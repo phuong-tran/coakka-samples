@@ -531,7 +531,7 @@ repositories {
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.0-g5e25dda67597-a21e1ad")
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.0-g0cb644340467-cfb8ee4")
     implementation("coakka.logger:coakka-jvm-native-logger:0.1.0-gba2a66d98eb5")
 }
 ```
@@ -575,9 +575,9 @@ Current artifact pins:
 
 | Lane | Release |
 | --- | --- |
-| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.1.0-g5e25dda67597-a21e1ad` |
+| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.1.0-g0cb644340467-cfb8ee4` |
 | Logger JVM | `coakka.logger:coakka-jvm-native-logger:0.1.0-gba2a66d98eb5` |
-| Runtime Python/Node/Go/Native | `0.1.0+5e25dda67597` |
+| Runtime Python/Node/Go/Native | `0.1.0+0cb644340467` |
 | Logger | `0.1.0+ba2a66d98eb5` |
 
 The runtime JVM jar, Python wheel, Node package, Go source tarball, and native
