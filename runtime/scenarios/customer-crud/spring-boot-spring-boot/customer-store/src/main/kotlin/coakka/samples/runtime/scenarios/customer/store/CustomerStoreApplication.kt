@@ -1,6 +1,5 @@
 package coakka.samples.runtime.scenarios.customer.store
 
-import coakka.samples.runtime.scenarios.customer.contract.CustomerDeliveryModes
 import coakka.samples.runtime.scenarios.customer.contract.CustomerDraft
 import coakka.samples.runtime.scenarios.customer.contract.CustomerMessageTypes
 import coakka.samples.runtime.scenarios.customer.contract.CustomerPayloadContract
@@ -9,7 +8,6 @@ import coakka.samples.runtime.scenarios.customer.contract.DeleteCustomerRequest
 import coakka.samples.runtime.scenarios.customer.contract.ListCustomersRequest
 import coakka.samples.runtime.scenarios.customer.contract.ListResponse
 import coakka.samples.runtime.scenarios.customer.contract.MutationResponse
-import coakka.samples.runtime.scenarios.customer.contract.RuntimeDiagnosticsView
 import coakka.v2.connector.ConnectorOrchestrator
 import coakka.v2.connector.RuntimeClient
 import coakka.v2.connector.RuntimeEndpointFlags
@@ -29,16 +27,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 
@@ -75,7 +63,8 @@ object CustomerPayloads {
  *
  * `localTarget` is the address this store serves. `peerTarget` is the web
  * process address used by the route table. Ports `19101/19102` are runtime
- * endpoints, not HTTP ports; HTTP stays on `8081/8082` for browser/API access.
+ * endpoints, not HTTP ports. This store is headless; customer traffic enters
+ * only through the runtime handler registered below.
  */
 @ConfigurationProperties("sample.connector")
 data class CustomerStoreConnectorProperties(
@@ -256,104 +245,4 @@ suspend fun handleCustomerRequest(
         ReplyPayload(customerStore.list(), CustomerPayloads.LIST_RESPONSE)
     }
     else -> error("unsupported customer message type: ${request.messageType}")
-}
-
-@RestController
-@RequestMapping("/api/customers")
-class CustomerStoreController(
-    private val managedConnector: ManagedConnector,
-    private val customerStore: InMemoryCustomerStore,
-    private val properties: CustomerStoreConnectorProperties,
-) {
-    @GetMapping
-    fun listCustomers(): ListResponse = customerStore.list().copy(
-        deliveryMode = CustomerDeliveryModes.STORE_HTTP_DIRECT,
-    )
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    fun createCustomer(@RequestBody request: CustomerDraft): MutationResponse =
-        customerStore.create(request).copy(
-            deliveryMode = CustomerDeliveryModes.STORE_HTTP_DIRECT,
-        )
-
-    @PutMapping("/{id}")
-    fun updateCustomer(
-        @PathVariable id: String,
-        @RequestBody request: CustomerDraft,
-    ): MutationResponse = customerStore.update(
-        request.copy(id = id),
-    ).copy(
-        deliveryMode = CustomerDeliveryModes.STORE_HTTP_DIRECT,
-    )
-
-    @DeleteMapping("/{id}")
-    fun deleteCustomer(@PathVariable id: String): MutationResponse =
-        customerStore.delete(id).copy(
-            deliveryMode = CustomerDeliveryModes.STORE_HTTP_DIRECT,
-        )
-
-    @GetMapping("/runtime")
-    fun runtimeDiagnostics(): RuntimeDiagnosticsView = runtimeDiagnosticsView(
-        managedConnector = managedConnector,
-        localTarget = properties.localTarget,
-        peerTarget = properties.peerTarget,
-        configuredGeneration = properties.generation,
-        localEndpoint = "${properties.localHost}:${properties.localPort}",
-        peerEndpoint = "${properties.peerHost}:${properties.peerPort}",
-        serviceRole = "customer-store",
-    )
-}
-
-fun runtimeDiagnosticsView(
-    managedConnector: ManagedConnector,
-    localTarget: String,
-    peerTarget: String,
-    configuredGeneration: Long,
-    localEndpoint: String,
-    peerEndpoint: String,
-    serviceRole: String,
-): RuntimeDiagnosticsView {
-    val runtimeInfo = managedConnector.orchestrator.runtimeInfo()
-    val runtimeConfig = managedConnector.orchestrator.runtimeConfig()
-    val clientStats = managedConnector.orchestrator.clientStats()
-    return RuntimeDiagnosticsView(
-        runtimeInfo = mapOf(
-            "abiVersion" to runtimeInfo.abiVersion,
-            "runtimeVersion" to runtimeInfo.runtimeVersion,
-            "gitCommit" to runtimeInfo.gitCommit,
-            "southboundBackend" to runtimeInfo.southboundBackend,
-            "allocatorBackend" to runtimeInfo.allocatorBackend,
-            "featureFlagsText" to runtimeInfo.featureFlagsText,
-        ),
-        runtimeConfig = mapOf(
-            "systemName" to runtimeConfig.systemName,
-            "nodeId" to runtimeConfig.nodeId,
-            "runtimeStateName" to runtimeConfig.runtimeStateName,
-            "appliedGeneration" to runtimeConfig.appliedGeneration,
-            "routeCount" to runtimeConfig.routeCount,
-            "southboundBindHost" to (runtimeConfig.southboundBindHost ?: ""),
-            "southboundBindPort" to runtimeConfig.southboundBindPort,
-        ),
-        clientStats = mapOf(
-            "pendingRequests" to clientStats.pendingRequests,
-            "deliveredRequests" to clientStats.deliveredRequests,
-            "matchedResponses" to clientStats.matchedResponses,
-            "matchedDeadletters" to clientStats.matchedDeadletters,
-            "lateResponses" to clientStats.lateResponses,
-            "unhandledDeadletters" to clientStats.unhandledDeadletters,
-        ),
-        connector = mapOf(
-            "serviceRole" to serviceRole,
-            "localTarget" to localTarget,
-            "peerTarget" to peerTarget,
-            "configuredGeneration" to configuredGeneration,
-            "localEndpoint" to localEndpoint,
-            "peerEndpoint" to peerEndpoint,
-            "createType" to CustomerPayloads.CREATE.messageType,
-            "updateType" to CustomerPayloads.UPDATE.messageType,
-            "deleteType" to CustomerPayloads.DELETE.messageType,
-            "listType" to CustomerPayloads.LIST.messageType,
-        ),
-    )
 }

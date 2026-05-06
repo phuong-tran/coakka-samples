@@ -77,7 +77,7 @@ object CustomerPayloads {
  *
  * `localTarget` is the runtime address served by this process. `peerTarget`
  * is the store address that business requests are sent to. Customer web never
- * falls back to the store HTTP API; the inter-service business path is runtime
+ * falls back to a store REST API; the inter-service business path is runtime
  * only so delivery failures remain visible as runtime deadletters.
  */
 @ConfigurationProperties("sample.connector")

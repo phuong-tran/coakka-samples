@@ -17,6 +17,7 @@ Spring Boot to Spring Boot customer CRUD
 Usage:
   bash run.sh
   bash run.sh check
+  bash run.sh dev
   bash run.sh store
   bash run.sh web
   bash run.sh build
@@ -24,6 +25,7 @@ Usage:
   bash run.sh stop
 
 Default command is 'check'. Run 'store' first, then 'web' in another terminal.
+Use 'dev' to build and run both processes from one shell.
 EOF
 }
 
@@ -36,6 +38,29 @@ build_jars() {
   require_runtime_commands
   bash "${repo_root}/gradlew" -p "${repo_root}" "${web_build_task}" "${store_build_task}" --quiet
   coakka_note "check ok: built Spring Boot web and store jars"
+}
+
+run_dev() {
+  build_jars
+  stop_ports
+
+  java -jar "${store_jar}" &
+  local store_pid="$!"
+  sleep 2
+  java -jar "${web_jar}" &
+  local web_pid="$!"
+
+  cleanup() {
+    kill "${web_pid}" "${store_pid}" 2>/dev/null || true
+  }
+  trap cleanup EXIT INT TERM
+
+  coakka_note "dev running: open http://localhost:8081"
+  while kill -0 "${web_pid}" 2>/dev/null && kill -0 "${store_pid}" 2>/dev/null; do
+    sleep 1
+  done
+  cleanup
+  wait "${web_pid}" "${store_pid}" 2>/dev/null || true
 }
 
 smoke() {
@@ -54,7 +79,7 @@ smoke() {
 }
 
 stop_ports() {
-  coakka_stop_ports 8081 8082 19101 19102
+  coakka_stop_ports 8081 19101 19102
 }
 
 case "${1:-}" in
@@ -65,6 +90,9 @@ case "${1:-}" in
     require_runtime_commands
     bash "${repo_root}/gradlew" -p "${repo_root}" "${store_build_task}" --quiet
     exec java -jar "${store_jar}"
+    ;;
+  dev)
+    run_dev
     ;;
   web)
     require_runtime_commands

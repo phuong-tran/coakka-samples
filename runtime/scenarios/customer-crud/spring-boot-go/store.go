@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
+	"os/signal"
 	"sort"
-	"strings"
 	"sync"
+	"syscall"
 
 	connector "github.com/phuong-tran/coakka-runtime-go"
 )
@@ -135,11 +135,6 @@ func (s *storeState) mutation(operation string, id string) mutationResponse {
 }
 
 func main() {
-	indexHTML, err := os.ReadFile("store-index.html")
-	if err != nil {
-		log.Fatalf("read store-index.html: %v", err)
-	}
-
 	store := newStoreState()
 	// Runtime route table for the Go store process.
 	//
@@ -199,69 +194,16 @@ func main() {
 		log.Fatalf("register handler: %v", err)
 	}
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", func(response http.ResponseWriter, request *http.Request) {
-		if request.Method != http.MethodGet || request.URL.Path != "/" {
-			writeJSON(response, http.StatusNotFound, map[string]string{"error": "not_found", "path": request.URL.Path})
-			return
-		}
-		response.Header().Set("content-type", "text/html; charset=utf-8")
-		_, _ = response.Write(indexHTML)
-	})
-	mux.HandleFunc("/api/customers", func(response http.ResponseWriter, request *http.Request) {
-		switch request.Method {
-		case http.MethodGet:
-			writeJSON(response, http.StatusOK, listResponse{Customers: store.snapshotCustomers()})
-		case http.MethodPost:
-			var payload customerDraft
-			if err := json.NewDecoder(request.Body).Decode(&payload); err != nil {
-				writeJSON(response, http.StatusBadRequest, map[string]string{"error": "bad_request", "detail": err.Error()})
-				return
-			}
-			writeJSON(response, http.StatusCreated, store.upsert("create", payload))
-		default:
-			writeJSON(response, http.StatusMethodNotAllowed, map[string]string{"error": "method_not_allowed"})
-		}
-	})
-	mux.HandleFunc("/api/customers/", func(response http.ResponseWriter, request *http.Request) {
-		id := strings.TrimPrefix(request.URL.Path, "/api/customers/")
-		if id == "" || id == "runtime" {
-			writeJSON(response, http.StatusNotFound, map[string]string{"error": "not_found", "path": request.URL.Path})
-			return
-		}
-		switch request.Method {
-		case http.MethodPut:
-			var payload customerDraft
-			if err := json.NewDecoder(request.Body).Decode(&payload); err != nil {
-				writeJSON(response, http.StatusBadRequest, map[string]string{"error": "bad_request", "detail": err.Error()})
-				return
-			}
-			payload.ID = id
-			writeJSON(response, http.StatusOK, store.upsert("update", payload))
-		case http.MethodDelete:
-			writeJSON(response, http.StatusOK, store.delete(id, "store-http-direct"))
-		default:
-			writeJSON(response, http.StatusMethodNotAllowed, map[string]string{"error": "method_not_allowed"})
-		}
-	})
-	mux.HandleFunc("/api/customers/runtime", func(response http.ResponseWriter, request *http.Request) {
-		if request.Method != http.MethodGet {
-			writeJSON(response, http.StatusMethodNotAllowed, map[string]string{"error": "method_not_allowed"})
-			return
-		}
-		writeJSON(response, http.StatusOK, runtimeDiagnostics(orchestrator))
-	})
-
 	info := orchestrator.RuntimeInfo()
 	log.Printf(
-		"customer-store-go ready http=8093 runtime=%s backend=%s target=%s",
+		"customer-store-go ready headless runtime=%s backend=%s target=%s",
 		info.RuntimeVersion,
 		info.SouthboundBackend,
 		localTarget,
 	)
-	if err := http.ListenAndServe("127.0.0.1:8093", mux); err != nil && err != http.ErrServerClosed {
-		log.Fatalf("http server: %v", err)
-	}
+	signals := make(chan os.Signal, 1)
+	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
+	<-signals
 }
 
 func handleRuntimeRequest(store *storeState, request *connector.Envelope) (any, connector.PayloadIdentity, error) {
@@ -296,33 +238,4 @@ func decodeJSON(payload []byte, out any) error {
 		payload = []byte("{}")
 	}
 	return json.Unmarshal(payload, out)
-}
-
-func runtimeDiagnostics(orchestrator *connector.ConnectorOrchestrator) any {
-	return map[string]any{
-		"runtimeInfo":   orchestrator.RuntimeInfo(),
-		"runtimeConfig": orchestrator.RuntimeConfig(),
-		"clientStats":   orchestrator.ClientStats(),
-		"connector": map[string]any{
-			"serviceRole": "customer-store-go",
-			"localTarget": localTarget,
-			"peerTarget":  peerTarget,
-			"createType":  identities.create.MessageType,
-			"updateType":  identities.update.MessageType,
-			"deleteType":  identities.delete.MessageType,
-			"listType":    identities.list.MessageType,
-		},
-	}
-}
-
-func writeJSON(response http.ResponseWriter, status int, body any) {
-	bytes, err := json.Marshal(body)
-	if err != nil {
-		http.Error(response, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	response.Header().Set("content-type", "application/json; charset=utf-8")
-	response.Header().Set("content-length", fmt.Sprintf("%d", len(bytes)))
-	response.WriteHeader(status)
-	_, _ = response.Write(bytes)
 }

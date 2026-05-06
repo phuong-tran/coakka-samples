@@ -9,7 +9,8 @@ The story is intentionally ordinary:
 - the user adds, edits, deletes, and lists customers
 - the web-facing service sends typed runtime requests to another process
 - the owner process mutates or reads its in-memory customer table
-- both pages show runtime diagnostics beside the business state
+- one web page explains the message path and shows runtime diagnostics beside
+  the business state
 
 The goal is not to teach customer management. The goal is to make process,
 language, routing, request/reply, deadletter, and diagnostics visible through a
@@ -21,10 +22,10 @@ Every customer scenario should provide the same surface:
 
 | Surface | Requirement |
 | --- | --- |
-| Web UI | a customer form, customer table, and clear success/error state |
+| Web UI | one customer form/table page on the web service with clear success/error state |
 | HTTP API | curlable browser-facing create, update, delete, and list endpoints on the web service |
 | Runtime panel | ABI/version/git/backend, routes, delivered count, deadletters |
-| Process panel | service name, language, HTTP port, runtime endpoint/target |
+| Process panel | service name, language, runtime endpoint/target |
 | Logs | one line per accepted runtime operation with correlation id |
 | Smoke path | a script or documented curl flow that verifies the scenario without a browser |
 | Shutdown path | documented ports and cleanup commands |
@@ -111,7 +112,7 @@ implementation.
 | Service | Language | Role | HTTP | Runtime endpoint |
 | --- | --- | --- | --- | --- |
 | `customer-web` | JVM / Spring Boot | web UI and HTTP API | `8081` | `127.0.0.1:19101` |
-| `customer-store` | JVM / Spring Boot | in-memory customer table | `8082` | `127.0.0.1:19102` |
+| `customer-store` | JVM / Spring Boot | headless in-memory customer table | none | `127.0.0.1:19102` |
 
 Flow:
 
@@ -128,7 +129,7 @@ service and replaces the state owner with Node.js.
 | Service | Language | Role | HTTP | Runtime endpoint |
 | --- | --- | --- | --- | --- |
 | `customer-web` | JVM / Spring Boot | web UI and HTTP API | `8081` | `127.0.0.1:19111` |
-| `customer-store-node` | Node.js | in-memory customer table | `8092` | `127.0.0.1:19112` |
+| `customer-store-node` | Node.js | headless in-memory customer table | none | `127.0.0.1:19112` |
 
 This scenario proves the runtime contract survives replacing the backend
 process language while the web workflow stays unchanged.
@@ -141,7 +142,7 @@ service and replaces the state owner with Go.
 | Service | Language | Role | HTTP | Runtime endpoint |
 | --- | --- | --- | --- | --- |
 | `customer-web` | JVM / Spring Boot | web UI and HTTP API | `8081` | `127.0.0.1:19121` |
-| `customer-store-go` | Go | in-memory customer table | `8093` | `127.0.0.1:19122` |
+| `customer-store-go` | Go | headless in-memory customer table | none | `127.0.0.1:19122` |
 
 This scenario makes Go feel like a normal service participant, not a special
 benchmark-only sidecar.
@@ -155,8 +156,8 @@ event receiver.
 | Service | Language | Role | HTTP | Runtime endpoint |
 | --- | --- | --- | --- | --- |
 | `customer-web` | JVM / Spring Boot | web UI and HTTP API | `8081` | `127.0.0.1:19131` |
-| `customer-store-node` | Node.js | authoritative customer table | `8092` | `127.0.0.1:19132` |
-| `customer-audit-node` | Node.js | receives mutation events | `8094` | `127.0.0.1:19134` |
+| `customer-store-node` | Node.js | headless authoritative customer table | none | `127.0.0.1:19132` |
+| `customer-audit-node` | Node.js | headless mutation event receiver | none | `127.0.0.1:19134` |
 
 Flow:
 
@@ -164,20 +165,20 @@ Flow:
 2. `customer-store-node` replies to the original request.
 3. `customer-store-node` also emits a typed audit event to
    `samples.customer.audit`.
-4. The audit page shows the event stream so users can see fan-out across
-   multiple Node.js processes.
+4. Store and audit logs show the headless services receiving runtime work.
 
 ## Browser Walkthrough
 
 The browser story should be identical across topologies:
 
 1. Open the web service page.
-2. Open the store service page beside it.
+2. Read the process strip: Browser HTTP reaches only `customer-web`; service
+   traffic is CoAkka message/reply.
 3. Create a customer named `Ada Lovelace`.
 4. Edit the tier from `silver` to `gold`.
 5. Delete the customer.
-6. Watch the store table and runtime counters update.
-7. Trigger one missing-route action and verify the deadletter panel increments.
+6. Watch the customer table and runtime counters update on the single UI.
+7. Trigger one missing-route action and verify the deadletter diagnostic.
 
 ## Headless Smoke Shape
 
@@ -203,6 +204,10 @@ Expected result:
 - list response reflects the latest state
 - runtime panels show delivered requests increasing
 - route-miss test increments deadletters
+
+With the current public `backend=stub` artifact, the smoke command instead
+checks diagnostics, route-miss behavior, and that a create request returns
+`503 RUNTIME_DELIVERY_FAILED` without falling back to store REST.
 
 ## Implementation Order
 

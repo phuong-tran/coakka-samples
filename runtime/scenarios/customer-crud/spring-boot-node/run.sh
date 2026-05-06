@@ -18,12 +18,14 @@ Spring Boot to Node.js customer CRUD
 Usage:
   bash run.sh
   bash run.sh check
+  bash run.sh dev
   bash run.sh store
   bash run.sh web
   bash run.sh smoke
   bash run.sh stop
 
 Default command is 'check'. Run 'store' first, then 'web' in another terminal.
+Use 'dev' to build and run both processes from one shell.
 EOF
 }
 
@@ -55,7 +57,6 @@ run_store() {
   trap "rm -rf '${tmp_dir}'" EXIT
   package_path="$(coakka_resolve_artifact "${publish_root}" "${node_artifact_rel}" "${tmp_dir}/artifacts/coakka-v2-connector-node-0.1.0.tgz")"
   cp "${script_dir}/store.mjs" "${tmp_dir}/store.mjs"
-  cp "${script_dir}/store-index.html" "${tmp_dir}/store-index.html"
 
   (
     cd "${tmp_dir}"
@@ -63,6 +64,47 @@ run_store() {
     npm install "${package_path}" >/dev/null
     exec node store.mjs
   )
+}
+
+run_dev() {
+  require_web_commands
+  require_node_commands
+
+  local tmp_dir package_path store_pid web_pid
+  tmp_dir="$(mktemp -d)"
+  package_path="$(coakka_resolve_artifact "${publish_root}" "${node_artifact_rel}" "${tmp_dir}/artifacts/coakka-v2-connector-node-0.1.0.tgz")"
+  cp "${script_dir}/store.mjs" "${tmp_dir}/store.mjs"
+
+  (
+    cd "${tmp_dir}"
+    npm init -y >/dev/null
+    npm install "${package_path}" >/dev/null
+  )
+  bash "${repo_root}/gradlew" -p "${repo_root}" "${web_build_task}" --quiet
+  stop_ports
+
+  (cd "${tmp_dir}" && node store.mjs) &
+  store_pid="$!"
+  sleep 2
+  java -jar "${web_jar}" \
+    --sample.connector.system-name=customer-web-node-topology \
+    --sample.connector.node-id=customer-web-node-topology-node \
+    --sample.connector.local-port=19111 \
+    --sample.connector.peer-port=19112 &
+  web_pid="$!"
+
+  cleanup() {
+    kill "${web_pid}" "${store_pid}" 2>/dev/null || true
+    rm -rf "${tmp_dir}"
+  }
+  trap cleanup EXIT INT TERM
+
+  coakka_note "dev running: open http://localhost:8081"
+  while kill -0 "${web_pid}" 2>/dev/null && kill -0 "${store_pid}" 2>/dev/null; do
+    sleep 1
+  done
+  cleanup
+  wait "${web_pid}" "${store_pid}" 2>/dev/null || true
 }
 
 check_scenario() {
@@ -74,7 +116,6 @@ check_scenario() {
   trap "rm -rf '${tmp_dir}'" EXIT
   package_path="$(coakka_resolve_artifact "${publish_root}" "${node_artifact_rel}" "${tmp_dir}/artifacts/coakka-v2-connector-node-0.1.0.tgz")"
   cp "${script_dir}/store.mjs" "${tmp_dir}/store.mjs"
-  cp "${script_dir}/store-index.html" "${tmp_dir}/store-index.html"
 
   bash "${repo_root}/gradlew" -p "${repo_root}" "${web_build_task}" --quiet
   (
@@ -102,7 +143,7 @@ smoke() {
 }
 
 stop_ports() {
-  coakka_stop_ports 8081 8092 19111 19112
+  coakka_stop_ports 8081 19111 19112
 }
 
 case "${1:-}" in
@@ -111,6 +152,9 @@ case "${1:-}" in
     ;;
   store)
     run_store
+    ;;
+  dev)
+    run_dev
     ;;
   web)
     run_web

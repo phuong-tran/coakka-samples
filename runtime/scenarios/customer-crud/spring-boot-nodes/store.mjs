@@ -1,7 +1,3 @@
-import { createServer } from "node:http";
-import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-import { dirname, join } from "node:path";
 import {
   ConnectorOrchestrator,
   EndpointFlag,
@@ -9,9 +5,6 @@ import {
   PayloadFormat,
   PayloadIdentity,
 } from "coakka-v2-connector-node";
-
-const here = dirname(fileURLToPath(import.meta.url));
-const indexHtml = readFileSync(join(here, "store-index.html"), "utf8");
 
 const localTarget = "samples.customer.store";
 const peerTarget = "samples.customer.frontend";
@@ -143,106 +136,16 @@ function handleRuntimeRequest(messageType, payload, correlationId) {
   }
 }
 
-function runtimeDiagnostics() {
-  return {
-    runtimeInfo: orchestrator.runtimeInfo(),
-    runtimeConfig: orchestrator.runtimeConfig(),
-    clientStats: orchestrator.clientStats(),
-    connector: {
-      serviceRole: "customer-store-node-multi",
-      localTarget,
-      peerTarget,
-      auditTarget,
-      createType: identities.create.messageType,
-      updateType: identities.update.messageType,
-      deleteType: identities.delete.messageType,
-      listType: identities.list.messageType,
-      auditEventType: identities.auditEvent.messageType,
-      auditSubmitted,
-      auditRejected,
-    },
-  };
-}
-
-function sendJson(response, status, body) {
-  const bytes = Buffer.from(JSON.stringify(body));
-  response.writeHead(status, {
-    "content-type": "application/json; charset=utf-8",
-    "content-length": bytes.length,
-  });
-  response.end(bytes);
-}
-
-function readJsonRequest(request) {
-  return new Promise((resolve, reject) => {
-    const chunks = [];
-    request.on("data", (chunk) => chunks.push(chunk));
-    request.on("end", () => {
-      const text = Buffer.concat(chunks).toString("utf8");
-      resolve(text ? JSON.parse(text) : {});
-    });
-    request.on("error", reject);
-  });
-}
-
-function customerIdFromPath(pathname) {
-  const prefix = "/api/customers/";
-  if (!pathname.startsWith(prefix) || pathname === "/api/customers/runtime") return null;
-  return decodeURIComponent(pathname.slice(prefix.length));
-}
-
-const server = createServer(async (request, response) => {
-  const url = new URL(request.url || "/", "http://127.0.0.1:8092");
-  try {
-    if (request.method === "GET" && url.pathname === "/") {
-      response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
-      response.end(indexHtml);
-      return;
-    }
-    if (request.method === "GET" && url.pathname === "/api/customers") {
-      sendJson(response, 200, { customers: customerList() });
-      return;
-    }
-    if (request.method === "POST" && url.pathname === "/api/customers") {
-      sendJson(response, 201, upsertCustomer("create", await readJsonRequest(request), "store-http-direct"));
-      return;
-    }
-    const customerId = customerIdFromPath(url.pathname);
-    if (request.method === "PUT" && customerId) {
-      const customer = await readJsonRequest(request);
-      sendJson(response, 200, upsertCustomer("update", { ...customer, id: customerId }, "store-http-direct"));
-      return;
-    }
-    if (request.method === "DELETE" && customerId) {
-      revision += 1;
-      customers.delete(customerId);
-      console.log(`customer-store-node-multi delete id=${customerId}`);
-      publishAudit("delete", customerId, null, "store-http-direct");
-      sendJson(response, 200, mutation("delete", customerId));
-      return;
-    }
-    if (request.method === "GET" && url.pathname === "/api/customers/runtime") {
-      sendJson(response, 200, runtimeDiagnostics());
-      return;
-    }
-    sendJson(response, 404, { error: "not_found", path: url.pathname });
-  } catch (error) {
-    sendJson(response, 400, { error: "bad_request", detail: error.message });
-  }
-});
-
-server.listen(8092, "127.0.0.1", () => {
-  const info = orchestrator.runtimeInfo();
-  console.log(
-    `customer-store-node-multi ready http=8092 runtime=${info.runtimeVersion} backend=${info.southboundBackend} target=${localTarget}`,
-  );
-});
+const info = orchestrator.runtimeInfo();
+console.log(
+  `customer-store-node-multi ready headless runtime=${info.runtimeVersion} backend=${info.southboundBackend} target=${localTarget} auditTarget=${auditTarget}`,
+);
+process.stdin.resume();
 
 function shutdown() {
-  server.close(() => {
-    orchestrator.close();
-    process.exit(0);
-  });
+  console.log(`customer-store-node-multi auditSubmitted=${auditSubmitted} auditRejected=${auditRejected}`);
+  orchestrator.close();
+  process.exit(0);
 }
 
 process.on("SIGTERM", shutdown);

@@ -5,7 +5,7 @@ This scenario runs two Spring Boot processes:
 | Service | Role | HTTP | Runtime target | Runtime endpoint |
 | --- | --- | --- | --- | --- |
 | `customer-web` | browser UI and HTTP API | `8081` | `samples.customer.frontend` | `127.0.0.1:19101` |
-| `customer-store` | in-memory customer table | `8082` | `samples.customer.store` | `127.0.0.1:19102` |
+| `customer-store` | headless in-memory customer table | none | `samples.customer.store` | `127.0.0.1:19102` |
 
 The browser talks to `customer-web`. `customer-web` sends typed runtime
 requests to `customer-store`, and `customer-store` replies with mutation/list
@@ -49,7 +49,8 @@ sample:
     generation: 1
 ```
 
-`/api/customers/runtime` shows the route config that was fed into the runtime:
+`customer-web` exposes `/api/customers/runtime`, which shows the route config
+that was fed into the runtime:
 `configuredGeneration`, `localEndpoint`, and `peerEndpoint`.
 
 Business responses include `deliveryMode` so smoke tests cannot hide which path
@@ -58,11 +59,10 @@ handled the request:
 | Value | Meaning |
 | --- | --- |
 | `runtime` | The customer request was handled through the runtime route. |
-| `store-http-direct` | The store HTTP API was called directly. |
 
 With the current `backend=stub` runtime artifact, Create, Update, Delete, and
 List from the web API return a runtime delivery failure instead of using the
-store HTTP API. The separate `Route miss` action is the intentional deadletter
+store REST API. The separate `Route miss` action is the intentional deadletter
 diagnostic.
 
 Shared request/response DTOs and message-type strings live in the
@@ -86,12 +86,16 @@ servers running.
 To start the services, run:
 
 ```sh
-bash run.sh store
+bash run.sh dev
 ```
 
-In another terminal:
+This builds both jars, starts `customer-store` headless, starts `customer-web`,
+and leaves the single UI at `http://localhost:8081`.
+
+To run services manually, use separate terminals:
 
 ```sh
+bash run.sh store
 bash run.sh web
 ```
 
@@ -101,7 +105,6 @@ That keeps shutdown output simpler than Gradle `bootRun`.
 Open:
 
 - Customer Web: `http://localhost:8081`
-- Customer Store: `http://localhost:8082`
 
 ## Smoke
 
@@ -131,5 +134,5 @@ bash run.sh stop
 4. Delete the customer.
 5. Watch runtime counters and customer state update.
 
-Both services expose runtime diagnostics beside the business state so the
-process boundary is visible without reading source code.
+The UI explains the process boundary directly: browser-to-web is HTTP,
+web-to-store is CoAkka message/reply, and REST fallback is disabled.

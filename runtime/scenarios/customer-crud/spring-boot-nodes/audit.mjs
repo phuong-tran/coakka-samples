@@ -1,16 +1,9 @@
-import { createServer } from "node:http";
-import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-import { dirname, join } from "node:path";
 import {
   ConnectorOrchestrator,
   EndpointFlag,
   PayloadFormat,
   PayloadIdentity,
 } from "coakka-v2-connector-node";
-
-const here = dirname(fileURLToPath(import.meta.url));
-const indexHtml = readFileSync(join(here, "audit-index.html"), "utf8");
 
 const localTarget = "samples.customer.audit";
 const storeTarget = "samples.customer.store";
@@ -67,61 +60,16 @@ function decodeJson(payload) {
   return text ? JSON.parse(text) : {};
 }
 
-function runtimeDiagnostics() {
-  return {
-    runtimeInfo: orchestrator.runtimeInfo(),
-    runtimeConfig: orchestrator.runtimeConfig(),
-    clientStats: orchestrator.clientStats(),
-    connector: {
-      serviceRole: "customer-audit-node",
-      localTarget,
-      storeTarget,
-      peerTarget,
-      auditEventType: identities.auditEvent.messageType,
-      retainedEvents: auditEvents.length,
-    },
-  };
-}
-
-function sendJson(response, status, body) {
-  const bytes = Buffer.from(JSON.stringify(body));
-  response.writeHead(status, {
-    "content-type": "application/json; charset=utf-8",
-    "content-length": bytes.length,
-  });
-  response.end(bytes);
-}
-
-const server = createServer((request, response) => {
-  const url = new URL(request.url || "/", "http://127.0.0.1:8094");
-  if (request.method === "GET" && url.pathname === "/") {
-    response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
-    response.end(indexHtml);
-    return;
-  }
-  if (request.method === "GET" && url.pathname === "/api/audit/events") {
-    sendJson(response, 200, { events: auditEvents });
-    return;
-  }
-  if (request.method === "GET" && url.pathname === "/api/audit/runtime") {
-    sendJson(response, 200, runtimeDiagnostics());
-    return;
-  }
-  sendJson(response, 404, { error: "not_found", path: url.pathname });
-});
-
-server.listen(8094, "127.0.0.1", () => {
-  const info = orchestrator.runtimeInfo();
-  console.log(
-    `customer-audit-node ready http=8094 runtime=${info.runtimeVersion} backend=${info.southboundBackend} target=${localTarget}`,
-  );
-});
+const info = orchestrator.runtimeInfo();
+console.log(
+  `customer-audit-node ready headless runtime=${info.runtimeVersion} backend=${info.southboundBackend} target=${localTarget}`,
+);
+process.stdin.resume();
 
 function shutdown() {
-  server.close(() => {
-    orchestrator.close();
-    process.exit(0);
-  });
+  console.log(`customer-audit-node retainedEvents=${auditEvents.length}`);
+  orchestrator.close();
+  process.exit(0);
 }
 
 process.on("SIGTERM", shutdown);

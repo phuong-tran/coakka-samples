@@ -5,8 +5,8 @@ This scenario runs:
 | Service | Language | Role | HTTP | Runtime target | Runtime endpoint |
 | --- | --- | --- | --- | --- | --- |
 | `customer-web` | JVM / Spring Boot | browser UI and HTTP API | `8081` | `samples.customer.frontend` | `127.0.0.1:19131` |
-| `customer-store-node` | Node.js | authoritative customer table | `8092` | `samples.customer.store` | `127.0.0.1:19132` |
-| `customer-audit-node` | Node.js | mutation event stream | `8094` | `samples.customer.audit` | `127.0.0.1:19134` |
+| `customer-store-node` | Node.js | headless authoritative customer table | none | `samples.customer.store` | `127.0.0.1:19132` |
+| `customer-audit-node` | Node.js | headless mutation event receiver | none | `samples.customer.audit` | `127.0.0.1:19134` |
 
 The Spring Boot web service reuses the same customer UI/API from the
 Spring-to-Spring scenario. The Node.js store owns state and emits typed audit
@@ -21,9 +21,8 @@ return explicit runtime delivery failures until a remote-capable backend is
 published. The audit fan-out path is present in the store code and will become
 observable through runtime delivery when that backend is available.
 
-The web UI is shared with the Spring-to-Spring scenario. Store and audit HTTP
-ports are for viewing state and diagnostics directly; they are not used as the
-web-to-store business transport.
+The web UI is shared with the Spring-to-Spring scenario. Store and audit state
+are visible through runtime replies and service logs, not through separate UIs.
 
 ## Run
 
@@ -40,21 +39,22 @@ keeping servers running.
 To start the services, run:
 
 ```sh
-bash run.sh audit
-bash run.sh store
+bash run.sh dev
 ```
 
-In another terminal:
+This prepares the Node.js store/audit services, builds the Spring Boot web jar,
+and starts all three processes. To run services manually, use separate
+terminals:
 
 ```sh
+bash run.sh audit
+bash run.sh store
 bash run.sh web
 ```
 
 Open:
 
 - Customer Web: `http://localhost:8081`
-- Node Store: `http://localhost:8092`
-- Node Audit: `http://localhost:8094`
 
 ## Smoke
 

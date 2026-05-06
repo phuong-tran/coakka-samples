@@ -18,12 +18,14 @@ Spring Boot to Go customer CRUD
 Usage:
   bash run.sh
   bash run.sh check
+  bash run.sh dev
   bash run.sh store
   bash run.sh web
   bash run.sh smoke
   bash run.sh stop
 
 Default command is 'check'. Run 'store' first, then 'web' in another terminal.
+Use 'dev' to build and run both processes from one shell.
 EOF
 }
 
@@ -44,7 +46,6 @@ prepare_go_workspace() {
   mkdir -p "${tmp_dir}/package"
   tar -C "${tmp_dir}/package" --strip-components 1 -xzf "${package_path}"
   cp "${script_dir}/store.go" "${tmp_dir}/store.go"
-  cp "${script_dir}/store-index.html" "${tmp_dir}/store-index.html"
 
   cat > "${tmp_dir}/go.mod" <<EOF
 module coakka-runtime-spring-boot-go-store
@@ -55,6 +56,45 @@ require ${module_path} v0.0.0
 
 replace ${module_path} => ./package
 EOF
+}
+
+run_dev() {
+  require_web_commands
+  require_go_commands
+
+  local tmp_dir store_pid web_pid
+  tmp_dir="$(mktemp -d)"
+  prepare_go_workspace "${tmp_dir}"
+  (
+    cd "${tmp_dir}"
+    go mod tidy >/dev/null
+    go build -o customer-store-go .
+  )
+  bash "${repo_root}/gradlew" -p "${repo_root}" "${web_build_task}" --quiet
+  stop_ports
+
+  (cd "${tmp_dir}" && ./customer-store-go) &
+  store_pid="$!"
+  sleep 2
+  java -jar "${web_jar}" \
+    --sample.connector.system-name=customer-web-go-topology \
+    --sample.connector.node-id=customer-web-go-topology-node \
+    --sample.connector.local-port=19121 \
+    --sample.connector.peer-port=19122 &
+  web_pid="$!"
+
+  cleanup() {
+    kill "${web_pid}" "${store_pid}" 2>/dev/null || true
+    rm -rf "${tmp_dir}"
+  }
+  trap cleanup EXIT INT TERM
+
+  coakka_note "dev running: open http://localhost:8081"
+  while kill -0 "${web_pid}" 2>/dev/null && kill -0 "${store_pid}" 2>/dev/null; do
+    sleep 1
+  done
+  cleanup
+  wait "${web_pid}" "${store_pid}" 2>/dev/null || true
 }
 
 run_web() {
@@ -117,7 +157,7 @@ smoke() {
 }
 
 stop_ports() {
-  coakka_stop_ports 8081 8093 19121 19122
+  coakka_stop_ports 8081 19121 19122
 }
 
 case "${1:-}" in
@@ -126,6 +166,9 @@ case "${1:-}" in
     ;;
   store)
     run_store
+    ;;
+  dev)
+    run_dev
     ;;
   web)
     run_web

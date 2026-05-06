@@ -5,12 +5,11 @@ This scenario runs:
 | Service | Language | Role | HTTP | Runtime target | Runtime endpoint |
 | --- | --- | --- | --- | --- | --- |
 | `customer-web` | JVM / Spring Boot | browser UI and HTTP API | `8081` | `samples.customer.frontend` | `127.0.0.1:19121` |
-| `customer-store-go` | Go | in-memory customer table | `8093` | `samples.customer.store` | `127.0.0.1:19122` |
+| `customer-store-go` | Go | headless in-memory customer table | none | `samples.customer.store` | `127.0.0.1:19122` |
 
 The Spring Boot web service reuses the same customer UI/API from the
 Spring-to-Spring scenario. The Go store uses the published
-`coakka-v2-connector-go` package and exposes its own store table plus runtime
-diagnostics.
+`coakka-v2-connector-go` package and runs as a headless message handler.
 
 ## Current Runtime Backend Note
 
@@ -19,9 +18,8 @@ boot and show diagnostics. The web service sends business requests only through
 the runtime route. There is no Go store REST fallback, so CRUD requests return
 explicit runtime delivery failures until a remote-capable backend is published.
 
-The web UI is shared with the Spring-to-Spring scenario. The store HTTP port is
-for viewing store state and diagnostics directly; it is not used as the
-web-to-store business transport.
+The web UI is shared with the Spring-to-Spring scenario. Store state is visible
+only through the web service list action, which is also a runtime message.
 
 ## Run
 
@@ -38,19 +36,20 @@ running.
 To start the services, run:
 
 ```sh
-bash run.sh store
+bash run.sh dev
 ```
 
-In another terminal:
+This prepares the Go store, builds the Spring Boot web jar, and starts both
+processes. To run services manually, use separate terminals:
 
 ```sh
+bash run.sh store
 bash run.sh web
 ```
 
 Open:
 
 - Customer Web: `http://localhost:8081`
-- Go Store: `http://localhost:8093`
 
 ## Smoke
 

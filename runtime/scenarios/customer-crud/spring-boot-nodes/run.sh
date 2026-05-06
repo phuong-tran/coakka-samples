@@ -17,6 +17,7 @@ Spring Boot to multiple Node.js customer CRUD
 Usage:
   bash run.sh
   bash run.sh check
+  bash run.sh dev
   bash run.sh audit
   bash run.sh store
   bash run.sh web
@@ -24,6 +25,7 @@ Usage:
   bash run.sh stop
 
 Default command is 'check'. Run 'audit' and 'store' first, then 'web' in another terminal.
+Use 'dev' to build and run all processes from one shell.
 EOF
 }
 
@@ -43,14 +45,49 @@ prepare_node_workspace() {
   package_path="$(coakka_resolve_artifact "${publish_root}" "${node_artifact_rel}" "${tmp_dir}/artifacts/coakka-v2-connector-node-0.1.0.tgz")"
   cp "${script_dir}/store.mjs" "${tmp_dir}/store.mjs"
   cp "${script_dir}/audit.mjs" "${tmp_dir}/audit.mjs"
-  cp "${script_dir}/store-index.html" "${tmp_dir}/store-index.html"
-  cp "${script_dir}/audit-index.html" "${tmp_dir}/audit-index.html"
 
   (
     cd "${tmp_dir}"
     npm init -y >/dev/null
     npm install "${package_path}" >/dev/null
   )
+}
+
+run_dev() {
+  require_web_commands
+  require_node_commands
+
+  local tmp_dir audit_pid store_pid web_pid
+  tmp_dir="$(mktemp -d)"
+  prepare_node_workspace "${tmp_dir}"
+  bash "${repo_root}/gradlew" -p "${repo_root}" "${web_build_task}" --quiet
+  stop_ports
+
+  (cd "${tmp_dir}" && node audit.mjs) &
+  audit_pid="$!"
+  sleep 1
+  (cd "${tmp_dir}" && node store.mjs) &
+  store_pid="$!"
+  sleep 2
+  java -jar "${web_jar}" \
+    --sample.connector.system-name=customer-web-nodes-topology \
+    --sample.connector.node-id=customer-web-nodes-topology-node \
+    --sample.connector.local-port=19131 \
+    --sample.connector.peer-port=19132 &
+  web_pid="$!"
+
+  cleanup() {
+    kill "${web_pid}" "${store_pid}" "${audit_pid}" 2>/dev/null || true
+    rm -rf "${tmp_dir}"
+  }
+  trap cleanup EXIT INT TERM
+
+  coakka_note "dev running: open http://localhost:8081"
+  while kill -0 "${web_pid}" 2>/dev/null && kill -0 "${store_pid}" 2>/dev/null && kill -0 "${audit_pid}" 2>/dev/null; do
+    sleep 1
+  done
+  cleanup
+  wait "${web_pid}" "${store_pid}" "${audit_pid}" 2>/dev/null || true
 }
 
 run_web() {
@@ -112,7 +149,7 @@ smoke() {
 }
 
 stop_ports() {
-  coakka_stop_ports 8081 8092 8094 19131 19132 19134
+  coakka_stop_ports 8081 19131 19132 19134
 }
 
 case "${1:-}" in
@@ -124,6 +161,9 @@ case "${1:-}" in
     ;;
   store)
     run_node_service store.mjs
+    ;;
+  dev)
+    run_dev
     ;;
   web)
     run_web

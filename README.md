@@ -260,7 +260,6 @@ the runtime, including `configuredGeneration`, `localEndpoint`, and
 The API responses distinguish how a request was handled:
 
 - `runtime` for runtime delivery
-- `store-http-direct` when the store HTTP API is called directly
 
 There is no store REST fallback on the customer web path. If cross-process
 runtime delivery fails, the web API returns `RUNTIME_DELIVERY_FAILED` so the
@@ -690,9 +689,10 @@ bash run.sh runtime/scenarios/customer-crud/spring-boot-spring-boot
 The default command for each scenario is `check`, so opening a scenario
 `run.sh` from a shell still performs a real build/preparation step. Long-running
 scenario commands such as `web`, `store`, and `audit` start services and should
-be run in separate terminals. The current public runtime artifact still reports
-`backend=stub`; customer scenarios expose that in diagnostics and fall back to
-the store HTTP endpoint so smoke commands and browser CRUD remain runnable.
+be run in separate terminals. `dev` builds and starts the whole topology from
+one shell. The current public runtime artifact still reports `backend=stub`;
+customer scenarios expose that in diagnostics and return explicit runtime
+delivery failures instead of using a store REST fallback.
 
 ## CI
 
