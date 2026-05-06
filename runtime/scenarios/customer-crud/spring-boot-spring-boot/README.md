@@ -11,6 +11,10 @@ The browser talks to `customer-web`. `customer-web` sends typed runtime
 requests to `customer-store`, and `customer-store` replies with mutation/list
 results.
 
+`customer-store` is a non-web Spring Boot process
+(`spring.main.web-application-type: none`). It does not start Tomcat or expose
+a store REST API; it stays alive only to serve the runtime handler.
+
 ## Current Runtime Backend Note
 
 The current public runtime v2 artifact used by `coakka-samples` reports
@@ -90,7 +94,7 @@ bash run.sh dev
 ```
 
 This builds both jars, starts `customer-store` headless, starts `customer-web`,
-and leaves the single UI at `http://localhost:8081`.
+and leaves the single UI/API at `http://localhost:8081`.
 
 To run services manually, use separate terminals:
 

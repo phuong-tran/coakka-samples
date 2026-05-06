@@ -264,6 +264,8 @@ The API responses distinguish how a request was handled:
 There is no store REST fallback on the customer web path. If cross-process
 runtime delivery fails, the web API returns `RUNTIME_DELIVERY_FAILED` so the
 missing remote backend is visible instead of hidden by a second transport.
+Store and audit services run headless; even the Spring Boot store is configured
+as a non-web application, so `8081` is the only browser/API HTTP surface.
 
 The main remaining scenario gap is a route hot reload demo: a `routes.yml`
 example, a `reload-routes` command, and diagnostics that show the active
@@ -442,7 +444,8 @@ and makes the same route snapshot and generation concepts visible:
 Customer scenarios intentionally do not include a store REST fallback. The
 current public runtime artifact reports `backend=stub`, so CRUD attempts from
 the web service return explicit runtime delivery failures until a remote-capable
-runtime artifact is available.
+runtime artifact is available. Only `customer-web` exposes HTTP; store and
+audit processes are runtime handlers without a REST API.
 
 ## Integration Guide
 

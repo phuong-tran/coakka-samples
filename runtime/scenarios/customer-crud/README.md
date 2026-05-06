@@ -114,6 +114,9 @@ implementation.
 | `customer-web` | JVM / Spring Boot | web UI and HTTP API | `8081` | `127.0.0.1:19101` |
 | `customer-store` | JVM / Spring Boot | headless in-memory customer table | none | `127.0.0.1:19102` |
 
+The Spring Boot store is configured with `spring.main.web-application-type:
+none`, so it does not start Tomcat or bind an HTTP port.
+
 Flow:
 
 1. Browser posts `create/update/delete/list` to `customer-web`.
