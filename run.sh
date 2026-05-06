@@ -97,6 +97,7 @@ run_scenario_checks() {
   for scenario_path in \
     "runtime/scenarios/customer-crud/spring-boot-single-process" \
     "runtime/scenarios/customer-crud/kotlin-desktop-local" \
+    "runtime/scenarios/customer-crud/python-desktop-local" \
     "runtime/scenarios/customer-crud/spring-boot-spring-boot" \
     "runtime/scenarios/customer-crud/spring-boot-node" \
     "runtime/scenarios/customer-crud/spring-boot-go" \

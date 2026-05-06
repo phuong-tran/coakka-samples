@@ -287,18 +287,19 @@ Current customer topologies:
 | --- | --- |
 | `runtime/scenarios/customer-crud/spring-boot-single-process` | Spring Boot web service plus local runtime store target |
 | `runtime/scenarios/customer-crud/kotlin-desktop-local` | Kotlin desktop app plus local runtime store target |
+| `runtime/scenarios/customer-crud/python-desktop-local` | Python desktop app plus local runtime store target |
 | `runtime/scenarios/customer-crud/spring-boot-spring-boot` | Spring Boot web service to Spring Boot store |
 | `runtime/scenarios/customer-crud/spring-boot-node` | Spring Boot web service to Node.js store |
 | `runtime/scenarios/customer-crud/spring-boot-go` | Spring Boot web service to Go store |
 | `runtime/scenarios/customer-crud/spring-boot-nodes` | Spring Boot web service to Node.js store plus Node.js audit service |
 
-The Spring Boot single-process and Kotlin desktop local scenarios are the
-current happy paths: customer actions succeed through runtime request/reply
-without a store REST API. They are intentionally visual, local demos for the
-same target and payload vocabulary. The cross-process scenarios keep the same
-UI and payload contract but intentionally expose the current remote stub backend
-as `RUNTIME_DELIVERY_FAILED` until a remote-capable runtime artifact is
-published.
+The Spring Boot single-process, Kotlin desktop local, and Python desktop local
+scenarios are the current happy paths: customer actions succeed through runtime
+request/reply without a store REST API. They are intentionally visual, local
+demos for the same target and payload vocabulary. The cross-process scenarios
+keep the same UI and payload contract but intentionally expose the current
+remote stub backend as `RUNTIME_DELIVERY_FAILED` until a remote-capable runtime
+artifact is published.
 
 The multi-service Node.js scenario includes an audit target so the store can
 emit a typed one-way event after mutations. Under the current stub backend, that
@@ -700,17 +701,18 @@ Run one scenario check directly:
 ```sh
 bash run.sh runtime/scenarios/customer-crud/spring-boot-spring-boot
 bash run.sh runtime/scenarios/customer-crud/kotlin-desktop-local smoke
+bash run.sh runtime/scenarios/customer-crud/python-desktop-local smoke
 ```
 
 The default command for each scenario is `check`, so opening a scenario
 `run.sh` from a shell still performs a real build/preparation step. Long-running
 scenario commands such as `web`, `store`, and `audit` start services and should
 be run in separate terminals. `dev` builds and starts the whole topology from
-one shell. The Spring Boot single-process and Kotlin desktop local scenarios can
-complete CRUD today because the store target is local. Cross-process customer
-scenarios expose the current `backend=stub` runtime artifact in diagnostics and
-return explicit runtime delivery failures instead of using a store REST
-fallback.
+one shell. The Spring Boot single-process, Kotlin desktop local, and Python
+desktop local scenarios can complete CRUD today because the store target is
+local. Cross-process customer scenarios expose the current `backend=stub`
+runtime artifact in diagnostics and return explicit runtime delivery failures
+instead of using a store REST fallback.
 
 ## CI
 
