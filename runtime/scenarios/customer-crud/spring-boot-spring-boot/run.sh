@@ -41,17 +41,24 @@ build_jars() {
 }
 
 run_dev() {
+  local store_pid="" web_pid=""
+
   build_jars
   stop_ports
 
   java -jar "${store_jar}" &
-  local store_pid="$!"
+  store_pid="$!"
   sleep 2
   java -jar "${web_jar}" &
-  local web_pid="$!"
+  web_pid="$!"
 
   cleanup() {
-    kill "${web_pid}" "${store_pid}" 2>/dev/null || true
+    if [[ -n "${web_pid}" ]]; then
+      kill "${web_pid}" 2>/dev/null || true
+    fi
+    if [[ -n "${store_pid}" ]]; then
+      kill "${store_pid}" 2>/dev/null || true
+    fi
   }
   trap cleanup EXIT INT TERM
 

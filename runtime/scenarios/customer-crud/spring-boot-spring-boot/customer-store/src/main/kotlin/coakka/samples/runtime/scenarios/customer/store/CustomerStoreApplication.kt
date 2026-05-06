@@ -18,6 +18,7 @@ import coakka.v2.connector.protocol.ConnectorEnvelope
 import coakka.v2.connector.protocol.ConnectorPayloadFormat
 import coakka.v2.connector.protocol.ConnectorPayloadIdentity
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.boot.ApplicationRunner
@@ -28,6 +29,7 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.atomic.AtomicLong
 
 @SpringBootApplication
@@ -132,6 +134,9 @@ class ManagedConnector(val orchestrator: ConnectorOrchestrator) : AutoCloseable 
 @Configuration
 class CustomerStoreConnectorConfiguration {
     @Bean
+    fun objectMapper(): ObjectMapper = jacksonObjectMapper()
+
+    @Bean
     fun customerStore(): InMemoryCustomerStore = InMemoryCustomerStore()
 
     @Bean
@@ -213,6 +218,7 @@ class CustomerStoreConnectorConfiguration {
             properties.peerTarget,
             config.routeCount,
         )
+        CountDownLatch(1).await()
     }
 }
 
