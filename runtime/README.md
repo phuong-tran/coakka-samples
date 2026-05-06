@@ -55,9 +55,7 @@ The first scenario implementations are:
 
 They boot web/store/audit services and expose clear runtime diagnostics. The
 single-process topology gives a successful CRUD path through a local runtime
-store target. The cross-process web-to-store path is runtime-only; with the
-current public `backend=stub` runtime artifact, those CRUD attempts return
-explicit runtime delivery failures until a remote-capable backend is published.
+store target. The cross-process web-to-store path is runtime-only and uses the remote runtime backend. If delivery fails, samples return explicit runtime errors instead of hiding the failure behind a REST fallback.
 
 For production-facing integration guidance, read:
 

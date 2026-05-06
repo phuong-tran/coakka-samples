@@ -37,7 +37,7 @@ repositories {
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.0-g65b36b8ad2ec")
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.0-ge91e6bb90bba")
 }
 ```
 
@@ -145,6 +145,4 @@ DeadletterSubscription subscription =
 - Increment `generation` when applying a new route table.
 - Prefer `strictNoDrop=true` while integrating so overload becomes visible.
 - Handle `DeadletterException`; do not treat deadletters as generic failures.
-- Customer scenarios keep inter-service business traffic runtime-only; the
-  current public `backend=stub` artifact returns explicit delivery failures for
-  cross-process CRUD.
+- Customer scenarios keep inter-service business traffic runtime-only and avoid a store REST fallback.

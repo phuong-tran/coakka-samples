@@ -60,6 +60,7 @@ import javax.swing.table.DefaultTableModel
 private const val FRONTEND_TARGET = "samples.customer.frontend"
 private const val STORE_TARGET = "samples.customer.store"
 private const val STORE_HOST = "127.0.0.1"
+private const val FRONTEND_PORT = 19151
 private const val STORE_PORT = 19152
 private const val GENERATION = 1L
 
@@ -146,6 +147,7 @@ private data class ReplyPayload(val payload: Any, val identity: ConnectorPayload
 private class CustomerDesktopRuntime private constructor(
     private val store: InMemoryCustomerStore,
     val orchestrator: ConnectorOrchestrator,
+    val storeOrchestrator: ConnectorOrchestrator,
 ) : AutoCloseable {
     private val objectMapper = jacksonObjectMapper()
     private val closed = AtomicBoolean(false)
@@ -153,10 +155,10 @@ private class CustomerDesktopRuntime private constructor(
     companion object {
         fun start(): CustomerDesktopRuntime {
             val store = InMemoryCustomerStore()
-            val orchestrator = ConnectorOrchestrator.start(
+            val storeOrchestrator = ConnectorOrchestrator.start(
                 startSpec = RuntimeStartSpec(
-                    systemName = "customer-desktop-local",
-                    nodeId = "customer-desktop-local-node",
+                    systemName = "customer-desktop-store",
+                    nodeId = "customer-desktop-store-node",
                     queueCapacity = 128,
                     strictNoDrop = true,
                     separateDeliveredRequestLane = true,
@@ -169,13 +171,55 @@ private class CustomerDesktopRuntime private constructor(
                                     host = STORE_HOST,
                                     port = STORE_PORT,
                                     flags = RuntimeEndpointFlags.LOCAL,
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-            )
-            val runtime = CustomerDesktopRuntime(store, orchestrator)
+	                                ),
+	                            ),
+	                        ),
+	                        RuntimeRouteSpec(
+	                            target = FRONTEND_TARGET,
+	                            endpoints = listOf(
+	                                RuntimeEndpointSpec(
+	                                    host = STORE_HOST,
+	                                    port = FRONTEND_PORT,
+	                                    flags = 0,
+	                                ),
+	                            ),
+	                        ),
+	                    ),
+	                ),
+	            )
+	            val frontendOrchestrator = ConnectorOrchestrator.start(
+	                startSpec = RuntimeStartSpec(
+	                    systemName = "customer-desktop-frontend",
+	                    nodeId = "customer-desktop-frontend-node",
+	                    queueCapacity = 128,
+	                    strictNoDrop = true,
+	                    separateDeliveredRequestLane = true,
+	                    generation = GENERATION,
+	                    routes = listOf(
+	                        RuntimeRouteSpec(
+	                            target = FRONTEND_TARGET,
+	                            endpoints = listOf(
+	                                RuntimeEndpointSpec(
+	                                    host = STORE_HOST,
+	                                    port = FRONTEND_PORT,
+	                                    flags = RuntimeEndpointFlags.LOCAL,
+	                                ),
+	                            ),
+	                        ),
+	                        RuntimeRouteSpec(
+	                            target = STORE_TARGET,
+	                            endpoints = listOf(
+	                                RuntimeEndpointSpec(
+	                                    host = STORE_HOST,
+	                                    port = STORE_PORT,
+	                                    flags = 0,
+	                                ),
+	                            ),
+	                        ),
+	                    ),
+	                ),
+	            )
+            val runtime = CustomerDesktopRuntime(store, frontendOrchestrator, storeOrchestrator)
             runtime.registerStoreHandler()
             return runtime
         }
@@ -231,44 +275,63 @@ private class CustomerDesktopRuntime private constructor(
     }
 
     fun diagnosticsText(): String {
-        val info = orchestrator.runtimeInfo()
-        val config = orchestrator.runtimeConfig()
-        val runtimeStats = orchestrator.stats()
+        val frontendInfo = orchestrator.runtimeInfo()
+        val storeInfo = storeOrchestrator.runtimeInfo()
+        val frontendConfig = orchestrator.runtimeConfig()
+        val storeConfig = storeOrchestrator.runtimeConfig()
+        val frontendStats = orchestrator.stats()
+        val storeStats = storeOrchestrator.stats()
         val clientStats = orchestrator.clientStats()
+        val storeClientStats = storeOrchestrator.clientStats()
         return buildString {
-            appendLine("Runtime")
-            appendLine("  abi: ${info.abiVersion}")
-            appendLine("  version: ${info.runtimeVersion}")
-            appendLine("  git: ${info.gitCommit}")
-            appendLine("  backend: ${info.southboundBackend}")
+            appendLine("Frontend runtime")
+            appendLine("  abi: ${frontendInfo.abiVersion}")
+            appendLine("  version: ${frontendInfo.runtimeVersion}")
+            appendLine("  git: ${frontendInfo.gitCommit}")
+            appendLine("  backend: ${frontendInfo.southboundBackend}")
+            appendLine("  system: ${frontendConfig.systemName}")
+            appendLine("  node: ${frontendConfig.nodeId}")
+            appendLine("  generation: ${frontendConfig.appliedGeneration}")
+            appendLine()
+            appendLine("Store runtime")
+            appendLine("  abi: ${storeInfo.abiVersion}")
+            appendLine("  version: ${storeInfo.runtimeVersion}")
+            appendLine("  git: ${storeInfo.gitCommit}")
+            appendLine("  backend: ${storeInfo.southboundBackend}")
+            appendLine("  system: ${storeConfig.systemName}")
+            appendLine("  node: ${storeConfig.nodeId}")
+            appendLine("  generation: ${storeConfig.appliedGeneration}")
             appendLine()
             appendLine("Route snapshot")
-            appendLine("  system: ${config.systemName}")
-            appendLine("  node: ${config.nodeId}")
-            appendLine("  generation: ${config.appliedGeneration}")
-            appendLine("  routes: ${config.routeCount}")
-            appendLine("  store endpoint: $STORE_HOST:$STORE_PORT LOCAL")
+            appendLine("  frontend endpoint: $STORE_HOST:$FRONTEND_PORT LOCAL on frontend runtime")
+            appendLine("  store endpoint: $STORE_HOST:$STORE_PORT LOCAL on store runtime")
+            appendLine("  frontend routes: ${frontendConfig.routeCount}")
+            appendLine("  store routes: ${storeConfig.routeCount}")
             appendLine()
             appendLine("Counters")
-            appendLine("  delivered: ${clientStats.deliveredRequests}")
+            appendLine("  store delivered: ${storeClientStats.deliveredRequests}")
             appendLine("  matched responses: ${clientStats.matchedResponses}")
             appendLine("  matched deadletters: ${clientStats.matchedDeadletters}")
             appendLine("  pending: ${clientStats.pendingRequests}")
-            appendLine("  route misses: ${runtimeStats.routeMissCount}")
-            appendLine("  deadletters: ${runtimeStats.deadletterCount}")
+            appendLine("  frontend route misses: ${frontendStats.routeMissCount}")
+            appendLine("  frontend deadletters: ${frontendStats.deadletterCount}")
+            appendLine("  store deadletters: ${storeStats.deadletterCount}")
         }
     }
 
-    override fun close() {
-        if (closed.compareAndSet(false, true)) {
-            runBlocking { orchestrator.kotlin.shutdown() }
-        }
-    }
+	    override fun close() {
+	        if (closed.compareAndSet(false, true)) {
+	            runBlocking {
+	                orchestrator.kotlin.shutdown()
+	                storeOrchestrator.kotlin.shutdown()
+	            }
+	        }
+	    }
 
-    private fun registerStoreHandler() {
-        orchestrator.registerHandler(STORE_TARGET) { request ->
-            val reply = handleCustomerRequest(request)
-            RuntimeClient.replyTo(
+	    private fun registerStoreHandler() {
+	        storeOrchestrator.registerHandler(STORE_TARGET) { request ->
+	            val reply = handleCustomerRequest(request)
+	            RuntimeClient.replyTo(
                 request = request,
                 source = STORE_TARGET,
                 payloadUtf8 = objectMapper.writeValueAsString(reply.payload),
@@ -283,15 +346,15 @@ private class CustomerDesktopRuntime private constructor(
         operation: String,
         responseType: Class<T>,
     ): T {
-        val response = orchestrator.kotlin.ask(
+	        val response = orchestrator.kotlin.ask(
             source = FRONTEND_TARGET,
             target = STORE_TARGET,
             payloadUtf8 = objectMapper.writeValueAsString(payload),
             payloadIdentity = identity,
             timeoutMs = 5_000,
             operation = operation,
-            deliveryHint = ConnectorDeliveryHint.ROUTER_DEFAULT,
-        )
+	            deliveryHint = ConnectorDeliveryHint.REQUIRE_REMOTE,
+	        )
         return objectMapper.readValue(response.payload, responseType)
     }
 
@@ -362,7 +425,7 @@ private class CustomerDesktopFrame(
             "Desktop UI -> $FRONTEND_TARGET -> CoAkka runtime ask -> $STORE_TARGET -> reply",
         )
         path.foreground = Color(52, 73, 94)
-        val note = JLabel("One JVM process, one runtime handle, two local runtime roles, no store REST API.")
+        val note = JLabel("One JVM process, two runtime handles, frontend talks to store by runtime messages, no store REST API.")
         note.foreground = Color(82, 95, 107)
         panel.add(title, BorderLayout.NORTH)
         panel.add(path, BorderLayout.CENTER)
@@ -581,11 +644,12 @@ private suspend fun runSmoke() {
         println("coakka_desktop_deadletter reason=${deadletter.reason} target=${deadletter.target}")
 
         val stats = runtime.orchestrator.clientStats()
-        check(stats.deliveredRequests >= 5L) { "expected delivered requests, got ${stats.deliveredRequests}" }
+        val storeStats = runtime.storeOrchestrator.clientStats()
+        check(storeStats.deliveredRequests >= 5L) { "expected delivered requests, got ${storeStats.deliveredRequests}" }
         check(stats.matchedResponses >= 5L) { "expected matched responses, got ${stats.matchedResponses}" }
         check(stats.matchedDeadletters >= 1L) { "expected matched deadletters, got ${stats.matchedDeadletters}" }
         println(
-            "coakka_desktop_stats delivered=${stats.deliveredRequests} " +
+            "coakka_desktop_stats storeDelivered=${storeStats.deliveredRequests} " +
                 "matchedResponses=${stats.matchedResponses} matchedDeadletters=${stats.matchedDeadletters}"
         )
     } finally {

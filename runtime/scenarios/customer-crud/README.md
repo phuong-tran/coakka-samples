@@ -95,16 +95,14 @@ List response JSON:
 }
 ```
 
-## Planned Topologies
+## Topologies
 
-The current public runtime v2 release used by these samples reports
-`backend=stub`. The single-process scenario gives a successful CRUD path today
-because the store target is local to the same runtime process. Cross-process
-customer scenarios are the target web topology for the next remote-capable
-runtime release. Web-to-store business traffic is runtime-only; there is no
-store REST fallback. Until a remote-capable release exists, cross-process CRUD
-attempts return explicit delivery deadletters while build, boot, route config,
-and diagnostics remain runnable from public artifacts.
+The customer scenarios keep web-to-store business traffic on the runtime path;
+there is no store REST fallback. Single-process demos keep both runtime targets
+inside one app for a compact local happy path. Cross-process demos run separate
+services and require a remote-capable runtime artifact. If remote delivery
+fails, the samples surface an explicit runtime delivery error instead of hiding
+the failure behind HTTP fallback behavior.
 
 ### Spring Boot Single Process
 
@@ -131,16 +129,17 @@ path for the same customer contract.
 
 | Surface | Language | Role | HTTP | Runtime endpoint |
 | --- | --- | --- | --- | --- |
-| `customer-desktop` UI | JVM / Kotlin Swing | desktop UI and frontend target | none | source-only |
-| `customer-desktop` store handler | JVM / Kotlin | local in-memory customer table | none | `127.0.0.1:19152` |
+| `customer-desktop` UI | JVM / Kotlin Swing | desktop UI and frontend runtime | none | `127.0.0.1:19151` |
+| `customer-desktop` store handler | JVM / Kotlin | local in-memory customer table on store runtime | none | `127.0.0.1:19152` |
 
 Flow:
 
 1. The desktop button sends a typed `ask(...)` from `samples.customer.frontend`.
 2. The route snapshot resolves `samples.customer.store`.
-3. The local store handler mutates or reads the table and replies.
-4. The desktop UI shows the customer table, route generation, runtime
-   version/git/backend, counters, and one intentional route-miss diagnostic.
+3. The store runtime handler mutates or reads the table and replies.
+4. The desktop UI shows the customer table, route generations, runtime
+   version/git/backend for both handles, counters, and one intentional
+   route-miss diagnostic.
 
 This scenario has no HTTP API at all. It exists so the local runtime message
 path is visible without the extra browser-to-web-service layer.
@@ -148,12 +147,13 @@ path is visible without the extra browser-to-web-service layer.
 ### Python Desktop Local
 
 This is scaffolded under `python-desktop-local/` as the same local visual happy
-path through the Python connector.
+path through the Python connector, with two runtime handles inside one Python
+process.
 
 | Surface | Language | Role | HTTP | Runtime endpoint |
 | --- | --- | --- | --- | --- |
-| `app.py` UI | Python / Tk | desktop UI and frontend target | none | source-only |
-| `app.py` store handler | Python | local in-memory customer table | none | `127.0.0.1:19162` |
+| `app.py` UI | Python / Tk | desktop UI and frontend runtime | none | `127.0.0.1:19161` |
+| `app.py` store handler | Python | local in-memory customer table on store runtime | none | `127.0.0.1:19162` |
 
 Flow:
 
@@ -270,10 +270,6 @@ Expected result:
 - list response reflects the latest state
 - runtime panels show delivered requests increasing
 - route-miss test increments deadletters
-
-With the current public `backend=stub` artifact, the smoke command instead
-checks diagnostics, route-miss behavior, and that a create request returns
-`503 RUNTIME_DELIVERY_FAILED` without falling back to store REST.
 
 ## Implementation Order
 

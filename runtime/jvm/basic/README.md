@@ -35,7 +35,7 @@ Direct Gradle run from the repository root:
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=0.1.0 git=5e25dda67597 backend=stub
+coakka_runtime_info abi=1 version=0.1.0 git=<git> backend=<backend>
 coakka_runtime_response payload={"echo":"hello-runtime-jvm"}
 coakka_runtime_stats generation=1 routes=1 delivered=1 matchedResponses=1
 ```

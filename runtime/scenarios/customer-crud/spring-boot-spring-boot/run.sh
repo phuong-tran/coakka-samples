@@ -53,10 +53,10 @@ run_dev() {
   web_pid="$!"
 
   cleanup() {
-    if [[ -n "${web_pid}" ]]; then
+    if [[ -n "${web_pid:-}" ]]; then
       kill "${web_pid}" 2>/dev/null || true
     fi
-    if [[ -n "${store_pid}" ]]; then
+    if [[ -n "${store_pid:-}" ]]; then
       kill "${store_pid}" 2>/dev/null || true
     fi
   }
@@ -67,6 +67,7 @@ run_dev() {
     sleep 1
   done
   cleanup
+  trap - EXIT INT TERM
   wait "${web_pid}" "${store_pid}" 2>/dev/null || true
 }
 
@@ -79,10 +80,21 @@ smoke() {
   coakka_customer_smoke_request "trigger route-miss diagnostic" \
     -X POST http://127.0.0.1:8081/api/customers/route-miss
 
-  coakka_customer_expect_http_status "runtime-only create is blocked by current stub backend" 503 \
+  coakka_customer_smoke_request "create customer through runtime message" \
     -X POST http://127.0.0.1:8081/api/customers \
     -H 'Content-Type: application/json' \
     -d '{"id":"cust-001","name":"Ada Lovelace","email":"ada@example.com","tier":"silver","notes":"smoke"}'
+
+  coakka_customer_smoke_request "update customer through runtime message" \
+    -X PUT http://127.0.0.1:8081/api/customers/cust-001 \
+    -H 'Content-Type: application/json' \
+    -d '{"name":"Ada Lovelace","email":"ada@example.com","tier":"gold","notes":"updated"}'
+
+  coakka_customer_smoke_request "list customers through runtime message" \
+    http://127.0.0.1:8081/api/customers
+
+  coakka_customer_smoke_request "delete customer through runtime message" \
+    -X DELETE http://127.0.0.1:8081/api/customers/cust-001
 }
 
 stop_ports() {

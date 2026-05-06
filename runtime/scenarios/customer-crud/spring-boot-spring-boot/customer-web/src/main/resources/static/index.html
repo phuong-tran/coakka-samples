@@ -372,9 +372,9 @@
     runtimeBannerPill.textContent = `backend: ${backend}`;
     if (backend === 'stub') {
       runtimeBanner.className = 'runtime-banner';
-      runtimeBanner.querySelector('strong').textContent = 'Runtime backend is stub: cross-process delivery is expected to fail';
+      runtimeBanner.querySelector('strong').textContent = 'Runtime backend is stub: cross-process delivery is unavailable';
       runtimeBanner.querySelector('p').innerHTML =
-        'This public artifact does not include the remote southbound backend yet. Customer actions stay on the CoAkka runtime path and return <code>RUNTIME_DELIVERY_FAILED</code> instead of using a store REST fallback.';
+        'Customer actions still stay on the CoAkka runtime path and return <code>RUNTIME_DELIVERY_FAILED</code> instead of using a store REST fallback.';
       return;
     }
     runtimeBanner.className = 'runtime-banner ready';

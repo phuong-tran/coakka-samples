@@ -19,13 +19,9 @@ It does not prove remote cross-process delivery.
 
 ## Why This Exists
 
-The cross-process customer scenarios intentionally keep service-to-service
-traffic runtime-only and return `RUNTIME_DELIVERY_FAILED` with the current
-public `backend=stub` artifact. That is correct for testing the missing remote
-backend without hiding the failure behind REST fallback.
-
-This scenario gives the happy path: customer actions succeed today while still
-using the same runtime targets and payload contract.
+This scenario gives the smallest Spring Boot happy path: customer actions
+succeed while still using the same runtime targets and payload contract as the
+cross-process demos.
 
 ## Run
 

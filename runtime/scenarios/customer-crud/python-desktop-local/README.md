@@ -1,16 +1,16 @@
 # Python Desktop Local Runtime Customer CRUD
 
 This scenario mirrors the Kotlin desktop local demo with Python and Tk. It runs
-one Python process with one CoAkka runtime handle and two local runtime roles:
+one Python process with two CoAkka runtime handles:
 
 | Role | Target | Transport |
 | --- | --- | --- |
-| desktop frontend | `samples.customer.frontend` | source of typed asks |
-| in-memory store handler | `samples.customer.store` | local runtime handler |
+| desktop frontend runtime | `samples.customer.frontend` | source of typed asks |
+| in-memory store runtime | `samples.customer.store` | local runtime handler |
 
 The desktop UI is not a REST client. Customer create, update, delete, and list
-commands are sent as typed runtime asks from the frontend target to the store
-target. The store has no HTTP API.
+commands are sent as typed runtime asks from the frontend runtime to the store
+runtime. The store has no HTTP API.
 
 ## Run
 
@@ -41,10 +41,10 @@ delivered requests, matched responses, and one matched deadletter.
 The first screen shows the full local path:
 
 ```text
-Desktop UI -> samples.customer.frontend -> CoAkka runtime ask -> samples.customer.store -> reply
+Desktop UI -> frontend runtime -> CoAkka runtime ask -> store runtime -> reply
 ```
 
-Runtime diagnostics show the runtime version/git/backend, active route
-generation, delivered request count, matched response count, pending count, and
-deadletter count. This is the visual happy path for Python while cross-process
-customer scenarios still wait for a remote-capable runtime backend.
+Runtime diagnostics show the version/git/backend for both runtime handles,
+active route generations, delivered request count, matched response count,
+pending count, and deadletter count. This is the visual happy path for Python
+without introducing a REST fallback.

@@ -12,14 +12,13 @@ The Spring Boot web service reuses the same customer UI/API from the
 Spring-to-Spring scenario. The Node.js store owns state and emits typed audit
 events to a second Node.js service after create, update, and delete operations.
 
-## Current Runtime Backend Note
+## Runtime Transport Note
 
-The current public runtime v2 artifact reports `backend=stub`. All services can
-boot and show diagnostics. The web service sends business requests only through
-the runtime route. There is no Node.js store REST fallback, so CRUD requests
-return explicit runtime delivery failures until a remote-capable backend is
-published. The audit fan-out path is present in the store code and will become
-observable through runtime delivery when that backend is available.
+This scenario expects a remote-capable runtime v2 artifact. The web service
+sends business requests only through the runtime route. There is no Node.js
+store REST fallback, so delivery failures are returned explicitly instead of
+being hidden by HTTP fallback behavior. The audit fan-out path is delivered as
+a typed runtime event from the store service to the audit service.
 
 The web UI is shared with the Spring-to-Spring scenario. Store and audit state
 are visible through runtime replies and service logs, not through separate UIs.
@@ -64,9 +63,8 @@ With all services running:
 bash run.sh smoke
 ```
 
-With the current `backend=stub` artifact, `bash run.sh smoke` verifies
-diagnostics, route-miss behavior, and that create returns
-`503 RUNTIME_DELIVERY_FAILED` instead of falling back to store REST.
+The smoke creates, updates, lists, and deletes a customer through the web API.
+It also verifies diagnostics and the intentional route-miss behavior.
 
 ## Check Without Running Servers
 

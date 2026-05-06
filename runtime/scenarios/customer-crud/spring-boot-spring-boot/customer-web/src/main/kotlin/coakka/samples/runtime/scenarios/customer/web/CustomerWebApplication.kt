@@ -296,7 +296,7 @@ class RuntimeErrorAdvice {
                 detail = deadletter.detail,
                 target = deadletter.originalEnvelope.target,
                 resolvedEndpoint = "${deadletter.resolvedHost}:${deadletter.resolvedPort}",
-                hint = "No store REST fallback is used. Cross-service customer traffic is runtime-only, so this scenario needs a runtime release with a remote southbound backend.",
+                hint = "No store REST fallback is used. Cross-service customer traffic is runtime-only; check the runtime backend, peer process, route generation, and resolved endpoint.",
             ),
         )
     }

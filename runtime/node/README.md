@@ -77,6 +77,4 @@ process.on("SIGTERM", () => {
 - Keep target names stable and payload identities versioned.
 - Use `strictNoDrop=true` while integrating to expose overload.
 - Handle `DeadletterError` explicitly.
-- Customer scenarios keep inter-service business traffic runtime-only; the
-  current public `backend=stub` artifact returns explicit delivery failures for
-  cross-process CRUD.
+- Customer scenarios keep inter-service business traffic runtime-only and avoid a store REST fallback.

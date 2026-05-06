@@ -23,6 +23,7 @@ from coakka_v2_connector import (
 FRONTEND_TARGET = "samples.customer.frontend"
 STORE_TARGET = "samples.customer.store"
 STORE_HOST = "127.0.0.1"
+FRONTEND_PORT = 19161
 STORE_PORT = 19162
 GENERATION = 1
 ROUTE_MISS_REASON = 2
@@ -130,9 +131,9 @@ class CustomerStore:
 
 class CustomerDesktopRuntime:
     def __init__(self) -> None:
-        start_spec = ConnectorStartSpec(
-            system_name="customer-python-desktop-local",
-            node_id="customer-python-desktop-local-node",
+        store_spec = ConnectorStartSpec(
+            system_name="customer-python-desktop-store",
+            node_id="customer-python-desktop-store-node",
             queue_capacity=128,
             strict_no_drop=True,
             separate_delivered_request_lane=True,
@@ -147,22 +148,66 @@ class CustomerDesktopRuntime:
                             flags=int(EndpointFlag.LOCAL),
                         )
                     ],
+                ),
+                RouteSpec(
+                    target=FRONTEND_TARGET,
+                    endpoints=[
+                        EndpointSpec(
+                            host=STORE_HOST,
+                            port=FRONTEND_PORT,
+                        )
+                    ],
+                ),
+            ],
+        )
+        frontend_spec = ConnectorStartSpec(
+            system_name="customer-python-desktop-frontend",
+            node_id="customer-python-desktop-frontend-node",
+            queue_capacity=128,
+            strict_no_drop=True,
+            separate_delivered_request_lane=True,
+            generation=GENERATION,
+            routes=[
+                RouteSpec(
+                    target=FRONTEND_TARGET,
+                    endpoints=[
+                        EndpointSpec(
+                            host=STORE_HOST,
+                            port=FRONTEND_PORT,
+                            flags=int(EndpointFlag.LOCAL),
+                        )
+                    ],
+                ),
+                RouteSpec(
+                    target=STORE_TARGET,
+                    endpoints=[
+                        EndpointSpec(
+                            host=STORE_HOST,
+                            port=STORE_PORT,
+                        )
+                    ],
                 )
             ],
         )
         self._store = CustomerStore()
-        self._orchestrator = ConnectorOrchestrator.start(start_spec=start_spec)
+        self._store_orchestrator = ConnectorOrchestrator.start(start_spec=store_spec)
+        self._frontend_orchestrator = ConnectorOrchestrator.start(start_spec=frontend_spec)
         self._closed = False
-        self._orchestrator.register_handler(STORE_TARGET, self._handle_store_request)
+        self._store_orchestrator.register_handler(STORE_TARGET, self._handle_store_request)
 
     @property
     def orchestrator(self) -> ConnectorOrchestrator:
-        return self._orchestrator
+        return self._frontend_orchestrator
+
+    @property
+    def store_orchestrator(self) -> ConnectorOrchestrator:
+        return self._store_orchestrator
 
     def close(self) -> None:
         if not self._closed:
             self._closed = True
-            self._orchestrator.close()
+            self._frontend_orchestrator.close()
+            self._store_orchestrator.close()
 
     def create(self, customer: dict[str, Any]) -> dict[str, Any]:
         return self._ask(customer, CREATE_IDENTITY, "create_customer")
@@ -178,7 +223,7 @@ class CustomerDesktopRuntime:
 
     def route_miss(self) -> dict[str, Any]:
         try:
-            self._orchestrator.ask_json(
+            self._frontend_orchestrator.ask_json(
                 source=FRONTEND_TARGET,
                 target="samples.customer.missing",
                 payload={"message": "missing customer route"},
@@ -199,44 +244,61 @@ class CustomerDesktopRuntime:
             }
 
     def diagnostics_text(self) -> str:
-        info = self._orchestrator.runtime_info()
-        config = self._orchestrator.runtime_config()
-        stats = self._orchestrator.stats()
-        client_stats = self._orchestrator.client_stats()
+        frontend_info = self._frontend_orchestrator.runtime_info()
+        store_info = self._store_orchestrator.runtime_info()
+        frontend_config = self._frontend_orchestrator.runtime_config()
+        store_config = self._store_orchestrator.runtime_config()
+        frontend_stats = self._frontend_orchestrator.stats()
+        store_stats = self._store_orchestrator.stats()
+        client_stats = self._frontend_orchestrator.client_stats()
+        store_client_stats = self._store_orchestrator.client_stats()
         return "\n".join(
             [
-                "Runtime",
-                f"  abi: {info['abiVersion']}",
-                f"  version: {info['runtimeVersion']}",
-                f"  git: {info['gitCommit']}",
-                f"  backend: {info['southboundBackend']}",
+                "Frontend runtime",
+                f"  abi: {frontend_info['abiVersion']}",
+                f"  version: {frontend_info['runtimeVersion']}",
+                f"  git: {frontend_info['gitCommit']}",
+                f"  backend: {frontend_info['southboundBackend']}",
+                f"  system: {frontend_config['systemName']}",
+                f"  node: {frontend_config['nodeId']}",
+                f"  generation: {frontend_config['appliedGeneration']}",
+                "",
+                "Store runtime",
+                f"  abi: {store_info['abiVersion']}",
+                f"  version: {store_info['runtimeVersion']}",
+                f"  git: {store_info['gitCommit']}",
+                f"  backend: {store_info['southboundBackend']}",
+                f"  system: {store_config['systemName']}",
+                f"  node: {store_config['nodeId']}",
+                f"  generation: {store_config['appliedGeneration']}",
                 "",
                 "Route snapshot",
-                f"  system: {config['systemName']}",
-                f"  node: {config['nodeId']}",
-                f"  generation: {config['appliedGeneration']}",
-                f"  routes: {config['routeCount']}",
-                f"  store endpoint: {STORE_HOST}:{STORE_PORT} LOCAL",
+                f"  frontend endpoint: {STORE_HOST}:{FRONTEND_PORT} LOCAL on frontend runtime",
+                f"  store endpoint: {STORE_HOST}:{STORE_PORT} LOCAL on store runtime",
+                f"  frontend routes: {frontend_config['routeCount']}",
+                f"  store routes: {store_config['routeCount']}",
                 "",
                 "Counters",
                 f"  delivered: {client_stats.delivered_requests}",
                 f"  matched responses: {client_stats.matched_responses}",
                 f"  matched deadletters: {client_stats.matched_deadletters}",
                 f"  pending: {client_stats.pending_requests}",
-                f"  route misses: {stats['routeMissCount']}",
-                f"  deadletters: {stats['deadletterCount']}",
+                f"  frontend route misses: {frontend_stats['routeMissCount']}",
+                f"  frontend deadletters: {frontend_stats['deadletterCount']}",
+                f"  store delivered requests: {store_client_stats.delivered_requests}",
+                f"  store deadletters: {store_stats['deadletterCount']}",
             ]
         )
 
     def _ask(self, payload: dict[str, Any], payload_identity: PayloadIdentity, operation: str) -> dict[str, Any]:
-        return self._orchestrator.ask_json(
+        return self._frontend_orchestrator.ask_json(
             source=FRONTEND_TARGET,
             target=STORE_TARGET,
             payload=payload,
             payload_identity=payload_identity,
             timeout_ms=5000,
             operation=operation,
-            delivery_hint=DeliveryHint.ROUTER_DEFAULT,
+            delivery_hint=DeliveryHint.REQUIRE_REMOTE,
         )
 
     def _handle_store_request(self, request: Any) -> Any:
@@ -256,7 +318,7 @@ class CustomerDesktopRuntime:
         else:
             raise RuntimeError(f"unsupported customer message type: {request.message_type}")
 
-        return self._orchestrator.client.make_json_reply(
+        return self._store_orchestrator.client.make_json_reply(
             request=request,
             source=STORE_TARGET,
             payload=response,
@@ -305,7 +367,7 @@ class CustomerDesktopApp:
         ).pack(anchor="w", pady=(6, 0))
         ttk.Label(
             header,
-            text="One Python process, one runtime handle, two local runtime roles, no store REST API.",
+            text="One Python process, two runtime handles, frontend talks to store by runtime messages, no store REST API.",
         ).pack(anchor="w", pady=(2, 0))
 
         body = ttk.PanedWindow(self.root, orient=tk.HORIZONTAL)
@@ -545,10 +607,11 @@ def run_smoke() -> None:
         print(f"coakka_python_desktop_deadletter reason={deadletter['reason']} target={deadletter['target']}")
 
         stats = runtime.orchestrator.client_stats()
-        if stats.delivered_requests < 5 or stats.matched_responses < 5 or stats.matched_deadletters < 1:
-            raise RuntimeError(f"unexpected client stats: {stats}")
+        store_stats = runtime.store_orchestrator.client_stats()
+        if stats.matched_responses < 5 or stats.matched_deadletters < 1 or store_stats.delivered_requests < 5:
+            raise RuntimeError(f"unexpected client stats: frontend={stats} store={store_stats}")
         print(
-            f"coakka_python_desktop_stats delivered={stats.delivered_requests} "
+            f"coakka_python_desktop_stats storeDelivered={store_stats.delivered_requests} "
             f"matchedResponses={stats.matched_responses} matchedDeadletters={stats.matched_deadletters}"
         )
     finally:

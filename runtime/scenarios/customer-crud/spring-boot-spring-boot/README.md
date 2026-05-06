@@ -15,15 +15,13 @@ results.
 (`spring.main.web-application-type: none`). It does not start Tomcat or expose
 a store REST API; it stays alive only to serve the runtime handler.
 
-## Current Runtime Backend Note
+## Runtime Transport Note
 
-The current public runtime v2 artifact used by `coakka-samples` reports
-`backend=stub`. That artifact can run local primitive samples, but it cannot
-deliver remote cross-process requests yet. The web service still sends customer
-business requests only through the runtime route. There is no store REST
-fallback, so CRUD requests return `RUNTIME_DELIVERY_FAILED` until a
-remote-capable backend is published. Runtime diagnostics show the stub backend
-and deadletter counters.
+This scenario expects a remote-capable runtime v2 artifact. The web service
+sends customer business requests only through the runtime route; there is no
+store REST fallback. If the runtime cannot deliver to `customer-store`, the web
+API returns an explicit runtime delivery failure so the issue is visible in the
+UI and smoke output.
 
 The route table is configured in `customer-web/src/main/resources/application.yml`:
 
@@ -64,9 +62,8 @@ handled the request:
 | --- | --- |
 | `runtime` | The customer request was handled through the runtime route. |
 
-With the current `backend=stub` runtime artifact, Create, Update, Delete, and
-List from the web API return a runtime delivery failure instead of using the
-store REST API. The separate `Route miss` action is the intentional deadletter
+Create, Update, Delete, and List from the web API should return `deliveryMode:
+runtime`. The separate `Route miss` action remains the intentional deadletter
 diagnostic.
 
 Shared request/response DTOs and message-type strings live in the
@@ -119,10 +116,8 @@ bash run.sh smoke
 ```
 
 The smoke creates, updates, lists, and deletes `cust-001` through the web
-service API only after a remote-capable runtime backend is available. With the
-current `backend=stub` artifact, `bash run.sh smoke` verifies diagnostics,
-route-miss behavior, and that create returns `503 RUNTIME_DELIVERY_FAILED`
-instead of falling back to store REST.
+service API. It also checks the intentional route-miss diagnostic and fails if
+customer traffic falls back to REST or returns a runtime delivery failure.
 
 ## Stop
 

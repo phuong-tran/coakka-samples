@@ -89,12 +89,11 @@ The samples use JSON where readability matters. The runtime contract also has
 payload format space for Protobuf, Thrift, MessagePack, plain text, and binary
 payloads when a workflow needs a different wire shape.
 
-The current public runtime v2 artifact used by these samples reports
-`backend=stub`. Local primitive samples work directly. Cross-process customer
-scenarios keep web-to-store business traffic on the runtime path only. With the
-stub backend they still build, boot, and show diagnostics, but CRUD delivery
-returns an explicit runtime deadletter until a remote-capable backend is
-published.
+The current public runtime v2 artifact used by these samples includes a
+remote-capable backend. Local primitive samples and cross-process customer
+scenarios keep business traffic on the runtime path; if runtime delivery fails,
+the UI/API returns an explicit runtime error instead of hiding the failure
+behind a REST fallback.
 
 ## Architectural Value
 
@@ -263,7 +262,7 @@ The API responses distinguish how a request was handled:
 
 There is no store REST fallback on the customer web path. If cross-process
 runtime delivery fails, the web API returns `RUNTIME_DELIVERY_FAILED` so the
-missing remote backend is visible instead of hidden by a second transport.
+runtime failure is visible instead of hidden by a second transport.
 Store and audit services run headless; even the Spring Boot store is configured
 as a non-web application, so `8081` is the only browser/API HTTP surface.
 
@@ -286,25 +285,21 @@ Current customer topologies:
 | Scenario | Purpose |
 | --- | --- |
 | `runtime/scenarios/customer-crud/spring-boot-single-process` | Spring Boot web service plus local runtime store target |
-| `runtime/scenarios/customer-crud/kotlin-desktop-local` | Kotlin desktop app plus local runtime store target |
-| `runtime/scenarios/customer-crud/python-desktop-local` | Python desktop app plus local runtime store target |
+| `runtime/scenarios/customer-crud/kotlin-desktop-local` | Kotlin desktop app with two local runtime handles |
+| `runtime/scenarios/customer-crud/python-desktop-local` | Python desktop app with two local runtime handles |
 | `runtime/scenarios/customer-crud/spring-boot-spring-boot` | Spring Boot web service to Spring Boot store |
 | `runtime/scenarios/customer-crud/spring-boot-node` | Spring Boot web service to Node.js store |
 | `runtime/scenarios/customer-crud/spring-boot-go` | Spring Boot web service to Go store |
 | `runtime/scenarios/customer-crud/spring-boot-nodes` | Spring Boot web service to Node.js store plus Node.js audit service |
 
 The Spring Boot single-process, Kotlin desktop local, and Python desktop local
-scenarios are the current happy paths: customer actions succeed through runtime
-request/reply without a store REST API. They are intentionally visual, local
-demos for the same target and payload vocabulary. The cross-process scenarios
-keep the same UI and payload contract but intentionally expose the current
-remote stub backend as `RUNTIME_DELIVERY_FAILED` until a remote-capable runtime
-artifact is published.
+scenarios are compact happy paths: customer actions succeed through runtime
+request/reply without a store REST API. The cross-process scenarios keep the
+same UI and payload contract while moving the store target into another
+process or language.
 
 The multi-service Node.js scenario includes an audit target so the store can
-emit a typed one-way event after mutations. Under the current stub backend, that
-fan-out path is scaffolded and visible in diagnostics; remote delivery becomes
-observable when the runtime backend supports it.
+emit a typed one-way event after mutations.
 
 ## Logger
 
@@ -454,11 +449,9 @@ and makes the same route snapshot and generation concepts visible:
 
 Customer scenarios intentionally do not include a store REST fallback. The
 single-process scenario can complete CRUD through a local runtime store target.
-Cross-process scenarios run against the current public `backend=stub` artifact,
-so CRUD attempts from the web service return explicit runtime delivery failures
-until a remote-capable runtime artifact is available. Only the browser-facing
-web surface exposes HTTP; store and audit processes are runtime handlers without
-a REST API.
+Cross-process scenarios use the same runtime-only customer traffic across
+processes and languages. Only the browser-facing web surface exposes HTTP;
+store and audit processes are runtime handlers without a REST API.
 
 ## Integration Guide
 
@@ -543,7 +536,7 @@ repositories {
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.0-g65b36b8ad2ec")
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.0-ge91e6bb90bba")
     implementation("coakka.logger:coakka-jvm-native-logger:0.1.0-gba2a66d98eb5")
 }
 ```
@@ -587,9 +580,9 @@ Current artifact pins:
 
 | Lane | Release |
 | --- | --- |
-| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.1.0-g65b36b8ad2ec` |
+| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.1.0-ge91e6bb90bba` |
 | Logger JVM | `coakka.logger:coakka-jvm-native-logger:0.1.0-gba2a66d98eb5` |
-| Runtime Python/Node/Go/Native | `0.1.0+65b36b8ad2ec` |
+| Runtime Python/Node/Go/Native | `0.1.0+e91e6bb90bba` |
 | Logger | `0.1.0+ba2a66d98eb5` |
 
 The runtime JVM jar, Python wheel, Node package, Go source tarball, and native
@@ -609,7 +602,7 @@ Run the smallest JVM runtime v2 sample directly through Gradle:
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=0.1.0 git=5e25dda67597 backend=stub
+coakka_runtime_info abi=1 version=0.1.0 git=<git> backend=<backend>
 coakka_runtime_response payload={"echo":"hello-runtime-jvm"}
 coakka_runtime_stats generation=1 routes=1 delivered=1 matchedResponses=1
 ```
@@ -637,9 +630,9 @@ bash run.sh runtime native basic
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=0.1.0 git=<git> backend=stub language=c
+coakka_runtime_info abi=1 version=0.1.0 git=<git> backend=<backend> language=c
 coakka_runtime_stats generation=1 routes=1 routeMisses=1 deadletters=1 language=c
-coakka_runtime_info abi=1 version=0.1.0 git=<git> backend=stub language=cpp
+coakka_runtime_info abi=1 version=0.1.0 git=<git> backend=<backend> language=cpp
 coakka_runtime_stats generation=1 routes=1 routeMisses=1 deadletters=1 language=cpp
 ```
 
@@ -708,11 +701,9 @@ The default command for each scenario is `check`, so opening a scenario
 `run.sh` from a shell still performs a real build/preparation step. Long-running
 scenario commands such as `web`, `store`, and `audit` start services and should
 be run in separate terminals. `dev` builds and starts the whole topology from
-one shell. The Spring Boot single-process, Kotlin desktop local, and Python
-desktop local scenarios can complete CRUD today because the store target is
-local. Cross-process customer scenarios expose the current `backend=stub`
-runtime artifact in diagnostics and return explicit runtime delivery failures
-instead of using a store REST fallback.
+one shell. Local desktop/single-process scenarios and cross-process customer
+scenarios all keep customer traffic on the runtime path and avoid a store REST
+fallback.
 
 ## CI
 

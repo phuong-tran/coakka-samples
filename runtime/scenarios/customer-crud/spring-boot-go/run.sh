@@ -5,7 +5,7 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../../../.." && pwd)"
 publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
 module_path="github.com/phuong-tran/coakka-runtime-go"
-go_artifact_rel="runtime/go/releases/0.1.0+65b36b8ad2ec/coakka-v2-connector-go-0.1.0.tar.gz"
+go_artifact_rel="runtime/go/releases/0.1.0+e91e6bb90bba/coakka-v2-connector-go-0.1.0.tar.gz"
 web_build_task=":runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-web:bootJar"
 web_jar="${repo_root}/runtime/scenarios/customer-crud/spring-boot-spring-boot/customer-web/build/libs/customer-web.jar"
 source "${repo_root}/scripts/resolve-artifact.sh"
@@ -84,8 +84,15 @@ run_dev() {
   web_pid="$!"
 
   cleanup() {
-    kill "${web_pid}" "${store_pid}" 2>/dev/null || true
-    rm -rf "${tmp_dir}"
+    if [[ -n "${web_pid:-}" ]]; then
+      kill "${web_pid}" 2>/dev/null || true
+    fi
+    if [[ -n "${store_pid:-}" ]]; then
+      kill "${store_pid}" 2>/dev/null || true
+    fi
+    if [[ -n "${tmp_dir:-}" ]]; then
+      rm -rf "${tmp_dir}"
+    fi
   }
   trap cleanup EXIT INT TERM
 
@@ -94,6 +101,7 @@ run_dev() {
     sleep 1
   done
   cleanup
+  trap - EXIT INT TERM
   wait "${web_pid}" "${store_pid}" 2>/dev/null || true
 }
 
@@ -150,10 +158,21 @@ smoke() {
   coakka_customer_smoke_request "trigger route-miss diagnostic" \
     -X POST http://127.0.0.1:8081/api/customers/route-miss
 
-  coakka_customer_expect_http_status "runtime-only create is blocked by current stub backend" 503 \
+  coakka_customer_smoke_request "create customer through runtime message" \
     -X POST http://127.0.0.1:8081/api/customers \
     -H 'Content-Type: application/json' \
     -d '{"id":"cust-001","name":"Ada Lovelace","email":"ada@example.com","tier":"silver","notes":"spring to go smoke"}'
+
+  coakka_customer_smoke_request "update customer through runtime message" \
+    -X PUT http://127.0.0.1:8081/api/customers/cust-001 \
+    -H 'Content-Type: application/json' \
+    -d '{"name":"Ada Lovelace","email":"ada@example.com","tier":"gold","notes":"updated"}'
+
+  coakka_customer_smoke_request "list customers through runtime message" \
+    http://127.0.0.1:8081/api/customers
+
+  coakka_customer_smoke_request "delete customer through runtime message" \
+    -X DELETE http://127.0.0.1:8081/api/customers/cust-001
 }
 
 stop_ports() {

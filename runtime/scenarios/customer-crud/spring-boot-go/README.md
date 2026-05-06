@@ -11,12 +11,12 @@ The Spring Boot web service reuses the same customer UI/API from the
 Spring-to-Spring scenario. The Go store uses the published
 `coakka-v2-connector-go` package and runs as a headless message handler.
 
-## Current Runtime Backend Note
+## Runtime Transport Note
 
-The current public runtime v2 artifact reports `backend=stub`. Both services
-boot and show diagnostics. The web service sends business requests only through
-the runtime route. There is no Go store REST fallback, so CRUD requests return
-explicit runtime delivery failures until a remote-capable backend is published.
+This scenario expects a remote-capable runtime v2 artifact. The web service
+sends business requests only through the runtime route. There is no Go store
+REST fallback, so delivery failures are returned explicitly instead of being
+hidden by HTTP fallback behavior.
 
 The web UI is shared with the Spring-to-Spring scenario. Store state is visible
 only through the web service list action, which is also a runtime message.
@@ -59,9 +59,8 @@ With both services running:
 bash run.sh smoke
 ```
 
-With the current `backend=stub` artifact, `bash run.sh smoke` verifies
-diagnostics, route-miss behavior, and that create returns
-`503 RUNTIME_DELIVERY_FAILED` instead of falling back to store REST.
+The smoke creates, updates, lists, and deletes a customer through the web API.
+It also verifies diagnostics and the intentional route-miss behavior.
 
 ## Check Without Running Servers
 
