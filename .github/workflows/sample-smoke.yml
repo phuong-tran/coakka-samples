@@ -61,7 +61,9 @@ jobs:
       - name: Check sample entrypoints
         env:
           COAKKA_DOCTOR_NETWORK: "1"
+          COAKKA_PIN_CHECK_NETWORK: "1"
         run: |
+          bash scripts/check-artifact-pins.sh
           bash run.sh doctor
           bash run.sh list
 
