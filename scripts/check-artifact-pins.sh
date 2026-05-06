@@ -5,8 +5,8 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/.." && pwd)"
 source "${script_dir}/sample-metadata.sh"
 
-expected_runtime_native="0.1.0+0cb644340467"
-expected_runtime_jvm="0.1.0-g0cb644340467-cfb8ee4"
+expected_runtime_native="0.1.0+65b36b8ad2ec"
+expected_runtime_jvm="0.1.0-g65b36b8ad2ec"
 expected_logger_native="0.1.0+ba2a66d98eb5"
 
 required_rows=(
@@ -15,7 +15,7 @@ required_rows=(
   "logger Node package|logger/node/releases/${expected_logger_native}/coakka-logger-node-0.1.0.tgz"
   "logger Go package|logger/go/releases/${expected_logger_native}/coakka-logger-go-0.1.0.tar.gz"
   "logger Native package|logger/native/releases/${expected_logger_native}/coakka-logger-native-0.1.0.tar.gz"
-  "runtime JVM jar|runtime/jvm/releases/${expected_runtime_native}-jvm-cfb8ee4/coakka-jvm-native-runtime-v2-${expected_runtime_jvm}.jar"
+  "runtime JVM jar|runtime/jvm/releases/${expected_runtime_native}/coakka-jvm-native-runtime-v2-${expected_runtime_jvm}.jar"
   "runtime Python wheel|runtime/python/releases/${expected_runtime_native}/coakka_v2_connector-0.1.0-py3-none-any.whl"
   "runtime Node package|runtime/node/releases/${expected_runtime_native}/coakka-v2-connector-node-0.1.0.tgz"
   "runtime Go package|runtime/go/releases/${expected_runtime_native}/coakka-v2-connector-go-0.1.0.tar.gz"
@@ -27,8 +27,10 @@ stale_patterns=(
   "0.1.0-g5e25""dda67597"
   "0.1.0-g5e25""dda67597-a21e1ad"
   "0.1.0+2eae""d9a043ca"
-  "0.1.0-g0cb644340467-e4a8""ed3"
-  "runtime/jvm/releases/0.1.0+0cb644340467/coakka-jvm-native-runtime-v2-0.1.0-g0cb644""340467.jar"
+  "0.1.0-g0cb""644340467-e4a8""ed3"
+  "0.1.0+0cb""644340467"
+  "0.1.0-g0cb""644340467-cfb8ee4"
+  "runtime/jvm/releases/0.1.0+0cb""644340467/coakka-jvm-native-runtime-v2-0.1.0-g0cb644""340467.jar"
 )
 
 fail() {

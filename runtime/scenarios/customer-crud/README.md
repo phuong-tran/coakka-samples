@@ -124,6 +124,27 @@ Flow:
 
 This scenario does not exercise remote cross-process transport.
 
+### Kotlin Desktop Local
+
+This is scaffolded under `kotlin-desktop-local/` as the smallest visual happy
+path for the same customer contract.
+
+| Surface | Language | Role | HTTP | Runtime endpoint |
+| --- | --- | --- | --- | --- |
+| `customer-desktop` UI | JVM / Kotlin Swing | desktop UI and frontend target | none | source-only |
+| `customer-desktop` store handler | JVM / Kotlin | local in-memory customer table | none | `127.0.0.1:19152` |
+
+Flow:
+
+1. The desktop button sends a typed `ask(...)` from `samples.customer.frontend`.
+2. The route snapshot resolves `samples.customer.store`.
+3. The local store handler mutates or reads the table and replies.
+4. The desktop UI shows the customer table, route generation, runtime
+   version/git/backend, counters, and one intentional route-miss diagnostic.
+
+This scenario has no HTTP API at all. It exists so the local runtime message
+path is visible without the extra browser-to-web-service layer.
+
 ### Spring Boot to Spring Boot
 
 This is now scaffolded under `spring-boot-spring-boot/` as the reference
@@ -235,10 +256,11 @@ checks diagnostics, route-miss behavior, and that a create request returns
 ## Implementation Order
 
 1. Spring Boot single-process customer CRUD.
-2. Spring Boot to Spring Boot customer CRUD.
-3. Spring Boot to Node.js customer store.
-4. Spring Boot to Go customer store.
-5. Spring Boot to multiple Node.js services with audit fan-out.
+2. Kotlin desktop local customer CRUD.
+3. Spring Boot to Spring Boot customer CRUD.
+4. Spring Boot to Node.js customer store.
+5. Spring Boot to Go customer store.
+6. Spring Boot to multiple Node.js services with audit fan-out.
 
 The single-process scenario owns the happy-path UI and HTTP contract. Later
 scenarios should reuse that contract and change only the store

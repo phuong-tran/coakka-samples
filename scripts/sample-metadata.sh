@@ -30,6 +30,7 @@ COAKKA_SAMPLE_ROWS=(
 
 COAKKA_SCENARIO_ROWS=(
   "customer-crud|spring-boot-single-process|Spring Boot web UI plus local runtime store target"
+  "customer-crud|kotlin-desktop-local|Kotlin Swing desktop UI plus local runtime store target"
   "customer-crud|spring-boot-spring-boot|Spring Boot web UI plus Spring Boot customer store"
   "customer-crud|spring-boot-node|Spring Boot web UI plus Node.js customer store"
   "customer-crud|spring-boot-go|Spring Boot web UI plus Go customer store"
@@ -42,11 +43,11 @@ COAKKA_ARTIFACT_ROWS=(
   "logger Node package|logger/node/releases/0.1.0+ba2a66d98eb5/coakka-logger-node-0.1.0.tgz"
   "logger Go package|logger/go/releases/0.1.0+ba2a66d98eb5/coakka-logger-go-0.1.0.tar.gz"
   "logger Native package|logger/native/releases/0.1.0+ba2a66d98eb5/coakka-logger-native-0.1.0.tar.gz"
-  "runtime JVM jar|runtime/jvm/releases/0.1.0+0cb644340467-jvm-cfb8ee4/coakka-jvm-native-runtime-v2-0.1.0-g0cb644340467-cfb8ee4.jar"
-  "runtime Python wheel|runtime/python/releases/0.1.0+0cb644340467/coakka_v2_connector-0.1.0-py3-none-any.whl"
-  "runtime Node package|runtime/node/releases/0.1.0+0cb644340467/coakka-v2-connector-node-0.1.0.tgz"
-  "runtime Go package|runtime/go/releases/0.1.0+0cb644340467/coakka-v2-connector-go-0.1.0.tar.gz"
-  "runtime Native package|runtime/native/releases/0.1.0+0cb644340467/coakka-runtime-native-v2-0.1.0.tar.gz"
+  "runtime JVM jar|runtime/jvm/releases/0.1.0+65b36b8ad2ec/coakka-jvm-native-runtime-v2-0.1.0-g65b36b8ad2ec.jar"
+  "runtime Python wheel|runtime/python/releases/0.1.0+65b36b8ad2ec/coakka_v2_connector-0.1.0-py3-none-any.whl"
+  "runtime Node package|runtime/node/releases/0.1.0+65b36b8ad2ec/coakka-v2-connector-node-0.1.0.tgz"
+  "runtime Go package|runtime/go/releases/0.1.0+65b36b8ad2ec/coakka-v2-connector-go-0.1.0.tar.gz"
+  "runtime Native package|runtime/native/releases/0.1.0+65b36b8ad2ec/coakka-runtime-native-v2-0.1.0.tar.gz"
 )
 
 coakka_default_publish_root() {
@@ -91,6 +92,7 @@ Scenario commands:
   bash run.sh scenarios
   bash run.sh scenarios check
   bash run.sh scenario customer-crud spring-boot-single-process dev
+  bash run.sh scenario customer-crud kotlin-desktop-local app
   bash run.sh scenario customer-crud spring-boot-nodes check
   bash run.sh runtime/scenarios/customer-crud/spring-boot-go check
 EOF
