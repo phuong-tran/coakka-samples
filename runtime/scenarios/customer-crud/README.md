@@ -98,11 +98,31 @@ List response JSON:
 ## Planned Topologies
 
 The current public runtime v2 release used by these samples reports
-`backend=stub`. The customer scenarios are the target web topology for the next
-remote-capable runtime release. Web-to-store business traffic is runtime-only;
-there is no store REST fallback. Until a remote-capable release exists, CRUD
+`backend=stub`. The single-process scenario gives a successful CRUD path today
+because the store target is local to the same runtime process. Cross-process
+customer scenarios are the target web topology for the next remote-capable
+runtime release. Web-to-store business traffic is runtime-only; there is no
+store REST fallback. Until a remote-capable release exists, cross-process CRUD
 attempts return explicit delivery deadletters while build, boot, route config,
 and diagnostics remain runnable from public artifacts.
+
+### Spring Boot Single Process
+
+This is scaffolded under `spring-boot-single-process/` as the local happy path.
+
+| Surface | Language | Role | HTTP | Runtime endpoint |
+| --- | --- | --- | --- | --- |
+| `customer-app` web/API | JVM / Spring Boot | web UI and HTTP API | `8081` | source-only |
+| `customer-app` store handler | JVM / Spring Boot | local in-memory customer table | none | `127.0.0.1:19142` |
+
+Flow:
+
+1. Browser posts `create/update/delete/list` to `customer-app`.
+2. The controller sends typed `ask(...)` to `samples.customer.store`.
+3. The local store handler mutates or reads the table and replies.
+4. Browser shows the updated table, runtime counters, and route-miss diagnostics.
+
+This scenario does not exercise remote cross-process transport.
 
 ### Spring Boot to Spring Boot
 
@@ -175,8 +195,8 @@ Flow:
 The browser story should be identical across topologies:
 
 1. Open the web service page.
-2. Read the process strip: Browser HTTP reaches only `customer-web`; service
-   traffic is CoAkka message/reply.
+2. Read the process strip: Browser HTTP reaches only the web-facing service;
+   store traffic is CoAkka message/reply.
 3. Create a customer named `Ada Lovelace`.
 4. Edit the tier from `silver` to `gold`.
 5. Delete the customer.
@@ -214,10 +234,12 @@ checks diagnostics, route-miss behavior, and that a create request returns
 
 ## Implementation Order
 
-1. Spring Boot to Spring Boot customer CRUD.
-2. Spring Boot to Node.js customer store.
-3. Spring Boot to Go customer store.
-4. Spring Boot to multiple Node.js services with audit fan-out.
+1. Spring Boot single-process customer CRUD.
+2. Spring Boot to Spring Boot customer CRUD.
+3. Spring Boot to Node.js customer store.
+4. Spring Boot to Go customer store.
+5. Spring Boot to multiple Node.js services with audit fan-out.
 
-The first scenario owns the UI and HTTP contract. Later scenarios should reuse
-that contract and change only the store implementation/topology.
+The single-process scenario owns the happy-path UI and HTTP contract. Later
+scenarios should reuse that contract and change only the store
+implementation/topology.

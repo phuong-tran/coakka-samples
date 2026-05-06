@@ -1,0 +1,18 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: customer-single-process
+
+sample:
+  connector:
+    system-name: customer-single-process
+    node-id: customer-single-process-node
+    frontend-target: samples.customer.frontend
+    frontend-host: 127.0.0.1
+    frontend-port: 19141
+    store-target: samples.customer.store
+    store-host: 127.0.0.1
+    store-port: 19142
+    generation: 1

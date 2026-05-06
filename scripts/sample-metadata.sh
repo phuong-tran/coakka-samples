@@ -29,6 +29,7 @@ COAKKA_SAMPLE_ROWS=(
 )
 
 COAKKA_SCENARIO_ROWS=(
+  "customer-crud|spring-boot-single-process|Spring Boot web UI plus local runtime store target"
   "customer-crud|spring-boot-spring-boot|Spring Boot web UI plus Spring Boot customer store"
   "customer-crud|spring-boot-node|Spring Boot web UI plus Node.js customer store"
   "customer-crud|spring-boot-go|Spring Boot web UI plus Go customer store"
@@ -89,6 +90,7 @@ coakka_print_scenarios() {
 Scenario commands:
   bash run.sh scenarios
   bash run.sh scenarios check
+  bash run.sh scenario customer-crud spring-boot-single-process dev
   bash run.sh scenario customer-crud spring-boot-nodes check
   bash run.sh runtime/scenarios/customer-crud/spring-boot-go check
 EOF

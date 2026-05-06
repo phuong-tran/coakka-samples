@@ -285,10 +285,17 @@ Current customer topologies:
 
 | Scenario | Purpose |
 | --- | --- |
+| `runtime/scenarios/customer-crud/spring-boot-single-process` | Spring Boot web service plus local runtime store target |
 | `runtime/scenarios/customer-crud/spring-boot-spring-boot` | Spring Boot web service to Spring Boot store |
 | `runtime/scenarios/customer-crud/spring-boot-node` | Spring Boot web service to Node.js store |
 | `runtime/scenarios/customer-crud/spring-boot-go` | Spring Boot web service to Go store |
 | `runtime/scenarios/customer-crud/spring-boot-nodes` | Spring Boot web service to Node.js store plus Node.js audit service |
+
+The single-process scenario is the current happy path: customer actions succeed
+through runtime request/reply without a store REST API. The cross-process
+scenarios keep the same UI and payload contract but intentionally expose the
+current remote stub backend as `RUNTIME_DELIVERY_FAILED` until a remote-capable
+runtime artifact is published.
 
 The multi-service Node.js scenario includes an audit target so the store can
 emit a typed one-way event after mutations. Under the current stub backend, that
@@ -442,10 +449,12 @@ and makes the same route snapshot and generation concepts visible:
 | `LOCAL` endpoint flag | Marks the target served by the current process. Remote peer routes are left non-local. |
 
 Customer scenarios intentionally do not include a store REST fallback. The
-current public runtime artifact reports `backend=stub`, so CRUD attempts from
-the web service return explicit runtime delivery failures until a remote-capable
-runtime artifact is available. Only `customer-web` exposes HTTP; store and
-audit processes are runtime handlers without a REST API.
+single-process scenario can complete CRUD through a local runtime store target.
+Cross-process scenarios run against the current public `backend=stub` artifact,
+so CRUD attempts from the web service return explicit runtime delivery failures
+until a remote-capable runtime artifact is available. Only the browser-facing
+web surface exposes HTTP; store and audit processes are runtime handlers without
+a REST API.
 
 ## Integration Guide
 
@@ -693,8 +702,9 @@ The default command for each scenario is `check`, so opening a scenario
 `run.sh` from a shell still performs a real build/preparation step. Long-running
 scenario commands such as `web`, `store`, and `audit` start services and should
 be run in separate terminals. `dev` builds and starts the whole topology from
-one shell. The current public runtime artifact still reports `backend=stub`;
-customer scenarios expose that in diagnostics and return explicit runtime
+one shell. The single-process scenario can complete CRUD today because the store
+target is local. Cross-process customer scenarios expose the current
+`backend=stub` runtime artifact in diagnostics and return explicit runtime
 delivery failures instead of using a store REST fallback.
 
 ## CI

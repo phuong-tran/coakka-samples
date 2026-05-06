@@ -47,15 +47,17 @@ Scenario track:
 
 The first scenario implementations are:
 
+- `scenarios/customer-crud/spring-boot-single-process`
 - `scenarios/customer-crud/spring-boot-spring-boot`
 - `scenarios/customer-crud/spring-boot-node`
 - `scenarios/customer-crud/spring-boot-go`
 - `scenarios/customer-crud/spring-boot-nodes`
 
 They boot web/store/audit services and expose clear runtime diagnostics. The
-web-to-store business path is runtime-only. With the current public
-`backend=stub` runtime artifact, CRUD attempts return explicit runtime delivery
-failures until a remote-capable backend is published.
+single-process topology gives a successful CRUD path through a local runtime
+store target. The cross-process web-to-store path is runtime-only; with the
+current public `backend=stub` runtime artifact, those CRUD attempts return
+explicit runtime delivery failures until a remote-capable backend is published.
 
 For production-facing integration guidance, read:
 
