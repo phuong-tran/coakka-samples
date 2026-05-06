@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Node Customer Store</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7fa;
+      --panel: #ffffff;
+      --line: #dce4eb;
+      --text: #1b2530;
+      --muted: #637486;
+      --accent: #5867a7;
+      --code: #111820;
+      --codeText: #edf6ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 15px/1.45 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 22px;
+      display: grid;
+      gap: 18px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      padding: 18px 0 4px;
+    }
+    h1, h2 { margin: 0; }
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1rem; text-transform: uppercase; letter-spacing: .05em; }
+    p { margin: 4px 0 0; color: var(--muted); }
+    .badge {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 6px;
+      padding: 8px 10px;
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(520px, 1.2fr) minmax(360px, .8fr);
+      gap: 18px;
+    }
+    .stack { display: grid; gap: 18px; }
+    section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      color: var(--muted);
+      font-size: .76rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    pre {
+      margin: 0;
+      min-height: 150px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      border-radius: 6px;
+      padding: 12px;
+      background: var(--code);
+      color: var(--codeText);
+      font: .84rem/1.45 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 10px;
+      background: #fbfdfe;
+    }
+    .metric span { display: block; color: var(--muted); font-size: .76rem; }
+    .metric strong { display: block; margin-top: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    @media (max-width: 980px) {
+      header, .layout { grid-template-columns: 1fr; display: grid; }
+      .metrics { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1>Node Customer Store</h1>
+      <p>Node.js state owner for the same customer runtime contract used by Spring Boot.</p>
+    </div>
+    <div class="badge">HTTP 8092 + runtime target samples.customer.store</div>
+  </header>
+
+  <div class="layout">
+    <section>
+      <h2>Stored Customers</h2>
+      <table>
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Tier</th>
+          <th>Notes</th>
+          <th>Revision</th>
+        </tr>
+        </thead>
+        <tbody id="customers-body"></tbody>
+      </table>
+    </section>
+
+    <div class="stack">
+      <section>
+        <h2>Runtime Summary</h2>
+        <div class="metrics" id="metrics"></div>
+      </section>
+      <section>
+        <h2>Runtime JSON</h2>
+        <pre id="runtime-box">Loading...</pre>
+      </section>
+    </div>
+  </div>
+</main>
+
+<script>
+  const customersBody = document.getElementById('customers-body');
+  const runtimeBox = document.getElementById('runtime-box');
+  const metrics = document.getElementById('metrics');
+
+  function metric(label, value) {
+    return `<div class="metric"><span>${label}</span><strong>${value}</strong></div>`;
+  }
+
+  async function api(path) {
+    const response = await fetch(path);
+    const text = await response.text();
+    const body = text ? JSON.parse(text) : null;
+    if (!response.ok) throw body || { error: response.statusText };
+    return body;
+  }
+
+  async function loadCustomers() {
+    try {
+      const result = await api('/api/customers');
+      customersBody.innerHTML = result.customers.map((customer) => `
+        <tr>
+          <td>${customer.id}</td>
+          <td>${customer.name}</td>
+          <td>${customer.email}</td>
+          <td>${customer.tier}</td>
+          <td>${customer.notes}</td>
+          <td>${customer.revision}</td>
+        </tr>
+      `).join('') || '<tr><td colspan="6">No customers yet.</td></tr>';
+    } catch (error) {
+      customersBody.innerHTML = `<tr><td colspan="6">${String(error.error || error)}</td></tr>`;
+    }
+  }
+
+  async function loadRuntime() {
+    try {
+      const runtime = await api('/api/customers/runtime');
+      metrics.innerHTML = [
+        metric('Runtime', runtime.runtimeInfo.runtimeVersion),
+        metric('Backend', runtime.runtimeInfo.southboundBackend),
+        metric('Node', runtime.runtimeConfig.nodeId),
+        metric('Routes', runtime.runtimeConfig.routeCount),
+        metric('Runtime delivered', runtime.clientStats.deliveredRequests),
+        metric('Runtime responses', runtime.clientStats.matchedResponses),
+      ].join('');
+      runtimeBox.textContent = JSON.stringify(runtime, null, 2);
+    } catch (error) {
+      runtimeBox.textContent = JSON.stringify(error, null, 2);
+    }
+  }
+
+  loadCustomers();
+  loadRuntime();
+  setInterval(loadCustomers, 1500);
+  setInterval(loadRuntime, 2500);
+</script>
+</body>
+</html>
