@@ -81,3 +81,7 @@ jobs:
           ./gradlew \
             :runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-web:bootJar \
             :runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-store:bootJar
+
+      - name: Smoke runtime customer scenario with CAF backend
+        if: matrix.sample_lane == 'runtime'
+        run: bash scripts/smoke-customer-runtime.sh
