@@ -41,21 +41,16 @@ build_jars() {
 smoke() {
   coakka_require_command curl "Install curl, then retry."
 
-  coakka_customer_smoke_request "create customer" \
+  coakka_customer_smoke_request "read runtime diagnostics" \
+    http://127.0.0.1:8081/api/customers/runtime
+
+  coakka_customer_smoke_request "trigger route-miss diagnostic" \
+    -X POST http://127.0.0.1:8081/api/customers/route-miss
+
+  coakka_customer_expect_http_status "runtime-only create is blocked by current stub backend" 503 \
     -X POST http://127.0.0.1:8081/api/customers \
     -H 'Content-Type: application/json' \
     -d '{"id":"cust-001","name":"Ada Lovelace","email":"ada@example.com","tier":"silver","notes":"smoke"}'
-
-  coakka_customer_smoke_request "update customer" \
-    -X PUT http://127.0.0.1:8081/api/customers/cust-001 \
-    -H 'Content-Type: application/json' \
-    -d '{"name":"Ada Lovelace","email":"ada@example.com","tier":"gold","notes":"updated"}'
-
-  coakka_customer_smoke_request "list customers" \
-    http://127.0.0.1:8081/api/customers
-
-  coakka_customer_smoke_request "delete customer" \
-    -X DELETE http://127.0.0.1:8081/api/customers/cust-001
 }
 
 stop_ports() {

@@ -28,7 +28,7 @@ stale_patterns=(
   "0.1.0-g5e25""dda67597-a21e1ad"
   "0.1.0+2eae""d9a043ca"
   "0.1.0-g0cb644340467-e4a8""ed3"
-  "runtime/jvm/releases/0.1.0+0cb644340467/coakka-jvm-native-runtime-v2-0.1.0-g0cb644340467.jar"
+  "runtime/jvm/releases/0.1.0+0cb644340467/coakka-jvm-native-runtime-v2-0.1.0-g0cb644""340467.jar"
 )
 
 fail() {

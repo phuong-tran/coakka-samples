@@ -17,7 +17,6 @@ object CustomerPayloadContract {
 object CustomerDeliveryModes {
     const val RUNTIME = "runtime"
     const val STORE_HTTP_DIRECT = "store-http-direct"
-    const val RUNTIME_DEADLETTER_HTTP_FALLBACK = "runtime-deadletter-http-fallback"
 }
 
 data class CustomerDraft(

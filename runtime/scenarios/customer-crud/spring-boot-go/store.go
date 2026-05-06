@@ -239,7 +239,7 @@ func main() {
 			payload.ID = id
 			writeJSON(response, http.StatusOK, store.upsert("update", payload))
 		case http.MethodDelete:
-			writeJSON(response, http.StatusOK, store.delete(id, "http-fallback"))
+			writeJSON(response, http.StatusOK, store.delete(id, "store-http-direct"))
 		default:
 			writeJSON(response, http.StatusMethodNotAllowed, map[string]string{"error": "method_not_allowed"})
 		}

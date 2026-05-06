@@ -77,5 +77,6 @@ response, err := orchestrator.AskJSON(
 - Wire `Close()` into service shutdown, not just `defer` in short programs.
 - Treat `DeadletterError` as a route/delivery result.
 - Keep route generations monotonic.
-- The customer scenario HTTP fallback is demo glue for the current public
-  `backend=stub` runtime.
+- Customer scenarios keep inter-service business traffic runtime-only; the
+  current public `backend=stub` artifact returns explicit delivery failures for
+  cross-process CRUD.

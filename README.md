@@ -91,9 +91,10 @@ payloads when a workflow needs a different wire shape.
 
 The current public runtime v2 artifact used by these samples reports
 `backend=stub`. Local primitive samples work directly. Cross-process customer
-scenarios try the runtime route first, then use an HTTP store fallback while the
-public remote backend is not available, so the browser CRUD flow still works
-from public artifacts.
+scenarios keep web-to-store business traffic on the runtime path only. With the
+stub backend they still build, boot, and show diagnostics, but CRUD delivery
+returns an explicit runtime deadletter until a remote-capable backend is
+published.
 
 ## Architectural Value
 
@@ -244,8 +245,6 @@ The customer scenarios expose the important config knobs in application config:
 - `peer-host`
 - `peer-port`
 - `generation`
-- `store-http-base-url` and `store-http-fallback-enabled` while the demo
-  fallback is still needed
 
 The shared `customer-contract` module holds the cross-service contract:
 
@@ -261,13 +260,11 @@ the runtime, including `configuredGeneration`, `localEndpoint`, and
 The API responses distinguish how a request was handled:
 
 - `runtime` for runtime delivery
-- `runtime-deadletter-http-fallback` when the current public runtime backend
-  returns a deadletter and the demo falls back to HTTP
 - `store-http-direct` when the store HTTP API is called directly
 
-The HTTP fallback is demo glue, not the production architecture. When a
-remote-capable transporter is published, production samples should disable or
-remove the fallback and keep the runtime route path as the source of truth.
+There is no store REST fallback on the customer web path. If cross-process
+runtime delivery fails, the web API returns `RUNTIME_DELIVERY_FAILED` so the
+missing remote backend is visible instead of hidden by a second transport.
 
 The main remaining scenario gap is a route hot reload demo: a `routes.yml`
 example, a `reload-routes` command, and diagnostics that show the active
@@ -443,10 +440,10 @@ and makes the same route snapshot and generation concepts visible:
 | `routes` | Maps a target name such as `samples.customer.store` to one or more endpoints. |
 | `LOCAL` endpoint flag | Marks the target served by the current process. Remote peer routes are left non-local. |
 
-The customer scenarios also include an HTTP fallback because the current public
-runtime artifact reports `backend=stub`. The web service still attempts runtime
-delivery first; when the stub backend returns a delivery deadletter, the sample
-uses the store HTTP API so the browser CRUD flow remains runnable.
+Customer scenarios intentionally do not include a store REST fallback. The
+current public runtime artifact reports `backend=stub`, so CRUD attempts from
+the web service return explicit runtime delivery failures until a remote-capable
+runtime artifact is available.
 
 ## Integration Guide
 

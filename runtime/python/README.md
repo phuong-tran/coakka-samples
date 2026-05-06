@@ -77,5 +77,6 @@ Use the context manager or call `close()` during application shutdown.
 - Keep queue sizes bounded and monitor deadletter counters.
 - Treat `DeadletterError` as a first-class route/delivery result.
 - Increment `generation` when applying a new route table.
-- The customer scenario HTTP fallback is demo glue for the current public
-  `backend=stub` runtime.
+- Customer scenarios keep inter-service business traffic runtime-only; the
+  current public `backend=stub` artifact returns explicit delivery failures for
+  cross-process CRUD.

@@ -145,5 +145,6 @@ DeadletterSubscription subscription =
 - Increment `generation` when applying a new route table.
 - Prefer `strictNoDrop=true` while integrating so overload becomes visible.
 - Handle `DeadletterException`; do not treat deadletters as generic failures.
-- The customer scenarios include HTTP fallback only because the current public
-  runtime backend is `stub`.
+- Customer scenarios keep inter-service business traffic runtime-only; the
+  current public `backend=stub` artifact returns explicit delivery failures for
+  cross-process CRUD.

@@ -16,5 +16,3 @@ sample:
     peer-host: 127.0.0.1
     peer-port: 19102
     generation: 1
-    store-http-base-url: http://127.0.0.1:8082
-    store-http-fallback-enabled: true

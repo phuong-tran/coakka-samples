@@ -44,8 +44,7 @@ run_web() {
     --sample.connector.system-name=customer-web-node-topology \
     --sample.connector.node-id=customer-web-node-topology-node \
     --sample.connector.local-port=19111 \
-    --sample.connector.peer-port=19112 \
-    --sample.connector.store-http-base-url=http://127.0.0.1:8092
+    --sample.connector.peer-port=19112
 }
 
 run_store() {
@@ -90,13 +89,16 @@ check_scenario() {
 smoke() {
   coakka_require_command curl "Install curl, then retry."
 
-  coakka_customer_smoke_request "create customer through Spring Boot web" \
+  coakka_customer_smoke_request "read runtime diagnostics" \
+    http://127.0.0.1:8081/api/customers/runtime
+
+  coakka_customer_smoke_request "trigger route-miss diagnostic" \
+    -X POST http://127.0.0.1:8081/api/customers/route-miss
+
+  coakka_customer_expect_http_status "runtime-only create is blocked by current stub backend" 503 \
     -X POST http://127.0.0.1:8081/api/customers \
     -H 'Content-Type: application/json' \
     -d '{"id":"cust-001","name":"Ada Lovelace","email":"ada@example.com","tier":"silver","notes":"spring to node smoke"}'
-
-  coakka_customer_smoke_request "list Node.js store customers" \
-    http://127.0.0.1:8092/api/customers
 }
 
 stop_ports() {

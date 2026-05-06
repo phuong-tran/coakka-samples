@@ -153,9 +153,9 @@
   <header>
     <div>
       <h1>Customer Web</h1>
-      <p>Spring Boot UI/API tries typed runtime requests first, then uses the store HTTP fallback while the public backend is stub.</p>
+      <p>Spring Boot UI/API sends customer business requests through the runtime target only; there is no store REST fallback.</p>
     </div>
-    <div class="badge">HTTP 8081 -> runtime target samples.customer.store</div>
+    <div class="badge">Browser HTTP 8081 -> runtime target samples.customer.store</div>
   </header>
 
   <div class="layout">
@@ -213,7 +213,6 @@
       <section>
         <h2>Runtime Summary</h2>
         <div class="metrics" id="metrics"></div>
-        <div class="notice" id="fallback-notice" hidden></div>
       </section>
 
       <section>
@@ -231,7 +230,6 @@
   const customersDeliveryMode = document.getElementById('customers-delivery-mode');
   const runtimeBox = document.getElementById('runtime-box');
   const metrics = document.getElementById('metrics');
-  const fallbackNotice = document.getElementById('fallback-notice');
 
   function formCustomer() {
     return Object.fromEntries(new FormData(form).entries());
@@ -275,24 +273,16 @@
   async function loadRuntime() {
     try {
       const runtime = await api('/api/customers/runtime');
-      const fallbackMode = runtime.connector.storeHttpFallback || 'disabled';
       const matchedDeadletters = runtime.clientStats.matchedDeadletters;
       metrics.innerHTML = [
         metric('Runtime', runtime.runtimeInfo.runtimeVersion),
         metric('Backend', runtime.runtimeInfo.southboundBackend),
         metric('Node', runtime.runtimeConfig.nodeId),
         metric('Routes', runtime.runtimeConfig.routeCount),
-        metric('Fallback', fallbackMode),
+        metric('Business transport', runtime.connector.businessTransport || 'runtime-only'),
         metric('Runtime delivered', runtime.clientStats.deliveredRequests),
         metric('Runtime deadletters', matchedDeadletters),
       ].join('');
-      if (fallbackMode.startsWith('enabled') && matchedDeadletters > 0) {
-        fallbackNotice.hidden = false;
-        fallbackNotice.textContent = 'Customer data changed through HTTP fallback after runtime delivery returned deadletters. The deadletter counter reflects the runtime attempt, not a failed customer mutation.';
-      } else {
-        fallbackNotice.hidden = true;
-        fallbackNotice.textContent = '';
-      }
       runtimeBox.textContent = JSON.stringify(runtime, null, 2);
     } catch (error) {
       runtimeBox.textContent = JSON.stringify(error, null, 2);

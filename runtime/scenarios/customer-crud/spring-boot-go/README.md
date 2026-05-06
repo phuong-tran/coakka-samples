@@ -15,14 +15,13 @@ diagnostics.
 ## Current Runtime Backend Note
 
 The current public runtime v2 artifact reports `backend=stub`. Both services
-boot and show diagnostics. The web service tries the runtime route first, then
-uses the Go store HTTP API when the stub backend rejects remote delivery, so
-browser CRUD and smoke commands remain runnable.
+boot and show diagnostics. The web service sends business requests only through
+the runtime route. There is no Go store REST fallback, so CRUD requests return
+explicit runtime delivery failures until a remote-capable backend is published.
 
-The web UI is shared with the Spring-to-Spring scenario. If a Create, Update,
-Delete, or List succeeds while `Runtime deadletters` increases, the business
-operation succeeded through HTTP fallback after the runtime remote attempt
-returned a deadletter.
+The web UI is shared with the Spring-to-Spring scenario. The store HTTP port is
+for viewing store state and diagnostics directly; it is not used as the
+web-to-store business transport.
 
 ## Run
 
@@ -61,8 +60,9 @@ With both services running:
 bash run.sh smoke
 ```
 
-With the current `backend=stub` artifact, the web service uses the HTTP store
-fallback after the runtime route reports a delivery deadletter.
+With the current `backend=stub` artifact, `bash run.sh smoke` verifies
+diagnostics, route-miss behavior, and that create returns
+`503 RUNTIME_DELIVERY_FAILED` instead of falling back to store REST.
 
 ## Check Without Running Servers
 

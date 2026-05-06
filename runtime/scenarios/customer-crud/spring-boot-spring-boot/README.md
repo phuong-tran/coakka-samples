@@ -15,13 +15,13 @@ results.
 
 The current public runtime v2 artifact used by `coakka-samples` reports
 `backend=stub`. That artifact can run local primitive samples, but it cannot
-deliver remote cross-process requests yet. The web service still tries the
-runtime route first. When the stub backend rejects remote delivery, it falls
-back to the store HTTP API so browser CRUD and smoke commands remain runnable.
-Runtime diagnostics show the stub backend and deadletter counters.
+deliver remote cross-process requests yet. The web service still sends customer
+business requests only through the runtime route. There is no store REST
+fallback, so CRUD requests return `RUNTIME_DELIVERY_FAILED` until a
+remote-capable backend is published. Runtime diagnostics show the stub backend
+and deadletter counters.
 
-The fallback is configured explicitly in
-`customer-web/src/main/resources/application.yml`:
+The route table is configured in `customer-web/src/main/resources/application.yml`:
 
 ```yaml
 sample:
@@ -33,8 +33,6 @@ sample:
     peer-host: 127.0.0.1
     peer-port: 19102
     generation: 1
-    store-http-base-url: http://127.0.0.1:8082
-    store-http-fallback-enabled: true
 ```
 
 `customer-store` uses the same config shape with local and peer reversed:
@@ -60,15 +58,12 @@ handled the request:
 | Value | Meaning |
 | --- | --- |
 | `runtime` | The customer request was handled through the runtime route. |
-| `runtime-deadletter-http-fallback` | The runtime route returned a deadletter and web used the store HTTP fallback. |
 | `store-http-direct` | The store HTTP API was called directly. |
 
-With the current `backend=stub` runtime artifact, a successful Create, Update,
-or Delete can still increase `Runtime deadletters` in the web monitor. That
-means the runtime remote attempt failed first and the business operation then
-succeeded through HTTP fallback. The browser also refreshes the customer list
-after a mutation, so one button click can produce a deadletter for the mutation
-attempt and another deadletter for the list attempt.
+With the current `backend=stub` runtime artifact, Create, Update, Delete, and
+List from the web API return a runtime delivery failure instead of using the
+store HTTP API. The separate `Route miss` action is the intentional deadletter
+diagnostic.
 
 Shared request/response DTOs and message-type strings live in the
 `customer-contract` module together with the payload schema version and format.
@@ -117,8 +112,10 @@ bash run.sh smoke
 ```
 
 The smoke creates, updates, lists, and deletes `cust-001` through the web
-service API. With the current `backend=stub` artifact, the web service uses the
-HTTP store fallback after the runtime route reports a delivery deadletter.
+service API only after a remote-capable runtime backend is available. With the
+current `backend=stub` artifact, `bash run.sh smoke` verifies diagnostics,
+route-miss behavior, and that create returns `503 RUNTIME_DELIVERY_FAILED`
+instead of falling back to store REST.
 
 ## Stop
 

@@ -22,7 +22,7 @@ Every customer scenario should provide the same surface:
 | Surface | Requirement |
 | --- | --- |
 | Web UI | a customer form, customer table, and clear success/error state |
-| HTTP API | curlable create, update, delete, and list endpoints |
+| HTTP API | curlable browser-facing create, update, delete, and list endpoints on the web service |
 | Runtime panel | ABI/version/git/backend, routes, delivered count, deadletters |
 | Process panel | service name, language, HTTP port, runtime endpoint/target |
 | Logs | one line per accepted runtime operation with correlation id |
@@ -98,11 +98,10 @@ List response JSON:
 
 The current public runtime v2 release used by these samples reports
 `backend=stub`. The customer scenarios are the target web topology for the next
-remote-capable runtime release. Until that release exists, each web process
-tries the runtime route first and then falls back to the store HTTP endpoint
-when the stub backend returns a delivery deadletter. That keeps browser CRUD
-and smoke commands runnable from public artifacts while diagnostics still show
-the runtime backend and deadletter counters.
+remote-capable runtime release. Web-to-store business traffic is runtime-only;
+there is no store REST fallback. Until a remote-capable release exists, CRUD
+attempts return explicit delivery deadletters while build, boot, route config,
+and diagnostics remain runnable from public artifacts.
 
 ### Spring Boot to Spring Boot
 

@@ -52,10 +52,10 @@ The first scenario implementations are:
 - `scenarios/customer-crud/spring-boot-go`
 - `scenarios/customer-crud/spring-boot-nodes`
 
-They boot web/store/audit services and expose clear runtime diagnostics. With
-the current public `backend=stub` runtime artifact, the web services try the
-runtime route first and then use HTTP store fallback so browser CRUD remains
-runnable. Diagnostics still show backend and deadletter counters.
+They boot web/store/audit services and expose clear runtime diagnostics. The
+web-to-store business path is runtime-only. With the current public
+`backend=stub` runtime artifact, CRUD attempts return explicit runtime delivery
+failures until a remote-capable backend is published.
 
 For production-facing integration guidance, read:
 

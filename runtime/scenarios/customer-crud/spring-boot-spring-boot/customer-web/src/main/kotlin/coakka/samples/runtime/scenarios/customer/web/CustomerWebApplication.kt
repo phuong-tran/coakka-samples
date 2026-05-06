@@ -1,6 +1,5 @@
 package coakka.samples.runtime.scenarios.customer.web
 
-import coakka.samples.runtime.scenarios.customer.contract.CustomerDeliveryModes
 import coakka.samples.runtime.scenarios.customer.contract.CustomerDraft
 import coakka.samples.runtime.scenarios.customer.contract.CustomerMessageTypes
 import coakka.samples.runtime.scenarios.customer.contract.CustomerPayloadContract
@@ -44,13 +43,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.bind.annotation.RestController
-import java.net.URI
-import java.net.URLEncoder
-import java.net.http.HttpClient
-import java.net.http.HttpRequest
-import java.net.http.HttpResponse
-import java.nio.charset.StandardCharsets
-import java.time.Duration
 
 @SpringBootApplication
 @EnableConfigurationProperties(CustomerWebConnectorProperties::class)
@@ -81,14 +73,12 @@ object CustomerPayloads {
 }
 
 /**
- * Runtime and fallback wiring for the customer web process.
+ * Runtime wiring for the customer web process.
  *
  * `localTarget` is the runtime address served by this process. `peerTarget`
- * is the store address that business requests are sent to. The public runtime
- * artifact currently reports `southboundBackend=stub`, so `storeHttpBaseUrl`
- * keeps the sample usable by falling back to the store HTTP API after a runtime
- * delivery deadletter. When a remote-capable runtime backend is published,
- * integrations can disable the fallback and keep the same route targets.
+ * is the store address that business requests are sent to. Customer web never
+ * falls back to the store HTTP API; the inter-service business path is runtime
+ * only so delivery failures remain visible as runtime deadletters.
  */
 @ConfigurationProperties("sample.connector")
 data class CustomerWebConnectorProperties(
@@ -101,81 +91,12 @@ data class CustomerWebConnectorProperties(
     var peerHost: String = "127.0.0.1",
     var peerPort: Int = 19102,
     var generation: Long = 1,
-    var storeHttpBaseUrl: String = "http://127.0.0.1:8082",
-    var storeHttpFallbackEnabled: Boolean = true,
 )
 
 class ManagedConnector(val orchestrator: ConnectorOrchestrator) : AutoCloseable {
     override fun close() {
         runBlocking { orchestrator.kotlin.shutdown() }
     }
-}
-
-class CustomerStoreFallbackClient(
-    private val objectMapper: ObjectMapper,
-    private val properties: CustomerWebConnectorProperties,
-) {
-    private val client = HttpClient.newBuilder()
-        .connectTimeout(Duration.ofSeconds(2))
-        .build()
-
-    fun listCustomers(): ListResponse =
-        send(
-            request = requestBuilder("/api/customers").GET().build(),
-            responseType = ListResponse::class.java,
-        )
-
-    fun createCustomer(customer: CustomerDraft): MutationResponse =
-        sendJson(
-            method = "POST",
-            path = "/api/customers",
-            payload = customer,
-            responseType = MutationResponse::class.java,
-        )
-
-    fun updateCustomer(customer: CustomerDraft): MutationResponse =
-        sendJson(
-            method = "PUT",
-            path = "/api/customers/${pathSegment(customer.id)}",
-            payload = customer,
-            responseType = MutationResponse::class.java,
-        )
-
-    fun deleteCustomer(id: String): MutationResponse =
-        send(
-            request = requestBuilder("/api/customers/${pathSegment(id)}")
-                .DELETE()
-                .build(),
-            responseType = MutationResponse::class.java,
-        )
-
-    private fun <T : Any> sendJson(
-        method: String,
-        path: String,
-        payload: Any,
-        responseType: Class<T>,
-    ): T = send(
-        request = requestBuilder(path)
-            .method(method, HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(payload)))
-            .header("Content-Type", "application/json")
-            .build(),
-        responseType = responseType,
-    )
-
-    private fun <T : Any> send(request: HttpRequest, responseType: Class<T>): T {
-        val response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8))
-        if (response.statusCode() !in 200..299) {
-            error("customer-store HTTP fallback returned ${response.statusCode()}: ${response.body()}")
-        }
-        return objectMapper.readValue(response.body(), responseType)
-    }
-
-    private fun requestBuilder(path: String): HttpRequest.Builder =
-        HttpRequest.newBuilder(URI.create("${properties.storeHttpBaseUrl.trimEnd('/')}$path"))
-            .timeout(Duration.ofSeconds(5))
-
-    private fun pathSegment(value: String): String =
-        URLEncoder.encode(value, StandardCharsets.UTF_8)
 }
 
 @Configuration
@@ -229,12 +150,6 @@ class CustomerWebConnectorConfiguration {
     }
 
     @Bean
-    fun customerStoreFallbackClient(
-        objectMapper: ObjectMapper,
-        properties: CustomerWebConnectorProperties,
-    ): CustomerStoreFallbackClient = CustomerStoreFallbackClient(objectMapper, properties)
-
-    @Bean
     fun connectorStartupLog(
         managedConnector: ManagedConnector,
         properties: CustomerWebConnectorProperties,
@@ -260,7 +175,6 @@ class CustomerWebController(
     private val managedConnector: ManagedConnector,
     private val objectMapper: ObjectMapper,
     private val properties: CustomerWebConnectorProperties,
-    private val fallbackClient: CustomerStoreFallbackClient,
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -271,11 +185,6 @@ class CustomerWebController(
             identity = CustomerPayloads.LIST,
             operation = "list_customers",
             responseType = ListResponse::class.java,
-            fallback = {
-                fallbackClient.listCustomers().copy(
-                    deliveryMode = CustomerDeliveryModes.RUNTIME_DEADLETTER_HTTP_FALLBACK,
-                )
-            },
         )
     }
 
@@ -288,11 +197,6 @@ class CustomerWebController(
             identity = CustomerPayloads.CREATE,
             operation = "create_customer",
             responseType = MutationResponse::class.java,
-            fallback = {
-                fallbackClient.createCustomer(request).copy(
-                    deliveryMode = CustomerDeliveryModes.RUNTIME_DEADLETTER_HTTP_FALLBACK,
-                )
-            },
         )
     }
 
@@ -314,11 +218,6 @@ class CustomerWebController(
             identity = CustomerPayloads.UPDATE,
             operation = "update_customer",
             responseType = MutationResponse::class.java,
-            fallback = {
-                fallbackClient.updateCustomer(payload).copy(
-                    deliveryMode = CustomerDeliveryModes.RUNTIME_DEADLETTER_HTTP_FALLBACK,
-                )
-            },
         )
     }
 
@@ -330,11 +229,6 @@ class CustomerWebController(
             identity = CustomerPayloads.DELETE,
             operation = "delete_customer",
             responseType = MutationResponse::class.java,
-            fallback = {
-                fallbackClient.deleteCustomer(id).copy(
-                    deliveryMode = CustomerDeliveryModes.RUNTIME_DEADLETTER_HTTP_FALLBACK,
-                )
-            },
         )
     }
 
@@ -369,12 +263,6 @@ class CustomerWebController(
         localEndpoint = "${properties.localHost}:${properties.localPort}",
         peerEndpoint = "${properties.peerHost}:${properties.peerPort}",
         serviceRole = "customer-web",
-        storeHttpBaseUrl = properties.storeHttpBaseUrl,
-        storeHttpFallback = if (properties.storeHttpFallbackEnabled) {
-            "enabled for backend=stub"
-        } else {
-            "disabled"
-        },
     )
 
     private suspend fun <T : Any> ask(
@@ -382,36 +270,18 @@ class CustomerWebController(
         identity: ConnectorPayloadIdentity,
         operation: String,
         responseType: Class<T>,
-        fallback: () -> T,
     ): T {
-        return try {
-            val response = managedConnector.orchestrator.kotlin.ask(
-                source = properties.localTarget,
-                target = properties.peerTarget,
-                payloadUtf8 = objectMapper.writeValueAsString(payload),
-                payloadIdentity = identity,
-                timeoutMs = 5_000,
-                operation = operation,
-                deliveryHint = ConnectorDeliveryHint.REQUIRE_REMOTE,
-            )
-            objectMapper.readValue(response.payload, responseType)
-        } catch (error: DeadletterException) {
-            if (!properties.storeHttpFallbackEnabled || !runtimeBackendNeedsFallback()) {
-                throw error
-            }
-            logger.warn(
-                "customer-web runtime delivery failed operation={} reason={} backend={}; using HTTP fallback {}",
-                operation,
-                error.deadletter.reason,
-                managedConnector.orchestrator.runtimeInfo().southboundBackend,
-                properties.storeHttpBaseUrl,
-            )
-            fallback()
-        }
+        val response = managedConnector.orchestrator.kotlin.ask(
+            source = properties.localTarget,
+            target = properties.peerTarget,
+            payloadUtf8 = objectMapper.writeValueAsString(payload),
+            payloadIdentity = identity,
+            timeoutMs = 5_000,
+            operation = operation,
+            deliveryHint = ConnectorDeliveryHint.REQUIRE_REMOTE,
+        )
+        return objectMapper.readValue(response.payload, responseType)
     }
-
-    private fun runtimeBackendNeedsFallback(): Boolean =
-        managedConnector.orchestrator.runtimeInfo().southboundBackend.equals("stub", ignoreCase = true)
 }
 
 @RestControllerAdvice
@@ -426,7 +296,7 @@ class RuntimeErrorAdvice {
                 detail = deadletter.detail,
                 target = deadletter.originalEnvelope.target,
                 resolvedEndpoint = "${deadletter.resolvedHost}:${deadletter.resolvedPort}",
-                hint = "The current public runtime v2 artifact reports backend=stub. Cross-process customer scenarios need a runtime release with a remote southbound backend.",
+                hint = "No store REST fallback is used. Cross-service customer traffic is runtime-only, so this scenario needs a runtime release with a remote southbound backend.",
             ),
         )
     }
@@ -440,8 +310,6 @@ fun runtimeDiagnosticsView(
     localEndpoint: String,
     peerEndpoint: String,
     serviceRole: String,
-    storeHttpBaseUrl: String = "",
-    storeHttpFallback: String = "",
 ): RuntimeDiagnosticsView {
     val runtimeInfo = managedConnector.orchestrator.runtimeInfo()
     val runtimeConfig = managedConnector.orchestrator.runtimeConfig()
@@ -479,8 +347,7 @@ fun runtimeDiagnosticsView(
             "configuredGeneration" to configuredGeneration,
             "localEndpoint" to localEndpoint,
             "peerEndpoint" to peerEndpoint,
-            "storeHttpBaseUrl" to storeHttpBaseUrl,
-            "storeHttpFallback" to storeHttpFallback,
+            "businessTransport" to "runtime-only",
             "createType" to CustomerPayloads.CREATE.messageType,
             "updateType" to CustomerPayloads.UPDATE.messageType,
             "deleteType" to CustomerPayloads.DELETE.messageType,

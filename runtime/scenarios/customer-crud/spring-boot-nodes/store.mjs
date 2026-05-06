@@ -204,20 +204,20 @@ const server = createServer(async (request, response) => {
       return;
     }
     if (request.method === "POST" && url.pathname === "/api/customers") {
-      sendJson(response, 201, upsertCustomer("create", await readJsonRequest(request), "http-fallback"));
+      sendJson(response, 201, upsertCustomer("create", await readJsonRequest(request), "store-http-direct"));
       return;
     }
     const customerId = customerIdFromPath(url.pathname);
     if (request.method === "PUT" && customerId) {
       const customer = await readJsonRequest(request);
-      sendJson(response, 200, upsertCustomer("update", { ...customer, id: customerId }, "http-fallback"));
+      sendJson(response, 200, upsertCustomer("update", { ...customer, id: customerId }, "store-http-direct"));
       return;
     }
     if (request.method === "DELETE" && customerId) {
       revision += 1;
       customers.delete(customerId);
       console.log(`customer-store-node-multi delete id=${customerId}`);
-      publishAudit("delete", customerId, null, "http-fallback");
+      publishAudit("delete", customerId, null, "store-http-direct");
       sendJson(response, 200, mutation("delete", customerId));
       return;
     }
