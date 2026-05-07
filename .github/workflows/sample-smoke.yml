@@ -76,6 +76,7 @@ jobs:
         if: matrix.sample_lane == 'runtime'
         run: |
           node --check runtime/scenarios/customer-crud/spring-boot-node/store.mjs
+          bash runtime/scenarios/customer-crud/spring-boot-starter-local/run.sh check
           bash runtime/scenarios/customer-crud/spring-boot-nodes/run.sh check
           bash runtime/scenarios/customer-crud/spring-boot-go/run.sh check
           ./gradlew \
@@ -85,3 +86,7 @@ jobs:
       - name: Smoke runtime customer scenario with CAF backend
         if: matrix.sample_lane == 'runtime'
         run: bash scripts/smoke-customer-runtime.sh
+
+      - name: Smoke Spring Boot starter local scenario
+        if: matrix.sample_lane == 'runtime'
+        run: bash scripts/smoke-spring-boot-starter-local.sh

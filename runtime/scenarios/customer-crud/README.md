@@ -125,7 +125,7 @@ This scenario does not exercise remote cross-process transport.
 ### Spring Boot Starter Local
 
 This is scaffolded under `spring-boot-starter-local/` as an experimental
-macOS-first proof for the local-first Spring Boot starter shape.
+macOS/Linux proof for the local-first Spring Boot starter shape.
 
 | Surface | Language | Role | HTTP | Runtime endpoint |
 | --- | --- | --- | --- | --- |

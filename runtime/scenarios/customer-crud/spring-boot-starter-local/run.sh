@@ -30,14 +30,7 @@ require_runtime_commands() {
   coakka_require_command java "Install JDK 17 or newer, then retry."
 }
 
-require_macos_first() {
-  if [[ "$(uname -s)" != "Darwin" ]]; then
-    coakka_die "spring-boot-starter-local is currently a macOS-first prototype; Linux coverage comes after the starter shape settles."
-  fi
-}
-
 build_jar() {
-  require_macos_first
   require_runtime_commands
   bash "${repo_root}/gradlew" -p "${repo_root}" "${app_build_task}" --quiet
   coakka_note "check ok: built Spring Boot starter-local customer app jar"
@@ -51,7 +44,6 @@ run_dev() {
 }
 
 smoke() {
-  require_macos_first
   coakka_require_command curl "Install curl, then retry."
 
   coakka_customer_smoke_request "read runtime diagnostics" \

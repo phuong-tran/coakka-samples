@@ -96,6 +96,7 @@ run_scenario_checks() {
   local scenario_path
   for scenario_path in \
     "runtime/scenarios/customer-crud/spring-boot-single-process" \
+    "runtime/scenarios/customer-crud/spring-boot-starter-local" \
     "runtime/scenarios/customer-crud/kotlin-desktop-local" \
     "runtime/scenarios/customer-crud/python-desktop-local" \
     "runtime/scenarios/customer-crud/spring-boot-spring-boot" \

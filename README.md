@@ -296,10 +296,10 @@ Current customer topologies:
 The Spring Boot single-process, Spring Boot starter local, Kotlin desktop
 local, and Python desktop local scenarios are compact happy paths: customer
 actions succeed through runtime request/reply without a store REST API. The
-starter-local scenario is an experimental macOS-first proof that derives local
-runtime routes from `@CoAkkaHandler` methods. The cross-process scenarios keep
-the same UI and payload contract while moving the store target into another
-process or language.
+starter-local scenario is an experimental macOS/Linux proof that derives local
+runtime routes from `@CoAkkaHandler` methods and is smoked in CI on Ubuntu. The
+cross-process scenarios keep the same UI and payload contract while moving the
+store target into another process or language.
 
 The multi-service Node.js scenario includes an audit target so the store can
 emit a typed one-way event after mutations.

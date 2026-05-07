@@ -15,8 +15,8 @@ The app does not configure remote endpoints. The prototype starter scans
 targets, registers typed handlers, and exposes a `CoAkkaRuntimeClient` bean for
 the controller.
 
-This slice is macOS-first while the starter shape is still moving. Linux and CI
-coverage should be added after the local API shape is boring.
+This slice runs on macOS for local development and is smoked on Linux in CI.
+Remote/Kubernetes mode should wait until the local API shape is boring.
 
 ## Run
 
