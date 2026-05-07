@@ -31,6 +31,18 @@ or fork a Spring-specific native runtime.
 The starter source lives in the connector workspace. This sample only consumes
 the published Maven artifact from `coakka-publish`.
 
+## Code Map
+
+Start with `CustomerStarterLocalApplication.kt`; it only boots Spring and logs
+the runtime route count. The local capability path is split by role:
+
+- `CustomerTargets.kt` names the runtime targets.
+- `CustomerCapabilityHandlers.kt` exposes CRUD work with `@CoAkkaHandler`.
+- `CustomerStarterLocalController.kt` keeps REST at `/api/customers`.
+- `InMemoryCustomerStore.kt` is the ordinary Spring service behind the handlers.
+- `CustomerRuntimeDiagnosticsController.kt` keeps smoke-only runtime diagnostics
+  away from the CRUD path.
+
 ## Run
 
 ```sh
