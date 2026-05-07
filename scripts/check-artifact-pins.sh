@@ -7,7 +7,7 @@ source "${script_dir}/sample-metadata.sh"
 
 expected_runtime_native="0.1.0+22f571fd955c"
 expected_runtime_jvm="0.1.0-g22f571fd955c"
-expected_spring_starter="0.1.0-ge2b402e"
+expected_spring_starter="0.1.0-g90d825857466"
 expected_logger_native="0.1.0+ba2a66d98eb5"
 
 required_rows=(

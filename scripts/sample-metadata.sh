@@ -51,7 +51,7 @@ COAKKA_ARTIFACT_ROWS=(
   "runtime Node package|runtime/node/releases/0.1.0+22f571fd955c/coakka-v2-connector-node-0.1.0.tgz"
   "runtime Go package|runtime/go/releases/0.1.0+22f571fd955c/coakka-v2-connector-go-0.1.0.tar.gz"
   "runtime Native package|runtime/native/releases/0.1.0+22f571fd955c/coakka-runtime-native-v2-0.1.0.tar.gz"
-  "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/0.1.0-ge2b402e/coakka-spring-boot-starter-0.1.0-ge2b402e.jar"
+  "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/0.1.0-g90d825857466/coakka-spring-boot-starter-0.1.0-g90d825857466.jar"
 )
 
 coakka_default_publish_root() {
