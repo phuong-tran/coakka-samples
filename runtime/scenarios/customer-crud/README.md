@@ -122,6 +122,28 @@ Flow:
 
 This scenario does not exercise remote cross-process transport.
 
+### Spring Boot Starter Local
+
+This is scaffolded under `spring-boot-starter-local/` as an experimental
+macOS-first proof for the local-first Spring Boot starter shape.
+
+| Surface | Language | Role | HTTP | Runtime endpoint |
+| --- | --- | --- | --- | --- |
+| `customer-app` web/API | JVM / Spring Boot | web UI and HTTP API | `8082` | source-only |
+| `@CoAkkaHandler` methods | JVM / Spring Boot | local customer capabilities | none | `127.0.0.1:19172` |
+
+Flow:
+
+1. Browser posts `create/update/delete/list` to `customer-app`.
+2. The controller calls `CoAkkaRuntimeClient`.
+3. The prototype starter routes to local `@CoAkkaHandler` capability methods.
+4. Runtime diagnostics show backend, generation, route count, request/reply
+   counters, and an intentional route-miss deadletter.
+
+This scenario does not configure remote endpoints, bind/advertise ports for
+Kubernetes, service discovery, TLS, or business retry policy. Those belong
+after the local starter API shape is stable.
+
 ### Kotlin Desktop Local
 
 This is scaffolded under `kotlin-desktop-local/` as the smallest visual happy

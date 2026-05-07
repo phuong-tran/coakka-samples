@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Starter Local</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7f7;
+      --panel: #ffffff;
+      --line: #d8e1e4;
+      --text: #172126;
+      --muted: #60727c;
+      --accent: #0a7068;
+      --danger: #9b3737;
+      --ok: #20724d;
+      --code: #11191f;
+      --codeText: #eff8fb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 15px/1.45 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main { max-width: 1180px; margin: 0 auto; padding: 24px; display: grid; gap: 18px; }
+    header { display: flex; justify-content: space-between; align-items: end; gap: 16px; padding-top: 8px; }
+    h1, h2 { margin: 0; }
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1rem; text-transform: uppercase; letter-spacing: .04em; }
+    p { margin: 4px 0 0; color: var(--muted); }
+    section { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
+    .badge {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 8px 10px;
+      background: var(--panel);
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    .layout { display: grid; grid-template-columns: minmax(340px, .85fr) minmax(460px, 1.15fr); gap: 18px; }
+    .stack { display: grid; gap: 18px; }
+    .flow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .flow-step { border: 1px solid var(--line); border-radius: 8px; background: #fbfdfe; padding: 12px; }
+    .flow-step span { display: block; color: var(--muted); font-size: .76rem; text-transform: uppercase; letter-spacing: .04em; }
+    .flow-step strong { display: block; margin-top: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9rem; }
+    label { display: block; margin-top: 12px; color: var(--muted); font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+    input, textarea, select {
+      width: 100%;
+      margin-top: 5px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 10px 11px;
+      color: var(--text);
+      font: inherit;
+      background: #fbfdfe;
+    }
+    textarea { min-height: 72px; resize: vertical; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    button {
+      border: 0;
+      border-radius: 6px;
+      padding: 10px 12px;
+      background: var(--accent);
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button.secondary { background: #506474; }
+    button.danger { background: var(--danger); }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px 8px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { color: var(--muted); font-size: .76rem; text-transform: uppercase; letter-spacing: .05em; }
+    pre {
+      margin: 0;
+      min-height: 130px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      border-radius: 6px;
+      padding: 12px;
+      background: var(--code);
+      color: var(--codeText);
+      font: .84rem/1.45 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    .metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .metric { border: 1px solid var(--line); border-radius: 6px; padding: 10px; background: #fbfdfe; }
+    .metric span { display: block; color: var(--muted); font-size: .76rem; }
+    .metric strong { display: block; margin-top: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .notice { margin-top: 10px; border: 1px solid #9ac9aa; border-radius: 6px; padding: 10px; background: #effaf2; color: var(--ok); }
+    .notice.error { border-color: #e4aaa2; background: #fff1ef; color: #7c2f27; }
+    @media (max-width: 900px) {
+      header, .layout { display: grid; grid-template-columns: 1fr; }
+      .metrics, .flow { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1>Customer Starter Local</h1>
+      <p>Spring Boot edge controller calling local @CoAkkaHandler capabilities through the runtime.</p>
+    </div>
+    <div class="badge">localhost:8082</div>
+  </header>
+
+  <div class="flow">
+    <div class="flow-step"><span>HTTP boundary</span><strong>/api/customers</strong></div>
+    <div class="flow-step"><span>Runtime client</span><strong>CoAkkaRuntimeClient</strong></div>
+    <div class="flow-step"><span>Capability</span><strong>@CoAkkaHandler</strong></div>
+  </div>
+
+  <div class="layout">
+    <div class="stack">
+      <section>
+        <h2>Customer</h2>
+        <form id="customer-form">
+          <label for="customer-id">ID</label>
+          <input id="customer-id" value="cust-001">
+          <label for="customer-name">Name</label>
+          <input id="customer-name" value="Ada Lovelace">
+          <label for="customer-email">Email</label>
+          <input id="customer-email" value="ada@example.com">
+          <label for="customer-tier">Tier</label>
+          <select id="customer-tier">
+            <option>silver</option>
+            <option selected>gold</option>
+            <option>platinum</option>
+          </select>
+          <label for="customer-notes">Notes</label>
+          <textarea id="customer-notes">starter local smoke</textarea>
+          <div class="actions">
+            <button type="submit">Create</button>
+            <button type="button" id="update" class="secondary">Update</button>
+            <button type="button" id="delete" class="danger">Delete</button>
+            <button type="button" id="route-miss" class="secondary">Route miss</button>
+          </div>
+        </form>
+        <div id="status" class="notice">Ready</div>
+      </section>
+
+      <section>
+        <h2>Runtime</h2>
+        <div class="metrics" id="metrics"></div>
+      </section>
+    </div>
+
+    <div class="stack">
+      <section>
+        <h2>Customers</h2>
+        <table>
+          <thead><tr><th>ID</th><th>Name</th><th>Tier</th><th>Revision</th></tr></thead>
+          <tbody id="customers"></tbody>
+        </table>
+      </section>
+      <section>
+        <h2>Last Response</h2>
+        <pre id="output">{}</pre>
+      </section>
+    </div>
+  </div>
+</main>
+
+<script>
+  const form = document.getElementById('customer-form');
+  const statusBox = document.getElementById('status');
+  const output = document.getElementById('output');
+  const customers = document.getElementById('customers');
+  const metrics = document.getElementById('metrics');
+
+  function draft() {
+    return {
+      id: document.getElementById('customer-id').value,
+      name: document.getElementById('customer-name').value,
+      email: document.getElementById('customer-email').value,
+      tier: document.getElementById('customer-tier').value,
+      notes: document.getElementById('customer-notes').value
+    };
+  }
+
+  async function call(path, options = {}) {
+    const response = await fetch(path, options);
+    const body = await response.json();
+    output.textContent = JSON.stringify(body, null, 2);
+    statusBox.className = response.ok ? 'notice' : 'notice error';
+    statusBox.textContent = response.ok ? 'Runtime call completed' : `Runtime call failed: ${body.reason || response.status}`;
+    if (!response.ok) throw new Error(statusBox.textContent);
+    await refresh();
+    return body;
+  }
+
+  async function refresh() {
+    const list = await fetch('/api/customers').then(r => r.json());
+    customers.innerHTML = list.customers.map(c =>
+      `<tr><td>${c.id}</td><td>${c.name}<br><small>${c.email}</small></td><td>${c.tier}</td><td>${c.revision}</td></tr>`
+    ).join('');
+    const runtime = await fetch('/api/customers/runtime').then(r => r.json());
+    metrics.innerHTML = [
+      ['backend', runtime.runtimeInfo.southboundBackend],
+      ['routes', runtime.runtimeConfig.routeCount],
+      ['generation', runtime.runtimeConfig.appliedGeneration],
+      ['delivered', runtime.clientStats.deliveredRequests],
+      ['responses', runtime.clientStats.matchedResponses],
+      ['deadletters', runtime.clientStats.matchedDeadletters]
+    ].map(([label, value]) => `<div class="metric"><span>${label}</span><strong>${value}</strong></div>`).join('');
+  }
+
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    call('/api/customers', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(draft())
+    }).catch(() => {});
+  });
+  document.getElementById('update').onclick = () => {
+    const payload = draft();
+    call(`/api/customers/${encodeURIComponent(payload.id)}`, {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    }).catch(() => {});
+  };
+  document.getElementById('delete').onclick = () => {
+    call(`/api/customers/${encodeURIComponent(draft().id)}`, {method: 'DELETE'}).catch(() => {});
+  };
+  document.getElementById('route-miss').onclick = () => {
+    call('/api/customers/route-miss', {method: 'POST'}).catch(() => {});
+  };
+
+  refresh().catch(error => {
+    statusBox.className = 'notice error';
+    statusBox.textContent = error.message;
+  });
+</script>
+</body>
+</html>

@@ -285,6 +285,7 @@ Current customer topologies:
 | Scenario | Purpose |
 | --- | --- |
 | `runtime/scenarios/customer-crud/spring-boot-single-process` | Spring Boot web service plus local runtime store target |
+| `runtime/scenarios/customer-crud/spring-boot-starter-local` | Spring Boot starter prototype with local `@CoAkkaHandler` targets |
 | `runtime/scenarios/customer-crud/kotlin-desktop-local` | Kotlin desktop app with two local runtime handles |
 | `runtime/scenarios/customer-crud/python-desktop-local` | Python desktop app with two local runtime handles |
 | `runtime/scenarios/customer-crud/spring-boot-spring-boot` | Spring Boot web service to Spring Boot store |
@@ -292,10 +293,12 @@ Current customer topologies:
 | `runtime/scenarios/customer-crud/spring-boot-go` | Spring Boot web service to Go store |
 | `runtime/scenarios/customer-crud/spring-boot-nodes` | Spring Boot web service to Node.js store plus Node.js audit service |
 
-The Spring Boot single-process, Kotlin desktop local, and Python desktop local
-scenarios are compact happy paths: customer actions succeed through runtime
-request/reply without a store REST API. The cross-process scenarios keep the
-same UI and payload contract while moving the store target into another
+The Spring Boot single-process, Spring Boot starter local, Kotlin desktop
+local, and Python desktop local scenarios are compact happy paths: customer
+actions succeed through runtime request/reply without a store REST API. The
+starter-local scenario is an experimental macOS-first proof that derives local
+runtime routes from `@CoAkkaHandler` methods. The cross-process scenarios keep
+the same UI and payload contract while moving the store target into another
 process or language.
 
 The multi-service Node.js scenario includes an audit target so the store can

@@ -31,6 +31,7 @@ COAKKA_SAMPLE_ROWS=(
 
 COAKKA_SCENARIO_ROWS=(
   "customer-crud|spring-boot-single-process|Spring Boot web UI plus local runtime store target"
+  "customer-crud|spring-boot-starter-local|Spring Boot starter prototype with local @CoAkkaHandler targets"
   "customer-crud|kotlin-desktop-local|Kotlin Swing desktop UI plus local runtime store target"
   "customer-crud|python-desktop-local|Python Tk desktop UI plus local runtime store target"
   "customer-crud|spring-boot-spring-boot|Spring Boot web UI plus Spring Boot customer store"
@@ -94,6 +95,7 @@ Scenario commands:
   bash run.sh scenarios
   bash run.sh scenarios check
   bash run.sh scenario customer-crud spring-boot-single-process dev
+  bash run.sh scenario customer-crud spring-boot-starter-local dev
   bash run.sh scenario customer-crud kotlin-desktop-local app
   bash run.sh scenario customer-crud python-desktop-local app
   bash run.sh scenario customer-crud spring-boot-nodes check

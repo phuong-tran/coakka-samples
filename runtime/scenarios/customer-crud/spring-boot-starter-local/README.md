@@ -1,0 +1,54 @@
+# Spring Boot Starter Local Prototype
+
+This scenario is an experimental local-first Spring Boot starter proof.
+
+It keeps HTTP at the browser/API boundary and exposes internal customer work as
+runtime capabilities:
+
+```kotlin
+@CoAkkaHandler("samples.customer.create")
+fun create(command: CustomerDraft): MutationResponse
+```
+
+The app does not configure remote endpoints. The prototype starter scans
+`@CoAkkaHandler` methods, starts the runtime with local routes for those
+targets, registers typed handlers, and exposes a `CoAkkaRuntimeClient` bean for
+the controller.
+
+This slice is macOS-first while the starter shape is still moving. Linux and CI
+coverage should be added after the local API shape is boring.
+
+## Run
+
+```sh
+bash run.sh check
+bash run.sh dev
+```
+
+Open:
+
+```text
+http://localhost:8082
+```
+
+Smoke:
+
+```sh
+bash run.sh smoke
+```
+
+Ports:
+
+- HTTP: `8082`
+- local runtime diagnostic endpoint: `19172`
+
+## Boundary Shape
+
+The controller owns real HTTP ingress. It calls runtime targets through
+`CoAkkaRuntimeClient`.
+
+The customer store remains an ordinary Spring service. Capability methods are
+thin adapters that receive typed command objects and return typed responses.
+
+Remote transport, Kubernetes bind/advertise config, service discovery, TLS, and
+business retry policy are deliberately out of scope for this prototype.

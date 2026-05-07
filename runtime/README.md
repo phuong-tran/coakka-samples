@@ -48,6 +48,7 @@ Scenario track:
 The first scenario implementations are:
 
 - `scenarios/customer-crud/spring-boot-single-process`
+- `scenarios/customer-crud/spring-boot-starter-local`
 - `scenarios/customer-crud/spring-boot-spring-boot`
 - `scenarios/customer-crud/spring-boot-node`
 - `scenarios/customer-crud/spring-boot-go`
@@ -55,7 +56,11 @@ The first scenario implementations are:
 
 They boot web/store/audit services and expose clear runtime diagnostics. The
 single-process topology gives a successful CRUD path through a local runtime
-store target. The cross-process web-to-store path is runtime-only and uses the remote runtime backend. If delivery fails, samples return explicit runtime errors instead of hiding the failure behind a REST fallback.
+store target. The starter-local topology is an experimental macOS-first proof
+where a Spring Boot starter derives local routes from `@CoAkkaHandler` methods.
+The cross-process web-to-store path is runtime-only and uses the remote runtime
+backend. If delivery fails, samples return explicit runtime errors instead of
+hiding the failure behind a REST fallback.
 
 For production-facing integration guidance, read:
 
