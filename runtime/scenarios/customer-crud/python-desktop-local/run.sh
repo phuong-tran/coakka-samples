@@ -27,21 +27,26 @@ EOF
 require_runtime_commands() {
   local python_bin="${COAKKA_PYTHON:-python3}"
   coakka_require_command "${python_bin}" "Install Python 3.11 or newer, then retry."
+  "${python_bin}" -m venv --help >/dev/null 2>&1 ||
+    coakka_die "Python venv support is required. Install the venv module for ${python_bin}, then retry."
 }
 
 with_python_env() {
   require_runtime_commands
-  local python_bin tmp_dir site_packages wheel_path status
+  local python_bin tmp_dir venv_python wheel_path status
   python_bin="${COAKKA_PYTHON:-python3}"
   tmp_dir="$(mktemp -d)"
-  site_packages="${tmp_dir}/site-packages"
+  trap "rm -rf '${tmp_dir}'" EXIT INT TERM
+  "${python_bin}" -m venv "${tmp_dir}/venv"
+  venv_python="${tmp_dir}/venv/bin/python"
   wheel_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka_v2_connector-0.1.0-py3-none-any.whl")"
-  "${python_bin}" -m pip install "${wheel_path}" --target "${site_packages}" >/dev/null
+  PIP_DISABLE_PIP_VERSION_CHECK=1 "${venv_python}" -m pip install "${wheel_path}" >/dev/null
   set +e
-  PYTHONPATH="${site_packages}" "${python_bin}" "${script_dir}/app.py" "$@"
+  "${venv_python}" "${script_dir}/app.py" "$@"
   status="$?"
   set -e
   rm -rf "${tmp_dir}"
+  trap - EXIT INT TERM
   return "${status}"
 }
 

@@ -14,6 +14,10 @@ runtime. The store has no HTTP API.
 
 ## Run
 
+`run.sh` creates a disposable Python virtual environment, installs the published
+CoAkka wheel into that environment, runs the sample, then removes the
+environment. It does not install packages into your global Python.
+
 Build/check the scenario with the headless smoke path:
 
 ```sh
