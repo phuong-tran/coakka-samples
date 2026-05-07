@@ -24,25 +24,13 @@ Default command is 'check'. Use 'app' or 'dev' to open the Tk desktop UI.
 EOF
 }
 
-require_runtime_commands() {
-  local python_bin="${COAKKA_PYTHON:-python3}"
-  coakka_require_command "${python_bin}" "Install Python 3.11 or newer, then retry."
-  "${python_bin}" -m venv --help >/dev/null 2>&1 ||
-    coakka_die "Python venv support is required. Install the venv module for ${python_bin}, then retry."
-}
-
 with_python_env() {
-  require_runtime_commands
-  local python_bin tmp_dir venv_python wheel_path status
-  python_bin="${COAKKA_PYTHON:-python3}"
+  local tmp_dir wheel_path status
   tmp_dir="$(mktemp -d)"
   trap "rm -rf '${tmp_dir}'" EXIT INT TERM
-  "${python_bin}" -m venv "${tmp_dir}/venv"
-  venv_python="${tmp_dir}/venv/bin/python"
   wheel_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka_v2_connector-0.1.0-py3-none-any.whl")"
-  PIP_DISABLE_PIP_VERSION_CHECK=1 "${venv_python}" -m pip install "${wheel_path}" >/dev/null
   set +e
-  "${venv_python}" "${script_dir}/app.py" "$@"
+  coakka_with_python_wheel_env "${wheel_path}" "${script_dir}/app.py" "$@"
   status="$?"
   set -e
   rm -rf "${tmp_dir}"
