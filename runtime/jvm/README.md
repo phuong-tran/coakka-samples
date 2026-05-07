@@ -37,7 +37,7 @@ repositories {
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.0-ge91e6bb90bba")
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.0-g22f571fd955c")
 }
 ```
 

@@ -5,8 +5,8 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/.." && pwd)"
 source "${script_dir}/sample-metadata.sh"
 
-expected_runtime_native="0.1.0+e91e6bb90bba"
-expected_runtime_jvm="0.1.0-ge91e6bb90bba"
+expected_runtime_native="0.1.0+22f571fd955c"
+expected_runtime_jvm="0.1.0-g22f571fd955c"
 expected_logger_native="0.1.0+ba2a66d98eb5"
 
 required_rows=(

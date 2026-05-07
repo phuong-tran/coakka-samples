@@ -45,11 +45,11 @@ COAKKA_ARTIFACT_ROWS=(
   "logger Node package|logger/node/releases/0.1.0+ba2a66d98eb5/coakka-logger-node-0.1.0.tgz"
   "logger Go package|logger/go/releases/0.1.0+ba2a66d98eb5/coakka-logger-go-0.1.0.tar.gz"
   "logger Native package|logger/native/releases/0.1.0+ba2a66d98eb5/coakka-logger-native-0.1.0.tar.gz"
-  "runtime JVM jar|runtime/jvm/releases/0.1.0+e91e6bb90bba/coakka-jvm-native-runtime-v2-0.1.0-ge91e6bb90bba.jar"
-  "runtime Python wheel|runtime/python/releases/0.1.0+e91e6bb90bba/coakka_v2_connector-0.1.0-py3-none-any.whl"
-  "runtime Node package|runtime/node/releases/0.1.0+e91e6bb90bba/coakka-v2-connector-node-0.1.0.tgz"
-  "runtime Go package|runtime/go/releases/0.1.0+e91e6bb90bba/coakka-v2-connector-go-0.1.0.tar.gz"
-  "runtime Native package|runtime/native/releases/0.1.0+e91e6bb90bba/coakka-runtime-native-v2-0.1.0.tar.gz"
+  "runtime JVM jar|runtime/jvm/releases/0.1.0+22f571fd955c/coakka-jvm-native-runtime-v2-0.1.0-g22f571fd955c.jar"
+  "runtime Python wheel|runtime/python/releases/0.1.0+22f571fd955c/coakka_v2_connector-0.1.0-py3-none-any.whl"
+  "runtime Node package|runtime/node/releases/0.1.0+22f571fd955c/coakka-v2-connector-node-0.1.0.tgz"
+  "runtime Go package|runtime/go/releases/0.1.0+22f571fd955c/coakka-v2-connector-go-0.1.0.tar.gz"
+  "runtime Native package|runtime/native/releases/0.1.0+22f571fd955c/coakka-runtime-native-v2-0.1.0.tar.gz"
 )
 
 coakka_default_publish_root() {
