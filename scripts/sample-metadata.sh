@@ -21,6 +21,7 @@ COAKKA_SAMPLE_ROWS=(
   "runtime|jvm|java-deadletter|Observe a runtime deadletter from Java 8 listener API"
   "runtime|python|basic|Run one local request/reply echo from Python"
   "runtime|python|deadletter|Verify a missing Python route returns a matched deadletter"
+  "runtime|python|hot-reload|Apply route snapshots and reject stale/invalid generations from Python"
   "runtime|node|basic|Run one local request/reply echo from Node.js"
   "runtime|node|deadletter|Verify a missing Node.js route returns a matched deadletter"
   "runtime|go|basic|Run one local request/reply echo from Go"

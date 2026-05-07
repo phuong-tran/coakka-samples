@@ -22,6 +22,9 @@ bash "${script_dir}/python/basic/run.sh"
 echo "[runtime/run-all] Python deadletter"
 bash "${script_dir}/python/deadletter/run.sh"
 
+echo "[runtime/run-all] Python hot reload"
+bash "${script_dir}/python/hot-reload/run.sh"
+
 echo "[runtime/run-all] Node basic"
 bash "${script_dir}/node/basic/run.sh"
 

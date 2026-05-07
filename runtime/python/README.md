@@ -8,7 +8,12 @@ wheel includes the native runtime for supported platforms.
 ```sh
 bash run.sh runtime python basic
 bash run.sh runtime python deadletter
+bash run.sh runtime python hot-reload
 ```
+
+The Python samples run from disposable virtual environments. They install the
+published wheel into a temporary venv, run the sample, and remove the venv on
+exit so the user's global Python installation is not modified.
 
 ## Integration Recipe
 
@@ -77,4 +82,6 @@ Use the context manager or call `close()` during application shutdown.
 - Keep queue sizes bounded and monitor deadletter counters.
 - Treat `DeadletterError` as a first-class route/delivery result.
 - Increment `generation` when applying a new route table.
+- Rejecting stale or invalid route snapshots should remain visible through
+  control rejection counters and unchanged active generation.
 - Customer scenarios keep inter-service business traffic runtime-only and avoid a store REST fallback.

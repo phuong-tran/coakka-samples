@@ -34,7 +34,7 @@ Current samples:
 | Language | Sample | Artifact | Behavior |
 | --- | --- | --- | --- |
 | JVM | `jvm/basic`, `jvm/deadletter`, `jvm/java-deadletter` | published JVM runtime jar | echo and Kotlin/Java route-miss deadletter observation |
-| Python | `python/basic`, `python/deadletter` | published Python wheel | echo and route-miss deadletter |
+| Python | `python/basic`, `python/deadletter`, `python/hot-reload` | published Python wheel | echo, route-miss deadletter, and route snapshot hot reload |
 | Node.js | `node/basic`, `node/deadletter` | published Node package | echo and route-miss deadletter |
 | Go | `go/basic`, `go/deadletter` | published Go source package | echo and route-miss deadletter |
 | Native C/C++ | `native/basic` | published native C/C++ archive | route snapshot and route-miss deadletter |
