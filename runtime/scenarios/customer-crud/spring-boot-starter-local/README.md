@@ -21,7 +21,7 @@ Remote/Kubernetes mode should wait until the local API shape is boring.
 The sample consumes the published prototype starter artifact:
 
 ```kotlin
-implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-g90d825857466")
+implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-gc64fb841f019")
 ```
 
 That starter depends on the shared runtime JVM artifact
