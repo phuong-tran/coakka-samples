@@ -25,18 +25,20 @@ EOF
 }
 
 require_runtime_commands() {
-  coakka_require_command python3 "Install Python 3.11 or newer, then retry."
+  local python_bin="${COAKKA_PYTHON:-python3}"
+  coakka_require_command "${python_bin}" "Install Python 3.11 or newer, then retry."
 }
 
 with_python_env() {
   require_runtime_commands
-  local tmp_dir site_packages wheel_path status
+  local python_bin tmp_dir site_packages wheel_path status
+  python_bin="${COAKKA_PYTHON:-python3}"
   tmp_dir="$(mktemp -d)"
   site_packages="${tmp_dir}/site-packages"
   wheel_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka_v2_connector-0.1.0-py3-none-any.whl")"
-  python3 -m pip install "${wheel_path}" --target "${site_packages}" >/dev/null
+  "${python_bin}" -m pip install "${wheel_path}" --target "${site_packages}" >/dev/null
   set +e
-  PYTHONPATH="${site_packages}" python3 "${script_dir}/app.py" "$@"
+  PYTHONPATH="${site_packages}" "${python_bin}" "${script_dir}/app.py" "$@"
   status="$?"
   set -e
   rm -rf "${tmp_dir}"

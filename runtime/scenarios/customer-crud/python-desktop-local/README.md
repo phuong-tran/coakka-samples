@@ -26,6 +26,15 @@ Open the desktop UI:
 bash run.sh app
 ```
 
+The desktop UI requires Python Tk support. If your default `python3` does not
+include `_tkinter`, install or select a Python build that includes Tk and run:
+
+```sh
+COAKKA_PYTHON=/path/to/python-with-tk bash run.sh app
+```
+
+The headless smoke path does not require Tk.
+
 Print the smoke output:
 
 ```sh

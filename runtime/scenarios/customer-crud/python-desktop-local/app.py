@@ -56,14 +56,26 @@ ttk: Any = None
 messagebox: Any = None
 
 
+class TkUnavailableError(RuntimeError):
+    pass
+
+
 def load_tk() -> None:
     global messagebox, tk, ttk
     if tk is not None:
         return
 
-    import tkinter as tk_module
-    from tkinter import messagebox as messagebox_module
-    from tkinter import ttk as ttk_module
+    try:
+        import tkinter as tk_module
+        from tkinter import messagebox as messagebox_module
+        from tkinter import ttk as ttk_module
+    except ImportError as exc:
+        raise TkUnavailableError(
+            "Python Tk support is not available in this interpreter. "
+            "The headless smoke path still works with 'bash run.sh smoke'. "
+            "To open the desktop UI, install a Python build with Tk support "
+            "or set COAKKA_PYTHON=/path/to/python-with-tk before running 'bash run.sh app'."
+        ) from exc
 
     tk = tk_module
     ttk = ttk_module
@@ -626,9 +638,18 @@ def main() -> None:
         run_smoke()
         return
 
+    try:
+        load_tk()
+    except TkUnavailableError as exc:
+        raise SystemExit(f"coakka_python_desktop_tk_unavailable: {exc}") from exc
+
     runtime = CustomerDesktopRuntime()
-    app = CustomerDesktopApp(runtime)
-    app.run()
+    try:
+        app = CustomerDesktopApp(runtime)
+        app.run()
+    except Exception:
+        runtime.close()
+        raise
 
 
 if __name__ == "__main__":
