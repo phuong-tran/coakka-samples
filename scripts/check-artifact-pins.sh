@@ -7,6 +7,7 @@ source "${script_dir}/sample-metadata.sh"
 
 expected_runtime_native="0.1.0+22f571fd955c"
 expected_runtime_jvm="0.1.0-g22f571fd955c"
+expected_spring_starter="0.1.0-ge2b402e"
 expected_logger_native="0.1.0+ba2a66d98eb5"
 
 required_rows=(
@@ -20,6 +21,7 @@ required_rows=(
   "runtime Node package|runtime/node/releases/${expected_runtime_native}/coakka-v2-connector-node-0.1.0.tgz"
   "runtime Go package|runtime/go/releases/${expected_runtime_native}/coakka-v2-connector-go-0.1.0.tar.gz"
   "runtime Native package|runtime/native/releases/${expected_runtime_native}/coakka-runtime-native-v2-0.1.0.tar.gz"
+  "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/${expected_spring_starter}/coakka-spring-boot-starter-${expected_spring_starter}.jar"
 )
 
 stale_patterns=(
