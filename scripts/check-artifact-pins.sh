@@ -6,8 +6,8 @@ repo_root="$(cd "${script_dir}/.." && pwd)"
 source "${script_dir}/sample-metadata.sh"
 
 expected_runtime_native="0.1.0+22f571fd955c"
-expected_runtime_jvm="0.1.0-g22f571fd955c"
-expected_spring_starter="0.1.0-gc64fb841f019"
+expected_runtime_jvm="0.1.1-g22f571fd955c"
+expected_spring_starter="0.1.0-g432bd75d3e4b"
 expected_logger_native="0.1.0+ba2a66d98eb5"
 
 required_rows=(
