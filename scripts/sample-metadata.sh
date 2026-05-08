@@ -51,6 +51,9 @@ COAKKA_ARTIFACT_ROWS=(
   "logger Node package|logger/node/releases/0.1.0+ba2a66d98eb5/coakka-logger-node-0.1.0.tgz"
   "logger Go package|logger/go/releases/0.1.0+ba2a66d98eb5/coakka-logger-go-0.1.0.tar.gz"
   "logger Native package|logger/native/releases/0.1.0+ba2a66d98eb5/coakka-logger-native-0.1.0.tar.gz"
+)
+
+COAKKA_PAUSED_ARTIFACT_ROWS=(
   "runtime JVM jar|runtime/jvm/releases/0.1.0+22f571fd955c/coakka-jvm-native-runtime-v2-0.1.1-g22f571fd955c.jar"
   "runtime Python wheel|runtime/python/releases/0.1.0+22f571fd955c/coakka_v2_connector-0.1.0-py3-none-any.whl"
   "runtime Node package|runtime/node/releases/0.1.0+22f571fd955c/coakka-v2-connector-node-0.1.0.tgz"
@@ -63,7 +66,7 @@ COAKKA_ARTIFACT_ROWS=(
 
 coakka_default_publish_root() {
   local repo_root="$1"
-  printf '%s\n' "${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
+  printf '%s\n' "${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish-public}"
 }
 
 coakka_print_samples() {
@@ -71,7 +74,7 @@ coakka_print_samples() {
 Recommended first runs:
   bash run.sh
   bash run.sh logger basic
-  bash run.sh runtime basic
+  bash run.sh logger/python/basic
 
 Available samples:
 EOF
@@ -79,7 +82,11 @@ EOF
   local row lane language sample summary
   for row in "${COAKKA_SAMPLE_ROWS[@]}"; do
     IFS='|' read -r lane language sample summary <<<"${row}"
-    printf '  %-31s %s\n' "${lane}/${language}/${sample}" "${summary}"
+    if [[ "${lane}" == "runtime" ]]; then
+      printf '  %-31s %s (paused until runtime artifacts are republished)\n' "${lane}/${language}/${sample}" "${summary}"
+    else
+      printf '  %-31s %s\n' "${lane}/${language}/${sample}" "${summary}"
+    fi
   done
 
   cat <<'EOF'
@@ -94,21 +101,14 @@ coakka_print_scenarios() {
   local row track topology summary
   for row in "${COAKKA_SCENARIO_ROWS[@]}"; do
     IFS='|' read -r track topology summary <<<"${row}"
-    printf '  %-55s %s\n' "runtime/scenarios/${track}/${topology}" "${summary}"
+    printf '  %-55s %s (paused until runtime artifacts are republished)\n' "runtime/scenarios/${track}/${topology}" "${summary}"
   done
 
   cat <<'EOF'
 
 Scenario commands:
   bash run.sh scenarios
-  bash run.sh scenarios check
-  bash run.sh scenario customer-crud spring-boot-single-process dev
-  bash run.sh scenario customer-crud spring-boot-starter-local dev
-  bash run.sh scenario customer-crud quarkus-local dev
-  bash run.sh scenario customer-crud kotlin-desktop-local app
-  bash run.sh scenario customer-crud python-desktop-local app
-  bash run.sh scenario customer-crud spring-boot-csharp check
-  bash run.sh scenario customer-crud spring-boot-nodes check
-  bash run.sh runtime/scenarios/customer-crud/spring-boot-go check
+  COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh scenarios check
+  COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh scenario customer-crud spring-boot-single-process dev
 EOF
 }

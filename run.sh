@@ -27,19 +27,14 @@ Usage:
 
 Examples:
   bash run.sh
-  bash run.sh runtime basic
   bash run.sh logger basic
   bash run.sh logger/python/pressure
-  bash run.sh runtime node basic
-  bash run.sh runtime/go/deadletter
   bash run.sh scenarios
   bash run.sh scenarios check
-  bash run.sh scenario customer-crud spring-boot-go check
-  bash run.sh runtime/scenarios/customer-crud/spring-boot-node smoke
 
 Lanes:
   logger
-  runtime
+  runtime (paused until public runtime artifacts are republished)
 
 Logger languages:
   jvm
@@ -66,6 +61,9 @@ print_samples() {
 run_sample_path() {
   local sample_path="$1"
   shift || true
+  if [[ "${sample_path}" == runtime/* && "${COAKKA_ALLOW_PAUSED_RUNTIME:-0}" != "1" ]]; then
+    coakka_die "Runtime artifact-backed samples are paused until the public runtime JVM, language, Spring Boot, and Quarkus packages are republished. Set COAKKA_ALLOW_PAUSED_RUNTIME=1 only when testing a local private artifact set."
+  fi
   local sample_script="${script_dir}/${sample_path}/run.sh"
   coakka_require_file "${sample_script}" "Use 'bash run.sh list' to see available samples."
   coakka_note "running ${sample_path}"
@@ -76,9 +74,6 @@ run_quickstart() {
   echo "coakka-samples quickstart"
   echo
   bash "${script_dir}/scripts/doctor.sh"
-  echo
-  echo "[quickstart] runtime jvm basic"
-  run_sample_path "runtime/jvm/basic"
   echo
   echo "[quickstart] logger jvm basic"
   run_sample_path "logger/jvm/basic"
@@ -147,7 +142,6 @@ case "$1" in
     ;;
   all)
     bash "${script_dir}/logger/run-all.sh"
-    bash "${script_dir}/runtime/run-all.sh"
     exit 0
     ;;
   logger)

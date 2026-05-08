@@ -5,10 +5,6 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/.." && pwd)"
 source "${script_dir}/sample-metadata.sh"
 
-expected_runtime_native="0.1.0+22f571fd955c"
-expected_runtime_jvm="0.1.1-g22f571fd955c"
-expected_runtime_csharp="0.1.1"
-expected_spring_starter="0.1.0-g432bd75d3e4b"
 expected_logger_native="0.1.0+ba2a66d98eb5"
 
 required_rows=(
@@ -17,14 +13,6 @@ required_rows=(
   "logger Node package|logger/node/releases/${expected_logger_native}/coakka-logger-node-0.1.0.tgz"
   "logger Go package|logger/go/releases/${expected_logger_native}/coakka-logger-go-0.1.0.tar.gz"
   "logger Native package|logger/native/releases/${expected_logger_native}/coakka-logger-native-0.1.0.tar.gz"
-  "runtime JVM jar|runtime/jvm/releases/${expected_runtime_native}/coakka-jvm-native-runtime-v2-${expected_runtime_jvm}.jar"
-  "runtime Python wheel|runtime/python/releases/${expected_runtime_native}/coakka_v2_connector-0.1.0-py3-none-any.whl"
-  "runtime Node package|runtime/node/releases/${expected_runtime_native}/coakka-v2-connector-node-0.1.0.tgz"
-  "runtime Go package|runtime/go/releases/${expected_runtime_native}/coakka-v2-connector-go-0.1.0.tar.gz"
-  "runtime C# package|runtime/csharp/releases/${expected_runtime_native}/CoAkka.Runtime.${expected_runtime_csharp}.nupkg"
-  "runtime Rust package|runtime/rust/releases/${expected_runtime_native}/coakka-runtime-rs-0.1.0-spike.tar.gz"
-  "runtime Native package|runtime/native/releases/${expected_runtime_native}/coakka-runtime-native-v2-0.1.0.tar.gz"
-  "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/${expected_spring_starter}/coakka-spring-boot-starter-${expected_spring_starter}.jar"
 )
 
 stale_patterns=(
@@ -120,4 +108,4 @@ check_stale_patterns
 check_local_artifacts
 check_public_artifacts
 
-printf '[ok] artifact pins are current\n'
+printf '[ok] artifact pins match the current public publish surface\n'

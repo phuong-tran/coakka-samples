@@ -5,11 +5,11 @@
 Public samples for the CoAkka runtime v2 and logger integration shape.
 
 This repository is intentionally separate from the private source workspaces.
-The public artifact channel is currently paused while package contents are
-reviewed and republished. Until that channel reopens, this repository is the
-public sample surface: examples, expected output shapes, script entrypoints,
-and integration notes. Artifact-backed runs require an internal or local
-publish checkout that contains the pinned packages.
+The current public artifact surface exposes logger packages and the sanitized
+direct runtime C ABI. Runtime JVM, language connector, Spring Boot, and Quarkus
+packages are paused until they are rebuilt and republished against that
+sanitized surface. Until then, runtime examples remain as sample surface and
+integration notes, while public quickstart/checks run the logger lane.
 
 ## Table of Contents
 
@@ -352,7 +352,7 @@ is actually useful.
 
 ### After: Local Runtime Capability
 
-Spring Boot uses the published starter:
+Spring Boot uses the starter when the runtime package lane is republished:
 
 ```kotlin
 implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-g432bd75d3e4b")
@@ -385,7 +385,8 @@ fun create(@RequestBody request: CustomerDraft): MutationResponse {
 }
 ```
 
-Quarkus follows the same shape through the published extension:
+Quarkus follows the same shape through the extension when that package lane is
+republished:
 
 ```kotlin
 implementation("coakka.quarkus:coakka-quarkus-extension:0.1.0-g26ee0819dc3d")
@@ -442,18 +443,14 @@ without requiring the whole application to be rewritten.
 
 ## Quick Start
 
-Run the default quickstart from the repository root after pointing the samples
-at a local publish checkout:
+Run the default quickstart from the repository root:
 
 ```sh
-COAKKA_PUBLISH_ROOT=/path/to/coakka-publish \
-COAKKA_PUBLISH_MAVEN_LOCAL=/path/to/coakka-publish/maven \
 bash run.sh
 ```
 
-This checks the local toolchain and runs two small JVM samples:
+This checks the local toolchain and runs the smallest public-ready JVM sample:
 
-- `runtime basic`
 - `logger basic`
 
 Check what your machine can run without launching a sample:
@@ -471,31 +468,25 @@ bash run.sh list
 Run one artifact-backed sample from the repository root:
 
 ```sh
-bash run.sh runtime basic
 bash run.sh logger basic
-bash run.sh runtime python basic
-bash run.sh runtime csharp basic
-bash run.sh runtime rust basic
 bash run.sh logger node basic
 bash run.sh logger native basic
 ```
 
-For a C# CRUD reader, start with
-[C# runtime samples](runtime/csharp/README.md). That page shows the internal
-HTTP boundary CoAkka is meant to remove, then runs the published NuGet package
-through a local handler, request/reply call, and matched deadletter.
+Runtime samples are paused for public artifact-backed execution. They can still
+be read as integration examples or run with a local private artifact set by
+setting `COAKKA_ALLOW_PAUSED_RUNTIME=1`.
 
 Run from inside a sample directory:
 
 ```sh
-cd runtime/jvm/basic
+cd logger/jvm/basic
 bash run.sh
 ```
 
 Run every sample in one lane:
 
 ```sh
-bash run.sh runtime
 bash run.sh logger
 ```
 
@@ -508,16 +499,14 @@ bash run.sh scenarios
 Check that every scenario can build or prepare its services:
 
 ```sh
-bash run.sh scenarios check
+COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh scenarios check
 ```
 
 Run a scenario command from the repository root:
 
 ```sh
-bash run.sh scenario customer-crud spring-boot-nodes check
-bash run.sh runtime/scenarios/customer-crud/spring-boot-node
-bash run.sh runtime/scenarios/customer-crud/spring-boot-csharp check
-bash run.sh runtime/scenarios/customer-crud/spring-boot-node smoke
+COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh scenario customer-crud spring-boot-nodes check
+COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime/scenarios/customer-crud/spring-boot-node smoke
 ```
 
 The scripts create temporary install/build directories for Python, Node.js, Go,
@@ -525,8 +514,8 @@ C#, and native C/C++ package examples. JVM samples resolve artifacts through a
 Maven repository; package lanes use their ecosystem or native package archives.
 
 If a command is missing, run `bash run.sh doctor`. It reports which language
-lane is affected. While the public artifact channel is paused, use a local
-publish checkout for artifact-backed commands.
+lane is affected. Use a local private publish checkout only when validating the
+paused runtime package lanes.
 
 ## Requirements
 
@@ -671,72 +660,69 @@ logger/
 
 ## Artifact Source
 
-Artifact-backed runs are retained for internal/local validation, but public
-artifact downloads are paused while package contents are reviewed and
-republished. Use a local publish checkout when running samples that install a
-runtime or logger package.
+The current public publish surface supports logger package downloads and the
+sanitized direct runtime C ABI. Runtime JVM, language connector, Spring Boot,
+and Quarkus packages are retained in the samples as paused local validation
+targets until they are rebuilt and republished.
 
-JVM runtime samples use a Maven repository from that local publish checkout:
+Logger JVM samples use the Maven repository from the public publish checkout:
 
 ```kotlin
 repositories {
     mavenCentral()
     maven {
-        url = uri("/path/to/coakka-publish/maven")
+        url = uri("/path/to/coakka-publish-public/maven")
     }
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-g22f571fd955c")
     implementation("coakka.logger:coakka-jvm-native-logger:0.1.0-gba2a66d98eb5")
-    implementation("coakka.quarkus:coakka-quarkus-extension:0.1.0-g26ee0819dc3d")
 }
 ```
 
-For local development, the root Gradle build checks a sibling `coakka-publish`
-Maven directory first:
+For local development, the root Gradle build checks a sibling
+`coakka-publish-public` Maven directory first:
 
 ```text
 workspace-root/
-  coakka-publish/maven/
-  coakka-samples/
+  coakka-publish-public/maven/
+  coakka-samples-public/
 ```
 
 Override the local Maven repository path with:
 
 ```sh
-COAKKA_PUBLISH_MAVEN_LOCAL=/path/to/coakka-publish/maven bash run.sh runtime
+COAKKA_PUBLISH_MAVEN_LOCAL=/path/to/coakka-publish-public/maven bash run.sh logger
 ```
 
 Python, Node.js, Go, C#, native C/C++, and non-Maven package lanes first look
-for a sibling `coakka-publish` checkout. They can still be pointed at another
-package source for internal validation:
+for a sibling `coakka-publish-public` checkout. Paused runtime lanes can still
+be pointed at another package source for internal validation:
 
 ```sh
-COAKKA_PUBLISH_ROOT=/path/to/coakka-publish bash run.sh runtime
+COAKKA_PUBLISH_ROOT=/path/to/coakka-publish-public bash run.sh logger
+COAKKA_ALLOW_PAUSED_RUNTIME=1 COAKKA_PUBLISH_ROOT=/path/to/private-publish bash run.sh runtime
 ```
 
-Retained local artifact pins:
+Current public artifact pins:
 
 | Lane | Release |
 | --- | --- |
-| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-g22f571fd955c` |
 | Logger JVM | `coakka.logger:coakka-jvm-native-logger:0.1.0-gba2a66d98eb5` |
-| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.1.0-g26ee0819dc3d` |
-| Runtime Python/Node/Go/C#/Rust/Native | `0.1.0+22f571fd955c` |
 | Logger | `0.1.0+ba2a66d98eb5` |
 
-These pins document the package set the samples were last validated against.
-Before reopening public artifact downloads, the package channel should provide
-checksums or signatures for downloaded archives.
+Paused runtime pins are kept in `scripts/sample-metadata.sh` under
+`COAKKA_PAUSED_ARTIFACT_ROWS` so they do not count as public-required
+artifacts.
 
 ## Direct Runs
 
-Run the smallest JVM runtime v2 sample directly through Gradle:
+Runtime direct runs are paused for the public artifact set. The expected output
+below documents the retained sample behavior for local private validation:
 
 ```sh
-./gradlew :runtime:jvm:basic:run
-./gradlew :runtime:jvm:java-basic:run
+COAKKA_ALLOW_PAUSED_RUNTIME=1 ./gradlew :runtime:jvm:basic:run
+COAKKA_ALLOW_PAUSED_RUNTIME=1 ./gradlew :runtime:jvm:java-basic:run
 ```
 
 Expected output shape:
@@ -759,19 +745,19 @@ Run every runtime v2 sample across JVM, Python, Node.js, Go, C#, and native
 C/C++:
 
 ```sh
-bash run.sh runtime
+COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime
 ```
 
 Run the C# runtime package smoke directly:
 
 ```sh
-bash run.sh runtime csharp basic
+COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime csharp basic
 ```
 
 Run the native C/C++ runtime v2 sample directly:
 
 ```sh
-bash run.sh runtime native basic
+COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime native basic
 ```
 
 Expected output shape:
@@ -786,7 +772,7 @@ coakka_runtime_stats generation=1 routes=1 routeMisses=1 deadletters=1 language=
 Run the native runtime pressure sample directly:
 
 ```sh
-bash run.sh runtime native pressure
+COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime native pressure
 ```
 
 Expected output shape:
@@ -847,15 +833,15 @@ coakka_logger_stats emitted=2 delivered=2 dropped=6
 Check the customer scenario services without keeping servers running:
 
 ```sh
-bash run.sh scenarios check
+COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh scenarios check
 ```
 
 Run one scenario check directly:
 
 ```sh
-bash run.sh runtime/scenarios/customer-crud/spring-boot-spring-boot
-bash run.sh runtime/scenarios/customer-crud/kotlin-desktop-local smoke
-bash run.sh runtime/scenarios/customer-crud/python-desktop-local smoke
+COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime/scenarios/customer-crud/spring-boot-spring-boot
+COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime/scenarios/customer-crud/kotlin-desktop-local smoke
+COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime/scenarios/customer-crud/python-desktop-local smoke
 ```
 
 The default command for each scenario is `check`, so opening a scenario
@@ -870,8 +856,7 @@ fallback.
 
 GitHub Actions currently runs a public surface check. It verifies script
 syntax, Python/Node sample syntax, sample listing, and wording guards. It does
-not download runtime or logger artifacts while the public artifact channel is
-paused.
+not run the paused runtime artifact-backed lane.
 
 ## Diagnostics
 

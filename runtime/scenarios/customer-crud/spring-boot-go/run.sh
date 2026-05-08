@@ -3,7 +3,7 @@ set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../../../.." && pwd)"
-publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
+publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish-public}"
 module_path="github.com/phuong-tran/coakka-runtime-go"
 go_artifact_rel="runtime/go/releases/0.1.0+22f571fd955c/coakka-v2-connector-go-0.1.0.tar.gz"
 web_build_task=":runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-web:bootJar"

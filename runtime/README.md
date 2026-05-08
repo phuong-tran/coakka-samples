@@ -3,6 +3,11 @@
 Runtime samples demonstrate CoAkka runtime v2 as a shared native runtime
 contract consumed through host-language connectors.
 
+Public artifact-backed runtime samples are currently paused. The public publish
+surface only exposes logger packages plus the sanitized direct runtime C ABI
+until the runtime JVM, language connector, Spring Boot, and Quarkus packages are
+rebuilt and republished against that sanitized surface.
+
 The runtime lane is not introduced as a generic framework. It starts from
 the connector-boundary problem:
 
@@ -41,13 +46,13 @@ Current samples:
 
 | Language | Sample | Artifact | Behavior |
 | --- | --- | --- | --- |
-| JVM | `jvm/basic`, `jvm/deadletter`, `jvm/java-deadletter` | published JVM runtime jar | echo and Kotlin/Java route-miss deadletter observation |
-| Python | `python/basic`, `python/deadletter`, `python/hot-reload` | published Python wheel | echo, route-miss deadletter, and route snapshot hot reload |
-| Node.js | `node/basic`, `node/deadletter` | published Node package | echo and route-miss deadletter |
-| Go | `go/basic`, `go/deadletter` | published Go source package | echo and route-miss deadletter |
-| C# | `csharp/basic` | published NuGet package | echo and route-miss deadletter |
-| Rust | `rust/basic` | published Rust spike tarball | echo and route-miss deadletter |
-| Native C/C++ | `native/basic`, `native/pressure` | published native C/C++ archive | route snapshot, route-miss deadletter, and bounded pressure counters |
+| JVM | `jvm/basic`, `jvm/deadletter`, `jvm/java-deadletter` | paused JVM runtime jar | echo and Kotlin/Java route-miss deadletter observation |
+| Python | `python/basic`, `python/deadletter`, `python/hot-reload` | paused Python wheel | echo, route-miss deadletter, and route snapshot hot reload |
+| Node.js | `node/basic`, `node/deadletter` | paused Node package | echo and route-miss deadletter |
+| Go | `go/basic`, `go/deadletter` | paused Go source package | echo and route-miss deadletter |
+| C# | `csharp/basic` | paused NuGet package | echo and route-miss deadletter |
+| Rust | `rust/basic` | paused Rust spike tarball | echo and route-miss deadletter |
+| Native C/C++ | `native/basic`, `native/pressure` | paused native C/C++ archive | route snapshot, route-miss deadletter, and bounded pressure counters |
 
 Scenario track:
 
@@ -97,7 +102,7 @@ bash run.sh scenario customer-crud spring-boot-nodes check
 Run:
 
 ```sh
-bash run.sh runtime basic
+bash run.sh logger basic
 ```
 
 Check local toolchains and artifact source:
@@ -106,10 +111,10 @@ Check local toolchains and artifact source:
 bash run.sh doctor
 ```
 
-Run every runtime sample currently available:
+Attempt the runtime lane only when validating a local private artifact set:
 
 ```sh
-bash run.sh runtime
+COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime
 ```
 
 From any leaf sample directory, run:

@@ -121,10 +121,10 @@ print_artifact_source() {
     if [[ "${missing_artifacts}" -eq 0 ]]; then
       printf '  [ok] all pinned local artifacts are present\n'
     else
-      printf '  local checkout is incomplete; samples can still download missing artifacts from public raw base\n'
+      printf '  local checkout is incomplete for the current public artifact set; samples can still download missing artifacts from public raw base\n'
     fi
   else
-    printf '  local checkout not found; samples will download artifacts when needed\n'
+    printf '  local checkout not found; logger samples will download artifacts when needed\n'
   fi
 
   printf '  public raw base: %s\n' "${raw_base}"
@@ -158,7 +158,7 @@ check_command python3 "Python samples" "Install Python 3.11 or newer."
 check_command node "Node.js samples" "Install Node.js 20 or newer."
 check_command npm "Node.js samples" "Install npm."
 check_command go "Go samples" "Install Go 1.22+ for logger or Go 1.23+ for runtime v2."
-check_command dotnet "C# runtime samples" "Install .NET SDK 10 or newer."
+check_command dotnet "paused C# runtime samples" "Install .NET SDK 10 or newer when validating runtime locally."
 check_command cmake "native C/C++ samples" "Install CMake."
 check_command cc "native C samples" "Install a C compiler."
 check_command c++ "native C++ samples" "Install a C++ compiler."
@@ -169,17 +169,22 @@ check_minimum_version java "JVM samples" 17 0
 check_minimum_version python3 "Python samples" 3 11
 check_minimum_version node "Node.js samples" 20 0
 check_minimum_version go "Go logger samples" 1 22
-check_minimum_version go "Go runtime v2 samples" 1 23
-check_minimum_version dotnet "C# runtime samples" 10 0
+check_minimum_version go "paused Go runtime v2 samples" 1 23
+check_minimum_version dotnet "paused C# runtime samples" 10 0
 
 print_artifact_source
+
+cat <<'EOF'
+
+Runtime samples:
+  Public runtime JVM, language connector, Spring Boot, and Quarkus artifacts are
+  paused until they are rebuilt against the sanitized publish surface.
+EOF
 
 printf '\nTry:\n'
 printf '  bash run.sh\n'
 printf '  bash run.sh list\n'
 printf '  bash run.sh logger basic\n'
-printf '  bash run.sh runtime basic\n'
-printf '  bash run.sh runtime csharp basic\n'
-printf '  bash run.sh scenarios check\n'
+printf '  bash run.sh logger node basic\n'
 
 exit 0

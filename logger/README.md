@@ -27,7 +27,7 @@ From any leaf sample directory, run:
 bash run.sh
 ```
 
-If a sibling `../coakka-publish` checkout is not present, the samples download
+If a sibling `../coakka-publish-public` checkout is not present, the samples download
 the required artifacts from the public `coakka-publish` repository.
 
 The basic samples print:
