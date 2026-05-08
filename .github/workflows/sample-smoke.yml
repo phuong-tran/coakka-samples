@@ -1,0 +1,97 @@
+name: sample-smoke
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: ${{ matrix.sample_lane }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        sample_lane:
+          - logger
+          - runtime
+    env:
+      COAKKA_PUBLISH_ROOT: /tmp/coakka-publish-not-present
+      COAKKA_PUBLISH_RAW_BASE: https://raw.githubusercontent.com/phuong-tran/coakka-publish/main
+    steps:
+      - name: Check out samples
+        uses: actions/checkout@v4
+
+      - name: Install Linux native dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23.x"
+          cache: false
+
+      - name: Check sample entrypoints
+        env:
+          COAKKA_DOCTOR_NETWORK: "1"
+          COAKKA_PIN_CHECK_NETWORK: "1"
+        run: |
+          bash scripts/check-artifact-pins.sh
+          bash run.sh doctor
+          bash run.sh list
+
+      - name: Run ${{ matrix.sample_lane }} samples from public artifacts
+        env:
+          SAMPLE_LANE: ${{ matrix.sample_lane }}
+        run: bash run.sh "${SAMPLE_LANE}"
+
+      - name: Build runtime customer scenario
+        if: matrix.sample_lane == 'runtime'
+        run: |
+          node --check runtime/scenarios/customer-crud/spring-boot-node/store.mjs
+          bash runtime/scenarios/customer-crud/spring-boot-starter-local/run.sh check
+          bash runtime/scenarios/customer-crud/quarkus-local/run.sh check
+          bash runtime/scenarios/customer-crud/spring-boot-nodes/run.sh check
+          bash runtime/scenarios/customer-crud/spring-boot-go/run.sh check
+          ./gradlew \
+            :runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-web:bootJar \
+            :runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-store:bootJar
+
+      - name: Smoke runtime customer scenario
+        if: matrix.sample_lane == 'runtime'
+        run: bash scripts/smoke-customer-runtime.sh
+
+      - name: Smoke Spring Boot starter local scenario
+        if: matrix.sample_lane == 'runtime'
+        run: bash scripts/smoke-spring-boot-starter-local.sh
+
+      - name: Smoke Quarkus local scenario
+        if: matrix.sample_lane == 'runtime'
+        run: bash scripts/smoke-quarkus-local.sh

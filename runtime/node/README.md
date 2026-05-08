@@ -1,0 +1,140 @@
+# Node.js Runtime Samples
+
+Node.js runtime samples consume the published `coakka-v2-connector-node`
+package tarball. The package includes the native runtime for supported
+platforms.
+
+## Run
+
+```sh
+bash run.sh runtime node basic
+bash run.sh runtime node deadletter
+```
+
+## Integration Recipe
+
+Install the package through your normal package management path. The samples
+resolve it from `coakka-publish` into a temporary workspace.
+
+Start one `RuntimeHost` per process:
+
+```js
+const startSpec = {
+  systemName: "customer-store",
+  nodeId: "customer-store-node-1",
+  queueCapacity: 128,
+  strictNoDrop: true,
+  separateDeliveredRequestLane: true,
+  generation: 1,
+  routes: [
+    {
+      target: "samples.customer.store",
+      endpoints: [{ host: "127.0.0.1", port: 19102, flags: EndpointFlag.LOCAL }],
+    },
+  ],
+};
+
+const runtime = RuntimeHost.start(startSpec);
+```
+
+Register handlers only for local targets:
+
+```js
+runtime.registerHandler("samples.customer.store", (request) =>
+  NodeRuntimeClient.makeJsonReplyFromRequestIdentity(
+    request,
+    "samples.customer.store",
+    { status: "ACCEPTED" },
+  ),
+);
+```
+
+Send typed requests with explicit timeout and operation metadata:
+
+```js
+const response = await runtime.askJson(
+  "customer-web",
+  "samples.customer.store",
+  { id: "cust-001" },
+  new PayloadIdentity("samples.customer.create.request.v1", 1, PayloadFormat.JSON),
+  5000,
+  "create_customer",
+  DeliveryHint.ROUTER_DEFAULT,
+);
+```
+
+Close the runtime host on process shutdown:
+
+```js
+process.on("SIGTERM", () => {
+  runtime.close();
+  process.exit(0);
+});
+```
+
+## Before: Internal REST
+
+The store often becomes an internal Express/Fastify endpoint created only so
+another process can call it:
+
+```js
+app.post("/internal/customers", async (req, res) => {
+  const customer = await store.create(req.body);
+  res.json(customer);
+});
+```
+
+The web/API side then forwards business work through HTTP:
+
+```js
+app.post("/api/customers", async (req, res) => {
+  const reply = await fetch("http://customer-store/internal/customers", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(req.body),
+  });
+  res.json(await reply.json());
+});
+```
+
+## After: Runtime Target
+
+With CoAkka, the store is a runtime target:
+
+```js
+runtime.registerHandler("samples.customer.store", (request) =>
+  NodeRuntimeClient.makeJsonReplyFromRequestIdentity(
+    request,
+    "samples.customer.store",
+    store.create(JSON.parse(new TextDecoder().decode(request.payload))),
+  ),
+);
+```
+
+The caller sends one typed runtime request:
+
+```js
+const response = await runtime.askJson(
+  "samples.customer.frontend",
+  "samples.customer.store",
+  command,
+  new PayloadIdentity("samples.customer.create.request.v1", 1, PayloadFormat.JSON),
+  5000,
+  "create_customer",
+  DeliveryHint.ROUTER_DEFAULT,
+);
+```
+
+The fake endpoint still pays for HTTP parsing, headers, middleware,
+status/error mapping, timeout policy, and test setup. CoAkka keeps that work as
+a runtime target with request/reply and deadletter semantics, while HTTP stays
+at the public or legacy edge. Existing code using
+`ConnectorOrchestrator.start(...)` still works as the compatibility name; new
+samples use `RuntimeHost.start(...)`.
+
+## Production Notes
+
+- Keep target names stable and payload identities versioned.
+- Use `strictNoDrop=true` while integrating to expose overload.
+- Handle `DeadletterError` explicitly.
+- Customer scenarios keep inter-service business traffic runtime-only and avoid a store REST fallback.

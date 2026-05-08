@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CoAkka Quarkus Local Customer CRUD</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; background: #f6f7f9; color: #1f2933; }
+    main { max-width: 920px; margin: 0 auto; padding: 32px 20px; }
+    header { margin-bottom: 24px; }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    p { margin: 0 0 12px; color: #52606d; }
+    section { background: white; border: 1px solid #d9e2ec; border-radius: 8px; padding: 18px; margin: 16px 0; }
+    label { display: block; font-size: 13px; font-weight: 600; margin-top: 10px; }
+    input, textarea, select { width: 100%; box-sizing: border-box; padding: 9px; border: 1px solid #bcccdc; border-radius: 6px; font: inherit; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+    button { border: 0; border-radius: 6px; background: #2563eb; color: white; padding: 10px 14px; font-weight: 700; cursor: pointer; }
+    button.secondary { background: #52606d; }
+    pre { overflow: auto; background: #102a43; color: #d9e2ec; padding: 14px; border-radius: 6px; min-height: 120px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; border-bottom: 1px solid #e4e7eb; padding: 8px; }
+    @media (max-width: 680px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Quarkus Local Customer CRUD</h1>
+    <p>HTTP stays at the Quarkus edge. Customer work goes through a local CoAkka runtime target.</p>
+  </header>
+
+  <section>
+    <div class="grid">
+      <div>
+        <label for="customer-id">ID</label>
+        <input id="customer-id" value="cust-001">
+      </div>
+      <div>
+        <label for="customer-tier">Tier</label>
+        <select id="customer-tier">
+          <option>silver</option>
+          <option>gold</option>
+          <option>platinum</option>
+        </select>
+      </div>
+      <div>
+        <label for="customer-name">Name</label>
+        <input id="customer-name" value="Ada Lovelace">
+      </div>
+      <div>
+        <label for="customer-email">Email</label>
+        <input id="customer-email" value="ada@example.com">
+      </div>
+    </div>
+    <label for="customer-notes">Notes</label>
+    <textarea id="customer-notes">quarkus local demo</textarea>
+    <div class="actions">
+      <button id="create">Create</button>
+      <button id="update" class="secondary">Update</button>
+      <button id="delete" class="secondary">Delete</button>
+      <button id="route-miss" class="secondary">Route Miss</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Customers</h2>
+    <table>
+      <thead><tr><th>ID</th><th>Name</th><th>Tier</th><th>Revision</th></tr></thead>
+      <tbody id="customers"></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Runtime</h2>
+    <pre id="runtime"></pre>
+  </section>
+</main>
+
+<script>
+const byId = id => document.getElementById(id);
+const customers = byId('customers');
+const runtime = byId('runtime');
+
+function draft() {
+  return {
+    id: byId('customer-id').value,
+    name: byId('customer-name').value,
+    email: byId('customer-email').value,
+    tier: byId('customer-tier').value,
+    notes: byId('customer-notes').value
+  };
+}
+
+async function call(url, options) {
+  const response = await fetch(url, options);
+  const body = await response.json();
+  runtime.textContent = JSON.stringify(body, null, 2);
+  await refresh();
+}
+
+async function refresh() {
+  const list = await fetch('/api/customers').then(r => r.json());
+  customers.innerHTML = list.customers.map(c =>
+    `<tr><td>${c.id}</td><td>${c.name}</td><td>${c.tier}</td><td>${c.revision}</td></tr>`
+  ).join('');
+  const info = await fetch('/api/customers/runtime').then(r => r.json());
+  runtime.textContent = JSON.stringify(info, null, 2);
+}
+
+byId('create').onclick = () => call('/api/customers', {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify(draft())
+});
+byId('update').onclick = () => {
+  const payload = draft();
+  call(`/api/customers/${encodeURIComponent(payload.id)}`, {
+    method: 'PUT',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(payload)
+  });
+};
+byId('delete').onclick = () => call(`/api/customers/${encodeURIComponent(draft().id)}`, {method: 'DELETE'});
+byId('route-miss').onclick = () => call('/api/customers/route-miss', {method: 'POST'});
+
+refresh();
+</script>
+</body>
+</html>

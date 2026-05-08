@@ -1,0 +1,20 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: customer-starter-local
+
+coakka:
+  runtime:
+    enabled: true
+    mode: local
+    system-name: customer-starter-local
+    node-id: customer-starter-local-node
+    source-target: samples.customer.frontend
+    generation: 1
+    queue-capacity: 128
+    strict-no-drop: true
+    separate-delivered-request-lane: true
+    local-endpoint-host: 127.0.0.1
+    local-endpoint-port: 19172

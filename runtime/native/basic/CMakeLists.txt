@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 3.20)
+project(CoAkkaRuntimeNativeV2BasicSample LANGUAGES C CXX)
+
+find_package(CoAkkaRuntimeNativeV2 CONFIG REQUIRED)
+
+add_executable(coakka_runtime_v2_native_c_basic main.c)
+target_link_libraries(coakka_runtime_v2_native_c_basic PRIVATE CoAkkaRuntimeNativeV2::runtime_v2)
+
+add_executable(coakka_runtime_v2_native_cpp_basic main.cpp)
+target_link_libraries(coakka_runtime_v2_native_cpp_basic PRIVATE CoAkkaRuntimeNativeV2::runtime_v2)

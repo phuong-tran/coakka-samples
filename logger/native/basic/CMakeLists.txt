@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 3.20)
+project(CoAkkaLoggerNativeBasicSample LANGUAGES C CXX)
+
+find_package(CoAkkaLoggerNative CONFIG REQUIRED)
+
+add_executable(coakka_logger_native_c_basic main.c)
+target_link_libraries(coakka_logger_native_c_basic PRIVATE CoAkkaLoggerNative::core)
+
+add_executable(coakka_logger_native_cpp_basic main.cpp)
+target_link_libraries(coakka_logger_native_cpp_basic PRIVATE CoAkkaLoggerNative::native_cpp_connector)

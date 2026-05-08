@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.20)
+project(CoAkkaRuntimeNativeV2PressureSample LANGUAGES C)
+
+find_package(CoAkkaRuntimeNativeV2 CONFIG REQUIRED)
+
+add_executable(coakka_runtime_v2_native_c_pressure main.c)
+target_link_libraries(coakka_runtime_v2_native_c_pressure PRIVATE CoAkkaRuntimeNativeV2::runtime_v2)

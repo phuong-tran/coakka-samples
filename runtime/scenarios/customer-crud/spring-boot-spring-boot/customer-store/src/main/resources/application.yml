@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: customer-store
+  main:
+    web-application-type: none
+
+sample:
+  connector:
+    system-name: customer-store
+    node-id: customer-store-node
+    local-target: samples.customer.store
+    local-host: 127.0.0.1
+    local-port: 19102
+    peer-target: samples.customer.frontend
+    peer-host: 127.0.0.1
+    peer-port: 19101
+    generation: 1

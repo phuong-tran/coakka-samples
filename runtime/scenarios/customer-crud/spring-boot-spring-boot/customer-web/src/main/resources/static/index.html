@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Web</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f7f9;
+      --panel: #ffffff;
+      --line: #d9e2e8;
+      --text: #17212b;
+      --muted: #667789;
+      --accent: #0b6f6a;
+      --danger: #a23b3b;
+      --ok: #23724d;
+      --code: #101923;
+      --codeText: #edf6ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 15px/1.45 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 22px;
+      display: grid;
+      gap: 18px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      padding: 18px 0 4px;
+    }
+    h1, h2 { margin: 0; }
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1rem; text-transform: uppercase; letter-spacing: .05em; }
+    p { margin: 4px 0 0; color: var(--muted); }
+    .badge {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 6px;
+      padding: 8px 10px;
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(360px, .9fr) minmax(460px, 1.1fr);
+      gap: 18px;
+    }
+    .stack { display: grid; gap: 18px; }
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .flow-step {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 12px;
+    }
+    .flow-step span {
+      display: block;
+      color: var(--muted);
+      font-size: .76rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .flow-step strong {
+      display: block;
+      margin-top: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: .9rem;
+    }
+    .runtime-banner {
+      border: 1px solid #d8c175;
+      border-radius: 8px;
+      background: #fff8dd;
+      color: #5f4a10;
+      padding: 14px 16px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+    }
+    .runtime-banner strong {
+      display: block;
+      color: #2e2508;
+      font-size: .98rem;
+    }
+    .runtime-banner p {
+      margin-top: 4px;
+      color: #5f4a10;
+    }
+    .runtime-banner code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-weight: 700;
+    }
+    .runtime-banner .status-pill {
+      border: 1px solid #c4ab62;
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: #fffdf4;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .runtime-banner.ready {
+      border-color: #9ac9aa;
+      background: #effaf2;
+      color: var(--ok);
+    }
+    .runtime-banner.ready strong,
+    .runtime-banner.ready p {
+      color: var(--ok);
+    }
+    .runtime-banner.ready .status-pill {
+      border-color: #9ac9aa;
+      background: #f8fff9;
+    }
+    section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    input, textarea, select {
+      width: 100%;
+      margin-top: 5px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 10px 11px;
+      color: var(--text);
+      font: inherit;
+      background: #fbfdfe;
+    }
+    textarea { min-height: 74px; resize: vertical; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    button {
+      border: 0;
+      border-radius: 6px;
+      padding: 10px 12px;
+      background: var(--accent);
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button.secondary { background: #506474; }
+    button.danger { background: var(--danger); }
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      color: var(--muted);
+      font-size: .76rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    pre {
+      margin: 0;
+      min-height: 128px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      border-radius: 6px;
+      padding: 12px;
+      background: var(--code);
+      color: var(--codeText);
+      font: .84rem/1.45 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 10px;
+      background: #fbfdfe;
+    }
+    .metric span { display: block; color: var(--muted); font-size: .76rem; }
+    .metric strong { display: block; margin-top: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .notice {
+      margin-top: 10px;
+      border: 1px solid #d8c175;
+      border-radius: 6px;
+      padding: 10px;
+      background: #fff8dd;
+      color: #5f4a10;
+      font-size: .9rem;
+    }
+    .notice.error {
+      border-color: #e4aaa2;
+      background: #fff1ef;
+      color: #7c2f27;
+    }
+    .notice.ok {
+      border-color: #9ac9aa;
+      background: #effaf2;
+      color: var(--ok);
+    }
+    .notice[hidden] { display: none; }
+    details summary {
+      cursor: pointer;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    @media (max-width: 980px) {
+      header, .layout { grid-template-columns: 1fr; display: grid; }
+      .metrics { grid-template-columns: 1fr 1fr; }
+      .flow { grid-template-columns: 1fr; }
+      .runtime-banner { grid-template-columns: 1fr; }
+      .runtime-banner .status-pill { justify-self: start; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1>Customer Web</h1>
+      <p>One browser UI, two service processes. Customer Web sends typed messages to the Store through CoAkka runtime; no REST call is used between services.</p>
+    </div>
+    <div class="badge">Browser HTTP 8081 -> runtime target samples.customer.store</div>
+  </header>
+
+  <div class="flow">
+    <div class="flow-step">
+      <span>Browser edge</span>
+      <strong>HTTP -> customer-web</strong>
+    </div>
+    <div class="flow-step">
+      <span>Service message</span>
+      <strong>customer-web -> CoAkka -> customer-store</strong>
+    </div>
+    <div class="flow-step">
+      <span>Reply</span>
+      <strong>customer-store -> CoAkka -> customer-web</strong>
+    </div>
+  </div>
+
+  <div class="runtime-banner" id="runtime-banner">
+    <div>
+      <strong>Checking runtime delivery...</strong>
+      <p>Customer operations use runtime delivery only; no store REST fallback is available.</p>
+    </div>
+    <div class="status-pill" id="runtime-banner-pill">transport: loading</div>
+  </div>
+
+  <div class="layout">
+    <div class="stack">
+      <section>
+        <h2>Customer Form</h2>
+        <form id="customer-form">
+          <label for="id">Customer ID</label>
+          <input id="id" name="id" value="cust-001">
+          <label for="name">Name</label>
+          <input id="name" name="name" value="Ada Lovelace">
+          <label for="email">Email</label>
+          <input id="email" name="email" value="ada@example.com">
+          <label for="tier">Tier</label>
+          <select id="tier" name="tier">
+            <option>silver</option>
+            <option>gold</option>
+            <option>platinum</option>
+          </select>
+          <label for="notes">Notes</label>
+          <textarea id="notes" name="notes">first cross-process customer</textarea>
+          <div class="actions">
+            <button type="submit" data-action="create">Create</button>
+            <button type="button" class="secondary" id="update-button">Update</button>
+            <button type="button" class="danger" id="delete-button">Delete</button>
+            <button type="button" class="secondary" id="route-miss-button">Route miss</button>
+          </div>
+        </form>
+      </section>
+
+      <section>
+        <h2>Last Message</h2>
+        <div class="notice" id="message-notice">No customer message has been sent yet.</div>
+        <pre id="response-box">Waiting for action...</pre>
+      </section>
+    </div>
+
+    <div class="stack">
+      <section>
+        <h2>Customers</h2>
+        <p>This table is refreshed by sending a list message to the store service.</p>
+        <p>Last list delivery: <code id="customers-delivery-mode">loading</code></p>
+        <table>
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Tier</th>
+            <th>Revision</th>
+          </tr>
+          </thead>
+          <tbody id="customers-body"></tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Runtime Summary</h2>
+        <div class="metrics" id="metrics"></div>
+      </section>
+
+      <section>
+        <details>
+          <summary>Runtime JSON</summary>
+          <pre id="runtime-box">Loading...</pre>
+        </details>
+      </section>
+    </div>
+  </div>
+</main>
+
+<script>
+  const form = document.getElementById('customer-form');
+  const responseBox = document.getElementById('response-box');
+  const customersBody = document.getElementById('customers-body');
+  const customersDeliveryMode = document.getElementById('customers-delivery-mode');
+  const runtimeBox = document.getElementById('runtime-box');
+  const metrics = document.getElementById('metrics');
+  const messageNotice = document.getElementById('message-notice');
+  const runtimeBanner = document.getElementById('runtime-banner');
+  const runtimeBannerPill = document.getElementById('runtime-banner-pill');
+
+  function formCustomer() {
+    return Object.fromEntries(new FormData(form).entries());
+  }
+
+  function show(value) {
+    responseBox.textContent = JSON.stringify(value, null, 2);
+  }
+
+  function setMessageNotice(kind, text) {
+    messageNotice.className = `notice ${kind || ''}`.trim();
+    messageNotice.textContent = text;
+  }
+
+  function metric(label, value) {
+    return `<div class="metric"><span>${label}</span><strong>${value}</strong></div>`;
+  }
+
+  function updateRuntimeBanner(runtime) {
+    runtimeBannerPill.textContent = `transport: ${runtime.connector.businessTransport || 'runtime-only'}`;
+    runtimeBanner.className = 'runtime-banner ready';
+    runtimeBanner.querySelector('strong').textContent = 'Runtime delivery is active';
+    runtimeBanner.querySelector('p').textContent =
+      'Customer operations are sent from customer-web to customer-store through CoAkka runtime message delivery.';
+  }
+
+  async function api(path, options = {}) {
+    const response = await fetch(path, options);
+    const text = await response.text();
+    const body = text ? JSON.parse(text) : null;
+    if (!response.ok) throw body || { error: response.statusText };
+    return body;
+  }
+
+  async function loadCustomers() {
+    try {
+      const result = await api('/api/customers');
+      customersDeliveryMode.textContent = result.deliveryMode || 'unknown';
+      customersBody.innerHTML = result.customers.map((customer) => `
+        <tr>
+          <td>${customer.id}</td>
+          <td>${customer.name}</td>
+          <td>${customer.email}</td>
+          <td>${customer.tier}</td>
+          <td>${customer.revision}</td>
+        </tr>
+      `).join('');
+    } catch (error) {
+      customersDeliveryMode.textContent = 'error';
+      customersBody.innerHTML = '<tr><td colspan="5">Runtime list did not complete.</td></tr>';
+      if (error.status === 'RUNTIME_DELIVERY_FAILED') {
+        setMessageNotice(
+          'error',
+          'Remote runtime transport is not available in this artifact. The list request was not sent by REST fallback.',
+        );
+      }
+    }
+  }
+
+  async function loadRuntime() {
+    try {
+      const runtime = await api('/api/customers/runtime');
+      const matchedDeadletters = runtime.clientStats.matchedDeadletters;
+      metrics.innerHTML = [
+        metric('Runtime', runtime.runtimeInfo.runtimeVersion),
+        metric('Node', runtime.runtimeConfig.nodeId),
+        metric('Routes', runtime.runtimeConfig.routeCount),
+        metric('Business transport', runtime.connector.businessTransport || 'runtime-only'),
+        metric('REST fallback', 'disabled'),
+        metric('Runtime delivered', runtime.clientStats.deliveredRequests),
+        metric('Runtime deadletters', matchedDeadletters),
+      ].join('');
+      runtimeBox.textContent = JSON.stringify(runtime, null, 2);
+      updateRuntimeBanner(runtime);
+    } catch (error) {
+      runtimeBox.textContent = JSON.stringify(error, null, 2);
+    }
+  }
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    try {
+      const result = await api('/api/customers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formCustomer()),
+      });
+      setMessageNotice('ok', 'create_customer was delivered by runtime and accepted by the store service.');
+      show(result);
+      await loadCustomers();
+      await loadRuntime();
+    } catch (error) {
+      if (error.status === 'RUNTIME_DELIVERY_FAILED') {
+        setMessageNotice('error', 'create_customer failed in runtime delivery. No store REST fallback was used.');
+      }
+      show(error);
+      await loadRuntime();
+    }
+  });
+
+  document.getElementById('update-button').addEventListener('click', async () => {
+    const customer = formCustomer();
+    try {
+      const result = await api(`/api/customers/${encodeURIComponent(customer.id)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(customer),
+      });
+      setMessageNotice('ok', 'update_customer was delivered by runtime and accepted by the store service.');
+      show(result);
+      await loadCustomers();
+      await loadRuntime();
+    } catch (error) {
+      if (error.status === 'RUNTIME_DELIVERY_FAILED') {
+        setMessageNotice('error', 'update_customer failed in runtime delivery. No store REST fallback was used.');
+      }
+      show(error);
+      await loadRuntime();
+    }
+  });
+
+  document.getElementById('delete-button').addEventListener('click', async () => {
+    const customer = formCustomer();
+    try {
+      const result = await api(`/api/customers/${encodeURIComponent(customer.id)}`, { method: 'DELETE' });
+      setMessageNotice('ok', 'delete_customer was delivered by runtime and accepted by the store service.');
+      show(result);
+      await loadCustomers();
+      await loadRuntime();
+    } catch (error) {
+      if (error.status === 'RUNTIME_DELIVERY_FAILED') {
+        setMessageNotice('error', 'delete_customer failed in runtime delivery. No store REST fallback was used.');
+      }
+      show(error);
+      await loadRuntime();
+    }
+  });
+
+  document.getElementById('route-miss-button').addEventListener('click', async () => {
+    try {
+      show(await api('/api/customers/route-miss', { method: 'POST' }));
+      await loadRuntime();
+    } catch (error) { show(error); }
+  });
+
+  loadCustomers();
+  loadRuntime();
+  setInterval(loadRuntime, 2500);
+</script>
+</body>
+</html>
