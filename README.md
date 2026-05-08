@@ -724,8 +724,9 @@ artifacts.
 
 ## Direct Runs
 
-Runtime direct runs are paused for the public artifact set. The expected output
-below documents the retained sample behavior for local private validation:
+Runtime language/framework direct runs are paused for the public artifact set.
+The expected output below documents the retained sample behavior for local
+private validation:
 
 ```sh
 COAKKA_ALLOW_PAUSED_RUNTIME=1 ./gradlew :runtime:jvm:basic:run

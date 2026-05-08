@@ -3,9 +3,9 @@
 Runtime samples demonstrate CoAkka runtime v2 as a shared native runtime
 contract consumed through host-language connectors.
 
-Public artifact-backed runtime language/framework samples are currently paused.
 The public publish surface exposes logger packages plus the sanitized native
-runtime C ABI package until the runtime JVM, language connector, Spring Boot,
+runtime C ABI package. Public artifact-backed runtime language/framework
+samples remain paused until the runtime JVM, language connector, Spring Boot,
 and Quarkus packages are rebuilt and republished against that sanitized surface.
 
 The runtime lane is not introduced as a generic framework. It starts from
