@@ -51,6 +51,7 @@ COAKKA_ARTIFACT_ROWS=(
   "logger Node package|logger/node/releases/0.1.0+ba2a66d98eb5/coakka-logger-node-0.1.0.tgz"
   "logger Go package|logger/go/releases/0.1.0+ba2a66d98eb5/coakka-logger-go-0.1.0.tar.gz"
   "logger Native package|logger/native/releases/0.1.0+ba2a66d98eb5/coakka-logger-native-0.1.0.tar.gz"
+  "runtime Native package|runtime/native/releases/0.1.0+63c346e/coakka-runtime-native-v2-0.1.0.tar.gz"
 )
 
 COAKKA_PAUSED_ARTIFACT_ROWS=(
@@ -60,7 +61,6 @@ COAKKA_PAUSED_ARTIFACT_ROWS=(
   "runtime Go package|runtime/go/releases/0.1.0+22f571fd955c/coakka-v2-connector-go-0.1.0.tar.gz"
   "runtime C# package|runtime/csharp/releases/0.1.0+22f571fd955c/CoAkka.Runtime.0.1.1.nupkg"
   "runtime Rust package|runtime/rust/releases/0.1.0+22f571fd955c/coakka-runtime-rs-0.1.0-spike.tar.gz"
-  "runtime Native package|runtime/native/releases/0.1.0+22f571fd955c/coakka-runtime-native-v2-0.1.0.tar.gz"
   "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/0.1.0-g432bd75d3e4b/coakka-spring-boot-starter-0.1.0-g432bd75d3e4b.jar"
 )
 
@@ -82,8 +82,8 @@ EOF
   local row lane language sample summary
   for row in "${COAKKA_SAMPLE_ROWS[@]}"; do
     IFS='|' read -r lane language sample summary <<<"${row}"
-    if [[ "${lane}" == "runtime" ]]; then
-      printf '  %-31s %s (paused until runtime artifacts are republished)\n' "${lane}/${language}/${sample}" "${summary}"
+    if [[ "${lane}" == "runtime" && "${language}" != "native" ]]; then
+      printf '  %-31s %s (paused until language runtime artifacts are republished)\n' "${lane}/${language}/${sample}" "${summary}"
     else
       printf '  %-31s %s\n' "${lane}/${language}/${sample}" "${summary}"
     fi

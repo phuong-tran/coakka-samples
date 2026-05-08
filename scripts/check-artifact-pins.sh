@@ -13,6 +13,7 @@ required_rows=(
   "logger Node package|logger/node/releases/${expected_logger_native}/coakka-logger-node-0.1.0.tgz"
   "logger Go package|logger/go/releases/${expected_logger_native}/coakka-logger-go-0.1.0.tar.gz"
   "logger Native package|logger/native/releases/${expected_logger_native}/coakka-logger-native-0.1.0.tar.gz"
+  "runtime Native package|runtime/native/releases/0.1.0+63c346e/coakka-runtime-native-v2-0.1.0.tar.gz"
 )
 
 stale_patterns=(

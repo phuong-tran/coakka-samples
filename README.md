@@ -6,10 +6,10 @@ Public samples for the CoAkka runtime v2 and logger integration shape.
 
 This repository is intentionally separate from the private source workspaces.
 The current public artifact surface exposes logger packages and the sanitized
-direct runtime C ABI. Runtime JVM, language connector, Spring Boot, and Quarkus
-packages are paused until they are rebuilt and republished against that
-sanitized surface. Until then, runtime examples remain as sample surface and
-integration notes, while public quickstart/checks run the logger lane.
+native runtime C ABI package. Runtime JVM, language connector, Spring Boot, and
+Quarkus packages are paused until they are rebuilt and republished against that
+sanitized surface. Until then, public runtime execution is limited to native
+C/C++ samples.
 
 ## Table of Contents
 
@@ -473,9 +473,15 @@ bash run.sh logger node basic
 bash run.sh logger native basic
 ```
 
-Runtime samples are paused for public artifact-backed execution. They can still
-be read as integration examples or run with a local private artifact set by
-setting `COAKKA_ALLOW_PAUSED_RUNTIME=1`.
+Runtime language/framework samples are paused for public artifact-backed
+execution. They can still be read as integration examples or run with a local
+private artifact set by setting `COAKKA_ALLOW_PAUSED_RUNTIME=1`. Native C/C++
+runtime samples are available from the public native package:
+
+```sh
+bash run.sh runtime native basic
+bash run.sh runtime native pressure
+```
 
 Run from inside a sample directory:
 
@@ -661,9 +667,9 @@ logger/
 ## Artifact Source
 
 The current public publish surface supports logger package downloads and the
-sanitized direct runtime C ABI. Runtime JVM, language connector, Spring Boot,
-and Quarkus packages are retained in the samples as paused local validation
-targets until they are rebuilt and republished.
+sanitized native runtime C ABI package. Runtime JVM, language connector, Spring
+Boot, and Quarkus packages are retained in the samples as paused local
+validation targets until they are rebuilt and republished.
 
 Logger JVM samples use the Maven repository from the public publish checkout:
 
@@ -701,6 +707,7 @@ be pointed at another package source for internal validation:
 
 ```sh
 COAKKA_PUBLISH_ROOT=/path/to/coakka-publish-public bash run.sh logger
+COAKKA_PUBLISH_ROOT=/path/to/coakka-publish-public bash run.sh runtime native basic
 COAKKA_ALLOW_PAUSED_RUNTIME=1 COAKKA_PUBLISH_ROOT=/path/to/private-publish bash run.sh runtime
 ```
 
@@ -741,12 +748,14 @@ coakka_runtime_response payload={"echo":"hello-runtime-java"}
 coakka_runtime_stats generation=1 routes=1 delivered=1 matchedResponses=1 language=java
 ```
 
-Run every runtime v2 sample across JVM, Python, Node.js, Go, C#, and native
-C/C++:
+Run the currently public runtime v2 samples:
 
 ```sh
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime
+bash run.sh runtime
 ```
+
+With a private artifact set, `COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime`
+also runs the paused JVM, Python, Node.js, Go, and C# lanes.
 
 Run the C# runtime package smoke directly:
 
@@ -757,7 +766,7 @@ COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime csharp basic
 Run the native C/C++ runtime v2 sample directly:
 
 ```sh
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime native basic
+bash run.sh runtime native basic
 ```
 
 Expected output shape:
@@ -772,7 +781,7 @@ coakka_runtime_stats generation=1 routes=1 routeMisses=1 deadletters=1 language=
 Run the native runtime pressure sample directly:
 
 ```sh
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime native pressure
+bash run.sh runtime native pressure
 ```
 
 Expected output shape:

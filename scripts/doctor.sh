@@ -188,14 +188,16 @@ print_artifact_source
 cat <<'EOF'
 
 Runtime samples:
-  Public runtime JVM, language connector, Spring Boot, and Quarkus artifacts are
-  paused until they are rebuilt against the sanitized publish surface.
+  Native C ABI runtime samples are available from the public publish surface.
+  Runtime JVM, language connector, Spring Boot, and Quarkus artifacts are paused
+  until they are rebuilt against the sanitized publish surface.
 EOF
 
 printf '\nTry:\n'
 printf '  bash run.sh\n'
 printf '  bash run.sh list\n'
 printf '  bash run.sh logger basic\n'
+printf '  bash run.sh runtime native basic\n'
 printf '  bash run.sh logger node basic\n'
 
 exit 0

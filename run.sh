@@ -61,8 +61,8 @@ print_samples() {
 run_sample_path() {
   local sample_path="$1"
   shift || true
-  if [[ "${sample_path}" == runtime/* && "${COAKKA_ALLOW_PAUSED_RUNTIME:-0}" != "1" ]]; then
-    coakka_die "Runtime artifact-backed samples are paused until the public runtime JVM, language, Spring Boot, and Quarkus packages are republished. Set COAKKA_ALLOW_PAUSED_RUNTIME=1 only when testing a local private artifact set."
+  if [[ "${sample_path}" == runtime/* && "${sample_path}" != runtime/native/* && "${COAKKA_ALLOW_PAUSED_RUNTIME:-0}" != "1" ]]; then
+    coakka_die "Runtime language/framework samples are paused until the public runtime JVM, language, Spring Boot, and Quarkus packages are republished. Native C ABI runtime samples are available through 'bash run.sh runtime native basic' and 'bash run.sh runtime native pressure'. Set COAKKA_ALLOW_PAUSED_RUNTIME=1 only when testing a local private artifact set."
   fi
   local sample_script="${script_dir}/${sample_path}/run.sh"
   coakka_require_file "${sample_script}" "Use 'bash run.sh list' to see available samples."

@@ -3,10 +3,10 @@
 Runtime samples demonstrate CoAkka runtime v2 as a shared native runtime
 contract consumed through host-language connectors.
 
-Public artifact-backed runtime samples are currently paused. The public publish
-surface only exposes logger packages plus the sanitized direct runtime C ABI
-until the runtime JVM, language connector, Spring Boot, and Quarkus packages are
-rebuilt and republished against that sanitized surface.
+Public artifact-backed runtime language/framework samples are currently paused.
+The public publish surface exposes logger packages plus the sanitized native
+runtime C ABI package until the runtime JVM, language connector, Spring Boot,
+and Quarkus packages are rebuilt and republished against that sanitized surface.
 
 The runtime lane is not introduced as a generic framework. It starts from
 the connector-boundary problem:
@@ -52,7 +52,7 @@ Current samples:
 | Go | `go/basic`, `go/deadletter` | paused Go source package | echo and route-miss deadletter |
 | C# | `csharp/basic` | paused NuGet package | echo and route-miss deadletter |
 | Rust | `rust/basic` | paused Rust spike tarball | echo and route-miss deadletter |
-| Native C/C++ | `native/basic`, `native/pressure` | paused native C/C++ archive | route snapshot, route-miss deadletter, and bounded pressure counters |
+| Native C/C++ | `native/basic`, `native/pressure` | native C ABI archive | route snapshot, route-miss deadletter, and bounded pressure counters |
 
 Scenario track:
 
@@ -111,7 +111,14 @@ Check local toolchains and artifact source:
 bash run.sh doctor
 ```
 
-Attempt the runtime lane only when validating a local private artifact set:
+Run the public native runtime lane:
+
+```sh
+bash run.sh runtime
+```
+
+Attempt paused language/framework lanes only when validating a local private
+artifact set:
 
 ```sh
 COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime

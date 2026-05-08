@@ -1,22 +1,27 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 if [[ "${COAKKA_ALLOW_PAUSED_RUNTIME:-0}" != "1" ]]; then
   cat >&2 <<'EOF'
-[runtime/run-all] runtime artifact-backed samples are paused.
+[runtime/run-all] runtime language/framework samples are paused.
 
-The current public publish surface only exposes logger packages and the
-sanitized direct runtime C ABI. Runtime JVM, language connector, Spring Boot,
-and Quarkus packages must be republished before this lane is treated as a
-public sample lane.
+The current public publish surface exposes logger packages and the sanitized
+native runtime C ABI package. Runtime JVM, language connector, Spring Boot, and
+Quarkus packages must be republished before those lanes are treated as public
+sample lanes.
 
 Set COAKKA_ALLOW_PAUSED_RUNTIME=1 only when testing a local private artifact
 set that provides the paused runtime packages.
 EOF
-  exit 64
-fi
+  echo "[runtime/run-all] Native C/C++ basic"
+  bash "${script_dir}/native/basic/run.sh"
 
-script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  echo "[runtime/run-all] Native C pressure"
+  bash "${script_dir}/native/pressure/run.sh"
+  exit 0
+fi
 
 echo "[runtime/run-all] JVM basic"
 bash "${script_dir}/jvm/basic/run.sh"
