@@ -76,15 +76,27 @@ check_local_artifacts() {
   local publish_root row label relative_path
   publish_root="$(coakka_default_publish_root "${repo_root}")"
   if [[ ! -d "${publish_root}" ]]; then
-    printf '[skip] local coakka-publish checkout not found at %s\n' "${publish_root}"
+    printf '[skip] local public publish checkout not found at %s\n' "${publish_root}"
     return 0
   fi
 
   for row in "${required_rows[@]}"; do
     IFS='|' read -r label relative_path <<<"${row}"
     [[ -f "${publish_root}/${relative_path}" ]] ||
-      fail "local coakka-publish is missing ${label}: ${relative_path}"
+      fail "local public publish checkout is missing ${label}: ${relative_path}"
   done
+}
+
+check_local_publish_gate() {
+  local publish_root verify_script
+  publish_root="$(coakka_default_publish_root "${repo_root}")"
+  verify_script="${publish_root}/scripts/verify-public-surface.sh"
+  if [[ ! -x "${verify_script}" ]]; then
+    printf '[skip] local public publish verification gate not found at %s\n' "${verify_script}"
+    return 0
+  fi
+
+  "${verify_script}" >/dev/null 2>&1
 }
 
 check_public_artifacts() {
@@ -106,6 +118,7 @@ check_public_artifacts() {
 check_required_rows
 check_stale_patterns
 check_local_artifacts
+check_local_publish_gate
 check_public_artifacts
 
 printf '[ok] artifact pins match the current public publish surface\n'

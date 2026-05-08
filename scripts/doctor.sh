@@ -99,17 +99,18 @@ check_minimum_version() {
 }
 
 print_artifact_source() {
-  local publish_root raw_base row label relative_path missing_artifacts first_artifact
+  local publish_root raw_base row label relative_path missing_artifacts first_artifact verify_script
   publish_root="$(coakka_default_publish_root "${repo_root}")"
   raw_base="${COAKKA_PUBLISH_RAW_BASE:-${COAKKA_PUBLISH_RAW_BASE_DEFAULT}}"
   missing_artifacts=0
   first_artifact=""
+  verify_script="${publish_root}/scripts/verify-public-surface.sh"
 
   printf '\nArtifact source:\n'
   printf '  local publish root: %s\n' "${publish_root}"
 
   if [[ -d "${publish_root}" ]]; then
-    printf '  [ok] local coakka-publish checkout exists\n'
+    printf '  [ok] local public publish checkout exists\n'
     for row in "${COAKKA_ARTIFACT_ROWS[@]}"; do
       IFS='|' read -r label relative_path <<<"${row}"
       if [[ ! -f "${publish_root}/${relative_path}" ]]; then
@@ -122,6 +123,16 @@ print_artifact_source() {
       printf '  [ok] all pinned local artifacts are present\n'
     else
       printf '  local checkout is incomplete for the current public artifact set; samples can still download missing artifacts from public raw base\n'
+    fi
+
+    if [[ -x "${verify_script}" ]]; then
+      if "${verify_script}" >/dev/null 2>&1; then
+        printf '  [ok] public publish verification gate passes\n'
+      else
+        printf '  [warn] public publish verification gate failed\n'
+      fi
+    else
+      printf '  verification gate not found in local public publish checkout\n'
     fi
   else
     printf '  local checkout not found; logger samples will download artifacts when needed\n'
