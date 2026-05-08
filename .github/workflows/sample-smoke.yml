@@ -44,6 +44,7 @@ jobs:
           bash -n scripts/check-artifact-pins.sh
           bash -n scripts/doctor.sh
           bash -n scripts/resolve-artifact.sh
+          bash -n scripts/test-artifact-pins.sh
           bash -n scripts/test-resolve-artifact.sh
           bash -n scripts/sample-metadata.sh
           bash -n scripts/sample-utils.sh
@@ -70,6 +71,7 @@ jobs:
 
       - name: Check public artifact pins
         run: |
+          bash scripts/test-artifact-pins.sh
           bash scripts/test-resolve-artifact.sh
           COAKKA_PIN_CHECK_NETWORK=1 bash scripts/check-artifact-pins.sh
 
