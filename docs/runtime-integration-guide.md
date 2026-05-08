@@ -12,9 +12,10 @@ are intentionally small, but the integration shape should stay the same:
 
 ## Current Public Transport
 
-The current public runtime artifact supports remote-capable transport. Local
-in-process request/reply samples and cross-process customer scenarios keep
-business traffic on the runtime path.
+Public artifact downloads are currently paused while package contents are
+reviewed and republished. With a matching local artifact set, local in-process
+request/reply samples and cross-process customer scenarios keep business
+traffic on the runtime path.
 
 Delivery failures remain explicit runtime failures. The samples should not hide
 route, queue, or transporter failures behind an internal store HTTP fallback.
@@ -161,3 +162,7 @@ Then inspect the customer scenarios for cross-process wiring:
 ```sh
 bash run.sh scenarios check
 ```
+
+Artifact-backed runs require `COAKKA_PUBLISH_ROOT` and, for JVM lanes,
+`COAKKA_PUBLISH_MAVEN_LOCAL` to point at a local publish checkout until the
+public package channel reopens.

@@ -2,12 +2,14 @@
 
 [![sample-smoke](https://github.com/phuong-tran/coakka-samples/actions/workflows/sample-smoke.yml/badge.svg)](https://github.com/phuong-tran/coakka-samples/actions/workflows/sample-smoke.yml)
 
-Public samples for consuming CoAkka runtime v2 and logger published artifacts.
+Public samples for the CoAkka runtime v2 and logger integration shape.
 
 This repository is intentionally separate from the private source workspaces.
-Samples here consume release drops from `coakka-publish` and should keep the
-first-run path practical: run a small example, see expected output, and know
-where version or diagnostic information comes from.
+The public artifact channel is currently paused while package contents are
+reviewed and republished. Until that channel reopens, this repository is the
+public sample surface: examples, expected output shapes, script entrypoints,
+and integration notes. Artifact-backed runs require an internal or local
+publish checkout that contains the pinned packages.
 
 ## Table of Contents
 
@@ -91,11 +93,11 @@ The samples use JSON where readability matters. The runtime contract also has
 payload format space for Protobuf, Thrift, MessagePack, plain text, and binary
 payloads when a workflow needs a different wire shape.
 
-The current public runtime v2 artifact used by these samples includes
-remote-capable transport. Local primitive samples and cross-process customer
-scenarios keep business traffic on the runtime path; if runtime delivery fails,
-the UI/API returns an explicit runtime error instead of hiding the failure
-behind a REST fallback.
+When run with a matching local artifact set, local primitive samples and
+cross-process customer scenarios keep business traffic on the runtime path; if
+runtime delivery fails, the UI/API returns an explicit runtime error instead of
+hiding the failure behind a REST fallback. Public artifact-backed execution is
+paused until the package channel is republished.
 
 ## Architectural Value
 
@@ -440,9 +442,12 @@ without requiring the whole application to be rewritten.
 
 ## Quick Start
 
-Run the default quickstart from the repository root:
+Run the default quickstart from the repository root after pointing the samples
+at a local publish checkout:
 
 ```sh
+COAKKA_PUBLISH_ROOT=/path/to/coakka-publish \
+COAKKA_PUBLISH_MAVEN_LOCAL=/path/to/coakka-publish/maven \
 bash run.sh
 ```
 
@@ -463,7 +468,7 @@ List the available samples:
 bash run.sh list
 ```
 
-Run one sample from the repository root:
+Run one artifact-backed sample from the repository root:
 
 ```sh
 bash run.sh runtime basic
@@ -516,14 +521,12 @@ bash run.sh runtime/scenarios/customer-crud/spring-boot-node smoke
 ```
 
 The scripts create temporary install/build directories for Python, Node.js, Go,
-C#, and native C/C++ package examples. JVM samples resolve artifacts through
-the static Maven repository published by `coakka-publish`; package lanes still
-use their ecosystem or native package archives.
+C#, and native C/C++ package examples. JVM samples resolve artifacts through a
+Maven repository; package lanes use their ecosystem or native package archives.
 
 If a command is missing, run `bash run.sh doctor`. It reports which language
-lane is affected. JVM runtime artifacts resolve from a Maven repository;
-package lanes report whether archives will come from a local `coakka-publish`
-checkout or from the public raw GitHub URL.
+lane is affected. While the public artifact channel is paused, use a local
+publish checkout for artifact-backed commands.
 
 ## Requirements
 
@@ -668,13 +671,18 @@ logger/
 
 ## Artifact Source
 
-JVM runtime samples use a Maven repository published from `coakka-publish`:
+Artifact-backed runs are retained for internal/local validation, but public
+artifact downloads are paused while package contents are reviewed and
+republished. Use a local publish checkout when running samples that install a
+runtime or logger package.
+
+JVM runtime samples use a Maven repository from that local publish checkout:
 
 ```kotlin
 repositories {
     mavenCentral()
     maven {
-        url = uri("https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/maven")
+        url = uri("/path/to/coakka-publish/maven")
     }
 }
 
@@ -685,19 +693,13 @@ dependencies {
 }
 ```
 
-For local development, the root Gradle build also checks a sibling
-`coakka-publish` Maven directory first:
+For local development, the root Gradle build checks a sibling `coakka-publish`
+Maven directory first:
 
 ```text
 workspace-root/
   coakka-publish/maven/
   coakka-samples/
-```
-
-Override the Maven repository URL with:
-
-```sh
-COAKKA_PUBLISH_MAVEN_URL=https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/maven bash run.sh runtime
 ```
 
 Override the local Maven repository path with:
@@ -706,21 +708,15 @@ Override the local Maven repository path with:
 COAKKA_PUBLISH_MAVEN_LOCAL=/path/to/coakka-publish/maven bash run.sh runtime
 ```
 
-Python, Node.js, Go, C#, native C/C++, and non-Maven package lanes still first
-look for a sibling `coakka-publish` checkout and otherwise download package
-archives from the public raw GitHub URL:
-
-```text
-https://raw.githubusercontent.com/phuong-tran/coakka-publish/main
-```
-
-Override that raw package source with:
+Python, Node.js, Go, C#, native C/C++, and non-Maven package lanes first look
+for a sibling `coakka-publish` checkout. They can still be pointed at another
+package source for internal validation:
 
 ```sh
-COAKKA_PUBLISH_RAW_BASE=https://raw.githubusercontent.com/phuong-tran/coakka-publish/main bash run.sh runtime
+COAKKA_PUBLISH_ROOT=/path/to/coakka-publish bash run.sh runtime
 ```
 
-Current artifact pins:
+Retained local artifact pins:
 
 | Lane | Release |
 | --- | --- |
@@ -730,11 +726,9 @@ Current artifact pins:
 | Runtime Python/Node/Go/C#/Rust/Native | `0.1.0+22f571fd955c` |
 | Logger | `0.1.0+ba2a66d98eb5` |
 
-The runtime JVM jar, Python wheel, Node package, Go source tarball, C# NuGet
-package, Rust spike tarball, and native C/C++ archive are currently published
-as all-in-one artifacts for the supported platforms. Users download the
-relevant artifact through the normal sample dependency path; no extra
-per-platform native download is required.
+These pins document the package set the samples were last validated against.
+Before reopening public artifact downloads, the package channel should provide
+checksums or signatures for downloaded archives.
 
 ## Direct Runs
 
@@ -874,23 +868,17 @@ fallback.
 
 ## CI
 
-GitHub Actions runs both sample lanes against public `coakka-publish` artifacts:
-
-```sh
-COAKKA_PUBLISH_ROOT=/tmp/coakka-publish-not-present bash runtime/run-all.sh
-COAKKA_PUBLISH_ROOT=/tmp/coakka-publish-not-present bash logger/run-all.sh
-```
-
-That CI job is intentionally a consumer smoke test. It proves that a clean Linux
-runner can download public artifacts and run the samples without a private
-source checkout.
+GitHub Actions currently runs a public surface check. It verifies script
+syntax, Python/Node sample syntax, sample listing, and wording guards. It does
+not download runtime or logger artifacts while the public artifact channel is
+paused.
 
 ## Diagnostics
 
 If native loading fails, first check:
 
 - the selected publish repo path
-- the relevant `manifest.json` under `coakka-publish`
+- the relevant `manifest.json` under the local publish checkout
 - Runtime v2 JVM/Python/Node.js/Go samples use all-in-one language artifacts
   for supported platforms; no separate per-platform native download is required
   for those language lanes.
