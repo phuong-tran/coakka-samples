@@ -12,12 +12,11 @@ are intentionally small, but the integration shape should stay the same:
 
 ## Current Public Transport
 
-The public publish surface currently exposes logger packages and the sanitized
-native runtime C ABI package. Runtime JVM, language connector, Spring Boot, and
-Quarkus package-backed samples remain paused while those package contents are
-rebuilt and republished against the sanitized runtime surface. With a matching
-local unpublished artifact set, local in-process request/reply samples and
-cross-process customer scenarios keep business traffic on the runtime path.
+The public publish surface currently exposes logger packages, the sanitized
+native runtime C ABI package, runtime JVM/language connector packages, and the
+Spring Boot and Quarkus adapters. With a matching public artifact checkout,
+local in-process request/reply samples and cross-process customer scenarios keep
+business traffic on the runtime path.
 
 Delivery failures remain explicit runtime failures. The samples should not hide
 route, queue, or transporter failures behind an internal store HTTP fallback.
@@ -165,11 +164,8 @@ Then inspect the customer scenarios for cross-process wiring:
 bash run.sh scenarios check
 ```
 
-Artifact-backed native runtime runs can use the public publish checkout. Paused
-language/framework runs require `COAKKA_ALLOW_PAUSED_RUNTIME=1`,
-`COAKKA_PUBLISH_ROOT`, and, for JVM lanes, `COAKKA_PUBLISH_MAVEN_LOCAL` to
-point at a local unpublished artifact set until the public package channel
-reopens.
-For public non-Maven packages, the sample resolver verifies artifact SHA256
-against `artifacts/public-artifacts.tsv` from the publish surface before the
-package is unpacked or installed.
+Artifact-backed runtime runs can use the public publish checkout. Use
+`COAKKA_PUBLISH_ROOT`, and for JVM lanes `COAKKA_PUBLISH_MAVEN_LOCAL`, to point
+at a local public artifact checkout. For public non-Maven packages, the sample
+resolver verifies artifact SHA256 against `artifacts/public-artifacts.tsv` from
+the publish surface before the package is unpacked or installed.

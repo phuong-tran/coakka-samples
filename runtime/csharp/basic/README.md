@@ -1,13 +1,12 @@
 # C# Runtime Basic
 
-This paused public-lane sample starts the C# runtime package from a
-local unpublished artifact set, registers one local customer capability, sends one
-request/reply call through the runtime, then checks that a missing target
-returns a matched deadletter.
+This public runtime sample starts the C# runtime package, registers one local
+customer capability, sends one request/reply call through the runtime, then
+checks that a missing target returns a matched deadletter.
 
 It demonstrates:
 
-- NuGet package install from a local unpublished artifact set
+- NuGet package install from the public artifact surface
 - embedded native runtime loading
 - runtime version/git diagnostics
 - one local route target owned by the .NET process
@@ -18,13 +17,13 @@ It demonstrates:
 Run from this directory:
 
 ```sh
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh
+bash run.sh
 ```
 
 Or from the repository root:
 
 ```sh
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime csharp basic
+bash run.sh runtime csharp basic
 ```
 
 Expected output shape:

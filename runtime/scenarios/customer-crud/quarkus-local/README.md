@@ -17,11 +17,9 @@ coakka.askBlocking(
 )
 ```
 
-The public Quarkus package lane is paused until it is rebuilt against the
-sanitized native runtime surface. With a local unpublished artifact set, the app
-consumes `coakka.quarkus:coakka-quarkus-extension`; Quarkus owns HTTP/CDI
-lifecycle, and the adapter starts the local CoAkka runtime and registers CDI
-`CoAkkaLocalHandler` beans as local capability routes.
+The app consumes the public `coakka.quarkus:coakka-quarkus-extension` artifact.
+Quarkus owns HTTP/CDI lifecycle, and the adapter starts the local CoAkka
+runtime and registers CDI `CoAkkaLocalHandler` beans as local capability routes.
 
 ## Before: Internal REST
 
@@ -101,7 +99,7 @@ With the adapter, Quarkus config owns local runtime defaults:
 
 ```kotlin
 dependencies {
-    implementation("coakka.quarkus:coakka-quarkus-extension:0.1.0-g26ee0819dc3d")
+    implementation("coakka.quarkus:coakka-quarkus-extension:0.1.0-g63c346e")
     implementation("io.quarkus:quarkus-rest-jackson")
 }
 ```

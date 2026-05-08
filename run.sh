@@ -61,9 +61,6 @@ print_samples() {
 run_sample_path() {
   local sample_path="$1"
   shift || true
-  if [[ "${sample_path}" == runtime/* && "${sample_path}" != runtime/native/* && "${COAKKA_ALLOW_PAUSED_RUNTIME:-0}" != "1" ]]; then
-    coakka_die "This runtime lane is not part of the default public run yet. Native C ABI runtime samples are available through 'bash run.sh runtime native basic' and 'bash run.sh runtime native pressure'. Set COAKKA_ALLOW_PAUSED_RUNTIME=1 only when testing a local unpublished artifact set."
-  fi
   local sample_script="${script_dir}/${sample_path}/run.sh"
   coakka_require_file "${sample_script}" "Use 'bash run.sh list' to see available samples."
   coakka_note "running ${sample_path}"
@@ -101,6 +98,7 @@ run_scenario_checks() {
     "runtime/scenarios/customer-crud/spring-boot-spring-boot" \
     "runtime/scenarios/customer-crud/spring-boot-node" \
     "runtime/scenarios/customer-crud/spring-boot-go" \
+    "runtime/scenarios/customer-crud/spring-boot-csharp" \
     "runtime/scenarios/customer-crud/spring-boot-nodes"; do
     echo "[scenarios/check] ${scenario_path}"
     run_sample_path "${scenario_path}" check
@@ -142,6 +140,7 @@ case "$1" in
     ;;
   all)
     bash "${script_dir}/logger/run-all.sh"
+    bash "${script_dir}/runtime/run-all.sh"
     exit 0
     ;;
   logger)
@@ -163,7 +162,7 @@ case "$1" in
     elif [[ "$#" -eq 3 ]]; then
       run_sample_path "runtime/$2/$3"
     else
-      coakka_die "Usage: bash run.sh runtime [<jvm|python|node|go|native>] <sample>"
+      coakka_die "Usage: bash run.sh runtime [<jvm|python|node|go|csharp|rust|native>] <sample>"
     fi
     ;;
   scenario)

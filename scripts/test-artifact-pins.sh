@@ -77,11 +77,11 @@ expect_success "clean publish manifest" run_pin_check "${good_publish_root}"
 
 bad_path_root="$(make_publish_root bad-path)"
 cat >>"${bad_path_root}/artifacts/public-artifacts.tsv" <<'EOF'
-public	runtime JVM jar	runtime/jvm/releases/test/coakka-jvm-native-runtime-v2-test.jar	0000000000000000000000000000000000000000000000000000000000000000
+public	outside fixture	../outside.tar.gz	0000000000000000000000000000000000000000000000000000000000000000
 EOF
-expect_failure "path outside current public surface" run_pin_check "${bad_path_root}"
-grep -Fq "path outside the current public surface" "${test_output}" ||
-  fail "missing out-of-surface manifest error"
+expect_failure "unsafe manifest path" run_pin_check "${bad_path_root}"
+grep -Fq "unsafe path" "${test_output}" ||
+  fail "missing unsafe path manifest error"
 
 duplicate_path_root="$(make_publish_root duplicate-path)"
 runtime_artifact="runtime/native/releases/0.1.0+63c346e/coakka-runtime-native-v2-0.1.0.tar.gz"

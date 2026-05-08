@@ -5,8 +5,9 @@
 Public samples for the CoAkka runtime v2 and logger integration shape.
 
 These samples consume artifacts from the public CoAkka publish surface. The
-current public artifact surface exposes logger packages and the sanitized native
-runtime C ABI package.
+current public artifact surface exposes logger packages, the sanitized native
+runtime C ABI package, runtime JVM/language connector packages, and the Spring
+Boot and Quarkus adapters.
 
 ## Start Here
 
@@ -14,6 +15,7 @@ Run the shortest public path first:
 
 ```sh
 bash run.sh quickstart
+bash run.sh runtime jvm basic
 bash run.sh runtime native basic
 bash run.sh runtime native pressure
 ```
@@ -40,8 +42,8 @@ bash run.sh list
 | Logger Go | public | `bash run.sh logger go basic` |
 | Logger native C/C++ | public | `bash run.sh logger native basic` |
 | Runtime native C/C++ | public | `bash run.sh runtime native basic` |
-| Runtime JVM, Python, Node.js, Go, C#, Rust | paused | retained as integration examples |
-| Runtime Spring Boot and Quarkus adapters | paused | retained as integration examples |
+| Runtime JVM, Python, Node.js, Go, C#, Rust | public | `bash run.sh runtime jvm basic` |
+| Runtime Spring Boot and Quarkus adapters | public | `bash run.sh scenarios check` |
 
 ## Table of Contents
 
@@ -127,12 +129,10 @@ The samples use JSON where readability matters. The runtime contract also has
 payload format space for Protobuf, Thrift, MessagePack, plain text, and binary
 payloads when a workflow needs a different wire shape.
 
-When run with a matching local artifact set, local primitive samples and
+When run with a matching public artifact set, local primitive samples and
 cross-process customer scenarios keep business traffic on the runtime path; if
 runtime delivery fails, the UI/API returns an explicit runtime error instead of
-hiding the failure behind a REST fallback. The public artifact-backed runtime
-surface is currently native C/C++; language and framework runtime samples are
-retained as integration examples until their package channels are republished.
+hiding the failure behind a REST fallback.
 
 ## Architectural Value
 
@@ -387,10 +387,10 @@ is actually useful.
 
 ### After: Local Runtime Capability
 
-Spring Boot uses the starter when the runtime package lane is republished:
+Spring Boot uses the public starter artifact:
 
 ```kotlin
-implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-g432bd75d3e4b")
+implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-g63c346e")
 ```
 
 ```kotlin
@@ -420,11 +420,10 @@ fun create(@RequestBody request: CustomerDraft): MutationResponse {
 }
 ```
 
-Quarkus follows the same shape through the extension when that package lane is
-republished:
+Quarkus follows the same shape through the public extension artifact:
 
 ```kotlin
-implementation("coakka.quarkus:coakka-quarkus-extension:0.1.0-g26ee0819dc3d")
+implementation("coakka.quarkus:coakka-quarkus-extension:0.1.0-g63c346e")
 ```
 
 ```kotlin
@@ -518,9 +517,16 @@ bash run.sh runtime native basic
 bash run.sh runtime native pressure
 ```
 
-Runtime language/framework samples are retained as integration examples until
-their public artifacts are republished. The public runtime execution path today
-is native C/C++.
+Run public JVM/language connector samples:
+
+```sh
+bash run.sh runtime jvm basic
+bash run.sh runtime python basic
+bash run.sh runtime node basic
+bash run.sh runtime go basic
+bash run.sh runtime csharp basic
+bash run.sh runtime rust basic
+```
 
 Run from inside a sample directory:
 
@@ -544,14 +550,14 @@ bash run.sh scenarios
 Check that every scenario can build or prepare its services:
 
 ```sh
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh scenarios check
+bash run.sh scenarios check
 ```
 
 Run a scenario command from the repository root:
 
 ```sh
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh scenario customer-crud spring-boot-nodes check
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime/scenarios/customer-crud/spring-boot-node smoke
+bash run.sh scenario customer-crud spring-boot-nodes check
+bash run.sh runtime/scenarios/customer-crud/spring-boot-node smoke
 ```
 
 The scripts create temporary install/build directories for Python, Node.js, Go,
@@ -559,8 +565,8 @@ C#, and native C/C++ package examples. JVM samples resolve artifacts through a
 Maven repository; package lanes use their ecosystem or native package archives.
 
 If a command is missing, run `bash run.sh doctor`. It reports which language
-lane is affected. Use a local unpublished publish checkout only when validating
-candidate runtime package lanes.
+lane is affected. Use `COAKKA_PUBLISH_ROOT` to point samples at a local public
+publish checkout.
 
 ## Requirements
 
@@ -740,22 +746,21 @@ Override the local Maven repository path with:
 COAKKA_PUBLISH_MAVEN_LOCAL=/path/to/coakka-publish-public/maven bash run.sh logger
 ```
 
-Python, Node.js, Go, C#, native C/C++, and non-Maven package lanes first look
-for a sibling `coakka-publish-public` checkout. Candidate runtime package lanes
-can be pointed at another package source when explicitly enabled:
+Python, Node.js, Go, C#, Rust, native C/C++, and non-Maven package lanes first
+look for a sibling `coakka-publish-public` checkout. Use `COAKKA_PUBLISH_ROOT`
+to point samples at another public artifact checkout:
 
 ```sh
 COAKKA_PUBLISH_ROOT=/path/to/coakka-publish-public bash run.sh logger
 COAKKA_PUBLISH_ROOT=/path/to/coakka-publish-public bash run.sh runtime native basic
-COAKKA_ALLOW_PAUSED_RUNTIME=1 COAKKA_PUBLISH_ROOT=/path/to/unpublished-publish bash run.sh runtime
+COAKKA_PUBLISH_ROOT=/path/to/coakka-publish-public bash run.sh runtime
 ```
 
 Public package downloads are pinned through
 `coakka-publish-public/artifacts/public-artifacts.tsv`. When a sample resolves
 an artifact from the local public checkout or from the public raw GitHub URL, it
 verifies the artifact SHA256 from that manifest before unpacking or installing
-the package. Unlisted local artifacts are accepted only when
-`COAKKA_ALLOW_PAUSED_RUNTIME=1` is set for candidate-lane validation.
+the package.
 
 Current public artifact pins:
 
@@ -764,20 +769,18 @@ Current public artifact pins:
 | Logger JVM | `coakka.logger:coakka-jvm-native-logger:0.1.0-gba2a66d98eb5` |
 | Logger Python, Node.js, Go, and native C/C++ | `0.1.0+ba2a66d98eb5` |
 | Runtime native C/C++ | `0.1.0+63c346e` |
-
-Candidate runtime pins are kept in `scripts/sample-metadata.sh` under
-`COAKKA_PAUSED_ARTIFACT_ROWS` so they do not count as public-required
-artifacts.
+| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-g63c346e` |
+| Runtime Python, Node.js, Go, C#, and Rust | `0.1.0+63c346e` |
+| Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.1.0-g63c346e` |
+| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.1.0-g63c346e` |
 
 ## Direct Runs
 
-Runtime language/framework direct runs are retained for candidate-lane
-validation. They require `COAKKA_ALLOW_PAUSED_RUNTIME=1` until their public
-artifacts are republished:
+Runtime language/framework direct runs consume the public runtime artifacts:
 
 ```sh
-COAKKA_ALLOW_PAUSED_RUNTIME=1 ./gradlew :runtime:jvm:basic:run
-COAKKA_ALLOW_PAUSED_RUNTIME=1 ./gradlew :runtime:jvm:java-basic:run
+./gradlew :runtime:jvm:basic:run
+./gradlew :runtime:jvm:java-basic:run
 ```
 
 Expected output shape:
@@ -796,20 +799,16 @@ coakka_runtime_response payload={"echo":"hello-runtime-java"}
 coakka_runtime_stats generation=1 routes=1 delivered=1 matchedResponses=1 language=java
 ```
 
-Run the currently public runtime v2 samples:
+Run the runtime v2 samples:
 
 ```sh
 bash run.sh runtime
 ```
 
-With a local unpublished artifact set,
-`COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime` also runs the candidate
-JVM, Python, Node.js, Go, and C# lanes.
-
 Run the C# runtime package smoke directly:
 
 ```sh
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime csharp basic
+bash run.sh runtime csharp basic
 ```
 
 Run the native C/C++ runtime v2 sample directly:
@@ -891,15 +890,15 @@ coakka_logger_stats emitted=2 delivered=2 dropped=6
 Check the customer scenario services without keeping servers running:
 
 ```sh
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh scenarios check
+bash run.sh scenarios check
 ```
 
 Run one scenario check directly:
 
 ```sh
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime/scenarios/customer-crud/spring-boot-spring-boot
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime/scenarios/customer-crud/kotlin-desktop-local smoke
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime/scenarios/customer-crud/python-desktop-local smoke
+bash run.sh runtime/scenarios/customer-crud/spring-boot-spring-boot
+bash run.sh runtime/scenarios/customer-crud/kotlin-desktop-local smoke
+bash run.sh runtime/scenarios/customer-crud/python-desktop-local smoke
 ```
 
 The default command for each scenario is `check`, so opening a scenario
@@ -913,8 +912,8 @@ fallback.
 ## CI
 
 GitHub Actions currently runs a public surface check. It verifies script
-syntax, Python/Node sample syntax, sample listing, and wording guards. It does
-not run candidate runtime package lanes.
+syntax, Python/Node sample syntax, sample listing, selected runtime smoke
+samples, and wording guards.
 
 ## Diagnostics
 

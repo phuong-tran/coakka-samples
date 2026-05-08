@@ -1,15 +1,15 @@
 # Python Runtime Samples
 
 Python runtime samples document the `coakka_v2_connector` wheel shape. This
-runtime lane is paused for the public artifact set until the wheel is rebuilt
-against the sanitized native runtime surface.
+runtime lane consumes the public Python wheel built against native runtime
+`0.1.0+63c346e`.
 
 ## Run
 
 ```sh
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime python basic
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime python deadletter
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime python hot-reload
+bash run.sh runtime python basic
+bash run.sh runtime python deadletter
+bash run.sh runtime python hot-reload
 ```
 
 The Python samples run from disposable virtual environments. They install the
@@ -18,9 +18,9 @@ exit so the user's global Python installation is not modified.
 
 ## Integration Recipe
 
-Install the wheel through your normal packaging path after this lane is
-republished. Until then, the samples resolve a local unpublished wheel into a
-temporary directory only when `COAKKA_ALLOW_PAUSED_RUNTIME=1` is set.
+Install the wheel through your normal packaging path. The samples resolve the
+public wheel into a temporary directory, install it into a disposable venv, and
+remove the venv on exit.
 
 Start one `RuntimeHost` per process:
 

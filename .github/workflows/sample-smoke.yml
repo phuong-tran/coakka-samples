@@ -78,8 +78,13 @@ jobs:
       - name: Run public quickstart
         run: bash run.sh quickstart
 
-      - name: Run public native runtime lane
-        run: bash run.sh runtime
+      - name: Run public runtime smoke
+        run: |
+          bash run.sh runtime jvm basic
+          bash run.sh runtime python basic
+          bash run.sh runtime node basic
+          bash run.sh runtime native basic
+          bash run.sh runtime native pressure
 
       - name: Guard public wording
         run: |
@@ -94,6 +99,17 @@ jobs:
             build.gradle.kts
             settings.gradle.kts
             gradle.properties
+          )
+          sensitive_terms=(
+            "private"" artifact"
+            "private"" publish"
+            "private"" source"
+            "private"" repo"
+            "private"" repository"
+            "local/""private"
+            "private""-publish"
+            "source""-workspace"
+            "source"" workspace"
           )
           for pattern in \
             "\\binternal_backend\\b" \
@@ -122,15 +138,7 @@ jobs:
             "\\bsouthbound\\b" \
             "remote_wire" \
             "wire_profile" \
-            "private artifact" \
-            "private publish" \
-            "private source" \
-            "private repo" \
-            "private repository" \
-            "local/private" \
-            "private-publish" \
-            "source-workspace" \
-            "source workspace"
+            "${sensitive_terms[@]}"
           do
             if git grep -n -I -i -E -- "$pattern" "${paths[@]}"; then
               echo "forbidden public wording found: $pattern" >&2

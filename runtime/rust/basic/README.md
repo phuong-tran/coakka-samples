@@ -1,11 +1,11 @@
 # Rust Runtime Basic
 
-This paused public-lane sample unpacks the Rust runtime spike tarball from a
-local unpublished artifact set and runs its packaged smoke binary.
+This public runtime sample unpacks the Rust runtime spike tarball from the
+public artifact surface and runs its packaged smoke binary.
 
 It demonstrates:
 
-- Rust package install from a local unpublished artifact set
+- Rust package install from the public artifact surface
 - embedded native runtime loading from the package
 - one local route target owned by the Rust process
 - request/reply from Rust into a registered runtime handler
@@ -15,13 +15,13 @@ It demonstrates:
 Run from this directory:
 
 ```sh
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh
+bash run.sh
 ```
 
 Or from the repository root:
 
 ```sh
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime rust basic
+bash run.sh runtime rust basic
 ```
 
 Expected output shape:

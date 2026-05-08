@@ -3,25 +3,6 @@ set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-if [[ "${COAKKA_ALLOW_PAUSED_RUNTIME:-0}" != "1" ]]; then
-  cat >&2 <<'EOF'
-[runtime/run-all] running the public runtime native lane.
-
-The current public publish surface exposes logger packages and the sanitized
-native runtime C ABI package. Runtime language/framework package lanes are
-retained as integration examples until their public artifacts are republished.
-
-Set COAKKA_ALLOW_PAUSED_RUNTIME=1 only when testing a local unpublished
-artifact set for candidate package lanes.
-EOF
-  echo "[runtime/run-all] Native C/C++ basic"
-  bash "${script_dir}/native/basic/run.sh"
-
-  echo "[runtime/run-all] Native C pressure"
-  bash "${script_dir}/native/pressure/run.sh"
-  exit 0
-fi
-
 echo "[runtime/run-all] JVM basic"
 bash "${script_dir}/jvm/basic/run.sh"
 
@@ -57,6 +38,9 @@ bash "${script_dir}/go/deadletter/run.sh"
 
 echo "[runtime/run-all] C# basic"
 bash "${script_dir}/csharp/basic/run.sh"
+
+echo "[runtime/run-all] Rust basic"
+bash "${script_dir}/rust/basic/run.sh"
 
 echo "[runtime/run-all] Native C/C++ basic"
 bash "${script_dir}/native/basic/run.sh"

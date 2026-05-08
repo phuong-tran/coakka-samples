@@ -1,25 +1,25 @@
 # JVM Runtime Samples
 
 JVM runtime samples document the `coakka-jvm-native-runtime-v2` jar shape. This
-runtime lane is paused for the public artifact set until the jar is rebuilt
-against the sanitized native runtime surface.
+runtime lane consumes the public JVM runtime jar built against native runtime
+`0.1.0+63c346e`.
 
 ## Run
 
 ```sh
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime basic
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime jvm java-basic
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime jvm deadletter
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime jvm java-deadletter
+bash run.sh runtime basic
+bash run.sh runtime jvm java-basic
+bash run.sh runtime jvm deadletter
+bash run.sh runtime jvm java-deadletter
 ```
 
 Direct Gradle runs:
 
 ```sh
-COAKKA_ALLOW_PAUSED_RUNTIME=1 ./gradlew :runtime:jvm:basic:run
-COAKKA_ALLOW_PAUSED_RUNTIME=1 ./gradlew :runtime:jvm:java-basic:run
-COAKKA_ALLOW_PAUSED_RUNTIME=1 ./gradlew :runtime:jvm:deadletter:run
-COAKKA_ALLOW_PAUSED_RUNTIME=1 ./gradlew :runtime:jvm:java-deadletter:run
+./gradlew :runtime:jvm:basic:run
+./gradlew :runtime:jvm:java-basic:run
+./gradlew :runtime:jvm:deadletter:run
+./gradlew :runtime:jvm:java-deadletter:run
 ```
 
 For IDE runs, open the `coakka-samples` repository root as the Gradle project.
@@ -100,7 +100,7 @@ repositories {
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-g22f571fd955c")
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-g63c346e")
 }
 ```
 

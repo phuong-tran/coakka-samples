@@ -1,8 +1,8 @@
 # Rust Runtime Samples
 
 Rust runtime samples document the `coakka-runtime-rs` spike tarball shape. This
-runtime lane is paused for the public artifact set until the package is rebuilt
-against the sanitized native runtime surface.
+runtime lane consumes the public Rust spike tarball built against native
+runtime `0.1.0+63c346e`.
 
 This lane is intentionally marked as a spike. It proves the runtime shape before
 claiming a stable Rust API or crates.io-ready package.
@@ -10,7 +10,7 @@ claiming a stable Rust API or crates.io-ready package.
 ## Run
 
 ```sh
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime rust basic
+bash run.sh runtime rust basic
 ```
 
 Rust samples expect a working Rust/Cargo toolchain.

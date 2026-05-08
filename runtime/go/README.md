@@ -1,23 +1,22 @@
 # Go Runtime Samples
 
 Go runtime samples document the `coakka-v2-connector-go` source package shape.
-This runtime lane is paused for the public artifact set until the package is
-rebuilt against the sanitized native runtime surface.
+This runtime lane consumes the public Go source package built against native
+runtime `0.1.0+63c346e`.
 
 ## Run
 
 ```sh
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime go basic
-COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime go deadletter
+bash run.sh runtime go basic
+bash run.sh runtime go deadletter
 ```
 
 Go runtime v2 samples expect Go 1.23 or newer.
 
 ## Integration Recipe
 
-Add the package through your normal module path after this lane is republished.
-Until then, the samples unpack a local unpublished tarball into a temporary
-workspace only when `COAKKA_ALLOW_PAUSED_RUNTIME=1` is set.
+Add the package through your normal module path. The samples unpack the public
+tarball into a temporary workspace for each run.
 
 Start one runtime host per process:
 

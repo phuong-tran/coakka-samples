@@ -78,6 +78,9 @@ coakka_resolve_artifact() {
     if [[ -f "${manifest_path}" ]]; then
       if expected_sha="$(coakka_manifest_sha256 "${manifest_path}" "${relative_path}")"; then
         coakka_verify_artifact_sha256 "${local_path}" "${relative_path}" "${expected_sha}" || return 1
+      else
+        echo "[coakka-samples] local public artifact manifest does not list ${relative_path}" >&2
+        return 1
       fi
     fi
     echo "[coakka-samples] using local artifact: ${local_path}" >&2

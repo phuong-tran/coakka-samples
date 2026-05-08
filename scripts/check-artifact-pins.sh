@@ -23,6 +23,14 @@ required_rows=(
   "logger Go package|logger/go/releases/${expected_logger_native}/coakka-logger-go-0.1.0.tar.gz"
   "logger Native package|logger/native/releases/${expected_logger_native}/coakka-logger-native-0.1.0.tar.gz"
   "runtime Native package|runtime/native/releases/0.1.0+63c346e/coakka-runtime-native-v2-0.1.0.tar.gz"
+  "runtime JVM jar|runtime/jvm/releases/0.1.0+63c346e/coakka-jvm-native-runtime-v2-0.1.1-g63c346e.jar"
+  "runtime Python wheel|runtime/python/releases/0.1.0+63c346e/coakka_v2_connector-0.1.0-py3-none-any.whl"
+  "runtime Node package|runtime/node/releases/0.1.0+63c346e/coakka-v2-connector-node-0.1.0.tgz"
+  "runtime Go package|runtime/go/releases/0.1.0+63c346e/coakka-v2-connector-go-0.1.0.tar.gz"
+  "runtime C# package|runtime/csharp/releases/0.1.0+63c346e/CoAkka.Runtime.0.1.1.nupkg"
+  "runtime Rust package|runtime/rust/releases/0.1.0+63c346e/coakka-runtime-rs-0.1.0-spike.tar.gz"
+  "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/0.1.0-g63c346e/coakka-spring-boot-starter-0.1.0-g63c346e.jar"
+  "Quarkus extension Maven jar|maven/coakka/quarkus/coakka-quarkus-extension/0.1.0-g63c346e/coakka-quarkus-extension-0.1.0-g63c346e.jar"
 )
 
 stale_patterns=(
@@ -34,6 +42,10 @@ stale_patterns=(
   "0.1.0+0cb""644340467"
   "0.1.0-g0cb""644340467-cfb8ee4"
   "runtime/jvm/releases/0.1.0+0cb""644340467/coakka-jvm-native-runtime-v2-0.1.0-g0cb644""340467.jar"
+  "0.1.0+22f""571fd955c"
+  "0.1.1-g22f""571fd955c"
+  "0.1.0-g432""bd75d3e4b"
+  "0.1.0-g26e""e0819dc3d"
 )
 
 fail() {
@@ -75,7 +87,7 @@ validate_manifest_rows() {
       fail "${source_name} manifest has unsafe path on row ${line_no}: ${relative_path}"
     fi
     case "${relative_path}" in
-      logger/*/releases/*|runtime/native/releases/*)
+      logger/*/releases/*|runtime/*/releases/*|maven/coakka/*/*/*/*.jar)
         ;;
       *)
         fail "${source_name} manifest has path outside the current public surface on row ${line_no}: ${relative_path}"

@@ -175,7 +175,7 @@ def main() -> None:
             "invalid",
             lambda: runtime.control.apply_snapshot(
                 generation=3,
-                routes=[RouteSpec(target="", endpoints=[EndpointSpec(host="127.0.0.1", port=19513)])],
+                routes=[RouteSpec(target=MISSING_TARGET, endpoints=[EndpointSpec(host="127.0.0.1", port=0)])],
                 source_connector="python-hot-reload-sample",
                 seq=4,
             ),

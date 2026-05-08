@@ -52,16 +52,14 @@ COAKKA_ARTIFACT_ROWS=(
   "logger Go package|logger/go/releases/0.1.0+ba2a66d98eb5/coakka-logger-go-0.1.0.tar.gz"
   "logger Native package|logger/native/releases/0.1.0+ba2a66d98eb5/coakka-logger-native-0.1.0.tar.gz"
   "runtime Native package|runtime/native/releases/0.1.0+63c346e/coakka-runtime-native-v2-0.1.0.tar.gz"
-)
-
-COAKKA_PAUSED_ARTIFACT_ROWS=(
-  "runtime JVM jar|runtime/jvm/releases/0.1.0+22f571fd955c/coakka-jvm-native-runtime-v2-0.1.1-g22f571fd955c.jar"
-  "runtime Python wheel|runtime/python/releases/0.1.0+22f571fd955c/coakka_v2_connector-0.1.0-py3-none-any.whl"
-  "runtime Node package|runtime/node/releases/0.1.0+22f571fd955c/coakka-v2-connector-node-0.1.0.tgz"
-  "runtime Go package|runtime/go/releases/0.1.0+22f571fd955c/coakka-v2-connector-go-0.1.0.tar.gz"
-  "runtime C# package|runtime/csharp/releases/0.1.0+22f571fd955c/CoAkka.Runtime.0.1.1.nupkg"
-  "runtime Rust package|runtime/rust/releases/0.1.0+22f571fd955c/coakka-runtime-rs-0.1.0-spike.tar.gz"
-  "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/0.1.0-g432bd75d3e4b/coakka-spring-boot-starter-0.1.0-g432bd75d3e4b.jar"
+  "runtime JVM jar|runtime/jvm/releases/0.1.0+63c346e/coakka-jvm-native-runtime-v2-0.1.1-g63c346e.jar"
+  "runtime Python wheel|runtime/python/releases/0.1.0+63c346e/coakka_v2_connector-0.1.0-py3-none-any.whl"
+  "runtime Node package|runtime/node/releases/0.1.0+63c346e/coakka-v2-connector-node-0.1.0.tgz"
+  "runtime Go package|runtime/go/releases/0.1.0+63c346e/coakka-v2-connector-go-0.1.0.tar.gz"
+  "runtime C# package|runtime/csharp/releases/0.1.0+63c346e/CoAkka.Runtime.0.1.1.nupkg"
+  "runtime Rust package|runtime/rust/releases/0.1.0+63c346e/coakka-runtime-rs-0.1.0-spike.tar.gz"
+  "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/0.1.0-g63c346e/coakka-spring-boot-starter-0.1.0-g63c346e.jar"
+  "Quarkus extension Maven jar|maven/coakka/quarkus/coakka-quarkus-extension/0.1.0-g63c346e/coakka-quarkus-extension-0.1.0-g63c346e.jar"
 )
 
 coakka_default_publish_root() {
@@ -82,11 +80,7 @@ EOF
   local row lane language sample summary
   for row in "${COAKKA_SAMPLE_ROWS[@]}"; do
     IFS='|' read -r lane language sample summary <<<"${row}"
-    if [[ "${lane}" == "runtime" && "${language}" != "native" ]]; then
-      printf '  %-31s %s (candidate lane)\n' "${lane}/${language}/${sample}" "${summary}"
-    else
-      printf '  %-31s %s\n' "${lane}/${language}/${sample}" "${summary}"
-    fi
+    printf '  %-31s %s\n' "${lane}/${language}/${sample}" "${summary}"
   done
 
   cat <<'EOF'
@@ -101,14 +95,14 @@ coakka_print_scenarios() {
   local row track topology summary
   for row in "${COAKKA_SCENARIO_ROWS[@]}"; do
     IFS='|' read -r track topology summary <<<"${row}"
-    printf '  %-55s %s (candidate lane)\n' "runtime/scenarios/${track}/${topology}" "${summary}"
+    printf '  %-55s %s\n' "runtime/scenarios/${track}/${topology}" "${summary}"
   done
 
   cat <<'EOF'
 
 Scenario commands:
   bash run.sh scenarios
-  COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh scenarios check
-  COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh scenario customer-crud spring-boot-single-process dev
+  bash run.sh scenarios check
+  bash run.sh scenario customer-crud spring-boot-single-process dev
 EOF
 }
