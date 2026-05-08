@@ -36,7 +36,7 @@ local runtime route generation. The HTTP edge should stay unchanged, and local
 development should not need an internal REST service just to feel comfortable.
 
 The public Spring Boot package lane is paused until it is rebuilt against the
-sanitized native runtime surface. With a local/private artifact set, the sample
+sanitized native runtime surface. With a local unpublished artifact set, the sample
 consumes the starter artifact:
 
 ```kotlin
@@ -48,7 +48,7 @@ That starter depends on the shared runtime JVM artifact
 or fork a Spring-specific native runtime.
 
 The starter source lives in the connector workspace. This sample consumes the
-Maven artifact from a local/private publish checkout while the public package
+Maven artifact from a local unpublished publish checkout while the public package
 lane is paused.
 
 ## Before: Internal REST

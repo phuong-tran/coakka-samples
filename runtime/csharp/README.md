@@ -143,7 +143,7 @@ deadletter, native loading, lifecycle, and diagnostics baseline.
 
 ## What This Sample Proves
 
-- `dotnet` can install `CoAkka.Runtime` from a local/private artifact set.
+- `dotnet` can install `CoAkka.Runtime` from a local unpublished artifact set.
 - The package can load the native runtime on supported macOS/Linux platforms.
 - A .NET process can start one local `RuntimeHost`.
 - A .NET process can register a local target handler and call it with

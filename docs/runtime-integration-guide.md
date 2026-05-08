@@ -16,7 +16,7 @@ The public publish surface currently exposes logger packages and the sanitized
 native runtime C ABI package. Runtime JVM, language connector, Spring Boot, and
 Quarkus package-backed samples remain paused while those package contents are
 rebuilt and republished against the sanitized runtime surface. With a matching
-local private artifact set, local in-process request/reply samples and
+local unpublished artifact set, local in-process request/reply samples and
 cross-process customer scenarios keep business traffic on the runtime path.
 
 Delivery failures remain explicit runtime failures. The samples should not hide
@@ -168,7 +168,8 @@ bash run.sh scenarios check
 Artifact-backed native runtime runs can use the public publish checkout. Paused
 language/framework runs require `COAKKA_ALLOW_PAUSED_RUNTIME=1`,
 `COAKKA_PUBLISH_ROOT`, and, for JVM lanes, `COAKKA_PUBLISH_MAVEN_LOCAL` to
-point at a local private artifact set until the public package channel reopens.
+point at a local unpublished artifact set until the public package channel
+reopens.
 For public non-Maven packages, the sample resolver verifies artifact SHA256
 against `artifacts/public-artifacts.tsv` from the publish surface before the
 package is unpacked or installed.

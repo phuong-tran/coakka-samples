@@ -1,11 +1,11 @@
 # Go Runtime Basic
 
 This paused public-lane sample runs a local request/reply echo through the Go
-runtime v2 package from a local/private artifact set.
+runtime v2 package from a local unpublished artifact set.
 
 It demonstrates:
 
-- source package extraction from a local/private artifact set
+- source package extraction from a local unpublished artifact set
 - embedded native runtime loading
 - runtime version/git diagnostics
 - one local route and one local handler

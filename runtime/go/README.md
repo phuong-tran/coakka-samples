@@ -16,7 +16,7 @@ Go runtime v2 samples expect Go 1.23 or newer.
 ## Integration Recipe
 
 Add the package through your normal module path after this lane is republished.
-Until then, the samples unpack a local/private tarball into a temporary
+Until then, the samples unpack a local unpublished tarball into a temporary
 workspace only when `COAKKA_ALLOW_PAUSED_RUNTIME=1` is set.
 
 Start one runtime host per process:

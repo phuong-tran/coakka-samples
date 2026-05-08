@@ -12,8 +12,8 @@ native runtime C ABI package. Runtime JVM, language connector, Spring Boot, and
 Quarkus packages must be republished before those lanes are treated as public
 sample lanes.
 
-Set COAKKA_ALLOW_PAUSED_RUNTIME=1 only when testing a local private artifact
-set that provides the paused runtime packages.
+Set COAKKA_ALLOW_PAUSED_RUNTIME=1 only when testing a local unpublished
+artifact set that provides the paused runtime packages.
 EOF
   echo "[runtime/run-all] Native C/C++ basic"
   bash "${script_dir}/native/basic/run.sh"

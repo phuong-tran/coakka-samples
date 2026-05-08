@@ -476,8 +476,8 @@ bash run.sh logger native basic
 
 Runtime language/framework samples are paused for public artifact-backed
 execution. They can still be read as integration examples or run with a local
-private artifact set by setting `COAKKA_ALLOW_PAUSED_RUNTIME=1`. Native C/C++
-runtime samples are available from the public native package:
+unpublished artifact set by setting `COAKKA_ALLOW_PAUSED_RUNTIME=1`. Native
+C/C++ runtime samples are available from the public native package:
 
 ```sh
 bash run.sh runtime native basic
@@ -521,8 +521,8 @@ C#, and native C/C++ package examples. JVM samples resolve artifacts through a
 Maven repository; package lanes use their ecosystem or native package archives.
 
 If a command is missing, run `bash run.sh doctor`. It reports which language
-lane is affected. Use a local private publish checkout only when validating the
-paused runtime package lanes.
+lane is affected. Use a local unpublished publish checkout only when validating
+the paused runtime package lanes.
 
 ## Requirements
 
@@ -704,19 +704,19 @@ COAKKA_PUBLISH_MAVEN_LOCAL=/path/to/coakka-publish-public/maven bash run.sh logg
 
 Python, Node.js, Go, C#, native C/C++, and non-Maven package lanes first look
 for a sibling `coakka-publish-public` checkout. Paused runtime lanes can still
-be pointed at another package source for internal validation:
+be pointed at another package source for candidate validation:
 
 ```sh
 COAKKA_PUBLISH_ROOT=/path/to/coakka-publish-public bash run.sh logger
 COAKKA_PUBLISH_ROOT=/path/to/coakka-publish-public bash run.sh runtime native basic
-COAKKA_ALLOW_PAUSED_RUNTIME=1 COAKKA_PUBLISH_ROOT=/path/to/private-publish bash run.sh runtime
+COAKKA_ALLOW_PAUSED_RUNTIME=1 COAKKA_PUBLISH_ROOT=/path/to/unpublished-publish bash run.sh runtime
 ```
 
 Public package downloads are pinned through
 `coakka-publish-public/artifacts/public-artifacts.tsv`. When a sample resolves
 an artifact from the local public checkout or from the public raw GitHub URL, it
 verifies the artifact SHA256 from that manifest before unpacking or installing
-the package. Local private artifact sets that are not listed in the public
+the package. Local unpublished artifact sets that are not listed in the public
 manifest are still allowed only for paused runtime validation with
 `COAKKA_ALLOW_PAUSED_RUNTIME=1`.
 
@@ -736,7 +736,7 @@ artifacts.
 
 Runtime language/framework direct runs are paused for the public artifact set.
 The expected output below documents the retained sample behavior for local
-private validation:
+unpublished-artifact validation:
 
 ```sh
 COAKKA_ALLOW_PAUSED_RUNTIME=1 ./gradlew :runtime:jvm:basic:run
@@ -765,8 +765,9 @@ Run the currently public runtime v2 samples:
 bash run.sh runtime
 ```
 
-With a private artifact set, `COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime`
-also runs the paused JVM, Python, Node.js, Go, and C# lanes.
+With a local unpublished artifact set,
+`COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime` also runs the paused JVM,
+Python, Node.js, Go, and C# lanes.
 
 Run the C# runtime package smoke directly:
 

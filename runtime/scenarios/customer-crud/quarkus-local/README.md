@@ -18,7 +18,7 @@ coakka.askBlocking(
 ```
 
 The public Quarkus package lane is paused until it is rebuilt against the
-sanitized native runtime surface. With a local/private artifact set, the app
+sanitized native runtime surface. With a local unpublished artifact set, the app
 consumes `coakka.quarkus:coakka-quarkus-extension`; Quarkus owns HTTP/CDI
 lifecycle, and the adapter starts the local CoAkka runtime and registers CDI
 `CoAkkaLocalHandler` beans as local capability routes.

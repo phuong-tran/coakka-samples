@@ -1,11 +1,11 @@
 # Python Runtime Basic
 
 This paused public-lane sample runs a local request/reply echo through the
-Python runtime v2 wheel from a local/private artifact set.
+Python runtime v2 wheel from a local unpublished artifact set.
 
 It demonstrates:
 
-- wheel install from a local/private artifact set
+- wheel install from a local unpublished artifact set
 - embedded native runtime loading
 - runtime version/git diagnostics
 - one local route and one local handler

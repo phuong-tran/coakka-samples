@@ -1,13 +1,13 @@
 # C# Runtime Basic
 
 This paused public-lane sample starts the C# runtime package from a
-local/private artifact set, registers one local customer capability, sends one
+local unpublished artifact set, registers one local customer capability, sends one
 request/reply call through the runtime, then checks that a missing target
 returns a matched deadletter.
 
 It demonstrates:
 
-- NuGet package install from a local/private artifact set
+- NuGet package install from a local unpublished artifact set
 - embedded native runtime loading
 - runtime version/git diagnostics
 - one local route target owned by the .NET process

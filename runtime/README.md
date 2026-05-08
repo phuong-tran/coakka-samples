@@ -117,8 +117,8 @@ Run the public native runtime lane:
 bash run.sh runtime
 ```
 
-Attempt paused language/framework lanes only when validating a local private
-artifact set:
+Attempt paused language/framework lanes only when validating a local
+unpublished artifact set:
 
 ```sh
 COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime

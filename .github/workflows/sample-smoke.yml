@@ -121,7 +121,16 @@ jobs:
             "\\bbackend\\b" \
             "\\bsouthbound\\b" \
             "remote_wire" \
-            "wire_profile"
+            "wire_profile" \
+            "private artifact" \
+            "private publish" \
+            "private source" \
+            "private repo" \
+            "private repository" \
+            "local/private" \
+            "private-publish" \
+            "source-workspace" \
+            "source workspace"
           do
             if git grep -n -I -i -E -- "$pattern" "${paths[@]}"; then
               echo "forbidden public wording found: $pattern" >&2

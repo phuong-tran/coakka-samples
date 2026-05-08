@@ -174,7 +174,7 @@ Flow:
    counters, and an intentional route-miss deadletter.
 
 This scenario uses the Quarkus adapter for lifecycle and local handler
-registration when a local/private artifact set is supplied. Remote/Kubernetes
+registration when a local unpublished artifact set is supplied. Remote/Kubernetes
 mode remains out of scope for this local-first slice.
 
 ### Kotlin Desktop Local

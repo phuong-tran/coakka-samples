@@ -37,12 +37,12 @@ fi
 grep -Fq "artifact checksum mismatch" "${tmp_dir}/stderr" ||
   fail "checksum mismatch did not explain the failure"
 
-unlisted_rel="runtime/private/releases/test/private-runtime.tar.gz"
+unlisted_rel="runtime/unpublished/releases/test/unpublished-runtime.tar.gz"
 unlisted_path="${publish_root}/${unlisted_rel}"
 mkdir -p "$(dirname "${unlisted_path}")"
-printf 'private local artifact\n' >"${unlisted_path}"
-resolved_private="$(coakka_resolve_artifact "${publish_root}" "${unlisted_rel}" "${tmp_dir}/downloads/private-runtime.tar.gz")"
-[[ "${resolved_private}" == "${unlisted_path}" ]] ||
-  fail "expected unlisted local artifact path, got ${resolved_private}"
+printf 'unlisted local artifact\n' >"${unlisted_path}"
+resolved_unlisted="$(coakka_resolve_artifact "${publish_root}" "${unlisted_rel}" "${tmp_dir}/downloads/unpublished-runtime.tar.gz")"
+[[ "${resolved_unlisted}" == "${unlisted_path}" ]] ||
+  fail "expected unlisted local artifact path, got ${resolved_unlisted}"
 
 printf '[resolve-artifact-test] ok\n'

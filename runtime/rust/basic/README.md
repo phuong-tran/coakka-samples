@@ -1,11 +1,11 @@
 # Rust Runtime Basic
 
 This paused public-lane sample unpacks the Rust runtime spike tarball from a
-local/private artifact set and runs its packaged smoke binary.
+local unpublished artifact set and runs its packaged smoke binary.
 
 It demonstrates:
 
-- Rust package install from a local/private artifact set
+- Rust package install from a local unpublished artifact set
 - embedded native runtime loading from the package
 - one local route target owned by the Rust process
 - request/reply from Rust into a registered runtime handler

@@ -14,8 +14,8 @@ COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime node deadletter
 ## Integration Recipe
 
 Install the package through your normal package management path after this lane
-is republished. Until then, the samples resolve a local/private package into a
-temporary workspace only when `COAKKA_ALLOW_PAUSED_RUNTIME=1` is set.
+is republished. Until then, the samples resolve a local unpublished package
+into a temporary workspace only when `COAKKA_ALLOW_PAUSED_RUNTIME=1` is set.
 
 Start one `RuntimeHost` per process:
 

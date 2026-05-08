@@ -19,7 +19,7 @@ exit so the user's global Python installation is not modified.
 ## Integration Recipe
 
 Install the wheel through your normal packaging path after this lane is
-republished. Until then, the samples resolve a local/private wheel into a
+republished. Until then, the samples resolve a local unpublished wheel into a
 temporary directory only when `COAKKA_ALLOW_PAUSED_RUNTIME=1` is set.
 
 Start one `RuntimeHost` per process:
