@@ -1,4 +1,4 @@
-name: sample-smoke
+name: sample-surface
 
 on:
   push:
@@ -11,36 +11,13 @@ permissions:
   contents: read
 
 jobs:
-  smoke:
-    name: ${{ matrix.sample_lane }}
+  surface:
+    name: public sample surface
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-    strategy:
-      fail-fast: false
-      matrix:
-        sample_lane:
-          - logger
-          - runtime
-    env:
-      COAKKA_PUBLISH_ROOT: /tmp/coakka-publish-not-present
-      COAKKA_PUBLISH_RAW_BASE: https://raw.githubusercontent.com/phuong-tran/coakka-publish/main
+    timeout-minutes: 10
     steps:
       - name: Check out samples
         uses: actions/checkout@v4
-
-      - name: Install Linux native dependencies
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: "21"
-
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -52,46 +29,82 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.23.x"
-          cache: false
-
-      - name: Check sample entrypoints
-        env:
-          COAKKA_DOCTOR_NETWORK: "1"
-          COAKKA_PIN_CHECK_NETWORK: "1"
+      - name: Check public entrypoints
         run: |
-          bash scripts/check-artifact-pins.sh
-          bash run.sh doctor
           bash run.sh list
+          bash -n run.sh
+          bash -n logger/run-all.sh
+          bash -n runtime/run-all.sh
+          bash -n scripts/check-artifact-pins.sh
+          bash -n scripts/doctor.sh
+          bash -n scripts/resolve-artifact.sh
+          bash -n scripts/sample-metadata.sh
+          bash -n scripts/sample-utils.sh
+          bash -n scripts/smoke-customer-runtime.sh
+          bash -n scripts/smoke-quarkus-local.sh
+          bash -n scripts/smoke-spring-boot-starter-local.sh
 
-      - name: Run ${{ matrix.sample_lane }} samples from public artifacts
-        env:
-          SAMPLE_LANE: ${{ matrix.sample_lane }}
-        run: bash run.sh "${SAMPLE_LANE}"
-
-      - name: Build runtime customer scenario
-        if: matrix.sample_lane == 'runtime'
+      - name: Check script syntax
         run: |
+          python3 -m py_compile \
+            runtime/python/basic/main.py \
+            runtime/python/deadletter/main.py \
+            runtime/python/hot-reload/main.py \
+            runtime/scenarios/customer-crud/python-desktop-local/app.py \
+            logger/python/basic/main.py \
+            logger/python/pressure/main.py
+          node --check runtime/node/basic/main.mjs
+          node --check runtime/node/deadletter/main.mjs
           node --check runtime/scenarios/customer-crud/spring-boot-node/store.mjs
-          bash runtime/scenarios/customer-crud/spring-boot-starter-local/run.sh check
-          bash runtime/scenarios/customer-crud/quarkus-local/run.sh check
-          bash runtime/scenarios/customer-crud/spring-boot-nodes/run.sh check
-          bash runtime/scenarios/customer-crud/spring-boot-go/run.sh check
-          ./gradlew \
-            :runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-web:bootJar \
-            :runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-store:bootJar
+          node --check runtime/scenarios/customer-crud/spring-boot-nodes/audit.mjs
+          node --check runtime/scenarios/customer-crud/spring-boot-nodes/store.mjs
+          node --check logger/node/basic/main.mjs
+          node --check logger/node/pressure/main.mjs
 
-      - name: Smoke runtime customer scenario
-        if: matrix.sample_lane == 'runtime'
-        run: bash scripts/smoke-customer-runtime.sh
-
-      - name: Smoke Spring Boot starter local scenario
-        if: matrix.sample_lane == 'runtime'
-        run: bash scripts/smoke-spring-boot-starter-local.sh
-
-      - name: Smoke Quarkus local scenario
-        if: matrix.sample_lane == 'runtime'
-        run: bash scripts/smoke-quarkus-local.sh
+      - name: Guard public wording
+        run: |
+          set -euo pipefail
+          paths=(
+            README.md
+            docs
+            logger
+            runtime
+            scripts
+            run.sh
+            build.gradle.kts
+            settings.gradle.kts
+            gradle.properties
+          )
+          for pattern in \
+            "\\binternal_backend\\b" \
+            "\\btransport_dependency\\b" \
+            "io_uring" \
+            "\\bepoll\\b" \
+            "\\bkqueue\\b" \
+            "\\bscheduler\\b" \
+            "work-stealing" \
+            "thread-per-core" \
+            "\\bmailbox\\b" \
+            "lock-free" \
+            "zero-copy" \
+            "zero-gc" \
+            "zero-overhead" \
+            "actor framework" \
+            "heavy template" \
+            "template metaprogramming" \
+            "us/msg" \
+            "µs/msg" \
+            "\\bp99\\b" \
+            "\\blatency\\b" \
+            "\\bmicrobenchmark\\b" \
+            "\\bbenchmark\\b" \
+            "\\bbackend\\b" \
+            "\\bsouthbound\\b" \
+            "remote_wire" \
+            "wire_profile"
+          do
+            if git grep -n -I -i -E -- "$pattern" "${paths[@]}"; then
+              echo "forbidden public wording found: $pattern" >&2
+              exit 1
+            fi
+          done
