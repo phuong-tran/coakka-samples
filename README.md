@@ -4,10 +4,10 @@
 
 Public samples for the CoAkka runtime v2 and logger integration shape.
 
-This repository is intentionally separate from the private source workspaces.
-The current public artifact surface exposes logger packages and the sanitized
-native runtime C ABI package. Runtime JVM, language connector, Spring Boot, and
-Quarkus packages are paused until they are rebuilt and republished against that
+These samples consume artifacts from the public CoAkka publish surface. The
+current public artifact surface exposes logger packages and the sanitized native
+runtime C ABI package. Runtime JVM, language connector, Spring Boot, and Quarkus
+packages are paused until they are rebuilt and republished against that
 sanitized surface. Until then, public runtime execution is limited to native
 C/C++ samples.
 
