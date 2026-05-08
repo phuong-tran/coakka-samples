@@ -44,6 +44,7 @@ jobs:
           bash -n scripts/check-artifact-pins.sh
           bash -n scripts/doctor.sh
           bash -n scripts/resolve-artifact.sh
+          bash -n scripts/test-resolve-artifact.sh
           bash -n scripts/sample-metadata.sh
           bash -n scripts/sample-utils.sh
           bash -n scripts/smoke-customer-runtime.sh
@@ -68,7 +69,9 @@ jobs:
           node --check logger/node/pressure/main.mjs
 
       - name: Check public artifact pins
-        run: COAKKA_PIN_CHECK_NETWORK=1 bash scripts/check-artifact-pins.sh
+        run: |
+          bash scripts/test-resolve-artifact.sh
+          COAKKA_PIN_CHECK_NETWORK=1 bash scripts/check-artifact-pins.sh
 
       - name: Run public quickstart
         run: bash run.sh quickstart
