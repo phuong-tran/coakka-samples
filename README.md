@@ -711,6 +711,14 @@ COAKKA_PUBLISH_ROOT=/path/to/coakka-publish-public bash run.sh runtime native ba
 COAKKA_ALLOW_PAUSED_RUNTIME=1 COAKKA_PUBLISH_ROOT=/path/to/private-publish bash run.sh runtime
 ```
 
+Public package downloads are pinned through
+`coakka-publish-public/artifacts/public-artifacts.tsv`. When a sample resolves
+an artifact from the local public checkout or from the public raw GitHub URL, it
+verifies the artifact SHA256 from that manifest before unpacking or installing
+the package. Local private artifact sets that are not listed in the public
+manifest are still allowed only for paused runtime validation with
+`COAKKA_ALLOW_PAUSED_RUNTIME=1`.
+
 Current public artifact pins:
 
 | Lane | Release |

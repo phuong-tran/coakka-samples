@@ -169,3 +169,6 @@ Artifact-backed native runtime runs can use the public publish checkout. Paused
 language/framework runs require `COAKKA_ALLOW_PAUSED_RUNTIME=1`,
 `COAKKA_PUBLISH_ROOT`, and, for JVM lanes, `COAKKA_PUBLISH_MAVEN_LOCAL` to
 point at a local private artifact set until the public package channel reopens.
+For public non-Maven packages, the sample resolver verifies artifact SHA256
+against `artifacts/public-artifacts.tsv` from the publish surface before the
+package is unpacked or installed.
