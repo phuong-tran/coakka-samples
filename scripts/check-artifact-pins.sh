@@ -57,6 +57,8 @@ validate_manifest_rows() {
   local source_name="$2"
   local line_no=0
   local public_rows=0
+  local seen_paths=$'\n'
+  local seen_labels=$'\n'
   local status label relative_path expected_sha extra
 
   while IFS=$'\t' read -r status label relative_path expected_sha extra || [[ -n "${status:-}" ]]; do
@@ -72,9 +74,24 @@ validate_manifest_rows() {
     if [[ "${relative_path}" == /* || "${relative_path}" == *".."* ]]; then
       fail "${source_name} manifest has unsafe path on row ${line_no}: ${relative_path}"
     fi
+    case "${relative_path}" in
+      logger/*/releases/*|runtime/native/releases/*)
+        ;;
+      *)
+        fail "${source_name} manifest has path outside the current public surface on row ${line_no}: ${relative_path}"
+        ;;
+    esac
+    if [[ "${seen_paths}" == *$'\n'"${relative_path}"$'\n'* ]]; then
+      fail "${source_name} manifest has duplicate artifact path on row ${line_no}: ${relative_path}"
+    fi
+    if [[ "${seen_labels}" == *$'\n'"${label}"$'\n'* ]]; then
+      fail "${source_name} manifest has duplicate artifact label on row ${line_no}: ${label}"
+    fi
     if [[ "${#expected_sha}" -ne 64 || "${expected_sha}" == *[!0-9a-f]* ]]; then
       fail "${source_name} manifest has invalid sha256 on row ${line_no}"
     fi
+    seen_paths+="${relative_path}"$'\n'
+    seen_labels+="${label}"$'\n'
     public_rows=$((public_rows + 1))
   done <"${manifest}"
 
