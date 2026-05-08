@@ -96,7 +96,7 @@ bash run.sh scenarios
 Run a scenario check without changing directories:
 
 ```sh
-bash run.sh scenario customer-crud spring-boot-nodes check
+COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh scenario customer-crud spring-boot-nodes check
 ```
 
 Run:

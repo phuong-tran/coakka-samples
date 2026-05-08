@@ -35,7 +35,9 @@ refresh, rebuild the local handler registry from refreshed beans and apply a new
 local runtime route generation. The HTTP edge should stay unchanged, and local
 development should not need an internal REST service just to feel comfortable.
 
-The sample consumes the published starter artifact:
+The public Spring Boot package lane is paused until it is rebuilt against the
+sanitized native runtime surface. With a local/private artifact set, the sample
+consumes the starter artifact:
 
 ```kotlin
 implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-g432bd75d3e4b")
@@ -45,8 +47,9 @@ That starter depends on the shared runtime JVM artifact
 `coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-g22f571fd955c`; it does not bundle
 or fork a Spring-specific native runtime.
 
-The starter source lives in the connector workspace. This sample only consumes
-the published Maven artifact from `coakka-publish`.
+The starter source lives in the connector workspace. This sample consumes the
+Maven artifact from a local/private publish checkout while the public package
+lane is paused.
 
 ## Before: Internal REST
 

@@ -1,20 +1,21 @@
 # Node.js Runtime Samples
 
-Node.js runtime samples consume the published `coakka-v2-connector-node`
-package tarball. The package includes the native runtime for supported
-platforms.
+Node.js runtime samples document the `coakka-v2-connector-node` package shape.
+This runtime lane is paused for the public artifact set until the package is
+rebuilt against the sanitized native runtime surface.
 
 ## Run
 
 ```sh
-bash run.sh runtime node basic
-bash run.sh runtime node deadletter
+COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime node basic
+COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime node deadletter
 ```
 
 ## Integration Recipe
 
-Install the package through your normal package management path. The samples
-resolve it from `coakka-publish` into a temporary workspace.
+Install the package through your normal package management path after this lane
+is republished. Until then, the samples resolve a local/private package into a
+temporary workspace only when `COAKKA_ALLOW_PAUSED_RUNTIME=1` is set.
 
 Start one `RuntimeHost` per process:
 

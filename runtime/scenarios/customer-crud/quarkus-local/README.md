@@ -4,7 +4,7 @@ This scenario is the Quarkus/Kotlin counterpart to the Spring Boot
 single-process sample.
 
 It keeps HTTP at the browser/API boundary and sends internal customer work
-through the published Quarkus adapter:
+through the Quarkus adapter shape:
 
 ```kotlin
 coakka.askBlocking(
@@ -17,9 +17,11 @@ coakka.askBlocking(
 )
 ```
 
-The app consumes `coakka.quarkus:coakka-quarkus-extension` from `coakka-publish`.
-Quarkus owns HTTP/CDI lifecycle; the adapter starts the local CoAkka runtime and
-registers CDI `CoAkkaLocalHandler` beans as local capability routes.
+The public Quarkus package lane is paused until it is rebuilt against the
+sanitized native runtime surface. With a local/private artifact set, the app
+consumes `coakka.quarkus:coakka-quarkus-extension`; Quarkus owns HTTP/CDI
+lifecycle, and the adapter starts the local CoAkka runtime and registers CDI
+`CoAkkaLocalHandler` beans as local capability routes.
 
 ## Before: Internal REST
 

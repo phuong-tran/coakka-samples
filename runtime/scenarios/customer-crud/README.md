@@ -155,7 +155,9 @@ after the local starter API shape is stable.
 ### Quarkus Local
 
 This is scaffolded under `quarkus-local/` as a Quarkus/Kotlin local-first proof
-that consumes the published `coakka.quarkus:coakka-quarkus-extension` adapter.
+for the `coakka.quarkus:coakka-quarkus-extension` adapter shape. The public
+package lane is paused until it is rebuilt against the sanitized native runtime
+surface.
 
 | Surface | Language | Role | HTTP | Runtime endpoint |
 | --- | --- | --- | --- | --- |
@@ -171,9 +173,9 @@ Flow:
 4. Runtime diagnostics show generation, route count, request/reply
    counters, and an intentional route-miss deadletter.
 
-This scenario uses the published Quarkus adapter for lifecycle and local handler
-registration. Remote/Kubernetes mode remains out of scope for this local-first
-slice.
+This scenario uses the Quarkus adapter for lifecycle and local handler
+registration when a local/private artifact set is supplied. Remote/Kubernetes
+mode remains out of scope for this local-first slice.
 
 ### Kotlin Desktop Local
 

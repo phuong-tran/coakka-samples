@@ -1,25 +1,25 @@
 # JVM Runtime Samples
 
-JVM runtime samples consume the published `coakka-jvm-native-runtime-v2` jar
-from the static Maven repository in `coakka-publish`. The jar is all-in-one for
-supported platforms and embeds the native runtime libraries directly.
+JVM runtime samples document the `coakka-jvm-native-runtime-v2` jar shape. This
+runtime lane is paused for the public artifact set until the jar is rebuilt
+against the sanitized native runtime surface.
 
 ## Run
 
 ```sh
-bash run.sh runtime basic
-bash run.sh runtime jvm java-basic
-bash run.sh runtime jvm deadletter
-bash run.sh runtime jvm java-deadletter
+COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime basic
+COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime jvm java-basic
+COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime jvm deadletter
+COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime jvm java-deadletter
 ```
 
 Direct Gradle runs:
 
 ```sh
-./gradlew :runtime:jvm:basic:run
-./gradlew :runtime:jvm:java-basic:run
-./gradlew :runtime:jvm:deadletter:run
-./gradlew :runtime:jvm:java-deadletter:run
+COAKKA_ALLOW_PAUSED_RUNTIME=1 ./gradlew :runtime:jvm:basic:run
+COAKKA_ALLOW_PAUSED_RUNTIME=1 ./gradlew :runtime:jvm:java-basic:run
+COAKKA_ALLOW_PAUSED_RUNTIME=1 ./gradlew :runtime:jvm:deadletter:run
+COAKKA_ALLOW_PAUSED_RUNTIME=1 ./gradlew :runtime:jvm:java-deadletter:run
 ```
 
 For IDE runs, open the `coakka-samples` repository root as the Gradle project.

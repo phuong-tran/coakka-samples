@@ -1,7 +1,8 @@
 # C# Runtime Samples
 
-C# runtime samples consume the published `CoAkka.Runtime` NuGet package. The
-package includes the native runtime for supported macOS/Linux platforms.
+C# runtime samples document the `CoAkka.Runtime` NuGet package shape. This
+runtime lane is paused for the public artifact set until the package is rebuilt
+against the sanitized native runtime surface.
 
 For a CRUD developer, the point is not to replace ASP.NET Core. Keep HTTP at
 the browser/API edge. Use CoAkka for work that is internal to the application
@@ -16,7 +17,7 @@ packaging.
 ## Run
 
 ```sh
-bash run.sh runtime csharp basic
+COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime csharp basic
 ```
 
 The C# sample expects .NET SDK 10 or newer.
@@ -142,7 +143,7 @@ deadletter, native loading, lifecycle, and diagnostics baseline.
 
 ## What This Sample Proves
 
-- `dotnet` can install `CoAkka.Runtime` from `coakka-publish`.
+- `dotnet` can install `CoAkka.Runtime` from a local/private artifact set.
 - The package can load the native runtime on supported macOS/Linux platforms.
 - A .NET process can start one local `RuntimeHost`.
 - A .NET process can register a local target handler and call it with

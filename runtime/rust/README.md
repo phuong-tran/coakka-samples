@@ -1,7 +1,8 @@
 # Rust Runtime Samples
 
-Rust runtime samples consume the published `coakka-runtime-rs` spike tarball.
-The package includes the native runtime for supported macOS/Linux platforms.
+Rust runtime samples document the `coakka-runtime-rs` spike tarball shape. This
+runtime lane is paused for the public artifact set until the package is rebuilt
+against the sanitized native runtime surface.
 
 This lane is intentionally marked as a spike. It proves the runtime shape before
 claiming a stable Rust API or crates.io-ready package.
@@ -9,7 +10,7 @@ claiming a stable Rust API or crates.io-ready package.
 ## Run
 
 ```sh
-bash run.sh runtime rust basic
+COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime rust basic
 ```
 
 Rust samples expect a working Rust/Cargo toolchain.

@@ -1,11 +1,11 @@
 # Node Runtime Basic
 
-This sample runs a local request/reply echo through the published Node runtime
-v2 package.
+This paused public-lane sample runs a local request/reply echo through the Node
+runtime v2 package from a local/private artifact set.
 
 It demonstrates:
 
-- package install from `coakka-publish`
+- package install from a local/private artifact set
 - embedded native runtime loading
 - runtime version/git diagnostics
 - one local route and one local handler
@@ -15,13 +15,13 @@ It demonstrates:
 Run from this directory:
 
 ```sh
-bash run.sh
+COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh
 ```
 
 Or from the repository root:
 
 ```sh
-bash run.sh runtime node basic
+COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime node basic
 ```
 
 Expected output shape:

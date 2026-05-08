@@ -96,8 +96,9 @@ payloads when a workflow needs a different wire shape.
 When run with a matching local artifact set, local primitive samples and
 cross-process customer scenarios keep business traffic on the runtime path; if
 runtime delivery fails, the UI/API returns an explicit runtime error instead of
-hiding the failure behind a REST fallback. Public artifact-backed execution is
-paused until the package channel is republished.
+hiding the failure behind a REST fallback. The public artifact-backed runtime
+surface is currently limited to native C/C++; language and framework runtime
+samples remain paused until their package channels are republished.
 
 ## Architectural Value
 
@@ -724,7 +725,8 @@ Current public artifact pins:
 | Lane | Release |
 | --- | --- |
 | Logger JVM | `coakka.logger:coakka-jvm-native-logger:0.1.0-gba2a66d98eb5` |
-| Logger | `0.1.0+ba2a66d98eb5` |
+| Logger Python, Node.js, Go, and native C/C++ | `0.1.0+ba2a66d98eb5` |
+| Runtime native C/C++ | `0.1.0+63c346e` |
 
 Paused runtime pins are kept in `scripts/sample-metadata.sh` under
 `COAKKA_PAUSED_ARTIFACT_ROWS` so they do not count as public-required
