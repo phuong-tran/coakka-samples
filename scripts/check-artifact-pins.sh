@@ -6,6 +6,15 @@ repo_root="$(cd "${script_dir}/.." && pwd)"
 source "${script_dir}/sample-metadata.sh"
 
 expected_logger_native="0.1.0+ba2a66d98eb5"
+public_manifest_path="artifacts/public-artifacts.tsv"
+tmp_files=()
+
+cleanup() {
+  if [[ "${#tmp_files[@]}" -gt 0 ]]; then
+    rm -f "${tmp_files[@]}"
+  fi
+}
+trap cleanup EXIT
 
 required_rows=(
   "logger JVM jar|logger/jvm/releases/${expected_logger_native}/coakka-jvm-native-logger-0.1.0.jar"
@@ -43,6 +52,62 @@ artifact_row_exists() {
   return 1
 }
 
+validate_manifest_rows() {
+  local manifest="$1"
+  local source_name="$2"
+  local line_no=0
+  local public_rows=0
+  local status label relative_path expected_sha extra
+
+  while IFS=$'\t' read -r status label relative_path expected_sha extra || [[ -n "${status:-}" ]]; do
+    line_no=$((line_no + 1))
+    [[ -z "${status:-}" || "${status}" == \#* ]] && continue
+
+    if [[ -n "${extra:-}" || -z "${label:-}" || -z "${relative_path:-}" || -z "${expected_sha:-}" ]]; then
+      fail "${source_name} manifest has invalid row ${line_no}"
+    fi
+    if [[ "${status}" != "public" ]]; then
+      fail "${source_name} manifest has unsupported status '${status}' on row ${line_no}"
+    fi
+    if [[ "${relative_path}" == /* || "${relative_path}" == *".."* ]]; then
+      fail "${source_name} manifest has unsafe path on row ${line_no}: ${relative_path}"
+    fi
+    if [[ "${#expected_sha}" -ne 64 || "${expected_sha}" == *[!0-9a-f]* ]]; then
+      fail "${source_name} manifest has invalid sha256 on row ${line_no}"
+    fi
+    public_rows=$((public_rows + 1))
+  done <"${manifest}"
+
+  [[ "${public_rows}" -gt 0 ]] || fail "${source_name} manifest has no public artifact rows"
+}
+
+manifest_row_exists() {
+  local manifest="$1"
+  local needle="$2"
+  local status label relative_path expected_sha extra
+
+  while IFS=$'\t' read -r status label relative_path expected_sha extra || [[ -n "${status:-}" ]]; do
+    [[ -z "${status:-}" || "${status}" == \#* ]] && continue
+    if [[ "${status}" == "public" && "${label}|${relative_path}" == "${needle}" ]]; then
+      return 0
+    fi
+  done <"${manifest}"
+
+  return 1
+}
+
+check_manifest_required_rows() {
+  local manifest="$1"
+  local source_name="$2"
+  local row
+
+  validate_manifest_rows "${manifest}" "${source_name}"
+  for row in "${required_rows[@]}"; do
+    manifest_row_exists "${manifest}" "${row}" ||
+      fail "${source_name} manifest is missing public artifact row: ${row}"
+  done
+}
+
 tracked_source_files() {
   git -C "${repo_root}" ls-files \
     ':!:*.lock' \
@@ -74,12 +139,17 @@ check_stale_patterns() {
 }
 
 check_local_artifacts() {
-  local publish_root row label relative_path
+  local publish_root manifest row label relative_path
   publish_root="$(coakka_default_publish_root "${repo_root}")"
   if [[ ! -d "${publish_root}" ]]; then
     printf '[skip] local public publish checkout not found at %s\n' "${publish_root}"
     return 0
   fi
+
+  manifest="${publish_root}/${public_manifest_path}"
+  [[ -f "${manifest}" ]] ||
+    fail "local public publish checkout is missing artifact manifest: ${public_manifest_path}"
+  check_manifest_required_rows "${manifest}" "local public publish"
 
   for row in "${required_rows[@]}"; do
     IFS='|' read -r label relative_path <<<"${row}"
@@ -101,7 +171,7 @@ check_local_publish_gate() {
 }
 
 check_public_artifacts() {
-  local raw_base row label relative_path
+  local raw_base manifest_tmp row label relative_path
   if [[ "${COAKKA_PIN_CHECK_NETWORK:-0}" != "1" ]]; then
     printf '[skip] public artifact URL checks disabled; set COAKKA_PIN_CHECK_NETWORK=1 to enable\n'
     return 0
@@ -109,6 +179,12 @@ check_public_artifacts() {
   command -v curl >/dev/null 2>&1 || fail "curl is required for COAKKA_PIN_CHECK_NETWORK=1"
 
   raw_base="${COAKKA_PUBLISH_RAW_BASE:-${COAKKA_PUBLISH_RAW_BASE_DEFAULT}}"
+  manifest_tmp="$(mktemp "${TMPDIR:-/tmp}/coakka-public-artifacts.XXXXXX")"
+  tmp_files+=("${manifest_tmp}")
+  curl -fsSL --max-time 10 "${raw_base%/}/${public_manifest_path}" -o "${manifest_tmp}" ||
+    fail "public artifact manifest is missing: ${public_manifest_path}"
+  check_manifest_required_rows "${manifest_tmp}" "public raw"
+
   for row in "${required_rows[@]}"; do
     IFS='|' read -r label relative_path <<<"${row}"
     curl -fsI --max-time 10 "${raw_base%/}/${relative_path}" >/dev/null ||
