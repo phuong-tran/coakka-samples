@@ -29,6 +29,12 @@ jobs:
         with:
           node-version: "22"
 
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
       - name: Check public entrypoints
         run: |
           bash run.sh list
@@ -60,6 +66,15 @@ jobs:
           node --check runtime/scenarios/customer-crud/spring-boot-nodes/store.mjs
           node --check logger/node/basic/main.mjs
           node --check logger/node/pressure/main.mjs
+
+      - name: Check public artifact pins
+        run: COAKKA_PIN_CHECK_NETWORK=1 bash scripts/check-artifact-pins.sh
+
+      - name: Run public quickstart
+        run: bash run.sh quickstart
+
+      - name: Run public native runtime lane
+        run: bash run.sh runtime
 
       - name: Guard public wording
         run: |
