@@ -6,13 +6,47 @@ Public samples for the CoAkka runtime v2 and logger integration shape.
 
 These samples consume artifacts from the public CoAkka publish surface. The
 current public artifact surface exposes logger packages and the sanitized native
-runtime C ABI package. Runtime JVM, language connector, Spring Boot, and Quarkus
-packages are paused until they are rebuilt and republished against that
-sanitized surface. Until then, public runtime execution is limited to native
-C/C++ samples.
+runtime C ABI package.
+
+## Start Here
+
+Run the shortest public path first:
+
+```sh
+bash run.sh quickstart
+bash run.sh runtime native basic
+bash run.sh runtime native pressure
+```
+
+Check your local toolchain without launching a sample:
+
+```sh
+bash run.sh doctor
+```
+
+List every sample:
+
+```sh
+bash run.sh list
+```
+
+## Public Status
+
+| Lane | Public artifact status | First command |
+| --- | --- | --- |
+| Logger JVM | public | `bash run.sh logger basic` |
+| Logger Python | public | `bash run.sh logger python basic` |
+| Logger Node.js | public | `bash run.sh logger node basic` |
+| Logger Go | public | `bash run.sh logger go basic` |
+| Logger native C/C++ | public | `bash run.sh logger native basic` |
+| Runtime native C/C++ | public | `bash run.sh runtime native basic` |
+| Runtime JVM, Python, Node.js, Go, C#, Rust | paused | retained as integration examples |
+| Runtime Spring Boot and Quarkus adapters | paused | retained as integration examples |
 
 ## Table of Contents
 
+- [Start Here](#start-here)
+- [Public Status](#public-status)
 - [Why CoAkka Exists](#why-coakka-exists)
 - [Runtime First](#runtime-first)
 - [Architectural Value](#architectural-value)
@@ -97,8 +131,8 @@ When run with a matching local artifact set, local primitive samples and
 cross-process customer scenarios keep business traffic on the runtime path; if
 runtime delivery fails, the UI/API returns an explicit runtime error instead of
 hiding the failure behind a REST fallback. The public artifact-backed runtime
-surface is currently limited to native C/C++; language and framework runtime
-samples remain paused until their package channels are republished.
+surface is currently native C/C++; language and framework runtime samples are
+retained as integration examples until their package channels are republished.
 
 ## Architectural Value
 
@@ -444,15 +478,18 @@ without requiring the whole application to be rewritten.
 
 ## Quick Start
 
-Run the default quickstart from the repository root:
+Run the default quickstart from the repository root. It checks the local
+toolchain and runs the smallest public-ready JVM logger sample:
+
+```sh
+bash run.sh quickstart
+```
+
+The repository root command is the same quickstart:
 
 ```sh
 bash run.sh
 ```
-
-This checks the local toolchain and runs the smallest public-ready JVM sample:
-
-- `logger basic`
 
 Check what your machine can run without launching a sample:
 
@@ -474,15 +511,16 @@ bash run.sh logger node basic
 bash run.sh logger native basic
 ```
 
-Runtime language/framework samples are paused for public artifact-backed
-execution. They can still be read as integration examples or run with a local
-unpublished artifact set by setting `COAKKA_ALLOW_PAUSED_RUNTIME=1`. Native
-C/C++ runtime samples are available from the public native package:
+Run public runtime native samples:
 
 ```sh
 bash run.sh runtime native basic
 bash run.sh runtime native pressure
 ```
+
+Runtime language/framework samples are retained as integration examples until
+their public artifacts are republished. The public runtime execution path today
+is native C/C++.
 
 Run from inside a sample directory:
 
@@ -522,7 +560,7 @@ Maven repository; package lanes use their ecosystem or native package archives.
 
 If a command is missing, run `bash run.sh doctor`. It reports which language
 lane is affected. Use a local unpublished publish checkout only when validating
-the paused runtime package lanes.
+candidate runtime package lanes.
 
 ## Requirements
 
@@ -668,9 +706,9 @@ logger/
 ## Artifact Source
 
 The current public publish surface supports logger package downloads and the
-sanitized native runtime C ABI package. Runtime JVM, language connector, Spring
-Boot, and Quarkus packages are retained in the samples as paused local
-validation targets until they are rebuilt and republished.
+sanitized native runtime C ABI package. The sample runner resolves public
+artifacts from a sibling `coakka-publish-public` checkout when present, then
+falls back to the public raw GitHub URL.
 
 Logger JVM samples use the Maven repository from the public publish checkout:
 
@@ -703,8 +741,8 @@ COAKKA_PUBLISH_MAVEN_LOCAL=/path/to/coakka-publish-public/maven bash run.sh logg
 ```
 
 Python, Node.js, Go, C#, native C/C++, and non-Maven package lanes first look
-for a sibling `coakka-publish-public` checkout. Paused runtime lanes can still
-be pointed at another package source for candidate validation:
+for a sibling `coakka-publish-public` checkout. Candidate runtime package lanes
+can be pointed at another package source when explicitly enabled:
 
 ```sh
 COAKKA_PUBLISH_ROOT=/path/to/coakka-publish-public bash run.sh logger
@@ -716,9 +754,8 @@ Public package downloads are pinned through
 `coakka-publish-public/artifacts/public-artifacts.tsv`. When a sample resolves
 an artifact from the local public checkout or from the public raw GitHub URL, it
 verifies the artifact SHA256 from that manifest before unpacking or installing
-the package. Local unpublished artifact sets that are not listed in the public
-manifest are still allowed only for paused runtime validation with
-`COAKKA_ALLOW_PAUSED_RUNTIME=1`.
+the package. Unlisted local artifacts are accepted only when
+`COAKKA_ALLOW_PAUSED_RUNTIME=1` is set for candidate-lane validation.
 
 Current public artifact pins:
 
@@ -728,15 +765,15 @@ Current public artifact pins:
 | Logger Python, Node.js, Go, and native C/C++ | `0.1.0+ba2a66d98eb5` |
 | Runtime native C/C++ | `0.1.0+63c346e` |
 
-Paused runtime pins are kept in `scripts/sample-metadata.sh` under
+Candidate runtime pins are kept in `scripts/sample-metadata.sh` under
 `COAKKA_PAUSED_ARTIFACT_ROWS` so they do not count as public-required
 artifacts.
 
 ## Direct Runs
 
-Runtime language/framework direct runs are paused for the public artifact set.
-The expected output below documents the retained sample behavior for local
-unpublished-artifact validation:
+Runtime language/framework direct runs are retained for candidate-lane
+validation. They require `COAKKA_ALLOW_PAUSED_RUNTIME=1` until their public
+artifacts are republished:
 
 ```sh
 COAKKA_ALLOW_PAUSED_RUNTIME=1 ./gradlew :runtime:jvm:basic:run
@@ -766,8 +803,8 @@ bash run.sh runtime
 ```
 
 With a local unpublished artifact set,
-`COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime` also runs the paused JVM,
-Python, Node.js, Go, and C# lanes.
+`COAKKA_ALLOW_PAUSED_RUNTIME=1 bash run.sh runtime` also runs the candidate
+JVM, Python, Node.js, Go, and C# lanes.
 
 Run the C# runtime package smoke directly:
 
@@ -877,7 +914,7 @@ fallback.
 
 GitHub Actions currently runs a public surface check. It verifies script
 syntax, Python/Node sample syntax, sample listing, and wording guards. It does
-not run the paused runtime artifact-backed lane.
+not run candidate runtime package lanes.
 
 ## Diagnostics
 

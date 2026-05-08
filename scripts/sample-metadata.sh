@@ -83,7 +83,7 @@ EOF
   for row in "${COAKKA_SAMPLE_ROWS[@]}"; do
     IFS='|' read -r lane language sample summary <<<"${row}"
     if [[ "${lane}" == "runtime" && "${language}" != "native" ]]; then
-      printf '  %-31s %s (paused until language runtime artifacts are republished)\n' "${lane}/${language}/${sample}" "${summary}"
+      printf '  %-31s %s (candidate lane)\n' "${lane}/${language}/${sample}" "${summary}"
     else
       printf '  %-31s %s\n' "${lane}/${language}/${sample}" "${summary}"
     fi
@@ -101,7 +101,7 @@ coakka_print_scenarios() {
   local row track topology summary
   for row in "${COAKKA_SCENARIO_ROWS[@]}"; do
     IFS='|' read -r track topology summary <<<"${row}"
-    printf '  %-55s %s (paused until runtime artifacts are republished)\n' "runtime/scenarios/${track}/${topology}" "${summary}"
+    printf '  %-55s %s (candidate lane)\n' "runtime/scenarios/${track}/${topology}" "${summary}"
   done
 
   cat <<'EOF'
