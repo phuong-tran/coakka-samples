@@ -15,6 +15,25 @@ python3 bench/run_smoke_load.py \
 The GitHub Actions workflow `bench-smoke` runs the same harness on
 `ubuntu-latest` only when triggered manually.
 
+Every JSON artifact should pass the validator before it is uploaded:
+
+```sh
+python3 bench/validate_smoke_load.py bench/linux-ci/<commit>-<profile>.json
+```
+
+The validator checks common metadata and profile-specific invariants. For
+example, `runtime-python-hot-reload` must finish on generation `2` after
+rejecting stale and invalid route snapshots, and `runtime-native-pressure` must
+show constrained-queue rejection and matching deadletter counts.
+
+## Profiles
+
+| Profile | Command | Evidence |
+| --- | --- | --- |
+| `runtime-native-pressure` | `bash run.sh runtime native pressure` | Bounded native queue pressure, queue rejection, and deadletter accounting. |
+| `runtime-jvm-basic` | `bash run.sh runtime jvm basic` | JVM request/reply delivery and matched response accounting. |
+| `runtime-python-hot-reload` | `bash run.sh runtime python hot-reload` | Route snapshot apply, stale generation rejection, invalid snapshot rejection, and final generation diagnostics. |
+
 ## Result Classes
 
 | Class | Directory | Meaning |
@@ -61,6 +80,7 @@ capacity of CoAkka?
 
 ## Linux Pending Path
 
-The first Linux step should be a GitHub Actions job that emits JSON artifacts
-with the same metadata shape. Later, a self-hosted Linux runner can reuse the
-same output format.
+The first Linux step is the manual GitHub Actions `bench-smoke` workflow. It
+emits validated JSON artifacts with the same metadata shape. Later, a
+self-hosted Linux runner can reuse the same output format under
+`linux-hardware/` for durable benchmark claims.

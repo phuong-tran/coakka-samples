@@ -708,10 +708,14 @@ The current harness is manual:
 
 ```sh
 python3 bench/run_smoke_load.py --profile runtime-native-pressure
+python3 bench/run_smoke_load.py --profile runtime-python-hot-reload
+python3 bench/validate_smoke_load.py bench/linux-ci/<commit>-<profile>.json
 ```
 
 The `bench-smoke` GitHub Actions workflow uses the same JSON format on
-`ubuntu-latest` when triggered through `workflow_dispatch`.
+`ubuntu-latest` when triggered through `workflow_dispatch`. It validates the
+JSON artifact before upload so Linux CI evidence fails closed if the profile
+does not emit the expected diagnostics.
 
 Repository layout:
 
