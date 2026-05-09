@@ -678,7 +678,7 @@ Current gaps:
 | --- | --- |
 | Cross-process route hot reload scenario | Pending beyond the single-process customer route reload sample |
 | Language connector runtime pressure samples | Pending beyond native C runtime pressure |
-| Two-machine Linux walkthrough | Pending: document machine A/B setup, ports, and smoke command |
+| Two-machine Linux walkthrough | Manual setup documented in [`docs/two-machine-linux.md`](docs/two-machine-linux.md); live two-host capture pending |
 | Repeatable benchmark harness | Manual smoke-load harness present; Linux CI workflow is manual; Linux hardware benchmark remains pending |
 
 ### Samples By Language
