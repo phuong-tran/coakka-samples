@@ -1,0 +1,15 @@
+# Route snapshot consumed by `bash run.sh reload-routes`.
+# `next` means the web process applies active generation + 1 so the same file
+# can be reused during local development.
+generation: next
+routes:
+  - target: samples.customer.frontend
+    endpoints:
+      - host: 127.0.0.1
+        port: 19101
+        flags: [LOCAL]
+  - target: samples.customer.store
+    endpoints:
+      - host: 127.0.0.1
+        port: 19102
+        flags: [NONE]

@@ -9,6 +9,7 @@ web_build_task=":runtime:scenarios:customer-crud:spring-boot-spring-boot:custome
 store_build_task=":runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-store:bootJar"
 web_jar="${script_dir}/customer-web/build/libs/customer-web.jar"
 store_jar="${script_dir}/customer-store/build/libs/customer-store.jar"
+routes_file="${script_dir}/routes.yml"
 
 print_usage() {
   cat <<'EOF'
@@ -21,6 +22,7 @@ Usage:
   bash run.sh store
   bash run.sh web
   bash run.sh build
+  bash run.sh reload-routes
   bash run.sh smoke
   bash run.sh stop
 
@@ -71,11 +73,23 @@ run_dev() {
   wait "${web_pid}" "${store_pid}" 2>/dev/null || true
 }
 
+reload_routes() {
+  coakka_require_command curl "Install curl, then retry."
+  coakka_require_file "${routes_file}" "The route hot reload sample needs routes.yml."
+
+  coakka_customer_smoke_request "reload runtime routes from routes.yml" \
+    -X POST http://127.0.0.1:8081/api/customers/runtime/reload-routes \
+    -H 'Content-Type: application/x-yaml' \
+    --data-binary @"${routes_file}"
+}
+
 smoke() {
   coakka_require_command curl "Install curl, then retry."
 
   coakka_customer_smoke_request "read runtime diagnostics" \
     http://127.0.0.1:8081/api/customers/runtime
+
+  reload_routes
 
   coakka_customer_smoke_request "trigger route-miss diagnostic" \
     -X POST http://127.0.0.1:8081/api/customers/route-miss
@@ -120,6 +134,9 @@ case "${1:-}" in
     ;;
   build)
     build_jars
+    ;;
+  reload-routes|reload)
+    reload_routes
     ;;
   smoke)
     smoke

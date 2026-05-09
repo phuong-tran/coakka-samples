@@ -31,6 +31,7 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -43,6 +44,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.server.ResponseStatusException
+import org.yaml.snakeyaml.Yaml
 
 @SpringBootApplication
 @EnableConfigurationProperties(CustomerWebConnectorProperties::class)
@@ -98,6 +101,21 @@ class ManagedConnector(val orchestrator: ConnectorOrchestrator) : AutoCloseable 
         runBlocking { orchestrator.kotlin.shutdown() }
     }
 }
+
+data class RouteReloadPlan(
+    val generation: Long,
+    val routes: List<RuntimeRouteSpec>,
+)
+
+data class RouteReloadView(
+    val status: String,
+    val source: String,
+    val requestedGeneration: Long,
+    val appliedGenerationBefore: Long,
+    val appliedGenerationAfter: Long,
+    val routeCount: Long,
+    val routeTargets: List<String>,
+)
 
 @Configuration
 class CustomerWebConnectorConfiguration {
@@ -264,6 +282,31 @@ class CustomerWebController(
         serviceRole = "customer-web",
     )
 
+    @PostMapping(
+        "/runtime/reload-routes",
+        consumes = [MediaType.TEXT_PLAIN_VALUE, "application/x-yaml", "text/yaml"],
+        produces = [MediaType.APPLICATION_JSON_VALUE],
+    )
+    fun reloadRoutes(@RequestBody routesYaml: String): RouteReloadView {
+        val before = managedConnector.orchestrator.runtimeConfig()
+        val plan = parseRouteReloadPlan(routesYaml, before.appliedGeneration)
+        managedConnector.orchestrator.applySnapshot(
+            generation = plan.generation,
+            routes = plan.routes,
+            sourceConnector = "${properties.systemName}:routes-yml",
+        )
+        val after = managedConnector.orchestrator.runtimeConfig()
+        return RouteReloadView(
+            status = "APPLIED",
+            source = "routes.yml",
+            requestedGeneration = plan.generation,
+            appliedGenerationBefore = before.appliedGeneration,
+            appliedGenerationAfter = after.appliedGeneration,
+            routeCount = after.routeCount,
+            routeTargets = plan.routes.map { it.target },
+        )
+    }
+
     private suspend fun <T : Any> ask(
         payload: Any,
         identity: ConnectorPayloadIdentity,
@@ -281,6 +324,97 @@ class CustomerWebController(
         )
         return objectMapper.readValue(response.payload, responseType)
     }
+}
+
+private fun parseRouteReloadPlan(routesYaml: String, currentGeneration: Long): RouteReloadPlan {
+    val root = Yaml().load<Any>(routesYaml) as? Map<*, *>
+        ?: badRouteReload("routes.yml must contain an object")
+    val generation = parseGeneration(root["generation"], currentGeneration)
+    val routeMaps = root["routes"] as? List<*>
+        ?: badRouteReload("routes.yml requires a routes list")
+    if (routeMaps.isEmpty()) {
+        badRouteReload("routes.yml requires at least one route")
+    }
+    return RouteReloadPlan(
+        generation = generation,
+        routes = routeMaps.mapIndexed { index, value -> parseRoute(index, value) },
+    )
+}
+
+private fun parseGeneration(value: Any?, currentGeneration: Long): Long = when (value) {
+    is Number -> value.toLong()
+    is String -> {
+        if (value == "next") {
+            currentGeneration + 1
+        } else {
+            value.toLongOrNull() ?: badRouteReload("generation must be a positive integer or next")
+        }
+    }
+    else -> badRouteReload("generation must be a positive integer or next")
+}.also {
+    if (it <= currentGeneration) {
+        badRouteReload("generation must be greater than active generation $currentGeneration")
+    }
+}
+
+private fun parseRoute(index: Int, value: Any?): RuntimeRouteSpec {
+    val route = value as? Map<*, *> ?: badRouteReload("routes[$index] must be an object")
+    val target = route["target"] as? String ?: badRouteReload("routes[$index].target is required")
+    if (target.isBlank()) {
+        badRouteReload("routes[$index].target must not be blank")
+    }
+    val endpointValues = route["endpoints"] as? List<*>
+        ?: badRouteReload("routes[$index].endpoints is required")
+    if (endpointValues.isEmpty()) {
+        badRouteReload("routes[$index].endpoints must not be empty")
+    }
+    return RuntimeRouteSpec(
+        target = target,
+        endpoints = endpointValues.mapIndexed { endpointIndex, endpoint ->
+            parseEndpoint(index, endpointIndex, endpoint)
+        },
+    )
+}
+
+private fun parseEndpoint(routeIndex: Int, endpointIndex: Int, value: Any?): RuntimeEndpointSpec {
+    val endpoint = value as? Map<*, *>
+        ?: badRouteReload("routes[$routeIndex].endpoints[$endpointIndex] must be an object")
+    val host = endpoint["host"] as? String
+        ?: badRouteReload("routes[$routeIndex].endpoints[$endpointIndex].host is required")
+    val port = (endpoint["port"] as? Number)?.toInt()
+        ?: badRouteReload("routes[$routeIndex].endpoints[$endpointIndex].port is required")
+    if (host.isBlank()) {
+        badRouteReload("routes[$routeIndex].endpoints[$endpointIndex].host must not be blank")
+    }
+    if (port <= 0) {
+        badRouteReload("routes[$routeIndex].endpoints[$endpointIndex].port must be positive")
+    }
+    return RuntimeEndpointSpec(
+        host = host,
+        port = port,
+        flags = parseEndpointFlags(endpoint["flags"]),
+    )
+}
+
+private fun parseEndpointFlags(value: Any?): Int = when (value) {
+    null -> 0
+    is Number -> value.toInt()
+    is String -> value.split('|', ',', ' ')
+        .filter { it.isNotBlank() }
+        .fold(0) { flags, token -> flags or endpointFlag(token) }
+    is List<*> -> value.fold(0) { flags, token -> flags or parseEndpointFlags(token) }
+    else -> badRouteReload("endpoint flags must be a number, string, or list")
+}
+
+private fun endpointFlag(token: String): Int = when (token.trim().uppercase()) {
+    "NONE" -> 0
+    "LOCAL" -> RuntimeEndpointFlags.LOCAL
+    "UNAVAILABLE" -> RuntimeEndpointFlags.UNAVAILABLE
+    else -> badRouteReload("unsupported endpoint flag: $token")
+}
+
+private fun badRouteReload(message: String): Nothing {
+    throw ResponseStatusException(HttpStatus.BAD_REQUEST, message)
 }
 
 @RestControllerAdvice
@@ -343,6 +477,8 @@ fun runtimeDiagnosticsView(
             "localEndpoint" to localEndpoint,
             "peerEndpoint" to peerEndpoint,
             "businessTransport" to "runtime-only",
+            "routeReloadEndpoint" to "POST /api/customers/runtime/reload-routes",
+            "routeReloadFile" to "runtime/scenarios/customer-crud/spring-boot-spring-boot/routes.yml",
             "createType" to CustomerPayloads.CREATE.messageType,
             "updateType" to CustomerPayloads.UPDATE.messageType,
             "deleteType" to CustomerPayloads.DELETE.messageType,

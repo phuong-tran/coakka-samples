@@ -55,6 +55,18 @@ sample:
 that was fed into the runtime:
 `configuredGeneration`, `localEndpoint`, and `peerEndpoint`.
 
+It also exposes `POST /api/customers/runtime/reload-routes` for applying a
+newer route snapshot while both processes are running. The local development
+snapshot lives in `routes.yml`:
+
+```sh
+bash run.sh reload-routes
+```
+
+The command posts the YAML snapshot to `customer-web`; `customer-web` validates
+that the snapshot generation is newer than the active generation, applies it
+atomically, and returns the generation before and after the apply.
+
 Business responses include `deliveryMode` so smoke tests cannot hide which path
 handled the request:
 
@@ -115,9 +127,9 @@ With both services running:
 bash run.sh smoke
 ```
 
-The smoke creates, updates, lists, and deletes `cust-001` through the web
-service API. It also checks the intentional route-miss diagnostic and fails if
-customer traffic falls back to REST or returns a runtime delivery failure.
+The smoke reloads routes from `routes.yml`, creates, updates, lists, and deletes
+`cust-001` through the web service API. It also checks the intentional route-miss
+diagnostic and fails if customer traffic returns a runtime delivery failure.
 
 ## Stop
 
