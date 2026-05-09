@@ -99,7 +99,7 @@ With the adapter, Quarkus config owns local runtime defaults:
 
 ```kotlin
 dependencies {
-    implementation("coakka.quarkus:coakka-quarkus-extension:0.1.0-g63c346e")
+    implementation("coakka.quarkus:coakka-quarkus-extension:0.1.0-g3362b67")
     implementation("io.quarkus:quarkus-rest-jackson")
 }
 ```

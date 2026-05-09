@@ -157,7 +157,7 @@ after the local starter API shape is stable.
 This is scaffolded under `quarkus-local/` as a Quarkus/Kotlin local-first proof
 for the `coakka.quarkus:coakka-quarkus-extension` adapter shape. The sample
 consumes the public Quarkus extension built against native runtime
-`0.1.0+63c346e`.
+`0.1.0+3362b67`.
 
 | Surface | Language | Role | HTTP | Runtime endpoint |
 | --- | --- | --- | --- | --- |

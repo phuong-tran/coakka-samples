@@ -2,7 +2,7 @@
 
 Rust runtime samples document the `coakka-runtime-rs` spike tarball shape. This
 runtime lane consumes the public Rust spike tarball built against native
-runtime `0.1.0+63c346e`.
+runtime `0.1.0+3362b67`.
 
 This lane is intentionally marked as a spike. It proves the runtime shape before
 claiming a stable Rust API or crates.io-ready package.

@@ -2,7 +2,7 @@
 
 Go runtime samples document the `coakka-v2-connector-go` source package shape.
 This runtime lane consumes the public Go source package built against native
-runtime `0.1.0+63c346e`.
+runtime `0.1.0+3362b67`.
 
 ## Run
 

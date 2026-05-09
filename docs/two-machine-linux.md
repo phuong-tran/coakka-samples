@@ -12,12 +12,10 @@ The browser or smoke command talks to `customer-web`. Customer create, update,
 delete, and list requests are intended to move from `customer-web` to
 `customer-store` through the runtime route.
 
-Current public artifact note: this walkthrough can validate the Linux setup,
-route configuration, process ownership, and explicit delivery failure shape
-with the local/runtime-only artifact set. End-to-end cross-host CRUD requires a
-cross-host delivery-capable runtime package. Until that package is present,
-business requests should fail visibly instead of falling back to a store REST
-API.
+Current public artifact note: this walkthrough uses the public TCP transport
+candidate package. It is intended to validate Linux setup, route configuration,
+process ownership, and end-to-end runtime delivery without a store REST API
+fallback.
 
 ## Requirements
 
@@ -88,10 +86,9 @@ Run on machine B while both processes are up:
 bash run.sh runtime/scenarios/customer-crud/spring-boot-spring-boot smoke
 ```
 
-With the current local/runtime-only artifact set, this command is expected to
-surface an explicit runtime delivery failure for customer business traffic. That
-is still useful: it proves the sample does not hide the missing delivery path
-behind HTTP fallback behavior.
+The smoke command should return customer business responses with runtime
+delivery. If delivery fails, the sample should surface an explicit runtime
+error instead of falling back to a store REST API.
 
 Inspect the runtime route config exposed by the web process:
 
@@ -102,8 +99,7 @@ curl -fsS http://127.0.0.1:8081/api/customers/runtime | python3 -m json.tool
 The response should show `localEndpoint` on machine B and `peerEndpoint` on
 machine A.
 
-When a cross-host delivery-capable runtime package is installed, business
-responses should include:
+Successful business responses should include:
 
 ```json
 "deliveryMode": "runtime"
