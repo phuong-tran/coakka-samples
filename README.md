@@ -830,6 +830,9 @@ Current public artifact pins:
 | Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.1.0-ga671b3a` |
 | Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.1.0-ga671b3a` |
 
+The matching artifact note is published at
+`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-05-09-runtime-a671b3a.md`.
+
 ## Direct Runs
 
 Runtime language/framework direct runs consume the public runtime artifacts:
