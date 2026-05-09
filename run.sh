@@ -41,6 +41,8 @@ Logger languages:
   python
   node
   go
+  csharp
+  rust
   native
 
 Runtime languages:
@@ -151,7 +153,7 @@ case "$1" in
     elif [[ "$#" -eq 3 ]]; then
       run_sample_path "logger/$2/$3"
     else
-      coakka_die "Usage: bash run.sh logger [<jvm|python|node|go|native>] <sample>"
+      coakka_die "Usage: bash run.sh logger [<jvm|python|node|go|csharp|rust|native>] <sample>"
     fi
     ;;
   runtime)

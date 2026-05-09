@@ -58,4 +58,6 @@ Current samples:
 | Python | `python/basic`, `python/pressure` | published Python wheel |
 | Node.js | `node/basic`, `node/pressure` | published Node package |
 | Go | `go/basic`, `go/pressure` | published Go source package |
+| C# | `csharp/basic`, `csharp/pressure` | published C# NuGet package |
+| Rust | `rust/basic`, `rust/pressure` | published Rust spike package |
 | Native C/C++ | `native/basic`, `native/pressure` | published native C/C++ archive |

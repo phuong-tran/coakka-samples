@@ -34,6 +34,18 @@ bash "${script_dir}/go/basic/run.sh"
 echo "[logger/run-all] Go pressure"
 bash "${script_dir}/go/pressure/run.sh"
 
+echo "[logger/run-all] C# basic"
+bash "${script_dir}/csharp/basic/run.sh"
+
+echo "[logger/run-all] C# pressure"
+bash "${script_dir}/csharp/pressure/run.sh"
+
+echo "[logger/run-all] Rust basic"
+bash "${script_dir}/rust/basic/run.sh"
+
+echo "[logger/run-all] Rust pressure"
+bash "${script_dir}/rust/pressure/run.sh"
+
 echo "[logger/run-all] Native C/C++ basic"
 bash "${script_dir}/native/basic/run.sh"
 
