@@ -64,6 +64,8 @@ bash run.sh list
 - [Integration Guide](#integration-guide)
 - [Future Connector Scope](#future-connector-scope)
 - [Samples](#samples)
+- [Runtime Capability Samples](#runtime-capability-samples)
+- [Benchmark And Load Status](#benchmark-and-load-status)
 - [Artifact Source](#artifact-source)
 - [Direct Runs](#direct-runs)
 - [CI](#ci)
@@ -305,9 +307,10 @@ runtime failure is visible instead of hidden by a second transport.
 Store and audit services run headless; even the Spring Boot store is configured
 as a non-web application, so `8081` is the only browser/API HTTP surface.
 
-The main remaining scenario gap is a route hot reload demo: a `routes.yml`
-example, a `reload-routes` command, and diagnostics that show the active
-generation changing after an atomic route snapshot apply.
+The route hot reload capability is covered by `runtime/python/hot-reload`.
+The main remaining scenario gap is a customer CRUD route hot reload demo: a
+`routes.yml` example, a `reload-routes` command, and diagnostics that show the
+active generation changing after an atomic route snapshot apply.
 
 ## Runtime Scenarios
 
@@ -654,7 +657,31 @@ a clear worker-host story.
 
 ## Samples
 
-Current sample matrix:
+### Runtime Capability Samples
+
+Runtime features are listed separately from language coverage so a capability
+does not look missing just because it is demonstrated through one host
+connector first.
+
+| Capability | Public sample | What it proves |
+| --- | --- | --- |
+| Request/reply | JVM, Python, Node.js, Go, C#, Rust, native C/C++ basic samples | Typed local request/reply and runtime counters |
+| Deadletter | JVM, Java, Python, Node.js, Go deadletter samples; native basic route miss | Missing-route accounting and matched pending requests |
+| Route hot reload | `runtime/python/hot-reload` | Apply a newer route snapshot, reject stale/invalid snapshots, and observe generation changes |
+| Queue pressure | `runtime/native/pressure` | Bounded runtime queue rejection and deadletter counters |
+| Logger pressure | JVM, Java, Python, Node.js, Go, native logger pressure samples | Bounded logger queue rejection and dropped counters |
+| Customer CRUD scenarios | Spring Boot, Quarkus, desktop, Node.js, Go, and C# scenario tracks | Real workflow shape across local and cross-process runtime boundaries |
+
+Current gaps:
+
+| Gap | Status |
+| --- | --- |
+| Customer CRUD route hot reload scenario | Pending: add `routes.yml`, `reload-routes`, and active generation diagnostics |
+| Language connector runtime pressure samples | Pending beyond native C runtime pressure |
+| Two-machine Linux walkthrough | Pending: document machine A/B setup, ports, and smoke command |
+| Repeatable benchmark harness | Pending for Linux; macOS numbers, if shown, are reference-only smoke-load numbers |
+
+### Samples By Language
 
 | Lane | JVM | Python | Node.js | Go | C# | Rust | Native C/C++ |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -663,6 +690,14 @@ Current sample matrix:
 | Runtime v2 pressure | - | - | - | - | - | - | `runtime/native/pressure` |
 | Logger basic | `logger/jvm/basic`, `logger/jvm/java-basic` | `logger/python/basic` | `logger/node/basic` | `logger/go/basic` | - | - | `logger/native/basic` |
 | Logger pressure | `logger/jvm/pressure`, `logger/jvm/java-pressure` | `logger/python/pressure` | `logger/node/pressure` | `logger/go/pressure` | - | - | `logger/native/pressure` |
+
+### Benchmark And Load Status
+
+This repository does not publish production benchmark claims yet. Any macOS
+numbers added here should be treated only as reference smoke-load output for
+checking sample shape and catching obvious regressions on a developer machine.
+Linux benchmark coverage is pending and should be the source of any durable
+runtime performance claims.
 
 Repository layout:
 
@@ -676,6 +711,7 @@ runtime/
   python/
     basic/
     deadletter/
+    hot-reload/
   node/
     basic/
     deadletter/
@@ -683,6 +719,8 @@ runtime/
     basic/
     deadletter/
   csharp/
+    basic/
+  rust/
     basic/
   native/
     basic/

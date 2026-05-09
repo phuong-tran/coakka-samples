@@ -132,8 +132,6 @@ jobs:
             "µs/msg" \
             "\\bp99\\b" \
             "\\blatency\\b" \
-            "\\bmicrobenchmark\\b" \
-            "\\bbenchmark\\b" \
             "\\bbackend\\b" \
             "\\bsouthbound\\b" \
             "remote_wire" \
