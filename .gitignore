@@ -21,6 +21,10 @@ out/
 ### Kotlin ###
 .kotlin
 
+### Python ###
+__pycache__/
+*.py[cod]
+
 ### Eclipse ###
 .apt_generated
 .classpath

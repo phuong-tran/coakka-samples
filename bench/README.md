@@ -3,6 +3,18 @@
 This directory is reserved for repeatable load and benchmark support. It does
 not contain production benchmark claims yet.
 
+Run a local reference profile:
+
+```sh
+python3 bench/run_smoke_load.py \
+  --profile runtime-native-pressure \
+  --result-class macos-smoke \
+  --output bench/macos-smoke/local-runtime-native-pressure.json
+```
+
+The GitHub Actions workflow `bench-smoke` runs the same harness on
+`ubuntu-latest` only when triggered manually.
+
 ## Result Classes
 
 | Class | Directory | Meaning |
@@ -45,7 +57,7 @@ macOS is acceptable for development guardrails:
 
 These runs should answer: did this change obviously regress the sample shape on
 the same developer machine? They should not answer: what is the production
-throughput of CoAkka?
+capacity of CoAkka?
 
 ## Linux Pending Path
 

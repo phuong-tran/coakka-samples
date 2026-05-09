@@ -679,7 +679,7 @@ Current gaps:
 | Cross-process route hot reload scenario | Pending beyond the single-process customer route reload sample |
 | Language connector runtime pressure samples | Pending beyond native C runtime pressure |
 | Two-machine Linux walkthrough | Pending: document machine A/B setup, ports, and smoke command |
-| Repeatable benchmark harness | Pending for Linux; macOS numbers, if shown, are reference-only smoke-load numbers |
+| Repeatable benchmark harness | Manual smoke-load harness present; Linux CI workflow is manual; Linux hardware benchmark remains pending |
 
 ### Samples By Language
 
@@ -700,9 +700,18 @@ Linux benchmark coverage is pending and should be the source of any durable
 runtime performance claims.
 
 Benchmark and load result policy lives in [`bench/README.md`](bench/README.md).
-When the harness is added, keep macOS reference output under `bench/macos-smoke/`
-and Linux runner output under `bench/linux-ci/` so readers do not confuse local
-development guardrails with production performance claims.
+The harness keeps macOS reference output under `bench/macos-smoke/` and Linux
+runner output under `bench/linux-ci/` so readers do not confuse local development
+guardrails with production performance claims.
+
+The current harness is manual:
+
+```sh
+python3 bench/run_smoke_load.py --profile runtime-native-pressure
+```
+
+The `bench-smoke` GitHub Actions workflow uses the same JSON format on
+`ubuntu-latest` when triggered through `workflow_dispatch`.
 
 Repository layout:
 

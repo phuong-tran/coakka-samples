@@ -1,0 +1,56 @@
+name: bench-smoke
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: Smoke-load profile to run
+        required: true
+        default: runtime-native-pressure
+        type: choice
+        options:
+          - runtime-native-pressure
+          - runtime-jvm-basic
+          - runtime-python-hot-reload
+      repetitions:
+        description: Measured repetitions
+        required: true
+        default: "3"
+
+permissions:
+  contents: read
+
+jobs:
+  linux-ci-smoke:
+    name: Linux CI smoke-load
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out samples
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Run smoke-load profile
+        run: |
+          python3 bench/run_smoke_load.py \
+            --profile "${{ inputs.profile }}" \
+            --result-class linux-ci \
+            --warmup-runs 1 \
+            --repetitions "${{ inputs.repetitions }}" \
+            --output "bench/linux-ci/${{ github.sha }}-${{ inputs.profile }}.json"
+
+      - name: Upload JSON result
+        uses: actions/upload-artifact@v4
+        with:
+          name: "coakka-${{ inputs.profile }}-${{ github.sha }}"
+          path: "bench/linux-ci/${{ github.sha }}-${{ inputs.profile }}.json"
