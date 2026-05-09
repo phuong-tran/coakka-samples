@@ -9,8 +9,15 @@ machines:
 | B | `customer-web` | `samples.customer.frontend` | `19101` | `8081` |
 
 The browser or smoke command talks to `customer-web`. Customer create, update,
-delete, and list requests are delivered from `customer-web` to
+delete, and list requests are intended to move from `customer-web` to
 `customer-store` through the runtime route.
+
+Current public artifact note: this walkthrough can validate the Linux setup,
+route configuration, process ownership, and explicit delivery failure shape
+with the local/runtime-only artifact set. End-to-end cross-host CRUD requires a
+cross-host delivery-capable runtime package. Until that package is present,
+business requests should fail visibly instead of falling back to a store REST
+API.
 
 ## Requirements
 
@@ -81,6 +88,11 @@ Run on machine B while both processes are up:
 bash run.sh runtime/scenarios/customer-crud/spring-boot-spring-boot smoke
 ```
 
+With the current local/runtime-only artifact set, this command is expected to
+surface an explicit runtime delivery failure for customer business traffic. That
+is still useful: it proves the sample does not hide the missing delivery path
+behind HTTP fallback behavior.
+
 Inspect the runtime route config exposed by the web process:
 
 ```sh
@@ -88,7 +100,10 @@ curl -fsS http://127.0.0.1:8081/api/customers/runtime | python3 -m json.tool
 ```
 
 The response should show `localEndpoint` on machine B and `peerEndpoint` on
-machine A. Business responses should include:
+machine A.
+
+When a cross-host delivery-capable runtime package is installed, business
+responses should include:
 
 ```json
 "deliveryMode": "runtime"
@@ -106,7 +121,8 @@ bash run.sh runtime/scenarios/customer-crud/spring-boot-spring-boot stop
 
 ## Troubleshooting
 
-If smoke returns a runtime delivery failure, check these first:
+If a cross-host delivery-capable runtime package is installed and smoke returns
+a runtime delivery failure, check these first:
 
 - `STORE_HOST` and `WEB_HOST` are the addresses the other machine can reach.
 - TCP `19101`, `19102`, and `8081` are allowed by the host firewall.

@@ -91,9 +91,11 @@ They run web, desktop, store, and audit shapes and expose clear runtime
 diagnostics. The single-process, starter-local, Quarkus-local, and desktop
 topologies give successful CRUD paths through local runtime capabilities
 without an internal store REST API. The cross-process web-to-store path is
-runtime-only and uses runtime remote delivery. If delivery fails, samples
-return explicit runtime errors instead of hiding the failure behind a REST
-fallback.
+runtime-only and is wired for cross-host delivery. With the current
+local/runtime-only public artifact set, those cross-process topologies act as
+route wiring and error-visibility samples until a cross-host delivery-capable
+runtime package is installed. If delivery fails, samples return explicit
+runtime errors instead of hiding the failure behind a REST fallback.
 
 For production-facing integration guidance, read:
 
