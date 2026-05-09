@@ -564,8 +564,9 @@ bash run.sh runtime/scenarios/customer-crud/spring-boot-node smoke
 ```
 
 The scripts create temporary install/build directories for Python, Node.js, Go,
-C#, and native C/C++ package examples. JVM samples resolve artifacts through a
-Maven repository; package lanes use their ecosystem or native package archives.
+C#, Rust, and native C/C++ package examples. JVM samples resolve artifacts
+through a Maven repository; package lanes use their ecosystem or native package
+archives.
 
 If a command is missing, run `bash run.sh doctor`. It reports which language
 lane is affected. Use `COAKKA_PUBLISH_ROOT` to point samples at a local public
@@ -582,7 +583,8 @@ Install only the toolchain for the language you want to try:
 | Node.js | Node.js 20 or newer with `npm` |
 | Go logger | Go 1.22 or newer |
 | Go runtime v2 | Go 1.23 or newer |
-| C# runtime | .NET SDK 10 or newer |
+| C# samples | .NET SDK 10 or newer |
+| Rust samples | Rust/Cargo 1.74 or newer |
 | Native C/C++ samples | CMake plus C and C++ compilers |
 
 The scripts check these commands before running and print a direct error when a
@@ -632,8 +634,8 @@ Language-specific entry points:
 - [Go runtime samples](runtime/go/README.md)
 - [C# runtime samples](runtime/csharp/README.md)
 - [Rust runtime samples](runtime/rust/README.md)
+- [Logger samples](logger/README.md)
 - [Native C/C++ runtime samples](runtime/native/README.md)
-- [Native C/C++ logger samples](logger/native/README.md)
 
 ## Future Connector Scope
 
@@ -669,7 +671,7 @@ connector first.
 | Deadletter | JVM, Java, Python, Node.js, Go deadletter samples; native basic route miss | Missing-route accounting and matched pending requests |
 | Route hot reload | `runtime/python/hot-reload`; `runtime/scenarios/customer-crud/spring-boot-single-process/routes.yml` and `runtime/scenarios/customer-crud/spring-boot-spring-boot/routes.yml` with `bash run.sh reload-routes` | Apply a newer route snapshot, reject stale/invalid snapshots, and observe generation changes |
 | Queue pressure | `runtime/native/pressure`; status notes in [`runtime/README.md`](runtime/README.md) | Bounded runtime queue rejection and deadletter counters at the public C ABI intake boundary |
-| Logger pressure | JVM, Java, Python, Node.js, Go, native logger pressure samples | Bounded logger queue rejection and dropped counters |
+| Logger pressure | JVM, Java, Python, Node.js, Go, C#, Rust, native logger pressure samples | Bounded logger queue rejection and dropped counters |
 | Customer CRUD scenarios | Spring Boot, Quarkus, desktop, Node.js, Go, and C# scenario tracks | Real workflow shape across local and cross-process runtime boundaries |
 
 Current gaps:
@@ -758,6 +760,12 @@ logger/
     basic/
     pressure/
   go/
+    basic/
+    pressure/
+  csharp/
+    basic/
+    pressure/
+  rust/
     basic/
     pressure/
   native/
@@ -932,7 +940,8 @@ The JVM logger lane also includes Java basic and pressure samples:
 
 The exact sequence number can change if the sample is extended.
 
-Run every logger sample across JVM, Python, Node.js, Go, and native C/C++:
+Run every logger sample across JVM, Python, Node.js, Go, C#, Rust, and native
+C/C++:
 
 ```sh
 bash run.sh logger
@@ -971,8 +980,8 @@ fallback.
 ## CI
 
 GitHub Actions currently runs a public surface check. It verifies script
-syntax, Python/Node sample syntax, sample listing, selected runtime smoke
-samples, and wording guards.
+syntax, Python/Node sample syntax, sample listing, artifact pins, selected
+logger package smoke samples, and selected runtime smoke samples.
 
 ## Diagnostics
 
@@ -980,9 +989,9 @@ If native loading fails, first check:
 
 - the selected publish repo path
 - the relevant `manifest.json` under the local publish checkout
-- Runtime v2 JVM/Python/Node.js/Go samples use all-in-one language artifacts
-  for supported platforms; no separate per-platform native download is required
-  for those language lanes.
+- Runtime v2 and logger JVM/Python/Node.js/Go/C#/Rust samples use all-in-one
+  language artifacts for supported platforms; no separate per-platform native
+  download is required for those language lanes.
 - Native C/C++ samples use the published native archive and select the current
   platform with CMake.
 - whether the current OS/architecture is one of:
