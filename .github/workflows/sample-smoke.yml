@@ -95,6 +95,7 @@ jobs:
             logger
             runtime
             scripts
+            bench
             run.sh
             build.gradle.kts
             settings.gradle.kts

@@ -699,6 +699,11 @@ checking sample shape and catching obvious regressions on a developer machine.
 Linux benchmark coverage is pending and should be the source of any durable
 runtime performance claims.
 
+Benchmark and load result policy lives in [`bench/README.md`](bench/README.md).
+When the harness is added, keep macOS reference output under `bench/macos-smoke/`
+and Linux runner output under `bench/linux-ci/` so readers do not confuse local
+development guardrails with production performance claims.
+
 Repository layout:
 
 ```text
