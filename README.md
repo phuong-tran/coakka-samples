@@ -393,7 +393,7 @@ is actually useful.
 Spring Boot uses the public starter artifact:
 
 ```kotlin
-implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-g3362b67")
+implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-ga671b3a")
 ```
 
 ```kotlin
@@ -426,7 +426,7 @@ fun create(@RequestBody request: CustomerDraft): MutationResponse {
 Quarkus follows the same shape through the public extension artifact:
 
 ```kotlin
-implementation("coakka.quarkus:coakka-quarkus-extension:0.1.0-g3362b67")
+implementation("coakka.quarkus:coakka-quarkus-extension:0.1.0-ga671b3a")
 ```
 
 ```kotlin
@@ -824,11 +824,11 @@ Current public artifact pins:
 | --- | --- |
 | Logger JVM | `coakka.logger:coakka-jvm-native-logger:0.1.0-gba2a66d98eb5` |
 | Logger Python, Node.js, Go, and native C/C++ | `0.1.0+ba2a66d98eb5` |
-| Runtime native C/C++ | `0.1.0+3362b67` |
-| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-g3362b67` |
-| Runtime Python, Node.js, Go, C#, and Rust | `0.1.0+3362b67` |
-| Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.1.0-g3362b67` |
-| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.1.0-g3362b67` |
+| Runtime native C/C++ | `0.1.0+a671b3a` |
+| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-ga671b3a` |
+| Runtime Python, Node.js, Go, C#, and Rust | `0.1.0+a671b3a` |
+| Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.1.0-ga671b3a` |
+| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.1.0-ga671b3a` |
 
 ## Direct Runs
 

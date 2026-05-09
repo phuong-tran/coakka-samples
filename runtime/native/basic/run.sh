@@ -26,7 +26,7 @@ coakka_native_platform() {
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
-artifact_rel="runtime/native/releases/0.1.0+3362b67/coakka-runtime-native-v2-0.1.0.tar.gz"
+artifact_rel="runtime/native/releases/0.1.0+a671b3a/coakka-runtime-native-v2-0.1.0.tar.gz"
 package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-runtime-native-v2-0.1.0.tar.gz")"
 mkdir -p "${tmp_dir}/package"
 tar -C "${tmp_dir}/package" -xzf "${package_path}"

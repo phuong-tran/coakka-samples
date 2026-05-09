@@ -2,7 +2,7 @@
 
 JVM runtime samples document the `coakka-jvm-native-runtime-v2` jar shape. This
 runtime lane consumes the public JVM runtime jar built against native runtime
-`0.1.0+3362b67`.
+`0.1.0+a671b3a`.
 
 ## Run
 
@@ -100,7 +100,7 @@ repositories {
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-g3362b67")
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-ga671b3a")
 }
 ```
 

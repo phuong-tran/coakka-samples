@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-g3362b67")
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-ga671b3a")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 }
 

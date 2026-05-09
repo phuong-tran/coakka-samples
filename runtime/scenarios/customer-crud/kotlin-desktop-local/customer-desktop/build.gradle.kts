@@ -5,7 +5,7 @@ plugins {
 
 dependencies {
     implementation(project(":runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-contract"))
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-g3362b67")
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-ga671b3a")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 }

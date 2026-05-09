@@ -2,7 +2,7 @@
 
 Node.js runtime samples document the `coakka-v2-connector-node` package shape.
 This runtime lane consumes the public Node.js package built against native
-runtime `0.1.0+3362b67`.
+runtime `0.1.0+a671b3a`.
 
 ## Run
 

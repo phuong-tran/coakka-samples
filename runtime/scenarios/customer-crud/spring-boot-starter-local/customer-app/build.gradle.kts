@@ -7,7 +7,7 @@ plugins {
 
 dependencies {
     implementation(project(":runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-contract"))
-    implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-g3362b67")
+    implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-ga671b3a")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 }

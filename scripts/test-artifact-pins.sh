@@ -84,7 +84,7 @@ grep -Fq "unsafe path" "${test_output}" ||
   fail "missing unsafe path manifest error"
 
 duplicate_path_root="$(make_publish_root duplicate-path)"
-runtime_artifact="runtime/native/releases/0.1.0+3362b67/coakka-runtime-native-v2-0.1.0.tar.gz"
+runtime_artifact="runtime/native/releases/0.1.0+a671b3a/coakka-runtime-native-v2-0.1.0.tar.gz"
 runtime_sha="$(sha256_file "${duplicate_path_root}/${runtime_artifact}")"
 cat >>"${duplicate_path_root}/artifacts/public-artifacts.tsv" <<EOF
 public	runtime Native package duplicate	${runtime_artifact}	${runtime_sha}
