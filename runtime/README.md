@@ -3,7 +3,7 @@
 Runtime samples demonstrate CoAkka runtime v2 as a shared native runtime
 contract consumed through host-language connectors.
 
-The public publish surface exposes logger packages, the sanitized native
+The public publish surface exposes logger packages, the public native
 runtime C ABI package, runtime JVM/language connector packages, and the Spring
 Boot and Quarkus adapters. These samples consume those public artifacts.
 

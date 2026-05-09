@@ -5,7 +5,7 @@
 Public samples for the CoAkka runtime v2 and logger integration shape.
 
 These samples consume artifacts from the public CoAkka publish surface. The
-current public artifact surface exposes logger packages, the sanitized native
+current public artifact surface exposes logger packages, the public native
 runtime C ABI package, runtime JVM/language connector packages, and the Spring
 Boot and Quarkus adapters.
 
@@ -776,7 +776,7 @@ logger/
 ## Artifact Source
 
 The current public publish surface supports logger package downloads and the
-sanitized native runtime C ABI package. The sample runner resolves public
+public native runtime C ABI package. The sample runner resolves public
 artifacts from a sibling `coakka-publish-public` checkout when present, then
 falls back to the public raw GitHub URL.
 

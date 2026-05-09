@@ -12,9 +12,9 @@ are intentionally small, but the integration shape should stay the same:
 
 ## Current Public Transport
 
-The public publish surface currently exposes logger packages, the sanitized
-native runtime C ABI package, runtime JVM/language connector packages, and the
-Spring Boot and Quarkus adapters. With a matching public artifact checkout,
+The public publish surface currently exposes logger packages, the public native
+runtime C ABI package, runtime JVM/language connector packages, and the Spring
+Boot and Quarkus adapters. With a matching public artifact checkout,
 local in-process request/reply samples and cross-process customer scenarios keep
 business traffic on the runtime path.
 
