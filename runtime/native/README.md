@@ -35,3 +35,8 @@ The pressure sample uses the public C ABI from C with `queueCapacity=2` and
 `strictNoDrop=true`. It submits a burst through the runtime request pipe and
 verifies that bounded queue pressure becomes queue-rejected deadletters and
 counters instead of silent drops or unbounded growth.
+
+This is the current source of runtime intake-pressure evidence in the public
+sample set. Language connector samples should not copy this result by wrapping
+the C sample; they need connector-owned pressure hooks so the result proves the
+connector boundary as well as the native runtime boundary.

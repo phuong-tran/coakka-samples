@@ -53,6 +53,21 @@ Current samples:
 | Rust | `rust/basic` | public Rust spike tarball | echo and route-miss deadletter |
 | Native C/C++ | `native/basic`, `native/pressure` | native C ABI archive | route snapshot, route-miss deadletter, and bounded pressure counters |
 
+## Runtime Pressure Status
+
+`runtime/native/pressure` is the executable pressure sample for the runtime
+intake boundary. It uses the public C ABI directly with `queueCapacity=2` and
+`strictNoDrop=true`, submits a burst through the runtime request pipe, and
+verifies queue-rejected deadletters plus queue counters.
+
+The higher-level connector samples are listed separately because they exercise a
+different boundary. JVM, Python, Node.js, Go, C#, and Rust samples currently
+cover request/reply, route-miss deadletters, and route snapshot hot reload where
+that connector exposes it. They intentionally do not claim native intake
+pressure until the public connector surface exposes a repeatable pressure hook
+that can produce the same queue-rejected evidence without bypassing connector
+ownership.
+
 Scenario track:
 
 | Scenario | Purpose |

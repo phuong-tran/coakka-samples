@@ -668,7 +668,7 @@ connector first.
 | Request/reply | JVM, Python, Node.js, Go, C#, Rust, native C/C++ basic samples | Typed local request/reply and runtime counters |
 | Deadletter | JVM, Java, Python, Node.js, Go deadletter samples; native basic route miss | Missing-route accounting and matched pending requests |
 | Route hot reload | `runtime/python/hot-reload`; `runtime/scenarios/customer-crud/spring-boot-single-process/routes.yml` and `runtime/scenarios/customer-crud/spring-boot-spring-boot/routes.yml` with `bash run.sh reload-routes` | Apply a newer route snapshot, reject stale/invalid snapshots, and observe generation changes |
-| Queue pressure | `runtime/native/pressure` | Bounded runtime queue rejection and deadletter counters |
+| Queue pressure | `runtime/native/pressure`; status notes in [`runtime/README.md`](runtime/README.md) | Bounded runtime queue rejection and deadletter counters at the public C ABI intake boundary |
 | Logger pressure | JVM, Java, Python, Node.js, Go, native logger pressure samples | Bounded logger queue rejection and dropped counters |
 | Customer CRUD scenarios | Spring Boot, Quarkus, desktop, Node.js, Go, and C# scenario tracks | Real workflow shape across local and cross-process runtime boundaries |
 
@@ -677,7 +677,7 @@ Current gaps:
 | Gap | Status |
 | --- | --- |
 | Cross-process route hot reload scenario | Route apply covered by `runtime/scenarios/customer-crud/spring-boot-spring-boot/routes.yml`; live cross-host delivery capture pending |
-| Language connector runtime pressure samples | Pending beyond native C runtime pressure |
+| Language connector runtime pressure samples | Tracked separately from native intake pressure; current public connector samples cover request/reply, deadletter, and hot reload |
 | Two-machine Linux walkthrough | Manual setup documented in [`docs/two-machine-linux.md`](docs/two-machine-linux.md); live two-host capture pending |
 | Repeatable benchmark harness | Manual smoke-load harness present; Linux CI workflow is manual; Linux hardware benchmark remains pending |
 
