@@ -56,6 +56,27 @@ The smoke creates, updates, lists, deletes, and triggers one intentional route
 miss through the browser-facing API. All CRUD operations go through the local
 runtime store target.
 
+## Route Hot Reload
+
+This scenario includes a route snapshot file:
+
+```text
+routes.yml
+```
+
+With the app running, apply the snapshot through the runtime control lane:
+
+```sh
+bash run.sh reload-routes
+```
+
+The command posts `routes.yml` to
+`POST /api/customers/runtime/reload-routes`. The app compiles that YAML into a
+full route snapshot, applies the next generation, and returns the generation
+before and after the reload. The customer route still points to the same local
+store target; this keeps the sample focused on the reload mechanics rather than
+remote deployment.
+
 ## Stop
 
 ```sh

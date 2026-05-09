@@ -307,8 +307,8 @@ runtime failure is visible instead of hidden by a second transport.
 Store and audit services run headless; even the Spring Boot store is configured
 as a non-web application, so `8081` is the only browser/API HTTP surface.
 
-The route hot reload capability is covered by `runtime/python/hot-reload`.
-The main remaining scenario gap is a customer CRUD route hot reload demo: a
+The route hot reload capability is covered by `runtime/python/hot-reload` and
+by the Spring Boot single-process customer scenario. The scenario includes a
 `routes.yml` example, a `reload-routes` command, and diagnostics that show the
 active generation changing after an atomic route snapshot apply.
 
@@ -667,7 +667,7 @@ connector first.
 | --- | --- | --- |
 | Request/reply | JVM, Python, Node.js, Go, C#, Rust, native C/C++ basic samples | Typed local request/reply and runtime counters |
 | Deadletter | JVM, Java, Python, Node.js, Go deadletter samples; native basic route miss | Missing-route accounting and matched pending requests |
-| Route hot reload | `runtime/python/hot-reload` | Apply a newer route snapshot, reject stale/invalid snapshots, and observe generation changes |
+| Route hot reload | `runtime/python/hot-reload`; `runtime/scenarios/customer-crud/spring-boot-single-process/routes.yml` with `bash run.sh reload-routes` | Apply a newer route snapshot, reject stale/invalid snapshots, and observe generation changes |
 | Queue pressure | `runtime/native/pressure` | Bounded runtime queue rejection and deadletter counters |
 | Logger pressure | JVM, Java, Python, Node.js, Go, native logger pressure samples | Bounded logger queue rejection and dropped counters |
 | Customer CRUD scenarios | Spring Boot, Quarkus, desktop, Node.js, Go, and C# scenario tracks | Real workflow shape across local and cross-process runtime boundaries |
@@ -676,7 +676,7 @@ Current gaps:
 
 | Gap | Status |
 | --- | --- |
-| Customer CRUD route hot reload scenario | Pending: add `routes.yml`, `reload-routes`, and active generation diagnostics |
+| Cross-process route hot reload scenario | Pending beyond the single-process customer route reload sample |
 | Language connector runtime pressure samples | Pending beyond native C runtime pressure |
 | Two-machine Linux walkthrough | Pending: document machine A/B setup, ports, and smoke command |
 | Repeatable benchmark harness | Pending for Linux; macOS numbers, if shown, are reference-only smoke-load numbers |

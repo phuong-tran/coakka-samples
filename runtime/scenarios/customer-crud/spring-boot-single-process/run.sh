@@ -7,6 +7,7 @@ source "${repo_root}/scripts/sample-utils.sh"
 
 app_build_task=":runtime:scenarios:customer-crud:spring-boot-single-process:customer-app:bootJar"
 app_jar="${script_dir}/customer-app/build/libs/customer-app.jar"
+routes_file="${script_dir}/routes.yml"
 
 print_usage() {
   cat <<'EOF'
@@ -18,6 +19,7 @@ Usage:
   bash run.sh dev
   bash run.sh app
   bash run.sh build
+  bash run.sh reload-routes
   bash run.sh smoke
   bash run.sh stop
 
@@ -43,11 +45,23 @@ run_dev() {
   exec java -jar "${app_jar}"
 }
 
+reload_routes() {
+  coakka_require_command curl "Install curl, then retry."
+  coakka_require_file "${routes_file}" "The route hot reload sample needs routes.yml."
+
+  coakka_customer_smoke_request "reload runtime routes from routes.yml" \
+    -X POST http://127.0.0.1:8081/api/customers/runtime/reload-routes \
+    -H 'Content-Type: application/x-yaml' \
+    --data-binary @"${routes_file}"
+}
+
 smoke() {
   coakka_require_command curl "Install curl, then retry."
 
   coakka_customer_smoke_request "read runtime diagnostics" \
     http://127.0.0.1:8081/api/customers/runtime
+
+  reload_routes
 
   coakka_customer_smoke_request "create customer through local runtime target" \
     -X POST http://127.0.0.1:8081/api/customers \
@@ -82,6 +96,9 @@ case "${1:-}" in
     ;;
   build)
     build_jar
+    ;;
+  reload-routes|reload)
+    reload_routes
     ;;
   smoke)
     smoke
