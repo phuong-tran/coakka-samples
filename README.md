@@ -97,11 +97,27 @@ raw GitHub URL and verify SHA256 before unpacking or installing an artifact.
 Runtime language and framework samples in this status table are aligned to the
 same native package generation unless a later release note declares otherwise.
 
+## License And Trademark
+
+The sample code, scripts, and documentation in this repository are licensed
+under the [Apache License, Version 2.0](LICENSE). See [NOTICE](NOTICE) for the
+repository notice.
+
+Runtime binaries, connector packages, Maven artifacts, and other released
+artifacts consumed by these samples come from `coakka-publish-public` and are
+covered by the license terms in that artifact repository or the terms included
+with the specific release artifact.
+
+The CoAkka name and `coakka` package, artifact, and image prefixes identify
+the official project surface. See [TRADEMARKS.md](TRADEMARKS.md) before using
+the name for forks, derived samples, hosted services, or product branding.
+
 ## Table of Contents
 
 - [Try Containers First](#try-containers-first)
 - [Start Here](#start-here)
 - [Public Status](#public-status)
+- [License And Trademark](#license-and-trademark)
 - [Why CoAkka Exists](#why-coakka-exists)
 - [Runtime First](#runtime-first)
 - [Architectural Value](#architectural-value)
