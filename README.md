@@ -80,6 +80,7 @@ same native package generation unless a later release note declares otherwise.
 - [Future Connector Scope](#future-connector-scope)
 - [Samples](#samples)
 - [Runtime Capability Samples](#runtime-capability-samples)
+- [Container Sample Direction](#container-sample-direction)
 - [Benchmark And Load Status](#benchmark-and-load-status)
 - [Artifact Source](#artifact-source)
 - [Direct Runs](#direct-runs)
@@ -697,6 +698,19 @@ Current gaps:
 | Language connector runtime pressure samples | Tracked separately from native intake pressure; current public connector samples cover request/reply, deadletter, and hot reload |
 | Two-machine Linux walkthrough | Manual setup documented in [`docs/two-machine-linux.md`](docs/two-machine-linux.md); live two-host capture pending |
 | Repeatable benchmark harness | Manual smoke-load harness present; Linux CI workflow is manual; Linux hardware benchmark remains pending |
+
+### Container Sample Direction
+
+Containerized samples are planned as the next low-friction public path. The
+first target is a lightweight Node.js client calling a Python service through
+the CoAkka runtime, with Docker and Podman commands documented side by side.
+
+The intent is to prove two real processes, two language hosts, and one runtime
+delivery path before adding heavier framework samples such as Spring Boot or
+Quarkus. The first container sample should prioritize reliable first run and
+clear logs over the smallest possible image.
+
+Planning note: [Container Samples Plan](docs/container-samples-plan.md).
 
 ### Samples By Language
 
