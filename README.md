@@ -9,18 +9,50 @@ current public artifact surface exposes logger packages, the public native
 runtime C ABI package, runtime JVM/language connector packages, and the Spring
 Boot and Quarkus adapters.
 
+## Try Containers First
+
+The fastest visible runtime proof is the container path. It uses pinned Docker
+Hub images, so you can test a cross-process runtime delivery path without
+installing Node.js, Python, Go, Java, protobuf tooling, or native build tools.
+
+Run either sample:
+
+```sh
+bash run.sh containers node-python
+bash run.sh containers spring-go
+```
+
+Then open the browser UIs:
+
+```text
+Node.js web -> Python store:
+  http://localhost:8080
+  http://localhost:8081
+
+Spring Boot JVM web -> Go store:
+  http://localhost:8090
+  http://localhost:8091
+```
+
+Stop every container sample:
+
+```sh
+bash run.sh containers down
+```
+
+These samples prove two real processes, two language hosts, browser-visible
+state changes, and runtime delivery with no REST fallback between the sample
+services.
+
 ## Start Here
 
-Run the shortest public path first:
+Run the shortest local non-container paths:
 
 ```sh
 bash run.sh quickstart
 bash run.sh runtime jvm basic
 bash run.sh runtime native basic
 bash run.sh runtime native pressure
-bash run.sh containers node-python
-bash run.sh containers spring-go
-bash run.sh containers down
 ```
 
 Check your local toolchain without launching a sample:
@@ -67,6 +99,7 @@ same native package generation unless a later release note declares otherwise.
 
 ## Table of Contents
 
+- [Try Containers First](#try-containers-first)
 - [Start Here](#start-here)
 - [Public Status](#public-status)
 - [Why CoAkka Exists](#why-coakka-exists)
