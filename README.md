@@ -172,7 +172,7 @@ CoAkka treats those problems as boundary problems first. The runtime does not
 try to own every framework decision; it gives each host a common contract for
 the parts that must behave consistently across services and languages:
 
-- one runtime contract for JVM, Python, Node.js, Go, C#, and native C/C++
+- one runtime contract for JVM, Python, Node.js, Go, C#, Rust, and native C/C++
 - one vocabulary for target names, route snapshots, generations, and handler
   ownership
 - one diagnostic model for request/reply, deadletters, queue pressure, and
@@ -709,6 +709,10 @@ The intent is to prove two real processes, two language hosts, and one runtime
 delivery path before adding heavier framework samples such as Spring Boot or
 Quarkus. The first container sample should prioritize reliable first run and
 clear logs over the smallest possible image.
+
+Prebuilt Docker Hub images are part of the plan so users can try a pinned
+runtime generation without building protobuf, transport dependencies, or native
+runtime artifacts locally.
 
 Planning note: [Container Samples Plan](docs/container-samples-plan.md).
 
