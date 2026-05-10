@@ -54,7 +54,7 @@ Current public runtime generation: `0.1.0+a671b3a`.
 | Runtime C# | public | `bash run.sh runtime csharp basic` |
 | Runtime Rust | public | `bash run.sh runtime rust basic` |
 | Runtime Spring Boot and Quarkus adapters | public | `bash run.sh scenarios check` |
-| Runtime container sample | scaffold | `bash run.sh containers node-python` |
+| Runtime container sample | public Docker Hub images | `bash run.sh containers node-python` |
 
 Samples resolve public downloads through
 `coakka-publish-public/artifacts/public-artifacts.tsv` or the matching public
@@ -707,7 +707,7 @@ Containerized samples are the next low-friction public path. The first target
 is a lightweight Node.js web UI calling a Python customer store through the
 CoAkka runtime, with Docker and Podman commands documented side by side.
 
-Run the wave 1 scaffold:
+Run the wave 1 sample:
 
 ```sh
 bash run.sh containers node-python
@@ -733,7 +733,7 @@ delivery path before adding heavier framework samples such as Spring Boot or
 Quarkus. The first container sample prioritizes visible state changes and clear
 runtime diagnostics over the smallest possible image.
 
-Prebuilt Docker Hub images are part of the plan so users can try a pinned
+The default container path uses pinned Docker Hub images so users can try a
 runtime generation without building protobuf, connector packages, transport
 dependencies, or native runtime artifacts locally.
 

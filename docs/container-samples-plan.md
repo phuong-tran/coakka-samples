@@ -46,7 +46,7 @@ runtime approved by their environment.
 
 | Wave | Sample | Purpose |
 | --- | --- | --- |
-| 1 | Node.js web -> Python store | smallest visible cross-language, cross-process proof; scaffold lives in `containers/node-python` |
+| 1 | Node.js web -> Python store | smallest visible cross-language, cross-process proof; sample lives in `containers/node-python` |
 | 2 | Python -> Node.js or Go variant | show the pattern is not tied to one caller |
 | 3 | Spring Boot / Quarkus | richer framework and business workflow demos |
 
@@ -97,10 +97,11 @@ coakka/runtime-base:<runtime-generation>
   -> CA certificates
   -> version/diagnostic metadata
 
-coakka/sample-node-python:<runtime-generation>
-  -> small Node.js client
-  -> small Python service
-  -> config for the first cross-language proof
+docker.io/gabrielgun1983/sample-node-web:<runtime-generation>
+  -> small Node.js web edge
+
+docker.io/gabrielgun1983/sample-python-store:<runtime-generation>
+  -> small Python store service
 ```
 
 The public artifact manifest remains the source of truth. Docker Hub images are
@@ -141,16 +142,16 @@ Release rules:
 This lets the first public container path become:
 
 ```sh
-docker run --rm coakka/sample-node-python:0.1.0-fbab60154993-remote
+docker compose -f containers/node-python/compose.yaml up
 ```
 
 or:
 
 ```sh
-podman run --rm coakka/sample-node-python:0.1.0-fbab60154993-remote
+podman-compose -f containers/node-python/compose.yaml up
 ```
 
-Compose can still exist for the two-container view, but prebuilt images remove
+The two-container view is the public path for wave 1. Prebuilt images remove
 the slowest part of the first-run experience.
 
 ## Expected Output
@@ -210,8 +211,5 @@ If the local environment uses `podman-compose`, document that alternative too.
 - whether the sample should rely on the existing public TCP-capable runtime
   artifact generation or wait for the next refresh
 - how much artifact caching should be done inside Docker build layers
-- whether Docker Hub or GHCR should be the first public image registry
-- whether the first published image should be runtime-base only or a complete
-  `sample-node-python` image
 - whether CI should run the container sample on every push or only as a manual
   smoke path at first
