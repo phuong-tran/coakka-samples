@@ -15,6 +15,15 @@ The fastest visible runtime proof is the container path. It uses pinned Docker
 Hub images, so you can test a cross-process runtime delivery path without
 installing Node.js, Python, Go, Java, protobuf tooling, or native build tools.
 
+Public Docker Hub images:
+
+```text
+docker.io/gabrielgun1983/sample-node-web:0.1.0-fbab60154993-remote
+docker.io/gabrielgun1983/sample-python-store:0.1.0-fbab60154993-remote
+docker.io/gabrielgun1983/sample-spring-web:0.1.0-fbab60154993-remote
+docker.io/gabrielgun1983/sample-go-store:0.1.0-fbab60154993-remote
+```
+
 Run either sample:
 
 ```sh
