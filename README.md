@@ -34,16 +34,31 @@ bash run.sh list
 
 ## Public Status
 
+Current public runtime generation: `0.1.0+a671b3a`.
+
 | Lane | Public artifact status | First command |
 | --- | --- | --- |
 | Logger JVM | public | `bash run.sh logger basic` |
 | Logger Python | public | `bash run.sh logger python basic` |
 | Logger Node.js | public | `bash run.sh logger node basic` |
 | Logger Go | public | `bash run.sh logger go basic` |
+| Logger C# | public | `bash run.sh logger csharp basic` |
+| Logger Rust | public | `bash run.sh logger rust basic` |
 | Logger native C/C++ | public | `bash run.sh logger native basic` |
 | Runtime native C/C++ | public | `bash run.sh runtime native basic` |
-| Runtime JVM, Python, Node.js, Go, C#, Rust | public | `bash run.sh runtime jvm basic` |
+| Runtime JVM | public | `bash run.sh runtime jvm basic` |
+| Runtime Python | public | `bash run.sh runtime python basic` |
+| Runtime Node.js | public | `bash run.sh runtime node basic` |
+| Runtime Go | public | `bash run.sh runtime go basic` |
+| Runtime C# | public | `bash run.sh runtime csharp basic` |
+| Runtime Rust | public | `bash run.sh runtime rust basic` |
 | Runtime Spring Boot and Quarkus adapters | public | `bash run.sh scenarios check` |
+
+Samples resolve public downloads through
+`coakka-publish-public/artifacts/public-artifacts.tsv` or the matching public
+raw GitHub URL and verify SHA256 before unpacking or installing an artifact.
+Runtime language and framework samples in this status table are aligned to the
+same native package generation unless a later release note declares otherwise.
 
 ## Table of Contents
 
