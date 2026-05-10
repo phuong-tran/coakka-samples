@@ -7,6 +7,13 @@ Available samples:
 
 ```sh
 bash run.sh containers node-python
+bash run.sh containers spring-go
+```
+
+Stop all running container samples:
+
+```sh
+bash run.sh containers down
 ```
 
 Direct runtime equivalents:
@@ -15,9 +22,16 @@ Direct runtime equivalents:
 docker compose -f containers/node-python/compose.yaml up
 podman compose -f containers/node-python/compose.yaml up
 podman-compose -f containers/node-python/compose.yaml up
+docker compose -f containers/spring-go/compose.yaml up
+podman compose -f containers/spring-go/compose.yaml up
+podman-compose -f containers/spring-go/compose.yaml up
 ```
 
 The first sample is intentionally small: a Node.js web process sends customer
 commands through the CoAkka runtime to a Python store process. The Node UI is
 the browser edge; the Python UI is a read-only view of store state changed by
 runtime messages.
+
+The Spring Boot JVM to Go sample uses the same visible two-container shape with
+a framework web edge and a Go store. Spring Boot native and Quarkus native are
+planned as separate later lanes.

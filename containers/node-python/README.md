@@ -41,6 +41,12 @@ Smoke a running stack:
 bash run.sh containers node-python smoke
 ```
 
+Stop this stack:
+
+```sh
+bash run.sh containers node-python down
+```
+
 Run Docker Compose directly:
 
 ```sh

@@ -51,6 +51,7 @@ COAKKA_SCENARIO_ROWS=(
 
 COAKKA_CONTAINER_ROWS=(
   "node-python|Node.js web container to Python store container"
+  "spring-go|Spring Boot JVM web container to Go store container"
 )
 
 COAKKA_ARTIFACT_ROWS=(
@@ -135,5 +136,7 @@ coakka_print_containers() {
 
 Container commands:
   bash run.sh containers node-python
+  bash run.sh containers spring-go
+  bash run.sh containers down
 EOF
 }

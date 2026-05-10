@@ -22,6 +22,7 @@ Usage:
   bash run.sh scenarios check
   bash run.sh <lane> <sample>
   bash run.sh <lane> <language> <sample>
+  bash run.sh containers down
   bash run.sh containers <sample> [command]
   bash run.sh scenario <track> <topology> [command]
   bash run.sh <lane>/<language>/<sample>
@@ -33,6 +34,8 @@ Examples:
   bash run.sh logger basic
   bash run.sh logger/python/pressure
   bash run.sh containers node-python
+  bash run.sh containers spring-go
+  bash run.sh containers down
   bash run.sh scenarios
   bash run.sh scenarios check
 
@@ -122,6 +125,21 @@ run_container() {
   run_sample_path "containers/${sample}" "$@"
 }
 
+run_all_containers() {
+  local command="$1"
+  local row sample summary sample_script
+  for row in "${COAKKA_CONTAINER_ROWS[@]}"; do
+    IFS='|' read -r sample summary <<<"${row}"
+    sample_script="${script_dir}/containers/${sample}/run.sh"
+    coakka_require_file "${sample_script}" "Use 'bash run.sh list' to see available samples."
+    if bash "${sample_script}" "${command}" >/dev/null 2>&1; then
+      coakka_note "containers/${sample}: ${command} ok"
+    else
+      coakka_note "containers/${sample}: already stopped or not present"
+    fi
+  done
+}
+
 if [[ "$#" -eq 0 ]]; then
   run_quickstart
   exit 0
@@ -151,6 +169,8 @@ case "$1" in
     if [[ "$#" -eq 1 ]]; then
       echo "Available container samples:"
       coakka_print_containers
+    elif [[ "$#" -eq 2 && ( "$2" == "down" || "$2" == "stop" ) ]]; then
+      run_all_containers down
     else
       shift
       run_container "$@"

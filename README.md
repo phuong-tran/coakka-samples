@@ -19,6 +19,8 @@ bash run.sh runtime jvm basic
 bash run.sh runtime native basic
 bash run.sh runtime native pressure
 bash run.sh containers node-python
+bash run.sh containers spring-go
+bash run.sh containers down
 ```
 
 Check your local toolchain without launching a sample:
@@ -54,7 +56,8 @@ Current public runtime generation: `0.1.0+a671b3a`.
 | Runtime C# | public | `bash run.sh runtime csharp basic` |
 | Runtime Rust | public | `bash run.sh runtime rust basic` |
 | Runtime Spring Boot and Quarkus adapters | public | `bash run.sh scenarios check` |
-| Runtime container sample | public Docker Hub images | `bash run.sh containers node-python` |
+| Runtime container sample: Node.js -> Python | public Docker Hub images | `bash run.sh containers node-python` |
+| Runtime container sample: Spring Boot JVM -> Go | public Docker Hub images | `bash run.sh containers spring-go` |
 
 Samples resolve public downloads through
 `coakka-publish-public/artifacts/public-artifacts.tsv` or the matching public
@@ -703,14 +706,16 @@ Current gaps:
 
 ### Container Sample Direction
 
-Containerized samples are the next low-friction public path. The first target
-is a lightweight Node.js web UI calling a Python customer store through the
-CoAkka runtime, with Docker and Podman commands documented side by side.
+Containerized samples are the low-friction public path. The first target is a
+lightweight Node.js web UI calling a Python customer store through the CoAkka
+runtime. The second target adds a Spring Boot JVM web edge talking to a Go
+store, with both sides exposing browser-visible state.
 
 Run the wave 1 sample:
 
 ```sh
 bash run.sh containers node-python
+bash run.sh containers spring-go
 ```
 
 Then open:
@@ -718,6 +723,14 @@ Then open:
 ```text
 http://localhost:8080
 http://localhost:8081
+http://localhost:8090
+http://localhost:8091
+```
+
+Stop all container samples:
+
+```sh
+bash run.sh containers down
 ```
 
 Or run Compose directly:
@@ -726,12 +739,15 @@ Or run Compose directly:
 docker compose -f containers/node-python/compose.yaml up
 podman compose -f containers/node-python/compose.yaml up
 podman-compose -f containers/node-python/compose.yaml up
+docker compose -f containers/spring-go/compose.yaml up
+podman compose -f containers/spring-go/compose.yaml up
+podman-compose -f containers/spring-go/compose.yaml up
 ```
 
 The intent is to prove two real processes, two language hosts, and one runtime
-delivery path before adding heavier framework samples such as Spring Boot or
-Quarkus. The first container sample prioritizes visible state changes and clear
-runtime diagnostics over the smallest possible image.
+delivery path with browser-visible state changes. The Spring Boot JVM to Go
+sample keeps the framework lane practical for this wave; Spring Boot native and
+Quarkus native are planned as separate native-image lanes.
 
 The default container path uses pinned Docker Hub images so users can try a
 runtime generation without building protobuf, connector packages, transport
