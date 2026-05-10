@@ -746,8 +746,18 @@ podman-compose -f containers/spring-go/compose.yaml up
 
 The intent is to prove two real processes, two language hosts, and one runtime
 delivery path with browser-visible state changes. The Spring Boot JVM to Go
-sample keeps the framework lane practical for this wave; Spring Boot native and
-Quarkus native are planned as separate native-image lanes.
+sample keeps the framework lane practical for this wave.
+
+Framework native-image builds are deliberately not the primary public sample
+path. For Java and Kotlin framework applications, the JVM remains the expected
+runtime: it keeps the normal dependency model, diagnostics, profiling, and
+steady-state behavior. For native deployment, the sample matrix uses native
+language hosts such as Go, Rust, C, and C++ instead of treating native-image as
+the default way to run Spring Boot or Quarkus.
+
+Spring Boot native-image and Quarkus native-image may be explored later as
+optional advanced lanes if they become useful for a concrete deployment case,
+but they are not a promise or a requirement for the container story.
 
 The default container path uses pinned Docker Hub images so users can try a
 runtime generation without building protobuf, connector packages, transport

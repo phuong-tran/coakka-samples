@@ -62,5 +62,6 @@ podman compose -f containers/spring-go/compose.yaml up
 podman-compose -f containers/spring-go/compose.yaml up
 ```
 
-This sample is intentionally JVM-based. Spring Boot native and Quarkus native
-are planned as later native-image lanes, separate from this Docker wave.
+This sample is intentionally JVM-based. Framework native-image builds are not
+the default container path; they remain optional research if a concrete
+deployment case makes the tradeoff worthwhile.

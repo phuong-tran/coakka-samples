@@ -59,7 +59,7 @@ runtime approved by their environment.
 | 1 | Node.js web -> Python store | smallest visible cross-language, cross-process proof; sample lives in `containers/node-python` |
 | 1b | Spring Boot JVM web -> Go store | visible framework web edge plus Go store UI; sample lives in `containers/spring-go` |
 | 2 | Python -> Node.js or Go variant | show the pattern is not tied to one caller |
-| 3 | Spring Boot native / Quarkus native | native-image lanes after the JVM framework path is stable |
+| 3 | Optional native-image research | only if a concrete deployment case makes the tradeoff worthwhile |
 
 Wave 1 should not wait for the full matrix. One clear two-container sample is
 more useful than many heavy examples that are hard to run.
@@ -204,7 +204,9 @@ No benchmark claims should be made from this sample.
 - prefer pinned Docker Hub tags for public docs once images are published
 - keep Docker/Podman support as a sample UX layer, not the source of truth
 - do not require Docker Desktop
-- keep Spring Boot native and Quarkus native for a later native-image wave
+- keep framework native-image builds out of the default container path
+- treat framework native-image support as optional research, not a public
+  sample promise
 
 ## Future Commands
 
