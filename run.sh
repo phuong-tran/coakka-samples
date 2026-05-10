@@ -17,24 +17,29 @@ Usage:
   bash run.sh all
   bash run.sh logger
   bash run.sh runtime
+  bash run.sh containers
   bash run.sh scenarios
   bash run.sh scenarios check
   bash run.sh <lane> <sample>
   bash run.sh <lane> <language> <sample>
+  bash run.sh containers <sample> [command]
   bash run.sh scenario <track> <topology> [command]
   bash run.sh <lane>/<language>/<sample>
+  bash run.sh containers/<sample> [command]
   bash run.sh runtime/scenarios/<track>/<topology> <command>
 
 Examples:
   bash run.sh
   bash run.sh logger basic
   bash run.sh logger/python/pressure
+  bash run.sh containers node-python
   bash run.sh scenarios
   bash run.sh scenarios check
 
 Lanes:
   logger
   runtime
+  containers
 
 Logger languages:
   jvm
@@ -107,6 +112,16 @@ run_scenario_checks() {
   done
 }
 
+run_container() {
+  if [[ "$#" -lt 1 ]]; then
+    coakka_die "Usage: bash run.sh containers <sample> [command]"
+  fi
+
+  local sample="$1"
+  shift
+  run_sample_path "containers/${sample}" "$@"
+}
+
 if [[ "$#" -eq 0 ]]; then
   run_quickstart
   exit 0
@@ -129,6 +144,16 @@ case "$1" in
       run_scenario_checks
     else
       coakka_die "Usage: bash run.sh scenarios [check]"
+    fi
+    exit 0
+    ;;
+  containers)
+    if [[ "$#" -eq 1 ]]; then
+      echo "Available container samples:"
+      coakka_print_containers
+    else
+      shift
+      run_container "$@"
     fi
     exit 0
     ;;
@@ -171,7 +196,7 @@ case "$1" in
     shift
     run_scenario "$@"
     ;;
-  logger/*|runtime/*)
+  logger/*|runtime/*|containers/*)
     sample_path="$1"
     shift
     run_sample_path "${sample_path}" "$@"

@@ -9,15 +9,15 @@ install every host-language toolchain.
 The first container sample should be intentionally small:
 
 ```text
-Node.js client process
+Node.js web process
   -> CoAkka runtime delivery
-  -> Python service process
-  -> response back to Node.js
+  -> Python store process
+  -> response back to Node.js UI
 ```
 
 The goal is not to prove every framework at once. The goal is to prove that two
 real processes, in two different language hosts, can communicate through the
-same runtime contract.
+same runtime contract while a user can see state change in the browser.
 
 ## Why Containers
 
@@ -28,13 +28,13 @@ path creates avoidable friction.
 Containers give a shorter first proof:
 
 ```sh
-docker compose up --build
+docker compose up
 ```
 
 or:
 
 ```sh
-podman compose up --build
+podman compose up
 ```
 
 The sample design should not require Docker Desktop. It should work with Docker
@@ -46,12 +46,18 @@ runtime approved by their environment.
 
 | Wave | Sample | Purpose |
 | --- | --- | --- |
-| 1 | Node.js client -> Python service | smallest cross-language, cross-process proof |
+| 1 | Node.js web -> Python store | smallest visible cross-language, cross-process proof; scaffold lives in `containers/node-python` |
 | 2 | Python -> Node.js or Go variant | show the pattern is not tied to one caller |
 | 3 | Spring Boot / Quarkus | richer framework and business workflow demos |
 
 Wave 1 should not wait for the full matrix. One clear two-container sample is
 more useful than many heavy examples that are hard to run.
+
+Current wave 1 command:
+
+```sh
+bash run.sh containers node-python
+```
 
 ## Image Strategy
 
@@ -104,11 +110,10 @@ separate contract.
 Recommended tag discipline:
 
 ```text
-0.1.0-a671b3a
-0.1.0-a671b3a-local
-0.1.0-a671b3a-tcp
-0.1.0-a671b3a-linux-amd64
-0.1.0-a671b3a-linux-arm64
+0.1.0-fbab60154993-remote
+0.1.0-fbab60154993-remote-local
+0.1.0-fbab60154993-remote-linux-amd64
+0.1.0-fbab60154993-remote-linux-arm64
 ```
 
 Documentation should use pinned tags. `latest` can exist for convenience, but
@@ -136,13 +141,13 @@ Release rules:
 This lets the first public container path become:
 
 ```sh
-docker run --rm coakka/sample-node-python:0.1.0-a671b3a
+docker run --rm coakka/sample-node-python:0.1.0-fbab60154993-remote
 ```
 
 or:
 
 ```sh
-podman run --rm coakka/sample-node-python:0.1.0-a671b3a
+podman run --rm coakka/sample-node-python:0.1.0-fbab60154993-remote
 ```
 
 Compose can still exist for the two-container view, but prebuilt images remove
@@ -153,10 +158,9 @@ the slowest part of the first-run experience.
 The demo should tell the story in logs:
 
 ```text
-python-service | ready: target samples.customer.create
-node-client    | send: customer.create {"name":"Ada"}
-python-service | handled: customer.create
-node-client    | recv: customer.created {"id":"cus_001","name":"Ada"}
+python-store | ready: http://localhost:8081
+node-web     | ready: http://localhost:8080
+python-store | handled: type=samples.container.customer.create.request.v1
 ```
 
 The important proof:
@@ -164,8 +168,10 @@ The important proof:
 - two containers
 - two processes
 - two language hosts
+- browser-visible store update
 - one runtime delivery path
 - explicit failure if runtime delivery fails
+- no REST fallback path
 
 No benchmark claims should be made from this sample.
 
@@ -191,8 +197,8 @@ bash run.sh containers node-python
 with direct runtime equivalents documented:
 
 ```sh
-docker compose -f containers/node-python/compose.yaml up --build
-podman compose -f containers/node-python/compose.yaml up --build
+docker compose -f containers/node-python/compose.yaml up
+podman compose -f containers/node-python/compose.yaml up
 ```
 
 If the local environment uses `podman-compose`, document that alternative too.

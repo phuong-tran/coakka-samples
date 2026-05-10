@@ -1,0 +1,52 @@
+# syntax=docker/dockerfile:1
+
+ARG COAKKA_RUNTIME_BASE_IMAGE=coakka/runtime-base:0.1.0-fbab60154993-remote
+FROM ${COAKKA_RUNTIME_BASE_IMAGE} AS coakka-runtime
+
+FROM python:3.12-slim
+
+ARG COAKKA_RUNTIME_VERSION=0.1.0
+ARG COAKKA_RUNTIME_REVISION=fbab60154993
+ARG COAKKA_RUNTIME_GENERATION=0.1.0-fbab60154993-remote
+ARG COAKKA_ARTIFACT_MANIFEST_SHA256=resolved-at-build
+ARG COAKKA_PUBLISH_RAW_BASE=https://raw.githubusercontent.com/phuong-tran/coakka-publish/main
+ARG COAKKA_PYTHON_ARTIFACT=runtime/python/releases/0.1.0+fbab60154993/coakka_v2_connector-0.1.0-py3-none-any.whl
+
+LABEL org.opencontainers.image.title="CoAkka Python store sample"
+LABEL org.opencontainers.image.description="Python store and read-only UI for the CoAkka runtime Node -> Python container sample"
+LABEL org.opencontainers.image.version="${COAKKA_RUNTIME_VERSION}"
+LABEL org.opencontainers.image.revision="${COAKKA_RUNTIME_REVISION}"
+LABEL org.opencontainers.image.source="https://github.com/phuong-tran/coakka-samples"
+LABEL coakka.runtime.generation="${COAKKA_RUNTIME_GENERATION}"
+LABEL coakka.artifact.manifest.sha256="${COAKKA_ARTIFACT_MANIFEST_SHA256}"
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends bash ca-certificates curl \
+  && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /sample
+COPY scripts/resolve-artifact.sh /sample/scripts/resolve-artifact.sh
+COPY containers/node-python/python-store.py /sample/python-store.py
+
+RUN bash -lc 'set -eu; \
+  export COAKKA_PUBLISH_RAW_BASE; \
+  mkdir -p /tmp/coakka-artifacts; \
+  source /sample/scripts/resolve-artifact.sh; \
+  wheel_path="$(coakka_resolve_artifact /not-present "${COAKKA_PYTHON_ARTIFACT}" /tmp/coakka-artifacts/coakka_v2_connector-0.1.0-py3-none-any.whl)"; \
+  PIP_DISABLE_PIP_VERSION_CHECK=1 pip install --no-cache-dir "${wheel_path}" >/dev/null; \
+  rm -rf /tmp/coakka-artifacts'
+
+COPY --from=coakka-runtime /opt/coakka/runtime/ /opt/coakka/runtime/
+
+ENV PYTHONUNBUFFERED=1
+ENV COAKKA_RUNTIME_LIB=/opt/coakka/runtime/libcoakka_runtime_v2.so
+ENV LD_LIBRARY_PATH=/opt/coakka/runtime
+ENV COAKKA_SAMPLE_STORE_WEB_HOST=0.0.0.0
+ENV COAKKA_SAMPLE_STORE_WEB_PORT=8081
+ENV COAKKA_SAMPLE_STORE_RUNTIME_BIND_HOST=python-store
+ENV COAKKA_SAMPLE_STORE_RUNTIME_HOST=python-store
+ENV COAKKA_SAMPLE_STORE_RUNTIME_PORT=19232
+ENV COAKKA_SAMPLE_NODE_RUNTIME_HOST=node-web
+ENV COAKKA_SAMPLE_NODE_RUNTIME_PORT=19231
+
+CMD ["python", "/sample/python-store.py"]

@@ -49,6 +49,10 @@ COAKKA_SCENARIO_ROWS=(
   "customer-crud|spring-boot-nodes|Spring Boot web UI plus Node.js store and audit services"
 )
 
+COAKKA_CONTAINER_ROWS=(
+  "node-python|Node.js web container to Python store container"
+)
+
 COAKKA_ARTIFACT_ROWS=(
   "logger JVM jar|logger/jvm/releases/0.1.0+ba2a66d98eb5/coakka-jvm-native-logger-0.1.0.jar"
   "logger Python wheel|logger/python/releases/0.1.0+ba2a66d98eb5/coakka_logger-0.1.0-py3-none-any.whl"
@@ -95,6 +99,13 @@ Scenario tracks:
 EOF
 
   coakka_print_scenarios
+
+  cat <<'EOF'
+
+Container samples:
+EOF
+
+  coakka_print_containers
 }
 
 coakka_print_scenarios() {
@@ -110,5 +121,19 @@ Scenario commands:
   bash run.sh scenarios
   bash run.sh scenarios check
   bash run.sh scenario customer-crud spring-boot-single-process dev
+EOF
+}
+
+coakka_print_containers() {
+  local row sample summary
+  for row in "${COAKKA_CONTAINER_ROWS[@]}"; do
+    IFS='|' read -r sample summary <<<"${row}"
+    printf '  %-31s %s\n' "containers/${sample}" "${summary}"
+  done
+
+  cat <<'EOF'
+
+Container commands:
+  bash run.sh containers node-python
 EOF
 }

@@ -1,0 +1,47 @@
+services:
+  python-store:
+    build:
+      context: ../..
+      dockerfile: containers/node-python/Dockerfile.python
+      args:
+        COAKKA_RUNTIME_BASE_IMAGE: ${COAKKA_RUNTIME_BASE_IMAGE:-coakka/runtime-base:0.1.0-fbab60154993-remote}
+    image: coakka/sample-python-store:0.1.0-fbab60154993-remote-local
+    hostname: python-store
+    environment:
+      COAKKA_SAMPLE_STORE_WEB_HOST: 0.0.0.0
+      COAKKA_SAMPLE_STORE_WEB_PORT: "8081"
+      COAKKA_SAMPLE_STORE_RUNTIME_BIND_HOST: python-store
+      COAKKA_SAMPLE_STORE_RUNTIME_HOST: python-store
+      COAKKA_SAMPLE_STORE_RUNTIME_PORT: "19232"
+      COAKKA_SAMPLE_NODE_RUNTIME_HOST: node-web
+      COAKKA_SAMPLE_NODE_RUNTIME_PORT: "19231"
+    ports:
+      - "8081:8081"
+    networks:
+      - coakka-node-python
+
+  node-web:
+    build:
+      context: ../..
+      dockerfile: containers/node-python/Dockerfile.node
+      args:
+        COAKKA_RUNTIME_BASE_IMAGE: ${COAKKA_RUNTIME_BASE_IMAGE:-coakka/runtime-base:0.1.0-fbab60154993-remote}
+    image: coakka/sample-node-web:0.1.0-fbab60154993-remote-local
+    hostname: node-web
+    depends_on:
+      - python-store
+    environment:
+      COAKKA_SAMPLE_WEB_HOST: 0.0.0.0
+      COAKKA_SAMPLE_WEB_PORT: "8080"
+      COAKKA_SAMPLE_NODE_RUNTIME_BIND_HOST: node-web
+      COAKKA_SAMPLE_NODE_RUNTIME_HOST: node-web
+      COAKKA_SAMPLE_NODE_RUNTIME_PORT: "19231"
+      COAKKA_SAMPLE_STORE_RUNTIME_HOST: python-store
+      COAKKA_SAMPLE_STORE_RUNTIME_PORT: "19232"
+    ports:
+      - "8080:8080"
+    networks:
+      - coakka-node-python
+
+networks:
+  coakka-node-python:

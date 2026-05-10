@@ -1,0 +1,52 @@
+# syntax=docker/dockerfile:1
+
+ARG COAKKA_RUNTIME_BASE_IMAGE=coakka/runtime-base:0.1.0-fbab60154993-remote
+FROM ${COAKKA_RUNTIME_BASE_IMAGE} AS coakka-runtime
+
+FROM node:22-slim
+
+ARG COAKKA_RUNTIME_VERSION=0.1.0
+ARG COAKKA_RUNTIME_REVISION=fbab60154993
+ARG COAKKA_RUNTIME_GENERATION=0.1.0-fbab60154993-remote
+ARG COAKKA_ARTIFACT_MANIFEST_SHA256=resolved-at-build
+ARG COAKKA_PUBLISH_RAW_BASE=https://raw.githubusercontent.com/phuong-tran/coakka-publish/main
+ARG COAKKA_NODE_ARTIFACT=runtime/node/releases/0.1.0+fbab60154993/coakka-v2-connector-node-0.1.0.tgz
+
+LABEL org.opencontainers.image.title="CoAkka Node web to Python store sample"
+LABEL org.opencontainers.image.description="Node.js web edge for the CoAkka runtime Node -> Python container sample"
+LABEL org.opencontainers.image.version="${COAKKA_RUNTIME_VERSION}"
+LABEL org.opencontainers.image.revision="${COAKKA_RUNTIME_REVISION}"
+LABEL org.opencontainers.image.source="https://github.com/phuong-tran/coakka-samples"
+LABEL coakka.runtime.generation="${COAKKA_RUNTIME_GENERATION}"
+LABEL coakka.artifact.manifest.sha256="${COAKKA_ARTIFACT_MANIFEST_SHA256}"
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends bash ca-certificates curl \
+  && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /sample
+COPY scripts/resolve-artifact.sh /sample/scripts/resolve-artifact.sh
+COPY containers/node-python/node-web.mjs /sample/node-web.mjs
+
+RUN bash -lc 'set -eu; \
+  export COAKKA_PUBLISH_RAW_BASE; \
+  mkdir -p /tmp/coakka-artifacts; \
+  source /sample/scripts/resolve-artifact.sh; \
+  package_path="$(coakka_resolve_artifact /not-present "${COAKKA_NODE_ARTIFACT}" /tmp/coakka-artifacts/coakka-v2-connector-node-0.1.0.tgz)"; \
+  npm init -y >/dev/null; \
+  npm install "${package_path}" --omit=dev >/dev/null; \
+  rm -rf /tmp/coakka-artifacts /root/.npm'
+
+COPY --from=coakka-runtime /opt/coakka/runtime/ /opt/coakka/runtime/
+
+ENV COAKKA_RUNTIME_LIB=/opt/coakka/runtime/libcoakka_runtime_v2.so
+ENV LD_LIBRARY_PATH=/opt/coakka/runtime
+ENV COAKKA_SAMPLE_WEB_HOST=0.0.0.0
+ENV COAKKA_SAMPLE_WEB_PORT=8080
+ENV COAKKA_SAMPLE_NODE_RUNTIME_BIND_HOST=node-web
+ENV COAKKA_SAMPLE_NODE_RUNTIME_HOST=node-web
+ENV COAKKA_SAMPLE_NODE_RUNTIME_PORT=19231
+ENV COAKKA_SAMPLE_STORE_RUNTIME_HOST=python-store
+ENV COAKKA_SAMPLE_STORE_RUNTIME_PORT=19232
+
+CMD ["node", "/sample/node-web.mjs"]

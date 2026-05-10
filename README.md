@@ -18,6 +18,7 @@ bash run.sh quickstart
 bash run.sh runtime jvm basic
 bash run.sh runtime native basic
 bash run.sh runtime native pressure
+bash run.sh containers node-python
 ```
 
 Check your local toolchain without launching a sample:
@@ -53,6 +54,7 @@ Current public runtime generation: `0.1.0+a671b3a`.
 | Runtime C# | public | `bash run.sh runtime csharp basic` |
 | Runtime Rust | public | `bash run.sh runtime rust basic` |
 | Runtime Spring Boot and Quarkus adapters | public | `bash run.sh scenarios check` |
+| Runtime container sample | scaffold | `bash run.sh containers node-python` |
 
 Samples resolve public downloads through
 `coakka-publish-public/artifacts/public-artifacts.tsv` or the matching public
@@ -701,18 +703,39 @@ Current gaps:
 
 ### Container Sample Direction
 
-Containerized samples are planned as the next low-friction public path. The
-first target is a lightweight Node.js client calling a Python service through
-the CoAkka runtime, with Docker and Podman commands documented side by side.
+Containerized samples are the next low-friction public path. The first target
+is a lightweight Node.js web UI calling a Python customer store through the
+CoAkka runtime, with Docker and Podman commands documented side by side.
+
+Run the wave 1 scaffold:
+
+```sh
+bash run.sh containers node-python
+```
+
+Then open:
+
+```text
+http://localhost:8080
+http://localhost:8081
+```
+
+Or run Compose directly:
+
+```sh
+docker compose -f containers/node-python/compose.yaml up
+podman compose -f containers/node-python/compose.yaml up
+podman-compose -f containers/node-python/compose.yaml up
+```
 
 The intent is to prove two real processes, two language hosts, and one runtime
 delivery path before adding heavier framework samples such as Spring Boot or
-Quarkus. The first container sample should prioritize reliable first run and
-clear logs over the smallest possible image.
+Quarkus. The first container sample prioritizes visible state changes and clear
+runtime diagnostics over the smallest possible image.
 
 Prebuilt Docker Hub images are part of the plan so users can try a pinned
-runtime generation without building protobuf, transport dependencies, or native
-runtime artifacts locally.
+runtime generation without building protobuf, connector packages, transport
+dependencies, or native runtime artifacts locally.
 
 Planning note: [Container Samples Plan](docs/container-samples-plan.md).
 
