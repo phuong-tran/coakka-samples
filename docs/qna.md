@@ -173,14 +173,16 @@ deliver. From that point, CoAkka gives the system a centralized runtime
 vocabulary for target identity, route snapshots, bounded queues, route
 generation, timeouts, deadletters, health, and stats.
 
-A team should be clear about these responsibilities:
+A team should be clear about these responsibilities. They exist with or without
+CoAkka; CoAkka gives them one runtime vocabulary instead of leaving them spread
+across clients, framework config, and logs:
 
 - app-hosts still choose when to submit work
 - connectors still feed runtime config and register handlers
-- route snapshots and handler registration need discipline
+- route snapshots and handler registration need the same ownership discipline
+  that internal REST/gRPC clients need for URLs, schemas, retries, and rollout
 - operators still need to observe runtime lifecycle, stats, and deadletters
-- simple CRUD paths that only need direct service calls may not need this
-  runtime boundary
+- simple CRUD paths that only need direct service calls can stay direct
 
 Short filter:
 

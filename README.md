@@ -430,20 +430,20 @@ That does not remove the need for trace logs or business-level observability.
 It gives trace logs a sharper runtime vocabulary: source, target, generation,
 operation, delivery outcome, and deadletter reason.
 
-### What It Costs
+### Boundary Work CoAkka Makes Explicit
 
-CoAkka does not remove boundary design work. A team still has to define target
-names, payload identity, schema/version discipline, route ownership, handler
-ownership, and diagnostics. A serious internal REST/gRPC design has to answer
-the same kinds of questions through URLs, clients, schemas, retries, status
-mapping, logs, dashboards, and rollout rules.
+CoAkka does not remove boundary design work. Any real boundary needs answers
+for naming, payload identity, schema/version discipline, route ownership,
+handler ownership, and diagnostics. A serious internal REST/gRPC design has to
+answer the same kinds of questions through URLs, clients, schemas, retries,
+status mapping, logs, dashboards, and rollout rules.
 
 The difference is where that work lives. Without CoAkka, the rules often spread
 across client code, framework config, HTTP status handling, tracing conventions,
 and team memory. With CoAkka, the route, target, generation, delivery outcome,
-and deadletter vocabulary are explicit runtime concepts. Very small CRUD
-applications that only need direct service calls may not need this boundary
-yet.
+and deadletter vocabulary are explicit runtime concepts. If a small CRUD
+application only needs direct service calls, that direct shape may already be
+enough.
 
 What it can save:
 
@@ -456,12 +456,11 @@ What it can save:
 - more consistent trace/log fields across languages: `source`, `target`,
   `generation`, `operation`, outcome, and deadletter reason
 
-The trade is usually worth considering when the current alternative is many
-fake internal HTTP/gRPC endpoints, scattered client config, unclear route
-ownership, or painful language/process migration. CoAkka's job is not to make
-distributed systems simple. It makes one part of the system explicit: how
-internal work is named, routed, admitted, delivered, and reported when delivery
-fails.
+CoAkka is usually worth considering when the current alternative is many fake
+internal HTTP/gRPC endpoints, scattered client config, unclear route ownership,
+or painful language/process migration. CoAkka's job is not to make distributed
+systems simple. It makes one part of the system explicit: how internal work is
+named, routed, admitted, delivered, and reported when delivery fails.
 
 ## Questions And Answers
 
