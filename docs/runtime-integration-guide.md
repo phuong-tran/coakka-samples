@@ -119,48 +119,9 @@ from platform/runtime configuration when the process starts. Common sources are:
 - explicit `COAKKA_NODE_ID` or `INSTANCE_ID` environment variable
 
 `nodeId` is runtime identity, not image identity. Build one reusable container
-image for every replica. Do not bake a different `nodeId` into each image.
-Instead, let the orchestrator provide a different value when each container or
-pod starts:
-
-```text
-build time:
-  image = billing:1.0.0
-  nodeId is not fixed in the image
-
-runtime:
-  billing pod A -> COAKKA_NODE_ID=billing-7d9f8c-a
-  billing pod B -> COAKKA_NODE_ID=billing-7d9f8c-b
-  billing pod C -> COAKKA_NODE_ID=billing-7d9f8c-c
-```
-
-For Kubernetes, inject a pod name:
-
-```yaml
-env:
-  - name: COAKKA_NODE_ID
-    valueFrom:
-      fieldRef:
-        fieldPath: metadata.name
-```
-
-Use pod UID instead when the identity must not be reused across pod restarts or
-rescheduling:
-
-```yaml
-env:
-  - name: COAKKA_NODE_ID
-    valueFrom:
-      fieldRef:
-        fieldPath: metadata.uid
-```
-
-Connector code can then fall back for local development:
-
-```kotlin
-val nodeId = System.getenv("COAKKA_NODE_ID")
-    ?: InetAddress.getLocalHost().hostName
-```
+image for every replica and inject `nodeId` when each container or pod starts.
+For Kubernetes, Docker Compose, and image-build examples, see
+[Containerized Runtime Notes](containerized-runtime.md).
 
 Treat duplicate `nodeId` values as misconfiguration in real deployments.
 Requests may still be delivered if route selection does not depend on node

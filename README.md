@@ -737,6 +737,9 @@ After running the demos, use
 production-facing shape: dependencies, start spec, route targets, endpoint
 flags, payload identities, handler ownership, caller timeouts, deadletter
 handling, queue policy, and shutdown.
+For containerized deployments, read
+[Containerized Runtime Notes](docs/containerized-runtime.md) for build-time
+versus runtime identity, Kubernetes metadata injection, and `nodeId` guidance.
 
 Language-specific entry points:
 
