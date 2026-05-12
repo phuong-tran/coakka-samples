@@ -676,23 +676,23 @@ RuntimeEndpointSpec   = one place that can handle that target
 RuntimeEndpointFlags  = endpoint state, such as LOCAL or UNAVAILABLE
 ```
 
-| Item | Plain meaning |
-| --- | --- |
-| `RuntimeStartSpec` | Startup declaration for one runtime participant/process. |
-| `RuntimeRouteSpec` | One route-table row: target/capability to endpoint list. |
-| `RuntimeEndpointSpec` | One concrete endpoint with `host`, `port`, and flags. |
-| `systemName` | Logical runtime participant name used in diagnostics, such as `customer-store`. |
-| `nodeId` | Concrete process identity used in logs and runtime snapshots; include pod/instance identity when multiple copies run. |
-| `queueCapacity = 128` | Bounded queue that is large enough for a demo but still prevents unbounded memory growth. |
-| `strictNoDrop = true` | Overload becomes visible as an error/deadletter instead of silently dropping work. |
-| `separateDeliveredRequestLane = true` | Keeps inbound delivered requests separate from response/deadletter matching for outgoing asks. |
-| `generation = 1` | First route-table snapshot applied at startup. Real services should increment this when applying a new route snapshot. |
-| `routes` | Maps a target name such as `samples.customer.store` to one or more endpoints. |
-| `target` | Stable capability address, not a class name, function name, or URL. |
-| `host` / `port` | Endpoint address for local listener or remote runtime handoff. |
-| `RuntimeEndpointFlags.LOCAL` | This process owns the target and should register the handler. |
-| `RuntimeEndpointFlags.UNAVAILABLE` | Endpoint remains in the snapshot but is excluded from new route selection. |
-| no `LOCAL` flag | The endpoint is a peer/remote endpoint, not a handler owned by this process. |
+| Item | Question it answers | Plain meaning |
+| --- | --- | --- |
+| `RuntimeStartSpec` | What does this process declare when joining runtime? | Startup declaration for one runtime participant/process. |
+| `RuntimeRouteSpec` | Which target/capability is routed where? | One route-table row: target/capability to endpoint list. |
+| `RuntimeEndpointSpec` | Where can that target be handled? | One concrete endpoint with `host`, `port`, and flags. |
+| `systemName` | Which logical service do I belong to? | Logical runtime participant name used in diagnostics, such as `customer-store`. |
+| `nodeId` | Which concrete instance/process am I? | Concrete process identity used in logs and runtime snapshots; include pod/instance identity when multiple copies run. |
+| `queueCapacity = 128` | How much work can runtime buffer before applying pressure? | Bounded queue that is large enough for a demo but still prevents unbounded memory growth. |
+| `strictNoDrop = true` | Should overload be visible instead of silently dropping work? | Overload becomes visible as an error/deadletter instead of silently dropping work. |
+| `separateDeliveredRequestLane = true` | Should inbound work be separated from replies/deadletters? | Keeps inbound delivered requests separate from response/deadletter matching for outgoing asks. |
+| `generation = 1` | Which version of the route table is this? | First route-table snapshot applied at startup. Real services should increment this when applying a new route snapshot. |
+| `routes` | What targets does this runtime know how to route? | Maps a target name such as `samples.customer.store` to one or more endpoints. |
+| `target` | What capability is the caller asking for? | Stable capability address, not a class name, function name, or URL. |
+| `host` / `port` | What endpoint identity should runtime use? | Endpoint address for local listener or remote runtime handoff. |
+| `RuntimeEndpointFlags.LOCAL` | Is the handler in this process? | This process owns the target and should register the handler. |
+| `RuntimeEndpointFlags.UNAVAILABLE` | Should this endpoint stay visible but receive no new work? | Endpoint remains in the snapshot but is excluded from new route selection. |
+| no `LOCAL` flag | Is this a peer endpoint instead of my handler? | The endpoint is a peer/remote endpoint, not a handler owned by this process. |
 
 For example, a route with `target = "samples.runtime.jvm.echo"` and one
 endpoint marked `LOCAL` means:

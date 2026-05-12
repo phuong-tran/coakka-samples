@@ -41,26 +41,26 @@ RuntimeStartSpec
   initial route snapshot
 ```
 
-| Field | Integration rule |
-| --- | --- |
-| `systemName` | Stable logical service name, such as `billing-api` or `customer-store`. |
-| `nodeId` | Concrete process identity. Include instance/host/pod identity when multiple instances run. |
-| `queueCapacity` | Bounded queue size. Start conservative, measure pressure, then tune. |
-| `strictNoDrop` | Prefer `true` while integrating so overload becomes visible. |
-| `separateDeliveredRequestLane` | Prefer `true` for request/reply services so inbound work does not share the response/deadletter lane. |
-| `generation` | Monotonic route-table version. Increment when applying a new route snapshot. |
-| `routes` | Target-to-endpoint map. Local targets are owned here; peer targets point elsewhere. |
+| Field | Question it answers | Integration rule |
+| --- | --- | --- |
+| `systemName` | Which logical service do I belong to? | Stable logical service name, such as `billing-api` or `customer-store`. |
+| `nodeId` | Which concrete instance/process am I? | Concrete process identity. Include instance/host/pod identity when multiple instances run. |
+| `queueCapacity` | How much work can runtime buffer before applying pressure? | Bounded queue size. Start conservative, measure pressure, then tune. |
+| `strictNoDrop` | Should overload be visible instead of silently dropping work? | Prefer `true` while integrating so overload becomes visible. |
+| `separateDeliveredRequestLane` | Should inbound work be separated from replies/deadletters? | Prefer `true` for request/reply services so inbound work does not share the response/deadletter lane. |
+| `generation` | Which version of the route table is this? | Monotonic route-table version. Increment when applying a new route snapshot. |
+| `routes` | What targets does this runtime know how to route? | Target-to-endpoint map. Local targets are owned here; peer targets point elsewhere. |
 
 ### Reading The Runtime Types
 
 The nested types are route-table vocabulary, not business domain objects.
 
-| Type | Meaning |
-| --- | --- |
-| `RuntimeStartSpec` | Full startup/config declaration for one runtime process. |
-| `RuntimeRouteSpec` | One route-table row: a target/capability and its endpoint candidates. |
-| `RuntimeEndpointSpec` | One endpoint with `host`, `port`, and endpoint flags. |
-| `RuntimeEndpointFlags` | Endpoint state used by route selection, such as `LOCAL` or `UNAVAILABLE`. |
+| Type | Question it answers | Meaning |
+| --- | --- | --- |
+| `RuntimeStartSpec` | What does this process declare when joining runtime? | Full startup/config declaration for one runtime process. |
+| `RuntimeRouteSpec` | Which target/capability is routed where? | One route-table row: a target/capability and its endpoint candidates. |
+| `RuntimeEndpointSpec` | Where can that target be handled? | One endpoint with `host`, `port`, and endpoint flags. |
+| `RuntimeEndpointFlags` | What is the endpoint's routing state? | Endpoint state used by route selection, such as `LOCAL` or `UNAVAILABLE`. |
 
 Example shape:
 
