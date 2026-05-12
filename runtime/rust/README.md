@@ -46,6 +46,15 @@ mapping, timeout policy, and tests before there is a real product boundary.
 
 ## After: Runtime Target
 
+`samples.customer.store` is the sample's capability target name. In your app,
+choose your own target name, then use the same value in the route table, the
+local `register_handler(...)`, and every caller target. For example,
+`billing.invoice.create` is valid if that is the capability contract you want
+to expose.
+
+The same string appears again in the reply helper as `source`: the response is
+coming from the target handler that produced it.
+
 With CoAkka, the store is a runtime target owned by the Rust process:
 
 ```rust
@@ -58,12 +67,6 @@ runtime.register_handler("samples.customer.store", |request| {
     .ok()
 })?;
 ```
-
-`samples.customer.store` is the sample's capability target name. In your app,
-choose your own target name, then use the same value in the route table, the
-local `register_handler(...)`, and every caller target. For example,
-`billing.invoice.create` is valid if that is the capability contract you want
-to expose.
 
 `ask_json(...)` below is a convenience helper for JSON samples. It is not the
 runtime saying that only JSON is supported. The runtime contract is an envelope

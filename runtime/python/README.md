@@ -57,6 +57,15 @@ Name roles in this snippet:
 `target` is not `system_name` and not `node_id`. A process can own multiple
 targets; the route table maps those target names to endpoints.
 
+`samples.customer.store` is the sample's capability target name. In your app,
+choose your own target name, then use the same value in the route table, the
+local `register_handler(...)`, and every caller `target`. For example,
+`billing.invoice.create` is valid if that is the capability contract you want
+to expose.
+
+The same string appears again in the reply helper as `source`: the response is
+coming from the target handler that produced it.
+
 Register handlers only for local targets:
 
 ```python
@@ -69,12 +78,6 @@ def handle_customer(request):
 
 runtime.register_handler("samples.customer.store", handle_customer)
 ```
-
-`samples.customer.store` is the sample's capability target name. In your app,
-choose your own target name, then use the same value in the route table, the
-local `register_handler(...)`, and every caller `target`. For example,
-`billing.invoice.create` is valid if that is the capability contract you want
-to expose.
 
 `ask_json(...)` below is a convenience helper for JSON samples. It is not the
 runtime saying that only JSON is supported. The payload identity carries the

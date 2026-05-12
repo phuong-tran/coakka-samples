@@ -138,6 +138,15 @@ Name roles in this snippet:
 `target` is not `systemName` and not `nodeId`. A process can own multiple
 targets; the route table maps those target names to endpoints.
 
+`samples.customer.store` is the sample's capability target name. In your app,
+choose your own target name, then use the same value in the route table, the
+local `registerHandler(...)`, and every caller `target`. For example,
+`billing.invoice.create` is valid if that is the capability contract you want
+to expose.
+
+The same string appears again in the reply helper as `source`: the response is
+coming from the target handler that produced it.
+
 Register handlers only for targets this process owns:
 
 ```kotlin
@@ -149,12 +158,6 @@ orchestrator.registerHandler("samples.customer.store") { request ->
     )
 }
 ```
-
-`samples.customer.store` is the sample's capability target name. In your app,
-choose your own target name, then use the same value in the route table, the
-local `registerHandler(...)`, and every caller `target`. For example,
-`billing.invoice.create` is valid if that is the capability contract you want
-to expose.
 
 This sample sends JSON text because it is easy to inspect. The runtime does not
 route by JSON; it routes an envelope by `target` and carries payload bytes plus

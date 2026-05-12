@@ -108,6 +108,15 @@ Name roles in this snippet:
 `Target` is not `SystemName` and not `NodeId`. A process can own multiple
 targets; the route table maps those target names to endpoints.
 
+`customers.create` is the sample's capability target name. In your app, choose
+your own target name, then use the same value in the route table, the local
+`RegisterHandler(...)`, and every caller `target`. For example,
+`billing.invoice.create` is valid if that is the capability contract you want
+to expose.
+
+The same string appears again in the reply helper as `source`: the response is
+coming from the target handler that produced it.
+
 ```csharp
 runtime.RegisterHandler(
     "customers.create",
@@ -116,12 +125,6 @@ runtime.RegisterHandler(
         "customers.create",
         customerStore.Create(request.PayloadUtf8())));
 ```
-
-`customers.create` is the sample's capability target name. In your app, choose
-your own target name, then use the same value in the route table, the local
-`RegisterHandler(...)`, and every caller `target`. For example,
-`billing.invoice.create` is valid if that is the capability contract you want
-to expose.
 
 `AskJsonAsync(...)` below is a convenience helper for JSON samples. It is not
 the runtime saying that only JSON is supported. The payload identity carries
