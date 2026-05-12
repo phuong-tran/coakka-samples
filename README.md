@@ -432,10 +432,18 @@ operation, delivery outcome, and deadletter reason.
 
 ### What It Costs
 
-CoAkka is not free structure. A team has to define target names, payload
-identity, schema/version discipline, route snapshots, handler ownership, and
-runtime diagnostics. Very small CRUD applications that only need direct service
-calls may not need this boundary yet.
+CoAkka does not remove boundary design work. A team still has to define target
+names, payload identity, schema/version discipline, route ownership, handler
+ownership, and diagnostics. A serious internal REST/gRPC design has to answer
+the same kinds of questions through URLs, clients, schemas, retries, status
+mapping, logs, dashboards, and rollout rules.
+
+The difference is where that work lives. Without CoAkka, the rules often spread
+across client code, framework config, HTTP status handling, tracing conventions,
+and team memory. With CoAkka, the route, target, generation, delivery outcome,
+and deadletter vocabulary are explicit runtime concepts. Very small CRUD
+applications that only need direct service calls may not need this boundary
+yet.
 
 What it can save:
 
