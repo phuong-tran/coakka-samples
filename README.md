@@ -699,9 +699,9 @@ RuntimeEndpointFlags  = endpoint state, such as LOCAL or UNAVAILABLE
 Samples construct route specs directly so the runtime pieces are visible.
 Real integrations should usually generate route specs from config, service
 discovery, or a control plane. CoAkka does not remove the need to know which
-capability a system calls; it moves that knowledge from ad-hoc client wiring
-into a route snapshot with generation, strategy, endpoint flags, diagnostics,
-and deadletters.
+capability a system calls; it centralizes that knowledge in a route snapshot
+with generation, strategy, endpoint flags, diagnostics, and deadletters instead
+of scattering it across clients.
 
 For example, a route with `target = "samples.runtime.jvm.echo"` and one
 endpoint marked `LOCAL` means:

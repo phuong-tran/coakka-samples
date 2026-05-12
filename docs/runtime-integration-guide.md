@@ -151,8 +151,8 @@ target and lists the endpoints eligible to handle that target.
 
 Route configuration is not extra work invented by CoAkka. With or without
 CoAkka, a system must know which service or capability it intends to call.
-CoAkka changes the shape of that knowledge: it becomes an explicit route
-snapshot instead of scattered client wiring.
+CoAkka changes where that knowledge lives: it becomes explicit, centralized,
+versioned runtime state instead of scattered client wiring.
 
 ### Before And After Route Knowledge
 
@@ -176,8 +176,11 @@ generation = 12
 ```
 
 The system still has to know the same relationship. The difference is that the
-relationship enters one runtime contract, so it can be validated, hot-reloaded,
-observed, and deadlettered consistently.
+relationship enters one runtime contract. That makes topology easier to inspect,
+hot reload, diagnose, and keep consistent across languages. Route misses,
+unavailable endpoints, and queue pressure become runtime outcomes with shared
+deadletter and stats vocabulary instead of each client inventing its own
+failure shape.
 
 Samples often construct `RuntimeRouteSpec` directly so the moving parts are
 visible. Real integrations should usually generate route specs from framework
