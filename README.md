@@ -9,6 +9,36 @@ current public artifact surface exposes logger packages, the public native
 runtime C ABI package, runtime JVM/language connector packages, and the Spring
 Boot and Quarkus adapters.
 
+## Table of Contents
+
+- [Try Containers First](#try-containers-first)
+- [Start Here](#start-here)
+- [Why CoAkka Exists](#why-coakka-exists)
+- [Runtime First](#runtime-first)
+- [Architectural Value](#architectural-value)
+- [Questions And Answers](#questions-and-answers)
+- [How It Works](#how-it-works)
+- [Sample Integration Checklist](#sample-integration-checklist)
+- [Runtime Scenarios](#runtime-scenarios)
+- [Framework Local Adapters](#framework-local-adapters)
+- [Logger](#logger)
+- [Runtime And Logger Together](#runtime-and-logger-together)
+- [Quick Start](#quick-start)
+- [Requirements](#requirements)
+- [Runtime Configuration Notes](#runtime-configuration-notes)
+- [Integration Guide](#integration-guide)
+- [Future Connector Scope](#future-connector-scope)
+- [Samples](#samples)
+- [Runtime Capability Samples](#runtime-capability-samples)
+- [Container Sample Direction](#container-sample-direction)
+- [Benchmark And Load Status](#benchmark-and-load-status)
+- [Artifact Source](#artifact-source)
+- [Public Status](#public-status)
+- [Direct Runs](#direct-runs)
+- [CI](#ci)
+- [Diagnostics](#diagnostics)
+- [License And Trademark](#license-and-trademark)
+
 ## Try Containers First
 
 The fastest visible runtime proof is the container path. It uses pinned Docker
@@ -75,80 +105,6 @@ List every sample:
 ```sh
 bash run.sh list
 ```
-
-## Public Status
-
-Current public runtime generation: `0.1.0+a671b3a`.
-
-| Lane | Public artifact status | First command |
-| --- | --- | --- |
-| Logger JVM | public | `bash run.sh logger basic` |
-| Logger Python | public | `bash run.sh logger python basic` |
-| Logger Node.js | public | `bash run.sh logger node basic` |
-| Logger Go | public | `bash run.sh logger go basic` |
-| Logger C# | public | `bash run.sh logger csharp basic` |
-| Logger Rust | public | `bash run.sh logger rust basic` |
-| Logger native C/C++ | public | `bash run.sh logger native basic` |
-| Runtime native C/C++ | public | `bash run.sh runtime native basic` |
-| Runtime JVM | public | `bash run.sh runtime jvm basic` |
-| Runtime Python | public | `bash run.sh runtime python basic` |
-| Runtime Node.js | public | `bash run.sh runtime node basic` |
-| Runtime Go | public | `bash run.sh runtime go basic` |
-| Runtime C# | public | `bash run.sh runtime csharp basic` |
-| Runtime Rust | public | `bash run.sh runtime rust basic` |
-| Runtime Spring Boot and Quarkus adapters | public | `bash run.sh scenarios check` |
-| Runtime container sample: Node.js -> Python | public Docker Hub images | `bash run.sh containers node-python` |
-| Runtime container sample: Spring Boot JVM -> Go | public Docker Hub images | `bash run.sh containers spring-go` |
-
-Samples resolve public downloads through
-`coakka-publish-public/artifacts/public-artifacts.tsv` or the matching public
-raw GitHub URL and verify SHA256 before unpacking or installing an artifact.
-Runtime language and framework samples in this status table are aligned to the
-same native package generation unless a later release note declares otherwise.
-
-## License And Trademark
-
-The sample code, scripts, and documentation in this repository are licensed
-under the [Apache License, Version 2.0](LICENSE). See [NOTICE](NOTICE) for the
-repository notice.
-
-Runtime binaries, connector packages, Maven artifacts, and other released
-artifacts consumed by these samples come from `coakka-publish-public` and are
-covered by the license terms in that artifact repository or the terms included
-with the specific release artifact.
-
-The CoAkka name and `coakka` package, artifact, and image prefixes identify
-the official project surface. See [TRADEMARKS.md](TRADEMARKS.md) before using
-the name for forks, derived samples, hosted services, or product branding.
-
-## Table of Contents
-
-- [Try Containers First](#try-containers-first)
-- [Start Here](#start-here)
-- [Public Status](#public-status)
-- [License And Trademark](#license-and-trademark)
-- [Why CoAkka Exists](#why-coakka-exists)
-- [Runtime First](#runtime-first)
-- [Architectural Value](#architectural-value)
-- [How It Works](#how-it-works)
-- [Sample Integration Checklist](#sample-integration-checklist)
-- [Runtime Scenarios](#runtime-scenarios)
-- [Framework Local Adapters](#framework-local-adapters)
-- [Logger](#logger)
-- [Runtime And Logger Together](#runtime-and-logger-together)
-- [Quick Start](#quick-start)
-- [Requirements](#requirements)
-- [Runtime Configuration Notes](#runtime-configuration-notes)
-- [Integration Guide](#integration-guide)
-- [Future Connector Scope](#future-connector-scope)
-- [Samples](#samples)
-- [Runtime Capability Samples](#runtime-capability-samples)
-- [Container Sample Direction](#container-sample-direction)
-- [Benchmark And Load Status](#benchmark-and-load-status)
-- [Artifact Source](#artifact-source)
-- [Direct Runs](#direct-runs)
-- [CI](#ci)
-- [Diagnostics](#diagnostics)
 
 ## Why CoAkka Exists
 
@@ -276,36 +232,100 @@ defined semantics, and infrastructure that still owns ingress, TLS, discovery,
 and deployment policy. That gives an organization a shared integration
 substrate without forcing every service into the same application framework.
 
+## Questions And Answers
+
+Common positioning questions are collected in [docs/qna.md](docs/qna.md).
+Start there for comparisons with gRPC, CQRS, Event Sourcing, and business
+versus runtime boundaries.
+
 ## How It Works
 
 CoAkka keeps a hard boundary between the application host and the native runtime
 core.
 
-```text
-App host / connector layer
-JVM, Python, Node.js, Go, C#, etc.
+```mermaid
+flowchart TB
+    ingress["Ingress\nHTTP, gRPC, CLI, jobs, UI"]
 
-- read config from the host environment
-- map config into a route snapshot
-- register local handlers
-- encode and decode payloads
-- feed config and route reloads into the runtime
-- expose framework lifecycle
+    subgraph host["App host / connector layer\nJVM, Python, Node.js, Go, C#, Rust, C/C++"]
+        config["Host config\nfiles, env, framework config"]
+        routes["Route snapshot\ngeneration + target map"]
+        codec["Payload codec\nmessage type + schema version + format"]
+        handlers["Local handlers\nbusiness capability owners"]
+        lifecycle["Framework lifecycle\nstart, stop, shutdown"]
+    end
 
-        |
-        v
+    subgraph runtime["Native runtime core\nshared C/C++ runtime behavior"]
+        apply["Apply route snapshot"]
+        resolve["Target -> endpoint resolution"]
+        queues["Bounded queues\ncorrelation + backpressure"]
+        delivery["Request/reply and event delivery"]
+        deadletters["Deadletters\nroute miss, timeout, queue rejection"]
+        stats["Health, stats, diagnostics"]
+        transport["Transporter boundary\nlocal or remote handoff"]
+    end
 
-Native runtime core
-C/C++ runtime behavior shared by all hosts
+    remote["Peer runtime or remote handler"]
+    operator["Logs, metrics, dashboards"]
 
-- route table
-- generation
-- target -> endpoint resolution
-- bounded queues and correlation
-- request/reply
-- event and deadletter paths
-- lifecycle, stats, and diagnostics
-- transporter boundary
+    ingress --> codec
+    config --> routes --> apply
+    lifecycle --> apply
+    codec --> queues
+    apply --> resolve --> queues --> delivery
+    delivery --> handlers
+    delivery --> transport --> remote
+    queues --> deadletters
+    resolve --> deadletters
+    delivery --> stats
+    deadletters --> stats --> operator
+```
+
+### Configuration Injection
+
+CoAkka runtime does not fetch platform configuration by itself. The connector
+or framework adapter owns that work: it reads the host environment, validates
+the shape, builds a start spec and route snapshot, then injects those values
+through the runtime API.
+
+```mermaid
+flowchart LR
+    subgraph sources["Configuration sources"]
+        files["Files\nYAML, JSON, properties"]
+        env["Environment\nprocess env, flags"]
+        framework["Framework config\nSpring, Quarkus, Node, Go"]
+        k8s["Kubernetes\nConfigMap, Secret, API"]
+        consul["Consul / config service"]
+        operator["Operator or control plane"]
+    end
+
+    subgraph connector["Host connector / adapter"]
+        load["Load or watch config"]
+        validate["Validate targets, endpoints,\ntimeouts, queue policy"]
+        map["Map to CoAkka model\nsystemName, nodeId, routes"]
+        generation["Assign generation\nfor route snapshot"]
+        inject["Inject through connector API\nstart runtime + apply routes"]
+    end
+
+    subgraph runtime["CoAkka native runtime"]
+        start["Start spec\nqueue capacity, strictNoDrop,\ndelivery lanes"]
+        snapshot["Active route snapshot\ngeneration + target endpoints"]
+        dataplane["Data plane\nroute, queue, deliver, deadletter"]
+        info["Runtime info, stats, health"]
+    end
+
+    files --> load
+    env --> load
+    framework --> load
+    k8s --> load
+    consul --> load
+    operator --> load
+    load --> validate --> map --> generation --> inject
+    inject --> start
+    inject --> snapshot
+    snapshot --> dataplane
+    start --> dataplane
+    dataplane --> info
 ```
 
 The runtime is deliberately platform-agnostic:
@@ -981,6 +1001,36 @@ Current public artifact pins:
 The matching artifact note is published at
 `https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-05-09-runtime-a671b3a.md`.
 
+## Public Status
+
+Current public runtime generation: `0.1.0+a671b3a`.
+
+| Lane | Public artifact status | First command |
+| --- | --- | --- |
+| Logger JVM | public | `bash run.sh logger basic` |
+| Logger Python | public | `bash run.sh logger python basic` |
+| Logger Node.js | public | `bash run.sh logger node basic` |
+| Logger Go | public | `bash run.sh logger go basic` |
+| Logger C# | public | `bash run.sh logger csharp basic` |
+| Logger Rust | public | `bash run.sh logger rust basic` |
+| Logger native C/C++ | public | `bash run.sh logger native basic` |
+| Runtime native C/C++ | public | `bash run.sh runtime native basic` |
+| Runtime JVM | public | `bash run.sh runtime jvm basic` |
+| Runtime Python | public | `bash run.sh runtime python basic` |
+| Runtime Node.js | public | `bash run.sh runtime node basic` |
+| Runtime Go | public | `bash run.sh runtime go basic` |
+| Runtime C# | public | `bash run.sh runtime csharp basic` |
+| Runtime Rust | public | `bash run.sh runtime rust basic` |
+| Runtime Spring Boot and Quarkus adapters | public | `bash run.sh scenarios check` |
+| Runtime container sample: Node.js -> Python | public Docker Hub images | `bash run.sh containers node-python` |
+| Runtime container sample: Spring Boot JVM -> Go | public Docker Hub images | `bash run.sh containers spring-go` |
+
+Samples resolve public downloads through
+`coakka-publish-public/artifacts/public-artifacts.tsv` or the matching public
+raw GitHub URL and verify SHA256 before unpacking or installing an artifact.
+Runtime language and framework samples in this status table are aligned to the
+same native package generation unless a later release note declares otherwise.
+
 ## Direct Runs
 
 Runtime language/framework direct runs consume the public runtime artifacts:
@@ -1144,3 +1194,18 @@ The JVM logger jar also accepts an explicit native override:
 ```sh
 ./gradlew :logger:jvm:basic:run -Dcoakka.logger.lib=/abs/path/to/libcoakka_logger_core.dylib
 ```
+
+## License And Trademark
+
+The sample code, scripts, and documentation in this repository are licensed
+under the [Apache License, Version 2.0](LICENSE). See [NOTICE](NOTICE) for the
+repository notice.
+
+Runtime binaries, connector packages, Maven artifacts, and other released
+artifacts consumed by these samples come from `coakka-publish-public` and are
+covered by the license terms in that artifact repository or the terms included
+with the specific release artifact.
+
+The CoAkka name and `coakka` package, artifact, and image prefixes identify
+the official project surface. See [TRADEMARKS.md](TRADEMARKS.md) before using
+the name for forks, derived samples, hosted services, or product branding.
