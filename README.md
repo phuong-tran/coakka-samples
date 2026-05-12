@@ -690,6 +690,7 @@ RuntimeEndpointFlags  = endpoint state, such as LOCAL or UNAVAILABLE
 | `routes` | What targets does this runtime know how to route? | Maps a target name such as `samples.customer.store` to one or more endpoints. |
 | `target` | What capability is the caller asking for? | Stable capability address, not a class name, function name, or URL. |
 | `source` | Who is sending this request or reply? | Caller or responder identity used for diagnostics, correlation, and reply naming. |
+| `strategy` | If a target has multiple eligible endpoints, how should runtime choose one? | Route selection policy such as single owner, weighted round robin, or rendezvous hash. |
 | `host` / `port` | What endpoint identity should runtime use? | Endpoint address for local listener or remote runtime handoff. |
 | `RuntimeEndpointFlags.LOCAL` | Is the handler in this process? | This process owns the target and should register the handler. |
 | `RuntimeEndpointFlags.UNAVAILABLE` | Should this endpoint stay visible but receive no new work? | Endpoint remains in the snapshot but is excluded from new route selection. |

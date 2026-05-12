@@ -217,6 +217,70 @@ Register handlers only for local targets. Sending to a missing or unreachable
 target should produce a deadletter that the caller can log, surface, or retry
 according to business rules.
 
+## Route Resolution Strategy
+
+Route strategy answers this question:
+
+```text
+If a target has multiple eligible endpoints, which endpoint should runtime
+choose?
+```
+
+This is runtime routing policy. It is not business priority, authorization,
+or retry policy.
+
+| Strategy | Question it answers | Typical use |
+| --- | --- | --- |
+| `SINGLE_OWNER` | Does exactly one endpoint own this target? | Owner-sensitive commands, local samples, actor-like ownership. |
+| `WEIGHTED_ROUND_ROBIN` | Can equivalent endpoints share this work? | Stateless or replicated handlers that can scale horizontally. |
+| `RENDEZVOUS_HASH` | Should the same key keep going to the same endpoint? | Sharded ownership by `order_id`, `tenant_id`, `customer_id`, or another stable key. |
+
+Examples:
+
+```text
+target = payment.authorize
+strategy = SINGLE_OWNER
+```
+
+Read that as:
+
+```text
+payment.authorize has one responsible owner. If that owner is unavailable,
+runtime should fail closed instead of selecting an arbitrary endpoint.
+```
+
+```text
+target = order.validate
+strategy = WEIGHTED_ROUND_ROBIN
+```
+
+Read that as:
+
+```text
+order.validate can run on multiple equivalent endpoints. Runtime may distribute
+new requests across eligible endpoints.
+```
+
+```text
+target = order.create
+strategy = RENDEZVOUS_HASH
+route_key_hint = order_id
+```
+
+Read that as:
+
+```text
+Requests with the same order_id should resolve to the same eligible endpoint,
+which is useful when ownership or cache locality matters.
+```
+
+Endpoint flags and strategy work together:
+
+- `LOCAL` says the endpoint belongs to this process.
+- `UNAVAILABLE` keeps an endpoint visible but excludes it from new route
+  selection.
+- `strategy` chooses among endpoints that remain eligible.
+
 ## Payload Contract
 
 Every payload identity has:
