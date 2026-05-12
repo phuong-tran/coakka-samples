@@ -398,6 +398,68 @@ complete snapshot:
 applyRoutes(generation, routes) -> applied | stale_generation | invalid_snapshot
 ```
 
+```mermaid
+flowchart TD
+    snapshot["route snapshot"]
+    validate["validate"]
+    compare["newer generation?"]
+    applied["applied"]
+    stale["stale_generation"]
+    invalid["invalid_snapshot"]
+
+    snapshot --> validate
+    validate -->|bad shape| invalid
+    validate -->|valid| compare
+    compare -->|yes| applied
+    compare -->|no| stale
+```
+
+The result is intentionally small:
+
+- `applied`: runtime atomically swaps to the new route table
+- `stale_generation`: runtime keeps the current route table because the
+  snapshot is not newer
+- `invalid_snapshot`: runtime keeps the current route table because the
+  snapshot shape is not acceptable
+
+The request path then uses the active route snapshot:
+
+```mermaid
+flowchart LR
+    subgraph serviceA["Service A"]
+        appA["App code"]
+        connectorA["Connector"]
+        runtimeA["Runtime"]
+    end
+
+    routes["Active routes"]
+
+    subgraph serviceB["Service B"]
+        runtimeB["Runtime"]
+        connectorB["Connector"]
+        handlerB["Handler"]
+    end
+
+    deadletter["Deadletter"]
+
+    appA -->|ask target B| connectorA
+    connectorA --> runtimeA
+    runtimeA --> routes
+    routes -->|endpoint B| runtimeB
+    routes -->|missing target| deadletter
+    runtimeB --> connectorB
+    connectorB --> handlerB
+    handlerB -->|reply| connectorB
+    connectorB --> runtimeB
+    runtimeB --> runtimeA
+    runtimeA --> connectorA
+    connectorA --> appA
+```
+
+Service A does not call a Service B HTTP controller in this path. It asks a
+runtime `target`; the active route snapshot decides whether that target maps to
+an endpoint owned by this process, a peer runtime, or a deadletter.
+
 The semantics need to stay strict:
 
 - `generation` must increase for a new snapshot
