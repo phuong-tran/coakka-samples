@@ -109,6 +109,12 @@ customer-store-pod-7
 customer-store-us-east-1a-0003
 ```
 
+Treat duplicate `nodeId` values as misconfiguration in real deployments.
+Requests may still be delivered if route selection does not depend on node
+identity, but logs, stats, health, deadletters, and route ownership become
+ambiguous. A practical rule is that `nodeId` should be unique within a
+`systemName`.
+
 `queueCapacity` is the bounded runtime queue size. Start small enough that
 pressure is visible, then tune from observed queue depth, burst size, and memory
 budget. Do not treat sample values as production sizing.
