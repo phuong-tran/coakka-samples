@@ -153,6 +153,8 @@ target and lists the endpoints eligible to handle that target.
 `127.0.0.1` plus a demo port. In a real deployment it usually comes from the
 connector's config source, such as Kubernetes, Consul, a config service, or
 framework config.
+For container and Kubernetes examples, see
+[Containerized Runtime Notes](containerized-runtime.md).
 
 `RuntimeEndpointFlags.LOCAL` means the endpoint belongs to this process. Only
 targets with a local endpoint should have a handler registered in this process.

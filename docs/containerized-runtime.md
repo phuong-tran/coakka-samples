@@ -8,6 +8,7 @@ The short rule:
 ```text
 systemName is planned by humans.
 nodeId is assigned at runtime by the platform.
+host/port are advertised endpoint config read from the environment or control plane.
 ```
 
 Do not bake a different `nodeId` into each image.
@@ -46,6 +47,11 @@ billing pod C -> COAKKA_NODE_ID=billing-7d9f8c-c
 
 The connector reads that value and passes it into `RuntimeStartSpec`.
 
+The same rule applies to endpoint `host` and `port`. Local samples often use
+`127.0.0.1`, but production connectors should read advertised endpoint
+addresses from environment variables, Kubernetes metadata, service discovery,
+or a control-plane route snapshot.
+
 ## Kubernetes
 
 Use the Kubernetes Downward API to inject pod metadata.
@@ -60,6 +66,12 @@ env:
     valueFrom:
       fieldRef:
         fieldPath: metadata.name
+  - name: COAKKA_LOCAL_HOST
+    valueFrom:
+      fieldRef:
+        fieldPath: status.podIP
+  - name: COAKKA_LOCAL_PORT
+    value: "19301"
 ```
 
 Use pod UID when identity must not be reused across pod restarts or
@@ -81,6 +93,10 @@ In application code:
 val systemName = System.getenv("COAKKA_SYSTEM_NAME") ?: "billing"
 val nodeId = System.getenv("COAKKA_NODE_ID")
     ?: InetAddress.getLocalHost().hostName
+val localHost = System.getenv("COAKKA_LOCAL_HOST")
+    ?: InetAddress.getLocalHost().hostAddress
+val localPort = System.getenv("COAKKA_LOCAL_PORT")?.toInt()
+    ?: 19301
 
 val startSpec = RuntimeStartSpec(
     systemName = systemName,
@@ -92,6 +108,56 @@ val startSpec = RuntimeStartSpec(
     routes = routes,
 )
 ```
+
+## Endpoint Host And Port
+
+`host` and `port` answer this question:
+
+```text
+What address should other runtime participants use for this endpoint?
+```
+
+They are not meant to be manually edited in application source for every
+deployment. The connector should map environment or control-plane data into the
+route snapshot.
+
+Common sources:
+
+- `status.podIP` for a direct pod endpoint
+- Kubernetes Service DNS for service-level routing
+- StatefulSet DNS for stable per-pod names
+- Docker Compose service names for local multi-container samples
+- Consul, DNS, or another service registry
+- ConfigMap, Helm values, or a custom control plane
+
+Examples:
+
+```text
+local dev:
+  host = 127.0.0.1
+  port = 19301
+
+Kubernetes pod endpoint:
+  host = ${COAKKA_LOCAL_HOST}        # status.podIP
+  port = ${COAKKA_LOCAL_PORT}
+
+Kubernetes service endpoint:
+  host = customer-store.default.svc.cluster.local
+  port = 19301
+
+StatefulSet endpoint:
+  host = customer-store-0.customer-store.default.svc.cluster.local
+  port = 19301
+
+Docker Compose:
+  host = python-store
+  port = 19301
+```
+
+Choosing service DNS versus per-pod endpoints is a topology decision. Service
+DNS lets the platform perform service-level balancing. Per-pod endpoints give
+the CoAkka route snapshot and route strategy direct visibility into each
+eligible runtime endpoint.
 
 ## Docker Compose
 
@@ -109,6 +175,8 @@ services:
     environment:
       COAKKA_SYSTEM_NAME: billing
       COAKKA_NODE_ID: ${HOSTNAME}
+      COAKKA_LOCAL_HOST: billing
+      COAKKA_LOCAL_PORT: "19301"
 ```
 
 Exact Compose interpolation behavior varies by runtime and shell. When in
@@ -151,4 +219,3 @@ Work placement is still determined by:
 For example, three billing pods may share one `systemName`, each with a unique
 `nodeId`. Whether a target uses one owner, round-robin distribution, or stable
 hashing depends on the route strategy published by the connector/control plane.
-
