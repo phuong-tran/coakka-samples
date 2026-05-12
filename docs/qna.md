@@ -8,14 +8,20 @@ It is intentionally incomplete and should grow as users ask sharper questions.
 No.
 
 `gRPC` is a framework for calling a remote service over a network API.
-`CoAkka` is a runtime boundary for internal capabilities.
+`CoAkka` is a runtime boundary for capabilities that are internal to an app or
+deployment contract.
+
+Here, `internal` does not mean same-process-only. It means the capability is
+not being exposed as a public product/service API. The handler may live in the
+same process, another process, or another host depending on the active route
+snapshot.
 
 Short answer:
 
 ```text
-gRPC calls a service across a real network boundary.
-CoAkka delivers work through a runtime boundary with target routing, bounded
-queueing, deadletters, diagnostics, and a local-first path.
+gRPC calls a service across a real network API boundary.
+CoAkka delivers work to a named target through a runtime boundary; that target
+can resolve to a same-process handler, a peer runtime, or a deadletter.
 ```
 
 Use gRPC when the boundary is already a real service API:
@@ -29,7 +35,7 @@ Use CoAkka when the team wants a stronger boundary than a direct function call,
 but the work is still an internal capability:
 
 - named target or capability
-- local handler today, possible remote handler later
+- same-process handler today, possible peer-runtime handler later
 - route generation and route hot reload
 - queue pressure and explicit rejection
 - deadletter reasons instead of mystery timeouts
@@ -44,8 +50,9 @@ CoAkka replaces gRPC.
 Say:
 
 ```text
-CoAkka avoids turning local internal capabilities into fake network APIs too
-early. gRPC still belongs at real remote API boundaries.
+CoAkka avoids turning internal capabilities into fake network APIs too early.
+Those capabilities may still run same-process or cross-process through runtime
+routes. gRPC still belongs at real remote API boundaries.
 ```
 
 ## Is CoAkka A gRPC Add-On?
@@ -59,10 +66,10 @@ Common shapes:
 
 ```text
 No gRPC:
-  HTTP/CLI/job -> CoAkka runtime -> local capability handler
+  HTTP/CLI/job -> CoAkka runtime -> same-process handler
 
 gRPC at the ingress edge:
-  gRPC endpoint -> CoAkka runtime -> internal capability handler
+  gRPC endpoint -> CoAkka runtime -> runtime capability handler
 
 Existing service-to-service gRPC:
   keep gRPC where the service API is already the correct boundary
@@ -86,12 +93,12 @@ controller -> service_a -> service_b
 This is cheap and correct for a clean monolith.
 The limitation is that the boundary is mostly code ownership.
 It does not naturally model route generations, queue pressure, deadletters, or
-a later local-to-remote migration.
+a later same-process-to-peer-runtime migration.
 
 Internal REST/gRPC:
 
 ```text
-service_a -> HTTP/gRPC client -> local or remote endpoint -> service_b
+service_a -> HTTP/gRPC client -> same-host or remote endpoint -> service_b
 ```
 
 This creates a stronger boundary, but it pays network API costs:
@@ -101,7 +108,7 @@ This creates a stronger boundary, but it pays network API costs:
 - timeout and status mapping
 - test server setup
 - duplicated retry and correlation vocabulary
-- possible local network hop before the boundary is actually remote
+- possible same-host network hop before the boundary is actually remote
 
 Message broker:
 
@@ -113,13 +120,13 @@ This is useful when the system needs broker semantics.
 It also adds broker operations, topic/queue policy, lag, ordering, replay, and
 poison-message handling.
 
-CoAkka local capability:
+CoAkka runtime capability:
 
 ```text
 ingress/nginx -> app-host/controller -> CoAkka runtime -> target handler
 ```
 
-This keeps the work local by default while making the runtime boundary explicit:
+This keeps the first version compact while making the runtime boundary explicit:
 
 - target identity
 - payload contract
@@ -128,8 +135,8 @@ This keeps the work local by default while making the runtime boundary explicit:
 - route miss and drained endpoint behavior
 - deadletter reasons
 - health and stats
-- future remote or polyglot handoff without making the first version a fake
-  network service
+- future peer-runtime or polyglot handoff without making the first version a
+  fake network service
 
 ## When Is CoAkka Worth Adding?
 
@@ -141,7 +148,7 @@ CoAkka is useful when the team wants:
 - stronger boundary than direct dependency injection
 - less network plumbing than fake internal REST/gRPC
 - explicit route, queue, timeout, and deadletter vocabulary
-- local-first design with a later remote path
+- same-process-first design with a later peer-runtime path
 - connector-owned control plane and runtime-owned data plane
 - shared native runtime ABI for multiple host-language connectors
 
@@ -203,7 +210,7 @@ CoAkka decides how work is delivered to that capability:
 
 - target routing
 - queue admission
-- local or remote endpoint selection
+- same-process or peer-runtime endpoint selection
 - timeout and terminal outcome handling
 - deadletter and diagnostics
 
@@ -360,7 +367,7 @@ HTTP/gRPC/CLI
 CoAkka can help with:
 
 - command and query dispatch by target
-- local versus remote handler placement
+- same-process versus peer-runtime handler placement
 - bounded command/query lanes
 - route miss and queue rejection as explicit outcomes
 - runtime stats for pressure and delivery failures
@@ -401,7 +408,7 @@ CoAkka can help with:
 - isolating projection queues
 - deadlettering malformed or repeatedly failing projection work
 - exposing runtime pressure and delivery diagnostics
-- moving a projector from local to remote later
+- moving a projector from same-process to peer-runtime later
 
 CoAkka does not provide by itself:
 
@@ -427,15 +434,16 @@ Sourcing still need their own application contracts and persistence model.
 Use this when someone compares CoAkka to gRPC, CQRS, actors, or brokers:
 
 ```text
-CoAkka is a local-first runtime boundary for internal capabilities. It names
+CoAkka is a runtime boundary for internal capabilities, with a compact
+same-process path and a peer-runtime path through route snapshots. It names
 targets, routes work through a generationed runtime snapshot, applies bounded
 queue policy, and returns response or deadletter outcomes with diagnostics.
 
-Local-first does not mean same-process-only. It means the first boundary is an
-internal runtime boundary instead of a public HTTP/gRPC API boundary. The
-handler can be same process, same host, or another runtime participant reached
-through transport. The `LOCAL` endpoint flag is the narrower process-local
-case.
+Internal does not mean same-process-only. It means the first boundary is a
+runtime target boundary instead of a public HTTP/gRPC API boundary. The handler
+can be in the same process, same host, or another runtime participant reached
+through transport. The `LOCAL` endpoint flag is the narrower "handler owned by
+this process" case.
 
 It can carry RPC-style requests, CQRS commands, CQRS queries, events, or
 projection work. Those are payload and application patterns. CoAkka's core
