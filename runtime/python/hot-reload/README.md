@@ -1,7 +1,9 @@
 # Python Runtime Hot Reload
 
 This sample shows route snapshot hot reload without adding another UI or
-business workflow.
+business workflow. Hot reload is an operational capability, not the expected
+default for every deployment. Most container deployments can start with one
+route snapshot derived from platform config and change routes through rollout.
 
 It runs one Python process with one CoAkka runtime handle and demonstrates:
 

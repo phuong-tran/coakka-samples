@@ -71,13 +71,15 @@ pending request.
 
 ## Step 4: Understand Route Snapshots
 
-Run the route reload sample:
+Run the route reload sample when you want to see the apply semantics directly:
 
 ```sh
 bash run.sh runtime python hot-reload
 ```
 
-This shows why route generation exists:
+Most applications can start with one route snapshot from platform config and
+change it through rollout. This sample exists to show why route generation
+exists when live route changes are needed:
 
 - a newer route snapshot can be applied
 - a stale snapshot is rejected

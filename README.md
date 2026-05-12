@@ -37,13 +37,14 @@ That vocabulary is:
 - request/reply and one-way delivery
 - deadletter reasons
 - runtime stats and diagnostics
-- connector-owned configuration injection
+- connector-owned startup configuration
 
 This repository shows that architecture through runnable samples. The
 production-facing claim is intentionally practical: the design is ready to be
 evaluated in real deployments, while durable production evidence should come
-from Linux/container operation, restart and reconnect behavior, route reload
-under load, and operational monitoring in the target environment.
+from Linux/container operation, restart and reconnect behavior, stable startup
+configuration, controlled route reload when needed, and operational monitoring
+in the target environment.
 
 ## Table of Contents
 
@@ -294,9 +295,9 @@ That boundary matters during a wider rollout:
   or Node.js while the target and payload contract remain stable
 - operational debugging has shared terms: target, route generation, deadletter
   reason, pending counters, matched responses, and queue pressure
-- config and route hot reload stay flexible because the runtime does not care
-  where config came from, only that a route snapshot is applied with clear
-  semantics
+- startup config stays boring because the connector can read host, port,
+  identity, and route data from the platform; route reload remains available
+  for controlled changes when a deployment actually needs it
 - delivery failures become deadletters and diagnostics instead of vague
   timeouts or silent drops
 
@@ -304,17 +305,18 @@ For that value to hold in production, the project still has to prove three
 things:
 
 1. the remote transporter runs reliably under load, reconnect, process restart,
-   and route reload
+   and controlled route reload
 2. connector ergonomics stay simple when an application feeds config, registers
    handlers, and sends asks/events
 3. diagnostics are sharp enough for operators to identify the route,
    generation, target, pending work, and deadletter reason quickly
 
 The intended shape is a small runtime core, host-language connectors that feed
-config and business handlers, route snapshots that can be re-applied with
-defined semantics, and infrastructure that still owns ingress, discovery, and
-deployment policy. That gives an organization a shared integration
-substrate without forcing every service into the same application framework.
+startup config and business handlers, route snapshots that can be re-applied
+with defined semantics when needed, and infrastructure that still owns ingress,
+discovery, and deployment policy. That gives an organization a shared
+integration substrate without forcing every service into the same application
+framework.
 
 ## Questions And Answers
 
@@ -351,11 +353,11 @@ The native runtime core owns the shared behavior: active route generation,
 target-to-endpoint resolution, bounded queues, request/reply correlation,
 deadletters, health, stats, and the local or remote transporter boundary.
 
-### Configuration Injection
+### Startup Configuration
 
 CoAkka runtime does not fetch platform configuration by itself. The connector
 or framework adapter owns that work: it reads the host environment, validates
-the shape, builds a start spec and route snapshot, then injects those values
+the shape, builds a start spec and route snapshot, then passes those values
 through the runtime API.
 
 ```mermaid
@@ -371,6 +373,11 @@ flowchart LR
     snapshot --> runtime
     runtime --> active
 ```
+
+For most container deployments this is startup work, not a continuous hostname
+update loop. A pod or service gets its advertised host from Kubernetes metadata,
+Service DNS, environment, or a control plane when the process starts. Replicas
+of the same app role normally share the same runtime port.
 
 Configuration sources can be files, process environment, framework config,
 Kubernetes ConfigMaps or Secrets, Consul, another config service, or an
@@ -391,8 +398,9 @@ application, target resolution, correlation, queue pressure, deadletters, and
 lifecycle. Connector tests can focus on config mapping, payload encoding,
 handler registration, and framework shutdown behavior.
 
-Route reload is the critical API shape. Conceptually, a connector applies a
-complete snapshot:
+Route apply is the critical API shape. Startup uses it for the initial route
+snapshot. Hot reload uses the same shape later if an operator or control plane
+needs to change routes without restarting the process:
 
 ```text
 applyRoutes(generation, routes) -> applied | stale_generation | invalid_snapshot
@@ -542,9 +550,12 @@ Store and audit services run headless; even the Spring Boot store is configured
 as a non-web application, so `8081` is the only browser/API HTTP surface.
 
 The route hot reload capability is covered by `runtime/python/hot-reload` and
-by the Spring Boot single-process customer scenario. The scenario includes a
-`routes.yml` example, a `reload-routes` command, and diagnostics that show the
-active generation changing after an atomic route snapshot apply.
+by the Spring Boot single-process customer scenario. Treat it as an operational
+tool, not the normal happy path. Most container deployments can start with a
+route snapshot derived from platform config and change routes by rolling out a
+new pod set. The samples keep `routes.yml`, `reload-routes`, and generation
+diagnostics visible so the apply semantics are concrete when live route changes
+are needed.
 
 ## Runtime Scenarios
 
@@ -853,7 +864,7 @@ RuntimeEndpointFlags  = endpoint state, such as LOCAL or UNAVAILABLE
 | `RuntimeRouteSpec` | Which target/capability is routed where? | One route-table row: target/capability to endpoint list. |
 | `RuntimeEndpointSpec` | Where can that target be handled? | One concrete endpoint with `host`, `port`, and flags. |
 | `systemName` | Which logical service do I belong to? | Logical runtime participant name used in diagnostics, such as `customer-store`. |
-| `nodeId` | Which concrete instance/process am I? | Concrete process identity used in logs and runtime snapshots; samples may hard-code it, but production should inject a unique value per process/pod at runtime, not bake it into the image. |
+| `nodeId` | Which concrete instance/process am I? | Concrete process identity used in logs and runtime snapshots; samples may hard-code it, but production should supply a unique value per process/pod at runtime, not bake it into the image. |
 | `queueCapacity = 128` | How much work can runtime buffer before applying pressure? | Bounded queue that is large enough for a demo but still prevents unbounded memory growth. |
 | `strictNoDrop = true` | Should overload be visible instead of silently dropping work? | Overload becomes visible as an error/deadletter instead of silently dropping work. |
 | `separateDeliveredRequestLane = true` | Should inbound work be separated from replies/deadletters? | Keeps inbound delivered requests separate from response/deadletter matching for outgoing asks. |
@@ -862,7 +873,7 @@ RuntimeEndpointFlags  = endpoint state, such as LOCAL or UNAVAILABLE
 | `target` | What capability is the caller asking for? | Stable capability address, not a class name, function name, or URL. |
 | `source` | Who is sending this request or reply? | Caller or responder identity used for diagnostics, correlation, and reply naming. |
 | `strategy` | If a target has multiple eligible endpoints, how should runtime choose one? | Route selection policy such as single owner, weighted round robin, or rendezvous hash. |
-| `host` / `port` | What endpoint identity should runtime use? | Endpoint address for a process-owned listener or remote runtime handoff; samples may use `127.0.0.1`, but production should inject it from env, platform metadata, service discovery, or a control-plane route snapshot. Replicas of the same app role should normally share the same runtime port while host identity comes from service DNS, pod DNS/IP, or the control plane. |
+| `host` / `port` | What endpoint identity should runtime use? | Endpoint address for a process-owned listener or remote runtime handoff; samples may use `127.0.0.1`, but production should read it from env, platform metadata, service discovery, or a control-plane route snapshot. Replicas of the same app role should normally share the same runtime port while host identity comes from service DNS, pod DNS/IP, or the control plane. |
 | `RuntimeEndpointFlags.LOCAL` | Is the handler in this process? | This process owns the target and should register the handler. |
 | `RuntimeEndpointFlags.UNAVAILABLE` | Should this endpoint stay visible but receive no new work? | Endpoint remains in the snapshot but is excluded from new route selection. |
 | no `LOCAL` flag | Is this a peer endpoint instead of my handler? | The endpoint is a peer/remote endpoint, not a handler owned by this process. |
@@ -917,7 +928,8 @@ flags, payload identities, handler ownership, caller timeouts, deadletter
 handling, queue policy, and shutdown.
 For containerized deployments, read
 [Containerized Runtime Notes](docs/containerized-runtime.md) for build-time
-versus runtime identity, Kubernetes metadata injection, and `nodeId` guidance.
+versus runtime identity, Kubernetes metadata supplied at startup, and `nodeId`
+guidance.
 
 Language-specific entry points:
 
@@ -962,7 +974,7 @@ connector first.
 | --- | --- | --- |
 | Request/reply | JVM, Python, Node.js, Go, C#, Rust, native C/C++ basic samples | Typed request/reply through a process-owned route and runtime counters |
 | Deadletter | JVM, Java, Python, Node.js, Go deadletter samples; native basic route miss | Missing-route accounting and matched pending requests |
-| Route hot reload | `runtime/python/hot-reload`; `runtime/scenarios/customer-crud/spring-boot-single-process/routes.yml` and `runtime/scenarios/customer-crud/spring-boot-spring-boot/routes.yml` with `bash run.sh reload-routes` | Apply a newer route snapshot, reject stale/invalid snapshots, and observe generation changes |
+| Route snapshot apply/reload | `runtime/python/hot-reload`; `runtime/scenarios/customer-crud/spring-boot-single-process/routes.yml` and `runtime/scenarios/customer-crud/spring-boot-spring-boot/routes.yml` with `bash run.sh reload-routes` | Apply the startup route snapshot, optionally apply a newer snapshot later, reject stale/invalid snapshots, and observe generation changes |
 | Queue pressure | `runtime/native/pressure`; status notes in [`runtime/README.md`](runtime/README.md) | Bounded runtime queue rejection and deadletter counters at the public C ABI intake boundary |
 | Logger pressure | JVM, Java, Python, Node.js, Go, C#, Rust, native logger pressure samples | Bounded logger queue rejection and dropped counters |
 | Customer CRUD scenarios | Spring Boot, Quarkus, desktop, Node.js, Go, and C# scenario tracks | Real workflow shape across same-process and cross-process runtime boundaries |
@@ -971,8 +983,8 @@ Current gaps:
 
 | Gap | Status |
 | --- | --- |
-| Cross-process route hot reload scenario | Route apply covered by `runtime/scenarios/customer-crud/spring-boot-spring-boot/routes.yml`; live cross-host delivery capture pending |
-| Language connector runtime pressure samples | Tracked separately from native intake pressure; current public connector samples cover request/reply, deadletter, and hot reload |
+| Cross-process route apply/reload scenario | Route apply covered by `runtime/scenarios/customer-crud/spring-boot-spring-boot/routes.yml`; live cross-host delivery capture pending |
+| Language connector runtime pressure samples | Tracked separately from native intake pressure; current public connector samples cover request/reply, deadletter, and route snapshot apply/reload |
 | Two-machine Linux walkthrough | Manual setup documented in [`docs/two-machine-linux.md`](docs/two-machine-linux.md); live two-host capture pending |
 | Repeatable benchmark harness | Manual smoke-load harness present; Linux CI workflow is manual; Linux hardware benchmark remains pending |
 

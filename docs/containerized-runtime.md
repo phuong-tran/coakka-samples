@@ -8,12 +8,13 @@ The short rule:
 ```text
 systemName is planned by humans.
 nodeId is assigned at runtime by the platform.
-host/port are advertised endpoint config read from the environment or control plane.
+host/port are advertised endpoint config read at startup from the environment
+or control plane.
 ```
 
 Do not bake a different `nodeId` into each image.
-Build one reusable image and inject instance identity when each container
-starts.
+Build one reusable image and let the runtime environment supply instance
+identity when each container starts.
 
 ## Build Time Versus Runtime
 
@@ -50,11 +51,13 @@ The connector reads that value and passes it into `RuntimeStartSpec`.
 The same rule applies to endpoint `host` and `port`. Local samples often use
 `127.0.0.1`, but production connectors should read advertised endpoint
 addresses from environment variables, Kubernetes metadata, service discovery,
-or a control-plane route snapshot.
+or a control-plane route snapshot when the process starts. In ordinary
+Kubernetes deployments, hostname does not need to be recomputed continuously;
+Service DNS and pod metadata are stable enough for the pod lifecycle.
 
 ## Kubernetes
 
-Use the Kubernetes Downward API to inject pod metadata.
+Use the Kubernetes Downward API to provide pod metadata.
 
 Pod name is usually the practical default:
 

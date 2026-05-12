@@ -36,7 +36,7 @@ but the work is still an internal capability:
 
 - named target or capability
 - same-process handler today, possible peer-runtime handler later
-- route generation and route hot reload
+- startup route generation, with hot reload available when needed
 - queue pressure and explicit rejection
 - deadletter reasons instead of mystery timeouts
 - runtime health and delivery diagnostics
@@ -149,7 +149,7 @@ CoAkka is useful when the team wants:
 - less network plumbing than fake internal REST/gRPC
 - explicit route, queue, timeout, and deadletter vocabulary
 - same-process-first design with a later peer-runtime path
-- connector-owned control plane and runtime-owned data plane
+- connector-owned startup config and runtime-owned data plane
 - shared native runtime ABI for multiple host-language connectors
 
 The important point is not that CoAkka replaces the layers in front of it. In a

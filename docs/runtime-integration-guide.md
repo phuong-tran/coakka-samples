@@ -119,7 +119,7 @@ from platform/runtime configuration when the process starts. Common sources are:
 - explicit `COAKKA_NODE_ID` or `INSTANCE_ID` environment variable
 
 `nodeId` is runtime identity, not image identity. Build one reusable container
-image for every replica and inject `nodeId` when each container or pod starts.
+image for every replica and supply `nodeId` when each container or pod starts.
 For Kubernetes, Docker Compose, and image-build examples, see
 [Containerized Runtime Notes](containerized-runtime.md).
 
@@ -142,9 +142,9 @@ services. It keeps inbound requests delivered to this process separate from
 responses and deadletters that complete asks sent by this process.
 
 `generation` is the route snapshot version. The first snapshot commonly starts
-at `1`. A route reload should publish a newer generation. The runtime rejects
-stale generations so an old config update cannot silently roll back the active
-route table.
+at `1` and is usually enough for ordinary container startup. A route reload, if
+used, should publish a newer generation. The runtime rejects stale generations
+so an old config update cannot silently roll back the active route table.
 
 `routes` is the target-to-endpoint map. Each route names a stable capability
 target and lists the endpoints eligible to handle that target.
@@ -176,8 +176,9 @@ generation = 12
 ```
 
 The system still has to know the same relationship. The difference is that the
-relationship enters one runtime contract. That makes topology easier to inspect,
-hot reload, diagnose, and keep consistent across languages. Route misses,
+relationship enters one runtime contract. That makes topology easier to
+inspect, diagnose, keep consistent across languages, and reload when an
+operator or control plane actually needs a live route change. Route misses,
 unavailable endpoints, and queue pressure become runtime outcomes with shared
 deadletter and stats vocabulary instead of each client inventing its own
 failure shape.
@@ -189,8 +190,8 @@ plane.
 
 `host` and `port` identify the runtime endpoint. For a local sample this may be
 `127.0.0.1` plus a demo port. In a real deployment it usually comes from the
-connector's config source, such as Kubernetes, Consul, a config service, or
-framework config.
+connector's startup config source, such as Kubernetes, Consul, a config service,
+or framework config.
 
 Do not read `127.0.0.1` samples as the production model. In Kubernetes, `host`
 is commonly a Service DNS name, pod DNS name, advertised pod IP, or a value
@@ -213,7 +214,8 @@ Expanded pod endpoints:
 
 The first shape gives the runtime one logical endpoint and lets the platform
 resolve the service name. The second shape gives the route snapshot direct
-visibility into each replica.
+visibility into each replica. Neither shape requires the application image to
+know pod hostnames ahead of time.
 
 For container and Kubernetes examples, see
 [Containerized Runtime Notes](containerized-runtime.md).
