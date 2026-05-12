@@ -141,6 +141,18 @@ After dependency setup, every host follows the same shape:
 6. Shut runtime down through the host framework lifecycle.
 ```
 
+Name roles in that shape:
+
+| Name | Role |
+| --- | --- |
+| `systemName` | Logical runtime participant or service name. Example: this process belongs to `customer-store`. |
+| `nodeId` | Concrete process/instance identity. Example: this particular replica is `customer-store-node-1`. |
+| `target` | Capability address that callers route to. Example: `samples.customer.store` means "send this work to the customer store capability." |
+
+`target` is not `systemName` and not `nodeId`. A process can belong to one
+`systemName`, have one concrete `nodeId`, and own one or more local targets.
+The route table maps target names to endpoint candidates.
+
 Concrete copy-paste recipes:
 
 - [JVM runtime recipe](jvm/README.md#integration-recipe)

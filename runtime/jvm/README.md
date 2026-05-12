@@ -127,6 +127,17 @@ val orchestrator = ConnectorOrchestrator.start(
 )
 ```
 
+Name roles in this snippet:
+
+- `systemName` says this process belongs to the logical `customer-store`
+  runtime participant.
+- `nodeId` says this concrete process is `customer-store-node-1`.
+- `target` says which capability the runtime can route to:
+  `samples.customer.store`.
+
+`target` is not `systemName` and not `nodeId`. A process can own multiple
+targets; the route table maps those target names to endpoints.
+
 Register handlers only for targets this process owns:
 
 ```kotlin

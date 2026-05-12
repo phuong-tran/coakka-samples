@@ -95,7 +95,20 @@ var spec = new ConnectorStartSpec(
     SeparateDeliveredRequestLane: true);
 
 using var runtime = RuntimeHost.Start(spec);
+```
 
+Name roles in this snippet:
+
+- `SystemName` says this process belongs to the logical `customer-api`
+  runtime participant.
+- `NodeId` says this concrete process is `customer-api-node`.
+- `Target` says which capability the runtime can route to:
+  `customers.create`.
+
+`Target` is not `SystemName` and not `NodeId`. A process can own multiple
+targets; the route table maps those target names to endpoints.
+
+```csharp
 runtime.RegisterHandler(
     "customers.create",
     request => RuntimeHost.MakeJsonReplyFromRequestIdentity(

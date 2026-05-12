@@ -44,6 +44,17 @@ if err != nil {
 defer runtimeHost.Close()
 ```
 
+Name roles in this snippet:
+
+- `SystemName` says this process belongs to the logical `customer-store`
+  runtime participant.
+- `NodeID` says this concrete process is `customer-store-node-1`.
+- `Target` says which capability the runtime can route to:
+  `samples.customer.store`.
+
+`Target` is not `SystemName` and not `NodeID`. A process can own multiple
+targets; the route table maps those target names to endpoints.
+
 Register handlers only for local targets:
 
 ```go
