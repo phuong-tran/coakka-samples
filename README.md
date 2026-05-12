@@ -351,6 +351,36 @@ target is handled in the same process, another process, or not at all. If it
 cannot be delivered, the outcome is visible as runtime failure or deadletter
 instead of being hidden behind a vague timeout or an internal HTTP status.
 
+### Pass Parameters Without Turning Them Into URLs
+
+In REST, teams often encode call shape across method, path, query string, and
+headers:
+
+```text
+POST /internal/customers/cust-001/hold?tenant=acme
+x-request-id: req-123
+```
+
+With CoAkka, the same information is split by responsibility:
+
+```text
+target  = customer.hold
+payload = {"customerId":"cust-001","reason":"manual_review"}
+headers = {"tenant":"acme","x-request-id":"req-123"}
+```
+
+The mindset shift is that `target` is the stable capability address, not a URL
+template. Business arguments belong in the typed payload. Request context that
+is useful for diagnostics, correlation, tenancy, idempotency, or host-side
+policy can travel in the envelope `headers` map. Some connector APIs may expose
+that bag as request headers, metadata, `extraParam`, or `extraParams`, but the
+runtime contract is the same: an envelope plus typed payload bytes.
+
+Do not use envelope headers as a second payload schema. If a value is part of
+the business command or query, put it in the payload and version it through
+payload identity. Use headers for small request context that should stay next
+to the envelope.
+
 ### Replace Polyglot Services With Less Client Chaos
 
 Before:
@@ -1024,6 +1054,7 @@ RuntimeEndpointFlags  = endpoint state, such as LOCAL or UNAVAILABLE
 | `routes` | What targets does this runtime know how to route? | Maps a target name such as `samples.customer.store` to one or more endpoints. |
 | `target` | What capability is the caller asking for? | Stable capability address, not a class name, function name, or URL. |
 | `source` | Who is sending this request or reply? | Caller or responder identity used for diagnostics, correlation, and reply naming. |
+| `headers` | Which request context should travel with this envelope? | Small string map for host-side context such as tenant, request id, idempotency key, or diagnostics. Business arguments should stay in payload. |
 | `strategy` | If a target has multiple eligible endpoints, how should runtime choose one? | Route selection policy such as single owner, weighted round robin, or rendezvous hash. |
 | `host` / `port` | What endpoint identity should runtime use? | Endpoint address for a process-owned listener or remote runtime handoff; samples may use `127.0.0.1`, but production should read it from env, platform metadata, service discovery, or a control-plane route snapshot. Replicas of the same app role should normally share the same runtime port while host identity comes from service DNS, pod DNS/IP, or the control plane. |
 | `RuntimeEndpointFlags.LOCAL` | Is the handler in this process? | This process owns the target and should register the handler. |
@@ -1060,6 +1091,16 @@ target = samples.customer.store
 The runtime routes by `target`. `source` stays with the envelope so logs,
 deadletters, and replies can explain who sent the work.
 
+Parameters do not become URL path or query segments. Keep the target stable,
+put business data in the typed payload, and use envelope `headers` only for
+small request context:
+
+```text
+target  = samples.customer.hold
+payload = {"customerId":"cust-001","reason":"manual_review"}
+headers = {"tenant":"acme","x-request-id":"req-123"}
+```
+
 Customer scenarios intentionally do not include a store REST fallback. The
 single-process scenario can complete CRUD through a same-process runtime store target.
 Cross-process scenarios use the same runtime-only customer traffic across
@@ -1076,8 +1117,8 @@ language.
 After running the demos, use
 [Runtime Integration Guide](docs/runtime-integration-guide.md) for the
 production-facing shape: dependencies, start spec, route targets, endpoint
-flags, payload identities, handler ownership, caller timeouts, deadletter
-handling, queue policy, and shutdown.
+flags, payload identities, request headers/extra parameters, handler ownership,
+caller timeouts, deadletter handling, queue policy, and shutdown.
 For containerized deployments, read
 [Containerized Runtime Notes](docs/containerized-runtime.md) for build-time
 versus runtime identity, Kubernetes metadata supplied at startup, and `nodeId`

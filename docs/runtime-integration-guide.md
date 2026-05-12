@@ -277,6 +277,41 @@ Do not use `source` as a routing shortcut or authorization substitute.
 Authorization and business policy belong above the runtime. Runtime uses
 `target` to resolve delivery.
 
+## Request Parameters
+
+CoAkka does not use URL path or query parameters because `target` is not a URL.
+Split request data by responsibility:
+
+| Concern | Put it in | Example |
+| --- | --- | --- |
+| Capability address | `target` | `customer.hold` |
+| Business command/query data | payload | `{"customerId":"cust-001","reason":"manual_review"}` |
+| Request context | envelope `headers` map | `tenant=acme`, `x-request-id=req-123`, `idempotency-key=hold-001` |
+
+Read this REST-style call:
+
+```text
+POST /internal/customers/cust-001/hold?tenant=acme
+x-request-id: req-123
+```
+
+as this runtime envelope shape:
+
+```text
+target  = customer.hold
+payload = {"customerId":"cust-001","reason":"manual_review"}
+headers = {"tenant":"acme","x-request-id":"req-123"}
+```
+
+The envelope `headers` field is a small `map<string,string>` for host-side
+context that does not deserve a first-class runtime field yet. Some connector
+APIs may expose that bag as headers, metadata, `extraParam`, or `extraParams`.
+Use it for diagnostics, correlation, tenancy, idempotency keys, and other
+request context.
+
+Do not put core business data in headers. If a value changes the command or
+query semantics, put it in the payload and version it through payload identity.
+
 ## Target Design
 
 Use target names as stable service-contract addresses, not process names:
@@ -410,9 +445,11 @@ A caller should:
 
 1. choose source and target
 2. attach a payload identity
-3. set a timeout
-4. name the operation for diagnostics
-5. handle success, timeout, and deadletter paths
+3. put business arguments in payload
+4. add envelope headers only for request context
+5. set a timeout
+6. name the operation for diagnostics
+7. handle success, timeout, and deadletter paths
 
 Start with explicit timeout values. The samples use `2s` for tiny local demos
 and `5s` in web scenarios. Production values should come from service SLOs and

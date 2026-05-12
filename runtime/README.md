@@ -235,6 +235,25 @@ CoAkka:
 The analogy is only for orientation. A CoAkka target is runtime routing
 vocabulary, not an HTTP URL.
 
+REST path and query parameters do not disappear; they move into the right part
+of the runtime envelope. Keep `target` as the stable capability name, put
+business arguments in the payload, and use envelope headers or extra params for
+small request context:
+
+```text
+REST:
+  POST /internal/customers/cust-001/hold?tenant=acme
+
+CoAkka:
+  target  = customer.hold
+  payload = {"customerId":"cust-001","reason":"manual_review"}
+  headers = {"tenant":"acme","x-request-id":"req-123"}
+```
+
+Headers are not a second payload schema. Use them for context such as tenant,
+trace/request id, idempotency key, or diagnostics. Put business data in the
+payload and version it through payload identity.
+
 The runtime contract is not tied to web payloads. Each typed message declares a
 message type, schema version, and payload format. The samples mostly use JSON
 for readability, while the contract also supports payload shapes such as
