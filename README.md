@@ -498,6 +498,12 @@ Common positioning questions are collected in [docs/qna.md](docs/qna.md).
 Start there for comparisons with gRPC, CQRS, Event Sourcing, and business
 versus runtime boundaries.
 
+Public wording should follow
+[docs/public-documentation-framing.md](docs/public-documentation-framing.md):
+do not frame shared boundary responsibilities as CoAkka-specific trade-offs,
+costs, or overhead unless CoAkka truly introduces work the traditional approach
+does not have.
+
 ## How It Works
 
 CoAkka keeps a hard boundary between the application host and the native runtime
