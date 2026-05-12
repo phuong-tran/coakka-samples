@@ -682,7 +682,7 @@ RuntimeEndpointFlags  = endpoint state, such as LOCAL or UNAVAILABLE
 | `RuntimeRouteSpec` | Which target/capability is routed where? | One route-table row: target/capability to endpoint list. |
 | `RuntimeEndpointSpec` | Where can that target be handled? | One concrete endpoint with `host`, `port`, and flags. |
 | `systemName` | Which logical service do I belong to? | Logical runtime participant name used in diagnostics, such as `customer-store`. |
-| `nodeId` | Which concrete instance/process am I? | Concrete process identity used in logs and runtime snapshots; use a unique value per process/pod. |
+| `nodeId` | Which concrete instance/process am I? | Concrete process identity used in logs and runtime snapshots; samples may hard-code it, but production should inject a unique value per process/pod. |
 | `queueCapacity = 128` | How much work can runtime buffer before applying pressure? | Bounded queue that is large enough for a demo but still prevents unbounded memory growth. |
 | `strictNoDrop = true` | Should overload be visible instead of silently dropping work? | Overload becomes visible as an error/deadletter instead of silently dropping work. |
 | `separateDeliveredRequestLane = true` | Should inbound work be separated from replies/deadletters? | Keeps inbound delivered requests separate from response/deadletter matching for outgoing asks. |
