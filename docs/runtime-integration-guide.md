@@ -31,7 +31,15 @@ The customer scenario exposes that distinction through a `deliveryMode` field:
 
 ## Start Spec
 
-Every language exposes the same start-spec concepts.
+Every language exposes the same start-spec concepts. Treat `RuntimeStartSpec`
+as the startup declaration for one runtime participant:
+
+```text
+RuntimeStartSpec
+  process identity
+  queue and delivery policy
+  initial route snapshot
+```
 
 | Field | Integration rule |
 | --- | --- |
@@ -42,6 +50,97 @@ Every language exposes the same start-spec concepts.
 | `separateDeliveredRequestLane` | Prefer `true` for request/reply services so inbound work does not share the response/deadletter lane. |
 | `generation` | Monotonic route-table version. Increment when applying a new route snapshot. |
 | `routes` | Target-to-endpoint map. Local targets are owned here; peer targets point elsewhere. |
+
+### Reading The Runtime Types
+
+The nested types are route-table vocabulary, not business domain objects.
+
+| Type | Meaning |
+| --- | --- |
+| `RuntimeStartSpec` | Full startup/config declaration for one runtime process. |
+| `RuntimeRouteSpec` | One route-table row: a target/capability and its endpoint candidates. |
+| `RuntimeEndpointSpec` | One endpoint with `host`, `port`, and endpoint flags. |
+| `RuntimeEndpointFlags` | Endpoint state used by route selection, such as `LOCAL` or `UNAVAILABLE`. |
+
+Example shape:
+
+```text
+RuntimeStartSpec
+  systemName = customer-store
+  nodeId = customer-store-pod-7
+  generation = 12
+  routes:
+    RuntimeRouteSpec
+      target = samples.customer.store
+      endpoints:
+        RuntimeEndpointSpec
+          host = 10.20.1.45
+          port = 19301
+          flags = LOCAL
+```
+
+Read that as:
+
+```text
+This process is one customer-store runtime participant. Its current route-table
+generation is 12. It owns the samples.customer.store target locally, so this
+process must register the handler for that target.
+```
+
+If the endpoint has no `LOCAL` flag, this process does not own that handler.
+The route points at a peer runtime endpoint instead.
+
+### Field Details
+
+`systemName` is the logical participant or service name. Keep it stable across
+restarts and replicas:
+
+```text
+customer-store
+billing-worker
+document-service
+```
+
+`nodeId` is the concrete instance identity. In Kubernetes, include enough pod or
+instance identity to distinguish replicas:
+
+```text
+customer-store-pod-7
+customer-store-us-east-1a-0003
+```
+
+`queueCapacity` is the bounded runtime queue size. Start small enough that
+pressure is visible, then tune from observed queue depth, burst size, and memory
+budget. Do not treat sample values as production sizing.
+
+`strictNoDrop` should usually be `true` while integrating. Queue pressure,
+missing routes, and rejected work should become explicit failures or
+deadletters instead of silent message loss.
+
+`separateDeliveredRequestLane` should usually be `true` for request/reply
+services. It keeps inbound requests delivered to this process separate from
+responses and deadletters that complete asks sent by this process.
+
+`generation` is the route snapshot version. The first snapshot commonly starts
+at `1`. A route reload should publish a newer generation. The runtime rejects
+stale generations so an old config update cannot silently roll back the active
+route table.
+
+`routes` is the target-to-endpoint map. Each route names a stable capability
+target and lists the endpoints eligible to handle that target.
+
+`host` and `port` identify the runtime endpoint. For a local sample this may be
+`127.0.0.1` plus a demo port. In a real deployment it usually comes from the
+connector's config source, such as Kubernetes, Consul, a config service, or
+framework config.
+
+`RuntimeEndpointFlags.LOCAL` means the endpoint belongs to this process. Only
+targets with a local endpoint should have a handler registered in this process.
+
+`RuntimeEndpointFlags.UNAVAILABLE` means the endpoint remains visible in the
+snapshot but should be excluded from new request route selection. Use it for
+drain/rollout behavior where the route should stay observable but not receive
+new work.
 
 ## Target Design
 

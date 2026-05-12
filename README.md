@@ -659,16 +659,52 @@ Runtime samples use the same small start-spec shape across JVM, Python,
 Node.js, Go, and C#. The native C/C++ runtime sample uses the lower C ABI
 directly and makes the same route snapshot and generation concepts visible:
 
-| Field | Why the samples use it |
+Read the sample config as one startup declaration for one runtime process:
+
+```text
+RuntimeStartSpec
+  this process identity
+  runtime queue and delivery policy
+  initial route table
+```
+
+The route table is nested:
+
+```text
+RuntimeRouteSpec      = one target/capability route
+RuntimeEndpointSpec   = one place that can handle that target
+RuntimeEndpointFlags  = endpoint state, such as LOCAL or UNAVAILABLE
+```
+
+| Item | Plain meaning |
 | --- | --- |
-| `systemName` | Logical runtime participant name used in diagnostics. |
-| `nodeId` | Concrete process identity used in logs and runtime snapshots. |
-| `queueCapacity = 128` | Bounded queue that is large enough for a demo but still shows the embedded-style constraint. |
+| `RuntimeStartSpec` | Startup declaration for one runtime participant/process. |
+| `RuntimeRouteSpec` | One route-table row: target/capability to endpoint list. |
+| `RuntimeEndpointSpec` | One concrete endpoint with `host`, `port`, and flags. |
+| `systemName` | Logical runtime participant name used in diagnostics, such as `customer-store`. |
+| `nodeId` | Concrete process identity used in logs and runtime snapshots; include pod/instance identity when multiple copies run. |
+| `queueCapacity = 128` | Bounded queue that is large enough for a demo but still prevents unbounded memory growth. |
 | `strictNoDrop = true` | Overload becomes visible as an error/deadletter instead of silently dropping work. |
-| `separateDeliveredRequestLane = true` | Keeps delivered inbound requests separate from response/deadletter matching. |
+| `separateDeliveredRequestLane = true` | Keeps inbound delivered requests separate from response/deadletter matching for outgoing asks. |
 | `generation = 1` | First route-table snapshot applied at startup. Real services should increment this when applying a new route snapshot. |
 | `routes` | Maps a target name such as `samples.customer.store` to one or more endpoints. |
-| `LOCAL` endpoint flag | Marks the target served by the current process. Remote peer routes are left non-local. |
+| `target` | Stable capability address, not a class name, function name, or URL. |
+| `host` / `port` | Endpoint address for local listener or remote runtime handoff. |
+| `RuntimeEndpointFlags.LOCAL` | This process owns the target and should register the handler. |
+| `RuntimeEndpointFlags.UNAVAILABLE` | Endpoint remains in the snapshot but is excluded from new route selection. |
+| no `LOCAL` flag | The endpoint is a peer/remote endpoint, not a handler owned by this process. |
+
+For example, a route with `target = "samples.runtime.jvm.echo"` and one
+endpoint marked `LOCAL` means:
+
+```text
+When a request targets samples.runtime.jvm.echo, deliver it to the handler
+registered in this process. The 127.0.0.1:19301 address is the endpoint
+identity for this runtime participant.
+```
+
+If the same target points to an endpoint without `LOCAL`, the current process
+does not own the handler. Runtime treats that endpoint as a peer destination.
 
 Customer scenarios intentionally do not include a store REST fallback. The
 single-process scenario can complete CRUD through a local runtime store target.
