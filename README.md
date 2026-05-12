@@ -439,46 +439,62 @@ The request path then uses the active route snapshot. Same-process delivery is
 the compact case:
 
 ```mermaid
-flowchart LR
-    appA["App code"]
-    connectorA["Connector"]
-    runtimeA["Runtime"]
-    routesA["Active routes"]
-    handlerB["Process-owned handler"]
-    replyA["Reply"]
-    deadletterA["Deadletter"]
+sequenceDiagram
+    participant App as App code
+    participant Connector as Connector
+    participant Runtime as Runtime
+    participant Routes as Active routes
+    participant Handler as Process-owned handler
+    participant Deadletter as Deadletter
 
-    appA --> connectorA
-    connectorA --> runtimeA
-    runtimeA --> routesA
-    routesA --> handlerB
-    handlerB --> replyA
-    routesA --> deadletterA
+    App->>Connector: ask target B
+    Connector->>Runtime: submit envelope
+    Runtime->>Routes: resolve target
+    alt LOCAL endpoint
+        Routes->>Handler: deliver request
+        Handler-->>Runtime: reply
+        Runtime-->>Connector: match response
+        Connector-->>App: return result
+    else missing target
+        Routes-->>Deadletter: record miss
+        Deadletter-->>Runtime: terminal outcome
+        Runtime-->>Connector: match deadletter
+        Connector-->>App: return failure
+    end
 ```
 
 Multi-process delivery uses the same target vocabulary, but the active route
 points to a peer runtime:
 
 ```mermaid
-flowchart LR
-    appA2["Service A app"]
-    connectorA2["Connector A"]
-    runtimeA2["Runtime A"]
-    routesA2["Active routes"]
-    runtimeB2["Runtime B"]
-    connectorB2["Connector B"]
-    handlerB2["Service B handler"]
-    replyB2["Reply"]
-    deadletter2["Deadletter"]
+sequenceDiagram
+    participant AppA as Service A app
+    participant ConnectorA as Connector A
+    participant RuntimeA as Runtime A
+    participant Routes as Active routes
+    participant RuntimeB as Runtime B
+    participant ConnectorB as Connector B
+    participant HandlerB as Service B handler
+    participant Deadletter as Deadletter
 
-    appA2 --> connectorA2
-    connectorA2 --> runtimeA2
-    runtimeA2 --> routesA2
-    routesA2 --> runtimeB2
-    runtimeB2 --> connectorB2
-    connectorB2 --> handlerB2
-    handlerB2 --> replyB2
-    routesA2 --> deadletter2
+    AppA->>ConnectorA: ask target B
+    ConnectorA->>RuntimeA: submit envelope
+    RuntimeA->>Routes: resolve target
+    alt peer endpoint
+        Routes->>RuntimeB: deliver request
+        RuntimeB->>ConnectorB: dispatch
+        ConnectorB->>HandlerB: invoke handler
+        HandlerB-->>ConnectorB: reply
+        ConnectorB-->>RuntimeB: response envelope
+        RuntimeB-->>RuntimeA: response
+        RuntimeA-->>ConnectorA: match response
+        ConnectorA-->>AppA: return result
+    else missing target
+        Routes-->>Deadletter: record miss
+        Deadletter-->>RuntimeA: terminal outcome
+        RuntimeA-->>ConnectorA: match deadletter
+        ConnectorA-->>AppA: return failure
+    end
 ```
 
 The caller does not call an internal HTTP controller in either path. It asks a
