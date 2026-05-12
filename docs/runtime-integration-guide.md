@@ -142,6 +142,49 @@ snapshot but should be excluded from new request route selection. Use it for
 drain/rollout behavior where the route should stay observable but not receive
 new work.
 
+## Source And Target
+
+`source` and `target` answer different questions.
+
+| Field | Question it answers | Runtime behavior |
+| --- | --- | --- |
+| `source` | Who is sending this request, event, or reply? | Carried for diagnostics, correlation, deadletters, and reply naming. |
+| `target` | What capability should receive this work? | Used by the runtime route table to choose an endpoint. |
+
+Example:
+
+```text
+source = samples.customer.frontend
+target = samples.customer.store
+```
+
+Read that as:
+
+```text
+The frontend is asking the customer store capability to do work.
+```
+
+The runtime routes by `target`, not by `source`.
+`source` should still be stable and meaningful because it appears in logs,
+deadletters, traces, and replies.
+
+For a reply, the handler usually sends from the capability that handled the
+request:
+
+```text
+request:
+  source = samples.customer.frontend
+  target = samples.customer.store
+
+reply:
+  source = samples.customer.store
+  correlated with the original request
+```
+
+Do not use `source` as a routing shortcut or authorization substitute.
+Authorization and business policy belong above the runtime. Runtime uses
+`target` to resolve delivery.
+
 ## Target Design
 
 Use target names as stable service-contract addresses, not process names:

@@ -689,6 +689,7 @@ RuntimeEndpointFlags  = endpoint state, such as LOCAL or UNAVAILABLE
 | `generation = 1` | Which version of the route table is this? | First route-table snapshot applied at startup. Real services should increment this when applying a new route snapshot. |
 | `routes` | What targets does this runtime know how to route? | Maps a target name such as `samples.customer.store` to one or more endpoints. |
 | `target` | What capability is the caller asking for? | Stable capability address, not a class name, function name, or URL. |
+| `source` | Who is sending this request or reply? | Caller or responder identity used for diagnostics, correlation, and reply naming. |
 | `host` / `port` | What endpoint identity should runtime use? | Endpoint address for local listener or remote runtime handoff. |
 | `RuntimeEndpointFlags.LOCAL` | Is the handler in this process? | This process owns the target and should register the handler. |
 | `RuntimeEndpointFlags.UNAVAILABLE` | Should this endpoint stay visible but receive no new work? | Endpoint remains in the snapshot but is excluded from new route selection. |
@@ -705,6 +706,17 @@ identity for this runtime participant.
 
 If the same target points to an endpoint without `LOCAL`, the current process
 does not own the handler. Runtime treats that endpoint as a peer destination.
+
+When sending a request, `source` names the caller and `target` names the
+capability being called:
+
+```text
+source = samples.customer.frontend
+target = samples.customer.store
+```
+
+The runtime routes by `target`. `source` stays with the envelope so logs,
+deadletters, and replies can explain who sent the work.
 
 Customer scenarios intentionally do not include a store REST fallback. The
 single-process scenario can complete CRUD through a local runtime store target.
