@@ -159,6 +159,31 @@ DNS lets the platform perform service-level balancing. Per-pod endpoints give
 the CoAkka route snapshot and route strategy direct visibility into each
 eligible runtime endpoint.
 
+For replicated application roles, keep the runtime port stable across replicas.
+If `billing` runs three pods, each `billing` pod should normally expose the same
+runtime port, such as `19301`. The value that changes per pod is the advertised
+host identity, not the port:
+
+```text
+Kubernetes Service endpoint:
+  target = billing.invoice.create
+  host = billing.default.svc.cluster.local
+  port = 19301
+
+Expanded pod endpoints:
+  target = billing.invoice.create
+  endpoints =
+    billing-0.billing.default.svc.cluster.local:19301
+    billing-1.billing.default.svc.cluster.local:19301
+    billing-2.billing.default.svc.cluster.local:19301
+```
+
+With a Service DNS endpoint, the runtime sees one logical endpoint and the
+platform resolves that service name to backing pods. With expanded pod
+endpoints, the route snapshot sees each replica explicitly and route strategy
+can choose among those eligible endpoints. Both shapes are valid; choose one
+intentionally and keep the port convention consistent for the application role.
+
 ## Docker Compose
 
 For a small fixed topology, the sample Compose files may use stable service or

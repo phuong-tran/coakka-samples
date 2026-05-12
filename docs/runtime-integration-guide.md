@@ -191,11 +191,36 @@ plane.
 `127.0.0.1` plus a demo port. In a real deployment it usually comes from the
 connector's config source, such as Kubernetes, Consul, a config service, or
 framework config.
+
+Do not read `127.0.0.1` samples as the production model. In Kubernetes, `host`
+is commonly a Service DNS name, pod DNS name, advertised pod IP, or a value
+produced by a control plane. If one application role has multiple replicas, keep
+the runtime port stable across those replicas. For example, three `billing`
+pods can all advertise port `19301`; the differing part is the host identity or
+the Service DNS indirection.
+
+Two common route shapes are:
+
+```text
+Service DNS:
+  billing.default.svc.cluster.local:19301
+
+Expanded pod endpoints:
+  billing-0.billing.default.svc.cluster.local:19301
+  billing-1.billing.default.svc.cluster.local:19301
+  billing-2.billing.default.svc.cluster.local:19301
+```
+
+The first shape gives the runtime one logical endpoint and lets the platform
+resolve the service name. The second shape gives the route snapshot direct
+visibility into each replica.
+
 For container and Kubernetes examples, see
 [Containerized Runtime Notes](containerized-runtime.md).
 
 `RuntimeEndpointFlags.LOCAL` means the endpoint belongs to this process. Only
-targets with a local endpoint should have a handler registered in this process.
+targets with a process-owned endpoint should have a handler registered in this
+process.
 
 `RuntimeEndpointFlags.UNAVAILABLE` means the endpoint remains visible in the
 snapshot but should be excluded from new request route selection. Use it for
