@@ -68,6 +68,12 @@ err = runtimeHost.RegisterHandler("samples.customer.store", func(request *connec
 }, true)
 ```
 
+`samples.customer.store` is the sample's capability target name. In your app,
+choose your own target name, then use the same value in the route table, the
+local `RegisterHandler(...)`, and every caller target. For example,
+`billing.invoice.create` is valid if that is the capability contract you want
+to expose.
+
 Send typed requests with explicit timeout and operation metadata:
 
 ```go

@@ -150,6 +150,12 @@ orchestrator.registerHandler("samples.customer.store") { request ->
 }
 ```
 
+`samples.customer.store` is the sample's capability target name. In your app,
+choose your own target name, then use the same value in the route table, the
+local `registerHandler(...)`, and every caller `target`. For example,
+`billing.invoice.create` is valid if that is the capability contract you want
+to expose.
+
 Send typed requests with an explicit timeout and operation name:
 
 ```kotlin

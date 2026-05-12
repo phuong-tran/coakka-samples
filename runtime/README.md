@@ -153,6 +153,27 @@ Name roles in that shape:
 `systemName`, have one concrete `nodeId`, and own one or more local targets.
 The route table maps target names to endpoint candidates.
 
+Target names are application contract names. `samples.customer.store` is only a
+sample name. Use a name that matches the capability your system exposes, such
+as:
+
+```text
+billing.invoice.create
+payment.authorize
+inventory.stock.reserve
+```
+
+If you rename a target, update the same name in three places:
+
+| Place | Example |
+| --- | --- |
+| route table | `target = "billing.invoice.create"` |
+| local handler registration | `registerHandler("billing.invoice.create", ...)` |
+| caller ask/event | `target = "billing.invoice.create"` |
+
+If those names do not match, runtime treats the call as a different target and
+the caller should see a route-miss deadletter.
+
 Concrete copy-paste recipes:
 
 - [JVM runtime recipe](jvm/README.md#integration-recipe)

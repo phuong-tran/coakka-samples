@@ -115,7 +115,15 @@ runtime.RegisterHandler(
         request,
         "customers.create",
         customerStore.Create(request.PayloadUtf8())));
+```
 
+`customers.create` is the sample's capability target name. In your app, choose
+your own target name, then use the same value in the route table, the local
+`RegisterHandler(...)`, and every caller `target`. For example,
+`billing.invoice.create` is valid if that is the capability contract you want
+to expose.
+
+```csharp
 var response = await runtime.AskJsonAsync(
     source: "customer-api",
     target: "customers.create",
