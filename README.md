@@ -244,42 +244,28 @@ CoAkka keeps a hard boundary between the application host and the native runtime
 core.
 
 ```mermaid
-flowchart TB
-    ingress["Ingress\nHTTP, gRPC, CLI, jobs, UI"]
+flowchart LR
+    ingress["Ingress"]
+    connector["Connector"]
+    runtime["CoAkka runtime"]
+    handler["Local handler"]
+    peer["Peer runtime"]
+    diagnostics["Diagnostics"]
 
-    subgraph host["App host / connector layer\nJVM, Python, Node.js, Go, C#, Rust, C/C++"]
-        config["Host config\nfiles, env, framework config"]
-        routes["Route snapshot\ngeneration + target map"]
-        codec["Payload codec\nmessage type + schema version + format"]
-        handlers["Local handlers\nbusiness capability owners"]
-        lifecycle["Framework lifecycle\nstart, stop, shutdown"]
-    end
-
-    subgraph runtime["Native runtime core\nshared C/C++ runtime behavior"]
-        apply["Apply route snapshot"]
-        resolve["Target -> endpoint resolution"]
-        queues["Bounded queues\ncorrelation + backpressure"]
-        delivery["Request/reply and event delivery"]
-        deadletters["Deadletters\nroute miss, timeout, queue rejection"]
-        stats["Health, stats, diagnostics"]
-        transport["Transporter boundary\nlocal or remote handoff"]
-    end
-
-    remote["Peer runtime or remote handler"]
-    operator["Logs, metrics, dashboards"]
-
-    ingress --> codec
-    config --> routes --> apply
-    lifecycle --> apply
-    codec --> queues
-    apply --> resolve --> queues --> delivery
-    delivery --> handlers
-    delivery --> transport --> remote
-    queues --> deadletters
-    resolve --> deadletters
-    delivery --> stats
-    deadletters --> stats --> operator
+    ingress --> connector
+    connector --> runtime
+    runtime --> handler
+    runtime --> peer
+    runtime --> diagnostics
 ```
+
+The connector layer adapts the host language and framework. It reads host
+config, builds route snapshots, registers local handlers, encodes payloads, and
+maps framework lifecycle into runtime start and shutdown calls.
+
+The native runtime core owns the shared behavior: active route generation,
+target-to-endpoint resolution, bounded queues, request/reply correlation,
+deadletters, health, stats, and the local or remote transporter boundary.
 
 ### Configuration Injection
 
@@ -290,43 +276,21 @@ through the runtime API.
 
 ```mermaid
 flowchart LR
-    subgraph sources["Configuration sources"]
-        files["Files\nYAML, JSON, properties"]
-        env["Environment\nprocess env, flags"]
-        framework["Framework config\nSpring, Quarkus, Node, Go"]
-        k8s["Kubernetes\nConfigMap, Secret, API"]
-        consul["Consul / config service"]
-        operator["Operator or control plane"]
-    end
+    sources["Config sources"]
+    adapter["Connector validates and maps"]
+    snapshot["Start spec + route snapshot"]
+    runtime["Runtime API"]
+    active["Active runtime state"]
 
-    subgraph connector["Host connector / adapter"]
-        load["Load or watch config"]
-        validate["Validate targets, endpoints,\ntimeouts, queue policy"]
-        map["Map to CoAkka model\nsystemName, nodeId, routes"]
-        generation["Assign generation\nfor route snapshot"]
-        inject["Inject through connector API\nstart runtime + apply routes"]
-    end
-
-    subgraph runtime["CoAkka native runtime"]
-        start["Start spec\nqueue capacity, strictNoDrop,\ndelivery lanes"]
-        snapshot["Active route snapshot\ngeneration + target endpoints"]
-        dataplane["Data plane\nroute, queue, deliver, deadletter"]
-        info["Runtime info, stats, health"]
-    end
-
-    files --> load
-    env --> load
-    framework --> load
-    k8s --> load
-    consul --> load
-    operator --> load
-    load --> validate --> map --> generation --> inject
-    inject --> start
-    inject --> snapshot
-    snapshot --> dataplane
-    start --> dataplane
-    dataplane --> info
+    sources --> adapter
+    adapter --> snapshot
+    snapshot --> runtime
+    runtime --> active
 ```
+
+Configuration sources can be files, process environment, framework config,
+Kubernetes ConfigMaps or Secrets, Consul, another config service, or an
+operator/control plane. Those sources stay outside the runtime contract.
 
 The runtime is deliberately platform-agnostic:
 
