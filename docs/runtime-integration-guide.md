@@ -149,10 +149,35 @@ route table.
 `routes` is the target-to-endpoint map. Each route names a stable capability
 target and lists the endpoints eligible to handle that target.
 
-Route configuration is not optional magic. With or without CoAkka, a system
-must know which service or capability it intends to call. CoAkka makes that
-knowledge explicit as a route snapshot so runtime behavior can be validated,
-hot-reloaded, diagnosed, and deadlettered consistently.
+Route configuration is not extra work invented by CoAkka. With or without
+CoAkka, a system must know which service or capability it intends to call.
+CoAkka changes the shape of that knowledge: it becomes an explicit route
+snapshot instead of scattered client wiring.
+
+### Before And After Route Knowledge
+
+Before CoAkka, the same information often exists as ad-hoc client or framework
+configuration:
+
+```text
+customer-web needs customer-store
+customer-store lives at http://customer-store:8080
+the client owns timeout mapping, retry wrapper, status handling, logging,
+and correlation conventions
+```
+
+With CoAkka, the connector maps that topology into runtime route state:
+
+```text
+target = samples.customer.store
+endpoints = customer-store runtime endpoint(s)
+strategy = SINGLE_OWNER | WEIGHTED_ROUND_ROBIN | RENDEZVOUS_HASH
+generation = 12
+```
+
+The system still has to know the same relationship. The difference is that the
+relationship enters one runtime contract, so it can be validated, hot-reloaded,
+observed, and deadlettered consistently.
 
 Samples often construct `RuntimeRouteSpec` directly so the moving parts are
 visible. Real integrations should usually generate route specs from framework
