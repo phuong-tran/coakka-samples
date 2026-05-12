@@ -118,6 +118,22 @@ from platform/runtime configuration when the process starts. Common sources are:
 - container ID
 - explicit `COAKKA_NODE_ID` or `INSTANCE_ID` environment variable
 
+`nodeId` is runtime identity, not image identity. Build one reusable container
+image for every replica. Do not bake a different `nodeId` into each image.
+Instead, let the orchestrator provide a different value when each container or
+pod starts:
+
+```text
+build time:
+  image = billing:1.0.0
+  nodeId is not fixed in the image
+
+runtime:
+  billing pod A -> COAKKA_NODE_ID=billing-7d9f8c-a
+  billing pod B -> COAKKA_NODE_ID=billing-7d9f8c-b
+  billing pod C -> COAKKA_NODE_ID=billing-7d9f8c-c
+```
+
 For Kubernetes, inject a pod name:
 
 ```yaml
