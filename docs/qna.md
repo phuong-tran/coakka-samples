@@ -193,6 +193,25 @@ If the team is already inventing internal REST/gRPC, queues, route maps,
 timeouts, and failure vocabulary, CoAkka may be the smaller boundary.
 ```
 
+## Is Adding A Runtime Overkill If The Current System Works?
+
+It can be. If a path is small, stable, single-language, easy to trace, and direct
+service calls already answer the operational questions, keep it direct.
+
+CoAkka is not an all-or-nothing migration. The intended adoption shape is to wrap
+one boundary first:
+
+- one noisy internal integration
+- one polyglot handoff
+- one workflow that needs clearer delivery diagnostics
+- one route where deadletter reasons would be more useful than vague timeout or
+  status-code handling
+
+The rest of the system can keep using its existing HTTP APIs, framework
+controllers, service calls, jobs, and deployment model. CoAkka is worth expanding
+only when that first boundary makes ownership, routing, failure, and diagnostics
+clearer.
+
 ## Is The CoAkka Boundary A Business Boundary Or Technical Boundary?
 
 CoAkka is a technical/runtime boundary that should follow a business capability

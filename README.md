@@ -215,6 +215,25 @@ The intended adoption path is incremental:
   native runtime contract
 - migrate one process, one integration point, or one workflow at a time
 
+### Adopt One Boundary At A Time
+
+CoAkka does not require a team to migrate a whole system before learning whether
+the runtime boundary helps. A team can wrap one noisy internal integration, one
+polyglot handoff, one workflow, or one failure-prone route first. The existing
+HTTP APIs, framework controllers, services, jobs, and deployment shape can keep
+running around that experiment.
+
+This matters for real systems because the first useful result is often not a
+rewrite. It is a clearer answer to one operational question:
+
+```text
+Who sent the work, which target owned it, which route snapshot was active, and
+why did delivery succeed, time out, or become a deadletter?
+```
+
+If that answer is valuable for one boundary, the team can expand from there. If
+direct calls are already enough for a small path, that path can stay direct.
+
 That boundary can be embedded inside an application, placed beside a service as
 a sidecar, or used as the point where adapters talk to existing integration
 systems. Camel, MQTT, message brokers, files, serial devices, HTTP services, and
