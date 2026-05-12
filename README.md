@@ -112,6 +112,9 @@ The key idea is small: CoAkka does not replace the web edge or the application
 framework. It gives the app-host a shared runtime delivery boundary for
 internal capabilities.
 
+For dependency snippets and the minimal host skeleton, read
+[runtime/README.md#copy-paste-starter-shapes](runtime/README.md#copy-paste-starter-shapes).
+
 ## Start Here
 
 Run the shortest local non-container paths:

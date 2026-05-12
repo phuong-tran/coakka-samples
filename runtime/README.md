@@ -35,6 +35,121 @@ That is the smallest CoAkka mental model: an app-host declares who it is, what
 targets it knows, which targets it owns locally, then submits typed work through
 the runtime boundary.
 
+## Copy-Paste Starter Shapes
+
+These snippets are meant for first integration, not for production packaging
+policy. The samples verify public artifacts through the pinned artifact
+manifest. Real projects should mirror or pin the same artifacts through their
+own package feed, artifact store, or build system.
+
+JVM/Kotlin or Java Gradle:
+
+```kotlin
+repositories {
+    mavenCentral()
+    maven {
+        url = uri("https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/maven")
+    }
+}
+
+dependencies {
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-ga671b3a")
+}
+```
+
+Spring Boot local adapter:
+
+```kotlin
+dependencies {
+    implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-ga671b3a")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+}
+```
+
+Quarkus local adapter:
+
+```kotlin
+dependencies {
+    implementation("coakka.quarkus:coakka-quarkus-extension:0.1.0-ga671b3a")
+    implementation("io.quarkus:quarkus-rest-jackson")
+}
+```
+
+Python wheel:
+
+```sh
+python -m pip install \
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/python/releases/0.1.0+a671b3a/coakka_v2_connector-0.1.0-py3-none-any.whl"
+```
+
+Node.js package:
+
+```sh
+npm install \
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/node/releases/0.1.0+a671b3a/coakka-v2-connector-node-0.1.0.tgz"
+```
+
+Go source package:
+
+```sh
+mkdir -p third_party/coakka-runtime-go
+curl -L \
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/go/releases/0.1.0+a671b3a/coakka-v2-connector-go-0.1.0.tar.gz" \
+  -o /tmp/coakka-v2-connector-go-0.1.0.tar.gz
+tar -C third_party/coakka-runtime-go --strip-components 1 \
+  -xzf /tmp/coakka-v2-connector-go-0.1.0.tar.gz
+```
+
+```go
+require github.com/phuong-tran/coakka-runtime-go v0.0.0
+
+replace github.com/phuong-tran/coakka-runtime-go => ./third_party/coakka-runtime-go
+```
+
+C# NuGet package from a local feed directory:
+
+```sh
+mkdir -p packages
+curl -L \
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/csharp/releases/0.1.0+a671b3a/CoAkka.Runtime.0.1.1.nupkg" \
+  -o packages/CoAkka.Runtime.0.1.1.nupkg
+dotnet add package CoAkka.Runtime --version 0.1.1 --source ./packages
+```
+
+Rust is currently a spike tarball, not a crates.io-ready package:
+
+```sh
+curl -L \
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/rust/releases/0.1.0+a671b3a/coakka-runtime-rs-0.1.0-spike.tar.gz" \
+  -o /tmp/coakka-runtime-rs-0.1.0-spike.tar.gz
+```
+
+After dependency setup, every host follows the same shape:
+
+```text
+1. Build a start spec:
+   systemName, nodeId, bounded queue policy, generation, routes.
+
+2. Start one runtime host for the process.
+
+3. Register handlers only for targets owned by this process.
+
+4. Send typed asks or events to target names, not URLs or class names.
+
+5. Observe stats and deadletters as delivery outcomes.
+
+6. Shut runtime down through the host framework lifecycle.
+```
+
+Concrete copy-paste recipes:
+
+- [JVM runtime recipe](jvm/README.md#integration-recipe)
+- [Python runtime recipe](python/README.md#integration-recipe)
+- [Node.js runtime recipe](node/README.md#integration-recipe)
+- [Go runtime recipe](go/README.md#integration-recipe)
+- [Spring Boot starter scenario](scenarios/customer-crud/spring-boot-starter-local)
+- [Quarkus local scenario](scenarios/customer-crud/quarkus-local)
+
 The runtime samples keep a strict boundary rule: HTTP belongs at a real edge
 such as a browser/API, partner API, or legacy HTTP dependency. Internal work
 should not become a fake REST service just to get a boundary. That fake HTTP
