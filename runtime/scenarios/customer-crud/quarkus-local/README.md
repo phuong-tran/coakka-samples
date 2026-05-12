@@ -199,5 +199,5 @@ class CustomerCapabilityHandler(...) : CoAkkaLocalHandler
 The adapter registers that handler during application startup and shuts the
 runtime down through Quarkus lifecycle callbacks.
 
-Remote transport, Kubernetes bind/advertise config, service discovery, TLS, and
+Remote transport, Kubernetes bind/advertise config, service discovery, and
 business retry policy are deliberately out of scope for this local-first slice.

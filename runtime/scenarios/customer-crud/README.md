@@ -149,8 +149,8 @@ Flow:
    counters, and an intentional route-miss deadletter.
 
 This scenario does not configure remote endpoints, bind/advertise ports for
-Kubernetes, service discovery, TLS, or business retry policy. Those belong
-after the local starter API shape is stable.
+Kubernetes, service discovery, or business retry policy. Those belong after the
+local starter API shape is stable.
 
 ### Quarkus Local
 

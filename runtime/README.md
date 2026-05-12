@@ -23,6 +23,18 @@ adapters for systems such as Camel, MQTT, brokers, files, serial devices, or
 HTTP services can use the runtime contract as the common routing and diagnostic
 surface.
 
+If this is the first runtime sample you read, use this order:
+
+1. Run a basic sample in one language.
+2. In the sample code, find the start spec and route table.
+3. Find the target handler registered by the owning process.
+4. Find the typed ask/event sent by the caller.
+5. Find the stats or deadletter output printed after delivery.
+
+That is the smallest CoAkka mental model: an app-host declares who it is, what
+targets it knows, which targets it owns locally, then submits typed work through
+the runtime boundary.
+
 The runtime samples keep a strict boundary rule: HTTP belongs at a real edge
 such as a browser/API, partner API, or legacy HTTP dependency. Internal work
 should not become a fake REST service just to get a boundary. That fake HTTP
@@ -114,10 +126,10 @@ Run a scenario check without changing directories:
 bash run.sh scenario customer-crud spring-boot-nodes check
 ```
 
-Run:
+Run the smallest runtime sample:
 
 ```sh
-bash run.sh logger basic
+bash run.sh runtime jvm basic
 ```
 
 Check local toolchains and artifact source:

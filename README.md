@@ -12,6 +12,7 @@ Boot and Quarkus adapters.
 ## Table of Contents
 
 - [Try Containers First](#try-containers-first)
+- [If You Are New To CoAkka](#if-you-are-new-to-coakka)
 - [Start Here](#start-here)
 - [Why CoAkka Exists](#why-coakka-exists)
 - [Runtime First](#runtime-first)
@@ -82,6 +83,34 @@ bash run.sh containers down
 These samples prove two real processes, two language hosts, browser-visible
 state changes, and runtime delivery with no REST fallback between the sample
 services.
+
+## If You Are New To CoAkka
+
+Use this read order for the first pass:
+
+1. Run one container sample first. It shows the visible path without requiring
+   a local language toolchain.
+2. Watch the request path:
+
+```text
+browser
+  -> web app or app-host
+  -> connector
+  -> CoAkka runtime
+  -> target handler in the owning process
+  -> runtime reply
+  -> web UI
+```
+
+3. Then open one basic sample in a language you know and look for five things:
+   start spec, route target, local handler registration, typed ask/event, and
+   stats or deadletter output.
+4. After that, read a customer CRUD scenario. Those samples show why the
+   runtime boundary is useful in a normal application workflow.
+
+The key idea is small: CoAkka does not replace the web edge or the application
+framework. It gives the app-host a shared runtime delivery boundary for
+internal capabilities.
 
 ## Start Here
 
@@ -228,8 +257,8 @@ things:
 
 The intended shape is a small runtime core, host-language connectors that feed
 config and business handlers, route snapshots that can be re-applied with
-defined semantics, and infrastructure that still owns ingress, TLS, discovery,
-and deployment policy. That gives an organization a shared integration
+defined semantics, and infrastructure that still owns ingress, discovery, and
+deployment policy. That gives an organization a shared integration
 substrate without forcing every service into the same application framework.
 
 ## Questions And Answers

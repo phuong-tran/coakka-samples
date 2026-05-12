@@ -64,4 +64,4 @@ podman-compose -f containers/spring-go/compose.yaml up
 
 This sample is intentionally JVM-based. Framework native-image builds are not
 the default container path; they remain optional research if a concrete
-deployment case makes the tradeoff worthwhile.
+deployment case needs that packaging shape.

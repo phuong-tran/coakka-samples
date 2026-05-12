@@ -119,10 +119,9 @@ That works, but it makes an internal implementation detail look like an HTTP
 product boundary. It also adds URL config, HTTP serialization, error mapping,
 timeouts, and test setup around a call that is still just local business work.
 
-That is the cost this starter is meant to remove. The old shape pays for the
-Spring MVC/WebClient stack even when the store is just an internal capability.
-CoAkka keeps the controller as the real HTTP edge and moves internal work onto
-a typed runtime target with request/reply, counters, and deadletters.
+That is the shape this starter is meant to avoid. The controller stays the real
+HTTP edge, while internal customer work moves onto a typed runtime target with
+request/reply, counters, and deadletters.
 
 ## After: Local Runtime Capability
 
@@ -224,5 +223,5 @@ The controller owns real HTTP ingress. It calls runtime targets through
 The customer store remains an ordinary Spring service. Capability methods are
 thin adapters that receive typed command objects and return typed responses.
 
-Remote transport, Kubernetes bind/advertise config, service discovery, TLS, and
+Remote transport, Kubernetes bind/advertise config, service discovery, and
 business retry policy are deliberately out of scope for this local-first slice.

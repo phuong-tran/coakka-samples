@@ -35,4 +35,4 @@ runtime messages.
 The Spring Boot JVM to Go sample uses the same visible two-container shape with
 a framework web edge and a Go store. Framework native-image builds are not the
 default container path; they remain optional research if a concrete deployment
-case makes the tradeoff worthwhile.
+case needs that packaging shape.
