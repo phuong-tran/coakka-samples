@@ -106,8 +106,8 @@ of hiding the failure behind HTTP fallback behavior.
 
 This is the boundary rule the scenarios are trying to make obvious: REST is
 valuable at real edges, but an internal REST endpoint created only to call
-same-process or deployment-owned work pays for a web stack and then forces runtime delivery
-failures into HTTP-shaped policy. CoAkka keeps the internal path as a typed
+same-process or deployment-owned work spreads private routing and failure
+semantics across a web stack. CoAkka keeps the internal path as a typed
 runtime target with request/reply, one-way events, and deadletters. The samples
 therefore compare application shape and failure semantics, not just raw
 transport speed.

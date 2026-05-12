@@ -10,6 +10,13 @@ Avoid words such as `trade-off`, `cost`, `not free`, `overhead`, or similar
 negative framing unless CoAkka truly introduces work that the traditional
 approach does not have.
 
+Do not criticize REST, HTTP verbs, gRPC, ingress, or framework routing when they
+are used at real edges. The public point is narrower: when an internal
+capability is forced through an extra HTTP/gRPC surface only to get a boundary,
+the private contract is often fragmented across method, URL, handler, client,
+status mapping, retry policy, logs, and tests. CoAkka centralizes that contract
+as runtime vocabulary.
+
 Before calling something a trade-off, classify it:
 
 | Case | How to frame it |
@@ -27,6 +34,8 @@ Use wording like:
 - `CoAkka gives this existing work a runtime vocabulary.`
 - `This is not extra work unique to CoAkka; it is the same boundary
   responsibility organized differently.`
+- `REST remains the right shape at real HTTP edges; CoAkka is for internal
+  capability delivery inside the application or deployment boundary.`
 
 Avoid wording like:
 
@@ -45,12 +54,19 @@ Ask:
 1. Does direct function-call code avoid this work entirely?
 2. Does internal REST/gRPC also need this work through URLs, clients, schemas,
    retries, status mapping, logs, dashboards, or rollout rules?
-3. Is CoAkka adding a new responsibility, or organizing an existing
+3. Is the claim about measured runtime behavior, or just a naming/configuration
+   responsibility that both designs already have?
+4. Is CoAkka adding a new responsibility, or organizing an existing
    responsibility into `target`, `payload identity`, `route snapshot`,
    `headers`, `generation`, diagnostics, and deadletters?
 
 If both the old approach and CoAkka must answer the same question, do not call
 it a CoAkka trade-off. Explain the difference in organization.
+
+Avoid claiming generic HTTP overhead unless the text is explicitly discussing a
+measured hot path. Prefer saying that an extra internal HTTP surface expresses a
+private runtime capability through web-boundary concepts such as methods, URLs,
+headers, middleware, status codes, and endpoint tests.
 
 ## Example
 
@@ -76,4 +92,3 @@ across client code, framework config, HTTP status handling, tracing conventions,
 and team memory. With CoAkka, the route, target, generation, delivery outcome,
 and deadletter vocabulary are explicit runtime concepts.
 ```
-

@@ -6,7 +6,7 @@ runtime lane consumes the public NuGet package built against native runtime
 
 For a CRUD developer, the point is not to replace ASP.NET Core. Keep HTTP at
 the browser/API edge. Use CoAkka for work that is internal to the application
-or deployment and should not become a fake REST service just to cross an
+or deployment and should not need an extra REST service just to cross an
 in-process or runtime boundary.
 
 This lane is macOS/Linux-first. Windows support is not claimed yet because most
@@ -57,12 +57,11 @@ app.MapPost("/internal/customers", async (
 That adds URL config, serialization, timeout/error mapping, retry policy, and
 test setup before there is a real process or network boundary.
 
-That extra HTTP layer is not free. Even with keep-alive and small JSON payloads,
-the app is still paying for web-stack semantics: request parsing, headers,
-middleware, status-code mapping, client/server lifecycle, and tests for an
-endpoint that is not meant to be a product API. CoAkka is not presented here as
-a universal speed-contest winner; it is a better boundary for internal work,
-and it is usually a lighter path than pretending the work is REST.
+For an endpoint that is not meant to be a product API, that spreads private
+runtime work across web-stack semantics: request parsing, headers, middleware,
+status-code mapping, client/server lifecycle, and endpoint tests. CoAkka is not
+presented here as a universal speed-contest winner; it is a clearer runtime
+boundary for internal work while REST remains the right tool at real HTTP edges.
 
 ## After: Runtime Target
 

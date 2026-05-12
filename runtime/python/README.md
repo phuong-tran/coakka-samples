@@ -184,12 +184,13 @@ response = runtime.ask_json(
 )
 ```
 
-The fake internal REST path brings URL config, HTTP parsing, headers,
-middleware, status/error mapping, timeout policy, and test setup. CoAkka keeps
-the internal path as a typed runtime message with request/reply and deadletter
-behavior, while HTTP remains available for real client-facing or legacy
-boundaries. Existing code using `ConnectorOrchestrator.start(...)` still works
-as the compatibility name; new samples use `RuntimeHost.start(...)`.
+The extra internal REST path spreads private runtime work across URL config,
+HTTP parsing, headers, middleware, status/error mapping, timeout policy, and
+test setup. CoAkka keeps the internal path as a typed runtime message with
+request/reply and deadletter behavior, while HTTP remains available for real
+client-facing or legacy boundaries. Existing code using
+`ConnectorOrchestrator.start(...)` still works as the compatibility name; new
+samples use `RuntimeHost.start(...)`.
 
 ## Production Notes
 

@@ -50,9 +50,9 @@ CoAkka replaces gRPC.
 Say:
 
 ```text
-CoAkka avoids turning internal capabilities into fake network APIs too early.
-Those capabilities may still run same-process or cross-process through runtime
-routes. gRPC still belongs at real remote API boundaries.
+CoAkka avoids turning internal capabilities into separate network APIs before
+they need to be. Those capabilities may still run same-process or cross-process
+through runtime routes. gRPC still belongs at real remote API boundaries.
 ```
 
 ## Is CoAkka A gRPC Add-On?
@@ -101,7 +101,8 @@ Internal REST/gRPC:
 service_a -> HTTP/gRPC client -> same-host or remote endpoint -> service_b
 ```
 
-This creates a stronger boundary, but it pays network API costs:
+This creates a stronger boundary, but the boundary contract is usually spread
+across HTTP/gRPC concepts:
 
 - endpoint and URL/channel configuration
 - port and readiness setup
@@ -136,7 +137,7 @@ This keeps the first version compact while making the runtime boundary explicit:
 - deadletter reasons
 - health and stats
 - future peer-runtime or polyglot handoff without making the first version a
-  fake network service
+  network service before it needs to be one
 
 ## When Is CoAkka Worth Adding?
 
@@ -146,7 +147,7 @@ them a shared part of the application shape.
 CoAkka is useful when the team wants:
 
 - stronger boundary than direct dependency injection
-- less network plumbing than fake internal REST/gRPC
+- less network plumbing than internal REST/gRPC created only for private work
 - explicit route, queue, timeout, and deadletter vocabulary
 - same-process-first design with a later peer-runtime path
 - connector-owned startup config and runtime-owned data plane

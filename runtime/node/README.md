@@ -174,10 +174,10 @@ const response = await runtime.askJson(
 );
 ```
 
-The fake endpoint still pays for HTTP parsing, headers, middleware,
-status/error mapping, timeout policy, and test setup. CoAkka keeps that work as
-a runtime target with request/reply and deadletter semantics, while HTTP stays
-at the public or legacy edge. Existing code using
+The extra internal endpoint still spreads private runtime work across HTTP
+parsing, headers, middleware, status/error mapping, timeout policy, and test setup.
+CoAkka keeps that work as a runtime target with request/reply and deadletter
+semantics, while HTTP stays at the public or legacy edge. Existing code using
 `ConnectorOrchestrator.start(...)` still works as the compatibility name; new
 samples use `RuntimeHost.start(...)`.
 

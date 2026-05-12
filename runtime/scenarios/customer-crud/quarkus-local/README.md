@@ -84,12 +84,13 @@ class CustomerResource(
 }
 ```
 
-That works, but it turns internal business work into a fake HTTP service. The app
-now carries REST-client config, URL wiring, HTTP serialization, timeout/error
-mapping, and test setup before it has a real network boundary.
+That works, but it turns internal business work into an extra HTTP surface. The
+app now carries REST-client config, URL wiring, HTTP serialization,
+timeout/error mapping, and test setup before it has a real network boundary.
 
-That is the adapter's target problem. The old shape pays for a Quarkus REST
-resource and REST client even when the store is just an internal capability.
+That is the adapter's target problem. The old shape expresses the store through
+a Quarkus REST resource and REST client even when the store is just an internal
+capability.
 CoAkka keeps the public resource as the real HTTP edge and moves internal work
 onto a typed runtime target with request/reply, counters, and deadletters.
 

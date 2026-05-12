@@ -209,11 +209,12 @@ Concrete copy-paste recipes:
 
 The runtime samples keep a strict boundary rule: HTTP belongs at a real edge
 such as a browser/API, partner API, or legacy HTTP dependency. Internal work
-should not become a fake REST service just to get a boundary. That fake HTTP
-path often pays for request parsing, headers, middleware, status mapping,
-client/server lifecycle, timeout policy, and test setup before the application
-has crossed a real product boundary. CoAkka keeps that path as typed runtime
-messages with request/reply and deadletter behavior.
+does not need an extra REST service just to get a boundary. That internal
+HTTP shape spreads a private capability contract across request parsing,
+headers, middleware, status mapping, client/server lifecycle, timeout policy,
+and test setup before the application has crossed a real product boundary.
+CoAkka keeps that path as typed runtime messages with request/reply and
+deadletter behavior.
 
 `Local-first` in these samples does not mean the runtime is limited to one
 process. It means the first boundary is an internal runtime boundary instead of

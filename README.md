@@ -18,7 +18,7 @@ The goal is not to replace HTTP at real edges, gRPC at real service API
 boundaries, CQRS or authorization in application logic, ingress, service
 discovery, or deployment policy. The goal is narrower and deliberate: give
 application hosts a shared runtime vocabulary for internal work that should not
-be forced into a fake REST service just to gain a boundary.
+need an extra internal REST surface just to gain a boundary.
 
 When this repository says `local` or `local-first`, it does not mean "same
 process only." It means the work is still an internal application or deployment
@@ -336,9 +336,11 @@ Node job   -> internal REST -> Python worker
 C# API     -> internal REST -> JVM renderer
 ```
 
-This can work, but each internal endpoint brings URL config, HTTP parsing,
-status mapping, timeout policy, retry conventions, readiness checks, and tests
-for an API that may not be a real product boundary.
+This can work, and REST is still the right shape for real HTTP edges. The issue
+is organization: each internal endpoint spreads the same boundary contract across
+URL config, HTTP verbs, handlers, clients, status mapping, timeout policy, retry
+conventions, readiness checks, and tests for an API that may not be a real
+product boundary.
 
 After:
 
@@ -347,14 +349,18 @@ caller -> CoAkka target -> route snapshot -> handler
 ```
 
 The caller asks for a stable `target`. The route snapshot decides whether that
-target is handled in the same process, another process, or not at all. If it
-cannot be delivered, the outcome is visible as runtime failure or deadletter
-instead of being hidden behind a vague timeout or an internal HTTP status.
+target is handled in the same process, another process, or not at all. CoAkka
+keeps the internal routing contract in one runtime vocabulary instead of
+splitting it across HTTP method, URL, controller, client, and error-policy code.
+If it cannot be delivered, the outcome is visible as runtime failure or
+deadletter instead of being hidden behind a vague timeout or an internal HTTP
+status.
 
 ### Pass Parameters Without Turning Them Into URLs
 
 In REST, teams often encode call shape across method, path, query string, and
-headers:
+headers. That is fine for a real REST API, but it can fragment a private
+capability contract when the endpoint only exists for internal work:
 
 ```text
 POST /internal/customers/cust-001/hold?tenant=acme
@@ -808,18 +814,20 @@ class CustomerController(private val storeClient: CustomerStoreRestClient) {
 }
 ```
 
-That works, but the store call now carries URL config, HTTP serialization,
-timeout/error mapping, and test setup before there is a real network boundary.
-The CoAkka framework adapter samples keep HTTP at `/api/...` and move internal work
-onto typed runtime capabilities instead.
+That works, and it is a normal framework shape for a real REST boundary. For
+private store work, however, the contract is now split across URL config,
+HTTP method annotations, serialization, timeout/error mapping, and test setup
+before there is a real product/API boundary. The CoAkka framework adapter
+samples keep HTTP at `/api/...` and move internal work onto typed runtime
+capabilities instead.
 
 This is not a claim that every CoAkka call beats every tuned HTTP call in a
 synthetic contest. The point is simpler: if the call is not a real product/API
-boundary, forcing it through an internal HTTP stack adds parser, header,
-middleware, status-code, timeout, retry, and test-policy work that belongs to a
-web boundary. CoAkka keeps the internal path as a runtime envelope with routing,
-request/reply, and deadletter semantics, then leaves REST for the edge where it
-is actually useful.
+boundary, an internal HTTP stack makes the team express runtime work through
+web concepts such as methods, paths, headers, middleware, status codes, timeout
+mapping, retry policy, and endpoint tests. CoAkka keeps the internal path as a
+runtime envelope with routing, request/reply, and deadletter semantics, then
+leaves REST for the edge where it is actually useful.
 
 ### After: Same-Process Runtime Capability
 

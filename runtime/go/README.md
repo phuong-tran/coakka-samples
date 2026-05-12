@@ -178,10 +178,12 @@ response, err := runtimeHost.AskJSON(
 ```
 
 The goal is not to win a synthetic contest against every possible HTTP stack.
-The goal is to avoid fake internal REST: URL config, request parsing, headers,
-status/error mapping, timeout policy, and tests for a boundary that is not a
-product API. Existing code using `StartConnectorOrchestrator(...)` still works
-as the compatibility name; new samples use `StartRuntimeHost(...)`.
+The goal is to avoid adding internal REST only for private runtime work: URL
+config, request parsing, headers, status/error mapping, timeout policy, and
+tests are web-boundary concepts, while the internal contract is a runtime
+capability.
+Existing code using `StartConnectorOrchestrator(...)` still works as the
+compatibility name; new samples use `StartRuntimeHost(...)`.
 
 ## Production Notes
 
