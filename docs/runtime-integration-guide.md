@@ -149,6 +149,16 @@ route table.
 `routes` is the target-to-endpoint map. Each route names a stable capability
 target and lists the endpoints eligible to handle that target.
 
+Route configuration is not optional magic. With or without CoAkka, a system
+must know which service or capability it intends to call. CoAkka makes that
+knowledge explicit as a route snapshot so runtime behavior can be validated,
+hot-reloaded, diagnosed, and deadlettered consistently.
+
+Samples often construct `RuntimeRouteSpec` directly so the moving parts are
+visible. Real integrations should usually generate route specs from framework
+config, Kubernetes or Consul data, service discovery, Helm values, or a control
+plane.
+
 `host` and `port` identify the runtime endpoint. For a local sample this may be
 `127.0.0.1` plus a demo port. In a real deployment it usually comes from the
 connector's config source, such as Kubernetes, Consul, a config service, or

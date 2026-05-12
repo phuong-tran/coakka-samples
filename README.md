@@ -696,6 +696,11 @@ RuntimeEndpointFlags  = endpoint state, such as LOCAL or UNAVAILABLE
 | `RuntimeEndpointFlags.UNAVAILABLE` | Should this endpoint stay visible but receive no new work? | Endpoint remains in the snapshot but is excluded from new route selection. |
 | no `LOCAL` flag | Is this a peer endpoint instead of my handler? | The endpoint is a peer/remote endpoint, not a handler owned by this process. |
 
+Samples construct route specs directly so the runtime pieces are visible.
+Real integrations should usually generate route specs from config, service
+discovery, or a control plane. The route declaration is still necessary: with
+or without CoAkka, a system must know which capability it intends to call.
+
 For example, a route with `target = "samples.runtime.jvm.echo"` and one
 endpoint marked `LOCAL` means:
 
