@@ -431,6 +431,12 @@ CoAkka is a local-first runtime boundary for internal capabilities. It names
 targets, routes work through a generationed runtime snapshot, applies bounded
 queue policy, and returns response or deadletter outcomes with diagnostics.
 
+Local-first does not mean same-process-only. It means the first boundary is an
+internal runtime boundary instead of a public HTTP/gRPC API boundary. The
+handler can be same process, same host, or another runtime participant reached
+through transport. The `LOCAL` endpoint flag is the narrower process-local
+case.
+
 It can carry RPC-style requests, CQRS commands, CQRS queries, events, or
 projection work. Those are payload and application patterns. CoAkka's core
 claim is the runtime boundary, not ownership of every pattern above it.

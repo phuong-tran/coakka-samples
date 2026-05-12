@@ -214,6 +214,13 @@ client/server lifecycle, timeout policy, and test setup before the application
 has crossed a real product boundary. CoAkka keeps that path as typed runtime
 messages with request/reply and deadletter behavior.
 
+`Local-first` in these samples does not mean the runtime is limited to one
+process. It means the first boundary is an internal runtime boundary instead of
+a public HTTP/gRPC service API. The handler may be in the same process, another
+process on the same host, or another runtime participant reached through the
+transport path. Only `RuntimeEndpointFlags.LOCAL` has the strict process-local
+meaning: this process owns that handler and should register it.
+
 For readers coming from REST, the closest address analogy is:
 
 ```text

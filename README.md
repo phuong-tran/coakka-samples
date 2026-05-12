@@ -20,6 +20,13 @@ discovery, or deployment policy. The goal is narrower and deliberate: give
 application hosts a shared runtime vocabulary for internal work that should not
 be forced into a fake REST service just to gain a boundary.
 
+When this repository says `local` or `local-first`, it does not mean "same
+process only." It means the work is still an internal application or deployment
+capability, not a public service API boundary. A CoAkka path can be same
+process, same host, or cross-process runtime delivery. The narrow
+`LOCAL` endpoint flag means something more specific: this process owns that
+handler.
+
 That vocabulary is:
 
 - target and source names
