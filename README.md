@@ -9,8 +9,38 @@ current public artifact surface exposes logger packages, the public native
 runtime C ABI package, runtime JVM/language connector packages, and the Spring
 Boot and Quarkus adapters.
 
+## Design Statement
+
+CoAkka is designed to make internal capability delivery explicit, typed, and
+observable across app-hosts, processes, and languages.
+
+The goal is not to replace HTTP at real edges, gRPC at real service API
+boundaries, CQRS or authorization in application logic, ingress, service
+discovery, or deployment policy. The goal is narrower and deliberate: give
+application hosts a shared runtime vocabulary for internal work that should not
+be forced into a fake REST service just to gain a boundary.
+
+That vocabulary is:
+
+- target and source names
+- payload identity and payload format
+- route snapshots and generations
+- endpoint flags and route selection
+- bounded queue policy
+- request/reply and one-way delivery
+- deadletter reasons
+- runtime stats and diagnostics
+- connector-owned configuration injection
+
+This repository shows that architecture through runnable samples. The
+production-facing claim is intentionally practical: the design is ready to be
+evaluated in real deployments, while durable production evidence should come
+from Linux/container operation, restart and reconnect behavior, route reload
+under load, and operational monitoring in the target environment.
+
 ## Table of Contents
 
+- [Design Statement](#design-statement)
 - [Try Containers First](#try-containers-first)
 - [If You Are New To CoAkka](#if-you-are-new-to-coakka)
 - [Which Sample Should I Run?](#which-sample-should-i-run)
