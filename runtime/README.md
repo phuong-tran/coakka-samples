@@ -175,6 +175,15 @@ message type, schema version, and payload format. The samples mostly use JSON
 for readability, while the contract also supports payload shapes such as
 Protobuf, Thrift, MessagePack, plain text, and binary.
 
+When a sample uses a method such as `askJson(...)` or `AskJSON(...)`, read it
+as a convenience helper for the sample payload, not as a runtime limitation.
+The runtime routes envelopes by target and carries payload bytes plus
+`messageType`, `payloadSchemaVersion`, and `payloadFormat`. JSON is used in
+public samples because it is easy to inspect in logs, curl responses, and
+browser panels. Format-specific helpers for Protobuf, MessagePack, text, or
+binary payloads belong to each host-language connector API; the runtime
+contract is the envelope and payload identity.
+
 macOS is a good development path for these samples. Production-like validation
 should happen on Linux because native loading, process
 supervision, dependency packaging, and memory pressure are part of the runtime

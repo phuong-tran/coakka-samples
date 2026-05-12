@@ -88,6 +88,12 @@ response = runtime.ask_json(
 )
 ```
 
+`ask_json(...)` is a convenience helper for JSON samples. It is not the runtime
+saying that only JSON is supported. The payload identity carries the message
+type, schema version, and `PayloadFormat.JSON`; other payload formats are still
+runtime envelopes with a different payload format and byte encoding, exposed
+through the connector API surface for that host language.
+
 Use the context manager or call `close()` during application shutdown.
 
 ## Before: Internal REST
@@ -145,6 +151,10 @@ response = runtime.ask_json(
     operation="create_customer",
 )
 ```
+
+`ask_json(...)` is used here because the sample wants readable payloads in logs
+and browser-visible diagnostics. It is a helper around typed runtime delivery,
+not a statement that runtime is JSON-only.
 
 The fake internal REST path brings URL config, HTTP parsing, headers,
 middleware, status/error mapping, timeout policy, and test setup. CoAkka keeps

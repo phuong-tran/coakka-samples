@@ -83,6 +83,12 @@ response, err := runtimeHost.AskJSON(
 )
 ```
 
+`AskJSON(...)` is a convenience helper for JSON samples. It is not the runtime
+saying that only JSON is supported. The payload identity carries the message
+type, schema version, and `PayloadFormatJSON`; other payload formats are still
+runtime envelopes with a different payload format and byte encoding, exposed
+through the connector API surface for that host language.
+
 ## Before: Internal REST
 
 The store can become an internal `net/http` service even when the call is
@@ -138,6 +144,10 @@ response, err := runtimeHost.AskJSON(
     nil,
 )
 ```
+
+`AskJSON(...)` is used here because the sample wants readable payloads in logs
+and browser-visible diagnostics. It is a helper around typed runtime delivery,
+not a statement that runtime is JSON-only.
 
 The goal is not to win a synthetic contest against every possible HTTP stack.
 The goal is to avoid fake internal REST: URL config, request parsing, headers,

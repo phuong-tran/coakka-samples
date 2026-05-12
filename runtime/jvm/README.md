@@ -168,6 +168,11 @@ val response = orchestrator.kotlin.ask(
 )
 ```
 
+This sample sends JSON text because it is easy to inspect. The runtime does not
+route by JSON; it routes an envelope by `target` and carries payload bytes plus
+`ConnectorPayloadIdentity`. For another payload shape, change the bytes and set
+the appropriate `ConnectorPayloadFormat` in the payload identity.
+
 Java applications use the Java facade:
 
 ```java
