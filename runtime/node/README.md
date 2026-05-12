@@ -66,6 +66,12 @@ local `registerHandler(...)`, and every caller `target`. For example,
 `billing.invoice.create` is valid if that is the capability contract you want
 to expose.
 
+`askJson(...)` below is a convenience helper for JSON samples. It is not the
+runtime saying that only JSON is supported. The payload identity carries the
+message type, schema version, and `PayloadFormat.JSON`; other payload formats
+are still runtime envelopes with a different payload format and byte encoding,
+exposed through the connector API surface for that host language.
+
 Send typed requests with explicit timeout and operation metadata:
 
 ```js
@@ -79,12 +85,6 @@ const response = await runtime.askJson(
   DeliveryHint.ROUTER_DEFAULT,
 );
 ```
-
-`askJson(...)` is a convenience helper for JSON samples. It is not the runtime
-saying that only JSON is supported. The payload identity carries the message
-type, schema version, and `PayloadFormat.JSON`; other payload formats are still
-runtime envelopes with a different payload format and byte encoding, exposed
-through the connector API surface for that host language.
 
 Close the runtime host on process shutdown:
 
@@ -134,6 +134,10 @@ runtime.registerHandler("samples.customer.store", (request) =>
 );
 ```
 
+`askJson(...)` below is used because the sample wants readable payloads in logs
+and browser-visible diagnostics. It is a helper around typed runtime delivery,
+not a statement that runtime is JSON-only.
+
 The caller sends one typed runtime request:
 
 ```js
@@ -147,10 +151,6 @@ const response = await runtime.askJson(
   DeliveryHint.ROUTER_DEFAULT,
 );
 ```
-
-`askJson(...)` is used here because the sample wants readable payloads in logs
-and browser-visible diagnostics. It is a helper around typed runtime delivery,
-not a statement that runtime is JSON-only.
 
 The fake endpoint still pays for HTTP parsing, headers, middleware,
 status/error mapping, timeout policy, and test setup. CoAkka keeps that work as

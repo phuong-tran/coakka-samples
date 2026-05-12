@@ -123,6 +123,12 @@ your own target name, then use the same value in the route table, the local
 `billing.invoice.create` is valid if that is the capability contract you want
 to expose.
 
+`AskJsonAsync(...)` below is a convenience helper for JSON samples. It is not
+the runtime saying that only JSON is supported. The payload identity carries
+the message type, schema version, and `PayloadFormat.Json`; other payload
+formats are still runtime envelopes with a different payload format and byte
+encoding, exposed through the connector API surface for that host language.
+
 ```csharp
 var response = await runtime.AskJsonAsync(
     source: "customer-api",
@@ -131,12 +137,6 @@ var response = await runtime.AskJsonAsync(
     payloadIdentity: identity,
     deliveryHint: DeliveryHint.RequireLocal);
 ```
-
-`AskJsonAsync(...)` is a convenience helper for JSON samples. It is not the
-runtime saying that only JSON is supported. The payload identity carries the
-message type, schema version, and `PayloadFormat.Json`; other payload formats
-are still runtime envelopes with a different payload format and byte encoding,
-exposed through the connector API surface for that host language.
 
 The ASP.NET Core adapter shape on top of that runtime API is one API endpoint
 calling a local runtime target, while the store logic is a capability instead

@@ -65,6 +65,12 @@ local `register_handler(...)`, and every caller target. For example,
 `billing.invoice.create` is valid if that is the capability contract you want
 to expose.
 
+`ask_json(...)` below is a convenience helper for JSON samples. It is not the
+runtime saying that only JSON is supported. The runtime contract is an envelope
+with target, payload bytes, message type, schema version, and payload format.
+The Rust package is still a spike, so treat non-JSON helper ergonomics as
+connector API surface work rather than a runtime limitation.
+
 The caller sends one typed runtime request:
 
 ```rust
@@ -78,12 +84,6 @@ let response = runtime.ask_json(
     DeliveryHint::RouterDefault,
 )?;
 ```
-
-`ask_json(...)` is a convenience helper for JSON samples. It is not the runtime
-saying that only JSON is supported. The runtime contract is an envelope with
-target, payload bytes, message type, schema version, and payload format. The
-Rust package is still a spike, so treat non-JSON helper ergonomics as connector
-API surface work rather than a runtime limitation.
 
 HTTP stays at real client-facing or legacy boundaries. Internal Rust work can
 stay as a runtime target with request/reply and deadletter semantics.

@@ -156,6 +156,11 @@ local `registerHandler(...)`, and every caller `target`. For example,
 `billing.invoice.create` is valid if that is the capability contract you want
 to expose.
 
+This sample sends JSON text because it is easy to inspect. The runtime does not
+route by JSON; it routes an envelope by `target` and carries payload bytes plus
+`ConnectorPayloadIdentity`. For another payload shape, change the bytes and set
+the appropriate `ConnectorPayloadFormat` in the payload identity.
+
 Send typed requests with an explicit timeout and operation name:
 
 ```kotlin
@@ -173,11 +178,6 @@ val response = orchestrator.kotlin.ask(
     deliveryHint = ConnectorDeliveryHint.ROUTER_DEFAULT,
 )
 ```
-
-This sample sends JSON text because it is easy to inspect. The runtime does not
-route by JSON; it routes an envelope by `target` and carries payload bytes plus
-`ConnectorPayloadIdentity`. For another payload shape, change the bytes and set
-the appropriate `ConnectorPayloadFormat` in the payload identity.
 
 Java applications use the Java facade:
 
