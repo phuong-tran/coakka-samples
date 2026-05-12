@@ -46,6 +46,19 @@ mapping, timeout policy, and tests before there is a real product boundary.
 
 ## After: Runtime Target
 
+Read the address change like this:
+
+```text
+Before internal REST:
+  POST /internal/customers/create -> Axum/Actix handler
+
+After CoAkka:
+  target = "samples.customer.create" -> registered handler
+```
+
+The target plays a similar addressing role to an internal REST path, but it is
+runtime routing vocabulary, not an HTTP URL.
+
 `samples.customer.store` is the sample's capability target name. In your app,
 choose your own target name, then use the same value in the route table, the
 local `register_handler(...)`, and every caller target. For example,

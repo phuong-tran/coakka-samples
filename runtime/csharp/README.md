@@ -66,6 +66,19 @@ and it is usually a lighter path than pretending the work is REST.
 
 ## After: Runtime Target
 
+Read the address change like this:
+
+```text
+Before internal REST:
+  POST /internal/customers/create -> endpoint delegate
+
+After CoAkka:
+  target = "customers.create" -> registered handler
+```
+
+The target plays a similar addressing role to an internal REST path, but it is
+runtime routing vocabulary, not an HTTP URL.
+
 The C# adapter lets the app own one embedded runtime host, declare an internal
 target, and keep HTTP at the real edge:
 

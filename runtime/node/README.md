@@ -131,6 +131,19 @@ app.post("/api/customers", async (req, res) => {
 
 ## After: Runtime Target
 
+Read the address change like this:
+
+```text
+Before internal REST:
+  POST /internal/customers/create -> route handler
+
+After CoAkka:
+  target = "samples.customer.create" -> registered handler
+```
+
+The target plays a similar addressing role to an internal REST path, but it is
+runtime routing vocabulary, not an HTTP URL.
+
 With CoAkka, the store is a runtime target:
 
 ```js

@@ -214,6 +214,19 @@ client/server lifecycle, timeout policy, and test setup before the application
 has crossed a real product boundary. CoAkka keeps that path as typed runtime
 messages with request/reply and deadletter behavior.
 
+For readers coming from REST, the closest address analogy is:
+
+```text
+Internal REST:
+  method + URL path -> controller/handler
+
+CoAkka:
+  target + payload identity -> registered handler
+```
+
+The analogy is only for orientation. A CoAkka target is runtime routing
+vocabulary, not an HTTP URL.
+
 The runtime contract is not tied to web payloads. Each typed message declares a
 message type, schema version, and payload format. The samples mostly use JSON
 for readability, while the contract also supports payload shapes such as

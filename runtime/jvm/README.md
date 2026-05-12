@@ -60,6 +60,19 @@ policy, and test setup before there is a real product boundary.
 
 ## After: Runtime Target
 
+Read the address change like this:
+
+```text
+Before internal REST:
+  POST /internal/customers/create -> controller method
+
+After CoAkka:
+  target = "samples.customer.create" -> registered handler
+```
+
+The target plays a similar addressing role to an internal REST path, but it is
+runtime routing vocabulary, not an HTTP URL.
+
 With CoAkka, the store is a runtime target owned by the process that actually
 handles the work:
 
