@@ -422,21 +422,16 @@ The result is intentionally small:
 - `invalid_snapshot`: runtime keeps the current route table because the
   snapshot shape is not acceptable
 
-The request path then uses the active route snapshot:
+The request path then uses the active route snapshot. Same-process delivery is
+the compact case:
 
 ```mermaid
 flowchart LR
-    subgraph serviceA["Service A"]
+    subgraph appHost["One app process"]
         appA["App code"]
         connectorA["Connector"]
         runtimeA["Runtime"]
-    end
-
-    routes["Active routes"]
-
-    subgraph serviceB["Service B"]
-        runtimeB["Runtime"]
-        connectorB["Connector"]
+        routesA["Active routes"]
         handlerB["Handler"]
     end
 
@@ -444,21 +439,51 @@ flowchart LR
 
     appA -->|ask target B| connectorA
     connectorA --> runtimeA
-    runtimeA --> routes
-    routes -->|endpoint B| runtimeB
-    routes -->|missing target| deadletter
-    runtimeB --> connectorB
-    connectorB --> handlerB
-    handlerB -->|reply| connectorB
-    connectorB --> runtimeB
-    runtimeB --> runtimeA
+    runtimeA --> routesA
+    routesA -->|LOCAL endpoint| handlerB
+    routesA -->|missing target| deadletter
+    handlerB -->|reply| runtimeA
     runtimeA --> connectorA
     connectorA --> appA
 ```
 
-Service A does not call a Service B HTTP controller in this path. It asks a
+Multi-process delivery uses the same target vocabulary, but the active route
+points to a peer runtime:
+
+```mermaid
+flowchart LR
+    subgraph serviceA["Service A process"]
+        appA2["App code"]
+        connectorA2["Connector"]
+        runtimeA2["Runtime"]
+        routesA2["Active routes"]
+    end
+
+    subgraph serviceB["Service B process"]
+        runtimeB2["Runtime"]
+        connectorB2["Connector"]
+        handlerB2["Handler"]
+    end
+
+    deadletter2["Deadletter"]
+
+    appA2 -->|ask target B| connectorA2
+    connectorA2 --> runtimeA2
+    runtimeA2 --> routesA2
+    routesA2 -->|peer endpoint| runtimeB2
+    routesA2 -->|missing target| deadletter2
+    runtimeB2 --> connectorB2
+    connectorB2 --> handlerB2
+    handlerB2 -->|reply| connectorB2
+    connectorB2 --> runtimeB2
+    runtimeB2 --> runtimeA2
+    runtimeA2 --> connectorA2
+    connectorA2 --> appA2
+```
+
+The caller does not call an internal HTTP controller in either path. It asks a
 runtime `target`; the active route snapshot decides whether that target maps to
-an endpoint owned by this process, a peer runtime, or a deadletter.
+a handler owned by this process, a peer runtime, or a deadletter.
 
 The semantics need to stay strict:
 
