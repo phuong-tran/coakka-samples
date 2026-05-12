@@ -421,10 +421,10 @@ flowchart TD
     invalid["invalid_snapshot"]
 
     snapshot --> validate
-    validate -->|bad shape| invalid
-    validate -->|valid| compare
-    compare -->|yes| applied
-    compare -->|no| stale
+    validate --> invalid
+    validate --> compare
+    compare --> applied
+    compare --> stale
 ```
 
 The result is intentionally small:
@@ -440,24 +440,20 @@ the compact case:
 
 ```mermaid
 flowchart LR
-    subgraph appHost["One app process"]
-        appA["App code"]
-        connectorA["Connector"]
-        runtimeA["Runtime"]
-        routesA["Active routes"]
-        handlerB["Handler"]
-    end
+    appA["App code"]
+    connectorA["Connector"]
+    runtimeA["Runtime"]
+    routesA["Active routes"]
+    handlerB["Process-owned handler"]
+    replyA["Reply"]
+    deadletterA["Deadletter"]
 
-    deadletter["Deadletter"]
-
-    appA -->|ask target B| connectorA
+    appA --> connectorA
     connectorA --> runtimeA
     runtimeA --> routesA
-    routesA -->|LOCAL endpoint| handlerB
-    routesA -->|missing target| deadletter
-    handlerB -->|reply| runtimeA
-    runtimeA --> connectorA
-    connectorA --> appA
+    routesA --> handlerB
+    handlerB --> replyA
+    routesA --> deadletterA
 ```
 
 Multi-process delivery uses the same target vocabulary, but the active route
@@ -465,33 +461,24 @@ points to a peer runtime:
 
 ```mermaid
 flowchart LR
-    subgraph serviceA["Service A process"]
-        appA2["App code"]
-        connectorA2["Connector"]
-        runtimeA2["Runtime"]
-        routesA2["Active routes"]
-    end
-
-    subgraph serviceB["Service B process"]
-        runtimeB2["Runtime"]
-        connectorB2["Connector"]
-        handlerB2["Handler"]
-    end
-
+    appA2["Service A app"]
+    connectorA2["Connector A"]
+    runtimeA2["Runtime A"]
+    routesA2["Active routes"]
+    runtimeB2["Runtime B"]
+    connectorB2["Connector B"]
+    handlerB2["Service B handler"]
+    replyB2["Reply"]
     deadletter2["Deadletter"]
 
-    appA2 -->|ask target B| connectorA2
+    appA2 --> connectorA2
     connectorA2 --> runtimeA2
     runtimeA2 --> routesA2
-    routesA2 -->|peer endpoint| runtimeB2
-    routesA2 -->|missing target| deadletter2
+    routesA2 --> runtimeB2
     runtimeB2 --> connectorB2
     connectorB2 --> handlerB2
-    handlerB2 -->|reply| connectorB2
-    connectorB2 --> runtimeB2
-    runtimeB2 --> runtimeA2
-    runtimeA2 --> connectorA2
-    connectorA2 --> appA2
+    handlerB2 --> replyB2
+    routesA2 --> deadletter2
 ```
 
 The caller does not call an internal HTTP controller in either path. It asks a
