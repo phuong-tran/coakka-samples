@@ -13,6 +13,7 @@ Boot and Quarkus adapters.
 
 - [Try Containers First](#try-containers-first)
 - [If You Are New To CoAkka](#if-you-are-new-to-coakka)
+- [Which Sample Should I Run?](#which-sample-should-i-run)
 - [Start Here](#start-here)
 - [Why CoAkka Exists](#why-coakka-exists)
 - [Runtime First](#runtime-first)
@@ -114,6 +115,20 @@ internal capabilities.
 
 For dependency snippets and the minimal host skeleton, read
 [runtime/README.md#copy-paste-starter-shapes](runtime/README.md#copy-paste-starter-shapes).
+For a longer adoption path, read [docs/adoption-path.md](docs/adoption-path.md).
+
+## Which Sample Should I Run?
+
+| Goal | Start with | Why |
+| --- | --- | --- |
+| See CoAkka work without installing language toolchains | `bash run.sh containers node-python` or `bash run.sh containers spring-go` | Runs two real processes with browser-visible state and no internal REST fallback. |
+| Understand the smallest runtime API | `bash run.sh runtime jvm basic` or the basic sample for your language | Shows start spec, local route, handler registration, ask/reply, and stats. |
+| Understand route misses and delivery failures | `bash run.sh runtime jvm deadletter` or `bash run.sh runtime python deadletter` | Shows a missing target becoming a matched deadletter instead of a vague timeout. |
+| Understand route generation and reload | `bash run.sh runtime python hot-reload` | Shows newer route snapshots being applied and stale/invalid snapshots rejected. |
+| Understand a normal application workflow | `bash run.sh scenario customer-crud spring-boot-starter-local dev` | Shows browser/API edge plus internal runtime capabilities in one local app. |
+| Compare local app shape with cross-process shape | `bash run.sh scenario customer-crud spring-boot-spring-boot dev` | Keeps customer traffic runtime-only between web and store processes. |
+| Start from Spring Boot annotations | `runtime/scenarios/customer-crud/spring-boot-starter-local` | Uses `@CoAkkaHandler` and `CoAkkaRuntimeClient` instead of manual route/handler wiring. |
+| Start from explicit connector wiring | `runtime/scenarios/customer-crud/spring-boot-single-process` | Keeps route declaration and handler registration visible in application code. |
 
 ## Start Here
 
