@@ -135,10 +135,10 @@ Read the address change like this:
 
 ```text
 Before internal REST:
-  POST /internal/customers/create -> route handler
+  POST /internal/customers -> route handler
 
 After CoAkka:
-  target = "samples.customer.create" -> registered handler
+  target = "samples.customer.store" -> registered handler
 ```
 
 The target plays a similar addressing role to an internal REST path, but it is
