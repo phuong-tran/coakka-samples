@@ -64,6 +64,12 @@ to expose.
 The same string appears again in the reply helper as `source`: the response is
 coming from the target handler that produced it.
 
+This sample registers one handler to stay small. A real app-host can register
+multiple handlers if it owns multiple targets, such as
+`samples.customer.create`, `samples.customer.update`, and
+`samples.customer.list`. The route table and caller target must use the same
+names.
+
 Register handlers only for local targets:
 
 ```go

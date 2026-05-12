@@ -174,6 +174,29 @@ If you rename a target, update the same name in three places:
 If those names do not match, runtime treats the call as a different target and
 the caller should see a route-miss deadletter.
 
+The samples often register one handler to keep the code small. A real app-host
+can register multiple handlers when the process owns multiple capability
+targets:
+
+```text
+samples.customer.create
+samples.customer.update
+samples.customer.delete
+samples.customer.list
+```
+
+It can also register one broader target and dispatch by message type or
+operation inside the handler:
+
+```text
+samples.customer.store
+```
+
+Use multiple targets when route and diagnostic boundaries should be visible per
+operation. Use one broader target when the capability is owned and versioned as
+one unit. In both designs, the route table, local handler registration, and
+caller target must match.
+
 Concrete copy-paste recipes:
 
 - [JVM runtime recipe](jvm/README.md#integration-recipe)

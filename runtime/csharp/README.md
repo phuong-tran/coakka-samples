@@ -117,6 +117,11 @@ to expose.
 The same string appears again in the reply helper as `source`: the response is
 coming from the target handler that produced it.
 
+This sample registers one handler to stay small. A real app-host can register
+multiple handlers if it owns multiple targets, such as
+`customers.create`, `customers.update`, and `customers.list`. The route table
+and caller target must use the same names.
+
 ```csharp
 runtime.RegisterHandler(
     "customers.create",
