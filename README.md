@@ -56,6 +56,7 @@ in the target environment.
 - [Why CoAkka Exists](#why-coakka-exists)
 - [Runtime First](#runtime-first)
 - [Architectural Value](#architectural-value)
+- [Where CoAkka Helps](#where-coakka-helps)
 - [Questions And Answers](#questions-and-answers)
 - [How It Works](#how-it-works)
 - [Sample Integration Checklist](#sample-integration-checklist)
@@ -317,6 +318,142 @@ with defined semantics when needed, and infrastructure that still owns ingress,
 discovery, and deployment policy. That gives an organization a shared
 integration substrate without forcing every service into the same application
 framework.
+
+## Where CoAkka Helps
+
+CoAkka is most useful when a team wants internal work to have a clear runtime
+boundary without turning every internal call into another REST or gRPC surface.
+The value is practical: fewer scattered clients, clearer failure outcomes, and
+one shared vocabulary for delivery diagnostics.
+
+### Avoid Fake Internal REST
+
+Before:
+
+```text
+Spring API -> internal REST -> Go store
+Node job   -> internal REST -> Python worker
+C# API     -> internal REST -> JVM renderer
+```
+
+This can work, but each internal endpoint brings URL config, HTTP parsing,
+status mapping, timeout policy, retry conventions, readiness checks, and tests
+for an API that may not be a real product boundary.
+
+After:
+
+```text
+caller -> CoAkka target -> route snapshot -> handler
+```
+
+The caller asks for a stable `target`. The route snapshot decides whether that
+target is handled in the same process, another process, or not at all. If it
+cannot be delivered, the outcome is visible as runtime failure or deadletter
+instead of being hidden behind a vague timeout or an internal HTTP status.
+
+### Replace Polyglot Services With Less Client Chaos
+
+Before:
+
+```text
+customer-web  -> http://go-store/internal/customers
+audit-worker  -> http://go-store/internal/events
+batch-job     -> http://go-store/internal/rebuild
+```
+
+When the Go store moves to a new Go version, JVM service, Node.js worker, or
+replicated deployment, callers often need client config, path, timeout,
+serialization, and rollout changes. The real contract is spread across code,
+config, logs, dashboards, and team memory.
+
+After:
+
+```text
+target = customer.store
+generation 12 -> Go store
+generation 13 -> JVM store, Node.js store, or replicated store endpoints
+```
+
+The target and payload contract can stay stable while endpoint placement
+changes through route config. Callers still need a correct payload contract,
+but they do not need to learn every implementation move as a new internal
+network API.
+
+### Start Same-Process And Move Later
+
+Before:
+
+```text
+controller -> service class
+```
+
+That is correct for a small monolith. The pain appears when the team later
+wants to split the service: it usually has to introduce internal HTTP, a new
+client, new port config, new tests, new timeout handling, and new logs.
+
+After:
+
+```text
+controller -> CoAkka target -> same-process handler
+controller -> CoAkka target -> peer-runtime handler
+```
+
+The first version can remain compact. If the handler moves later, the route
+snapshot changes, but the app keeps the same target/source/deadletter
+vocabulary.
+
+### Make Delivery Failure Answerable
+
+Before, failures often look like this:
+
+```text
+timeout
+500
+connection refused
+unknown route
+bad gateway
+```
+
+Each team then searches a different log format and tries to infer what actually
+happened.
+
+With CoAkka diagnostics, the failure can answer more specific questions:
+
+- who sent the work: `source`
+- what was requested: `target` and `operation`
+- which route table was active: `generation`
+- whether the target was missing, unavailable, rejected by queue pressure, or
+  timed out
+- whether a pending request was matched by a response or deadletter
+
+That does not remove the need for trace logs or business-level observability.
+It gives trace logs a sharper runtime vocabulary: source, target, generation,
+operation, delivery outcome, and deadletter reason.
+
+### What It Costs
+
+CoAkka is not free structure. A team has to define target names, payload
+identity, schema/version discipline, route snapshots, handler ownership, and
+runtime diagnostics. Very small CRUD applications that only need direct service
+calls may not need this boundary yet.
+
+What it can save:
+
+- fewer internal REST/gRPC clients maintained only for private app work
+- fewer scattered timeout, retry, status, and error-mapping policies
+- fewer deployment changes when one implementation moves from Go to JVM,
+  Node.js, Python, C#, or another runtime participant
+- less time guessing whether a failure was a missing route, unavailable
+  endpoint, full queue, timeout, or handler problem
+- more consistent trace/log fields across languages: `source`, `target`,
+  `generation`, `operation`, outcome, and deadletter reason
+
+The trade is usually worth considering when the current alternative is many
+fake internal HTTP/gRPC endpoints, scattered client config, unclear route
+ownership, or painful language/process migration. CoAkka's job is not to make
+distributed systems simple. It makes one part of the system explicit: how
+internal work is named, routed, admitted, delivered, and reported when delivery
+fails.
 
 ## Questions And Answers
 
