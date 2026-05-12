@@ -237,6 +237,85 @@ CoAkka asks:
 
 They can be used together, but they are not the same pattern.
 
+## Does CoAkka Replace CQRS Or App-Level Policy?
+
+No.
+
+CoAkka runtime is not a magic application framework. It is a passive delivery
+boundary: when the app-host or connector submits work, runtime routes it,
+queues it, delivers it, and reports response or deadletter outcomes.
+
+Runtime does not create business intent by itself. The entrypoint usually lives
+above runtime:
+
+```text
+HTTP controller
+CLI command
+scheduled job
+desktop action
+message consumer
+outbox dispatcher
+device event
+```
+
+That app-host layer decides whether there is work to submit.
+
+Common shape:
+
+```text
+HTTP request
+  -> controller/resource
+  -> CQRS/security/app policy
+  -> connector or proxy
+  -> CoAkka runtime
+  -> target handler
+```
+
+CQRS and app policy answer questions such as:
+
+- is this a command or a query?
+- is the command valid?
+- is `serviceA` allowed to call `serviceB`?
+- is this caller allowed for this tenant or operation?
+- which read model or write model owns this flow?
+
+CoAkka runtime answers different questions:
+
+- which target should receive the work?
+- which endpoint is eligible in the active route generation?
+- can runtime admit the work into bounded queues?
+- did delivery produce a response, timeout, or deadletter?
+- what should diagnostics report?
+
+If a system wants to block a call before it is sent, that check belongs above
+runtime:
+
+```text
+app-host / CQRS bus / connector filter / framework adapter
+  -> allow: submit to runtime
+  -> deny: return app/security error
+```
+
+The receiver should still protect important business rules. If authorization
+only happens inside the receiver, then a forbidden call still reaches the
+receiver and returns a forbidden response, just like a traditional HTTP/gRPC
+call.
+
+Do not say:
+
+```text
+CoAkka replaces CQRS.
+CoAkka runtime handles business authorization.
+```
+
+Say:
+
+```text
+CQRS and app policy decide what is valid and allowed.
+CoAkka runtime delivers already-submitted work by target and reports delivery
+outcomes.
+```
+
 ## Can CoAkka Implement CQRS?
 
 Yes, CoAkka can be used as the runtime dispatch layer for CQRS.
