@@ -1,4 +1,4 @@
-# Quarkus Local Customer CRUD
+# Quarkus Same-Process Customer CRUD
 
 This scenario is the Quarkus/Kotlin counterpart to the Spring Boot
 single-process sample.
@@ -18,8 +18,8 @@ coakka.askBlocking(
 ```
 
 The app consumes the public `coakka.quarkus:coakka-quarkus-extension` artifact.
-Quarkus owns HTTP/CDI lifecycle, and the adapter starts the local CoAkka
-runtime and registers CDI `CoAkkaLocalHandler` beans as local capability routes.
+Quarkus owns HTTP/CDI lifecycle, and the adapter starts the CoAkka runtime with
+process-owned routes for CDI `CoAkkaLocalHandler` beans.
 
 ## Before: Internal REST
 
@@ -84,7 +84,7 @@ class CustomerResource(
 }
 ```
 
-That works, but it turns local business work into a fake HTTP service. The app
+That works, but it turns internal business work into a fake HTTP service. The app
 now carries REST-client config, URL wiring, HTTP serialization, timeout/error
 mapping, and test setup before it has a real network boundary.
 
@@ -93,9 +93,9 @@ resource and REST client even when the store is just an internal capability.
 CoAkka keeps the public resource as the real HTTP edge and moves internal work
 onto a typed runtime target with request/reply, counters, and deadletters.
 
-## After: Local Runtime Capability
+## After: Same-Process Runtime Capability
 
-With the adapter, Quarkus config owns local runtime defaults:
+With the adapter, Quarkus config owns same-process runtime defaults:
 
 ```kotlin
 dependencies {
@@ -114,7 +114,7 @@ coakka.runtime.local-endpoint-host=127.0.0.1
 coakka.runtime.local-endpoint-port=19182
 ```
 
-The local capability is a CDI bean. It still exposes the real runtime boundary,
+The internal capability is a CDI bean. It still exposes the real runtime boundary,
 but no longer owns route table creation or shutdown:
 
 ```kotlin
@@ -155,7 +155,7 @@ fun createCustomer(request: CustomerDraft): Response {
 ```
 
 That is the Quarkus adapter value: Quarkus keeps CDI and HTTP lifecycle, while
-CoAkka remains the local capability boundary instead of becoming another
+CoAkka remains the internal runtime boundary instead of becoming another
 internal REST hop.
 
 ## Run
@@ -180,14 +180,14 @@ bash run.sh smoke
 Ports:
 
 - HTTP: `8083`
-- local runtime diagnostic endpoint: `19182`
+- runtime diagnostic endpoint: `19182`
 
 ## Boundary Shape
 
 The Quarkus resource owns real HTTP ingress at `/api/customers`. It calls the
 runtime target `samples.customer.store`.
 
-The customer store remains an ordinary CDI bean. The local runtime handler is a
+The customer store remains an ordinary CDI bean. The process-owned runtime handler is a
 small `@CoAkkaHandler` CDI bean:
 
 ```kotlin
@@ -200,4 +200,4 @@ The adapter registers that handler during application startup and shuts the
 runtime down through Quarkus lifecycle callbacks.
 
 Remote transport, Kubernetes bind/advertise config, service discovery, and
-business retry policy are deliberately out of scope for this local-first slice.
+business retry policy are deliberately out of scope for this same-process slice.

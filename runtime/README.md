@@ -57,7 +57,7 @@ dependencies {
 }
 ```
 
-Spring Boot local adapter:
+Spring Boot same-process adapter:
 
 ```kotlin
 dependencies {
@@ -66,7 +66,7 @@ dependencies {
 }
 ```
 
-Quarkus local adapter:
+Quarkus same-process adapter:
 
 ```kotlin
 dependencies {
@@ -150,7 +150,8 @@ Name roles in that shape:
 | `target` | Capability address that callers route to. Example: `samples.customer.store` means "send this work to the customer store capability." |
 
 `target` is not `systemName` and not `nodeId`. A process can belong to one
-`systemName`, have one concrete `nodeId`, and own one or more local targets.
+`systemName`, have one concrete `nodeId`, and own one or more targets whose
+endpoint is marked `LOCAL` for this process.
 The route table maps target names to endpoint candidates.
 
 Target names are application contract names. `samples.customer.store` is only a
@@ -168,7 +169,7 @@ If you rename a target, update the same name in three places:
 | Place | Example |
 | --- | --- |
 | route table | `target = "billing.invoice.create"` |
-| local handler registration | `registerHandler("billing.invoice.create", ...)` |
+| process-owned handler registration | `registerHandler("billing.invoice.create", ...)` |
 | caller ask/event | `target = "billing.invoice.create"` |
 
 If those names do not match, runtime treats the call as a different target and
@@ -194,7 +195,7 @@ samples.customer.store
 
 Use multiple targets when route and diagnostic boundaries should be visible per
 operation. Use one broader target when the capability is owned and versioned as
-one unit. In both designs, the route table, local handler registration, and
+one unit. In both designs, the route table, process-owned handler registration, and
 caller target must match.
 
 Concrete copy-paste recipes:
@@ -204,7 +205,7 @@ Concrete copy-paste recipes:
 - [Node.js runtime recipe](node/README.md#integration-recipe)
 - [Go runtime recipe](go/README.md#integration-recipe)
 - [Spring Boot starter scenario](scenarios/customer-crud/spring-boot-starter-local)
-- [Quarkus local scenario](scenarios/customer-crud/quarkus-local)
+- [Quarkus same-process scenario](scenarios/customer-crud/quarkus-local)
 
 The runtime samples keep a strict boundary rule: HTTP belongs at a real edge
 such as a browser/API, partner API, or legacy HTTP dependency. Internal work
@@ -301,8 +302,8 @@ The first scenario implementations are:
 - `scenarios/customer-crud/spring-boot-nodes`
 
 They run web, desktop, store, and audit shapes and expose clear runtime
-diagnostics. The single-process, starter-local, Quarkus-local, and desktop
-topologies give successful CRUD paths through local runtime capabilities
+diagnostics. The single-process, starter same-process, Quarkus same-process, and desktop
+topologies give successful CRUD paths through process-owned runtime capabilities
 without an internal store REST API. The cross-process web-to-store path is
 runtime-only and is wired for cross-host delivery through the current public TCP
 transport candidate. If delivery fails, samples return explicit runtime errors

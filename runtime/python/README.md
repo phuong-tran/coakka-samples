@@ -59,7 +59,7 @@ targets; the route table maps those target names to endpoints.
 
 `samples.customer.store` is the sample's capability target name. In your app,
 choose your own target name, then use the same value in the route table, the
-local `register_handler(...)`, and every caller `target`. For example,
+process-owned `register_handler(...)`, and every caller `target`. For example,
 `billing.invoice.create` is valid if that is the capability contract you want
 to expose.
 
@@ -72,7 +72,7 @@ multiple handlers if it owns multiple targets, such as
 `samples.customer.list`. The route table and caller target must use the same
 names.
 
-Register handlers only for local targets:
+Register handlers only for targets this process owns:
 
 ```python
 def handle_customer(request):
@@ -113,7 +113,7 @@ Use the context manager or call `close()` during application shutdown.
 
 ## Before: Internal REST
 
-A local capability can become a small Flask/FastAPI service just to look
+A same-process capability can become a small Flask/FastAPI service just to look
 distributed:
 
 ```python

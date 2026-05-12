@@ -1,7 +1,7 @@
 # JVM Java Runtime Basic
 
 This sample shows the Java API for the runtime v2 request/reply path. It starts
-one local runtime participant, registers a Java handler, sends one typed ask,
+one same-process runtime participant, registers a Java handler, sends one typed ask,
 and prints runtime/client counters.
 
 Run:

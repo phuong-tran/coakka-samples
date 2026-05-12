@@ -1,6 +1,6 @@
-# Spring Boot Starter Local Customer CRUD
+# Spring Boot Starter Same-Process Customer CRUD
 
-This scenario is the local-first Spring Boot starter customer CRUD path.
+This scenario is the same-process Spring Boot starter customer CRUD path.
 
 It keeps HTTP at the browser/API boundary and exposes internal customer work as
 runtime capabilities:
@@ -11,7 +11,7 @@ fun create(command: CustomerDraft): MutationResponse
 ```
 
 The app does not configure remote endpoints. The starter scans
-`@CoAkkaHandler` methods, starts the runtime with local routes for those
+`@CoAkkaHandler` methods, starts the runtime with process-owned routes for those
 targets, registers typed handlers, and exposes a `CoAkkaRuntimeClient` bean for
 the controller.
 
@@ -21,8 +21,8 @@ registration mechanism; use the explicit runtime connector path today, and
 expect a generated or declared handler registry shape before treating the
 starter as native-image friendly.
 
-This slice is local-first and is smoked on Linux in CI. Remote/Kubernetes mode
-should wait until the local API shape is boring.
+This slice is same-process and is smoked on Linux in CI. Remote/Kubernetes mode
+should wait until the starter API shape is boring.
 
 ## Dev Loop
 
@@ -31,8 +31,8 @@ discovers `@CoAkkaHandler` methods at application startup, so changing the set
 of handler methods still requires a restart today.
 
 The intended starter direction is devtools-friendly: after a Spring context
-refresh, rebuild the local handler registry from refreshed beans and apply a new
-local runtime route generation. The HTTP edge should stay unchanged, and local
+refresh, rebuild the process-owned handler registry from refreshed beans and apply a new
+runtime route generation. The HTTP edge should stay unchanged, and local
 development should not need an internal REST service just to feel comfortable.
 
 The sample consumes the public Spring Boot starter artifact:
@@ -50,7 +50,7 @@ The sample resolves the Maven artifact from the public publish surface.
 ## Before: Internal REST
 
 A Spring Boot team that wants to separate “web” from “store” usually invents an
-internal REST hop, even when both sides still live in the same local development
+internal REST hop, even when both sides still live in the same development
 topology:
 
 ```kotlin
@@ -117,15 +117,15 @@ class CustomerController(private val storeClient: CustomerStoreRestClient) {
 
 That works, but it makes an internal implementation detail look like an HTTP
 product boundary. It also adds URL config, HTTP serialization, error mapping,
-timeouts, and test setup around a call that is still just local business work.
+timeouts, and test setup around a call that is still internal business work.
 
 That is the shape this starter is meant to avoid. The controller stays the real
 HTTP edge, while internal customer work moves onto a typed runtime target with
 request/reply, counters, and deadletters.
 
-## After: Local Runtime Capability
+## After: Same-Process Runtime Capability
 
-With the starter, the application declares local runtime defaults in config and
+With the starter, the application declares same-process runtime defaults in config and
 keeps business work as ordinary Spring beans:
 
 ```kotlin
@@ -157,7 +157,7 @@ class CustomerCapabilityHandlers(private val customerStore: InMemoryCustomerStor
 }
 ```
 
-The HTTP controller now reads like CRUD code again. It asks a local capability
+The HTTP controller now reads like CRUD code again. It asks an internal capability
 target; it does not construct route tables, decode envelopes, or own native
 runtime lifecycle:
 
@@ -175,14 +175,14 @@ fun createCustomer(@RequestBody request: CustomerDraft): MutationResponse {
 }
 ```
 
-That is the intended local-first starter value: keep the runtime boundary
+That is the intended starter value: keep the runtime boundary
 visible at the controller call-site, but move route derivation, handler
 registration, payload mapping, and shutdown into the starter.
 
 ## Code Map
 
 Start with `CustomerStarterLocalApplication.kt`; it only boots Spring and logs
-the runtime route count. The local capability path is split by role:
+the runtime route count. The internal capability path is split by role:
 
 - `CustomerTargets.kt` names the runtime targets.
 - `CustomerCapabilityHandlers.kt` exposes CRUD work with `@CoAkkaHandler`.
@@ -213,7 +213,7 @@ bash run.sh smoke
 Ports:
 
 - HTTP: `8082`
-- local runtime diagnostic endpoint: `19172`
+- runtime diagnostic endpoint: `19172`
 
 ## Boundary Shape
 
@@ -224,4 +224,4 @@ The customer store remains an ordinary Spring service. Capability methods are
 thin adapters that receive typed command objects and return typed responses.
 
 Remote transport, Kubernetes bind/advertise config, service discovery, and
-business retry policy are deliberately out of scope for this local-first slice.
+business retry policy are deliberately out of scope for this same-process slice.

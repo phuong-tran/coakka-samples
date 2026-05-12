@@ -1,6 +1,6 @@
 # Go Runtime Basic
 
-This public runtime sample runs a local request/reply echo through the Go
+This public runtime sample runs a same-process request/reply echo through the Go
 runtime v2 package.
 
 It demonstrates:
@@ -8,7 +8,7 @@ It demonstrates:
 - source package extraction from the public artifact surface
 - embedded native runtime loading
 - runtime version/git diagnostics
-- one local route and one local handler
+- one process-owned route and one process-owned handler
 - one request/reply round trip
 - basic route/client counters
 

@@ -8,7 +8,7 @@ The story is intentionally ordinary:
 - a user opens a web page
 - the user adds, edits, deletes, and lists customers
 - the web-facing service or desktop frontend sends typed runtime requests
-- the owner process or local handler mutates or reads its in-memory customer table
+- the owner process or registered handler mutates or reads its in-memory customer table
 - one web page explains the message path and shows runtime diagnostics beside
   the business state
 
@@ -98,15 +98,15 @@ List response JSON:
 ## Topologies
 
 The customer scenarios keep web-to-store business traffic on the runtime path;
-there is no store REST fallback. Local demos keep runtime work inside one app
-or one desktop process for a compact happy path. Cross-process demos run
+there is no store REST fallback. Same-process demos keep runtime work inside
+one app or one desktop process for a compact happy path. Cross-process demos run
 separate services and require a remote-capable runtime artifact. If remote
 delivery fails, the samples surface an explicit runtime delivery error instead
 of hiding the failure behind HTTP fallback behavior.
 
 This is the boundary rule the scenarios are trying to make obvious: REST is
-valuable at real edges, but an internal REST endpoint created only to call local
-or deployment-owned work pays for a web stack and then forces runtime delivery
+valuable at real edges, but an internal REST endpoint created only to call
+same-process or deployment-owned work pays for a web stack and then forces runtime delivery
 failures into HTTP-shaped policy. CoAkka keeps the internal path as a typed
 runtime target with request/reply, one-way events, and deadletters. The samples
 therefore compare application shape and failure semantics, not just raw
@@ -114,47 +114,47 @@ transport speed.
 
 ### Spring Boot Single Process
 
-This is scaffolded under `spring-boot-single-process/` as the local happy path.
+This is scaffolded under `spring-boot-single-process/` as the same-process happy path.
 
 | Surface | Language | Role | HTTP | Runtime endpoint |
 | --- | --- | --- | --- | --- |
 | `customer-app` web/API | JVM / Spring Boot | web UI and HTTP API | `8081` | source-only |
-| `customer-app` store handler | JVM / Spring Boot | local in-memory customer table | none | `127.0.0.1:19142` |
+| `customer-app` store handler | JVM / Spring Boot | in-process customer table | none | `127.0.0.1:19142` |
 
 Flow:
 
 1. Browser posts `create/update/delete/list` to `customer-app`.
 2. The controller sends typed `ask(...)` to `samples.customer.store`.
-3. The local store handler mutates or reads the table and replies.
+3. The same-process store handler mutates or reads the table and replies.
 4. Browser shows the updated table, runtime counters, and route-miss diagnostics.
 
 This scenario does not exercise remote cross-process transport.
 
-### Spring Boot Starter Local
+### Spring Boot Starter Same-Process
 
-This is scaffolded under `spring-boot-starter-local/` as the local-first Spring
+This is scaffolded under `spring-boot-starter-local/` as the same-process Spring
 Boot starter shape.
 
 | Surface | Language | Role | HTTP | Runtime endpoint |
 | --- | --- | --- | --- | --- |
 | `customer-app` web/API | JVM / Spring Boot | web UI and HTTP API | `8082` | source-only |
-| `@CoAkkaHandler` methods | JVM / Spring Boot | local customer capabilities | none | `127.0.0.1:19172` |
+| `@CoAkkaHandler` methods | JVM / Spring Boot | same-process customer capabilities | none | `127.0.0.1:19172` |
 
 Flow:
 
 1. Browser posts `create/update/delete/list` to `customer-app`.
 2. The controller calls `CoAkkaRuntimeClient`.
-3. The starter routes to local `@CoAkkaHandler` capability methods.
+3. The starter routes to same-process `@CoAkkaHandler` capability methods.
 4. Runtime diagnostics show generation, route count, request/reply
    counters, and an intentional route-miss deadletter.
 
 This scenario does not configure remote endpoints, bind/advertise ports for
 Kubernetes, service discovery, or business retry policy. Those belong after the
-local starter API shape is stable.
+same-process starter API shape is stable.
 
-### Quarkus Local
+### Quarkus Same-Process
 
-This is scaffolded under `quarkus-local/` as a Quarkus/Kotlin local-first proof
+This is scaffolded under `quarkus-local/` as a Quarkus/Kotlin same-process proof
 for the `coakka.quarkus:coakka-quarkus-extension` adapter shape. The sample
 consumes the public Quarkus extension built against native runtime
 `0.1.0+a671b3a`.
@@ -162,22 +162,22 @@ consumes the public Quarkus extension built against native runtime
 | Surface | Language | Role | HTTP | Runtime endpoint |
 | --- | --- | --- | --- | --- |
 | `customer-app` web/API | JVM / Quarkus Kotlin | web UI and HTTP API | `8083` | source-only |
-| `customer-app` store handler | JVM / Quarkus Kotlin | local in-memory customer table | none | `127.0.0.1:19182` |
+| `customer-app` store handler | JVM / Quarkus Kotlin | in-process customer table | none | `127.0.0.1:19182` |
 
 Flow:
 
 1. Browser posts `create/update/delete/list` to the Quarkus resource.
 2. The resource sends typed `askBlocking(...)` calls through the Quarkus
    adapter.
-3. The local `@CoAkkaHandler` CDI bean mutates or reads the table and replies.
+3. The same-process `@CoAkkaHandler` CDI bean mutates or reads the table and replies.
 4. Runtime diagnostics show generation, route count, request/reply
    counters, and an intentional route-miss deadletter.
 
-This scenario uses the Quarkus adapter for lifecycle and local handler
-registration. Remote/Kubernetes mode remains out of scope for this local-first
+This scenario uses the Quarkus adapter for lifecycle and process-owned handler
+registration. Remote/Kubernetes mode remains out of scope for this same-process
 slice.
 
-### Kotlin Desktop Local
+### Kotlin Desktop In-App
 
 This is scaffolded under `kotlin-desktop-local/` as the smallest visual happy
 path for the same customer contract.
@@ -185,7 +185,7 @@ path for the same customer contract.
 | Surface | Language | Role | HTTP | Runtime endpoint |
 | --- | --- | --- | --- | --- |
 | `customer-desktop` UI | JVM / Kotlin Swing | desktop UI and frontend runtime | none | `127.0.0.1:19151` |
-| `customer-desktop` store handler | JVM / Kotlin | local in-memory customer table on store runtime | none | `127.0.0.1:19152` |
+| `customer-desktop` store handler | JVM / Kotlin | in-process customer table on store runtime | none | `127.0.0.1:19152` |
 
 Flow:
 
@@ -196,26 +196,26 @@ Flow:
    version/git for both handles, counters, and one intentional
    route-miss diagnostic.
 
-This scenario has no HTTP API at all. It exists so the local runtime message
+This scenario has no HTTP API at all. It exists so the in-app runtime message
 path is visible without the extra browser-to-web-service layer.
 
-### Python Desktop Local
+### Python Desktop In-App
 
-This is scaffolded under `python-desktop-local/` as the same local visual happy
+This is scaffolded under `python-desktop-local/` as the same in-app visual happy
 path through the Python connector, with one `RuntimeHost` inside one Python
 process.
 
 | Surface | Language | Role | HTTP | Runtime endpoint |
 | --- | --- | --- | --- | --- |
 | `app.py` UI | Python / Tk | desktop UI and ask source | none | source-only |
-| `app.py` store handler | Python | local in-memory customer table on RuntimeHost | none | `127.0.0.1:19162` |
+| `app.py` store handler | Python | in-process customer table on RuntimeHost | none | `127.0.0.1:19162` |
 
 Flow:
 
 1. The desktop button sends a typed `ask_json(...)` from
    `samples.customer.frontend`.
-2. The single local `RuntimeHost` resolves `samples.customer.store`.
-3. The local store handler mutates or reads the table and replies.
+2. The single in-process `RuntimeHost` resolves `samples.customer.store`.
+3. The registered store handler mutates or reads the table and replies.
 4. The desktop UI shows the customer table, route generation, runtime
    version/git, counters, and one intentional route-miss diagnostic.
 
@@ -343,10 +343,10 @@ Expected result:
 ## Implementation Order
 
 1. Spring Boot single-process customer CRUD.
-2. Spring Boot starter local customer CRUD.
-3. Quarkus local customer CRUD.
-4. Kotlin desktop local customer CRUD.
-5. Python desktop local customer CRUD.
+2. Spring Boot starter same-process customer CRUD.
+3. Quarkus same-process customer CRUD.
+4. Kotlin desktop in-app customer CRUD.
+5. Python desktop in-app customer CRUD.
 6. Spring Boot to Spring Boot customer CRUD.
 7. Spring Boot to Node.js customer store.
 8. Spring Boot to Go customer store.

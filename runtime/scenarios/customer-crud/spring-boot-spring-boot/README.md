@@ -37,7 +37,8 @@ sample:
     generation: 1
 ```
 
-`customer-store` uses the same config shape with local and peer reversed:
+`customer-store` uses the same config shape with process-owned and peer roles
+reversed:
 
 ```yaml
 sample:

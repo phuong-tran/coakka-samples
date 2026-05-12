@@ -1,13 +1,13 @@
 # JVM Runtime Basic
 
-This sample runs a local request/reply echo through the published JVM runtime v2
+This sample runs a same-process request/reply echo through the published JVM runtime v2
 artifact.
 
 It demonstrates:
 
 - embedded native runtime loading
 - runtime version/git diagnostics
-- one local route and one local handler
+- one process-owned route and one process-owned handler
 - one request/reply round trip
 - basic route/client counters
 

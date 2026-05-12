@@ -1,7 +1,7 @@
 # Spring Boot Single-Process Customer CRUD
 
 This scenario runs one Spring Boot process with one browser UI/API and one
-local store handler target:
+same-process store handler target:
 
 | Surface | Role | HTTP | Runtime target | Runtime endpoint |
 | --- | --- | --- | --- | --- |
@@ -10,7 +10,7 @@ local store handler target:
 
 The browser talks to `customer-app` over HTTP. The controller still sends typed
 CoAkka runtime requests from `samples.customer.frontend` to
-`samples.customer.store`; the store handler is local to the same process and
+`samples.customer.store`; the store handler is owned by the same process and
 replies through runtime request/reply. There is no store REST API.
 
 This is a same-process runtime demo. It proves the target vocabulary, handler
@@ -53,8 +53,8 @@ bash run.sh smoke
 ```
 
 The smoke creates, updates, lists, deletes, and triggers one intentional route
-miss through the browser-facing API. All CRUD operations go through the local
-runtime store target.
+miss through the browser-facing API. All CRUD operations go through the
+same-process runtime store target.
 
 ## Route Hot Reload
 
@@ -73,8 +73,9 @@ bash run.sh reload-routes
 The command posts `routes.yml` to
 `POST /api/customers/runtime/reload-routes`. The app compiles that YAML into a
 full route snapshot, applies the next generation, and returns the generation
-before and after the reload. The customer route still points to the same local
-store target; this keeps the sample focused on the reload mechanics rather than
+before and after the reload. The customer route still points to the
+process-owned store target in the same process; this keeps the sample focused on
+the reload mechanics rather than
 remote deployment.
 
 ## Stop

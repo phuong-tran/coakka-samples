@@ -1,4 +1,4 @@
-# Kotlin Desktop Local Runtime Customer CRUD
+# Kotlin Desktop In-App Runtime Customer CRUD
 
 This scenario is the smallest visual happy path for the customer workflow.
 It runs one desktop JVM process with two CoAkka runtime handles:
@@ -6,7 +6,7 @@ It runs one desktop JVM process with two CoAkka runtime handles:
 | Role | Target | Transport |
 | --- | --- | --- |
 | desktop frontend runtime | `samples.customer.frontend` | source of typed asks |
-| in-memory store runtime | `samples.customer.store` | local runtime handler |
+| in-memory store runtime | `samples.customer.store` | process-owned runtime handler |
 
 The desktop UI is not a REST client. Customer create, update, delete, and list
 commands are sent as typed runtime asks from the frontend runtime to the store
@@ -14,7 +14,7 @@ runtime. The store has no HTTP API.
 
 ## Why This Exists
 
-This local desktop scenario gives a successful, visual path without changing
+This in-app desktop scenario gives a successful, visual path without changing
 the architectural point:
 
 1. The UI command becomes a typed CoAkka request.

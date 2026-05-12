@@ -1,15 +1,15 @@
-# Python Desktop Local Runtime Customer CRUD
+# Python Desktop In-App Runtime Customer CRUD
 
-This scenario mirrors the Kotlin desktop local demo with Python and Tk. It runs
+This scenario mirrors the Kotlin desktop in-app demo with Python and Tk. It runs
 one Python process with one CoAkka `RuntimeHost`:
 
 | Role | Target | Transport |
 | --- | --- | --- |
 | desktop frontend | `samples.customer.frontend` | source of typed asks |
-| in-memory store handler | `samples.customer.store` | local runtime handler |
+| in-memory store handler | `samples.customer.store` | process-owned runtime handler |
 
 The desktop UI is not a REST client. Customer create, update, delete, and list
-commands are sent as typed runtime asks from the same local runtime host to the
+commands are sent as typed runtime asks from the same in-process runtime host to the
 store handler. The store has no HTTP API.
 
 ## Run
@@ -51,13 +51,13 @@ delivered requests, matched responses, and one matched deadletter.
 
 ## What To Look For
 
-The first screen shows the full local path:
+The first screen shows the full in-app path:
 
 ```text
 Desktop UI -> RuntimeHost ask -> store handler -> reply
 ```
 
-Runtime diagnostics show the version/git for the local `RuntimeHost`,
+Runtime diagnostics show the version/git for the process-owned `RuntimeHost`,
 active route generation, delivered request count, matched response count,
 pending count, and deadletter count. This is the visual happy path for Python
 without introducing a REST fallback.

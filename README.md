@@ -59,7 +59,7 @@ under load, and operational monitoring in the target environment.
 - [How It Works](#how-it-works)
 - [Sample Integration Checklist](#sample-integration-checklist)
 - [Runtime Scenarios](#runtime-scenarios)
-- [Framework Local Adapters](#framework-local-adapters)
+- [Framework Adapters](#framework-adapters)
 - [Logger](#logger)
 - [Runtime And Logger Together](#runtime-and-logger-together)
 - [Quick Start](#quick-start)
@@ -141,7 +141,7 @@ browser
 ```
 
 3. Then open one basic sample in a language you know and look for five things:
-   start spec, route target, local handler registration, typed ask/event, and
+   start spec, route target, process-owned handler registration, typed ask/event, and
    stats or deadletter output.
 4. After that, read a customer CRUD scenario. Those samples show why the
    runtime boundary is useful in a normal application workflow.
@@ -159,17 +159,17 @@ For a longer adoption path, read [docs/adoption-path.md](docs/adoption-path.md).
 | Goal | Start with | Why |
 | --- | --- | --- |
 | See CoAkka work without installing language toolchains | `bash run.sh containers node-python` or `bash run.sh containers spring-go` | Runs two real processes with browser-visible state and no internal REST fallback. |
-| Understand the smallest runtime API | `bash run.sh runtime jvm basic` or the basic sample for your language | Shows start spec, local route, handler registration, ask/reply, and stats. |
+| Understand the smallest runtime API | `bash run.sh runtime jvm basic` or the basic sample for your language | Shows start spec, process-owned route, handler registration, ask/reply, and stats. |
 | Understand route misses and delivery failures | `bash run.sh runtime jvm deadletter` or `bash run.sh runtime python deadletter` | Shows a missing target becoming a matched deadletter instead of a vague timeout. |
 | Understand route generation and reload | `bash run.sh runtime python hot-reload` | Shows newer route snapshots being applied and stale/invalid snapshots rejected. |
-| Understand a normal application workflow | `bash run.sh scenario customer-crud spring-boot-starter-local dev` | Shows browser/API edge plus internal runtime capabilities in one local app. |
-| Compare local app shape with cross-process shape | `bash run.sh scenario customer-crud spring-boot-spring-boot dev` | Keeps customer traffic runtime-only between web and store processes. |
+| Understand a normal application workflow | `bash run.sh scenario customer-crud spring-boot-starter-local dev` | Shows browser/API edge plus internal runtime capabilities in one same-process app. |
+| Compare same-process app shape with cross-process shape | `bash run.sh scenario customer-crud spring-boot-spring-boot dev` | Keeps customer traffic runtime-only between web and store processes. |
 | Start from Spring Boot annotations | `runtime/scenarios/customer-crud/spring-boot-starter-local` | Uses `@CoAkkaHandler` and `CoAkkaRuntimeClient` instead of manual route/handler wiring. |
 | Start from explicit connector wiring | `runtime/scenarios/customer-crud/spring-boot-single-process` | Keeps route declaration and handler registration visible in application code. |
 
 ## Start Here
 
-Run the shortest local non-container paths:
+Run the shortest non-container paths:
 
 ```sh
 bash run.sh quickstart
@@ -250,7 +250,7 @@ The samples use JSON where readability matters. The runtime contract also has
 payload format space for Protobuf, Thrift, MessagePack, plain text, and binary
 payloads when a workflow needs a different wire shape.
 
-When run with a matching public artifact set, local primitive samples and
+When run with a matching public artifact set, basic same-process samples and
 cross-process customer scenarios keep business traffic on the runtime path; if
 runtime delivery fails, the UI/API returns an explicit runtime error instead of
 hiding the failure behind a REST fallback.
@@ -332,7 +332,7 @@ flowchart LR
     ingress["Ingress"]
     connector["Connector"]
     runtime["CoAkka runtime"]
-    handler["Local handler"]
+    handler["Process-owned handler"]
     peer["Peer runtime"]
     diagnostics["Diagnostics"]
 
@@ -344,7 +344,7 @@ flowchart LR
 ```
 
 The connector layer adapts the host language and framework. It reads host
-config, builds route snapshots, registers local handlers, encodes payloads, and
+config, builds route snapshots, registers process-owned handlers, encodes payloads, and
 maps framework lifecycle into runtime start and shutdown calls.
 
 The native runtime core owns the shared behavior: active route generation,
@@ -416,7 +416,7 @@ useful runtime sample should make these boundaries visible:
 
 1. Start the runtime participant.
 2. Feed route config from the app host into the runtime.
-3. Register the local handler for the target this process owns.
+3. Register the process-owned handler for the target this process owns.
 4. Send a typed ask or event to a peer target.
 5. Handle route miss and delivery deadletters explicitly.
 6. Observe active generation, pending requests, matched responses, and
@@ -473,21 +473,21 @@ Current customer topologies:
 
 | Scenario | Purpose |
 | --- | --- |
-| `runtime/scenarios/customer-crud/spring-boot-single-process` | Spring Boot web service plus local runtime store target |
-| `runtime/scenarios/customer-crud/spring-boot-starter-local` | Spring Boot starter with local `@CoAkkaHandler` targets |
-| `runtime/scenarios/customer-crud/quarkus-local` | Quarkus Kotlin web service plus local runtime store target |
-| `runtime/scenarios/customer-crud/kotlin-desktop-local` | Kotlin desktop app with two local runtime handles |
-| `runtime/scenarios/customer-crud/python-desktop-local` | Python desktop app with one local `RuntimeHost` |
+| `runtime/scenarios/customer-crud/spring-boot-single-process` | Spring Boot web service plus same-process runtime store target |
+| `runtime/scenarios/customer-crud/spring-boot-starter-local` | Spring Boot starter with same-process `@CoAkkaHandler` targets |
+| `runtime/scenarios/customer-crud/quarkus-local` | Quarkus Kotlin web service plus same-process runtime store target |
+| `runtime/scenarios/customer-crud/kotlin-desktop-local` | Kotlin desktop app with two process-owned runtime handles |
+| `runtime/scenarios/customer-crud/python-desktop-local` | Python desktop app with one process-owned `RuntimeHost` |
 | `runtime/scenarios/customer-crud/spring-boot-spring-boot` | Spring Boot web service to Spring Boot store |
 | `runtime/scenarios/customer-crud/spring-boot-node` | Spring Boot web service to Node.js store |
 | `runtime/scenarios/customer-crud/spring-boot-go` | Spring Boot web service to Go store |
 | `runtime/scenarios/customer-crud/spring-boot-csharp` | Spring Boot web service to C# store |
 | `runtime/scenarios/customer-crud/spring-boot-nodes` | Spring Boot web service to Node.js store plus Node.js audit service |
 
-## Framework Local Adapters
+## Framework Adapters
 
 Spring Boot and Quarkus CRUD code often starts cleanly: the browser/API
-controller calls a local store service directly. When teams try to create a
+controller calls an in-process store service directly. When teams try to create a
 stronger boundary, that call often becomes an internal REST service even though
 the browser/API edge is the only real HTTP boundary.
 
@@ -524,7 +524,7 @@ class CustomerController(private val storeClient: CustomerStoreRestClient) {
 
 That works, but the store call now carries URL config, HTTP serialization,
 timeout/error mapping, and test setup before there is a real network boundary.
-The CoAkka local adapter samples keep HTTP at `/api/...` and move internal work
+The CoAkka framework adapter samples keep HTTP at `/api/...` and move internal work
 onto typed runtime capabilities instead.
 
 This is not a claim that every CoAkka call beats every tuned HTTP call in a
@@ -535,7 +535,7 @@ web boundary. CoAkka keeps the internal path as a runtime envelope with routing,
 request/reply, and deadletter semantics, then leaves REST for the edge where it
 is actually useful.
 
-### After: Local Runtime Capability
+### After: Same-Process Runtime Capability
 
 Spring Boot uses the public starter artifact:
 
@@ -775,7 +775,7 @@ RuntimeEndpointFlags  = endpoint state, such as LOCAL or UNAVAILABLE
 | `target` | What capability is the caller asking for? | Stable capability address, not a class name, function name, or URL. |
 | `source` | Who is sending this request or reply? | Caller or responder identity used for diagnostics, correlation, and reply naming. |
 | `strategy` | If a target has multiple eligible endpoints, how should runtime choose one? | Route selection policy such as single owner, weighted round robin, or rendezvous hash. |
-| `host` / `port` | What endpoint identity should runtime use? | Endpoint address for local listener or remote runtime handoff; samples may use `127.0.0.1`, but production should inject it from env, platform metadata, service discovery, or a control-plane route snapshot. |
+| `host` / `port` | What endpoint identity should runtime use? | Endpoint address for a process-owned listener or remote runtime handoff; samples may use `127.0.0.1`, but production should inject it from env, platform metadata, service discovery, or a control-plane route snapshot. |
 | `RuntimeEndpointFlags.LOCAL` | Is the handler in this process? | This process owns the target and should register the handler. |
 | `RuntimeEndpointFlags.UNAVAILABLE` | Should this endpoint stay visible but receive no new work? | Endpoint remains in the snapshot but is excluded from new route selection. |
 | no `LOCAL` flag | Is this a peer endpoint instead of my handler? | The endpoint is a peer/remote endpoint, not a handler owned by this process. |
@@ -811,7 +811,7 @@ The runtime routes by `target`. `source` stays with the envelope so logs,
 deadletters, and replies can explain who sent the work.
 
 Customer scenarios intentionally do not include a store REST fallback. The
-single-process scenario can complete CRUD through a local runtime store target.
+single-process scenario can complete CRUD through a same-process runtime store target.
 Cross-process scenarios use the same runtime-only customer traffic across
 processes and languages. Only the browser-facing web surface exposes HTTP;
 store and audit processes are runtime handlers without a REST API.
@@ -850,7 +850,7 @@ Android and PHP are intentionally not in the current sample matrix yet.
 Android is a likely future connector target, but it is a different kind of
 runtime host. The useful Android shape is not "Spring Boot on a phone"; it is a
 long-lived app, dashboard, field tablet, sensor surface, or edge operator UI
-that can own a local runtime target or connect to one. That points toward an
+that can own a runtime target or connect to one. That points toward an
 AAR packaging lane, Android lifecycle handling, foreground/background policy,
 ABI splits, and device smoke coverage. The Android path should start as an
 experiment in the connector workspace before it is presented here as a sample.
@@ -873,12 +873,12 @@ connector first.
 
 | Capability | Public sample | What it proves |
 | --- | --- | --- |
-| Request/reply | JVM, Python, Node.js, Go, C#, Rust, native C/C++ basic samples | Typed local request/reply and runtime counters |
+| Request/reply | JVM, Python, Node.js, Go, C#, Rust, native C/C++ basic samples | Typed request/reply through a process-owned route and runtime counters |
 | Deadletter | JVM, Java, Python, Node.js, Go deadletter samples; native basic route miss | Missing-route accounting and matched pending requests |
 | Route hot reload | `runtime/python/hot-reload`; `runtime/scenarios/customer-crud/spring-boot-single-process/routes.yml` and `runtime/scenarios/customer-crud/spring-boot-spring-boot/routes.yml` with `bash run.sh reload-routes` | Apply a newer route snapshot, reject stale/invalid snapshots, and observe generation changes |
 | Queue pressure | `runtime/native/pressure`; status notes in [`runtime/README.md`](runtime/README.md) | Bounded runtime queue rejection and deadletter counters at the public C ABI intake boundary |
 | Logger pressure | JVM, Java, Python, Node.js, Go, C#, Rust, native logger pressure samples | Bounded logger queue rejection and dropped counters |
-| Customer CRUD scenarios | Spring Boot, Quarkus, desktop, Node.js, Go, and C# scenario tracks | Real workflow shape across local and cross-process runtime boundaries |
+| Customer CRUD scenarios | Spring Boot, Quarkus, desktop, Node.js, Go, and C# scenario tracks | Real workflow shape across same-process and cross-process runtime boundaries |
 
 Current gaps:
 

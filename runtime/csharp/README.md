@@ -122,8 +122,8 @@ Name roles in this snippet:
 targets; the route table maps those target names to endpoints.
 
 `customers.create` is the sample's capability target name. In your app, choose
-your own target name, then use the same value in the route table, the local
-`RegisterHandler(...)`, and every caller `target`. For example,
+your own target name, then use the same value in the route table, the
+process-owned `RegisterHandler(...)`, and every caller `target`. For example,
 `billing.invoice.create` is valid if that is the capability contract you want
 to expose.
 
@@ -160,7 +160,7 @@ var response = await runtime.AskJsonAsync(
 ```
 
 The ASP.NET Core adapter shape on top of that runtime API is one API endpoint
-calling a local runtime target, while the store logic is a capability instead
+calling an internal runtime target, while the store logic is a capability instead
 of an internal REST endpoint:
 
 ```csharp
@@ -186,15 +186,15 @@ public sealed class CreateCustomerHandler(CustomerStore store)
 
 The `[CoAkkaHandler]` scanning and ASP.NET Core DI sugar are still a later
 adapter step. The package sample in this directory already proves the
-connector-level route snapshot, local handler, request/reply, matched
+connector-level route snapshot, process-owned handler, request/reply, matched
 deadletter, native loading, lifecycle, and diagnostics baseline.
 
 ## What This Sample Proves
 
 - `dotnet` can install `CoAkka.Runtime` from the public artifact surface.
 - The package can load the native runtime on supported macOS/Linux platforms.
-- A .NET process can start one local `RuntimeHost`.
-- A .NET process can register a local target handler and call it with
+- A .NET process can start one process-owned `RuntimeHost`.
+- A .NET process can register a process-owned target handler and call it with
   request/reply.
 - Missing targets surface as matched deadletters instead of hidden HTTP 404
   policy.

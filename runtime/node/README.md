@@ -50,7 +50,7 @@ targets; the route table maps those target names to endpoints.
 
 `samples.customer.store` is the sample's capability target name. In your app,
 choose your own target name, then use the same value in the route table, the
-local `registerHandler(...)`, and every caller `target`. For example,
+process-owned `registerHandler(...)`, and every caller `target`. For example,
 `billing.invoice.create` is valid if that is the capability contract you want
 to expose.
 
@@ -63,7 +63,7 @@ multiple handlers if it owns multiple targets, such as
 `samples.customer.list`. The route table and caller target must use the same
 names.
 
-Register handlers only for local targets:
+Register handlers only for targets this process owns:
 
 ```js
 runtime.registerHandler("samples.customer.store", (request) =>

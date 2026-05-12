@@ -1,6 +1,6 @@
 # C# Runtime Basic
 
-This public runtime sample starts the C# runtime package, registers one local
+This public runtime sample starts the C# runtime package, registers one process-owned
 customer capability, sends one request/reply call through the runtime, then
 checks that a missing target returns a matched deadletter.
 
@@ -9,7 +9,7 @@ It demonstrates:
 - NuGet package install from the public artifact surface
 - embedded native runtime loading
 - runtime version/git diagnostics
-- one local route target owned by the .NET process
+- one process-owned route target owned by the .NET process
 - request/reply from C# into a registered runtime handler
 - route-miss deadletter handling without an internal REST endpoint
 - config, health, runtime stats, and client request/reply counters

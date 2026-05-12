@@ -7,7 +7,7 @@ It demonstrates:
 
 - Rust package install from the public artifact surface
 - embedded native runtime loading from the package
-- one local route target owned by the Rust process
+- one process-owned route target owned by the Rust process
 - request/reply from Rust into a registered runtime handler
 - route-miss deadletter handling without an internal REST endpoint
 - runtime info/config and client request/reply counters
