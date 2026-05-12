@@ -116,7 +116,7 @@ poison-message handling.
 CoAkka local capability:
 
 ```text
-ingress -> CoAkka runtime -> target -> handler
+ingress/nginx -> app-host/controller -> CoAkka runtime -> target handler
 ```
 
 This keeps the work local by default while making the runtime boundary explicit:
@@ -131,11 +131,12 @@ This keeps the work local by default while making the runtime boundary explicit:
 - future remote or polyglot handoff without making the first version a fake
   network service
 
-## What Are The Tradeoffs?
+## When Is CoAkka Worth Adding?
 
-Use CoAkka when runtime-boundary semantics are worth the extra layer.
+Use CoAkka when explicit runtime-boundary semantics are useful enough to make
+them a shared part of the application shape.
 
-Benefits:
+CoAkka is useful when the team wants:
 
 - stronger boundary than direct dependency injection
 - less network plumbing than fake internal REST/gRPC
@@ -144,15 +145,35 @@ Benefits:
 - connector-owned control plane and runtime-owned data plane
 - shared native runtime ABI for multiple host-language connectors
 
-Costs:
+The important point is not that CoAkka replaces the layers in front of it. In a
+normal deployment, the request path still looks like this:
 
-- additional runtime lifecycle to configure and observe
+```text
+external client
+  -> ingress/nginx
+  -> app-host/controller/resource
+  -> connector
+  -> CoAkka runtime
+  -> target handler
+```
+
+That means ingress/nginx still owns external traffic policy and edge routing.
+The app-host still owns request parsing, authentication, authorization,
+validation, CQRS/app policy, and the decision to submit work into runtime.
+
+CoAkka starts after the app-host or connector has decided there is work to
+deliver. From that point, CoAkka gives the system a centralized runtime
+vocabulary for target identity, route snapshots, bounded queues, route
+generation, timeouts, deadletters, health, and stats.
+
+A team should be clear about these responsibilities:
+
+- app-hosts still choose when to submit work
+- connectors still feed runtime config and register handlers
 - route snapshots and handler registration need discipline
-- teams must learn target, envelope, route generation, stats, and deadletter
-  vocabulary
-- it is too much for simple CRUD paths that only need direct service calls
-- it does not replace platform concerns such as service discovery, TLS policy,
-  authorization, metrics export, or business retry policy
+- operators still need to observe runtime lifecycle, stats, and deadletters
+- simple CRUD paths that only need direct service calls may not need this
+  runtime boundary
 
 Short filter:
 
