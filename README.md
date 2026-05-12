@@ -379,6 +379,11 @@ update loop. A pod or service gets its advertised host from Kubernetes metadata,
 Service DNS, environment, or a control plane when the process starts. Replicas
 of the same app role normally share the same runtime port.
 
+In Kubernetes this should feel like ordinary application configuration: read
+env, framework config, Helm values, ConfigMaps, Service DNS, or pod metadata at
+startup, then let the connector map those values into `RuntimeStartSpec` and
+the initial route snapshot.
+
 Configuration sources can be files, process environment, framework config,
 Kubernetes ConfigMaps or Secrets, Consul, another config service, or an
 operator/control plane. Those sources stay outside the runtime contract.

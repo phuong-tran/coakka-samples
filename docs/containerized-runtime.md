@@ -16,6 +16,13 @@ Do not bake a different `nodeId` into each image.
 Build one reusable image and let the runtime environment supply instance
 identity when each container starts.
 
+In Kubernetes, CoAkka configuration should feel like ordinary application
+configuration. The app reads environment variables, framework config, Helm
+values, ConfigMaps, Service DNS, or pod metadata at startup. The connector then
+maps those values into `RuntimeStartSpec` and the initial route snapshot.
+Operators should not have to manually maintain per-pod hostnames in application
+code.
+
 ## Build Time Versus Runtime
 
 At build time, every replica should use the same image:

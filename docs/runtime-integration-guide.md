@@ -188,6 +188,11 @@ visible. Real integrations should usually generate route specs from framework
 config, Kubernetes or Consul data, service discovery, Helm values, or a control
 plane.
 
+This should feel like ordinary application configuration in Kubernetes: the app
+reads env, framework config, Helm values, ConfigMaps, Service DNS, or pod
+metadata at startup, and the connector maps those values into
+`RuntimeStartSpec` plus the initial route snapshot.
+
 `host` and `port` identify the runtime endpoint. For a local sample this may be
 `127.0.0.1` plus a demo port. In a real deployment it usually comes from the
 connector's startup config source, such as Kubernetes, Consul, a config service,
