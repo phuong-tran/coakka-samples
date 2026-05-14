@@ -14,6 +14,7 @@ shape through language-specific connector APIs.
 
 - [Runtime Shape](#runtime-shape)
 - [Install Connector vs Start Runtime](#install-connector-vs-start-runtime)
+- [Business Request Shape](#business-request-shape)
 - [Core Vocabulary](#core-vocabulary)
 - [RuntimeStartSpec](#runtimestartspec)
 - [Delivered Request Lane](#delivered-request-lane)
@@ -108,6 +109,93 @@ One practical rule: start one runtime host per process. The app framework still
 owns HTTP, UI, jobs, lifecycle hooks, authentication, authorization, and
 business validation. CoAkka starts after app code decides there is internal work
 to deliver.
+
+## Business Request Shape
+
+Start from a user-facing request, not from the runtime. A frontend may call a
+REST endpoint such as `POST /checkout`. The app still validates the HTTP
+request, checks auth, reads the body, and decides which business work must run.
+CoAkka begins when that app code needs to call an internal target.
+
+Most business logic has one of two shapes.
+
+### Business Logic = One Request
+
+One app request may need one internal target:
+
+```mermaid
+sequenceDiagram
+    participant FE as Frontend
+    participant API as customer-api
+    participant C as CoAkka connector/runtime
+    participant S as customer-service
+
+    FE->>API: GET /customer/123
+    API->>API: auth, validation, response policy
+    API->>C: ask customer.profile
+    C->>S: deliver customer.profile envelope
+    S-->>C: reply or deadletter
+    C-->>API: complete ask with reply/deadletter/timeout
+    API-->>FE: HTTP response
+```
+
+Without CoAkka, the app or framework code usually chooses a concrete endpoint,
+sends a request, tracks timeout/correlation, maps transport failures, and
+decides how the result becomes an HTTP response. With CoAkka, the app still
+owns the business decision, but the service-to-service call uses target,
+envelope, ask completion, deadletter, timeout, and diagnostics through the
+connector/runtime.
+
+### Business Logic = Many Requests
+
+Many app requests need several internal targets before the business decision is
+known. Checkout is a typical shape:
+
+```mermaid
+sequenceDiagram
+    participant FE as Frontend
+    participant O as order-api
+    participant C as CoAkka connector/runtime
+    participant Cust as customer-service
+    participant Inv as inventory-service
+    participant Bill as billing-service
+    participant Pay as payment-service
+
+    FE->>O: POST /checkout
+    O->>O: auth, validation, idempotency policy
+    O->>C: ask customer.profile
+    O->>C: ask inventory.reserve
+    O->>C: ask billing.charge
+    C->>Cust: deliver customer.profile
+    C->>Inv: deliver inventory.reserve
+    C->>Bill: deliver billing.charge
+    Cust-->>C: reply or deadletter
+    Inv-->>C: reply or deadletter
+    Bill-->>C: reply or deadletter
+    C-->>O: complete each ask with reply/deadletter/timeout
+    O->>O: combine results and choose outcome
+    O->>C: ask payment.capture if needed
+    C->>Pay: deliver payment.capture
+    Pay-->>C: reply or deadletter
+    C-->>O: complete payment ask with reply/deadletter/timeout
+    O-->>FE: HTTP response
+```
+
+This is still ordinary business orchestration. CoAkka does not decide whether a
+checkout succeeds, whether to compensate inventory, or whether to retry a
+payment. It standardizes the internal calls that make up the business flow:
+stable targets instead of scattered endpoint strings, envelopes instead of
+ad-hoc message wrappers, route snapshots instead of caller-owned topology, and
+structured reply/deadletter/timeout completion instead of each integration
+inventing its own convention.
+
+`separateDeliveredRequestLane` matters in the many-request shape because a
+service often plays both roles at once. `billing-service` receives
+`billing.charge` from `order-api`, then asks `fraud.check` or `tax.calculate`
+before it can reply. The same runtime host is receiving new business work while
+also waiting for replies that complete earlier work. Keeping delivered requests
+separate from ask completion prevents a burst of new inbound work from delaying
+the replies, deadletters, or timeouts needed to finish work already in flight.
 
 ## Core Vocabulary
 
