@@ -177,8 +177,9 @@ For a longer adoption path, read [docs/adoption-path.md](docs/adoption-path.md).
 - `Route generation`: the version of the route snapshot used to decide where a
   target can be delivered.
 
-For the detailed message map, failure cases, retry ownership, and tuning
-guidance, read [Envelope And Deadletter Map](docs/envelope-deadletter-map.md).
+For the detailed connector, routing, envelope, deadletter, timeout, retry, and
+tuning model, read
+[Runtime Message And Routing Model](docs/runtime-message-and-routing-model.md).
 
 ## Which Sample Should I Run?
 
