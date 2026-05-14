@@ -29,7 +29,8 @@ shape through language-specific connector APIs.
 
 ```mermaid
 flowchart TD
-    app[App host<br/>controller, job, CLI, desktop UI]
+    env[Container env/config<br/>optional input]
+    app[App host<br/>controller, job, CLI]
     connector[Language connector]
     spec[RuntimeStartSpec]
     routes[Active route snapshot]
@@ -40,6 +41,7 @@ flowchart TD
     deadletter[Deadletter]
     stats[Stats and diagnostics]
 
+    env --> app
     app --> connector
     connector --> spec
     spec --> routes
