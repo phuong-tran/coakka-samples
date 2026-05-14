@@ -1,0 +1,107 @@
+# Adoption And Production Readiness
+
+CoAkka is an early public runtime surface. The samples are useful for learning
+the model and verifying the published artifacts, but production confidence
+should come from measurements in the environment where the system will run.
+
+This page is intentionally direct about fit, trade-offs, and ownership.
+
+## Where CoAkka Fits
+
+CoAkka is a good fit when an application needs one or more of these boundaries:
+
+- internal request/reply or event delivery by stable target names
+- explicit payload identity across services or languages
+- route snapshots and route generations instead of hand-wired internal clients
+- deadletters and timeout outcomes that are visible as runtime vocabulary
+- local and cross-process handlers that can move between JVM, Python, Node.js,
+  Go, C#, Rust, and native C/C++ without redesigning the business contract
+
+HTTP still belongs at real external edges such as browser/API entry points.
+CoAkka is for the internal runtime boundary after the app has accepted work and
+needs to route that work to another target, process, or language host.
+
+## When CoAkka May Be Too Much
+
+CoAkka may be unnecessary when the system is only one or two services with a
+stable REST or gRPC call and no need for runtime route snapshots, target-based
+addressing, payload identity, deadletters, or polyglot handler ownership.
+
+The trade-off is a different mental model:
+
+```text
+traditional client call:
+  URL or client object -> request DTO -> HTTP/gRPC response
+
+CoAkka runtime call:
+  target -> envelope -> payload identity -> reply or deadletter
+```
+
+That model is useful when those runtime boundaries matter. It is overhead when
+the application only needs one ordinary service call.
+
+## Current Maturity
+
+The public artifacts are still `0.1.x` generation packages. Treat them as an
+early integration surface, not as a mature ecosystem with broad community
+tooling and operational history.
+
+Before production use, collect evidence for:
+
+- Linux and container operation under realistic deployment limits
+- restart behavior for app hosts and runtime participants
+- reconnect behavior when peers, routes, or transport links disappear
+- queue pressure and strict no-drop behavior under bursts
+- memory use over long-running workloads
+- deadletter volume, timeout rates, and retry amplification risk
+- artifact and native-library loading on the target OS and CPU architecture
+- rollout behavior when route snapshots or payload schemas change
+
+Use the samples as a starting point, not as a substitute for those measurements.
+
+## Config Ownership
+
+The runtime does not silently read Kubernetes metadata, environment variables,
+or service-discovery data by itself. The app host or connector layer owns that
+mapping and passes the result into the start spec.
+
+That is deliberate:
+
+- tests can build start specs without depending on a specific platform
+- the same runtime vocabulary works in CLI, desktop, service, container, and
+  embedded-style hosts
+- platform-specific policy stays in the app host, framework adapter, or control
+  plane instead of being hidden inside the runtime
+
+The cost is that production integrations must map values such as `systemName`,
+`nodeId`, endpoint host/port, route generation, and route entries from their
+own deployment source. For container examples, see
+[Containerized Runtime Notes](containerized-runtime.md).
+
+## Observability Expectations
+
+The samples print runtime info, stats, matched replies, and deadletters. A real
+service should integrate those signals into its normal observability path:
+
+- queue depth and queue rejection counters
+- route miss and deadletter counters
+- matched response and matched deadletter counters
+- timeout counts by operation or target
+- active route generation
+- runtime identity: `systemName`, `nodeId`, endpoint host/port
+
+Retries should stay a business policy above the runtime. The runtime can return
+reply, deadletter, and timeout outcomes; the application decides whether the
+operation is safe to retry and how to prevent retry loops from amplifying load.
+
+## Suggested Adoption Path
+
+1. Run one container sample and one language basic sample.
+2. Read the [Runtime Glossary](runtime-glossary.md) until `target`,
+   `envelope`, `payload identity`, `deadletter`, and `generation` are clear.
+3. Wire one non-critical internal workflow through a local runtime target.
+4. Add deadletter, timeout, queue, and route-generation metrics.
+5. Move one cross-process or cross-language handler only after the local shape
+   is understood.
+6. Run restart, reconnect, memory, and queue-pressure tests in Linux/container
+   conditions before treating the path as production-ready.

@@ -69,6 +69,7 @@ in the target environment.
 - [Requirements](#requirements)
 - [Runtime Configuration Notes](#runtime-configuration-notes)
 - [Integration Guide](#integration-guide)
+- [Adoption And Readiness](#adoption-and-readiness)
 - [Future Connector Scope](#future-connector-scope)
 - [Samples](#samples)
 - [Runtime Capability Samples](#runtime-capability-samples)
@@ -1201,6 +1202,17 @@ Language-specific entry points:
 - [Rust runtime samples](runtime/rust/README.md)
 - [Logger samples](logger/README.md)
 - [Native C/C++ runtime samples](runtime/native/README.md)
+
+## Adoption And Readiness
+
+CoAkka is an early public runtime surface. It is a good fit when target-based
+internal delivery, payload identity, deadletters, route snapshots, and
+multi-language handler ownership are worth the model. It may be too much for a
+small system that only needs one ordinary REST or gRPC call.
+
+For production-facing trade-offs, measurement checklist, learning curve, and
+config ownership, read
+[Adoption And Production Readiness](docs/adoption-and-production-readiness.md).
 
 ## Future Connector Scope
 

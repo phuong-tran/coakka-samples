@@ -122,6 +122,7 @@ customer target. The business call between them stays runtime-only.
 After the samples make sense, read:
 
 - [runtime-integration-guide.md](runtime-integration-guide.md)
+- [adoption-and-production-readiness.md](adoption-and-production-readiness.md)
 - [containerized-runtime.md](containerized-runtime.md)
 - [qna.md](qna.md)
 

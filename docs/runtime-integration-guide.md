@@ -3,7 +3,9 @@
 This guide is for moving from the samples to an existing service. The samples
 are intentionally small, but the integration shape should stay the same:
 
-For vocabulary first, start with [Runtime Glossary](runtime-glossary.md).
+For vocabulary first, start with [Runtime Glossary](runtime-glossary.md). For
+fit, production evidence, and operational trade-offs, read
+[Adoption And Production Readiness](adoption-and-production-readiness.md).
 
 1. add the language connector artifact
 2. start one runtime participant per process
@@ -49,9 +51,13 @@ RuntimeStartSpec
 | `nodeId` | Which concrete instance/process am I? | Concrete process identity. Include instance/host/pod identity when multiple instances run. |
 | `queueCapacity` | How much work can runtime buffer before applying pressure? | Bounded queue size. Start conservative, measure pressure, then tune. |
 | `strictNoDrop` | Should overload be visible instead of silently dropping work? | Prefer `true` while integrating so overload becomes visible. |
-| `separateDeliveredRequestLane` | Should runtime keep delivered requests on their own internal lane? | Prefer `true` for request/reply services so inbound handler work does not delay reply/deadletter matching. |
+| delivered-request lane | Should runtime keep delivered requests on their own internal lane? | Enabled by default in current connectors; keep the default for request/reply services so inbound handler work does not delay reply/deadletter matching. |
 | `generation` | Which version of the route table is this? | Monotonic route-table version. Increment when applying a new route snapshot. |
 | `routes` | What targets does this runtime know how to route? | Target-to-endpoint map. Local targets are owned here; peer targets point elsewhere. |
+
+The runtime does not read environment variables, Kubernetes metadata, or
+service-discovery data by itself. The app host or connector maps deployment
+configuration into these fields and passes the start spec to the runtime.
 
 ### Reading The Runtime Types
 

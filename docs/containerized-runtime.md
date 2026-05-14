@@ -55,6 +55,11 @@ billing pod C -> COAKKA_NODE_ID=billing-7d9f8c-c
 
 The connector reads that value and passes it into `RuntimeStartSpec`.
 
+This mapping belongs to the app host or connector layer. The runtime does not
+silently read Kubernetes metadata or environment variables by itself. That
+keeps tests and non-container hosts deterministic, but production integrations
+must explicitly map platform config into the start spec and route snapshot.
+
 The same rule applies to endpoint `host` and `port`. Local samples often use
 `127.0.0.1`, but production connectors should read advertised endpoint
 addresses from environment variables, Kubernetes metadata, service discovery,
