@@ -170,8 +170,9 @@ For a longer adoption path, read [docs/adoption-path.md](docs/adoption-path.md).
   payload.
 - `Deadletter`: a structured terminal delivery result for route miss, queue
   pressure, unavailable endpoint, or another explicit delivery failure.
-- `Timeout`: the caller's wait budget for an ask; it is not a business retry
-  policy by itself.
+- `Timeout`: the caller's wait budget for an ask, enforced by
+  runtime/connector pending-request matching; it is not a business retry policy
+  by itself.
 - `Retry`: caller/application policy unless a sample explicitly says
   otherwise; retry only with idempotency and a bounded budget.
 - `Route generation`: the version of the route snapshot used to decide where a

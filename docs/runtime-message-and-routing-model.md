@@ -97,7 +97,7 @@ to deliver.
 | payload | Business command, query, reply, or event bytes. |
 | payload identity | Message type, schema version, and payload format. |
 | deadletter | Structured terminal delivery failure result. |
-| timeout | Caller wait budget for an ask. |
+| timeout | Caller wait budget enforced by runtime/connector ask matching. |
 | retry | Caller/application decision to submit again. |
 
 ## RuntimeStartSpec
@@ -182,7 +182,7 @@ the runtime wrapper around it.
 | `payload` | Business body bytes. | `{ "id": "cust-001", "name": "Ada" }` |
 | headers / metadata / extra params | Small request context. | tenant, request id, trace id, idempotency key |
 | operation | Human-readable operation label. | `create_customer` |
-| timeout | Ask wait budget. | `timeoutMs = 5000` |
+| timeout | Ask wait budget enforced by runtime/connector matching. | `timeoutMs = 5000` |
 | correlation id | Matching identity for reply/deadletter diagnostics. | Usually connector/runtime generated or preserved. |
 
 Use this split:
@@ -204,27 +204,35 @@ envelope: tenant, request id, trace id, idempotency key, or diagnostics tags.
 ```mermaid
 sequenceDiagram
     participant C as Caller
-    participant R as Runtime
+    participant RC as Runtime/connector
     participant H as Handler
 
-    C->>R: ask envelope target + payload + timeout
-    R->>H: delivered request envelope
-    H-->>R: reply envelope
-    R-->>C: matched reply
+    C->>RC: ask envelope target + payload + timeout
+    RC-->>RC: track pending ask
+    alt delivered and handled
+        RC->>H: delivered request envelope
+        H-->>RC: reply envelope
+        RC-->>C: matched reply
+    else delivery failure
+        RC-->>C: matched deadletter
+    else wait budget expires
+        RC-->>C: timeout
+    end
 
-    C->>R: event envelope target + payload
-    R->>H: delivered event envelope
+    C->>RC: event envelope target + payload
+    RC->>H: delivered event envelope
 ```
 
 | Shape | Runtime behavior | Caller expectation |
 | --- | --- | --- |
-| ask | Runtime matches reply or matched deadletter back to the pending caller. | Caller waits up to timeout. |
+| ask | Runtime/connector matches reply, matched deadletter, or timeout back to the pending caller. | Caller waits up to timeout. |
 | reply | Handler sends a response envelope with payload identity and payload. | Completes the ask when matched. |
 | event | One-way delivery attempt. | No reply wait; failures should still be visible through diagnostics when surfaced. |
 
-Timeout belongs to asks because the caller is waiting for a terminal outcome.
-One-way events should use explicit diagnostics and deadletter/stats handling
-rather than pretending there is a reply path.
+Timeout belongs to asks because runtime/connector code is tracking a pending
+reply/deadletter match for that caller. One-way events should use explicit
+diagnostics and deadletter/stats handling rather than pretending there is a
+reply path.
 
 ## Deadletter
 
@@ -246,14 +254,19 @@ behavior.
 
 ## Timeout Is A Wait Budget
 
-| Concept | Runtime meaning | Not this |
+| Concept | Runtime/connector responsibility | Not this |
 | --- | --- | --- |
-| timeout | Caller stops waiting for a matching reply or matched deadletter. | Automatic retry. |
-| deadletter | Runtime has terminal delivery failure evidence. | Generic timeout. |
-| retry | Caller/app decides to send another envelope. | Runtime default behavior. |
+| timeout | Track a pending ask and return timeout to the caller when no reply or matched deadletter arrives before the wait budget. | Automatic retry. |
+| deadletter | Produce terminal delivery failure evidence and match it to the pending ask when possible. | Generic timeout. |
+| retry | Expose the outcome so caller/app policy can decide whether to submit another envelope. | Runtime default behavior. |
 
-A timeout answers one narrow question: "did this caller receive a matching reply
-or matched deadletter before its wait budget expired?"
+The app-host does not implement pending-ask matching itself. Runtime/connector
+mechanics track the ask, match a reply or matched deadletter, and surface a
+timeout when the wait budget expires. The app-host owns what to do after that
+outcome.
+
+A timeout answers one narrow question: "did runtime/connector match a reply or
+matched deadletter for this caller before the wait budget expired?"
 
 It does not prove the handler never ran. A request may have reached a handler
 and still timed out at the caller because the handler was slow, the reply was
@@ -266,27 +279,29 @@ evidence.
 
 ## Retry Is Caller Policy
 
-CoAkka samples do not make business retry decisions inside the runtime. Retry
+CoAkka samples do not make business retry decisions inside the runtime.
+Runtime/connector code handles timeout and deadletter mechanics. Retry policy
 belongs to the caller or application layer unless a specific sample explicitly
 documents a retry behavior.
 
 ```mermaid
 sequenceDiagram
     participant C as Caller
-    participant R as Runtime
+    participant RC as Runtime/connector
     participant H as Handler
 
-    C->>R: ask envelope timeout=5000 idempotency-key=abc
+    C->>RC: ask envelope timeout=5000 idempotency-key=abc
+    RC-->>RC: track pending ask until reply, deadletter, or timeout
     alt route or queue failure
-        R-->>C: matched deadletter
+        RC-->>C: matched deadletter
     else delivered and handled
-        R->>H: request envelope
-        H-->>R: reply envelope
-        R-->>C: matched reply
+        RC->>H: request envelope
+        H-->>RC: reply envelope
+        RC-->>C: matched reply
     else no terminal outcome before timeout
-        C-->>C: timeout
+        RC-->>C: timeout
     end
-    C-->>C: retry only if operation is safe/idempotent
+    C-->>C: decide retry only if operation is safe/idempotent
 ```
 
 Before retrying, answer:
@@ -294,7 +309,7 @@ Before retrying, answer:
 | Question | Why it matters |
 | --- | --- |
 | Is the operation idempotent? | Retrying `create` can duplicate work without an idempotency key. |
-| Was the result a deadletter or timeout? | Route miss, queue pressure, and timeout need different responses. |
+| Was the result a deadletter or timeout? | Runtime/connector surfaces both, but route miss, queue pressure, and timeout need different responses. |
 | Could the first attempt still complete? | Timeout does not prove the handler did nothing. |
 | Is there a bounded retry budget? | Unbounded retries can create queue pressure. |
 | Does retry preserve context? | Tenant, trace, and idempotency context must survive each attempt. |
@@ -315,7 +330,7 @@ Start with visible, conservative behavior. Tune from stats and failure evidence.
 
 | Parameter | Start with | Increase when | Decrease when |
 | --- | --- | --- | --- |
-| `timeoutMs` / `timeout_ms` | Caller-specific wait budget. | Normal handler latency exceeds budget and retry would be worse. | Caller needs fast fallback or overload protection. |
+| `timeoutMs` / `timeout_ms` | Caller-specific wait budget enforced by runtime/connector pending-ask matching. | Normal handler latency exceeds budget and retry would be worse. | Caller needs fast fallback or overload protection. |
 | `queueCapacity` | Bounded and conservative. | Legitimate bursts are rejected and memory budget allows more buffering. | Latency grows, memory is tight, or pressure should surface earlier. |
 | `strictNoDrop` | `true` while integrating. | Usually keep true. | Only for a measured fire-and-forget path that can drop safely. |
 | `separateDeliveredRequestLane` | `true` for request/reply hosts. | Inbound work competes with response/deadletter matching. | Only for tiny one-way-only hosts after measurement. |
