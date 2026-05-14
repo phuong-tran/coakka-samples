@@ -16,6 +16,7 @@ shape through language-specific connector APIs.
 - [Install Connector vs Start Runtime](#install-connector-vs-start-runtime)
 - [Core Vocabulary](#core-vocabulary)
 - [RuntimeStartSpec](#runtimestartspec)
+- [Delivered Request Lane](#delivered-request-lane)
 - [Route Snapshot](#route-snapshot)
 - [Envelope](#envelope)
 - [Ask, Reply, And Event](#ask-reply-and-event)
@@ -169,6 +170,107 @@ requests use a separate internal lane from reply/deadletter matching. With
 `false`, both flows share one lane. Use `true` as the default for services that
 send asks or expose request/reply handlers; consider `false` only for tiny
 one-way hosts after measuring that lane sharing is harmless.
+
+## Delivered Request Lane
+
+`separateDeliveredRequestLane` is easiest to understand with a concrete billing
+host. Assume `billing-1` owns the local target `billing.charge`. `order-api`
+sends requests to that target. While handling a charge, `billing-1` may also ask
+`fraud.check` and wait for a reply or deadletter.
+
+Without CoAkka, the app or framework code usually has to own the pending ask
+map, timer policy, reply callbacks, and queue/executor split:
+
+```mermaid
+flowchart LR
+    order[order-api]
+    fraud[fraud-service]
+
+    subgraph app[Billing app without CoAkka]
+        inbound[Inbound handler queue<br/>billing.charge work]
+        handler[Billing handler]
+        pending[App-owned pending ask map]
+        timers[App timers<br/>timeout handling]
+        replies[Reply callback or consumer]
+    end
+
+    order -->|request billing.charge| inbound
+    inbound --> handler
+    handler -->|send fraud.check| fraud
+    handler -->|record correlation id| pending
+    timers -->|expire wait budget| pending
+    fraud -->|reply or failure signal| replies
+    replies -->|match correlation id| pending
+    pending -->|complete caller result| handler
+```
+
+With CoAkka, the connector/runtime owns the ask completion mechanics: pending
+ask matching, timeout completion, and deadletter completion. App code still owns
+the handler and the business decision after a result arrives.
+
+With `separateDeliveredRequestLane = true`, inbound requests and ask completion
+use separate internal lanes:
+
+```mermaid
+flowchart LR
+    order[order-api]
+    fraud[fraud-service]
+
+    subgraph host[billing-1 runtime host]
+        connector[Connector API]
+        inboundLane[Delivered request lane<br/>new billing.charge work]
+        completionLane[Ask completion lane<br/>reply, deadletter, timeout]
+        pending[Runtime/connector pending asks]
+        timeout[Runtime/connector timeout]
+        handler[Billing handler]
+    end
+
+    order -->|ask billing.charge| connector
+    connector --> inboundLane
+    inboundLane --> handler
+    handler -->|ask fraud.check| connector
+    connector --> pending
+    connector --> fraud
+    fraud -->|reply or deadletter| connector
+    connector --> completionLane
+    timeout --> completionLane
+    completionLane --> pending
+    pending -->|complete fraud.check ask| handler
+```
+
+With `separateDeliveredRequestLane = false`, both flows share one internal lane:
+
+```mermaid
+flowchart LR
+    order[order-api]
+    fraud[fraud-service]
+
+    subgraph host[billing-1 runtime host]
+        connector[Connector API]
+        sharedLane[Shared internal lane<br/>delivered requests plus ask completion]
+        pending[Runtime/connector pending asks]
+        timeout[Runtime/connector timeout]
+        handler[Billing handler]
+    end
+
+    order -->|ask billing.charge| connector
+    connector --> sharedLane
+    sharedLane --> handler
+    handler -->|ask fraud.check| connector
+    connector --> pending
+    connector --> fraud
+    fraud -->|reply or deadletter| connector
+    connector --> sharedLane
+    timeout --> sharedLane
+    sharedLane --> pending
+    pending -->|complete fraud.check ask| handler
+```
+
+The practical difference is queue interference. With `true`, a burst of inbound
+`billing.charge` work is less likely to delay reply/deadletter matching for the
+asks `billing-1` already sent. With `false`, the same burst shares the lane with
+ask completion. That can be acceptable for a tiny one-way host, but it is not
+the recommended default for request/reply services.
 
 ## Route Snapshot
 

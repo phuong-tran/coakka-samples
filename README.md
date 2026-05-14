@@ -1122,6 +1122,8 @@ burst of inbound handler work is less likely to delay response/deadletter
 matching. With `false`, they share a lane; use that only for very small,
 mostly one-way hosts after measurement. The samples use `true` as the normal
 default.
+The [detailed runtime model](docs/runtime-message-and-routing-model.md#delivered-request-lane)
+includes billing-style diagrams for the `true`/`false` cases.
 
 Samples construct route specs directly so the runtime pieces are visible.
 Real integrations should usually generate route specs from config, service
