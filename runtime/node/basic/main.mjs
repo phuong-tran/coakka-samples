@@ -15,8 +15,7 @@ const requestIdentity = new PayloadIdentity("samples.runtime.node.echo.request.v
 // nodeId identifies this concrete process in logs and runtime snapshots.
 // queueCapacity=128 is bounded but roomy enough for a sample.
 // strictNoDrop=true makes overload visible instead of silently dropping messages.
-// separateDeliveredRequestLane=true keeps inbound delivered requests away from
-// response/deadletter matching, which keeps request/reply behavior easy to inspect.
+// The delivered-request lane is enabled by default for request/reply hosts.
 // generation=1 is the first route-table version; increment it for new route snapshots.
 // EndpointFlag.LOCAL means the target handler is registered in this process.
 const startSpec = {
@@ -24,7 +23,6 @@ const startSpec = {
   nodeId: "node-runtime-sample-node",
   queueCapacity: 128,
   strictNoDrop: true,
-  separateDeliveredRequestLane: true,
   generation: 1,
   routes: [
     {

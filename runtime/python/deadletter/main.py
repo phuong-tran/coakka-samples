@@ -28,7 +28,6 @@ def main() -> None:
         node_id="python-deadletter-sample-node",
         queue_capacity=128,
         strict_no_drop=True,
-        separate_delivered_request_lane=True,
         generation=1,
         routes=[
             RouteSpec(

@@ -147,7 +147,6 @@ class CustomerDesktopRuntime:
             node_id="customer-python-desktop-local-node",
             queue_capacity=128,
             strict_no_drop=True,
-            separate_delivered_request_lane=True,
             generation=GENERATION,
             routes=[
                 RouteSpec(

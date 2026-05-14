@@ -85,7 +85,6 @@ def main() -> None:
         node_id="python-hot-reload-sample-node",
         queue_capacity=128,
         strict_no_drop=True,
-        separate_delivered_request_lane=True,
         generation=1,
         routes=[local_route(V1_TARGET, 19511)],
     )

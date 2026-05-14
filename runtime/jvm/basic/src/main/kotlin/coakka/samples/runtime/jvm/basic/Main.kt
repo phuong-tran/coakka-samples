@@ -21,9 +21,6 @@ fun main() = runBlocking {
      * - `queueCapacity = 128` is intentionally bounded but roomy enough for a sample.
      * - `strictNoDrop = true` makes overload visible as an error/deadletter instead
      *   of silently dropping messages.
-     * - `separateDeliveredRequestLane = true` keeps inbound delivered requests off
-     *   the response/deadletter lane, which makes request/reply samples easier to
-     *   reason about.
      * - `generation = 1` is the first route-table version. Real integrations should
      *   increment it when publishing a new route snapshot.
      * - `RuntimeEndpointFlags.LOCAL` means the handler is registered in this process.
@@ -33,7 +30,6 @@ fun main() = runBlocking {
         nodeId = "jvm-runtime-sample-node",
         queueCapacity = 128,
         strictNoDrop = true,
-        separateDeliveredRequestLane = true,
         generation = 1,
         routes = listOf(
             RuntimeRouteSpec(

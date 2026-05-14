@@ -1102,7 +1102,7 @@ RuntimeEndpointFlags  = endpoint state, such as LOCAL or UNAVAILABLE
 | `nodeId` | Which concrete instance/process am I? | Concrete process identity used in logs and runtime snapshots; samples may hard-code it, but production should supply a unique value per process/pod at runtime, not bake it into the image. |
 | `queueCapacity = 128` | How much work can runtime buffer before applying pressure? | Bounded queue that is large enough for a demo but still prevents unbounded memory growth. |
 | `strictNoDrop = true` | Should overload be visible instead of silently dropping work? | Overload becomes visible as an error/deadletter instead of silently dropping work. |
-| `separateDeliveredRequestLane = true` | Should runtime keep delivered requests on their own internal lane? | `true` separates incoming requests this process must handle from replies/deadletters that complete asks this process already sent. Prefer `true` for request/reply services. |
+| delivered-request lane | Should runtime keep delivered requests on their own internal lane? | Enabled by default in current connectors; it separates incoming requests this process must handle from replies/deadletters that complete asks this process already sent. |
 | `generation = 1` | Which version of the route table is this? | First route-table snapshot applied at startup. Real services should increment this when applying a new route snapshot. |
 | `routes` | What targets does this runtime know how to route? | Maps a target name such as `samples.customer.store` to one or more endpoints. |
 | `target` | What capability is the caller asking for? | Stable capability address, not a class name, function name, or URL. |
@@ -1187,6 +1187,9 @@ For containerized deployments, read
 [Containerized Runtime Notes](docs/containerized-runtime.md) for build-time
 versus runtime identity, Kubernetes metadata supplied at startup, and `nodeId`
 guidance.
+
+For vocabulary such as envelope, target, route snapshot, deadletter, timeout,
+and delivered-request lane, see [Runtime Glossary](docs/runtime-glossary.md).
 
 Language-specific entry points:
 
@@ -1456,8 +1459,8 @@ Current public artifact pins:
 | Logger JVM | `coakka.logger:coakka-jvm-native-logger:0.1.0-gba2a66d98eb5` |
 | Logger Python, Node.js, Go, C#, Rust, and native C/C++ | `0.1.0+ba2a66d98eb5` |
 | Runtime native C/C++ | `0.1.0+a671b3a` |
-| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-ga671b3a` |
-| Runtime Python, Node.js, Go, C#, and Rust | `0.1.0+a671b3a` |
+| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-ga671b3a-c20cf7c4` |
+| Runtime Python, Node.js, Go, C#, and Rust | `0.1.0+a671b3a-c20cf7c4` |
 | Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.1.0-ga671b3a` |
 | Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.1.0-ga671b3a` |
 

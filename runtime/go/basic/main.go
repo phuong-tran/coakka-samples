@@ -18,8 +18,7 @@ func main() {
 	// QueueCapacity=128 is bounded but roomy enough for a sample.
 	// StrictNoDrop=true makes overload visible instead of silently dropping messages.
 	// EnableMonitor=true exposes runtime snapshots for diagnostics.
-	// SeparateDeliveredRequestLane=true keeps inbound delivered requests away from
-	// response/deadletter matching, which keeps request/reply behavior easy to inspect.
+	// The delivered-request lane is enabled by default for request/reply hosts.
 	// Generation=1 is the first route-table version; increment it for new route snapshots.
 	// EndpointFlagLocal means the target handler is registered in this process.
 	runtimeHost, err := connector.StartRuntimeHost(connector.ConnectorStartSpec{
@@ -28,7 +27,6 @@ func main() {
 		StrictNoDrop:                 true,
 		QueueCapacity:                128,
 		EnableMonitor:                true,
-		SeparateDeliveredRequestLane: true,
 		Generation:                   1,
 		Routes: []connector.RouteSpec{{
 			Target: target,

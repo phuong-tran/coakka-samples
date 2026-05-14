@@ -3,6 +3,8 @@
 This guide is for moving from the samples to an existing service. The samples
 are intentionally small, but the integration shape should stay the same:
 
+For vocabulary first, start with [Runtime Glossary](runtime-glossary.md).
+
 1. add the language connector artifact
 2. start one runtime participant per process
 3. publish a route table

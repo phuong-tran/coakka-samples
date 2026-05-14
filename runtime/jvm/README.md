@@ -113,7 +113,7 @@ repositories {
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-ga671b3a")
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-ga671b3a-c20cf7c4")
 }
 ```
 
@@ -126,7 +126,6 @@ val orchestrator = ConnectorOrchestrator.start(
         nodeId = "customer-store-node-1",
         queueCapacity = 128,
         strictNoDrop = true,
-        separateDeliveredRequestLane = true,
         generation = 1,
         routes = listOf(
             RuntimeRouteSpec(

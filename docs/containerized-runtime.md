@@ -113,7 +113,6 @@ val startSpec = RuntimeStartSpec(
     nodeId = nodeId,
     queueCapacity = 128,
     strictNoDrop = true,
-    separateDeliveredRequestLane = true,
     generation = generation,
     routes = routes,
 )

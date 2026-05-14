@@ -148,7 +148,6 @@ func main() {
 		StrictNoDrop:                 true,
 		QueueCapacity:                128,
 		EnableMonitor:                true,
-		SeparateDeliveredRequestLane: true,
 		Generation:                   1,
 		Routes: []connector.RouteSpec{
 			{

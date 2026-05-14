@@ -24,7 +24,6 @@ fun main() = runBlocking {
         nodeId = "jvm-deadletter-sample-node",
         queueCapacity = 128,
         strictNoDrop = true,
-        separateDeliveredRequestLane = true,
         generation = 1,
         routes = listOf(
             RuntimeRouteSpec(

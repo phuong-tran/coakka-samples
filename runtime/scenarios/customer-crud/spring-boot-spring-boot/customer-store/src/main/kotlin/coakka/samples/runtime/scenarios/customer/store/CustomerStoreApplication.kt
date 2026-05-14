@@ -160,7 +160,6 @@ class CustomerStoreConnectorConfiguration {
                 nodeId = properties.nodeId,
                 queueCapacity = 128,
                 strictNoDrop = true,
-                separateDeliveredRequestLane = true,
                 generation = properties.generation,
                 routes = listOf(
                     RuntimeRouteSpec(

@@ -30,7 +30,6 @@ start_spec = ConnectorStartSpec(
     node_id="customer-store-node-1",
     queue_capacity=128,
     strict_no_drop=True,
-    separate_delivered_request_lane=True,
     generation=1,
     routes=[
         RouteSpec(

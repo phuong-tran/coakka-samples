@@ -31,7 +31,6 @@ const startSpec = {
   nodeId: "customer-store-node",
   queueCapacity: 128,
   strictNoDrop: true,
-  separateDeliveredRequestLane: true,
   generation: 1,
   routes: [
     {

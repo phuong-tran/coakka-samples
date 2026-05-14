@@ -42,7 +42,7 @@ implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-ga671b3a")
 ```
 
 That starter depends on the shared runtime JVM artifact
-`coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-ga671b3a`; it does not bundle
+`coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-ga671b3a-c20cf7c4`; it does not bundle
 or fork a Spring-specific native runtime.
 
 The sample resolves the Maven artifact from the public publish surface.

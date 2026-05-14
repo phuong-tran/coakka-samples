@@ -27,8 +27,7 @@ def main() -> None:
     # node_id identifies this concrete process in logs and snapshots.
     # queue_capacity=128 is bounded but roomy enough for a sample.
     # strict_no_drop=True makes overload visible instead of silently dropping messages.
-    # separate_delivered_request_lane=True keeps inbound delivered requests away from
-    # response/deadletter matching, which keeps request/reply behavior easy to inspect.
+    # The delivered-request lane is enabled by default for request/reply hosts.
     # generation=1 is the first route-table version; increment it for new route snapshots.
     # EndpointFlag.LOCAL means the target handler is registered in this process.
     start_spec = ConnectorStartSpec(
@@ -36,7 +35,6 @@ def main() -> None:
         node_id="python-runtime-sample-node",
         queue_capacity=128,
         strict_no_drop=True,
-        separate_delivered_request_lane=True,
         generation=1,
         routes=[
             RouteSpec(

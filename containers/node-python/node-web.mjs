@@ -32,7 +32,6 @@ const startSpec = {
   nodeId: "container-node-web",
   queueCapacity: 64,
   strictNoDrop: true,
-  separateDeliveredRequestLane: true,
   generation: 1,
   routes: [
     {

@@ -103,8 +103,7 @@ var spec = new ConnectorStartSpec(
                     Port: 19141,
                     Flags: RuntimeEndpointFlags.Local),
             ])
-    ],
-    SeparateDeliveredRequestLane: true);
+    ]);
 
 using var runtime = RuntimeHost.Start(spec);
 ```

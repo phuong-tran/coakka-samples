@@ -265,7 +265,6 @@ def main() -> None:
         node_id="container-python-store",
         queue_capacity=64,
         strict_no_drop=True,
-        separate_delivered_request_lane=True,
         generation=1,
         routes=[
             RouteSpec(

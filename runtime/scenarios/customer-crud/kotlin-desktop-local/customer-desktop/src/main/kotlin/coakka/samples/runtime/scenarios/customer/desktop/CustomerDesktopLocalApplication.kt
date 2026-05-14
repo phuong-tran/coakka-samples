@@ -161,7 +161,6 @@ private class CustomerDesktopRuntime private constructor(
                     nodeId = "customer-desktop-store-node",
                     queueCapacity = 128,
                     strictNoDrop = true,
-                    separateDeliveredRequestLane = true,
                     generation = GENERATION,
                     routes = listOf(
                         RuntimeRouteSpec(
@@ -193,7 +192,6 @@ private class CustomerDesktopRuntime private constructor(
 	                    nodeId = "customer-desktop-frontend-node",
 	                    queueCapacity = 128,
 	                    strictNoDrop = true,
-	                    separateDeliveredRequestLane = true,
 	                    generation = GENERATION,
 	                    routes = listOf(
 	                        RuntimeRouteSpec(

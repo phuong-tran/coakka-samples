@@ -35,8 +35,7 @@ var spec = new ConnectorStartSpec(
                     Flags: RuntimeEndpointFlags.None),
             ]),
     ],
-    EnableMonitor: true,
-    SeparateDeliveredRequestLane: true);
+    EnableMonitor: true);
 
 using var runtime = RuntimeHost.Start(spec);
 runtime.RegisterHandler(
