@@ -22,6 +22,7 @@ shape through language-specific connector APIs.
 - [Envelope](#envelope)
 - [Ask, Reply, And Event](#ask-reply-and-event)
 - [Deadletter](#deadletter)
+- [Business Timeout And Retry Shape](#business-timeout-and-retry-shape)
 - [Timeout Is A Wait Budget](#timeout-is-a-wait-budget)
 - [Retry Is Caller Policy](#retry-is-caller-policy)
 - [Tuning Parameters](#tuning-parameters)
@@ -476,6 +477,70 @@ or was rejected.
 Deadletters are terminal for the submitted envelope. A caller may choose to
 submit a new envelope later, but that is retry policy, not automatic runtime
 behavior.
+
+## Business Timeout And Retry Shape
+
+Timeout and retry are easiest to reason about from the business request, not
+from the transport. A user-facing request has a budget: how long the caller is
+willing to wait before choosing another outcome. Each internal ask consumes
+part of that budget.
+
+For `Business Logic = One Request`, the shape is direct:
+
+```mermaid
+sequenceDiagram
+    participant FE as Frontend
+    participant API as customer-api
+    participant C as CoAkka connector/runtime
+    participant S as customer-service
+
+    FE->>API: GET /customer/123
+    API->>C: ask customer.profile timeout=2s
+    C->>S: deliver customer.profile
+    alt reply or deadletter before 2s
+        S-->>C: reply or deadletter
+        C-->>API: complete ask
+        API-->>FE: business response
+    else no matched outcome before 2s
+        C-->>API: timeout
+        API-->>FE: fallback, error, or caller-owned retry decision
+    end
+```
+
+For `Business Logic = Many Requests`, the app may carry a larger business
+budget and split it across several asks:
+
+```mermaid
+flowchart TD
+    req[POST /checkout<br/>business budget 15s]
+    profile[ask customer.profile<br/>budget 2s]
+    inventory[ask inventory.reserve<br/>budget 3s]
+    billing[ask billing.charge<br/>budget 8s]
+    payment[ask payment.capture<br/>remaining budget]
+    decision[App combines outcomes<br/>success, fallback, compensation, or error]
+
+    req --> profile
+    req --> inventory
+    req --> billing
+    profile --> decision
+    inventory --> decision
+    billing --> decision
+    decision -->|only if needed| payment
+    payment --> decision
+```
+
+CoAkka standardizes how each ask completes: reply, matched deadletter, or
+timeout. It does not decide the business policy after that. A route-miss
+deadletter may mean "fix configuration", queue pressure may mean "back off",
+and timeout may mean "the caller's wait budget expired before a matched outcome
+arrived." These outcomes should not all collapse into a vague failure.
+
+Retry is a business decision because the caller must know whether trying again
+is safe. Retrying `customer.profile` is usually safer than retrying
+`payment.capture`. Retrying `billing.charge` may be safe only with an
+idempotency key and a bounded retry budget. CoAkka can carry that context in
+headers and can surface the outcome, but the app owns the choice to retry,
+fallback, compensate, or return an error.
 
 ## Timeout Is A Wait Budget
 
