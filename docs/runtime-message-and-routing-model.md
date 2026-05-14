@@ -61,6 +61,31 @@ The connector is the host-language face. The runtime owns the delivery
 vocabulary: target resolution, active route generation, queue pressure,
 request/reply matching, deadletters, and stats.
 
+Containerized deployment does not change this model. The image is still a
+normal application image, and operators still provide environment variables,
+config files, service DNS, pod identity, or control-plane route data the way
+they would for any app. The app or connector reads that configuration at
+startup and maps it into `RuntimeStartSpec` plus route snapshots. CoAkka runtime
+does not require a special container image shape and does not fetch Docker or
+Kubernetes metadata by itself.
+
+```mermaid
+flowchart LR
+    platform[Docker / Kubernetes<br/>env, config, DNS, pod metadata]
+    appConfig[App or framework config]
+    connectorConfig[Connector mapping]
+    spec[RuntimeStartSpec]
+    runtime[CoAkka runtime]
+
+    platform --> appConfig
+    appConfig --> connectorConfig
+    connectorConfig --> spec
+    spec --> runtime
+```
+
+For container details, read
+[Containerized Runtime Notes](containerized-runtime.md).
+
 ## Install Connector vs Start Runtime
 
 Installing a connector and starting a runtime are different steps.
