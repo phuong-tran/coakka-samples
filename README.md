@@ -1102,7 +1102,7 @@ RuntimeEndpointFlags  = endpoint state, such as LOCAL or UNAVAILABLE
 | `nodeId` | Which concrete instance/process am I? | Concrete process identity used in logs and runtime snapshots; samples may hard-code it, but production should supply a unique value per process/pod at runtime, not bake it into the image. |
 | `queueCapacity = 128` | How much work can runtime buffer before applying pressure? | Bounded queue that is large enough for a demo but still prevents unbounded memory growth. |
 | `strictNoDrop = true` | Should overload be visible instead of silently dropping work? | Overload becomes visible as an error/deadletter instead of silently dropping work. |
-| `separateDeliveredRequestLane = true` | Should inbound work be separated from replies/deadletters? | Keeps inbound delivered requests separate from response/deadletter matching for outgoing asks. |
+| `separateDeliveredRequestLane = true` | Should runtime keep delivered requests on their own internal lane? | `true` separates incoming requests this process must handle from replies/deadletters that complete asks this process already sent. Prefer `true` for request/reply services. |
 | `generation = 1` | Which version of the route table is this? | First route-table snapshot applied at startup. Real services should increment this when applying a new route snapshot. |
 | `routes` | What targets does this runtime know how to route? | Maps a target name such as `samples.customer.store` to one or more endpoints. |
 | `target` | What capability is the caller asking for? | Stable capability address, not a class name, function name, or URL. |
@@ -1113,6 +1113,15 @@ RuntimeEndpointFlags  = endpoint state, such as LOCAL or UNAVAILABLE
 | `RuntimeEndpointFlags.LOCAL` | Is the handler in this process? | This process owns the target and should register the handler. |
 | `RuntimeEndpointFlags.UNAVAILABLE` | Should this endpoint stay visible but receive no new work? | Endpoint remains in the snapshot but is excluded from new route selection. |
 | no `LOCAL` flag | Is this a peer endpoint instead of my handler? | The endpoint is a peer/remote endpoint, not a handler owned by this process. |
+
+`separateDeliveredRequestLane` is mostly about protecting ask completion. A
+runtime process can be doing two things at once: receiving new requests for its
+local handlers, and waiting for replies or deadletters for asks it sent out.
+With `true`, those two flows do not share the same internal delivery lane, so a
+burst of inbound handler work is less likely to delay response/deadletter
+matching. With `false`, they share a lane; use that only for very small,
+mostly one-way hosts after measurement. The samples use `true` as the normal
+default.
 
 Samples construct route specs directly so the runtime pieces are visible.
 Real integrations should usually generate route specs from config, service

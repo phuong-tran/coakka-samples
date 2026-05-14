@@ -47,7 +47,7 @@ RuntimeStartSpec
 | `nodeId` | Which concrete instance/process am I? | Concrete process identity. Include instance/host/pod identity when multiple instances run. |
 | `queueCapacity` | How much work can runtime buffer before applying pressure? | Bounded queue size. Start conservative, measure pressure, then tune. |
 | `strictNoDrop` | Should overload be visible instead of silently dropping work? | Prefer `true` while integrating so overload becomes visible. |
-| `separateDeliveredRequestLane` | Should inbound work be separated from replies/deadletters? | Prefer `true` for request/reply services so inbound work does not share the response/deadletter lane. |
+| `separateDeliveredRequestLane` | Should runtime keep delivered requests on their own internal lane? | Prefer `true` for request/reply services so inbound handler work does not delay reply/deadletter matching. |
 | `generation` | Which version of the route table is this? | Monotonic route-table version. Increment when applying a new route snapshot. |
 | `routes` | What targets does this runtime know how to route? | Target-to-endpoint map. Local targets are owned here; peer targets point elsewhere. |
 
@@ -138,8 +138,12 @@ missing routes, and rejected work should become explicit failures or
 deadletters instead of silent message loss.
 
 `separateDeliveredRequestLane` should usually be `true` for request/reply
-services. It keeps inbound requests delivered to this process separate from
-responses and deadletters that complete asks sent by this process.
+services. A process may receive new requests for local handlers while it is also
+waiting for replies or deadletters for asks it sent to another target. With
+`true`, delivered requests use a separate internal lane from ask completion.
+With `false`, incoming handler work and reply/deadletter matching share one
+lane. Treat `true` as the default; use `false` only for very small one-way
+hosts after measurement.
 
 `generation` is the route snapshot version. The first snapshot commonly starts
 at `1` and is usually enough for ordinary container startup. A route reload, if

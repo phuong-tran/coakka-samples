@@ -138,7 +138,7 @@ and what route table should it start with?"
 | `nodeId` | Which concrete process/replica am I? | Unique process identity from hostname, pod name, env, or platform metadata. |
 | `queueCapacity` | How much runtime work can this process buffer? | Start bounded and conservative; tune from pressure counters. |
 | `strictNoDrop` | Should overload become visible? | Prefer `true` while integrating so rejection is observable. |
-| `separateDeliveredRequestLane` | Should inbound work be separated from replies/deadletters? | Prefer `true` for request/reply hosts. |
+| `separateDeliveredRequestLane` | Should runtime keep delivered requests on their own internal lane? | Prefer `true` for request/reply hosts. |
 | `generation` | Which route snapshot version is active at startup? | Start at `1`; increment for newer route snapshots. |
 | `routes` | Which targets can this process route? | Map target names to local or peer endpoints. |
 
@@ -161,6 +161,14 @@ The sample values are not production sizing. They are visible defaults that make
 the boundary easy to read. In a real deployment, `nodeId`, endpoint host, and
 route generation should come from deployment config, platform metadata, service
 discovery, or a control plane.
+
+`separateDeliveredRequestLane` protects the ask/reply path from inbound handler
+work. A runtime host can receive requests for local handlers while it is also
+waiting for replies or deadletters for asks it has sent. With `true`, delivered
+requests use a separate internal lane from reply/deadletter matching. With
+`false`, both flows share one lane. Use `true` as the default for services that
+send asks or expose request/reply handlers; consider `false` only for tiny
+one-way hosts after measuring that lane sharing is harmless.
 
 ## Route Snapshot
 
@@ -360,7 +368,7 @@ Start with visible, conservative behavior. Tune from stats and failure evidence.
 | `timeoutMs` / `timeout_ms` | Caller-specific wait budget enforced by runtime/connector pending-ask matching. | Normal handler latency exceeds budget and retry would be worse. | Caller needs fast fallback or overload protection. |
 | `queueCapacity` | Bounded and conservative. | Legitimate bursts are rejected and memory budget allows more buffering. | Latency grows, memory is tight, or pressure should surface earlier. |
 | `strictNoDrop` | `true` while integrating. | Usually keep true. | Only for a measured fire-and-forget path that can drop safely. |
-| `separateDeliveredRequestLane` | `true` for request/reply hosts. | Inbound work competes with response/deadletter matching. | Only for tiny one-way-only hosts after measurement. |
+| `separateDeliveredRequestLane` | `true` for request/reply hosts. | Inbound delivered requests delay reply/deadletter matching for outgoing asks. | Only for tiny one-way-only hosts after measurement. |
 | route `generation` | Start at `1`, increment on updates. | Applying a newer route snapshot. | Never reuse old generations for new topology. |
 | endpoint flags | `LOCAL` only where this process owns the handler. | This process begins owning a target. | Endpoint is draining or temporarily unavailable. |
 | headers / metadata | Minimal request context. | Diagnostics need tenant, request id, trace id, or idempotency key. | Data is actually business payload. |
