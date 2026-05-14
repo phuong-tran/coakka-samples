@@ -51,6 +51,7 @@ in the target environment.
 - [Design Statement](#design-statement)
 - [Try Containers First](#try-containers-first)
 - [If You Are New To CoAkka](#if-you-are-new-to-coakka)
+- [Glossary](#glossary)
 - [Which Sample Should I Run?](#which-sample-should-i-run)
 - [Start Here](#start-here)
 - [Why CoAkka Exists](#why-coakka-exists)
@@ -155,6 +156,29 @@ internal capabilities.
 For dependency snippets and the minimal host skeleton, read
 [runtime/README.md#copy-paste-starter-shapes](runtime/README.md#copy-paste-starter-shapes).
 For a longer adoption path, read [docs/adoption-path.md](docs/adoption-path.md).
+
+## Glossary
+
+- `Envelope`: the runtime message wrapper carrying target, source, payload
+  identity, payload bytes, request context, timeout, and matching metadata.
+- `Target`: the stable capability address the caller asks for, not a URL,
+  class, or function name.
+- `Payload identity`: the message type, schema version, and payload format used
+  to version request, reply, and event bodies.
+- `Headers` / metadata / extra params: small request context such as tenant,
+  request id, trace id, or idempotency key; business arguments belong in the
+  payload.
+- `Deadletter`: a structured terminal delivery result for route miss, queue
+  pressure, unavailable endpoint, or another explicit delivery failure.
+- `Timeout`: the caller's wait budget for an ask; it is not a business retry
+  policy by itself.
+- `Retry`: caller/application policy unless a sample explicitly says
+  otherwise; retry only with idempotency and a bounded budget.
+- `Route generation`: the version of the route snapshot used to decide where a
+  target can be delivered.
+
+For the detailed message map, failure cases, retry ownership, and tuning
+guidance, read [Envelope And Deadletter Map](docs/envelope-deadletter-map.md).
 
 ## Which Sample Should I Run?
 
