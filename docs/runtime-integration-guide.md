@@ -4,7 +4,7 @@ This guide is for moving from the samples to an existing service. The samples
 are intentionally small, but the integration shape should stay the same:
 
 For vocabulary first, start with [Runtime Glossary](runtime-glossary.md). For
-fit, production evidence, and operational trade-offs, read
+fit, production evidence, and operational ownership, read
 [Adoption And Production Readiness](adoption-and-production-readiness.md).
 
 1. add the language connector artifact

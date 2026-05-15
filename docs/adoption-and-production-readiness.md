@@ -4,7 +4,7 @@ CoAkka is an early public runtime surface. The samples are useful for learning
 the model and verifying the published artifacts, but production confidence
 should come from measurements in the environment where the system will run.
 
-This page is intentionally direct about fit, trade-offs, and ownership.
+This page is intentionally direct about fit, measurement, and ownership.
 
 ## Where CoAkka Fits
 
@@ -21,13 +21,13 @@ HTTP still belongs at real external edges such as browser/API entry points.
 CoAkka is for the internal runtime boundary after the app has accepted work and
 needs to route that work to another target, process, or language host.
 
-## When CoAkka May Be Too Much
+## When Direct Calls Are Enough
 
 CoAkka may be unnecessary when the system is only one or two services with a
 stable REST or gRPC call and no need for runtime route snapshots, target-based
 addressing, payload identity, deadletters, or polyglot handler ownership.
 
-The trade-off is a different mental model:
+The model is different:
 
 ```text
 traditional client call:
@@ -37,8 +37,8 @@ CoAkka runtime call:
   target -> envelope -> payload identity -> reply or deadletter
 ```
 
-That model is useful when those runtime boundaries matter. It is overhead when
-the application only needs one ordinary service call.
+That model is useful when those runtime boundaries matter. When the application
+only needs one ordinary service call, the direct service call should stay direct.
 
 ## Current Maturity
 
@@ -73,9 +73,9 @@ That is deliberate:
 - platform-specific policy stays in the app host, framework adapter, or control
   plane instead of being hidden inside the runtime
 
-The cost is that production integrations must map values such as `systemName`,
-`nodeId`, endpoint host/port, route generation, and route entries from their
-own deployment source. For container examples, see
+Production integrations still map values such as `systemName`, `nodeId`,
+endpoint host/port, route generation, and route entries from their own
+deployment source. For container examples, see
 [Containerized Runtime Notes](containerized-runtime.md).
 
 ## Observability Expectations

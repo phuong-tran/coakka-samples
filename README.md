@@ -1131,11 +1131,12 @@ Language-specific entry points:
 
 CoAkka is an early public runtime surface. It is a good fit when target-based
 internal delivery, payload identity, deadletters, route snapshots, and
-multi-language handler ownership are worth the model. It may be too much for a
-small system that only needs one ordinary REST or gRPC call.
+multi-language handler ownership should be part of the application model. A
+small system that only needs one ordinary REST or gRPC call can keep that
+direct shape.
 
-For production-facing trade-offs, measurement checklist, learning curve, and
-config ownership, read
+For production fit, measurement checklist, learning path, and config ownership,
+read
 [Adoption And Production Readiness](docs/adoption-and-production-readiness.md).
 
 ## Future Connector Scope
