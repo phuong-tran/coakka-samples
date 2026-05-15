@@ -3,6 +3,27 @@
 This note captures recurring questions about the CoAkka runtime story.
 It is intentionally incomplete and should grow as users ask sharper questions.
 
+## Is CoAkka Architecturally Distinct?
+
+Yes, in a narrow and specific way.
+
+CoAkka addresses a problem that is both old and newly intensified. The old part
+is familiar: private internal work gets pushed through ad-hoc endpoints,
+clients, retries, timeout handling, and status mapping. The newer part is that
+modern systems are increasingly polyglot, gradually migrated, and fragmented
+across runtimes, processes, and deployment shapes.
+
+CoAkka's architectural response is not to replace HTTP, gRPC, or messaging
+systems. Those still belong at real service API, public edge, and broker
+boundaries. CoAkka is narrower: it treats selected private application work as
+a runtime capability boundary, with typed targets, explicit routing, route
+ownership, delivery outcomes, and shared diagnostics.
+
+That is the distinct part. Private work is not modeled as just another internal
+API surface before it needs to be one. It can start as a same-process runtime
+target, move to a peer runtime later, and keep the same target, payload, route,
+and deadletter vocabulary across that change.
+
 ## Is CoAkka Equivalent To gRPC?
 
 No.
