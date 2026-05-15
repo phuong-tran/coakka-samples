@@ -2,62 +2,33 @@
 
 [![sample-smoke](https://github.com/phuong-tran/coakka-samples/actions/workflows/sample-smoke.yml/badge.svg)](https://github.com/phuong-tran/coakka-samples/actions/workflows/sample-smoke.yml)
 
-Public samples for the CoAkka runtime v2 and logger integration shape.
+CoAkka is a runtime boundary for internal application capabilities across
+processes and languages.
 
-These samples consume artifacts from the public CoAkka publish surface. The
-current public artifact surface exposes logger packages, the public native
-runtime C ABI package, runtime JVM/language connector packages, and the Spring
-Boot and Quarkus adapters.
+Many teams create private internal REST endpoints just to move work between
+internal app components or services. That spreads one private contract across
+URLs, clients, retries, timeouts, status mapping, and error handling.
 
-## Design Statement
+CoAkka replaces that with typed runtime targets, explicit routing, and delivery
+diagnostics.
 
-CoAkka is designed to make internal capability delivery explicit, typed, and
-observable across app-hosts, processes, and languages.
-
-The goal is not to replace HTTP at real edges, gRPC at real service API
-boundaries, CQRS or authorization in application logic, ingress, service
-discovery, or deployment policy. The goal is narrower and deliberate: give
-application hosts a shared runtime vocabulary for internal work that should not
-need an extra internal REST surface just to gain a boundary.
-
-When this repository says `local` or `local-first`, it does not mean "same
-process only." It means the work is still an internal application or deployment
-capability, not a public service API boundary. A CoAkka path can be same
-process, same host, or cross-process runtime delivery. The narrow
-`LOCAL` endpoint flag means something more specific: this process owns that
-handler.
-
-That vocabulary is:
-
-- target and source names
-- payload identity and payload format
-- route snapshots and generations
-- endpoint flags and route selection
-- bounded queue policy
-- request/reply and one-way delivery
-- deadletter reasons
-- runtime stats and diagnostics
-- connector-owned startup configuration
-
-This repository shows that architecture through runnable samples. The
-production-facing claim is intentionally practical: the design is ready to be
-evaluated in real deployments, while durable production evidence should come
-from Linux/container operation, restart and reconnect behavior, stable startup
-configuration, controlled route reload when needed, and operational monitoring
-in the target environment.
+This repository shows that model through runnable samples for JVM, Python,
+Node.js, Go, C#, Rust, native integrations, framework adapters, and logger
+packages built from the public CoAkka artifact surface.
 
 ## Table of Contents
 
-- [Design Statement](#design-statement)
-- [Try Containers First](#try-containers-first)
-- [If You Are New To CoAkka](#if-you-are-new-to-coakka)
-- [Glossary](#glossary)
+- [What Problem Does CoAkka Solve?](#what-problem-does-coakka-solve)
+- [See It In 3 Minutes](#see-it-in-3-minutes)
+- [Before And After](#before-and-after)
 - [Which Sample Should I Run?](#which-sample-should-i-run)
-- [Start Here](#start-here)
+- [When CoAkka Helps](#when-coakka-helps)
+- [Core Runtime Vocabulary](#core-runtime-vocabulary)
+- [How To Read This Repository](#how-to-read-this-repository)
 - [Why CoAkka Exists](#why-coakka-exists)
 - [Runtime First](#runtime-first)
 - [Architectural Value](#architectural-value)
-- [Where CoAkka Helps](#where-coakka-helps)
+- [Where CoAkka Helps In Detail](#where-coakka-helps-in-detail)
 - [Questions And Answers](#questions-and-answers)
 - [How It Works](#how-it-works)
 - [Sample Integration Checklist](#sample-integration-checklist)
@@ -82,7 +53,38 @@ in the target environment.
 - [Diagnostics](#diagnostics)
 - [License And Trademark](#license-and-trademark)
 
-## Try Containers First
+## What Problem Does CoAkka Solve?
+
+CoAkka is for private application work that needs a real boundary but should
+not have to become another internal network API.
+
+The common failure mode is familiar:
+
+```text
+controller -> private URL -> HTTP client -> internal endpoint
+```
+
+That endpoint is not a public product API. It exists because one process, app
+module, worker, or language runtime needs to ask another one to do work. Over
+time, the contract spreads across path strings, client wrappers, status-code
+mapping, retry behavior, timeouts, and logs.
+
+CoAkka keeps the boundary in runtime terms:
+
+```text
+controller -> runtime target -> owning handler
+```
+
+The caller asks for a typed `target`. The runtime route snapshot decides where
+that target is owned. If delivery fails, the result is a runtime failure or
+deadletter with source, target, route generation, and reason.
+
+CoAkka does not replace HTTP at real edges, gRPC at real service API
+boundaries, CQRS, authorization, ingress, service discovery, or deployment
+policy. It gives application hosts a shared runtime vocabulary for internal
+capabilities that should not need fake REST just to gain a boundary.
+
+## See It In 3 Minutes
 
 The fastest visible runtime proof is the container path. It uses pinned Docker
 Hub images, so you can test a cross-process runtime delivery path without
@@ -104,7 +106,7 @@ bash run.sh containers node-python
 bash run.sh containers spring-go
 ```
 
-Then open the browser UIs:
+Then open:
 
 ```text
 Node.js web -> Python store:
@@ -126,13 +128,14 @@ These samples prove two real processes, two language hosts, browser-visible
 state changes, and runtime delivery with no REST fallback between the sample
 services.
 
-## If You Are New To CoAkka
+What to observe:
 
-Use this read order for the first pass:
+- the browser-visible web app sends internal work to another process
+- the internal path uses CoAkka runtime delivery, not REST fallback
+- the target owner can be in another language runtime
+- delivery stays explicit across language and process boundaries
 
-1. Run one container sample first. It shows the visible path without requiring
-   a local language toolchain.
-2. Watch the request path:
+The sample path is:
 
 ```text
 browser
@@ -144,44 +147,28 @@ browser
   -> web UI
 ```
 
-3. Then open one basic sample in a language you know and look for five things:
-   start spec, route target, process-owned handler registration, typed ask/event, and
-   stats or deadletter output.
-4. After that, read a customer CRUD scenario. Those samples show why the
-   runtime boundary is useful in a normal application workflow.
+## Before And After
 
-The key idea is small: CoAkka does not replace the web edge or the application
-framework. It gives the app-host a shared runtime delivery boundary for
-internal capabilities.
+Before:
 
-For dependency snippets and the minimal host skeleton, read
-[runtime/README.md#copy-paste-starter-shapes](runtime/README.md#copy-paste-starter-shapes).
-For a longer adoption path, read [docs/adoption-path.md](docs/adoption-path.md).
+```text
+Spring API -> internal REST -> Go store
+Node job   -> internal REST -> Python worker
+C# API     -> internal REST -> JVM renderer
+```
 
-## Glossary
+After:
 
-- `Envelope`: the runtime message wrapper carrying target, source, payload
-  identity, payload bytes, request context, timeout, and matching metadata.
-- `Target`: the stable capability address the caller asks for, not a URL,
-  class, or function name.
-- `Payload identity`: the message type, schema version, and payload format used
-  to version request, reply, and event bodies.
-- `Headers` / metadata / extra params: small request context such as tenant,
-  request id, trace id, or idempotency key; business arguments belong in the
-  payload.
-- `Deadletter`: a structured terminal delivery result for route miss, queue
-  pressure, unavailable endpoint, or another explicit delivery failure.
-- `Timeout`: the caller's wait budget for an ask, enforced by
-  runtime/connector pending-request matching; it is not a business retry policy
-  by itself.
-- `Retry`: caller/application policy unless a sample explicitly says
-  otherwise; retry only with idempotency and a bounded budget.
-- `Route generation`: the version of the route snapshot used to decide where a
-  target can be delivered.
+```text
+Spring API -> CoAkka target -> Go store
+Node job   -> CoAkka target -> Python worker
+C# API     -> CoAkka target -> JVM renderer
+```
 
-For the detailed connector, routing, envelope, deadletter, timeout, retry, and
-tuning model, read
-[Runtime Message And Routing Model](docs/runtime-message-and-routing-model.md).
+The point is not that every internal HTTP call is wrong. The point is that
+private app-to-app work often wants a stable capability name, typed payload,
+route ownership, and explicit delivery outcome more than it wants another URL
+surface.
 
 ## Which Sample Should I Run?
 
@@ -196,27 +183,86 @@ tuning model, read
 | Start from Spring Boot annotations | `runtime/scenarios/customer-crud/spring-boot-starter-local` | Uses `@CoAkkaHandler` and `CoAkkaRuntimeClient` instead of manual route/handler wiring. |
 | Start from explicit connector wiring | `runtime/scenarios/customer-crud/spring-boot-single-process` | Keeps route declaration and handler registration visible in application code. |
 
-## Start Here
-
-Run the shortest non-container paths:
+More local starts:
 
 ```sh
 bash run.sh quickstart
+bash run.sh doctor
+bash run.sh list
+```
+
+For dependency snippets and the minimal host skeleton, read
+[runtime/README.md#copy-paste-starter-shapes](runtime/README.md#copy-paste-starter-shapes).
+For a longer adoption path, read [docs/adoption-path.md](docs/adoption-path.md).
+
+## When CoAkka Helps
+
+CoAkka is useful when:
+
+- internal work crosses process or language boundaries
+- private contracts are spreading across ad-hoc REST or gRPC clients
+- teams want explicit delivery diagnostics for route miss, timeout, queue
+  pressure, and unavailable endpoints
+- a system is migrating gradually across runtimes
+- the same capability may start same-process and move cross-process later
+
+CoAkka is probably not necessary when:
+
+- direct in-process calls are already enough
+- the boundary is a real public HTTP or gRPC API
+- the added runtime vocabulary does not solve a coordination or diagnostics
+  problem
+- the team does not need route ownership, request/reply matching, deadletters,
+  or runtime delivery stats at that boundary
+
+Logger samples are included because the public artifact surface ships logger
+packages too, but the main README story is runtime capability delivery.
+
+## Core Runtime Vocabulary
+
+- `Target`: the stable capability address the caller asks for, not a URL,
+  class, or function name.
+- `Envelope`: the runtime message wrapper carrying target, source, payload
+  identity, payload bytes, request context, timeout, and matching metadata.
+- `Payload identity`: the message type, schema version, and payload format used
+  to version request, reply, and event bodies.
+- `Headers` / metadata / extra params: small request context such as tenant,
+  request id, trace id, or idempotency key; business arguments belong in the
+  payload.
+- `Route generation`: the version of the route snapshot used to decide where a
+  target can be delivered.
+- `Deadletter`: a structured terminal delivery result for route miss, queue
+  pressure, unavailable endpoint, or another explicit delivery failure.
+- `Timeout`: the caller's wait budget for an ask, enforced by
+  runtime/connector pending-request matching; it is not a business retry policy
+  by itself.
+- `Retry`: caller/application policy unless a sample explicitly says
+  otherwise; retry only with idempotency and a bounded budget.
+
+For the detailed connector, routing, envelope, deadletter, timeout, retry, and
+tuning model, read
+[Runtime Message And Routing Model](docs/runtime-message-and-routing-model.md).
+
+## How To Read This Repository
+
+Use this order for a first pass:
+
+1. Run one container sample first. It shows the visible path without requiring
+   a local language toolchain.
+2. Open one basic sample in a language you know and look for five things:
+   start spec, route target, process-owned handler registration, typed ask or
+   event, and stats or deadletter output.
+3. Read a customer CRUD scenario. Those samples show why the runtime boundary
+   is useful in a normal application workflow.
+4. Then read the model sections below when you want the full vocabulary and
+   architectural rationale.
+
+Shortest non-container paths:
+
+```sh
 bash run.sh runtime jvm basic
 bash run.sh runtime native basic
 bash run.sh runtime native pressure
-```
-
-Check your local toolchain without launching a sample:
-
-```sh
-bash run.sh doctor
-```
-
-List every sample:
-
-```sh
-bash run.sh list
 ```
 
 ## Why CoAkka Exists
@@ -365,7 +411,7 @@ discovery, and deployment policy. That gives an organization a shared
 integration substrate without forcing every service into the same application
 framework.
 
-## Where CoAkka Helps
+## Where CoAkka Helps In Detail
 
 CoAkka is most useful when a team wants internal work to have a clear runtime
 boundary without turning every internal call into another REST or gRPC surface.
