@@ -23,6 +23,7 @@ packages built from the public CoAkka artifact surface.
 - [Before And After](#before-and-after)
 - [Which Sample Should I Run?](#which-sample-should-i-run)
 - [When CoAkka Helps](#when-coakka-helps)
+- [Incremental Adoption](#incremental-adoption)
 - [Core Runtime Vocabulary](#core-runtime-vocabulary)
 - [How To Read This Repository](#how-to-read-this-repository)
 - [Why CoAkka Exists](#why-coakka-exists)
@@ -218,6 +219,33 @@ CoAkka is probably not necessary when:
 Logger samples are included because the public artifact surface ships logger
 packages too, but the main README story is runtime capability delivery.
 
+## Incremental Adoption
+
+CoAkka is not a rewrite-first platform. It does not ask teams to break working
+legacy systems, replace public APIs, standardize every service on one
+framework, or migrate the whole architecture at once.
+
+The practical adoption path is smaller:
+
+```text
+pick one internal boundary
+  -> add a host-language connector
+  -> route one typed target through CoAkka
+  -> inspect delivery, reply, stats, or deadletter evidence
+  -> expand only if the boundary becomes clearer
+```
+
+This matters because many architectural ideas are rejected for operational
+reasons rather than conceptual ones. A model may be sound, but if the first
+step requires a rewrite, a platform reset, or a large migration event, most
+teams will not adopt it.
+
+CoAkka is more useful when setup stays simple, configuration stays lightweight,
+and legacy systems can remain in place. In that shape, it becomes a practical
+boundary improvement rather than a disruptive architecture bet: reduce fake
+internal REST, standardize internal capability delivery, and improve diagnostics
+one boundary at a time.
+
 ## Core Runtime Vocabulary
 
 - `Target`: the stable capability address the caller asks for, not a URL,
@@ -279,6 +307,12 @@ CoAkka exists to give those pieces a shared runtime contract that can be adopted
 gradually. The goal is not to replace a working legacy system before value can
 be measured. The goal is to put a typed, inspectable boundary around one
 workflow, one process, or one integration point at a time.
+
+That coexistence is part of the design advantage. Existing public edges can
+stay public, direct in-process calls can stay direct, and legacy services can
+keep running while one noisy internal boundary is made explicit. If the first
+step is small and reversible, a team can evaluate the runtime model from real
+delivery evidence instead of committing to a migration plan up front.
 
 The intended adoption path is incremental:
 
