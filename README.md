@@ -29,7 +29,7 @@ packages built from the public CoAkka artifact surface.
 - [Why CoAkka Exists](#why-coakka-exists)
 - [Runtime First](#runtime-first)
 - [Architectural Value](#architectural-value)
-- [Where CoAkka Helps In Detail](#where-coakka-helps-in-detail)
+- [Boundary Patterns](#boundary-patterns)
 - [Questions And Answers](#questions-and-answers)
 - [How It Works](#how-it-works)
 - [Sample Integration Checklist](#sample-integration-checklist)
@@ -385,23 +385,9 @@ hiding the failure behind a REST fallback.
 
 ## Architectural Value
 
-The primary value is not adding one more transport option. The value is
-standardizing the boundary between an application host and the runtime:
-
-That can sound abstract until a system has been lived in for a while:
-
-- one small service change requires edits in five other services
-- ten or more services are coupled through informal message conventions
-- a message disappears between two processes and nobody can tell where it was
-  dropped
-- each team implements routing, retry, correlation, and error handling in a
-  slightly different way
-- migrating one service to another language becomes painful because the real
-  contract was scattered across code, config, logs, and tribal knowledge
-
-CoAkka treats those problems as boundary problems first. The runtime does not
-try to own every framework decision; it gives each host a common contract for
-the parts that must behave consistently across services and languages:
+The value is not adding one more transport option. The value is standardizing
+the boundary between an application host and the runtime so the same delivery
+terms apply across services and languages:
 
 - one runtime contract for JVM, Python, Node.js, Go, C#, Rust, and native C/C++
 - one vocabulary for target names, route snapshots, generations, and handler
@@ -412,21 +398,14 @@ the parts that must behave consistently across services and languages:
 - the C/C++ runtime core keeps behavior consistent instead of each framework
   inventing a different routing, correlation, or failure model
 
-That boundary matters during a wider rollout:
+That helps when a system has started to accumulate informal internal contracts:
 
-- integration drift is reduced because teams do not reinvent routing,
-  correlation, and deadletter behavior service by service
-- legacy migration can start by wrapping one boundary instead of rewriting a
-  whole service
-- polyglot systems stay disciplined because a store can move from Spring to Go
-  or Node.js while the target and payload contract remain stable
-- operational debugging has shared terms: target, route generation, deadletter
-  reason, pending counters, matched responses, and queue pressure
-- startup config stays boring because the connector can read host, port,
-  identity, and route data from the platform; route reload remains available
-  for controlled changes when a deployment actually needs it
-- delivery failures become deadletters and diagnostics instead of vague
-  timeouts or silent drops
+- a small service change requires edits in several other services
+- each team implements routing, retry, correlation, and error handling
+  differently
+- moving one implementation to another language forces client and config churn
+- failures show up as vague timeouts instead of route and delivery evidence
+- the real contract is scattered across code, config, logs, and team memory
 
 For that value to hold in production, the project still has to prove three
 things:
@@ -445,55 +424,19 @@ discovery, and deployment policy. That gives an organization a shared
 integration substrate without forcing every service into the same application
 framework.
 
-## Where CoAkka Helps In Detail
+## Boundary Patterns
 
-CoAkka is most useful when a team wants internal work to have a clear runtime
-boundary without turning every internal call into another REST or gRPC surface.
-The value is practical: fewer scattered clients, clearer failure outcomes, and
-one shared vocabulary for delivery diagnostics.
+These are the practical patterns the samples are trying to make concrete.
 
-### Avoid Fake Internal REST
-
-Before:
-
-```text
-Spring API -> internal REST -> Go store
-Node job   -> internal REST -> Python worker
-C# API     -> internal REST -> JVM renderer
-```
-
-This can work, and REST is still the right shape for real HTTP edges. The issue
-is organization: each internal endpoint spreads the same boundary contract across
-URL config, HTTP verbs, handlers, clients, status mapping, timeout policy, retry
-conventions, readiness checks, and tests for an API that may not be a real
-product boundary.
-
-After:
-
-```text
-caller -> CoAkka target -> route snapshot -> handler
-```
-
-The caller asks for a stable `target`. The route snapshot decides whether that
-target is handled in the same process, another process, or not at all. CoAkka
-keeps the internal routing contract in one runtime vocabulary instead of
-splitting it across HTTP method, URL, controller, client, and error-policy code.
-If it cannot be delivered, the outcome is visible as runtime failure or
-deadletter instead of being hidden behind a vague timeout or an internal HTTP
-status.
-
-### Pass Parameters Without Turning Them Into URLs
-
-In REST, teams often encode call shape across method, path, query string, and
-headers. That is fine for a real REST API, but it can fragment a private
-capability contract when the endpoint only exists for internal work:
+**Name private work by target, not URL.** In REST, teams often encode a private
+call shape across method, path, query string, and headers:
 
 ```text
 POST /internal/customers/cust-001/hold?tenant=acme
 x-request-id: req-123
 ```
 
-With CoAkka, the same information is split by responsibility:
+With CoAkka, responsibility is split more directly:
 
 ```text
 target  = customer.hold
@@ -501,34 +444,12 @@ payload = {"customerId":"cust-001","reason":"manual_review"}
 headers = {"tenant":"acme","x-request-id":"req-123"}
 ```
 
-The mindset shift is that `target` is the stable capability address, not a URL
-template. Business arguments belong in the typed payload. Request context that
-is useful for diagnostics, correlation, tenancy, idempotency, or host-side
-policy can travel in the envelope `headers` map. Some connector APIs may expose
-that bag as request headers, metadata, `extraParam`, or `extraParams`, but the
-runtime contract is the same: an envelope plus typed payload bytes.
-
 Do not use envelope headers as a second payload schema. If a value is part of
 the business command or query, put it in the payload and version it through
 payload identity. Use headers for small request context that should stay next
 to the envelope.
 
-### Replace Polyglot Services With Less Client Chaos
-
-Before:
-
-```text
-customer-web  -> http://go-store/internal/customers
-audit-worker  -> http://go-store/internal/events
-batch-job     -> http://go-store/internal/rebuild
-```
-
-When the Go store moves to a new Go version, JVM service, Node.js worker, or
-replicated deployment, callers often need client config, path, timeout,
-serialization, and rollout changes. The real contract is spread across code,
-config, logs, dashboards, and team memory.
-
-After:
+**Move implementations without renaming the capability.**
 
 ```text
 target = customer.store
@@ -537,92 +458,28 @@ generation 13 -> JVM store, Node.js store, or replicated store endpoints
 ```
 
 The target and payload contract can stay stable while endpoint placement
-changes through route config. Callers still need a correct payload contract,
-but they do not need to learn every implementation move as a new internal
-network API.
+changes through route config.
 
-### Start Same-Process And Move Later
-
-Before:
-
-```text
-controller -> service class
-```
-
-That is correct for a small monolith. The pain appears when the team later
-wants to split the service: it usually has to introduce internal HTTP, a new
-client, new port config, new tests, new timeout handling, and new logs.
-
-After:
+**Start same-process and move later when needed.**
 
 ```text
 controller -> CoAkka target -> same-process handler
 controller -> CoAkka target -> peer-runtime handler
 ```
 
-The first version can remain compact. If the handler moves later, the route
-snapshot changes, but the app keeps the same target/source/deadletter
-vocabulary.
+The first version can stay compact. If the handler moves later, the app keeps
+the same target, source, route-generation, and deadletter vocabulary.
 
-### Make Delivery Failure Answerable
+**Make delivery failure answerable.** CoAkka diagnostics should help identify:
 
-Before, failures often look like this:
+- who sent the work
+- which target was requested
+- which route generation was active
+- whether delivery missed a route, hit queue pressure, timed out, or matched a
+  response/deadletter
 
-```text
-timeout
-500
-connection refused
-unknown route
-bad gateway
-```
-
-Each team then searches a different log format and tries to infer what actually
-happened.
-
-With CoAkka diagnostics, the failure can answer more specific questions:
-
-- who sent the work: `source`
-- what was requested: `target` and `operation`
-- which route table was active: `generation`
-- whether the target was missing, unavailable, rejected by queue pressure, or
-  timed out
-- whether a pending request was matched by a response or deadletter
-
-That does not remove the need for trace logs or business-level observability.
-It gives trace logs a sharper runtime vocabulary: source, target, generation,
-operation, delivery outcome, and deadletter reason.
-
-### Boundary Work CoAkka Makes Explicit
-
-CoAkka does not remove boundary design work. Any real boundary needs answers
-for naming, payload identity, schema/version discipline, route ownership,
-handler ownership, and diagnostics. A serious internal REST/gRPC design has to
-answer the same kinds of questions through URLs, clients, schemas, retries,
-status mapping, logs, dashboards, and rollout rules.
-
-The difference is where that work lives. Without CoAkka, the rules often spread
-across client code, framework config, HTTP status handling, tracing conventions,
-and team memory. With CoAkka, the route, target, generation, delivery outcome,
-and deadletter vocabulary are explicit runtime concepts. If a small CRUD
-application only needs direct service calls, that direct shape may already be
-enough.
-
-What it can save:
-
-- fewer internal REST/gRPC clients maintained only for private app work
-- fewer scattered timeout, retry, status, and error-mapping policies
-- fewer deployment changes when one implementation moves from Go to JVM,
-  Node.js, Python, C#, or another runtime participant
-- less time guessing whether a failure was a missing route, unavailable
-  endpoint, full queue, timeout, or handler problem
-- more consistent trace/log fields across languages: `source`, `target`,
-  `generation`, `operation`, outcome, and deadletter reason
-
-CoAkka is usually worth considering when the current alternative is many fake
-internal HTTP/gRPC endpoints, scattered client config, unclear route ownership,
-or painful language/process migration. CoAkka's job is not to make distributed
-systems simple. It makes one part of the system explicit: how internal work is
-named, routed, admitted, delivered, and reported when delivery fails.
+For deeper comparisons with REST/gRPC, CQRS, Event Sourcing, and business
+versus runtime boundaries, read [docs/qna.md](docs/qna.md).
 
 ## Questions And Answers
 
@@ -898,15 +755,13 @@ Current customer topologies:
 
 ## Framework Adapters
 
-Spring Boot and Quarkus CRUD code often starts cleanly: the browser/API
-controller calls an in-process store service directly. When teams try to create a
-stronger boundary, that call often becomes an internal REST service even though
-the browser/API edge is the only real HTTP boundary.
+Spring Boot and Quarkus samples show the same boundary inside familiar
+framework code: keep HTTP at the browser/API edge, and route private store work
+as a runtime capability.
 
 ### Before: Internal REST
 
-The traditional split adds an internal endpoint just so the public controller
-has something HTTP-shaped to call:
+The traditional split adds an internal endpoint:
 
 ```kotlin
 @RestController
@@ -919,8 +774,8 @@ class CustomerStoreInternalController(private val store: InMemoryCustomerStore) 
 }
 ```
 
-The browser-facing controller then forwards business work through an internal
-HTTP client:
+The browser-facing controller forwards business work through an internal HTTP
+client:
 
 ```kotlin
 @RestController
@@ -934,20 +789,9 @@ class CustomerController(private val storeClient: CustomerStoreRestClient) {
 }
 ```
 
-That works, and it is a normal framework shape for a real REST boundary. For
-private store work, however, the contract is now split across URL config,
-HTTP method annotations, serialization, timeout/error mapping, and test setup
-before there is a real product/API boundary. The CoAkka framework adapter
-samples keep HTTP at `/api/...` and move internal work onto typed runtime
-capabilities instead.
-
-This is not a claim that every CoAkka call beats every tuned HTTP call in a
-synthetic contest. The point is simpler: if the call is not a real product/API
-boundary, an internal HTTP stack makes the team express runtime work through
-web concepts such as methods, paths, headers, middleware, status codes, timeout
-mapping, retry policy, and endpoint tests. CoAkka keeps the internal path as a
-runtime envelope with routing, request/reply, and deadletter semantics, then
-leaves REST for the edge where it is actually useful.
+That is a normal shape for a real REST boundary. For private store work, the
+sample instead keeps HTTP at `/api/...` and moves the internal call onto a
+typed runtime target.
 
 ### After: Same-Process Runtime Capability
 
