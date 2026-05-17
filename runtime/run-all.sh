@@ -42,6 +42,12 @@ bash "${script_dir}/csharp/basic/run.sh"
 echo "[runtime/run-all] Rust basic"
 bash "${script_dir}/rust/basic/run.sh"
 
+echo "[runtime/run-all] Zig basic"
+bash "${script_dir}/zig/basic/run.sh"
+
+echo "[runtime/run-all] Mojo basic"
+bash "${script_dir}/mojo/basic/run.sh"
+
 echo "[runtime/run-all] Native C/C++ basic"
 bash "${script_dir}/native/basic/run.sh"
 

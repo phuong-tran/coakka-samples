@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+repo_root="$(cd "${script_dir}/../../.." && pwd)"
+publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish-public}"
+source "${repo_root}/scripts/resolve-artifact.sh"
+source "${repo_root}/scripts/sample-utils.sh"
+
+coakka_require_command zig "Install Zig, then retry."
+coakka_require_command tar "Install tar, then retry."
+
+coakka_native_platform() {
+  local system machine
+  system="$(uname -s)"
+  machine="$(uname -m)"
+  case "${system}:${machine}" in
+    Darwin:arm64|Darwin:aarch64) printf '%s\n' "macos-aarch64" ;;
+    Linux:aarch64|Linux:arm64) printf '%s\n' "linux-aarch64" ;;
+    Linux:x86_64|Linux:amd64) printf '%s\n' "linux-x86_64" ;;
+    *) coakka_die "Unsupported Zig sample platform: ${system}/${machine}" ;;
+  esac
+}
+
+tmp_dir="$(mktemp -d)"
+trap 'rm -rf "${tmp_dir}"' EXIT
+artifact_rel="runtime/native/releases/0.2.0+c124a9e/coakka-runtime-native-v2-0.2.0.tar.gz"
+package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-runtime-native-v2-0.2.0.tar.gz")"
+mkdir -p "${tmp_dir}/package"
+tar -C "${tmp_dir}/package" -xzf "${package_path}"
+
+package_root="${tmp_dir}/package/coakka-runtime-native-v2-0.2.0"
+platform="$(coakka_native_platform)"
+binary="${tmp_dir}/coakka_runtime_v2_zig_basic"
+
+zig build-exe "${script_dir}/main.zig" \
+  -I"${package_root}/include" \
+  -L"${package_root}/native/${platform}" \
+  -lcoakka_runtime_v2 \
+  -lc \
+  -femit-bin="${binary}" >/dev/null
+
+case "$(uname -s)" in
+  Darwin)
+    DYLD_LIBRARY_PATH="${package_root}/native/${platform}" "${binary}"
+    ;;
+  Linux)
+    LD_LIBRARY_PATH="${package_root}/native/${platform}" "${binary}"
+    ;;
+esac
+

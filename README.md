@@ -15,7 +15,8 @@ diagnostics.
 This repository shows that model through runnable samples for JVM, Python,
 Node.js, Go, C#, Rust, native integrations, framework adapters, and logger
 packages built from the public CoAkka artifact surface. Mojo and Zig are
-tracked as planned runtime connector lanes.
+tracked as source-only basic runtime sample lanes while package lanes remain
+planned.
 
 ## Table of Contents
 
@@ -956,6 +957,8 @@ bash run.sh runtime node basic
 bash run.sh runtime go basic
 bash run.sh runtime csharp basic
 bash run.sh runtime rust basic
+bash run.sh runtime zig basic
+bash run.sh runtime mojo basic
 ```
 
 Run from inside a sample directory:
@@ -1165,10 +1168,11 @@ read
 
 Android and PHP are intentionally not in the current sample matrix yet.
 
-Mojo and Zig are planned runtime connector lanes. They should start as small
-FFI-based connectors over the public C ABI, with lifecycle, route-miss, and
-request/reply proofs before any framework or scenario sample claims. Until the
-artifact lanes exist, README tables list them as planned rather than public.
+Mojo and Zig now have source-only basic runtime lifecycle samples. Package
+lanes remain planned; they should grow through small FFI-based connectors over
+the public C ABI, with request/reply proofs before any framework or scenario
+sample claims. Until artifact lanes exist, README tables mark them as source
+samples rather than public packages.
 
 Android is a likely future connector target, but it is a different kind of
 runtime host. The useful Android shape is not "Spring Boot on a phone"; it is a
@@ -1196,7 +1200,8 @@ connector first.
 
 | Capability | Public sample | What it proves |
 | --- | --- | --- |
-| Request/reply | JVM, Python, Node.js, Go, C#, Rust, native C/C++ basic samples; Mojo and Zig planned | Typed request/reply through a process-owned route and runtime counters |
+| Request/reply | JVM, Python, Node.js, Go, C#, Rust, native C/C++ basic samples | Typed request/reply through a process-owned route and runtime counters |
+| Runtime lifecycle/control | Zig and Mojo basic samples | Public native runtime load, route snapshot apply, start, stats read, and stop |
 | Deadletter | JVM, Java, Python, Node.js, Go deadletter samples; native basic route miss | Missing-route accounting and matched pending requests |
 | Route snapshot apply/reload | `runtime/python/hot-reload`; `runtime/scenarios/customer-crud/spring-boot-single-process/routes.yml` and `runtime/scenarios/customer-crud/spring-boot-spring-boot/routes.yml` with `bash run.sh reload-routes` | Apply the startup route snapshot, optionally apply a newer snapshot later, reject stale/invalid snapshots, and observe generation changes |
 | Queue pressure | `runtime/native/pressure`; status notes in [`runtime/README.md`](runtime/README.md) | Bounded runtime queue rejection and deadletter counters at the public C ABI intake boundary |
@@ -1400,7 +1405,7 @@ Override the local Maven repository path with:
 COAKKA_PUBLISH_MAVEN_LOCAL=/path/to/coakka-publish-public/maven bash run.sh logger
 ```
 
-Python, Node.js, Go, C#, Rust, native C/C++, planned Mojo/Zig, and non-Maven package lanes first
+Python, Node.js, Go, C#, Rust, native C/C++, source-only Mojo/Zig, and non-Maven package lanes first
 look for a sibling `coakka-publish-public` checkout. Use `COAKKA_PUBLISH_ROOT`
 to point samples at another public artifact checkout:
 
@@ -1425,7 +1430,7 @@ Current public artifact pins:
 | Runtime native C/C++ | `0.2.0+c124a9e` |
 | Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-g94a5729-6b7a3bf` |
 | Runtime Python, Node.js, Go, C#, and Rust | `0.2.0+94a5729-6b7a3bf` |
-| Runtime Mojo and Zig | planned |
+| Runtime Mojo and Zig samples | source-only basic samples over native runtime archive |
 | Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.2.0-g94a5729` |
 | Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.2.0-g94a5729` |
 
@@ -1452,8 +1457,8 @@ Current public native runtime generation: `0.2.0+c124a9e`.
 | Runtime Go | public | `bash run.sh runtime go basic` |
 | Runtime C# | public | `bash run.sh runtime csharp basic` |
 | Runtime Rust | public | `bash run.sh runtime rust basic` |
-| Runtime Mojo | planned | not published yet |
-| Runtime Zig | planned | not published yet |
+| Runtime Mojo | source sample | `bash run.sh runtime mojo basic` |
+| Runtime Zig | source sample | `bash run.sh runtime zig basic` |
 | Runtime Spring Boot and Quarkus adapters | public | `bash run.sh scenarios check` |
 | Runtime container sample: Node.js -> Python | public Docker Hub images | `bash run.sh containers node-python` |
 | Runtime container sample: Spring Boot JVM -> Go | public Docker Hub images | `bash run.sh containers spring-go` |
