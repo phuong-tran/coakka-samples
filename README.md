@@ -2,15 +2,15 @@
 
 [![sample-smoke](https://github.com/phuong-tran/coakka-samples/actions/workflows/sample-smoke.yml/badge.svg)](https://github.com/phuong-tran/coakka-samples/actions/workflows/sample-smoke.yml)
 
-CoAkka is a runtime boundary for application capabilities across
-processes and languages.
+CoAkka is for application-owned work that needs a runtime boundary, not another
+fake backend API.
+
+It gives application hosts a shared runtime vocabulary: target, route snapshot,
+typed payload, reply, deadletter, and delivery diagnostics.
 
 Many teams create deployment-owned HTTP endpoints just to move work between
 application components or services. That spreads one application-owned contract across
 URLs, clients, retries, timeouts, status mapping, and error handling.
-
-CoAkka replaces that with typed runtime targets, explicit routing, and delivery
-diagnostics.
 
 This repository shows that model through runnable samples for JVM, Python,
 Node.js, Go, C#, Rust, native integrations, framework adapters, and logger
