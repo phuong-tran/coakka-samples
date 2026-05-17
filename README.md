@@ -938,6 +938,8 @@ Run one artifact-backed sample from the repository root:
 bash run.sh logger basic
 bash run.sh logger node basic
 bash run.sh logger native basic
+bash run.sh logger zig basic
+bash run.sh logger mojo basic
 ```
 
 Run public runtime native samples:
@@ -1014,8 +1016,8 @@ Install only the toolchain for the language you want to try:
 | Go runtime v2 | Go 1.23 or newer |
 | C# samples | .NET SDK 10 or newer |
 | Rust samples | Rust/Cargo 1.74 or newer |
-| Mojo source-package runtime sample | Mojo 1.0 beta or newer |
-| Zig source-package runtime sample | Zig 0.16 or newer |
+| Mojo logger/runtime samples | Mojo 1.0 beta or newer |
+| Zig logger/runtime samples | Zig 0.16 or newer |
 | Native C/C++ samples | CMake plus C and C++ compilers |
 
 The scripts check these commands before running and print a direct error when a
@@ -1172,10 +1174,10 @@ read
 
 Android and PHP are intentionally not in the current sample matrix yet.
 
-Mojo and Zig now have public source-package runtime lifecycle, raw
-request/reply, and route-miss deadletter samples. Package-manager lanes remain
-planned; they should grow through the same FFI-based connector boundary before
-any framework or scenario sample claims.
+Mojo and Zig now have logger basic samples plus public source-package runtime
+lifecycle, raw request/reply, and route-miss deadletter samples. Package-manager
+lanes remain planned; they should grow through the same FFI-based connector
+boundary before any framework or scenario sample claims.
 
 Android is a likely future connector target, but it is a different kind of
 runtime host. The useful Android shape is not "Spring Boot on a phone"; it is a
@@ -1209,6 +1211,7 @@ connector first.
 | Deadletter | JVM, Java, Python, Node.js, Go deadletter samples; Zig and Mojo basic route miss; native basic route miss | Missing-route accounting and matched pending requests |
 | Route snapshot apply/reload | `runtime/python/hot-reload`; `runtime/scenarios/customer-crud/spring-boot-single-process/routes.yml` and `runtime/scenarios/customer-crud/spring-boot-spring-boot/routes.yml` with `bash run.sh reload-routes` | Apply the startup route snapshot, optionally apply a newer snapshot later, reject stale/invalid snapshots, and observe generation changes |
 | Queue pressure | `runtime/native/pressure`; status notes in [`runtime/README.md`](runtime/README.md) | Bounded runtime queue rejection and deadletter counters at the public C ABI intake boundary |
+| Logger basic | Mojo and Zig basic samples; JVM, Java, Python, Node.js, Go, C#, Rust, and native logger basic samples | One bounded logger record through the public logger contract |
 | Logger pressure | JVM, Java, Python, Node.js, Go, C#, Rust, native logger pressure samples | Bounded logger queue rejection and dropped counters |
 | Customer CRUD scenarios | Spring Boot, Quarkus, desktop, Node.js, Go, and C# scenario tracks | Real workflow shape across same-process and cross-process runtime boundaries |
 
@@ -1289,7 +1292,7 @@ Planning note: [Container Samples Plan](docs/container-samples-plan.md).
 | Runtime v2 basic | `runtime/jvm/basic`, `runtime/jvm/java-basic` | `runtime/python/basic` | `runtime/node/basic` | `runtime/go/basic` | `runtime/csharp/basic` | `runtime/rust/basic` | `runtime/mojo/basic` | `runtime/zig/basic` | `runtime/native/basic` |
 | Runtime v2 deadletter | `runtime/jvm/deadletter`, `runtime/jvm/java-deadletter` | `runtime/python/deadletter` | `runtime/node/deadletter` | `runtime/go/deadletter` | - | - | - | - | - |
 | Runtime v2 pressure | - | - | - | - | - | - | - | - | `runtime/native/pressure` |
-| Logger basic | `logger/jvm/basic`, `logger/jvm/java-basic` | `logger/python/basic` | `logger/node/basic` | `logger/go/basic` | `logger/csharp/basic` | `logger/rust/basic` | - | - | `logger/native/basic` |
+| Logger basic | `logger/jvm/basic`, `logger/jvm/java-basic` | `logger/python/basic` | `logger/node/basic` | `logger/go/basic` | `logger/csharp/basic` | `logger/rust/basic` | `logger/mojo/basic` | `logger/zig/basic` | `logger/native/basic` |
 | Logger pressure | `logger/jvm/pressure`, `logger/jvm/java-pressure` | `logger/python/pressure` | `logger/node/pressure` | `logger/go/pressure` | `logger/csharp/pressure` | `logger/rust/pressure` | - | - | `logger/native/pressure` |
 
 ### Benchmark And Load Status
@@ -1461,6 +1464,8 @@ Current public native runtime generation: `0.2.0+c124a9e`.
 | Runtime Go | public | `bash run.sh runtime go basic` |
 | Runtime C# | public | `bash run.sh runtime csharp basic` |
 | Runtime Rust | public | `bash run.sh runtime rust basic` |
+| Logger Mojo | source sample | `bash run.sh logger mojo basic` |
+| Logger Zig | source sample | `bash run.sh logger zig basic` |
 | Runtime Mojo | source sample | `bash run.sh runtime mojo basic` |
 | Runtime Zig | source sample | `bash run.sh runtime zig basic` |
 | Runtime Spring Boot and Quarkus adapters | public | `bash run.sh scenarios check` |
@@ -1626,6 +1631,7 @@ If native loading fails, first check:
   download is required for those language lanes.
 - Mojo and Zig runtime samples use public source connector packages with
   bundled native runtime libraries.
+- Mojo and Zig logger samples use the published native logger archive.
 - Native C/C++ samples use the published native archive and select the current
   platform with CMake.
 - whether the current OS/architecture is one of:

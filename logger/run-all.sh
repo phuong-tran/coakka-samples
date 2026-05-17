@@ -46,6 +46,12 @@ bash "${script_dir}/rust/basic/run.sh"
 echo "[logger/run-all] Rust pressure"
 bash "${script_dir}/rust/pressure/run.sh"
 
+echo "[logger/run-all] Zig basic"
+bash "${script_dir}/zig/basic/run.sh"
+
+echo "[logger/run-all] Mojo basic"
+bash "${script_dir}/mojo/basic/run.sh"
+
 echo "[logger/run-all] Native C/C++ basic"
 bash "${script_dir}/native/basic/run.sh"
 

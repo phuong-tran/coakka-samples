@@ -60,4 +60,6 @@ Current samples:
 | Go | `go/basic`, `go/pressure` | published Go source package |
 | C# | `csharp/basic`, `csharp/pressure` | published C# NuGet package |
 | Rust | `rust/basic`, `rust/pressure` | published Rust spike package |
+| Zig | `zig/basic` | published native C/C++ archive |
+| Mojo | `mojo/basic` | published native C/C++ archive with a sample-local shim |
 | Native C/C++ | `native/basic`, `native/pressure` | published native C/C++ archive |

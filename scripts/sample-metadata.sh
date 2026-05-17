@@ -17,6 +17,8 @@ COAKKA_SAMPLE_ROWS=(
   "logger|csharp|pressure|Show bounded queue pressure and dropped counters from C#"
   "logger|rust|basic|Run one bounded logger record from Rust"
   "logger|rust|pressure|Show bounded queue pressure and dropped counters from Rust"
+  "logger|zig|basic|Run one bounded logger record from Zig"
+  "logger|mojo|basic|Run one bounded logger record from Mojo"
   "logger|native|basic|Run one bounded logger record from C and C++"
   "logger|native|pressure|Show bounded queue pressure and dropped counters from C"
   "runtime|jvm|basic|Run one local request/reply echo on JVM"
