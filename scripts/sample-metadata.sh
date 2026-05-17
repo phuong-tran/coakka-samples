@@ -71,6 +71,8 @@ COAKKA_ARTIFACT_ROWS=(
   "runtime Go package|runtime/go/releases/0.2.0+94a5729-6b7a3bf/coakka-v2-connector-go-0.2.0.tar.gz"
   "runtime C# package|runtime/csharp/releases/0.2.0+94a5729-6b7a3bf/CoAkka.Runtime.0.2.0.nupkg"
   "runtime Rust package|runtime/rust/releases/0.2.0+94a5729-6b7a3bf/coakka-runtime-rs-0.2.0-spike.tar.gz"
+  "runtime Mojo source package|runtime/mojo/releases/0.2.0+c124a9e-10dc009/coakka-runtime-mojo-0.2.0-source.tar.gz"
+  "runtime Zig source package|runtime/zig/releases/0.2.0+c124a9e-10dc009/coakka-runtime-zig-0.2.0-source.tar.gz"
   "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/0.2.0-g94a5729/coakka-spring-boot-starter-0.2.0-g94a5729.jar"
   "Quarkus extension Maven jar|maven/coakka/quarkus/coakka-quarkus-extension/0.2.0-g94a5729/coakka-quarkus-extension-0.2.0-g94a5729.jar"
 )

@@ -15,8 +15,8 @@ diagnostics.
 This repository shows that model through runnable samples for JVM, Python,
 Node.js, Go, C#, Rust, native integrations, framework adapters, and logger
 packages built from the public CoAkka artifact surface. Mojo and Zig are
-tracked as source-only basic runtime sample lanes while package lanes remain
-planned.
+tracked as public source-package runtime sample lanes while package-manager
+lanes remain planned.
 
 ## Table of Contents
 
@@ -398,8 +398,8 @@ The value is not adding one more transport option. The value is standardizing
 the boundary between an application host and the runtime so the same delivery
 terms apply across services and languages:
 
-- one runtime contract for JVM, Python, Node.js, Go, C#, Rust, source-only Mojo
-  and Zig samples, and native C/C++
+- one runtime contract for JVM, Python, Node.js, Go, C#, Rust, Mojo and Zig
+  source packages, and native C/C++
 - one vocabulary for target names, route snapshots, generations, and handler
   ownership
 - one diagnostic model for request/reply, deadletters, queue pressure, and
@@ -1014,8 +1014,8 @@ Install only the toolchain for the language you want to try:
 | Go runtime v2 | Go 1.23 or newer |
 | C# samples | .NET SDK 10 or newer |
 | Rust samples | Rust/Cargo 1.74 or newer |
-| Mojo source-only runtime sample | Mojo 1.0 beta or newer |
-| Zig source-only runtime sample | Zig 0.16 or newer |
+| Mojo source-package runtime sample | Mojo 1.0 beta or newer |
+| Zig source-package runtime sample | Zig 0.16 or newer |
 | Native C/C++ samples | CMake plus C and C++ compilers |
 
 The scripts check these commands before running and print a direct error when a
@@ -1172,11 +1172,10 @@ read
 
 Android and PHP are intentionally not in the current sample matrix yet.
 
-Mojo and Zig now have source-only basic runtime lifecycle, raw request/reply,
-and route-miss deadletter samples. Package lanes remain planned; they should
-grow through small FFI-based connectors over the public C ABI before any
-framework or scenario sample claims. Until artifact lanes exist, README tables
-mark them as source samples rather than public packages.
+Mojo and Zig now have public source-package runtime lifecycle, raw
+request/reply, and route-miss deadletter samples. Package-manager lanes remain
+planned; they should grow through the same FFI-based connector boundary before
+any framework or scenario sample claims.
 
 Android is a likely future connector target, but it is a different kind of
 runtime host. The useful Android shape is not "Spring Boot on a phone"; it is a
@@ -1410,7 +1409,7 @@ Override the local Maven repository path with:
 COAKKA_PUBLISH_MAVEN_LOCAL=/path/to/coakka-publish-public/maven bash run.sh logger
 ```
 
-Python, Node.js, Go, C#, Rust, native C/C++, source-only Mojo/Zig, and non-Maven package lanes first
+Python, Node.js, Go, C#, Rust, native C/C++, Mojo/Zig source packages, and non-Maven package lanes first
 look for a sibling `coakka-publish-public` checkout. Use `COAKKA_PUBLISH_ROOT`
 to point samples at another public artifact checkout:
 
@@ -1435,7 +1434,7 @@ Current public artifact pins:
 | Runtime native C/C++ | `0.2.0+c124a9e` |
 | Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-g94a5729-6b7a3bf` |
 | Runtime Python, Node.js, Go, C#, and Rust | `0.2.0+94a5729-6b7a3bf` |
-| Runtime Mojo and Zig samples | source-only basic samples over native runtime archive |
+| Runtime Mojo and Zig samples | `0.2.0+c124a9e-10dc009` source packages |
 | Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.2.0-g94a5729` |
 | Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.2.0-g94a5729` |
 
@@ -1625,9 +1624,8 @@ If native loading fails, first check:
 - Runtime v2 and logger JVM/Python/Node.js/Go/C#/Rust samples use all-in-one
   language artifacts for supported platforms; no separate per-platform native
   download is required for those language lanes.
-- Mojo and Zig runtime samples are source-only lifecycle, raw request/reply,
-  and route-miss deadletter smokes over the native runtime archive; they are
-  not published language artifacts yet.
+- Mojo and Zig runtime samples use public source connector packages with
+  bundled native runtime libraries.
 - Native C/C++ samples use the published native archive and select the current
   platform with CMake.
 - whether the current OS/architecture is one of:
