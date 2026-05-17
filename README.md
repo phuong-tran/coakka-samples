@@ -18,8 +18,24 @@ packages built from the public CoAkka artifact surface. Mojo and Zig are
 tracked as public source-package runtime sample lanes while package-manager
 lanes remain planned.
 
+## Start Here
+
+| Question | Short answer |
+| --- | --- |
+| Problem | Internal application work often becomes fake backend HTTP, spreading one contract across URLs, clients, retries, timeout mapping, status mapping, and logs. |
+| What CoAkka is | A runtime boundary for application capabilities: callers ask a typed target, route snapshots decide ownership, and replies/deadletters carry runtime diagnostics. |
+| What it is not | Not a replacement for public HTTP/gRPC edges, auth, service discovery, deployment policy, CQRS, or ordinary direct calls that are already enough. |
+| Run this | `bash run.sh containers node-python` or `bash run.sh runtime jvm basic` |
+| Observe this | The caller uses a target, the owner can be another process/language, and failures surface as runtime outcomes instead of hidden REST fallback behavior. |
+
+Evidence and repo boundaries:
+[Production Evidence](docs/production-evidence.md),
+[Repository Boundaries](docs/repository-boundaries.md),
+[Production Readiness](docs/production-readiness.md).
+
 ## Table of Contents
 
+- [Start Here](#start-here)
 - [What Problem Does CoAkka Solve?](#what-problem-does-coakka-solve)
 - [See It In 3 Minutes](#see-it-in-3-minutes)
 - [Before And After](#before-and-after)
@@ -135,6 +151,12 @@ bash run.sh containers down
 These samples prove two real processes, two language hosts, browser-visible
 state changes, and runtime delivery with no REST fallback between the sample
 services.
+
+Current visual proof from the Spring Boot JVM web to Go store container sample:
+
+![Spring Boot web UI showing runtime counters and route-miss diagnostics](docs/assets/container-spring-go-web.png)
+
+![Go store UI showing customer state changed by runtime messages](docs/assets/container-spring-go-store.png)
 
 What to observe:
 
@@ -885,7 +907,8 @@ The logger samples demonstrate:
 - pressure rejection and dropped counters
 - manual drain behavior
 - native ABI/version/git diagnostics
-- the same logging behavior from JVM, Python, Node.js, Go, and native C/C++
+- the same logging behavior from JVM, Python, Node.js, Go, C#, Rust, Mojo, Zig,
+  and native C/C++
 
 Use it when the useful property is predictable logging behavior across language
 ports, especially under constrained machines, queue pressure, or incident
@@ -1167,8 +1190,11 @@ small system that only needs one ordinary REST or gRPC call can keep that
 direct shape.
 
 For production fit, measurement checklist, learning path, and config ownership,
-read
-[Production Readiness](docs/production-readiness.md).
+read [Production Readiness](docs/production-readiness.md). For a stricter
+current-evidence ledger, read
+[Production Evidence](docs/production-evidence.md). For what this repository
+does and does not contain, read
+[Repository Boundaries](docs/repository-boundaries.md).
 
 ## Future Connector Scope
 
@@ -1344,6 +1370,10 @@ runtime/
     basic/
   rust/
     basic/
+  mojo/
+    basic/
+  zig/
+    basic/
   native/
     basic/
     pressure/
@@ -1370,6 +1400,10 @@ logger/
   rust/
     basic/
     pressure/
+  mojo/
+    basic/
+  zig/
+    basic/
   native/
     basic/
     pressure/

@@ -4,8 +4,11 @@ This guide is for moving from the samples to an existing service. The samples
 are intentionally small, but the integration shape should stay the same:
 
 For vocabulary first, start with [Runtime Glossary](runtime-glossary.md). For
-fit, production evidence, and operational ownership, read
-[Production Readiness](production-readiness.md).
+fit and operational ownership, read
+[Production Readiness](production-readiness.md). For the current public
+evidence checklist, read [Production Evidence](production-evidence.md). For
+repository ownership boundaries, read
+[Repository Boundaries](repository-boundaries.md).
 
 1. add the language connector artifact
 2. start one runtime participant per process
