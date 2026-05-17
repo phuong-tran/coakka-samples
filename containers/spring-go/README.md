@@ -15,18 +15,25 @@ Browser -> Spring Boot HTTP edge -> CoAkka runtime -> Go store -> CoAkka runtime
 
 The Go UI is observation-only. There is no Spring-to-Go REST fallback.
 
-Run through the repository entrypoint. The default path uses prebuilt images
-that already contain the native runtime:
+Run through the repository entrypoint. The default path uses prebuilt Spring-Go
+images that already contain the native runtime:
 
 ```sh
 bash run.sh containers spring-go
 ```
 
-Default image tags:
+Pinned image tags:
 
 ```text
 docker.io/gabrielgun1983/sample-spring-web:0.1.0-fbab60154993-remote
 docker.io/gabrielgun1983/sample-go-store:0.1.0-fbab60154993-remote
+```
+
+For the current `0.2.0` container visual proof, use the Node.js/Python
+container sample from the repository root:
+
+```sh
+bash run.sh containers node-python
 ```
 
 Then open:

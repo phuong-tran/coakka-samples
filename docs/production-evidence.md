@@ -10,7 +10,7 @@ deployment.
 
 | Area | Public evidence today | How to run |
 | --- | --- | --- |
-| Container runtime path | Spring Boot web to Go store runs as separate processes with browser-visible state and no store REST fallback; screenshots are committed under `docs/assets/`. Node.js web to Python store has the same sample shape and image-pinned compose path. | `bash run.sh containers spring-go`, `bash run.sh containers node-python` |
+| Container runtime path | Node.js web to Python store runs as separate processes with browser-visible state and no store REST fallback; screenshots are committed under `docs/assets/`. | `bash run.sh containers node-python` |
 | Local request/reply | JVM, Python, Node.js, Go, C#, Rust, native C/C++, Mojo, and Zig basic runtime samples. | `bash run.sh runtime <language> basic` |
 | Route miss and deadletter | JVM, Java, Python, Node.js, Go, native C/C++, Mojo, and Zig samples expose route-miss/deadletter behavior. | `bash run.sh runtime jvm deadletter`, `bash run.sh runtime python deadletter`, `bash run.sh runtime native basic` |
 | Route reload | Python hot-reload applies a newer generation and rejects stale or invalid snapshots. | `bash run.sh runtime python hot-reload` |
@@ -22,18 +22,18 @@ deployment.
 
 ## Visual Evidence
 
-The Spring Boot JVM web to Go store container sample was captured from the
+The Node.js web to Python store container sample was captured from the
 prebuilt public image path:
 
 ```sh
-bash run.sh containers spring-go up -d
-bash run.sh containers spring-go smoke
+bash run.sh containers node-python up -d
+bash run.sh containers node-python smoke
 ```
 
 Screenshots:
 
-- [Spring Boot web UI](assets/container-spring-go-create-web.png)
-- [Go store UI](assets/container-spring-go-create-store.png)
+- [Node.js web UI](assets/container-node-python-create-web.png)
+- [Python store UI](assets/container-node-python-create-store.png)
 
 The web screenshot shows an accepted create command and runtime counters. The
 store screenshot shows the same customer state changed by runtime messages from

@@ -1,6 +1,6 @@
 services:
   python-store:
-    image: ${COAKKA_SAMPLE_PYTHON_STORE_IMAGE:-docker.io/gabrielgun1983/sample-python-store:0.1.0-fbab60154993-remote}
+    image: ${COAKKA_SAMPLE_PYTHON_STORE_IMAGE:-docker.io/gabrielgun1983/sample-python-store:0.2.0-94a5729-remote}
     hostname: python-store
     environment:
       COAKKA_SAMPLE_STORE_WEB_HOST: 0.0.0.0
@@ -16,7 +16,7 @@ services:
       - coakka-node-python
 
   node-web:
-    image: ${COAKKA_SAMPLE_NODE_WEB_IMAGE:-docker.io/gabrielgun1983/sample-node-web:0.1.0-fbab60154993-remote}
+    image: ${COAKKA_SAMPLE_NODE_WEB_IMAGE:-docker.io/gabrielgun1983/sample-node-web:0.2.0-94a5729-remote}
     hostname: node-web
     depends_on:
       - python-store

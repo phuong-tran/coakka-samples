@@ -113,21 +113,19 @@ installing Node.js, Python, Go, Java, protobuf tooling, or native build tools.
 Public Docker Hub images:
 
 ```text
-docker.io/gabrielgun1983/sample-node-web:0.1.0-fbab60154993-remote
-docker.io/gabrielgun1983/sample-python-store:0.1.0-fbab60154993-remote
-docker.io/gabrielgun1983/sample-spring-web:0.1.0-fbab60154993-remote
-docker.io/gabrielgun1983/sample-go-store:0.1.0-fbab60154993-remote
+docker.io/gabrielgun1983/sample-node-web:0.2.0-94a5729-remote
+docker.io/gabrielgun1983/sample-python-store:0.2.0-94a5729-remote
 ```
 
-Those tags are the current public container image set. Source builds for the
-Node.js/Python container sample target the current connector set
-`0.2.0+94a5729-6b7a3bf` and need a matching runtime-base image.
+Those tags are the current public Node.js/Python container image set. Source
+builds for this container sample target the current connector set
+`0.2.0+94a5729-6b7a3bf` and need a matching runtime-base image only when
+building locally.
 
-Run either sample:
+Run the visible container sample:
 
 ```sh
 bash run.sh containers node-python
-bash run.sh containers spring-go
 ```
 
 Then open:
@@ -136,10 +134,6 @@ Then open:
 Node.js web -> Python store:
   http://localhost:8080
   http://localhost:8081
-
-Spring Boot JVM web -> Go store:
-  http://localhost:8090
-  http://localhost:8091
 ```
 
 Stop every container sample:
@@ -152,11 +146,11 @@ These samples prove two real processes, two language hosts, browser-visible
 state changes, and runtime delivery with no REST fallback between the sample
 services.
 
-Current visual proof from the Spring Boot JVM web to Go store container sample:
+Current visual proof from the Node.js web to Python store container sample:
 
-![Spring Boot web UI showing an accepted create command and runtime counters](docs/assets/container-spring-go-create-web.png)
+![Node.js web UI showing an accepted create command and runtime counters](docs/assets/container-node-python-create-web.png)
 
-![Go store UI showing the same customer state changed by runtime messages](docs/assets/container-spring-go-create-store.png)
+![Python store UI showing the same customer state changed by runtime messages](docs/assets/container-node-python-create-store.png)
 
 What to observe:
 

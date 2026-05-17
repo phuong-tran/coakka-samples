@@ -24,14 +24,14 @@ bash run.sh containers node-python
 Default image tags:
 
 ```text
-docker.io/gabrielgun1983/sample-node-web:0.1.0-fbab60154993-remote
-docker.io/gabrielgun1983/sample-python-store:0.1.0-fbab60154993-remote
+docker.io/gabrielgun1983/sample-node-web:0.2.0-94a5729-remote
+docker.io/gabrielgun1983/sample-python-store:0.2.0-94a5729-remote
 ```
 
-These prebuilt image tags are the current public container images. The
-Dockerfile source path targets the current runtime connector artifact set
-`0.2.0+94a5729`; build it only when a matching `coakka/runtime-base` image is
-available locally or in the selected registry.
+These prebuilt image tags are the current public Node.js/Python container
+images. The Dockerfile source path targets the same runtime connector artifact
+set; build it only when a matching `coakka/runtime-base` image is available
+locally or in the selected registry.
 
 Then open:
 
