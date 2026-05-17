@@ -27,6 +27,12 @@ print_version() {
     dotnet)
       dotnet --version 2>&1 | head -n 1 | sed 's/^/.NET SDK /'
       ;;
+    zig)
+      zig version 2>&1 | head -n 1 | sed 's/^/Zig /'
+      ;;
+    mojo)
+      mojo --version 2>&1 | head -n 1
+      ;;
     curl)
       curl --version 2>&1 | head -n 1
       ;;
@@ -71,6 +77,12 @@ command_major_minor() {
       ;;
     dotnet)
       dotnet --version | sed -n 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\).*/\1 \2/p'
+      ;;
+    zig)
+      zig version | sed -n 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\).*/\1 \2/p'
+      ;;
+    mojo)
+      mojo --version | sed -n 's/^Mojo \([0-9][0-9]*\)\.\([0-9][0-9]*\).*/\1 \2/p'
       ;;
   esac
 }
@@ -170,6 +182,8 @@ check_command node "Node.js samples" "Install Node.js 20 or newer."
 check_command npm "Node.js samples" "Install npm."
 check_command go "Go samples" "Install Go 1.22+ for logger or Go 1.23+ for runtime v2."
 check_command dotnet "C# runtime samples" "Install .NET SDK 10 or newer."
+check_command zig "Zig runtime source-only sample" "Install Zig 0.16 or newer."
+check_command mojo "Mojo runtime source-only sample" "Install Mojo 1.0 beta or newer."
 check_command cmake "native C/C++ samples" "Install CMake."
 check_command cc "native C samples" "Install a C compiler."
 check_command c++ "native C++ samples" "Install a C++ compiler."
@@ -182,6 +196,8 @@ check_minimum_version node "Node.js samples" 20 0
 check_minimum_version go "Go logger samples" 1 22
 check_minimum_version go "Go runtime v2 samples" 1 23
 check_minimum_version dotnet "C# runtime samples" 10 0
+check_minimum_version zig "Zig runtime source-only sample" 0 16
+check_minimum_version mojo "Mojo runtime source-only sample" 1 0
 
 print_artifact_source
 
@@ -189,7 +205,9 @@ cat <<'EOF'
 
 Runtime samples:
   Runtime JVM, Python, Node.js, Go, C#, Rust, native C/C++, Spring Boot, and
-  Quarkus samples are backed by the current public publish surface.
+  Quarkus samples are backed by the current public publish surface. Zig and
+  Mojo are source-only basic samples over the native runtime archive and
+  require local Zig/Mojo toolchains.
 EOF
 
 printf '\nTry:\n'

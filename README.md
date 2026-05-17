@@ -105,8 +105,7 @@ docker.io/gabrielgun1983/sample-go-store:0.1.0-fbab60154993-remote
 
 Those tags are the current public container image set. Source builds for the
 Node.js/Python container sample target the current connector set
-`0.2.0+94a5729-6b7a3bf`
-artifact set and need a matching runtime-base image.
+`0.2.0+94a5729-6b7a3bf` and need a matching runtime-base image.
 
 Run either sample:
 
@@ -399,8 +398,8 @@ The value is not adding one more transport option. The value is standardizing
 the boundary between an application host and the runtime so the same delivery
 terms apply across services and languages:
 
-- one runtime contract for JVM, Python, Node.js, Go, C#, Rust, planned Mojo and
-  Zig connectors, and native C/C++
+- one runtime contract for JVM, Python, Node.js, Go, C#, Rust, source-only Mojo
+  and Zig samples, and native C/C++
 - one vocabulary for target names, route snapshots, generations, and handler
   ownership
 - one diagnostic model for request/reply, deadletters, queue pressure, and

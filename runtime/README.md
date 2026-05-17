@@ -284,6 +284,8 @@ Current samples:
 | Go | `go/basic`, `go/deadletter` | public Go source package | echo and route-miss deadletter |
 | C# | `csharp/basic` | public NuGet package | echo and route-miss deadletter |
 | Rust | `rust/basic` | public Rust spike tarball | echo and route-miss deadletter |
+| Zig | `zig/basic` | source-only over native C ABI archive | lifecycle/control smoke |
+| Mojo | `mojo/basic` | source-only sample-local shim over native C ABI archive | lifecycle/control smoke |
 | Native C/C++ | `native/basic`, `native/pressure` | native C ABI archive | route snapshot, route-miss deadletter, and bounded pressure counters |
 | Containers | `../containers/node-python` | public Node.js package and Python wheel | Node.js web process to Python store process |
 
@@ -301,6 +303,11 @@ that connector exposes it. They intentionally do not claim native intake
 pressure until the public connector surface exposes a repeatable pressure hook
 that can produce the same queue-rejected evidence without bypassing connector
 ownership.
+
+Zig and Mojo currently cover only lifecycle/control smoke through the native
+C ABI archive. They prove native runtime loading, route snapshot application,
+start, stats read, and stop from source, but they are not package artifacts and
+do not claim connector-level request/reply coverage yet.
 
 Scenario track:
 
@@ -364,6 +371,9 @@ Run all runtime lanes:
 ```sh
 bash run.sh runtime
 ```
+
+This expects local toolchains for every runtime lane, including the source-only
+Zig and Mojo basic samples.
 
 From any leaf sample directory, run:
 
