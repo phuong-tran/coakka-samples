@@ -1395,7 +1395,7 @@ Current public artifact pins:
 | --- | --- |
 | Logger JVM | `coakka.logger:coakka-jvm-native-logger:0.1.0-gba2a66d98eb5` |
 | Logger Python, Node.js, Go, C#, Rust, and native C/C++ | `0.1.0+ba2a66d98eb5` |
-| Runtime native C/C++ | `0.1.0+a671b3a` |
+| Runtime native C/C++ | `0.1.0+e2dc43a` |
 | Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-ga671b3a-c20cf7c4` |
 | Runtime Python, Node.js, Go, C#, and Rust | `0.1.0+a671b3a-c20cf7c4` |
 | Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.1.0-ga671b3a` |
@@ -1406,7 +1406,7 @@ The matching artifact note is published at
 
 ## Public Status
 
-Current public runtime generation: `0.1.0+a671b3a`.
+Current public native runtime generation: `0.1.0+e2dc43a`.
 
 | Lane | Public artifact status | First command |
 | --- | --- | --- |

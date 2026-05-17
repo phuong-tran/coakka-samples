@@ -24,7 +24,7 @@ required_rows=(
   "logger C# package|logger/csharp/releases/${expected_logger_native}/CoAkka.Logger.0.1.0.nupkg"
   "logger Rust package|logger/rust/releases/${expected_logger_native}/coakka-logger-rs-0.1.0-spike.tar.gz"
   "logger Native package|logger/native/releases/${expected_logger_native}/coakka-logger-native-0.1.0.tar.gz"
-  "runtime Native package|runtime/native/releases/0.1.0+a671b3a/coakka-runtime-native-v2-0.1.0.tar.gz"
+  "runtime Native package|runtime/native/releases/0.1.0+e2dc43a/coakka-runtime-native-v2-0.1.0.tar.gz"
   "runtime JVM jar|runtime/jvm/releases/0.1.0+a671b3a-c20cf7c4/coakka-jvm-native-runtime-v2-0.1.1-ga671b3a-c20cf7c4.jar"
   "runtime Python wheel|runtime/python/releases/0.1.0+a671b3a-c20cf7c4/coakka_v2_connector-0.1.0-py3-none-any.whl"
   "runtime Node package|runtime/node/releases/0.1.0+a671b3a-c20cf7c4/coakka-v2-connector-node-0.1.0.tgz"
