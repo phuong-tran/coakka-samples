@@ -17,4 +17,31 @@ package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${t
 mkdir -p "${tmp_dir}/package"
 tar -C "${tmp_dir}/package" --strip-components 1 -xzf "${package_path}"
 
-(cd "${tmp_dir}/package" && bash scripts/smoke.sh)
+package_root="${tmp_dir}/package"
+sample_src="${tmp_dir}/sample-src"
+mkdir -p "${sample_src}"
+cp "${package_root}/src/runtime.zig" "${sample_src}/runtime.zig"
+cp "${script_dir}/main.zig" "${sample_src}/main.zig"
+
+runtime_lib="${COAKKA_RUNTIME_LIB:-}"
+if [[ -z "${runtime_lib}" ]]; then
+  case "$(uname -s)" in
+    Darwin) runtime_lib="${package_root}/native/macos-aarch64/libcoakka_runtime_v2.dylib" ;;
+    Linux)
+      case "$(uname -m)" in
+        x86_64) runtime_lib="${package_root}/native/linux-x86_64/libcoakka_runtime_v2.so" ;;
+        aarch64|arm64) runtime_lib="${package_root}/native/linux-aarch64/libcoakka_runtime_v2.so" ;;
+        *) coakka_die "Unsupported runtime Zig sample arch: $(uname -m)" ;;
+      esac
+      ;;
+    *) coakka_die "Unsupported runtime Zig sample OS: $(uname -s)" ;;
+  esac
+fi
+
+binary="${tmp_dir}/coakka-runtime-zig-basic"
+zig build-exe "${sample_src}/main.zig" -lc -femit-bin="${binary}" >/dev/null
+
+case "$(uname -s)" in
+  Darwin) COAKKA_RUNTIME_LIB="${runtime_lib}" DYLD_LIBRARY_PATH="$(dirname "${runtime_lib}")" "${binary}" ;;
+  Linux) COAKKA_RUNTIME_LIB="${runtime_lib}" LD_LIBRARY_PATH="$(dirname "${runtime_lib}")" "${binary}" ;;
+esac

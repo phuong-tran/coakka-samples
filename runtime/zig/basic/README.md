@@ -1,10 +1,12 @@
 # Zig Runtime Basic
 
-This sample unpacks the public Zig source connector package and runs its
-packaged runtime smoke.
+This sample keeps the runnable Zig entrypoint in this repository while using
+the public Zig source connector package for the reusable runtime helper and
+bundled native runtime library.
 
 It demonstrates:
 
+- sample-local Zig code over the published Zig runtime helper
 - source package extraction from the public artifact surface
 - native runtime loading from the package bundle
 - route snapshot apply
