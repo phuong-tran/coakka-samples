@@ -25,6 +25,7 @@ shape through language-specific connector APIs.
 - [Business Timeout And Retry Shape](#business-timeout-and-retry-shape)
 - [Timeout Is A Wait Budget](#timeout-is-a-wait-budget)
 - [Retry Is Caller Policy](#retry-is-caller-policy)
+- [Cluster Routing](#cluster-routing)
 - [Tuning Parameters](#tuning-parameters)
 - [Reading A Sample](#reading-a-sample)
 
@@ -613,6 +614,17 @@ Practical default:
 | non-idempotent command | Do not auto-retry after timeout without reconciliation. |
 | route miss | Fix config or target name; blind retry is usually wrong. |
 | queue pressure | Back off or shed load before increasing queue size. |
+
+## Cluster Routing
+
+Cluster-style routing keeps the same timeout and retry vocabulary. Runtime may
+try another eligible endpoint inside the same request lifecycle only when it
+has delivery evidence that the previous endpoint did not accept ownership. A
+user retry is different: the app submits a new request after a terminal result.
+
+Read [Runtime Cluster Routing](runtime-cluster-routing.md) for the route
+snapshot examples, Mermaid diagrams, failover evidence rules, and transport
+compatibility rule.
 
 ## Tuning Parameters
 

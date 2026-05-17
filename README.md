@@ -32,6 +32,7 @@ packages built from the public CoAkka artifact surface.
 - [Boundary Patterns](#boundary-patterns)
 - [Questions And Answers](#questions-and-answers)
 - [How It Works](#how-it-works)
+- [Cluster Routing](#cluster-routing)
 - [Sample Integration Checklist](#sample-integration-checklist)
 - [Runtime Scenarios](#runtime-scenarios)
 - [Framework Adapters](#framework-adapters)
@@ -270,6 +271,8 @@ one boundary at a time.
 For the detailed connector, routing, envelope, deadletter, timeout, retry, and
 tuning model, read
 [Runtime Message And Routing Model](docs/runtime-message-and-routing-model.md).
+For the cluster-style endpoint selection and failover model, read
+[Runtime Cluster Routing](docs/runtime-cluster-routing.md).
 
 ## How To Read This Repository
 
@@ -674,6 +677,18 @@ The semantics need to stay strict:
   the active route snapshot at send time
 - rollback is another explicit snapshot with a newer generation, not a partial
   mutation of runtime state
+
+## Cluster Routing
+
+Cluster-style delivery is still the same call-site shape. The app asks for a
+target; the route snapshot may contain several eligible peer endpoints; the
+runtime selects and, when safe, fails over within the same request lifecycle.
+The app still owns business retry policy after a terminal timeout or
+deadletter.
+
+Read [Runtime Cluster Routing](docs/runtime-cluster-routing.md) for the
+Mermaid diagrams, route snapshot examples, call-site sample, and the transport
+compatibility rule.
 
 ## Sample Integration Checklist
 
