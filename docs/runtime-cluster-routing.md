@@ -53,12 +53,12 @@ runtime: resolve route, select endpoint, deliver, match reply or deadletter
 | --- | --- |
 | App host | Business validation, idempotency, user retry policy, HTTP or UI mapping. |
 | Connector | Host-language API, config mapping, payload encoding, handler registration. |
-| Runtime core | Route generation, endpoint selection, failover attempt chain, correlation, timeout budget, deadletters, stats. |
+| Runtime | Route generation, endpoint selection, failover attempt chain, correlation, timeout budget, deadletters, stats. |
 | Transporter | Runtime-to-runtime delivery mechanics for one compatible wire profile. |
 
-This is why cluster routing belongs in the core. It is not the app-host
+This is why cluster routing belongs in the runtime. It is not the app-host
 guessing which peer is busy, and it is not call-site code maintaining a list of
-hosts. The app-host still owns business meaning; the core owns delivery.
+hosts. The app-host still owns business meaning; the runtime owns delivery.
 
 ## Request Path
 
@@ -114,7 +114,7 @@ Use these rules when publishing route snapshots:
 - after a partition heals, reconciliation is another explicit snapshot with a
   higher generation
 
-This keeps the runtime boundary small. The core can fail closed on stale or
+This keeps the runtime boundary small. The runtime can fail closed on stale or
 incompatible route state and report the active generation in diagnostics; the
 deployment control plane owns the single-writer or quorum rule that decides
 which route snapshot is next.
@@ -309,10 +309,10 @@ flowchart LR
     a -.->|"fail closed until compatible"| c
 ```
 
-The current public remote hardening path is CAF-to-CAF. A future transporter
-can be added behind the same host-facing C ABI only when compatibility is made
-explicit. Do not assume a route can mix transport engines just because every
-process exposes the same connector API.
+The current public remote hardening path requires matching runtime-to-runtime
+wire profiles. A future transporter can be added behind the same host-facing C
+ABI only when compatibility is made explicit. Do not assume a route can mix
+transport engines just because every process exposes the same connector API.
 
 ## Operator Reading
 
