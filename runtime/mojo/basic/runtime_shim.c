@@ -3,11 +3,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#if defined(_WIN32)
-#define COAKKA_MOJO_EXPORT __declspec(dllexport)
-#else
-#define COAKKA_MOJO_EXPORT __attribute__((visibility("default")))
-#endif
+#define COAKKA_SAMPLE_EXPORT __attribute__((visibility("default")))
 
 typedef enum coakka_v2_status_t {
   COAKKA_V2_OK = 0
@@ -333,7 +329,7 @@ done:
   return failed;
 }
 
-COAKKA_MOJO_EXPORT int coakka_mojo_runtime_basic(int ignored) {
+COAKKA_SAMPLE_EXPORT int coakka_mojo_runtime_basic(int ignored) {
   (void)ignored;
 
   coakka_v2_runtime_info_t info = {0};

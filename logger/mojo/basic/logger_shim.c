@@ -5,11 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#if defined(_WIN32)
-#define COAKKA_MOJO_EXPORT __declspec(dllexport)
-#else
-#define COAKKA_MOJO_EXPORT __attribute__((visibility("default")))
-#endif
+#define COAKKA_SAMPLE_EXPORT __attribute__((visibility("default")))
 
 static int require_ok(coakka_logger_status_t status, const char* step) {
   if (status == COAKKA_LOGGER_STATUS_OK) {
@@ -19,7 +15,7 @@ static int require_ok(coakka_logger_status_t status, const char* step) {
   return 1;
 }
 
-COAKKA_MOJO_EXPORT int coakka_mojo_logger_basic(int ignored) {
+COAKKA_SAMPLE_EXPORT int coakka_mojo_logger_basic(int ignored) {
   (void)ignored;
 
   coakka_logger_core_info_t info;
