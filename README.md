@@ -1205,6 +1205,7 @@ connector first.
 | Capability | Public sample | What it proves |
 | --- | --- | --- |
 | Request/reply | JVM, Python, Node.js, Go, C#, Rust, native C/C++ basic samples | Typed request/reply through a process-owned route and runtime counters |
+| Raw request/reply | Zig and Mojo basic samples | Raw envelope request/reply through the public C ask-client helpers and delivered-request lane |
 | Runtime lifecycle/control | Zig and Mojo basic samples | Public native runtime load, route snapshot apply, start, stats read, and stop |
 | Deadletter | JVM, Java, Python, Node.js, Go deadletter samples; native basic route miss | Missing-route accounting and matched pending requests |
 | Route snapshot apply/reload | `runtime/python/hot-reload`; `runtime/scenarios/customer-crud/spring-boot-single-process/routes.yml` and `runtime/scenarios/customer-crud/spring-boot-spring-boot/routes.yml` with `bash run.sh reload-routes` | Apply the startup route snapshot, optionally apply a newer snapshot later, reject stale/invalid snapshots, and observe generation changes |
@@ -1624,8 +1625,9 @@ If native loading fails, first check:
 - Runtime v2 and logger JVM/Python/Node.js/Go/C#/Rust samples use all-in-one
   language artifacts for supported platforms; no separate per-platform native
   download is required for those language lanes.
-- Mojo and Zig runtime samples are source-only lifecycle smokes over the native
-  runtime archive; they are not published language artifacts yet.
+- Mojo and Zig runtime samples are source-only lifecycle and raw request/reply
+  smokes over the native runtime archive; they are not published language
+  artifacts yet.
 - Native C/C++ samples use the published native archive and select the current
   platform with CMake.
 - whether the current OS/architecture is one of:
