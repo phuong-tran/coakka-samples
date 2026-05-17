@@ -31,7 +31,7 @@ Spring Boot JVM web process
 
 ## Why Containers
 
-Public users may come from Java, Go, Python, Node.js, C#, Rust, or native C/C++.
+Public users may come from Java, Go, Python, Node.js, C#, Rust, Mojo, Zig, or native C/C++.
 Requiring them to install several toolchains before seeing one runtime delivery
 path creates avoidable friction.
 

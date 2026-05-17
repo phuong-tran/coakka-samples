@@ -15,7 +15,8 @@ CoAkka is a good fit when an application needs one or more of these boundaries:
 - route snapshots and route generations instead of hand-wired hand-wired clients
 - deadletters and timeout outcomes that are visible as runtime vocabulary
 - local and cross-process handlers that can move between JVM, Python, Node.js,
-  Go, C#, Rust, and native C/C++ without redesigning the business contract
+  Go, C#, Rust, planned Mojo and Zig connectors, and native C/C++ without
+  redesigning the business contract
 
 HTTP still belongs at real external edges such as browser/API entry points.
 CoAkka is for the runtime boundary after the app has accepted work and

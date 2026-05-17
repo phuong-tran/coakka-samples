@@ -14,7 +14,8 @@ diagnostics.
 
 This repository shows that model through runnable samples for JVM, Python,
 Node.js, Go, C#, Rust, native integrations, framework adapters, and logger
-packages built from the public CoAkka artifact surface.
+packages built from the public CoAkka artifact surface. Mojo and Zig are
+tracked as planned runtime connector lanes.
 
 ## Table of Contents
 
@@ -102,7 +103,8 @@ docker.io/gabrielgun1983/sample-go-store:0.1.0-fbab60154993-remote
 ```
 
 Those tags are the current public container image set. Source builds for the
-Node.js/Python container sample target the current runtime `0.2.0+94a5729`
+Node.js/Python container sample target the current connector set
+`0.2.0+94a5729-6b7a3bf`
 artifact set and need a matching runtime-base image.
 
 Run either sample:
@@ -396,7 +398,8 @@ The value is not adding one more transport option. The value is standardizing
 the boundary between an application host and the runtime so the same delivery
 terms apply across services and languages:
 
-- one runtime contract for JVM, Python, Node.js, Go, C#, Rust, and native C/C++
+- one runtime contract for JVM, Python, Node.js, Go, C#, Rust, planned Mojo and
+  Zig connectors, and native C/C++
 - one vocabulary for target names, route snapshots, generations, and handler
   ownership
 - one diagnostic model for request/reply, deadletters, queue pressure, and
@@ -1162,6 +1165,11 @@ read
 
 Android and PHP are intentionally not in the current sample matrix yet.
 
+Mojo and Zig are planned runtime connector lanes. They should start as small
+FFI-based connectors over the public C ABI, with lifecycle, route-miss, and
+request/reply proofs before any framework or scenario sample claims. Until the
+artifact lanes exist, README tables list them as planned rather than public.
+
 Android is a likely future connector target, but it is a different kind of
 runtime host. The useful Android shape is not "Spring Boot on a phone"; it is a
 long-lived app, dashboard, field tablet, sensor surface, or edge operator UI
@@ -1188,7 +1196,7 @@ connector first.
 
 | Capability | Public sample | What it proves |
 | --- | --- | --- |
-| Request/reply | JVM, Python, Node.js, Go, C#, Rust, native C/C++ basic samples | Typed request/reply through a process-owned route and runtime counters |
+| Request/reply | JVM, Python, Node.js, Go, C#, Rust, native C/C++ basic samples; Mojo and Zig planned | Typed request/reply through a process-owned route and runtime counters |
 | Deadletter | JVM, Java, Python, Node.js, Go deadletter samples; native basic route miss | Missing-route accounting and matched pending requests |
 | Route snapshot apply/reload | `runtime/python/hot-reload`; `runtime/scenarios/customer-crud/spring-boot-single-process/routes.yml` and `runtime/scenarios/customer-crud/spring-boot-spring-boot/routes.yml` with `bash run.sh reload-routes` | Apply the startup route snapshot, optionally apply a newer snapshot later, reject stale/invalid snapshots, and observe generation changes |
 | Queue pressure | `runtime/native/pressure`; status notes in [`runtime/README.md`](runtime/README.md) | Bounded runtime queue rejection and deadletter counters at the public C ABI intake boundary |
@@ -1392,7 +1400,7 @@ Override the local Maven repository path with:
 COAKKA_PUBLISH_MAVEN_LOCAL=/path/to/coakka-publish-public/maven bash run.sh logger
 ```
 
-Python, Node.js, Go, C#, Rust, native C/C++, and non-Maven package lanes first
+Python, Node.js, Go, C#, Rust, native C/C++, planned Mojo/Zig, and non-Maven package lanes first
 look for a sibling `coakka-publish-public` checkout. Use `COAKKA_PUBLISH_ROOT`
 to point samples at another public artifact checkout:
 
@@ -1414,18 +1422,19 @@ Current public artifact pins:
 | --- | --- |
 | Logger JVM | `coakka.logger:coakka-jvm-native-logger:0.1.0-gba2a66d98eb5` |
 | Logger Python, Node.js, Go, C#, Rust, and native C/C++ | `0.1.0+ba2a66d98eb5` |
-| Runtime native C/C++ | `0.2.0+94a5729` |
+| Runtime native C/C++ | `0.2.0+c124a9e` |
 | Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-g94a5729-6b7a3bf` |
 | Runtime Python, Node.js, Go, C#, and Rust | `0.2.0+94a5729-6b7a3bf` |
+| Runtime Mojo and Zig | planned |
 | Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.2.0-g94a5729` |
 | Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.2.0-g94a5729` |
 
 The matching artifact note is published at
-`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-05-17-runtime-94a5729.md`.
+`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-05-18-runtime-native-c124a9e.md`.
 
 ## Public Status
 
-Current public native runtime generation: `0.2.0+94a5729`.
+Current public native runtime generation: `0.2.0+c124a9e`.
 
 | Lane | Public artifact status | First command |
 | --- | --- | --- |
@@ -1443,6 +1452,8 @@ Current public native runtime generation: `0.2.0+94a5729`.
 | Runtime Go | public | `bash run.sh runtime go basic` |
 | Runtime C# | public | `bash run.sh runtime csharp basic` |
 | Runtime Rust | public | `bash run.sh runtime rust basic` |
+| Runtime Mojo | planned | not published yet |
+| Runtime Zig | planned | not published yet |
 | Runtime Spring Boot and Quarkus adapters | public | `bash run.sh scenarios check` |
 | Runtime container sample: Node.js -> Python | public Docker Hub images | `bash run.sh containers node-python` |
 | Runtime container sample: Spring Boot JVM -> Go | public Docker Hub images | `bash run.sh containers spring-go` |
@@ -1552,8 +1563,8 @@ The JVM logger lane also includes Java basic and pressure samples:
 
 The exact sequence number can change if the sample is extended.
 
-Run every logger sample across JVM, Python, Node.js, Go, C#, Rust, and native
-C/C++:
+Run every published logger sample across JVM, Python, Node.js, Go, C#, Rust,
+and native C/C++:
 
 ```sh
 bash run.sh logger

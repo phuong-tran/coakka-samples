@@ -7,8 +7,8 @@ fit together.
 
 CoAkka does not assume every participant lives inside one actor runtime such as
 BEAM or a JVM actor system. The boundary is an app-host plus connector boundary:
-JVM, Python, Node.js, Go, C#, Rust, and native hosts submit the same runtime
-shape through language-specific connector APIs.
+JVM, Python, Node.js, Go, C#, Rust, planned Mojo and Zig connectors, and native
+hosts submit the same runtime shape through language-specific connector APIs.
 
 ## Table Of Contents
 

@@ -42,7 +42,7 @@ transport detail.
 An envelope is CoAkka's explicit message container. Erlang, Elixir, and Akka
 often let people talk about "messages" directly; CoAkka exposes the container
 because it must carry the same routing and payload contract across JVM, Python,
-Node.js, Go, C#, Rust, and native C/C++.
+Node.js, Go, C#, Rust, planned Mojo and Zig connectors, and native C/C++.
 
 | Field | Why it exists |
 | --- | --- |
@@ -103,4 +103,3 @@ The useful default is simple:
 | Business logic sends many requests | Keep the default lane split so inbound handler work does not sit in front of reply/deadletter matching. |
 | Business logic sends one request | Keep the same default; there is no extra setup for the caller. |
 | Tiny one-way host after measurement | Advanced users may disable the lane if sharing is proven harmless. |
-
