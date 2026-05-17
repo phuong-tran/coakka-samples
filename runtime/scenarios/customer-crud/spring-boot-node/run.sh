@@ -9,7 +9,7 @@ source "${repo_root}/scripts/sample-utils.sh"
 
 web_build_task=":runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-web:bootJar"
 web_jar="${repo_root}/runtime/scenarios/customer-crud/spring-boot-spring-boot/customer-web/build/libs/customer-web.jar"
-node_artifact_rel="runtime/node/releases/0.1.0+e2dc43a-9227dc0/coakka-v2-connector-node-0.1.0.tgz"
+node_artifact_rel="runtime/node/releases/0.2.0+94a5729-6b7a3bf/coakka-v2-connector-node-0.2.0.tgz"
 
 print_usage() {
   cat <<'EOF'
@@ -55,7 +55,7 @@ run_store() {
   local tmp_dir package_path
   tmp_dir="$(mktemp -d)"
   trap "rm -rf '${tmp_dir}'" EXIT
-  package_path="$(coakka_resolve_artifact "${publish_root}" "${node_artifact_rel}" "${tmp_dir}/artifacts/coakka-v2-connector-node-0.1.0.tgz")"
+  package_path="$(coakka_resolve_artifact "${publish_root}" "${node_artifact_rel}" "${tmp_dir}/artifacts/coakka-v2-connector-node-0.2.0.tgz")"
   cp "${script_dir}/store.mjs" "${tmp_dir}/store.mjs"
 
   (
@@ -72,7 +72,7 @@ run_dev() {
 
   local tmp_dir package_path store_pid web_pid
   tmp_dir="$(mktemp -d)"
-  package_path="$(coakka_resolve_artifact "${publish_root}" "${node_artifact_rel}" "${tmp_dir}/artifacts/coakka-v2-connector-node-0.1.0.tgz")"
+  package_path="$(coakka_resolve_artifact "${publish_root}" "${node_artifact_rel}" "${tmp_dir}/artifacts/coakka-v2-connector-node-0.2.0.tgz")"
   cp "${script_dir}/store.mjs" "${tmp_dir}/store.mjs"
 
   (
@@ -122,7 +122,7 @@ check_scenario() {
   local tmp_dir package_path
   tmp_dir="$(mktemp -d)"
   trap "rm -rf '${tmp_dir}'" EXIT
-  package_path="$(coakka_resolve_artifact "${publish_root}" "${node_artifact_rel}" "${tmp_dir}/artifacts/coakka-v2-connector-node-0.1.0.tgz")"
+  package_path="$(coakka_resolve_artifact "${publish_root}" "${node_artifact_rel}" "${tmp_dir}/artifacts/coakka-v2-connector-node-0.2.0.tgz")"
   cp "${script_dir}/store.mjs" "${tmp_dir}/store.mjs"
 
   bash "${repo_root}/gradlew" -p "${repo_root}" "${web_build_task}" --quiet

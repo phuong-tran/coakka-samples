@@ -53,7 +53,7 @@ repositories {
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-ge2dc43a-9227dc0")
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-g94a5729-6b7a3bf")
 }
 ```
 
@@ -61,7 +61,7 @@ Spring Boot same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-ge2dc43a")
+    implementation("coakka.spring:coakka-spring-boot-starter:0.2.0-g94a5729")
     implementation("org.springframework.boot:spring-boot-starter-web")
 }
 ```
@@ -70,7 +70,7 @@ Quarkus same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("coakka.quarkus:coakka-quarkus-extension:0.1.0-ge2dc43a")
+    implementation("coakka.quarkus:coakka-quarkus-extension:0.2.0-g94a5729")
     implementation("io.quarkus:quarkus-rest-jackson")
 }
 ```
@@ -79,14 +79,14 @@ Python wheel:
 
 ```sh
 python -m pip install \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/python/releases/0.1.0+e2dc43a-9227dc0/coakka_v2_connector-0.1.0-py3-none-any.whl"
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/python/releases/0.2.0+94a5729-6b7a3bf/coakka_v2_connector-0.2.0-py3-none-any.whl"
 ```
 
 Node.js package:
 
 ```sh
 npm install \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/node/releases/0.1.0+e2dc43a-9227dc0/coakka-v2-connector-node-0.1.0.tgz"
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/node/releases/0.2.0+94a5729-6b7a3bf/coakka-v2-connector-node-0.2.0.tgz"
 ```
 
 Go source package:
@@ -94,10 +94,10 @@ Go source package:
 ```sh
 mkdir -p third_party/coakka-runtime-go
 curl -L \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/go/releases/0.1.0+e2dc43a-9227dc0/coakka-v2-connector-go-0.1.0.tar.gz" \
-  -o /tmp/coakka-v2-connector-go-0.1.0.tar.gz
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/go/releases/0.2.0+94a5729-6b7a3bf/coakka-v2-connector-go-0.2.0.tar.gz" \
+  -o /tmp/coakka-v2-connector-go-0.2.0.tar.gz
 tar -C third_party/coakka-runtime-go --strip-components 1 \
-  -xzf /tmp/coakka-v2-connector-go-0.1.0.tar.gz
+  -xzf /tmp/coakka-v2-connector-go-0.2.0.tar.gz
 ```
 
 ```go
@@ -111,17 +111,17 @@ C# NuGet package from a local feed directory:
 ```sh
 mkdir -p packages
 curl -L \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/csharp/releases/0.1.0+e2dc43a-9227dc0/CoAkka.Runtime.0.1.1.nupkg" \
-  -o packages/CoAkka.Runtime.0.1.1.nupkg
-dotnet add package CoAkka.Runtime --version 0.1.1 --source ./packages
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/csharp/releases/0.2.0+94a5729-6b7a3bf/CoAkka.Runtime.0.2.0.nupkg" \
+  -o packages/CoAkka.Runtime.0.2.0.nupkg
+dotnet add package CoAkka.Runtime --version 0.2.0 --source ./packages
 ```
 
 Rust is currently a spike tarball, not a crates.io-ready package:
 
 ```sh
 curl -L \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/rust/releases/0.1.0+e2dc43a-9227dc0/coakka-runtime-rs-0.1.0-spike.tar.gz" \
-  -o /tmp/coakka-runtime-rs-0.1.0-spike.tar.gz
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/rust/releases/0.2.0+94a5729-6b7a3bf/coakka-runtime-rs-0.2.0-spike.tar.gz" \
+  -o /tmp/coakka-runtime-rs-0.2.0-spike.tar.gz
 ```
 
 After dependency setup, every host follows the same shape:
@@ -208,16 +208,16 @@ Concrete copy-paste recipes:
 - [Quarkus same-process scenario](scenarios/customer-crud/quarkus-local)
 
 The runtime samples keep a strict boundary rule: HTTP belongs at a real edge
-such as a browser/API, partner API, or legacy HTTP dependency. Internal work
-does not need an extra REST service just to get a boundary. That internal
-HTTP shape spreads a private capability contract across request parsing,
+such as a browser/API, partner API, or legacy HTTP dependency. Application work
+does not need an extra REST service just to get a boundary. That backend
+HTTP shape spreads an application-owned capability contract across request parsing,
 headers, middleware, status mapping, client/server lifecycle, timeout policy,
 and test setup before the application has crossed a real product boundary.
 CoAkka keeps that path as typed runtime messages with request/reply and
 deadletter behavior.
 
 `Local-first` in these samples does not mean the runtime is limited to one
-process. It means the first boundary is an internal runtime boundary instead of
+process. It means the first boundary is an runtime boundary instead of
 a public HTTP/gRPC service API. The handler may be in the same process, another
 process on the same host, or another runtime participant reached through the
 transport path. Only `RuntimeEndpointFlags.LOCAL` has the strict process-local
@@ -226,7 +226,7 @@ meaning: this process owns that handler and should register it.
 For readers coming from REST, the closest address analogy is:
 
 ```text
-Internal REST:
+Backend HTTP:
   method + URL path -> controller/handler
 
 CoAkka:
@@ -243,7 +243,7 @@ small request context:
 
 ```text
 REST:
-  POST /internal/customers/cust-001/hold?tenant=acme
+  POST /backend/customers/cust-001/hold?tenant=acme
 
 CoAkka:
   target  = customer.hold
@@ -324,7 +324,7 @@ The first scenario implementations are:
 They run web, desktop, store, and audit shapes and expose clear runtime
 diagnostics. The single-process, starter same-process, Quarkus same-process, and desktop
 topologies give successful CRUD paths through process-owned runtime capabilities
-without an internal store REST API. The cross-process web-to-store path is
+without an store HTTP API. The cross-process web-to-store path is
 runtime-only and is wired for cross-host delivery through the current public TCP
 transport candidate. If delivery fails, samples return explicit runtime errors
 instead of hiding the failure behind a REST fallback.

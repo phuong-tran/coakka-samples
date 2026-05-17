@@ -8,18 +8,18 @@ It is intentionally incomplete and should grow as users ask sharper questions.
 Yes, in a narrow and specific way.
 
 CoAkka addresses a problem that is both old and newly intensified. The old part
-is familiar: private internal work gets pushed through ad-hoc endpoints,
+is familiar: application-owned work gets pushed through ad-hoc endpoints,
 clients, retries, timeout handling, and status mapping. The newer part is that
 modern systems are increasingly polyglot, gradually migrated, and fragmented
 across runtimes, processes, and deployment shapes.
 
 CoAkka's architectural response is not to replace HTTP, gRPC, or messaging
 systems. Those still belong at real service API, public edge, and broker
-boundaries. CoAkka is narrower: it treats selected private application work as
+boundaries. CoAkka is narrower: it treats selected application-owned work as
 a runtime capability boundary, with typed targets, explicit routing, route
 ownership, delivery outcomes, and shared diagnostics.
 
-That is the distinct part. Private work is not modeled as just another internal
+That is the distinct part. Application-owned work is not modeled as just another backend
 API surface before it needs to be one. It can start as a same-process runtime
 target, move to a peer runtime later, and keep the same target, payload, route,
 and deadletter vocabulary across that change.
@@ -29,10 +29,10 @@ and deadletter vocabulary across that change.
 No.
 
 `gRPC` is a framework for calling a remote service over a network API.
-`CoAkka` is a runtime boundary for capabilities that are internal to an app or
+`CoAkka` is a runtime boundary for capabilities that are owned by an app or
 deployment contract.
 
-Here, `internal` does not mean same-process-only. It means the capability is
+The capability is
 not being exposed as a public product/service API. The handler may live in the
 same process, another process, or another host depending on the active route
 snapshot.
@@ -53,7 +53,7 @@ Use gRPC when the boundary is already a real service API:
 - HTTP/2, interceptors, auth, and standard gRPC tooling are desired
 
 Use CoAkka when the team wants a stronger boundary than a direct function call,
-but the work is still an internal capability:
+but the work is still an runtime capability:
 
 - named target or capability
 - same-process handler today, possible peer-runtime handler later
@@ -71,7 +71,7 @@ CoAkka replaces gRPC.
 Say:
 
 ```text
-CoAkka avoids turning internal capabilities into separate network APIs before
+CoAkka avoids turning runtime capabilities into separate network APIs before
 they need to be. Those capabilities may still run same-process or cross-process
 through runtime routes. gRPC still belongs at real remote API boundaries.
 ```
@@ -99,7 +99,7 @@ Existing service-to-service gRPC:
 The distinction is ownership:
 
 - gRPC owns service API call mechanics.
-- CoAkka owns internal runtime delivery semantics.
+- CoAkka owns runtime delivery semantics.
 
 ## What Does CoAkka Add Compared With No Runtime Boundary?
 
@@ -116,7 +116,7 @@ The limitation is that the boundary is mostly code ownership.
 It does not naturally model route generations, queue pressure, deadletters, or
 a later same-process-to-peer-runtime migration.
 
-Internal REST/gRPC:
+Backend HTTP/gRPC:
 
 ```text
 service_a -> HTTP/gRPC client -> same-host or remote endpoint -> service_b
@@ -168,7 +168,7 @@ them a shared part of the application shape.
 CoAkka is useful when the team wants:
 
 - stronger boundary than direct dependency injection
-- less network plumbing than internal REST/gRPC created only for private work
+- less network plumbing tha backend HTTP/gRPC created only for application-owned work
 - explicit route, queue, timeout, and deadletter vocabulary
 - same-process-first design with a later peer-runtime path
 - connector-owned startup config and runtime-owned data plane
@@ -202,7 +202,7 @@ across clients, framework config, and logs:
 - app-hosts still choose when to submit work
 - connectors still feed runtime config and register handlers
 - route snapshots and handler registration need the same ownership discipline
-  that internal REST/gRPC clients need for URLs, schemas, retries, and rollout
+  that backend HTTP/gRPC clients need for URLs, schemas, retries, and rollout
 - operators still need to observe runtime lifecycle, stats, and deadletters
 - simple CRUD paths that only need direct service calls can stay direct
 
@@ -210,7 +210,7 @@ Short filter:
 
 ```text
 If direct service calls are enough, do not add CoAkka.
-If the team is already inventing internal REST/gRPC, queues, route maps,
+If the team is already inventing backend HTTP/gRPC, queues, route maps,
 timeouts, and failure vocabulary, CoAkka may be the smaller boundary.
 ```
 
@@ -219,10 +219,10 @@ timeouts, and failure vocabulary, CoAkka may be the smaller boundary.
 It can be. If a path is small, stable, single-language, easy to trace, and direct
 service calls already answer the operational questions, keep it direct.
 
-CoAkka is not an all-or-nothing migration. The intended adoption shape is to wrap
+CoAkka is not an all-or-nothing migration. The intended rollout shape is to wrap
 one boundary first:
 
-- one noisy internal integration
+- one noisy runtime integration
 - one polyglot handoff
 - one workflow that needs clearer delivery diagnostics
 - one route where deadletter reasons would be more useful than vague timeout or
@@ -477,7 +477,7 @@ Sourcing still need their own application contracts and persistence model.
 Use this when someone compares CoAkka to gRPC, CQRS, actors, or brokers:
 
 ```text
-CoAkka is a runtime boundary for internal capabilities, with a compact
+CoAkka is a runtime boundary for runtime capabilities, with a compact
 same-process path and a peer-runtime path through route snapshots. It names
 targets, routes work through a generationed runtime snapshot, applies bounded
 queue policy, and returns response or deadletter outcomes with diagnostics.

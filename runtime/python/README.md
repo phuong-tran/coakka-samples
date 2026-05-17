@@ -2,7 +2,7 @@
 
 Python runtime samples document the `coakka_v2_connector` wheel shape. This
 runtime lane consumes the public Python wheel built against native runtime
-`0.1.0+e2dc43a`.
+`0.2.0+94a5729`.
 
 ## Run
 
@@ -110,13 +110,13 @@ response = runtime.ask_json(
 
 Use the context manager or call `close()` during application shutdown.
 
-## Before: Internal REST
+## Before: Backend HTTP
 
 A same-process capability can become a small Flask/FastAPI service just to look
 distributed:
 
 ```python
-@app.post("/internal/customers")
+@app.post("/backend/customers")
 def create_customer(command: CustomerDraft):
     return store.create(command)
 ```
@@ -125,7 +125,7 @@ The web/API side then forwards business work through HTTP:
 
 ```python
 reply = requests.post(
-    "http://customer-store/internal/customers",
+    "http://customer-store/backend/customers",
     json=command,
     timeout=5,
 )
@@ -138,14 +138,14 @@ customer = reply.json()
 Read the address change like this:
 
 ```text
-Before internal REST:
-  POST /internal/customers -> route function
+Before backend HTTP:
+  POST /backend/customers -> route function
 
 After CoAkka:
   target = "samples.customer.store" -> registered handler
 ```
 
-The target plays a similar addressing role to an internal REST path, but it is
+The target plays a similar addressing role to a backend HTTP path, but it is
 runtime routing vocabulary, not an HTTP URL.
 
 With CoAkka, the store is a runtime target:
@@ -183,9 +183,9 @@ response = runtime.ask_json(
 )
 ```
 
-The extra internal REST path spreads private runtime work across URL config,
+The extra backend HTTP path spreads application runtime work across URL config,
 HTTP parsing, headers, middleware, status/error mapping, timeout policy, and
-test setup. CoAkka keeps the internal path as a typed runtime message with
+test setup. CoAkka keeps the runtime path as a typed runtime message with
 request/reply and deadletter behavior, while HTTP remains available for real
 client-facing or legacy boundaries. Existing code using
 `ConnectorOrchestrator.start(...)` still works as the compatibility name; new

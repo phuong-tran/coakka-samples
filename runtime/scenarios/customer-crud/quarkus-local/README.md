@@ -3,7 +3,7 @@
 This scenario is the Quarkus/Kotlin counterpart to the Spring Boot
 single-process sample.
 
-It keeps HTTP at the browser/API boundary and sends internal customer work
+It keeps HTTP at the browser/API boundary and sends customer work
 through the Quarkus adapter shape:
 
 ```kotlin
@@ -21,10 +21,10 @@ The app consumes the public `coakka.quarkus:coakka-quarkus-extension` artifact.
 Quarkus owns HTTP/CDI lifecycle, and the adapter starts the CoAkka runtime with
 process-owned routes for CDI `CoAkkaLocalHandler` beans.
 
-## Before: Internal REST
+## Before: Backend HTTP
 
 A Quarkus team that wants to separate “web” from “store” usually creates an
-internal REST resource and calls it with a REST client, even when the store is
+backend HTTP resource and calls it with a REST client, even when the store is
 not a real external HTTP boundary:
 
 ```kotlin
@@ -37,11 +37,11 @@ dependencies {
 The store side becomes another HTTP resource:
 
 ```kotlin
-@Path("/internal/customers")
+@Path("/backend/customers")
 @ApplicationScoped
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-class CustomerStoreInternalResource(private val store: InMemoryCustomerStore) {
+class CustomerStoreBackendResource(private val store: InMemoryCustomerStore) {
     @POST
     fun create(request: CustomerDraft): MutationResponse {
         return store.create(request)
@@ -54,11 +54,11 @@ class CustomerStoreInternalResource(private val store: InMemoryCustomerStore) {
 }
 ```
 
-The web resource then needs a REST client for an internal call:
+The web resource then needs a REST client for an runtime call:
 
 ```kotlin
 @RegisterRestClient(configKey = "customer-store")
-@Path("/internal/customers")
+@Path("/backend/customers")
 interface CustomerStoreRestClient {
     @POST
     fun create(request: CustomerDraft): MutationResponse
@@ -68,7 +68,7 @@ interface CustomerStoreRestClient {
 }
 ```
 
-And the public HTTP resource forwards browser/API traffic to that internal REST
+And the public HTTP resource forwards browser/API traffic to that backend HTTP
 surface:
 
 ```kotlin
@@ -84,14 +84,14 @@ class CustomerResource(
 }
 ```
 
-That works, but it turns internal business work into an extra HTTP surface. The
+That works, but it turns application work into an extra HTTP surface. The
 app now carries REST-client config, URL wiring, HTTP serialization,
 timeout/error mapping, and test setup before it has a real network boundary.
 
 That is the adapter's target problem. The old shape expresses the store through
-a Quarkus REST resource and REST client even when the store is just an internal
+a Quarkus REST resource and REST client even when the store is just a runtime
 capability.
-CoAkka keeps the public resource as the real HTTP edge and moves internal work
+CoAkka keeps the public resource as the real HTTP edge and moves application work
 onto a typed runtime target with request/reply, counters, and deadletters.
 
 ## After: Same-Process Runtime Capability
@@ -100,7 +100,7 @@ With the adapter, Quarkus config owns same-process runtime defaults:
 
 ```kotlin
 dependencies {
-    implementation("coakka.quarkus:coakka-quarkus-extension:0.1.0-ge2dc43a")
+    implementation("coakka.quarkus:coakka-quarkus-extension:0.2.0-g94a5729")
     implementation("io.quarkus:quarkus-rest-jackson")
 }
 ```
@@ -115,7 +115,7 @@ coakka.runtime.local-endpoint-host=127.0.0.1
 coakka.runtime.local-endpoint-port=19182
 ```
 
-The internal capability is a CDI bean. It still exposes the real runtime boundary,
+The runtime capability is a CDI bean. It still exposes the real runtime boundary,
 but no longer owns route table creation or shutdown:
 
 ```kotlin
@@ -156,8 +156,8 @@ fun createCustomer(request: CustomerDraft): Response {
 ```
 
 That is the Quarkus adapter value: Quarkus keeps CDI and HTTP lifecycle, while
-CoAkka remains the internal runtime boundary instead of becoming another
-internal REST hop.
+CoAkka remains the runtime boundary instead of becoming another
+backend HTTP hop.
 
 ## Run
 

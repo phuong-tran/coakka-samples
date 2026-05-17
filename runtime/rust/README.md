@@ -2,7 +2,7 @@
 
 Rust runtime samples document the `coakka-runtime-rs` spike tarball shape. This
 runtime lane consumes the public Rust spike tarball built against native
-runtime `0.1.0+e2dc43a`.
+runtime `0.2.0+94a5729`.
 
 This lane is intentionally marked as a spike. It proves the runtime shape before
 claiming a stable Rust API or crates.io-ready package.
@@ -15,9 +15,9 @@ bash run.sh runtime rust basic
 
 Rust samples expect a working Rust/Cargo toolchain.
 
-## Before: Internal REST
+## Before: Backend HTTP
 
-A Rust CRUD service can expose an internal Axum/Actix endpoint just so another
+A Rust CRUD service can expose a backend Axum/Actix endpoint just so another
 process can call a store capability:
 
 ```rust
@@ -33,7 +33,7 @@ The caller then forwards business work through HTTP:
 
 ```rust
 let customer = client
-    .post("http://customer-store/internal/customers")
+    .post("http://customer-store/backend/customers")
     .json(&command)
     .send()
     .await?
@@ -49,14 +49,14 @@ mapping, timeout policy, and tests before there is a real product boundary.
 Read the address change like this:
 
 ```text
-Before internal REST:
-  POST /internal/customers -> Axum/Actix handler
+Before backend HTTP:
+  POST /backend/customers -> Axum/Actix handler
 
 After CoAkka:
   target = "samples.customer.store" -> registered handler
 ```
 
-The target plays a similar addressing role to an internal REST path, but it is
+The target plays a similar addressing role to a backend HTTP path, but it is
 runtime routing vocabulary, not an HTTP URL.
 
 `samples.customer.store` is the sample's capability target name. In your app,

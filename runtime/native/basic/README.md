@@ -12,8 +12,8 @@ bash run.sh runtime native basic
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=0.1.0 git=<git> language=c
+coakka_runtime_info abi=1 version=0.2.0 git=<git> language=c
 coakka_runtime_stats generation=1 routes=1 routeMisses=1 deadletters=1 language=c
-coakka_runtime_info abi=1 version=0.1.0 git=<git> language=cpp
+coakka_runtime_info abi=1 version=0.2.0 git=<git> language=cpp
 coakka_runtime_stats generation=1 routes=1 routeMisses=1 deadletters=1 language=cpp
 ```

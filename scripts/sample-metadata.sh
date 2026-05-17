@@ -38,7 +38,7 @@ COAKKA_SAMPLE_ROWS=(
 
 COAKKA_SCENARIO_ROWS=(
   "customer-crud|spring-boot-single-process|Spring Boot web UI plus local runtime store target"
-  "customer-crud|spring-boot-starter-local|Spring Boot starter prototype with local @CoAkkaHandler targets"
+  "customer-crud|spring-boot-starter-local|Spring Boot starter sample with local @CoAkkaHandler targets"
   "customer-crud|quarkus-local|Quarkus Kotlin web UI plus local runtime store target"
   "customer-crud|kotlin-desktop-local|Kotlin Swing desktop UI plus local runtime store target"
   "customer-crud|python-desktop-local|Python Tk desktop UI plus local runtime store target"
@@ -62,15 +62,15 @@ COAKKA_ARTIFACT_ROWS=(
   "logger C# package|logger/csharp/releases/0.1.0+ba2a66d98eb5/CoAkka.Logger.0.1.0.nupkg"
   "logger Rust package|logger/rust/releases/0.1.0+ba2a66d98eb5/coakka-logger-rs-0.1.0-spike.tar.gz"
   "logger Native package|logger/native/releases/0.1.0+ba2a66d98eb5/coakka-logger-native-0.1.0.tar.gz"
-  "runtime Native package|runtime/native/releases/0.1.0+e2dc43a/coakka-runtime-native-v2-0.1.0.tar.gz"
-  "runtime JVM jar|runtime/jvm/releases/0.1.0+e2dc43a-9227dc0/coakka-jvm-native-runtime-v2-0.1.1-ge2dc43a-9227dc0.jar"
-  "runtime Python wheel|runtime/python/releases/0.1.0+e2dc43a-9227dc0/coakka_v2_connector-0.1.0-py3-none-any.whl"
-  "runtime Node package|runtime/node/releases/0.1.0+e2dc43a-9227dc0/coakka-v2-connector-node-0.1.0.tgz"
-  "runtime Go package|runtime/go/releases/0.1.0+e2dc43a-9227dc0/coakka-v2-connector-go-0.1.0.tar.gz"
-  "runtime C# package|runtime/csharp/releases/0.1.0+e2dc43a-9227dc0/CoAkka.Runtime.0.1.1.nupkg"
-  "runtime Rust package|runtime/rust/releases/0.1.0+e2dc43a-9227dc0/coakka-runtime-rs-0.1.0-spike.tar.gz"
-  "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/0.1.0-ge2dc43a/coakka-spring-boot-starter-0.1.0-ge2dc43a.jar"
-  "Quarkus extension Maven jar|maven/coakka/quarkus/coakka-quarkus-extension/0.1.0-ge2dc43a/coakka-quarkus-extension-0.1.0-ge2dc43a.jar"
+  "runtime Native package|runtime/native/releases/0.2.0+94a5729/coakka-runtime-native-v2-0.2.0.tar.gz"
+  "runtime JVM jar|runtime/jvm/releases/0.2.0+94a5729-6b7a3bf/coakka-jvm-native-runtime-v2-0.2.0-g94a5729-6b7a3bf.jar"
+  "runtime Python wheel|runtime/python/releases/0.2.0+94a5729-6b7a3bf/coakka_v2_connector-0.2.0-py3-none-any.whl"
+  "runtime Node package|runtime/node/releases/0.2.0+94a5729-6b7a3bf/coakka-v2-connector-node-0.2.0.tgz"
+  "runtime Go package|runtime/go/releases/0.2.0+94a5729-6b7a3bf/coakka-v2-connector-go-0.2.0.tar.gz"
+  "runtime C# package|runtime/csharp/releases/0.2.0+94a5729-6b7a3bf/CoAkka.Runtime.0.2.0.nupkg"
+  "runtime Rust package|runtime/rust/releases/0.2.0+94a5729-6b7a3bf/coakka-runtime-rs-0.2.0-spike.tar.gz"
+  "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/0.2.0-g94a5729/coakka-spring-boot-starter-0.2.0-g94a5729.jar"
+  "Quarkus extension Maven jar|maven/coakka/quarkus/coakka-quarkus-extension/0.2.0-g94a5729/coakka-quarkus-extension-0.2.0-g94a5729.jar"
 )
 
 coakka_default_publish_root() {

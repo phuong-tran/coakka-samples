@@ -19,7 +19,7 @@ flowchart LR
 
 The app host is still a normal service, job, CLI, desktop process, or
 containerized process. CoAkka adds a runtime host inside that process so
-business code can call target names instead of hand-wiring every internal
+business code can call target names instead of hand-wiring every
 transport detail.
 
 ## Core Terms

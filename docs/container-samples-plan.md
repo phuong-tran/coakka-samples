@@ -94,7 +94,7 @@ later.
 
 ## Prebuilt Docker Hub Images
 
-Prebuilt images are the fastest product-shipping path for developer adoption.
+Prebuilt images are the fastest product-shipping path for developer rollout.
 They let a user try the runtime before building protobuf, transport
 dependencies, native runtime artifacts, or language connector packages locally.
 
@@ -152,7 +152,7 @@ Release rules:
 
 - build images only from scanner-clean public artifacts
 - publish multi-arch images when both `linux/amd64` and `linux/arm64` are ready
-- do not bake private paths, local cache paths, or credentials into image layers
+- do not bake local paths, local cache paths, or credentials into image layers
 - keep experimental transport-specific backend flavors separate until their
   public surface is explicitly safe
 - sample startup should print/verify the runtime generation it loaded
@@ -200,7 +200,7 @@ No benchmark claims should be made from this sample.
 
 - use public artifacts only
 - verify artifact checksums through the existing manifest path
-- do not bake private/local paths into images
+- do not bake local paths into images
 - prefer pinned Docker Hub tags for public docs once images are published
 - keep Docker/Podman support as a sample UX layer, not the source of truth
 - do not require Docker Desktop

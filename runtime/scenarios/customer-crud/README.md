@@ -100,14 +100,14 @@ List response JSON:
 The customer scenarios keep web-to-store business traffic on the runtime path;
 there is no store REST fallback. Same-process demos keep runtime work inside
 one app or one desktop process for a compact happy path. Cross-process demos run
-separate services and require a remote-capable runtime artifact. If remote
+separate services and require a runtime artifact with cross-process delivery enabled. If remote
 delivery fails, the samples surface an explicit runtime delivery error instead
 of hiding the failure behind HTTP fallback behavior.
 
 This is the boundary rule the scenarios are trying to make obvious: REST is
-valuable at real edges, but an internal REST endpoint created only to call
-same-process or deployment-owned work spreads private routing and failure
-semantics across a web stack. CoAkka keeps the internal path as a typed
+valuable at real edges, but a backend HTTP endpoint created only to call
+same-process or deployment-owned work spreads application routing and failure
+semantics across a web stack. CoAkka keeps the runtime path as a typed
 runtime target with request/reply, one-way events, and deadletters. The samples
 therefore compare application shape and failure semantics, not just raw
 transport speed.
@@ -157,7 +157,7 @@ same-process starter API shape is stable.
 This is scaffolded under `quarkus-local/` as a Quarkus/Kotlin same-process proof
 for the `coakka.quarkus:coakka-quarkus-extension` adapter shape. The sample
 consumes the public Quarkus extension built against native runtime
-`0.1.0+e2dc43a`.
+`0.2.0+94a5729`.
 
 | Surface | Language | Role | HTTP | Runtime endpoint |
 | --- | --- | --- | --- | --- |

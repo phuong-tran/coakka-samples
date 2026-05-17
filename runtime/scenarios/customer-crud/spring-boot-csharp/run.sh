@@ -4,7 +4,7 @@ set -euo pipefail
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../../../.." && pwd)"
 publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish-public}"
-artifact_rel="runtime/csharp/releases/0.1.0+e2dc43a-9227dc0/CoAkka.Runtime.0.1.1.nupkg"
+artifact_rel="runtime/csharp/releases/0.2.0+94a5729-6b7a3bf/CoAkka.Runtime.0.2.0.nupkg"
 web_build_task=":runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-web:bootJar"
 web_jar="${repo_root}/runtime/scenarios/customer-crud/spring-boot-spring-boot/customer-web/build/libs/customer-web.jar"
 source "${repo_root}/scripts/resolve-artifact.sh"
@@ -40,13 +40,13 @@ require_csharp_commands() {
 prepare_csharp_workspace() {
   local tmp_dir="$1"
   local package_path package_source
-  package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/CoAkka.Runtime.0.1.1.nupkg")"
+  package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/CoAkka.Runtime.0.2.0.nupkg")"
   package_source="$(dirname "${package_path}")"
 
   export NUGET_PACKAGES="${tmp_dir}/nuget-packages"
   dotnet new console -o "${tmp_dir}/store" --framework net10.0 --force >/dev/null
   dotnet add "${tmp_dir}/store/store.csproj" package CoAkka.Runtime \
-    --version 0.1.1 \
+    --version 0.2.0 \
     --source "${package_source}" >/dev/null
   cp "${script_dir}/Program.cs" "${tmp_dir}/store/Program.cs"
 }

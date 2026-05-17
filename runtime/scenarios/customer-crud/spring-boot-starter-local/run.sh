@@ -10,7 +10,7 @@ app_jar="${script_dir}/customer-app/build/libs/customer-app.jar"
 
 print_usage() {
   cat <<'EOF'
-Spring Boot starter local customer CRUD prototype
+Spring Boot starter local customer CRUD sample
 
 Usage:
   bash run.sh

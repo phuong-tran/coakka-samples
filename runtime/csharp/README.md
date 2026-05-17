@@ -2,10 +2,10 @@
 
 C# runtime samples document the `CoAkka.Runtime` NuGet package shape. This
 runtime lane consumes the public NuGet package built against native runtime
-`0.1.0+e2dc43a`.
+`0.2.0+94a5729`.
 
 For a CRUD developer, the point is not to replace ASP.NET Core. Keep HTTP at
-the browser/API edge. Use CoAkka for work that is internal to the application
+the browser/API edge. Use CoAkka for work that is owned by the application
 or deployment and should not need an extra REST service just to cross an
 in-process or runtime boundary.
 
@@ -22,19 +22,19 @@ bash run.sh runtime csharp basic
 
 The C# sample expects .NET SDK 10 or newer.
 
-## Before: Internal REST
+## Before: Backend HTTP
 
-Without CoAkka, an ASP.NET Core CRUD app often creates an internal controller
+Without CoAkka, an ASP.NET Core CRUD app often creates a backend controller
 and an HTTP client even when the store/audit work is still owned by the same
 application or deployment unit:
 
 ```csharp
 app.MapPost("/api/customers", async (
     CreateCustomerRequest request,
-    HttpClient internalClient) =>
+    HttpClient backendClient) =>
 {
-    var response = await internalClient.PostAsJsonAsync(
-        "http://customer-store/internal/customers",
+    var response = await backendClient.PostAsJsonAsync(
+        "http://customer-store/backend/customers",
         request);
     response.EnsureSuccessStatusCode();
     return Results.Json(await response.Content.ReadFromJsonAsync<CustomerDto>());
@@ -45,7 +45,7 @@ The receiving side then grows another web surface that is not a real product
 API:
 
 ```csharp
-app.MapPost("/internal/customers", async (
+app.MapPost("/backend/customers", async (
     CreateCustomerRequest request,
     CustomerStore store) =>
 {
@@ -57,28 +57,28 @@ app.MapPost("/internal/customers", async (
 That adds URL config, serialization, timeout/error mapping, retry policy, and
 test setup before there is a real process or network boundary.
 
-For an endpoint that is not meant to be a product API, that spreads private
+For an endpoint that is not meant to be a product API, that spreads application-owned
 runtime work across web-stack semantics: request parsing, headers, middleware,
 status-code mapping, client/server lifecycle, and endpoint tests. CoAkka is not
 presented here as a universal speed-contest winner; it is a clearer runtime
-boundary for internal work while REST remains the right tool at real HTTP edges.
+boundary for application work while REST remains the right tool at real HTTP edges.
 
 ## After: Runtime Target
 
 Read the address change like this:
 
 ```text
-Before internal REST:
-  POST /internal/customers/create -> endpoint delegate
+Before backend HTTP:
+  POST /backend/customers/create -> endpoint delegate
 
 After CoAkka:
   target = "customers.create" -> registered handler
 ```
 
-The target plays a similar addressing role to an internal REST path, but it is
+The target plays a similar addressing role to a backend HTTP path, but it is
 runtime routing vocabulary, not an HTTP URL.
 
-The C# adapter lets the app own one embedded runtime host, declare an internal
+The C# adapter lets the app own one embedded runtime host, declare a runtime
 target, and keep HTTP at the real edge:
 
 ```csharp
@@ -158,8 +158,8 @@ var response = await runtime.AskJsonAsync(
 ```
 
 The ASP.NET Core adapter shape on top of that runtime API is one API endpoint
-calling an internal runtime target, while the store logic is a capability instead
-of an internal REST endpoint:
+calling an runtime target, while the store logic is a capability instead
+of a backend HTTP endpoint:
 
 ```csharp
 app.MapPost("/api/customers", async (

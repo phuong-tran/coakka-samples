@@ -5,7 +5,7 @@ are intentionally small, but the integration shape should stay the same:
 
 For vocabulary first, start with [Runtime Glossary](runtime-glossary.md). For
 fit, production evidence, and operational ownership, read
-[Adoption And Production Readiness](adoption-and-production-readiness.md).
+[Production Readiness](production-readiness.md).
 
 1. add the language connector artifact
 2. start one runtime participant per process
@@ -23,7 +23,7 @@ local in-process request/reply samples and cross-process customer scenarios keep
 business traffic on the runtime path.
 
 Delivery failures remain explicit runtime failures. The samples should not hide
-route, queue, or transporter failures behind an internal store HTTP fallback.
+route, queue, or transporter failures behind an store HTTP fallback.
 HTTP stays at real external edges such as the browser-facing web API.
 
 The customer scenario exposes that distinction through a `deliveryMode` field:
@@ -51,7 +51,7 @@ RuntimeStartSpec
 | `nodeId` | Which concrete instance/process am I? | Concrete process identity. Include instance/host/pod identity when multiple instances run. |
 | `queueCapacity` | How much work can runtime buffer before applying pressure? | Bounded queue size. Start conservative, measure pressure, then tune. |
 | `strictNoDrop` | Should overload be visible instead of silently dropping work? | Prefer `true` while integrating so overload becomes visible. |
-| delivered-request lane | Should runtime keep delivered requests on their own internal lane? | Enabled by default in current connectors; keep the default for request/reply services so inbound handler work does not delay reply/deadletter matching. |
+| delivered-request lane | Should runtime keep delivered requests on their own runtime lane? | Enabled by default in current connectors; keep the default for request/reply services so inbound handler work does not delay reply/deadletter matching. |
 | `generation` | Which version of the route table is this? | Monotonic route-table version. Increment when applying a new route snapshot. |
 | `routes` | What targets does this runtime know how to route? | Target-to-endpoint map. Local targets are owned here; peer targets point elsewhere. |
 
@@ -148,7 +148,7 @@ deadletters instead of silent message loss.
 `separateDeliveredRequestLane` should usually be `true` for request/reply
 services. A process may receive new requests for local handlers while it is also
 waiting for replies or deadletters for asks it sent to another target. With
-`true`, delivered requests use a separate internal lane from ask completion.
+`true`, delivered requests use a separate runtime lane from ask completion.
 With `false`, incoming handler work and reply/deadletter matching share one
 lane. Treat `true` as the default; use `false` only for very small one-way
 hosts after measurement.
@@ -303,7 +303,7 @@ Split request data by responsibility:
 Read this REST-style call:
 
 ```text
-POST /internal/customers/cust-001/hold?tenant=acme
+POST /backend/customers/cust-001/hold?tenant=acme
 x-request-id: req-123
 ```
 
@@ -364,7 +364,7 @@ or retry policy.
 
 | Strategy | Question it answers | Typical use |
 | --- | --- | --- |
-| `SINGLE_OWNER` | Does exactly one endpoint own this target? | Owner-sensitive commands, local samples, actor-like ownership. |
+| `SINGLE_OWNER` | Does exactly one endpoint own this target? | Owner-bound commands, local samples, actor-like ownership. |
 | `WEIGHTED_ROUND_ROBIN` | Can equivalent endpoints share this work? | Stateless or replicated handlers that can scale horizontally. |
 | `RENDEZVOUS_HASH` | Should the same key keep going to the same endpoint? | Sharded ownership by `order_id`, `tenant_id`, `customer_id`, or another stable key. |
 

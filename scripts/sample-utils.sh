@@ -142,7 +142,7 @@ coakka_customer_smoke_request() {
 
   if grep -q '"status"[[:space:]]*:[[:space:]]*"RUNTIME_DELIVERY_FAILED"' "${body_file}"; then
     rm -f "${body_file}"
-    coakka_die "${label} reached the sample app, but runtime-only cross-process delivery failed. Publish a remote-capable runtime artifact before treating CRUD smoke as passing."
+    coakka_die "${label} reached the sample app, but runtime-only cross-process delivery failed. Publish a runtime artifact with cross-process delivery enabled before treating CRUD smoke as passing."
   fi
 
   if [[ ! "${http_code}" =~ ^2[0-9][0-9]$ ]]; then

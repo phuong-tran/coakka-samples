@@ -2,7 +2,7 @@
 
 JVM runtime samples document the `coakka-jvm-native-runtime-v2` jar shape. This
 runtime lane consumes the public JVM runtime jar built against native runtime
-`0.1.0+e2dc43a`.
+`0.2.0+94a5729`.
 
 ## Run
 
@@ -24,15 +24,15 @@ Direct Gradle runs:
 
 For IDE runs, open the `coakka-samples` repository root as the Gradle project.
 
-## Before: Internal REST
+## Before: Backend HTTP
 
 A JVM CRUD service often starts with a clean in-process store call, then grows
-an internal REST controller just to make the store feel separated:
+a backend HTTP controller just to make the store feel separated:
 
 ```kotlin
 @RestController
-@RequestMapping("/internal/customers")
-class CustomerStoreInternalController(private val store: CustomerStore) {
+@RequestMapping("/backend/customers")
+class CustomerStoreBackendController(private val store: CustomerStore) {
     @PostMapping
     fun create(@RequestBody request: CustomerDraft): MutationResponse {
         return store.create(request)
@@ -40,14 +40,14 @@ class CustomerStoreInternalController(private val store: CustomerStore) {
 }
 ```
 
-The web-facing controller then calls that fake internal HTTP surface:
+The web-facing controller then calls that fake backend HTTP surface:
 
 ```kotlin
 @PostMapping("/api/customers")
 @ResponseStatus(HttpStatus.CREATED)
 fun createCustomer(@RequestBody request: CustomerDraft): MutationResponse {
     return restClient.post()
-        .uri("http://customer-store/internal/customers")
+        .uri("http://customer-store/backend/customers")
         .body(request)
         .retrieve()
         .body(MutationResponse::class.java)
@@ -63,14 +63,14 @@ policy, and test setup before there is a real product boundary.
 Read the address change like this:
 
 ```text
-Before internal REST:
-  POST /internal/customers -> controller method
+Before backend HTTP:
+  POST /backend/customers -> controller method
 
 After CoAkka:
   target = "samples.customer.store" -> registered handler
 ```
 
-The target plays a similar addressing role to an internal REST path, but it is
+The target plays a similar addressing role to a backend HTTP path, but it is
 runtime routing vocabulary, not an HTTP URL.
 
 With CoAkka, the store is a runtime target owned by the process that actually
@@ -113,7 +113,7 @@ repositories {
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-ge2dc43a-9227dc0")
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-g94a5729-6b7a3bf")
 }
 ```
 
@@ -247,7 +247,7 @@ DeadletterSubscription subscription =
 
 ## Boundary Note
 
-Use HTTP where it is a real external boundary. For internal CRUD work, a fake
+Use HTTP where it is a real external boundary. For CRUD work, a fake
 REST hop usually adds web-stack work before there is a real network contract:
 URL wiring, headers, request parsing, middleware, status/error mapping,
 timeouts, retries, and extra tests. The JVM runtime path keeps that work as a

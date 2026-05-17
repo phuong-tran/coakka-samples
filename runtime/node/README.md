@@ -2,7 +2,7 @@
 
 Node.js runtime samples document the `coakka-v2-connector-node` package shape.
 This runtime lane consumes the public Node.js package built against native
-runtime `0.1.0+e2dc43a`.
+runtime `0.2.0+94a5729`.
 
 ## Run
 
@@ -103,13 +103,13 @@ process.on("SIGTERM", () => {
 });
 ```
 
-## Before: Internal REST
+## Before: Backend HTTP
 
-The store often becomes an internal Express/Fastify endpoint created only so
+The store often becomes a backend Express/Fastify endpoint created only so
 another process can call it:
 
 ```js
-app.post("/internal/customers", async (req, res) => {
+app.post("/backend/customers", async (req, res) => {
   const customer = await store.create(req.body);
   res.json(customer);
 });
@@ -119,7 +119,7 @@ The web/API side then forwards business work through HTTP:
 
 ```js
 app.post("/api/customers", async (req, res) => {
-  const reply = await fetch("http://customer-store/internal/customers", {
+  const reply = await fetch("http://customer-store/backend/customers", {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(req.body),
@@ -133,14 +133,14 @@ app.post("/api/customers", async (req, res) => {
 Read the address change like this:
 
 ```text
-Before internal REST:
-  POST /internal/customers -> route handler
+Before backend HTTP:
+  POST /backend/customers -> route handler
 
 After CoAkka:
   target = "samples.customer.store" -> registered handler
 ```
 
-The target plays a similar addressing role to an internal REST path, but it is
+The target plays a similar addressing role to a backend HTTP path, but it is
 runtime routing vocabulary, not an HTTP URL.
 
 With CoAkka, the store is a runtime target:
@@ -173,7 +173,7 @@ const response = await runtime.askJson(
 );
 ```
 
-The extra internal endpoint still spreads private runtime work across HTTP
+The extra backend endpoint still spreads application runtime work across HTTP
 parsing, headers, middleware, status/error mapping, timeout policy, and test setup.
 CoAkka keeps that work as a runtime target with request/reply and deadletter
 semantics, while HTTP stays at the public or legacy edge. Existing code using

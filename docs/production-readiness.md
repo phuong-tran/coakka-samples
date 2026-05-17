@@ -1,4 +1,4 @@
-# Adoption And Production Readiness
+# Production Readiness
 
 CoAkka is an early public runtime surface. The samples are useful for learning
 the model and verifying the published artifacts, but production confidence
@@ -10,15 +10,15 @@ This page is intentionally direct about fit, measurement, and ownership.
 
 CoAkka is a good fit when an application needs one or more of these boundaries:
 
-- internal request/reply or event delivery by stable target names
+- runtime request/reply or event delivery by stable target names
 - explicit payload identity across services or languages
-- route snapshots and route generations instead of hand-wired internal clients
+- route snapshots and route generations instead of hand-wired hand-wired clients
 - deadletters and timeout outcomes that are visible as runtime vocabulary
 - local and cross-process handlers that can move between JVM, Python, Node.js,
   Go, C#, Rust, and native C/C++ without redesigning the business contract
 
 HTTP still belongs at real external edges such as browser/API entry points.
-CoAkka is for the internal runtime boundary after the app has accepted work and
+CoAkka is for the runtime boundary after the app has accepted work and
 needs to route that work to another target, process, or language host.
 
 ## When Direct Calls Are Enough
@@ -94,12 +94,12 @@ Retries should stay a business policy above the runtime. The runtime can return
 reply, deadletter, and timeout outcomes; the application decides whether the
 operation is safe to retry and how to prevent retry loops from amplifying load.
 
-## Suggested Adoption Path
+## Suggested Rollout Path
 
 1. Run one container sample and one language basic sample.
 2. Read the [Runtime Glossary](runtime-glossary.md) until `target`,
    `envelope`, `payload identity`, `deadletter`, and `generation` are clear.
-3. Wire one non-critical internal workflow through a local runtime target.
+3. Wire one non-critical application workflow through a local runtime target.
 4. Add deadletter, timeout, queue, and route-generation metrics.
 5. Move one cross-process or cross-language handler only after the local shape
    is understood.

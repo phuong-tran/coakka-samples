@@ -2,7 +2,7 @@
 
 This scenario is the same-process Spring Boot starter customer CRUD path.
 
-It keeps HTTP at the browser/API boundary and exposes internal customer work as
+It keeps HTTP at the browser/API boundary and exposes customer work as
 runtime capabilities:
 
 ```kotlin
@@ -33,24 +33,24 @@ of handler methods still requires a restart today.
 The intended starter direction is devtools-friendly: after a Spring context
 refresh, rebuild the process-owned handler registry from refreshed beans and apply a new
 runtime route generation. The HTTP edge should stay unchanged, and local
-development should not need an internal REST service just to feel comfortable.
+development should not need a backend HTTP service just to feel comfortable.
 
 The sample consumes the public Spring Boot starter artifact:
 
 ```kotlin
-implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-ge2dc43a")
+implementation("coakka.spring:coakka-spring-boot-starter:0.2.0-g94a5729")
 ```
 
 That starter depends on the shared runtime JVM artifact
-`coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-ge2dc43a-9227dc0`; it does not bundle
+`coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-g94a5729-6b7a3bf`; it does not bundle
 or fork a Spring-specific native runtime.
 
 The sample resolves the Maven artifact from the public publish surface.
 
-## Before: Internal REST
+## Before: Backend HTTP
 
 A Spring Boot team that wants to separate “web” from “store” usually invents an
-internal REST hop, even when both sides still live in the same development
+backend HTTP hop, even when both sides still live in the same development
 topology:
 
 ```kotlin
@@ -64,8 +64,8 @@ something HTTP-shaped to call:
 
 ```kotlin
 @RestController
-@RequestMapping("/internal/customers")
-class CustomerStoreInternalController(private val store: InMemoryCustomerStore) {
+@RequestMapping("/backend/customers")
+class CustomerStoreBackendController(private val store: InMemoryCustomerStore) {
     @PostMapping
     fun create(@RequestBody request: CustomerDraft): MutationResponse {
         return store.create(request)
@@ -91,7 +91,7 @@ class CustomerStoreRestClient(
 
     fun create(request: CustomerDraft): MutationResponse {
         return rest.post()
-            .uri("/internal/customers")
+            .uri("/backend/customers")
             .body(request)
             .retrieve()
             .body(MutationResponse::class.java)
@@ -100,7 +100,7 @@ class CustomerStoreRestClient(
 }
 ```
 
-And the public controller ends up forwarding CRUD work over that internal REST
+And the public controller ends up forwarding CRUD work over that backend HTTP
 surface:
 
 ```kotlin
@@ -115,12 +115,12 @@ class CustomerController(private val storeClient: CustomerStoreRestClient) {
 }
 ```
 
-That works, but it makes an internal implementation detail look like an HTTP
+That works, but it makes an application implementation detail look like an HTTP
 product boundary. It also adds URL config, HTTP serialization, error mapping,
-timeouts, and test setup around a call that is still internal business work.
+timeouts, and test setup around a call that is still application work.
 
 That is the shape this starter is meant to avoid. The controller stays the real
-HTTP edge, while internal customer work moves onto a typed runtime target with
+HTTP edge, while customer work moves onto a typed runtime target with
 request/reply, counters, and deadletters.
 
 ## After: Same-Process Runtime Capability
@@ -130,7 +130,7 @@ keeps business work as ordinary Spring beans:
 
 ```kotlin
 dependencies {
-    implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-ge2dc43a")
+    implementation("coakka.spring:coakka-spring-boot-starter:0.2.0-g94a5729")
     implementation("org.springframework.boot:spring-boot-starter-web")
 }
 ```
@@ -157,7 +157,7 @@ class CustomerCapabilityHandlers(private val customerStore: InMemoryCustomerStor
 }
 ```
 
-The HTTP controller now reads like CRUD code again. It asks an internal capability
+The HTTP controller now reads like CRUD code again. It asks an runtime capability
 target; it does not construct route tables, decode envelopes, or own native
 runtime lifecycle:
 
@@ -182,7 +182,7 @@ registration, payload mapping, and shutdown into the starter.
 ## Code Map
 
 Start with `CustomerStarterLocalApplication.kt`; it only boots Spring and logs
-the runtime route count. The internal capability path is split by role:
+the runtime route count. The runtime capability path is split by role:
 
 - `CustomerTargets.kt` names the runtime targets.
 - `CustomerCapabilityHandlers.kt` exposes CRUD work with `@CoAkkaHandler`.

@@ -9,7 +9,7 @@ It demonstrates:
 - embedded native runtime loading from the package
 - one process-owned route target owned by the Rust process
 - request/reply from Rust into a registered runtime handler
-- route-miss deadletter handling without an internal REST endpoint
+- route-miss deadletter handling without a backend HTTP endpoint
 - runtime info/config and client request/reply counters
 
 Run from this directory:
@@ -28,7 +28,7 @@ Expected output shape:
 
 ```text
 CoAkka Rust runtime smoke ok
-runtime=0.1.0 git=<git> lib=<packaged-native-library>
+runtime=0.2.0 git=<git> lib=<packaged-native-library>
 response={"echo":{"message":"hello-rust-runtime"}} delivered=1 matched=1 deadletters=1
 ```
 

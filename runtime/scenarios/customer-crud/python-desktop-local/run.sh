@@ -7,7 +7,7 @@ publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish-public}"
 source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 
-artifact_rel="runtime/python/releases/0.1.0+e2dc43a-9227dc0/coakka_v2_connector-0.1.0-py3-none-any.whl"
+artifact_rel="runtime/python/releases/0.2.0+94a5729-6b7a3bf/coakka_v2_connector-0.2.0-py3-none-any.whl"
 
 print_usage() {
   cat <<'EOF'
@@ -28,7 +28,7 @@ with_python_env() {
   local tmp_dir wheel_path status
   tmp_dir="$(mktemp -d)"
   trap "rm -rf '${tmp_dir}'" EXIT INT TERM
-  wheel_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka_v2_connector-0.1.0-py3-none-any.whl")"
+  wheel_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka_v2_connector-0.2.0-py3-none-any.whl")"
   set +e
   coakka_with_python_wheel_env "${wheel_path}" "${script_dir}/app.py" "$@"
   status="$?"

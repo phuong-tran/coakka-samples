@@ -14,7 +14,7 @@ events to a second Node.js service after create, update, and delete operations.
 
 ## Runtime Transport Note
 
-This scenario expects a remote-capable runtime v2 artifact. The web service
+This scenario expects a runtime with cross-process delivery enabled v2 artifact. The web service
 sends business requests only through the runtime route. There is no Node.js
 store REST fallback, so delivery failures are returned explicitly instead of
 being hidden by HTTP fallback behavior. The audit fan-out path is delivered as

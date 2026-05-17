@@ -2,11 +2,11 @@
 
 [![sample-smoke](https://github.com/phuong-tran/coakka-samples/actions/workflows/sample-smoke.yml/badge.svg)](https://github.com/phuong-tran/coakka-samples/actions/workflows/sample-smoke.yml)
 
-CoAkka is a runtime boundary for internal application capabilities across
+CoAkka is a runtime boundary for application capabilities across
 processes and languages.
 
-Many teams create private internal REST endpoints just to move work between
-internal app components or services. That spreads one private contract across
+Many teams create deployment-owned HTTP endpoints just to move work between
+application components or services. That spreads one application-owned contract across
 URLs, clients, retries, timeouts, status mapping, and error handling.
 
 CoAkka replaces that with typed runtime targets, explicit routing, and delivery
@@ -23,7 +23,7 @@ packages built from the public CoAkka artifact surface.
 - [Before And After](#before-and-after)
 - [Which Sample Should I Run?](#which-sample-should-i-run)
 - [When CoAkka Helps](#when-coakka-helps)
-- [Incremental Adoption](#incremental-adoption)
+- [Incremental Rollout](#incremental-rollout)
 - [Core Runtime Vocabulary](#core-runtime-vocabulary)
 - [How To Read This Repository](#how-to-read-this-repository)
 - [Why CoAkka Exists](#why-coakka-exists)
@@ -42,7 +42,7 @@ packages built from the public CoAkka artifact surface.
 - [Requirements](#requirements)
 - [Runtime Configuration Notes](#runtime-configuration-notes)
 - [Integration Guide](#integration-guide)
-- [Adoption And Readiness](#adoption-and-readiness)
+- [Readiness](#readiness)
 - [Future Connector Scope](#future-connector-scope)
 - [Samples](#samples)
 - [Runtime Capability Samples](#runtime-capability-samples)
@@ -57,13 +57,13 @@ packages built from the public CoAkka artifact surface.
 
 ## What Problem Does CoAkka Solve?
 
-CoAkka is for private application work that needs a real boundary but should
-not have to become another internal network API.
+CoAkka is for application-owned work that needs a real boundary but should
+not have to become another backend network API.
 
 The common failure mode is familiar:
 
 ```text
-controller -> private URL -> HTTP client -> internal endpoint
+controller -> backend URL -> HTTP client -> backend endpoint
 ```
 
 That endpoint is not a public product API. It exists because one process, app
@@ -83,7 +83,7 @@ deadletter with source, target, route generation, and reason.
 
 CoAkka does not replace HTTP at real edges, gRPC at real service API
 boundaries, CQRS, authorization, ingress, service discovery, or deployment
-policy. It gives application hosts a shared runtime vocabulary for internal
+policy. It gives application hosts a shared runtime vocabulary for application
 capabilities that should not need fake REST just to gain a boundary.
 
 ## See It In 3 Minutes
@@ -132,8 +132,8 @@ services.
 
 What to observe:
 
-- the browser-visible web app sends internal work to another process
-- the internal path uses CoAkka runtime delivery, not REST fallback
+- the browser-visible web app sends application work to another process
+- the runtime path uses CoAkka runtime delivery, not REST fallback
 - the target owner can be in another language runtime
 - delivery stays explicit across language and process boundaries
 
@@ -154,9 +154,9 @@ browser
 Before:
 
 ```text
-Spring API -> internal REST -> Go store
-Node job   -> internal REST -> Python worker
-C# API     -> internal REST -> JVM renderer
+Spring API -> backend HTTP -> Go store
+Node job   -> backend HTTP -> Python worker
+C# API     -> backend HTTP -> JVM renderer
 ```
 
 After:
@@ -167,8 +167,8 @@ Node job   -> CoAkka target -> Python worker
 C# API     -> CoAkka target -> JVM renderer
 ```
 
-The point is not that every internal HTTP call is wrong. The point is that
-private app-to-app work often wants a stable capability name, typed payload,
+The point is not that every backend HTTP call is wrong. The point is that
+application-to-application work often wants a stable capability name, typed payload,
 route ownership, and explicit delivery outcome more than it wants another URL
 surface.
 
@@ -176,11 +176,11 @@ surface.
 
 | Goal | Start with | Why |
 | --- | --- | --- |
-| See CoAkka work without installing language toolchains | `bash run.sh containers node-python` or `bash run.sh containers spring-go` | Runs two real processes with browser-visible state and no internal REST fallback. |
+| See CoAkka work without installing language toolchains | `bash run.sh containers node-python` or `bash run.sh containers spring-go` | Runs two real processes with browser-visible state and no backend HTTP fallback. |
 | Understand the smallest runtime API | `bash run.sh runtime jvm basic` or the basic sample for your language | Shows start spec, process-owned route, handler registration, ask/reply, and stats. |
 | Understand route misses and delivery failures | `bash run.sh runtime jvm deadletter` or `bash run.sh runtime python deadletter` | Shows a missing target becoming a matched deadletter instead of a vague timeout. |
 | Understand route generation and reload | `bash run.sh runtime python hot-reload` | Shows newer route snapshots being applied and stale/invalid snapshots rejected. |
-| Understand a normal application workflow | `bash run.sh scenario customer-crud spring-boot-starter-local dev` | Shows browser/API edge plus internal runtime capabilities in one same-process app. |
+| Understand a normal application workflow | `bash run.sh scenario customer-crud spring-boot-starter-local dev` | Shows browser/API edge plus runtime capabilities in one same-process app. |
 | Compare same-process app shape with cross-process shape | `bash run.sh scenario customer-crud spring-boot-spring-boot dev` | Keeps customer traffic runtime-only between web and store processes. |
 | Start from Spring Boot annotations | `runtime/scenarios/customer-crud/spring-boot-starter-local` | Uses `@CoAkkaHandler` and `CoAkkaRuntimeClient` instead of manual route/handler wiring. |
 | Start from explicit connector wiring | `runtime/scenarios/customer-crud/spring-boot-single-process` | Keeps route declaration and handler registration visible in application code. |
@@ -195,14 +195,14 @@ bash run.sh list
 
 For dependency snippets and the minimal host skeleton, read
 [runtime/README.md#copy-paste-starter-shapes](runtime/README.md#copy-paste-starter-shapes).
-For a longer adoption path, read [docs/adoption-path.md](docs/adoption-path.md).
+For a longer rollout path, read [docs/integration-path.md](docs/integration-path.md).
 
 ## When CoAkka Helps
 
 CoAkka is useful when:
 
-- internal work crosses process or language boundaries
-- private contracts are spreading across ad-hoc REST or gRPC clients
+- application work crosses process or language boundaries
+- application-owned contracts are spreading across ad-hoc REST or gRPC clients
 - teams want explicit delivery diagnostics for route miss, timeout, queue
   pressure, and unavailable endpoints
 - a system is migrating gradually across runtimes
@@ -220,16 +220,16 @@ CoAkka is probably not necessary when:
 Logger samples are included because the public artifact surface ships logger
 packages too, but the main README story is runtime capability delivery.
 
-## Incremental Adoption
+## Incremental Rollout
 
 CoAkka is not a rewrite-first platform. It does not ask teams to break working
 legacy systems, replace public APIs, standardize every service on one
 framework, or migrate the whole architecture at once.
 
-The practical adoption path is smaller:
+The practical rollout path is smaller:
 
 ```text
-pick one internal boundary
+pick one runtime boundary
   -> add a host-language connector
   -> route one typed target through CoAkka
   -> inspect delivery, reply, stats, or deadletter evidence
@@ -244,7 +244,7 @@ teams will not adopt it.
 CoAkka is more useful when setup stays simple, configuration stays lightweight,
 and legacy systems can remain in place. In that shape, it becomes a practical
 boundary improvement rather than a disruptive architecture bet: reduce fake
-internal REST, standardize internal capability delivery, and improve diagnostics
+backend HTTP, standardize runtime capability delivery, and improve diagnostics
 one boundary at a time.
 
 ## Core Runtime Vocabulary
@@ -313,11 +313,11 @@ workflow, one process, or one integration point at a time.
 
 That coexistence is part of the design advantage. Existing public edges can
 stay public, direct in-process calls can stay direct, and legacy services can
-keep running while one noisy internal boundary is made explicit. If the first
+keep running while one noisy runtime boundary is made explicit. If the first
 step is small and reversible, a team can evaluate the runtime model from real
 delivery evidence instead of committing to a migration plan up front.
 
-The intended adoption path is incremental:
+The intended rollout path is incremental:
 
 - keep the existing service or desktop application
 - add a small host-language connector at the boundary
@@ -328,7 +328,7 @@ The intended adoption path is incremental:
 ### Adopt One Boundary At A Time
 
 CoAkka does not require a team to migrate a whole system before learning whether
-the runtime boundary helps. A team can wrap one noisy internal integration, one
+the runtime boundary helps. A team can wrap one noisy runtime integration, one
 polyglot handoff, one workflow, or one failure-prone route first. The existing
 HTTP APIs, framework controllers, services, jobs, and deployment shape can keep
 running around that experiment.
@@ -401,7 +401,7 @@ terms apply across services and languages:
 - the C/C++ runtime core keeps behavior consistent instead of each framework
   inventing a different routing, correlation, or failure model
 
-That helps when a system has started to accumulate informal internal contracts:
+That helps when a system has started to accumulate informal application-owned contracts:
 
 - a small service change requires edits in several other services
 - each team implements routing, retry, correlation, and error handling
@@ -431,11 +431,11 @@ framework.
 
 These are the practical patterns the samples are trying to make concrete.
 
-**Name private work by target, not URL.** In REST, teams often encode a private
+**Name application-owned work by target, not URL.** In REST, teams often encode an application-owned
 call shape across method, path, query string, and headers:
 
 ```text
-POST /internal/customers/cust-001/hold?tenant=acme
+POST /backend/customers/cust-001/hold?tenant=acme
 x-request-id: req-123
 ```
 
@@ -663,7 +663,7 @@ sequenceDiagram
     end
 ```
 
-The caller does not call an internal HTTP controller in either path. It asks a
+The caller does not call a backend HTTP controller in either path. It asks a
 runtime `target`; the active route snapshot decides whether that target maps to
 a handler owned by this process, a peer runtime, or a deadletter.
 
@@ -771,17 +771,17 @@ Current customer topologies:
 ## Framework Adapters
 
 Spring Boot and Quarkus samples show the same boundary inside familiar
-framework code: keep HTTP at the browser/API edge, and route private store work
+framework code: keep HTTP at the browser/API edge, and route store work
 as a runtime capability.
 
-### Before: Internal REST
+### Before: Backend HTTP
 
-The traditional split adds an internal endpoint:
+The traditional split adds a backend endpoint:
 
 ```kotlin
 @RestController
-@RequestMapping("/internal/customers")
-class CustomerStoreInternalController(private val store: InMemoryCustomerStore) {
+@RequestMapping("/backend/customers")
+class CustomerStoreBackendController(private val store: InMemoryCustomerStore) {
     @PostMapping
     fun create(@RequestBody request: CustomerDraft): MutationResponse {
         return store.create(request)
@@ -789,7 +789,7 @@ class CustomerStoreInternalController(private val store: InMemoryCustomerStore) 
 }
 ```
 
-The browser-facing controller forwards business work through an internal HTTP
+The browser-facing controller forwards business work through a backend HTTP
 client:
 
 ```kotlin
@@ -804,8 +804,8 @@ class CustomerController(private val storeClient: CustomerStoreRestClient) {
 }
 ```
 
-That is a normal shape for a real REST boundary. For private store work, the
-sample instead keeps HTTP at `/api/...` and moves the internal call onto a
+That is a normal shape for a real REST boundary. For store work, the
+sample instead keeps HTTP at `/api/...` and moves the runtime call onto a
 typed runtime target.
 
 ### After: Same-Process Runtime Capability
@@ -813,7 +813,7 @@ typed runtime target.
 Spring Boot uses the public starter artifact:
 
 ```kotlin
-implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-ge2dc43a")
+implementation("coakka.spring:coakka-spring-boot-starter:0.2.0-g94a5729")
 ```
 
 ```kotlin
@@ -827,7 +827,7 @@ class CustomerCapabilityHandlers(private val store: InMemoryCustomerStore) {
 ```
 
 The controller still owns real HTTP ingress, but it asks a runtime capability
-rather than an internal REST endpoint:
+rather than a backend HTTP endpoint:
 
 ```kotlin
 @PostMapping("/api/customers")
@@ -846,7 +846,7 @@ fun create(@RequestBody request: CustomerDraft): MutationResponse {
 Quarkus follows the same shape through the public extension artifact:
 
 ```kotlin
-implementation("coakka.quarkus:coakka-quarkus-extension:0.1.0-ge2dc43a")
+implementation("coakka.quarkus:coakka-quarkus-extension:0.2.0-g94a5729")
 ```
 
 ```kotlin
@@ -1042,7 +1042,7 @@ RuntimeEndpointFlags  = endpoint state, such as LOCAL or UNAVAILABLE
 | `nodeId` | Which concrete instance/process am I? | Concrete process identity used in logs and runtime snapshots; samples may hard-code it, but production should supply a unique value per process/pod at runtime, not bake it into the image. |
 | `queueCapacity = 128` | How much work can runtime buffer before applying pressure? | Bounded queue that is large enough for a demo but still prevents unbounded memory growth. |
 | `strictNoDrop = true` | Should overload be visible instead of silently dropping work? | Overload becomes visible as an error/deadletter instead of silently dropping work. |
-| delivered-request lane | Should runtime keep delivered requests on their own internal lane? | Enabled by default in current connectors; it separates incoming requests this process must handle from replies/deadletters that complete asks this process already sent. |
+| delivered-request lane | Should runtime keep delivered requests on their own runtime lane? | Enabled by default in current connectors; it separates incoming requests this process must handle from replies/deadletters that complete asks this process already sent. |
 | `generation = 1` | Which version of the route table is this? | First route-table snapshot applied at startup. Real services should increment this when applying a new route snapshot. |
 | `routes` | What targets does this runtime know how to route? | Maps a target name such as `samples.customer.store` to one or more endpoints. |
 | `target` | What capability is the caller asking for? | Stable capability address, not a class name, function name, or URL. |
@@ -1057,7 +1057,7 @@ RuntimeEndpointFlags  = endpoint state, such as LOCAL or UNAVAILABLE
 `separateDeliveredRequestLane` is mostly about protecting ask completion. A
 runtime process can be doing two things at once: receiving new requests for its
 local handlers, and waiting for replies or deadletters for asks it sent out.
-With `true`, those two flows do not share the same internal delivery lane, so a
+With `true`, those two flows do not share the same runtime delivery lane, so a
 burst of inbound handler work is less likely to delay response/deadletter
 matching. With `false`, they share a lane; use that only for very small,
 mostly one-way hosts after measurement. The samples use `true` as the normal
@@ -1113,7 +1113,7 @@ store and audit processes are runtime handlers without a REST API.
 
 That shape is deliberate for polyglot work. Once a store is a runtime target,
 changing the owner from Spring Boot to Node.js, Go, C#, Python, or another
-connector does not require inventing a new internal REST mini-service for each
+connector does not require inventing a new backend HTTP mini-service for each
 language.
 
 ## Integration Guide
@@ -1142,17 +1142,17 @@ Language-specific entry points:
 - [Logger samples](logger/README.md)
 - [Native C/C++ runtime samples](runtime/native/README.md)
 
-## Adoption And Readiness
+## Readiness
 
 CoAkka is an early public runtime surface. It is a good fit when target-based
-internal delivery, payload identity, deadletters, route snapshots, and
+runtime delivery, payload identity, deadletters, route snapshots, and
 multi-language handler ownership should be part of the application model. A
 small system that only needs one ordinary REST or gRPC call can keep that
 direct shape.
 
 For production fit, measurement checklist, learning path, and config ownership,
 read
-[Adoption And Production Readiness](docs/adoption-and-production-readiness.md).
+[Production Readiness](docs/production-readiness.md).
 
 ## Future Connector Scope
 
@@ -1410,18 +1410,18 @@ Current public artifact pins:
 | --- | --- |
 | Logger JVM | `coakka.logger:coakka-jvm-native-logger:0.1.0-gba2a66d98eb5` |
 | Logger Python, Node.js, Go, C#, Rust, and native C/C++ | `0.1.0+ba2a66d98eb5` |
-| Runtime native C/C++ | `0.1.0+e2dc43a` |
-| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-ge2dc43a-9227dc0` |
-| Runtime Python, Node.js, Go, C#, and Rust | `0.1.0+e2dc43a-9227dc0` |
-| Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.1.0-ge2dc43a` |
-| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.1.0-ge2dc43a` |
+| Runtime native C/C++ | `0.2.0+94a5729` |
+| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-g94a5729-6b7a3bf` |
+| Runtime Python, Node.js, Go, C#, and Rust | `0.2.0+94a5729-6b7a3bf` |
+| Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.2.0-g94a5729` |
+| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.2.0-g94a5729` |
 
 The matching artifact note is published at
-`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-05-17-runtime-e2dc43a.md`.
+`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-05-17-runtime-94a5729.md`.
 
 ## Public Status
 
-Current public native runtime generation: `0.1.0+e2dc43a`.
+Current public native runtime generation: `0.2.0+94a5729`.
 
 | Lane | Public artifact status | First command |
 | --- | --- | --- |
@@ -1461,7 +1461,7 @@ Runtime language/framework direct runs consume the public runtime artifacts:
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=0.1.0 git=<git>
+coakka_runtime_info abi=1 version=0.2.0 git=<git>
 coakka_runtime_response payload={"echo":"hello-runtime-jvm"}
 coakka_runtime_stats generation=1 routes=1 delivered=1 matchedResponses=1
 ```
@@ -1495,9 +1495,9 @@ bash run.sh runtime native basic
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=0.1.0 git=<git> language=c
+coakka_runtime_info abi=1 version=0.2.0 git=<git> language=c
 coakka_runtime_stats generation=1 routes=1 routeMisses=1 deadletters=1 language=c
-coakka_runtime_info abi=1 version=0.1.0 git=<git> language=cpp
+coakka_runtime_info abi=1 version=0.2.0 git=<git> language=cpp
 coakka_runtime_stats generation=1 routes=1 routeMisses=1 deadletters=1 language=cpp
 ```
 
@@ -1510,7 +1510,7 @@ bash run.sh runtime native pressure
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=0.1.0 git=<git> language=c
+coakka_runtime_info abi=1 version=0.2.0 git=<git> language=c
 coakka_runtime_pressure attempts=64 delivered=<n> rejected=<n> capacity=2 highWatermark=<n> language=c
 coakka_runtime_stats generation=1 routes=1 queueRejected=<n> deadletters=<n> language=c
 ```
@@ -1534,7 +1534,7 @@ Run the smallest JVM logger sample directly through Gradle:
 Expected output shape:
 
 ```text
-coakka_logger_info abi=10 version=0.1.0 git=<git>
+coakka_logger_info abi=10 version=0.2.0 git=<git>
 coakka_logger_record sequence=1 level=info category=samples.logger.jvm.basic message={"event":"hello","language":"jvm"}
 coakka_logger_stats emitted=1 delivered=1 dropped=0
 ```

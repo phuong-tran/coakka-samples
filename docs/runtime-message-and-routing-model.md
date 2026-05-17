@@ -109,7 +109,7 @@ starts with a `RuntimeStartSpec` and applies a route snapshot.
 
 One practical rule: start one runtime host per process. The app framework still
 owns HTTP, UI, jobs, lifecycle hooks, authentication, authorization, and
-business validation. CoAkka starts after app code decides there is internal work
+business validation. CoAkka starts after app code decides there is application work
 to deliver.
 
 ## Business Request Shape
@@ -117,13 +117,13 @@ to deliver.
 Start from a user-facing request, not from the runtime. A frontend may call a
 REST endpoint such as `POST /checkout`. The app still validates the HTTP
 request, checks auth, reads the body, and decides which business work must run.
-CoAkka begins when that app code needs to call an internal target.
+CoAkka begins when that app code needs to call an runtime target.
 
 Most business logic has one of two shapes.
 
 ### Business Logic = One Request
 
-One app request may need one internal target:
+One app request may need one runtime target:
 
 ```mermaid
 sequenceDiagram
@@ -150,7 +150,7 @@ connector/runtime.
 
 ### Business Logic = Many Requests
 
-Many app requests need several internal targets before the business decision is
+Many app requests need several runtime targets before the business decision is
 known. Checkout is a typical shape:
 
 ```mermaid
@@ -185,7 +185,7 @@ sequenceDiagram
 
 This is still ordinary business orchestration. CoAkka does not decide whether a
 checkout succeeds, whether to compensate inventory, or whether to retry a
-payment. It standardizes the internal calls that make up the business flow:
+payment. It standardizes the runtime calls that make up the business flow:
 stable targets instead of scattered endpoint strings, envelopes instead of
 ad-hoc message wrappers, route snapshots instead of caller-owned topology, and
 structured reply/deadletter/timeout completion instead of each integration
@@ -229,7 +229,7 @@ and what route table should it start with?"
 | `nodeId` | Which concrete process/replica am I? | Unique process identity from hostname, pod name, env, or platform metadata. |
 | `queueCapacity` | How much runtime work can this process buffer? | Start bounded and conservative; tune from pressure counters. |
 | `strictNoDrop` | Should overload become visible? | Prefer `true` while integrating so rejection is observable. |
-| `separateDeliveredRequestLane` | Should runtime keep delivered requests on their own internal lane? | Prefer `true` for request/reply hosts. |
+| `separateDeliveredRequestLane` | Should runtime keep delivered requests on their own runtime lane? | Prefer `true` for request/reply hosts. |
 | `generation` | Which route snapshot version is active at startup? | Start at `1`; increment for newer route snapshots. |
 | `routes` | Which targets can this process route? | Map target names to local or peer endpoints. |
 
@@ -256,7 +256,7 @@ discovery, or a control plane.
 `separateDeliveredRequestLane` protects the ask/reply path from inbound handler
 work. A runtime host can receive requests for local handlers while it is also
 waiting for replies or deadletters for asks it has sent. With `true`, delivered
-requests use a separate internal lane from reply/deadletter matching. With
+requests use a separate runtime lane from reply/deadletter matching. With
 `false`, both flows share one lane. Use `true` as the default for services that
 send asks or expose request/reply handlers; consider `false` only for tiny
 one-way hosts after measuring that lane sharing is harmless.
@@ -299,7 +299,7 @@ ask matching, timeout completion, and deadletter completion. App code still owns
 the handler and the business decision after a result arrives.
 
 With `separateDeliveredRequestLane = true`, inbound requests and ask completion
-use separate internal lanes:
+use separate runtime lanes:
 
 ```mermaid
 flowchart LR
@@ -328,7 +328,7 @@ flowchart LR
     pending -->|complete fraud.check ask| handler
 ```
 
-With `separateDeliveredRequestLane = false`, both flows share one internal lane:
+With `separateDeliveredRequestLane = false`, both flows share one runtime lane:
 
 ```mermaid
 flowchart LR
@@ -337,7 +337,7 @@ flowchart LR
 
     subgraph host[billing-1 runtime host]
         connector[Connector API]
-        sharedLane[Shared internal lane<br/>delivered requests plus ask completion]
+        sharedLane[Shared runtime lane<br/>delivered requests plus ask completion]
         pending[Runtime/connector pending asks]
         timeout[Runtime/connector timeout]
         handler[Billing handler]
@@ -483,7 +483,7 @@ behavior.
 
 Timeout and retry are easiest to reason about from the business request, not
 from the transport. A user-facing request has a budget: how long the caller is
-willing to wait before choosing another outcome. Each internal ask consumes
+willing to wait before choosing another outcome. Each runtime ask consumes
 part of that budget.
 
 For `Business Logic = One Request`, the shape is direct:

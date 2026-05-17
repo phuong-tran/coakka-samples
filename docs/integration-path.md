@@ -1,4 +1,4 @@
-# CoAkka Sample Adoption Path
+# CoAkka Sample Rollout Path
 
 This note gives a first-pass path through the samples. It is not a production
 rollout checklist; it is a reading and experimentation order for understanding
@@ -94,7 +94,7 @@ Run a local customer CRUD scenario:
 bash run.sh scenario customer-crud spring-boot-starter-local dev
 ```
 
-This scenario keeps HTTP at the browser/API edge and moves internal customer
+This scenario keeps HTTP at the browser/API edge and moves customer
 work onto local runtime targets.
 
 If you want explicit route and handler wiring instead of annotation-based
@@ -122,7 +122,7 @@ customer target. The business call between them stays runtime-only.
 After the samples make sense, read:
 
 - [runtime-integration-guide.md](runtime-integration-guide.md)
-- [adoption-and-production-readiness.md](adoption-and-production-readiness.md)
+- [production-readiness.md](production-readiness.md)
 - [containerized-runtime.md](containerized-runtime.md)
 - [qna.md](qna.md)
 

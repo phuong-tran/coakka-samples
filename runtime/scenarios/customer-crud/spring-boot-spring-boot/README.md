@@ -17,7 +17,7 @@ a store REST API; it stays alive only to serve the runtime handler.
 
 ## Runtime Transport Note
 
-This scenario expects a remote-capable runtime v2 artifact. The web service
+This scenario expects a runtime with cross-process delivery enabled v2 artifact. The web service
 sends customer business requests only through the runtime route; there is no
 store REST fallback. If the runtime cannot deliver to `customer-store`, the web
 API returns an explicit runtime delivery failure so the issue is visible in the

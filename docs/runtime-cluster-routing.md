@@ -189,7 +189,7 @@ routes:
         flags: [NONE]
 ```
 
-For ownership-sensitive work, use a strategy that preserves ownership:
+For ownership-bound work, use a strategy that preserves ownership:
 
 ```yaml
 generation: 43

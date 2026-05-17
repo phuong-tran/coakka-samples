@@ -2,7 +2,7 @@
 
 Go runtime samples document the `coakka-v2-connector-go` source package shape.
 This runtime lane consumes the public Go source package built against native
-runtime `0.1.0+e2dc43a`.
+runtime `0.2.0+94a5729`.
 
 ## Run
 
@@ -103,13 +103,13 @@ response, err := runtimeHost.AskJSON(
 )
 ```
 
-## Before: Internal REST
+## Before: Backend HTTP
 
-The store can become an internal `net/http` service even when the call is
+The store can become a backend `net/http` service even when the call is
 really an application capability:
 
 ```go
-http.HandleFunc("/internal/customers", func(w http.ResponseWriter, r *http.Request) {
+http.HandleFunc("/backend/customers", func(w http.ResponseWriter, r *http.Request) {
     var command customerDraft
     json.NewDecoder(r.Body).Decode(&command)
     json.NewEncoder(w).Encode(store.Create(command))
@@ -121,7 +121,7 @@ The web/API side then forwards business work through HTTP:
 ```go
 body, _ := json.Marshal(command)
 reply, err := http.Post(
-    "http://customer-store/internal/customers",
+    "http://customer-store/backend/customers",
     "application/json",
     bytes.NewReader(body),
 )
@@ -132,14 +132,14 @@ reply, err := http.Post(
 Read the address change like this:
 
 ```text
-Before internal REST:
-  POST /internal/customers -> http handler
+Before backend HTTP:
+  POST /backend/customers -> http handler
 
 After CoAkka:
   target = "samples.customer.store" -> registered handler
 ```
 
-The target plays a similar addressing role to an internal REST path, but it is
+The target plays a similar addressing role to a backend HTTP path, but it is
 runtime routing vocabulary, not an HTTP URL.
 
 With CoAkka, the store is a runtime target:
@@ -177,9 +177,9 @@ response, err := runtimeHost.AskJSON(
 ```
 
 The goal is not to win a synthetic contest against every possible HTTP stack.
-The goal is to avoid adding internal REST only for private runtime work: URL
+The goal is to avoid adding backend HTTP only for application runtime work: URL
 config, request parsing, headers, status/error mapping, timeout policy, and
-tests are web-boundary concepts, while the internal contract is a runtime
+tests are web-boundary concepts, while the runtime contract is a runtime
 capability.
 Existing code using `StartConnectorOrchestrator(...)` still works as the
 compatibility name; new samples use `StartRuntimeHost(...)`.
