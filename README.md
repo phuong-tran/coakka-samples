@@ -101,6 +101,10 @@ docker.io/gabrielgun1983/sample-spring-web:0.1.0-fbab60154993-remote
 docker.io/gabrielgun1983/sample-go-store:0.1.0-fbab60154993-remote
 ```
 
+Those tags are the current public container image set. Source builds for the
+Node.js/Python container sample target the current runtime `0.2.0+94a5729`
+artifact set and need a matching runtime-base image.
+
 Run either sample:
 
 ```sh
