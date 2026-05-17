@@ -154,9 +154,9 @@ services.
 
 Current visual proof from the Spring Boot JVM web to Go store container sample:
 
-![Spring Boot web UI showing runtime counters and route-miss diagnostics](docs/assets/container-spring-go-web.png)
+![Spring Boot web UI showing an accepted create command and runtime counters](docs/assets/container-spring-go-create-web.png)
 
-![Go store UI showing customer state changed by runtime messages](docs/assets/container-spring-go-store.png)
+![Go store UI showing the same customer state changed by runtime messages](docs/assets/container-spring-go-create-store.png)
 
 What to observe:
 

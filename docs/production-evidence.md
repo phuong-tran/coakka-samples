@@ -32,12 +32,12 @@ bash run.sh containers spring-go smoke
 
 Screenshots:
 
-- [Spring Boot web UI](assets/container-spring-go-web.png)
-- [Go store UI](assets/container-spring-go-store.png)
+- [Spring Boot web UI](assets/container-spring-go-create-web.png)
+- [Go store UI](assets/container-spring-go-create-store.png)
 
-The web screenshot shows runtime counters and route-miss diagnostics. The store
-screenshot shows customer state changed by runtime messages from the web
-process.
+The web screenshot shows an accepted create command and runtime counters. The
+store screenshot shows the same customer state changed by runtime messages from
+the web process.
 
 ## Not Proven Yet
 
