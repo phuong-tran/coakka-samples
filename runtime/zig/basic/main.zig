@@ -16,11 +16,12 @@ pub fn main(init: std.process.Init) !void {
     defer native.close();
 
     const info = try native.readInfo();
-    var host = try native.startHost(runtime.smokeSpec());
+    const spec = sampleSpec();
+    var host = try native.startHost(spec);
     defer host.deinit();
 
     const stats = try host.stats();
-    if (!runtime.isStarted(stats, 1, 1)) {
+    if (!runtime.isStarted(stats, spec.generation, 1)) {
         std.debug.print(
             "unexpected runtime stats generation={d} routes={d} state={d}\n",
             .{ stats.applied_generation, stats.route_count, stats.runtime_state },
@@ -37,11 +38,24 @@ pub fn main(init: std.process.Init) !void {
             info.abi_version,
             cstr(info.runtime_version),
             cstr(info.git_commit),
-            std.mem.span(runtime.smokeSpec().system_name),
-            std.mem.span(runtime.smokeSpec().node_id),
+            std.mem.span(spec.system_name),
+            std.mem.span(spec.node_id),
             stats.applied_generation,
             stats.route_count,
             stats.runtime_state,
         },
     );
+}
+
+fn sampleSpec() runtime.StartSpec {
+    return .{
+        .system_name = "zig-runtime-basic",
+        .node_id = "zig-runtime-basic-node",
+        .target = "svc.echo",
+        .host = "127.0.0.1",
+        .port = 9041,
+        .generation = 1,
+        .strict_no_drop = true,
+        .queue_capacity = 32,
+    };
 }

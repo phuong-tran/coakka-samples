@@ -34,8 +34,8 @@ COAKKA_SAMPLE_ROWS=(
   "runtime|go|deadletter|Verify a missing Go route returns a matched deadletter"
   "runtime|csharp|basic|Run one local request/reply echo from C#"
   "runtime|rust|basic|Run one local request/reply echo from Rust"
-  "runtime|zig|basic|Run one native runtime lifecycle, raw request/reply, and route-miss smoke from Zig"
-  "runtime|mojo|basic|Run one native runtime lifecycle, raw request/reply, and route-miss smoke from Mojo"
+  "runtime|zig|basic|Run one native runtime lifecycle, raw request/reply, and route-miss check from Zig"
+  "runtime|mojo|basic|Run one native runtime lifecycle, raw request/reply, and route-miss check from Mojo"
   "runtime|native|basic|Run one route snapshot and route-miss diagnostic from C and C++"
   "runtime|native|pressure|Show bounded runtime queue pressure and deadletter counters from C"
 )

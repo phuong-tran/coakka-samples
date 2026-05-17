@@ -37,18 +37,18 @@ fi
 
 case "$(uname -s)" in
   Darwin)
-    shim="${tmp_dir}/libcoakka_mojo_runtime_connector.dylib"
+    shim="${tmp_dir}/libcoakka_mojo_runtime_basic.dylib"
     cc -dynamiclib \
-      "${package_root}/src/runtime_connector_shim.c" \
+      "${script_dir}/runtime_shim.c" \
       "${runtime_lib}" \
       -o "${shim}"
     DYLD_LIBRARY_PATH="$(dirname "${runtime_lib}"):${tmp_dir}" \
       mojo "${script_dir}/main.mojo" "${shim}"
     ;;
   Linux)
-    shim="${tmp_dir}/libcoakka_mojo_runtime_connector.so"
+    shim="${tmp_dir}/libcoakka_mojo_runtime_basic.so"
     cc -shared -fPIC \
-      "${package_root}/src/runtime_connector_shim.c" \
+      "${script_dir}/runtime_shim.c" \
       "${runtime_lib}" \
       -o "${shim}"
     LD_LIBRARY_PATH="$(dirname "${runtime_lib}"):${tmp_dir}" \
