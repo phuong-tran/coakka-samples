@@ -1,4 +1,6 @@
 import http from "node:http";
+import dns from "node:dns";
+import os from "node:os";
 import {
   DeliveryHint,
   EndpointFlag,
@@ -20,12 +22,35 @@ const identities = {
 
 const webHost = process.env.COAKKA_SAMPLE_WEB_HOST || "0.0.0.0";
 const webPort = Number(process.env.COAKKA_SAMPLE_WEB_PORT || "8080");
-const runtimeBindHost = process.env.COAKKA_SAMPLE_NODE_RUNTIME_BIND_HOST || "0.0.0.0";
+const runtimeBindHost = resolveRuntimeBindHost(process.env.COAKKA_SAMPLE_NODE_RUNTIME_BIND_HOST);
 const runtimeHost = process.env.COAKKA_SAMPLE_NODE_RUNTIME_HOST || "node-web";
 const runtimePort = Number(process.env.COAKKA_SAMPLE_NODE_RUNTIME_PORT || "19231");
 const storeHost = process.env.COAKKA_SAMPLE_STORE_RUNTIME_HOST || "python-store";
+const storeRouteHost = resolveRouteHost(storeHost);
 const storePort = Number(process.env.COAKKA_SAMPLE_STORE_RUNTIME_PORT || "19232");
 const askTimeoutMs = Number(process.env.COAKKA_SAMPLE_ASK_TIMEOUT_MS || "3000");
+
+function resolveRuntimeBindHost(value) {
+  if (value && value !== "auto") {
+    return value;
+  }
+  for (const entries of Object.values(os.networkInterfaces())) {
+    for (const entry of entries || []) {
+      if (entry.family === "IPv4" && !entry.internal) {
+        return entry.address;
+      }
+    }
+  }
+  return "127.0.0.1";
+}
+
+function resolveRouteHost(host) {
+  try {
+    return dns.lookupSync(host, { family: 4 }).address;
+  } catch {
+    return host;
+  }
+}
 
 const startSpec = {
   systemName: "container-node-web",
@@ -40,7 +65,7 @@ const startSpec = {
     },
     {
       target: STORE_TARGET,
-      endpoints: [{ host: storeHost, port: storePort, flags: EndpointFlag.NONE }],
+      endpoints: [{ host: storeRouteHost, port: storePort, flags: EndpointFlag.NONE }],
     },
   ],
 };

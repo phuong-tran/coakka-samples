@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import socket
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -30,6 +31,13 @@ LIST_RESPONSE = PayloadIdentity("samples.container.customer.list.response.v1", 1
 
 def env_int(name: str, default: int) -> int:
     return int(os.environ.get(name, str(default)))
+
+
+def resolve_runtime_bind_host(name: str) -> str:
+    value = os.environ.get(name, "auto")
+    if value and value != "auto":
+        return value
+    return socket.gethostbyname(socket.gethostname())
 
 
 def decode_payload(request: Any) -> dict[str, Any]:
@@ -253,10 +261,11 @@ def make_handler(store: CustomerStore, runtime: RuntimeHost):
 def main() -> None:
     http_host = os.environ.get("COAKKA_SAMPLE_STORE_WEB_HOST", "0.0.0.0")
     http_port = env_int("COAKKA_SAMPLE_STORE_WEB_PORT", 8081)
-    store_runtime_bind_host = os.environ.get("COAKKA_SAMPLE_STORE_RUNTIME_BIND_HOST", "0.0.0.0")
+    store_runtime_bind_host = resolve_runtime_bind_host("COAKKA_SAMPLE_STORE_RUNTIME_BIND_HOST")
     store_runtime_host = os.environ.get("COAKKA_SAMPLE_STORE_RUNTIME_HOST", "python-store")
     store_runtime_port = env_int("COAKKA_SAMPLE_STORE_RUNTIME_PORT", 19232)
     node_runtime_host = os.environ.get("COAKKA_SAMPLE_NODE_RUNTIME_HOST", "node-web")
+    node_route_host = socket.gethostbyname(node_runtime_host)
     node_runtime_port = env_int("COAKKA_SAMPLE_NODE_RUNTIME_PORT", 19231)
     store = CustomerStore()
 
@@ -281,7 +290,7 @@ def main() -> None:
                 target=WEB_TARGET,
                 endpoints=[
                     EndpointSpec(
-                        host=node_runtime_host,
+                        host=node_route_host,
                         port=node_runtime_port,
                         flags=int(EndpointFlag.NONE),
                     )
