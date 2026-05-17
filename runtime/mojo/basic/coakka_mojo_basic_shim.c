@@ -145,6 +145,64 @@ done:
   return failed;
 }
 
+static int run_route_miss_deadletter(coakka_v2_runtime_t* runtime,
+                                     const coakka_v2_host_handles_t* handles) {
+  static const uint8_t request_payload[] = {'m', 'i', 's', 's', 'i', 'n', 'g'};
+  coakka_v2_ask_client_t* client = NULL;
+  coakka_v2_ask_ticket_t* ticket = NULL;
+  uint8_t* request_buf = NULL;
+  size_t request_len = 0;
+  uint8_t* result_buf = NULL;
+  size_t result_len = 0;
+  uint32_t result_kind = COAKKA_V2_CLIENT_RESULT_NONE;
+  int failed = 0;
+
+  client = coakka_v2_ask_client_create(runtime, handles);
+  if (client == NULL) {
+    fprintf(stderr, "ask_client_create failed\n");
+    return 1;
+  }
+
+  coakka_v2_client_raw_request_spec_t request_spec;
+  memset(&request_spec, 0, sizeof(request_spec));
+  request_spec.struct_size = sizeof(request_spec);
+  request_spec.message_id = "req-mojo-basic-missing-1";
+  request_spec.source = "mojo-basic-client";
+  request_spec.target = "svc.missing";
+  request_spec.reply_to = "mojo-basic-client/replies";
+  request_spec.payload = request_payload;
+  request_spec.payload_len = sizeof(request_payload);
+  request_spec.timeout_ms = 1000u;
+  request_spec.delivery_hint = COAKKA_V2_CLIENT_DELIVERY_HINT_ROUTER_DEFAULT;
+  request_spec.one_way = 0u;
+
+  if (require_ok(coakka_v2_client_build_raw_request(&request_spec, &request_buf, &request_len),
+                 "build_missing_raw_request") ||
+      request_buf == NULL || request_len == 0) {
+    failed = 1;
+    goto done;
+  }
+  if (require_ok(coakka_v2_ask_client_begin(client, request_buf, request_len, &ticket),
+                 "ask_missing_client_begin") ||
+      ticket == NULL) {
+    failed = 1;
+    goto done;
+  }
+  if (require_ok(coakka_v2_ask_ticket_await(ticket, 1000u, &result_kind, &result_buf, &result_len),
+                 "ask_missing_ticket_await") ||
+      result_kind != COAKKA_V2_CLIENT_RESULT_DEADLETTER || result_buf == NULL || result_len == 0) {
+    failed = 1;
+    goto done;
+  }
+
+done:
+  if (result_buf != NULL) coakka_v2_client_bytes_release(result_buf);
+  if (ticket != NULL) coakka_v2_ask_ticket_destroy(ticket);
+  if (request_buf != NULL) coakka_v2_client_bytes_release(request_buf);
+  coakka_v2_ask_client_destroy(client);
+  return failed;
+}
+
 int coakka_mojo_basic_run(int ignored) {
   (void)ignored;
   coakka_v2_runtime_info_t info;
@@ -233,13 +291,14 @@ int coakka_mojo_basic_run(int ignored) {
     return 1;
   }
 
-  if (run_raw_roundtrip(runtime, &handles)) {
+  if (run_raw_roundtrip(runtime, &handles) ||
+      run_route_miss_deadletter(runtime, &handles)) {
     close_host_handles(&handles);
     coakka_v2_runtime_destroy(runtime);
     return 1;
   }
 
-  printf("coakka_runtime_stats generation=%llu routes=%zu state=%s rawRoundTrip=ok language=mojo\n",
+  printf("coakka_runtime_stats generation=%llu routes=%zu state=%s rawRoundTrip=ok routeMissDeadletter=ok language=mojo\n",
          (unsigned long long)stats.applied_generation,
          stats.route_count,
          coakka_v2_runtime_state_name(stats.runtime_state));

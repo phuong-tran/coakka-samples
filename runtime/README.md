@@ -284,8 +284,8 @@ Current samples:
 | Go | `go/basic`, `go/deadletter` | public Go source package | echo and route-miss deadletter |
 | C# | `csharp/basic` | public NuGet package | echo and route-miss deadletter |
 | Rust | `rust/basic` | public Rust spike tarball | echo and route-miss deadletter |
-| Zig | `zig/basic` | source-only over native C ABI archive | lifecycle/control and raw request/reply smoke |
-| Mojo | `mojo/basic` | source-only sample-local shim over native C ABI archive | lifecycle/control and raw request/reply smoke |
+| Zig | `zig/basic` | source-only over native C ABI archive | lifecycle/control, raw request/reply, and route-miss deadletter smoke |
+| Mojo | `mojo/basic` | source-only sample-local shim over native C ABI archive | lifecycle/control, raw request/reply, and route-miss deadletter smoke |
 | Native C/C++ | `native/basic`, `native/pressure` | native C ABI archive | route snapshot, route-miss deadletter, and bounded pressure counters |
 | Containers | `../containers/node-python` | public Node.js package and Python wheel | Node.js web process to Python store process |
 
@@ -304,10 +304,11 @@ pressure until the public connector surface exposes a repeatable pressure hook
 that can produce the same queue-rejected evidence without bypassing connector
 ownership.
 
-Zig and Mojo currently cover lifecycle/control plus one raw request/reply
-through the native C ABI archive. They prove native runtime loading, route
-snapshot application, start, delivered-request handling, stats read, and stop
-from source, but they are not package artifacts yet.
+Zig and Mojo currently cover lifecycle/control, one raw request/reply, and one
+route-miss deadletter through the native C ABI archive. They prove native
+runtime loading, route snapshot application, start, delivered-request handling,
+ask-client deadletter matching, stats read, and stop from source, but they are
+not package artifacts yet.
 
 Scenario track:
 

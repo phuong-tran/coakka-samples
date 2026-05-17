@@ -140,6 +140,56 @@ fn runRawRoundTrip(runtime: ?*c.coakka_v2_runtime_t, handles: *const c.coakka_v2
     }
 }
 
+fn runRouteMissDeadletter(runtime: ?*c.coakka_v2_runtime_t, handles: *const c.coakka_v2_host_handles_t) !void {
+    if (runtime == null) {
+        return SampleError.CoakkaCallFailed;
+    }
+
+    const client = c.coakka_v2_ask_client_create(runtime, handles);
+    if (client == null) {
+        std.debug.print("ask_client_create failed\n", .{});
+        return SampleError.CoakkaCallFailed;
+    }
+    defer c.coakka_v2_ask_client_destroy(client);
+
+    const request_payload = "missing";
+    var request_spec: c.coakka_v2_client_raw_request_spec_t = std.mem.zeroes(c.coakka_v2_client_raw_request_spec_t);
+    request_spec.struct_size = @sizeOf(c.coakka_v2_client_raw_request_spec_t);
+    request_spec.message_id = "req-zig-basic-missing-1";
+    request_spec.source = "zig-basic-client";
+    request_spec.target = "svc.missing";
+    request_spec.reply_to = "zig-basic-client/replies";
+    request_spec.payload = request_payload.ptr;
+    request_spec.payload_len = request_payload.len;
+    request_spec.timeout_ms = 1000;
+    request_spec.delivery_hint = c.COAKKA_V2_CLIENT_DELIVERY_HINT_ROUTER_DEFAULT;
+    request_spec.one_way = 0;
+
+    var request_buf: [*c]u8 = null;
+    var request_len: usize = 0;
+    try requireOk(c.coakka_v2_client_build_raw_request(&request_spec, &request_buf, &request_len), "build_missing_raw_request");
+    if (request_buf == null or request_len == 0) {
+        return SampleError.CoakkaCallFailed;
+    }
+    defer c.coakka_v2_client_bytes_release(request_buf);
+
+    var ticket: ?*c.coakka_v2_ask_ticket_t = null;
+    try requireOk(c.coakka_v2_ask_client_begin(client, request_buf, request_len, &ticket), "ask_missing_client_begin");
+    if (ticket == null) {
+        return SampleError.CoakkaCallFailed;
+    }
+    defer c.coakka_v2_ask_ticket_destroy(ticket);
+
+    var result_kind: u32 = c.COAKKA_V2_CLIENT_RESULT_NONE;
+    var result_buf: [*c]u8 = null;
+    var result_len: usize = 0;
+    try requireOk(c.coakka_v2_ask_ticket_await(ticket, 1000, &result_kind, &result_buf, &result_len), "ask_missing_ticket_await");
+    defer c.coakka_v2_client_bytes_release(result_buf);
+    if (result_kind != c.COAKKA_V2_CLIENT_RESULT_DEADLETTER or result_buf == null or result_len == 0) {
+        return SampleError.CoakkaCallFailed;
+    }
+}
+
 pub fn main() !void {
     var info: c.coakka_v2_runtime_info_t = std.mem.zeroes(c.coakka_v2_runtime_info_t);
     info.struct_size = @sizeOf(c.coakka_v2_runtime_info_t);
@@ -211,9 +261,10 @@ pub fn main() !void {
     }
 
     try runRawRoundTrip(runtime, &handles);
+    try runRouteMissDeadletter(runtime, &handles);
 
     std.debug.print(
-        "coakka_runtime_stats generation={d} routes={d} state={s} rawRoundTrip=ok language=zig\n",
+        "coakka_runtime_stats generation={d} routes={d} state={s} rawRoundTrip=ok routeMissDeadletter=ok language=zig\n",
         .{
             stats.applied_generation,
             stats.route_count,
