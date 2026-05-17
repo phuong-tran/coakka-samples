@@ -94,6 +94,31 @@ sequenceDiagram
 The second attempt is still the same request lifecycle. It keeps the same
 business intent, correlation, active generation, and monotonic deadline budget.
 
+## Route Generation Discipline
+
+`generation` is a route-snapshot version, not a distributed consensus term.
+The runtime applies a newer snapshot locally and rejects stale snapshots, but it
+does not elect a leader, merge competing snapshots, or repair split-brain by
+itself.
+
+Use these rules when publishing route snapshots:
+
+- one generation number must describe one exact route snapshot for a target set
+- a topology change, endpoint flag change, strategy change, or rollback is a
+  new snapshot with a higher generation
+- two partitions must not independently mint different snapshots with the same
+  generation
+- if a partition cannot reach the route publisher, it should keep its current
+  accepted generation or drain affected endpoints instead of inventing a new
+  one
+- after a partition heals, reconciliation is another explicit snapshot with a
+  higher generation
+
+This keeps the runtime boundary small. The core can fail closed on stale or
+incompatible route state and report the active generation in diagnostics; the
+deployment control plane owns the single-writer or quorum rule that decides
+which route snapshot is next.
+
 ## Retry Versus Failover
 
 Use different words for two different things:
@@ -213,6 +238,31 @@ routes:
 failover belongs to multi-endpoint strategies such as weighted selection or
 rendezvous selection after excluding endpoints already failed by the current
 request.
+
+## Rendezvous Hash Stability
+
+`RENDEZVOUS_HASH` is for stable key-to-endpoint selection across route
+generations. It is not a promise that a key can never move. It minimizes
+movement when the endpoint set changes.
+
+Keep these inputs stable:
+
+- `routeKeyHint` should name a field or header that every caller can supply
+  deterministically
+- the hinted value should be normalized the same way in every connector, for
+  example the same tenant id or order id string, not a language-specific object
+  rendering
+- endpoint identity should be stable across generations; changing host, port,
+  wire profile, or endpoint id is treated like removing one endpoint and adding
+  another
+- every runtime that may select for the same target should use the same active
+  generation before expecting the same key to pick the same endpoint
+
+When adding endpoint D to `[A, B, C]`, rendezvous hashing should only move keys
+whose best score becomes D. Keys that still score highest for A, B, or C remain
+there. Removing B only remaps keys that previously chose B. This is the reason
+to use rendezvous for sharded or ownership-bound work instead of simple
+round-robin.
 
 ## Call-Site Shape
 
