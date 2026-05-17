@@ -18,4 +18,40 @@ package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${t
 mkdir -p "${tmp_dir}/package"
 tar -C "${tmp_dir}/package" --strip-components 1 -xzf "${package_path}"
 
-(cd "${tmp_dir}/package" && bash scripts/smoke.sh)
+package_root="${tmp_dir}/package"
+
+runtime_lib="${COAKKA_RUNTIME_LIB:-}"
+if [[ -z "${runtime_lib}" ]]; then
+  case "$(uname -s)" in
+    Darwin) runtime_lib="${package_root}/native/macos-aarch64/libcoakka_runtime_v2.dylib" ;;
+    Linux)
+      case "$(uname -m)" in
+        x86_64) runtime_lib="${package_root}/native/linux-x86_64/libcoakka_runtime_v2.so" ;;
+        aarch64|arm64) runtime_lib="${package_root}/native/linux-aarch64/libcoakka_runtime_v2.so" ;;
+        *) coakka_die "Unsupported runtime Mojo sample arch: $(uname -m)" ;;
+      esac
+      ;;
+    *) coakka_die "Unsupported runtime Mojo sample OS: $(uname -s)" ;;
+  esac
+fi
+
+case "$(uname -s)" in
+  Darwin)
+    shim="${tmp_dir}/libcoakka_mojo_runtime_connector.dylib"
+    cc -dynamiclib \
+      "${package_root}/src/runtime_connector_shim.c" \
+      "${runtime_lib}" \
+      -o "${shim}"
+    DYLD_LIBRARY_PATH="$(dirname "${runtime_lib}"):${tmp_dir}" \
+      mojo "${script_dir}/main.mojo" "${shim}"
+    ;;
+  Linux)
+    shim="${tmp_dir}/libcoakka_mojo_runtime_connector.so"
+    cc -shared -fPIC \
+      "${package_root}/src/runtime_connector_shim.c" \
+      "${runtime_lib}" \
+      -o "${shim}"
+    LD_LIBRARY_PATH="$(dirname "${runtime_lib}"):${tmp_dir}" \
+      mojo "${script_dir}/main.mojo" "${shim}"
+    ;;
+esac
