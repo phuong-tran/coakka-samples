@@ -993,9 +993,9 @@ bash run.sh runtime/scenarios/customer-crud/spring-boot-node smoke
 ```
 
 The scripts create temporary install/build directories for Python, Node.js, Go,
-C#, Rust, and native C/C++ package examples. JVM samples resolve artifacts
-through a Maven repository; package lanes use their ecosystem or native package
-archives.
+C#, Rust, Mojo, Zig, and native C/C++ package or source examples. JVM samples
+resolve artifacts through a Maven repository; package lanes use their ecosystem
+or native package archives.
 
 If a command is missing, run `bash run.sh doctor`. It reports which language
 lane is affected. Use `COAKKA_PUBLISH_ROOT` to point samples at a local public
@@ -1014,6 +1014,8 @@ Install only the toolchain for the language you want to try:
 | Go runtime v2 | Go 1.23 or newer |
 | C# samples | .NET SDK 10 or newer |
 | Rust samples | Rust/Cargo 1.74 or newer |
+| Mojo source-only runtime sample | Mojo 1.0 beta or newer |
+| Zig source-only runtime sample | Zig 0.16 or newer |
 | Native C/C++ samples | CMake plus C and C++ compilers |
 
 The scripts check these commands before running and print a direct error when a
@@ -1022,8 +1024,9 @@ tool is missing.
 ## Runtime Configuration Notes
 
 Runtime samples use the same small start-spec shape across JVM, Python,
-Node.js, Go, and C#. The native C/C++ runtime sample uses the lower C ABI
-directly and makes the same route snapshot and generation concepts visible:
+Node.js, Go, C#, and Rust. The native C/C++, Mojo, and Zig runtime samples use
+the lower C ABI directly and make the same route snapshot and generation
+concepts visible:
 
 Read the sample config as one startup declaration for one runtime process:
 
@@ -1148,6 +1151,8 @@ Language-specific entry points:
 - [Go runtime samples](runtime/go/README.md)
 - [C# runtime samples](runtime/csharp/README.md)
 - [Rust runtime samples](runtime/rust/README.md)
+- [Mojo runtime samples](runtime/mojo/README.md)
+- [Zig runtime samples](runtime/zig/README.md)
 - [Logger samples](logger/README.md)
 - [Native C/C++ runtime samples](runtime/native/README.md)
 
@@ -1279,13 +1284,13 @@ Planning note: [Container Samples Plan](docs/container-samples-plan.md).
 
 ### Samples By Language
 
-| Lane | JVM | Python | Node.js | Go | C# | Rust | Native C/C++ |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Runtime v2 basic | `runtime/jvm/basic`, `runtime/jvm/java-basic` | `runtime/python/basic` | `runtime/node/basic` | `runtime/go/basic` | `runtime/csharp/basic` | `runtime/rust/basic` | `runtime/native/basic` |
-| Runtime v2 deadletter | `runtime/jvm/deadletter`, `runtime/jvm/java-deadletter` | `runtime/python/deadletter` | `runtime/node/deadletter` | `runtime/go/deadletter` | - | - | - |
-| Runtime v2 pressure | - | - | - | - | - | - | `runtime/native/pressure` |
-| Logger basic | `logger/jvm/basic`, `logger/jvm/java-basic` | `logger/python/basic` | `logger/node/basic` | `logger/go/basic` | `logger/csharp/basic` | `logger/rust/basic` | `logger/native/basic` |
-| Logger pressure | `logger/jvm/pressure`, `logger/jvm/java-pressure` | `logger/python/pressure` | `logger/node/pressure` | `logger/go/pressure` | `logger/csharp/pressure` | `logger/rust/pressure` | `logger/native/pressure` |
+| Lane | JVM | Python | Node.js | Go | C# | Rust | Mojo | Zig | Native C/C++ |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Runtime v2 basic | `runtime/jvm/basic`, `runtime/jvm/java-basic` | `runtime/python/basic` | `runtime/node/basic` | `runtime/go/basic` | `runtime/csharp/basic` | `runtime/rust/basic` | `runtime/mojo/basic` | `runtime/zig/basic` | `runtime/native/basic` |
+| Runtime v2 deadletter | `runtime/jvm/deadletter`, `runtime/jvm/java-deadletter` | `runtime/python/deadletter` | `runtime/node/deadletter` | `runtime/go/deadletter` | - | - | - | - | - |
+| Runtime v2 pressure | - | - | - | - | - | - | - | - | `runtime/native/pressure` |
+| Logger basic | `logger/jvm/basic`, `logger/jvm/java-basic` | `logger/python/basic` | `logger/node/basic` | `logger/go/basic` | `logger/csharp/basic` | `logger/rust/basic` | - | - | `logger/native/basic` |
+| Logger pressure | `logger/jvm/pressure`, `logger/jvm/java-pressure` | `logger/python/pressure` | `logger/node/pressure` | `logger/go/pressure` | `logger/csharp/pressure` | `logger/rust/pressure` | - | - | `logger/native/pressure` |
 
 ### Benchmark And Load Status
 
@@ -1619,6 +1624,8 @@ If native loading fails, first check:
 - Runtime v2 and logger JVM/Python/Node.js/Go/C#/Rust samples use all-in-one
   language artifacts for supported platforms; no separate per-platform native
   download is required for those language lanes.
+- Mojo and Zig runtime samples are source-only lifecycle smokes over the native
+  runtime archive; they are not published language artifacts yet.
 - Native C/C++ samples use the published native archive and select the current
   platform with CMake.
 - whether the current OS/architecture is one of:
