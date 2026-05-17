@@ -100,7 +100,7 @@ With the adapter, Quarkus config owns same-process runtime defaults:
 
 ```kotlin
 dependencies {
-    implementation("coakka.quarkus:coakka-quarkus-extension:0.1.0-ga671b3a")
+    implementation("coakka.quarkus:coakka-quarkus-extension:0.1.0-ge2dc43a")
     implementation("io.quarkus:quarkus-rest-jackson")
 }
 ```

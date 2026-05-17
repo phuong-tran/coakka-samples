@@ -13,7 +13,7 @@ coakka_require_command tar "Install tar, then retry."
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
-artifact_rel="runtime/go/releases/0.1.0+a671b3a-c20cf7c4/coakka-v2-connector-go-0.1.0.tar.gz"
+artifact_rel="runtime/go/releases/0.1.0+e2dc43a-9227dc0/coakka-v2-connector-go-0.1.0.tar.gz"
 package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-v2-connector-go-0.1.0.tar.gz")"
 mkdir -p "${tmp_dir}/package"
 tar -C "${tmp_dir}/package" --strip-components 1 -xzf "${package_path}"

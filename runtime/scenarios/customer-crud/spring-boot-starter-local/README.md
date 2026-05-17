@@ -38,11 +38,11 @@ development should not need an internal REST service just to feel comfortable.
 The sample consumes the public Spring Boot starter artifact:
 
 ```kotlin
-implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-ga671b3a")
+implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-ge2dc43a")
 ```
 
 That starter depends on the shared runtime JVM artifact
-`coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-ga671b3a-c20cf7c4`; it does not bundle
+`coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-ge2dc43a-9227dc0`; it does not bundle
 or fork a Spring-specific native runtime.
 
 The sample resolves the Maven artifact from the public publish surface.
@@ -130,7 +130,7 @@ keeps business work as ordinary Spring beans:
 
 ```kotlin
 dependencies {
-    implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-ga671b3a")
+    implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-ge2dc43a")
     implementation("org.springframework.boot:spring-boot-starter-web")
 }
 ```

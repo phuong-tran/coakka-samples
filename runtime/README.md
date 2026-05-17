@@ -53,7 +53,7 @@ repositories {
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-ga671b3a-c20cf7c4")
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-ge2dc43a-9227dc0")
 }
 ```
 
@@ -61,7 +61,7 @@ Spring Boot same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-ga671b3a")
+    implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-ge2dc43a")
     implementation("org.springframework.boot:spring-boot-starter-web")
 }
 ```
@@ -70,7 +70,7 @@ Quarkus same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("coakka.quarkus:coakka-quarkus-extension:0.1.0-ga671b3a")
+    implementation("coakka.quarkus:coakka-quarkus-extension:0.1.0-ge2dc43a")
     implementation("io.quarkus:quarkus-rest-jackson")
 }
 ```
@@ -79,14 +79,14 @@ Python wheel:
 
 ```sh
 python -m pip install \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/python/releases/0.1.0+a671b3a-c20cf7c4/coakka_v2_connector-0.1.0-py3-none-any.whl"
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/python/releases/0.1.0+e2dc43a-9227dc0/coakka_v2_connector-0.1.0-py3-none-any.whl"
 ```
 
 Node.js package:
 
 ```sh
 npm install \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/node/releases/0.1.0+a671b3a-c20cf7c4/coakka-v2-connector-node-0.1.0.tgz"
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/node/releases/0.1.0+e2dc43a-9227dc0/coakka-v2-connector-node-0.1.0.tgz"
 ```
 
 Go source package:
@@ -94,7 +94,7 @@ Go source package:
 ```sh
 mkdir -p third_party/coakka-runtime-go
 curl -L \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/go/releases/0.1.0+a671b3a-c20cf7c4/coakka-v2-connector-go-0.1.0.tar.gz" \
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/go/releases/0.1.0+e2dc43a-9227dc0/coakka-v2-connector-go-0.1.0.tar.gz" \
   -o /tmp/coakka-v2-connector-go-0.1.0.tar.gz
 tar -C third_party/coakka-runtime-go --strip-components 1 \
   -xzf /tmp/coakka-v2-connector-go-0.1.0.tar.gz
@@ -111,7 +111,7 @@ C# NuGet package from a local feed directory:
 ```sh
 mkdir -p packages
 curl -L \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/csharp/releases/0.1.0+a671b3a-c20cf7c4/CoAkka.Runtime.0.1.1.nupkg" \
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/csharp/releases/0.1.0+e2dc43a-9227dc0/CoAkka.Runtime.0.1.1.nupkg" \
   -o packages/CoAkka.Runtime.0.1.1.nupkg
 dotnet add package CoAkka.Runtime --version 0.1.1 --source ./packages
 ```
@@ -120,7 +120,7 @@ Rust is currently a spike tarball, not a crates.io-ready package:
 
 ```sh
 curl -L \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/rust/releases/0.1.0+a671b3a-c20cf7c4/coakka-runtime-rs-0.1.0-spike.tar.gz" \
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/rust/releases/0.1.0+e2dc43a-9227dc0/coakka-runtime-rs-0.1.0-spike.tar.gz" \
   -o /tmp/coakka-runtime-rs-0.1.0-spike.tar.gz
 ```
 

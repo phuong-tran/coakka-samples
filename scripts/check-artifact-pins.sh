@@ -25,14 +25,14 @@ required_rows=(
   "logger Rust package|logger/rust/releases/${expected_logger_native}/coakka-logger-rs-0.1.0-spike.tar.gz"
   "logger Native package|logger/native/releases/${expected_logger_native}/coakka-logger-native-0.1.0.tar.gz"
   "runtime Native package|runtime/native/releases/0.1.0+e2dc43a/coakka-runtime-native-v2-0.1.0.tar.gz"
-  "runtime JVM jar|runtime/jvm/releases/0.1.0+a671b3a-c20cf7c4/coakka-jvm-native-runtime-v2-0.1.1-ga671b3a-c20cf7c4.jar"
-  "runtime Python wheel|runtime/python/releases/0.1.0+a671b3a-c20cf7c4/coakka_v2_connector-0.1.0-py3-none-any.whl"
-  "runtime Node package|runtime/node/releases/0.1.0+a671b3a-c20cf7c4/coakka-v2-connector-node-0.1.0.tgz"
-  "runtime Go package|runtime/go/releases/0.1.0+a671b3a-c20cf7c4/coakka-v2-connector-go-0.1.0.tar.gz"
-  "runtime C# package|runtime/csharp/releases/0.1.0+a671b3a-c20cf7c4/CoAkka.Runtime.0.1.1.nupkg"
-  "runtime Rust package|runtime/rust/releases/0.1.0+a671b3a-c20cf7c4/coakka-runtime-rs-0.1.0-spike.tar.gz"
-  "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/0.1.0-ga671b3a/coakka-spring-boot-starter-0.1.0-ga671b3a.jar"
-  "Quarkus extension Maven jar|maven/coakka/quarkus/coakka-quarkus-extension/0.1.0-ga671b3a/coakka-quarkus-extension-0.1.0-ga671b3a.jar"
+  "runtime JVM jar|runtime/jvm/releases/0.1.0+e2dc43a-9227dc0/coakka-jvm-native-runtime-v2-0.1.1-ge2dc43a-9227dc0.jar"
+  "runtime Python wheel|runtime/python/releases/0.1.0+e2dc43a-9227dc0/coakka_v2_connector-0.1.0-py3-none-any.whl"
+  "runtime Node package|runtime/node/releases/0.1.0+e2dc43a-9227dc0/coakka-v2-connector-node-0.1.0.tgz"
+  "runtime Go package|runtime/go/releases/0.1.0+e2dc43a-9227dc0/coakka-v2-connector-go-0.1.0.tar.gz"
+  "runtime C# package|runtime/csharp/releases/0.1.0+e2dc43a-9227dc0/CoAkka.Runtime.0.1.1.nupkg"
+  "runtime Rust package|runtime/rust/releases/0.1.0+e2dc43a-9227dc0/coakka-runtime-rs-0.1.0-spike.tar.gz"
+  "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/0.1.0-ge2dc43a/coakka-spring-boot-starter-0.1.0-ge2dc43a.jar"
+  "Quarkus extension Maven jar|maven/coakka/quarkus/coakka-quarkus-extension/0.1.0-ge2dc43a/coakka-quarkus-extension-0.1.0-ge2dc43a.jar"
 )
 
 stale_patterns=(

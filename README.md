@@ -813,7 +813,7 @@ typed runtime target.
 Spring Boot uses the public starter artifact:
 
 ```kotlin
-implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-ga671b3a")
+implementation("coakka.spring:coakka-spring-boot-starter:0.1.0-ge2dc43a")
 ```
 
 ```kotlin
@@ -846,7 +846,7 @@ fun create(@RequestBody request: CustomerDraft): MutationResponse {
 Quarkus follows the same shape through the public extension artifact:
 
 ```kotlin
-implementation("coakka.quarkus:coakka-quarkus-extension:0.1.0-ga671b3a")
+implementation("coakka.quarkus:coakka-quarkus-extension:0.1.0-ge2dc43a")
 ```
 
 ```kotlin
@@ -1411,13 +1411,13 @@ Current public artifact pins:
 | Logger JVM | `coakka.logger:coakka-jvm-native-logger:0.1.0-gba2a66d98eb5` |
 | Logger Python, Node.js, Go, C#, Rust, and native C/C++ | `0.1.0+ba2a66d98eb5` |
 | Runtime native C/C++ | `0.1.0+e2dc43a` |
-| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-ga671b3a-c20cf7c4` |
-| Runtime Python, Node.js, Go, C#, and Rust | `0.1.0+a671b3a-c20cf7c4` |
-| Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.1.0-ga671b3a` |
-| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.1.0-ga671b3a` |
+| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.1.1-ge2dc43a-9227dc0` |
+| Runtime Python, Node.js, Go, C#, and Rust | `0.1.0+e2dc43a-9227dc0` |
+| Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.1.0-ge2dc43a` |
+| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.1.0-ge2dc43a` |
 
 The matching artifact note is published at
-`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-05-09-runtime-a671b3a.md`.
+`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-05-17-runtime-e2dc43a.md`.
 
 ## Public Status
 
