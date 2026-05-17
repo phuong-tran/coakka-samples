@@ -42,7 +42,7 @@ transport detail.
 An envelope is CoAkka's explicit message container. Erlang, Elixir, and Akka
 often let people talk about "messages" directly; CoAkka exposes the container
 because it must carry the same routing and payload contract across JVM, Python,
-Node.js, Go, C#, Rust, planned Mojo and Zig connectors, and native C/C++.
+Node.js, Go, C#, Rust, Mojo and Zig source samples, and native C/C++.
 
 | Field | Why it exists |
 | --- | --- |

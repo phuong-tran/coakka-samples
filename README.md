@@ -1412,9 +1412,9 @@ Override the local Maven repository path with:
 COAKKA_PUBLISH_MAVEN_LOCAL=/path/to/coakka-publish-public/maven bash run.sh logger
 ```
 
-Python, Node.js, Go, C#, Rust, native C/C++, Mojo/Zig source packages, and non-Maven package lanes first
-look for a sibling `coakka-publish-public` checkout. Use `COAKKA_PUBLISH_ROOT`
-to point samples at another public artifact checkout:
+Python, Node.js, Go, C#, Rust, native C/C++, Mojo, Zig, and non-Maven package
+lanes first look for a sibling `coakka-publish-public` checkout. Use
+`COAKKA_PUBLISH_ROOT` to point samples at another public artifact checkout:
 
 ```sh
 COAKKA_PUBLISH_ROOT=/path/to/coakka-publish-public bash run.sh logger
@@ -1433,7 +1433,7 @@ Current public artifact pins:
 | Lane | Release |
 | --- | --- |
 | Logger JVM | `coakka.logger:coakka-jvm-native-logger:0.1.0-gba2a66d98eb5` |
-| Logger Python, Node.js, Go, C#, Rust, and native C/C++ | `0.1.0+ba2a66d98eb5` |
+| Logger Python, Node.js, Go, C#, Rust, Mojo, Zig, and native C/C++ | `0.1.0+ba2a66d98eb5` |
 | Runtime native C/C++ | `0.2.0+c124a9e` |
 | Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-g94a5729-6b7a3bf` |
 | Runtime Python, Node.js, Go, C#, and Rust | `0.2.0+94a5729-6b7a3bf` |
@@ -1578,7 +1578,7 @@ The JVM logger lane also includes Java basic and pressure samples:
 The exact sequence number can change if the sample is extended.
 
 Run every published logger sample across JVM, Python, Node.js, Go, C#, Rust,
-and native C/C++:
+Mojo, Zig, and native C/C++:
 
 ```sh
 bash run.sh logger
