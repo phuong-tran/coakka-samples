@@ -111,7 +111,7 @@ C# NuGet package from a local feed directory:
 ```sh
 mkdir -p packages
 curl -L \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/csharp/releases/0.2.0+94a5729-6b7a3bf/CoAkka.Runtime.0.2.0.nupkg" \
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/csharp/releases/0.2.0+94a5729-2bab9ee/CoAkka.Runtime.0.2.0.nupkg" \
   -o packages/CoAkka.Runtime.0.2.0.nupkg
 dotnet add package CoAkka.Runtime --version 0.2.0 --source ./packages
 ```

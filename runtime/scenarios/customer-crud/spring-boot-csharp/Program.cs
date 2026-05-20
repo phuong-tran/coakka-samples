@@ -16,15 +16,7 @@ var spec = new ConnectorStartSpec(
     Generation: 1,
     Routes:
     [
-        new RuntimeRouteSpec(
-            Target: localTarget,
-            Endpoints:
-            [
-                new RuntimeEndpointSpec(
-                    Host: "127.0.0.1",
-                    Port: 19142,
-                    Flags: RuntimeEndpointFlags.Local),
-            ]),
+        RuntimeHost.LocalRoute(localTarget, diagnosticPort: 19142),
         new RuntimeRouteSpec(
             Target: peerTarget,
             Endpoints:
@@ -100,7 +92,7 @@ sealed class CustomerPayloadIdentities
     public PayloadIdentity ListResponse { get; } = Identity(CustomerMessageTypes.ListResponse);
 
     private static PayloadIdentity Identity(string messageType) =>
-        new(messageType, CustomerMessageTypes.SchemaVersion, PayloadFormat.Json);
+        PayloadIdentity.Json(messageType, CustomerMessageTypes.SchemaVersion);
 }
 
 static class CustomerMessageTypes

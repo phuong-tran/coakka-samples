@@ -2,7 +2,7 @@
 
 C# runtime samples document the `CoAkka.Runtime` NuGet package shape. This
 runtime lane consumes the public NuGet package built against native runtime
-`0.2.0+94a5729` with connector generation `0.2.0+94a5729-6b7a3bf`.
+`0.2.0+94a5729` with connector generation `0.2.0+94a5729-2bab9ee`.
 
 For a CRUD developer, the point is not to replace ASP.NET Core. Keep HTTP at
 the browser/API edge. Use CoAkka for work that is owned by the application
@@ -21,6 +21,24 @@ bash run.sh runtime csharp basic
 ```
 
 The C# sample expects .NET SDK 10 or newer.
+
+The first-run API is local-first:
+
+```csharp
+using CoAkka.Runtime;
+
+const string target = "customers.greet";
+
+using var runtime = RuntimeHost.StartLocal("customer-api", target);
+runtime.RegisterTextHandler(target, name => $"Hello {name}");
+
+var reply = await runtime.AskTextAsync(
+    source: "customer-api",
+    target: target,
+    payload: "Ada",
+    payloadIdentity: PayloadIdentity.Text("customers.greet.request.v1"),
+    deliveryHint: DeliveryHint.RequireLocal);
+```
 
 ## Before: Backend HTTP
 
@@ -84,26 +102,12 @@ target, and keep HTTP at the real edge:
 ```csharp
 using CoAkka.Runtime;
 
-var identity = new PayloadIdentity(
-    "samples.customer.create.request.v1",
-    1,
-    PayloadFormat.Json);
+var identity = PayloadIdentity.Json("samples.customer.create.request.v1");
 
 var spec = new ConnectorStartSpec(
     SystemName: "customer-api",
     NodeId: "customer-api-node",
-    Routes:
-    [
-        new RuntimeRouteSpec(
-            Target: "customers.create",
-            Endpoints:
-            [
-                new RuntimeEndpointSpec(
-                    Host: "127.0.0.1",
-                    Port: 19141,
-                    Flags: RuntimeEndpointFlags.Local),
-            ])
-    ]);
+    Routes: [RuntimeHost.LocalRoute("customers.create")]);
 
 using var runtime = RuntimeHost.Start(spec);
 ```

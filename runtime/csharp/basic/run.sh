@@ -11,7 +11,7 @@ coakka_require_command dotnet "Install .NET SDK 10 or newer, then retry."
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
-artifact_rel="runtime/csharp/releases/0.2.0+94a5729-6b7a3bf/CoAkka.Runtime.0.2.0.nupkg"
+artifact_rel="runtime/csharp/releases/0.2.0+94a5729-2bab9ee/CoAkka.Runtime.0.2.0.nupkg"
 package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/CoAkka.Runtime.0.2.0.nupkg")"
 package_source="$(dirname "${package_path}")"
 export NUGET_PACKAGES="${tmp_dir}/nuget-packages"

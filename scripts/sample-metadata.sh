@@ -71,10 +71,10 @@ COAKKA_ARTIFACT_ROWS=(
   "runtime Python wheel|runtime/python/releases/0.2.0+94a5729-5ab812f/coakka_v2_connector-0.2.0-py3-none-any.whl"
   "runtime Node package|runtime/node/releases/0.2.0+94a5729-5ab812f/coakka-v2-connector-node-0.2.0.tgz"
   "runtime Go package|runtime/go/releases/0.2.0+94a5729-5ab812f/coakka-v2-connector-go-0.2.0.tar.gz"
-  "runtime C# package|runtime/csharp/releases/0.2.0+94a5729-6b7a3bf/CoAkka.Runtime.0.2.0.nupkg"
+  "runtime C# package|runtime/csharp/releases/0.2.0+94a5729-2bab9ee/CoAkka.Runtime.0.2.0.nupkg"
   "runtime Rust package|runtime/rust/releases/0.2.0+94a5729-6b7a3bf/coakka-runtime-rs-0.2.0-spike.tar.gz"
-  "runtime Mojo source package|runtime/mojo/releases/0.2.0+c124a9e-10dc009/coakka-runtime-mojo-0.2.0-source.tar.gz"
-  "runtime Zig source package|runtime/zig/releases/0.2.0+c124a9e-10dc009/coakka-runtime-zig-0.2.0-source.tar.gz"
+  "runtime Mojo source package|runtime/mojo/releases/0.2.0+c124a9e-2bab9ee/coakka-runtime-mojo-0.2.0-source.tar.gz"
+  "runtime Zig source package|runtime/zig/releases/0.2.0+c124a9e-2bab9ee/coakka-runtime-zig-0.2.0-source.tar.gz"
   "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/0.2.0-g5ab812f/coakka-spring-boot-starter-0.2.0-g5ab812f.jar"
   "Quarkus extension Maven jar|maven/coakka/quarkus/coakka-quarkus-extension/0.2.0-g5ab812f/coakka-quarkus-extension-0.2.0-g5ab812f.jar"
 )

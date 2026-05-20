@@ -1,8 +1,8 @@
 # Zig Runtime Samples
 
-Zig runtime samples use the public source connector package. The current basic
-sample covers lifecycle/control, raw request/reply, and route-miss deadletter
-handling.
+Zig runtime samples use the public source connector package
+`0.2.0+c124a9e-2bab9ee`. The current basic sample covers lifecycle/control,
+raw request/reply, and route-miss deadletter handling.
 
 Run the basic sample:
 

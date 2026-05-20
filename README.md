@@ -1469,15 +1469,16 @@ Current public artifact pins:
 | Runtime native C/C++ | `0.2.0+c124a9e` |
 | Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-g94a5729-5ab812f` |
 | Runtime Python, Node.js, and Go | `0.2.0+94a5729-5ab812f` |
-| Runtime C# and Rust | `0.2.0+94a5729-6b7a3bf` |
-| Runtime Mojo and Zig samples | `0.2.0+c124a9e-10dc009` source packages |
+| Runtime C# | `0.2.0+94a5729-2bab9ee` |
+| Runtime Rust | `0.2.0+94a5729-6b7a3bf` |
+| Runtime Mojo and Zig samples | `0.2.0+c124a9e-2bab9ee` source packages |
 | Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.2.0-g5ab812f` |
 | Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.2.0-g5ab812f` |
 
 The matching connector UX artifact note is published at
 `https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-05-21-runtime-connector-5ab812f.md`.
 The matching native/Mojo/Zig artifact note is published at
-`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-05-18-runtime-native-c124a9e.md`.
+`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-05-21-runtime-native-adjacent-docs-2bab9ee.md`.
 
 ## Public Status
 
