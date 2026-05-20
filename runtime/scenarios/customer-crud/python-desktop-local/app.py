@@ -12,12 +12,10 @@ from coakka_v2_connector import (
     ConnectorStartSpec,
     DeadletterError,
     DeliveryHint,
-    EndpointFlag,
-    EndpointSpec,
+    local_route,
     PayloadFormat,
     PayloadIdentity,
     RuntimeHost,
-    RouteSpec,
 )
 
 FRONTEND_TARGET = "samples.customer.frontend"
@@ -148,18 +146,7 @@ class CustomerDesktopRuntime:
             queue_capacity=128,
             strict_no_drop=True,
             generation=GENERATION,
-            routes=[
-                RouteSpec(
-                    target=STORE_TARGET,
-                    endpoints=[
-                        EndpointSpec(
-                            host=STORE_HOST,
-                            port=STORE_PORT,
-                            flags=int(EndpointFlag.LOCAL),
-                        )
-                    ],
-                ),
-            ],
+            routes=[local_route(STORE_TARGET, STORE_PORT)],
         )
         self._store = CustomerStore()
         self._runtime = RuntimeHost.start(start_spec=start_spec)

@@ -53,7 +53,7 @@ repositories {
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-g94a5729-6b7a3bf")
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-g94a5729-5ab812f")
 }
 ```
 
@@ -61,7 +61,7 @@ Spring Boot same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("coakka.spring:coakka-spring-boot-starter:0.2.0-g94a5729")
+    implementation("coakka.spring:coakka-spring-boot-starter:0.2.0-g5ab812f")
     implementation("org.springframework.boot:spring-boot-starter-web")
 }
 ```
@@ -70,7 +70,7 @@ Quarkus same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("coakka.quarkus:coakka-quarkus-extension:0.2.0-g94a5729")
+    implementation("coakka.quarkus:coakka-quarkus-extension:0.2.0-g5ab812f")
     implementation("io.quarkus:quarkus-rest-jackson")
 }
 ```
@@ -79,14 +79,14 @@ Python wheel:
 
 ```sh
 python -m pip install \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/python/releases/0.2.0+94a5729-6b7a3bf/coakka_v2_connector-0.2.0-py3-none-any.whl"
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/python/releases/0.2.0+94a5729-5ab812f/coakka_v2_connector-0.2.0-py3-none-any.whl"
 ```
 
 Node.js package:
 
 ```sh
 npm install \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/node/releases/0.2.0+94a5729-6b7a3bf/coakka-v2-connector-node-0.2.0.tgz"
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/node/releases/0.2.0+94a5729-5ab812f/coakka-v2-connector-node-0.2.0.tgz"
 ```
 
 Go source package:
@@ -94,7 +94,7 @@ Go source package:
 ```sh
 mkdir -p third_party/coakka-runtime-go
 curl -L \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/go/releases/0.2.0+94a5729-6b7a3bf/coakka-v2-connector-go-0.2.0.tar.gz" \
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/go/releases/0.2.0+94a5729-5ab812f/coakka-v2-connector-go-0.2.0.tar.gz" \
   -o /tmp/coakka-v2-connector-go-0.2.0.tar.gz
 tar -C third_party/coakka-runtime-go --strip-components 1 \
   -xzf /tmp/coakka-v2-connector-go-0.2.0.tar.gz

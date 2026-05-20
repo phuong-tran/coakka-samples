@@ -178,7 +178,7 @@ class CustomerStoreConnectorConfiguration {
                             RuntimeEndpointSpec(
                                 host = properties.peerHost,
                                 port = properties.peerPort,
-                                flags = 0,
+                                flags = RuntimeEndpointFlags.NONE,
                             ),
                         ),
                     ),

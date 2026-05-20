@@ -2,7 +2,8 @@
 
 Node.js runtime samples document the `coakka-v2-connector-node` package shape.
 This runtime lane consumes the public Node.js package built against native
-runtime `0.2.0+94a5729`.
+runtime `0.2.0+94a5729` with connector UX generation
+`0.2.0+94a5729-5ab812f`.
 
 ## Run
 
@@ -25,12 +26,7 @@ const startSpec = {
   queueCapacity: 128,
   strictNoDrop: true,
   generation: 1,
-  routes: [
-    {
-      target: "samples.customer.store",
-      endpoints: [{ host: "127.0.0.1", port: 19102, flags: EndpointFlag.LOCAL }],
-    },
-  ],
+  routes: [localRoute("samples.customer.store", 19102)],
 };
 
 const runtime = RuntimeHost.start(startSpec);

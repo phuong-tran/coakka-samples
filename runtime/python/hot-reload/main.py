@@ -6,12 +6,12 @@ from coakka_v2_connector import (
     ConnectorStartSpec,
     DeadletterError,
     DeliveryHint,
-    EndpointFlag,
     EndpointSpec,
     PayloadFormat,
     PayloadIdentity,
     RuntimeHost,
     RouteSpec,
+    local_route,
 )
 
 REQUEST_IDENTITY = PayloadIdentity(
@@ -24,19 +24,6 @@ CLIENT_TARGET = "samples.runtime.python.hot_reload.client"
 V1_TARGET = "samples.runtime.python.hot_reload.v1"
 V2_TARGET = "samples.runtime.python.hot_reload.v2"
 MISSING_TARGET = "samples.runtime.python.hot_reload.missing"
-
-
-def local_route(target: str, port: int) -> RouteSpec:
-    return RouteSpec(
-        target=target,
-        endpoints=[
-            EndpointSpec(
-                host="127.0.0.1",
-                port=port,
-                flags=int(EndpointFlag.LOCAL),
-            )
-        ],
-    )
 
 
 def ask(runtime: RuntimeHost, target: str, message: str) -> dict:

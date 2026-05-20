@@ -9,7 +9,7 @@ source "${repo_root}/scripts/sample-utils.sh"
 
 web_build_task=":runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-web:bootJar"
 web_jar="${repo_root}/runtime/scenarios/customer-crud/spring-boot-spring-boot/customer-web/build/libs/customer-web.jar"
-node_artifact_rel="runtime/node/releases/0.2.0+94a5729-6b7a3bf/coakka-v2-connector-node-0.2.0.tgz"
+node_artifact_rel="runtime/node/releases/0.2.0+94a5729-5ab812f/coakka-v2-connector-node-0.2.0.tgz"
 
 print_usage() {
   cat <<'EOF'

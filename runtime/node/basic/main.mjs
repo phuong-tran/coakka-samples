@@ -1,6 +1,6 @@
 import {
   DeliveryHint,
-  EndpointFlag,
+  localRoute,
   NodeRuntimeClient,
   PayloadFormat,
   PayloadIdentity,
@@ -17,19 +17,14 @@ const requestIdentity = new PayloadIdentity("samples.runtime.node.echo.request.v
 // strictNoDrop=true makes overload visible instead of silently dropping messages.
 // The delivered-request lane is enabled by default for request/reply hosts.
 // generation=1 is the first route-table version; increment it for new route snapshots.
-// EndpointFlag.LOCAL means the target handler is registered in this process.
+// localRoute(...) hides host/port placeholders for same-process targets.
 const startSpec = {
   systemName: "node-runtime-sample",
   nodeId: "node-runtime-sample-node",
   queueCapacity: 128,
   strictNoDrop: true,
   generation: 1,
-  routes: [
-    {
-      target,
-      endpoints: [{ host: "127.0.0.1", port: 19321, flags: EndpointFlag.LOCAL }],
-    },
-  ],
+  routes: [localRoute(target, 19321)],
 };
 
 const runtime = RuntimeHost.start(startSpec);

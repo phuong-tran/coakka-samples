@@ -2,7 +2,7 @@
 
 C# runtime samples document the `CoAkka.Runtime` NuGet package shape. This
 runtime lane consumes the public NuGet package built against native runtime
-`0.2.0+94a5729`.
+`0.2.0+94a5729` with connector generation `0.2.0+94a5729-6b7a3bf`.
 
 For a CRUD developer, the point is not to replace ASP.NET Core. Keep HTTP at
 the browser/API edge. Use CoAkka for work that is owned by the application

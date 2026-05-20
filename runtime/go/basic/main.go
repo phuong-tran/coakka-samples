@@ -20,7 +20,7 @@ func main() {
 	// EnableMonitor=true exposes runtime snapshots for diagnostics.
 	// The delivered-request lane is enabled by default for request/reply hosts.
 	// Generation=1 is the first route-table version; increment it for new route snapshots.
-	// EndpointFlagLocal means the target handler is registered in this process.
+	// LocalRoute(...) hides host/port placeholders for same-process targets.
 	runtimeHost, err := connector.StartRuntimeHost(connector.ConnectorStartSpec{
 		SystemName:                   "go-runtime-sample",
 		NodeID:                       "go-runtime-sample-node",
@@ -28,14 +28,7 @@ func main() {
 		QueueCapacity:                128,
 		EnableMonitor:                true,
 		Generation:                   1,
-		Routes: []connector.RouteSpec{{
-			Target: target,
-			Endpoints: []connector.EndpointSpec{{
-				Host:  "127.0.0.1",
-				Port:  19331,
-				Flags: uint32(connector.EndpointFlagLocal),
-			}},
-		}},
+		Routes:                       []connector.RouteSpec{connector.LocalRoute(target, 19331)},
 	}, "")
 	if err != nil {
 		fail("StartRuntimeHost failed: %v", err)

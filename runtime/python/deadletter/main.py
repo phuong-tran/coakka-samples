@@ -4,12 +4,10 @@ from coakka_v2_connector import (
     ConnectorStartSpec,
     DeadletterError,
     DeliveryHint,
-    EndpointFlag,
-    EndpointSpec,
     PayloadFormat,
     PayloadIdentity,
     RuntimeHost,
-    RouteSpec,
+    local_route,
 )
 
 ROUTE_MISS_REASON = 2
@@ -29,18 +27,7 @@ def main() -> None:
         queue_capacity=128,
         strict_no_drop=True,
         generation=1,
-        routes=[
-            RouteSpec(
-                target=live_target,
-                endpoints=[
-                    EndpointSpec(
-                        host="127.0.0.1",
-                        port=19411,
-                        flags=int(EndpointFlag.LOCAL),
-                    )
-                ],
-            )
-        ],
+        routes=[local_route(live_target, 19411)],
     )
 
     with RuntimeHost.start(start_spec=start_spec) as runtime:

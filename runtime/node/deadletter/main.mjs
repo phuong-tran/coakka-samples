@@ -1,7 +1,7 @@
 import {
   DeadletterError,
   DeliveryHint,
-  EndpointFlag,
+  localRoute,
   PayloadFormat,
   PayloadIdentity,
   RuntimeHost,
@@ -17,12 +17,7 @@ const startSpec = {
   queueCapacity: 128,
   strictNoDrop: true,
   generation: 1,
-  routes: [
-    {
-      target: liveTarget,
-      endpoints: [{ host: "127.0.0.1", port: 19421, flags: EndpointFlag.LOCAL }],
-    },
-  ],
+  routes: [localRoute(liveTarget, 19421)],
 };
 
 const runtime = RuntimeHost.start(startSpec);

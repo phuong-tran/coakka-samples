@@ -3,18 +3,11 @@ package coakka.samples.runtime.jvm.javabasic;
 import coakka.v2.connector.ConnectorOrchestrator;
 import coakka.v2.connector.RuntimeClient;
 import coakka.v2.connector.RuntimeClientStats;
-import coakka.v2.connector.RuntimeEndpointFlags;
-import coakka.v2.connector.RuntimeEndpointSpec;
 import coakka.v2.connector.RuntimeInfoSnapshot;
 import coakka.v2.connector.RuntimeOverloadPolicySpec;
-import coakka.v2.connector.RuntimeRouteSpec;
 import coakka.v2.connector.RuntimeStartSpec;
 import coakka.v2.connector.RuntimeStatsSnapshot;
 import coakka.v2.connector.protocol.ConnectorDeliveryHint;
-import coakka.v2.connector.protocol.ConnectorEnvelope;
-import coakka.v2.connector.protocol.ConnectorPayloadFormat;
-import coakka.v2.connector.protocol.ConnectorPayloadIdentity;
-import coakka.v2.control.RouteResolutionStrategy;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -32,22 +25,7 @@ public final class Main {
             true,
             1,
             new RuntimeOverloadPolicySpec(),
-            Arrays.asList(
-                new RuntimeRouteSpec(
-                    target,
-                    Arrays.asList(
-                        new RuntimeEndpointSpec(
-                            "127.0.0.1",
-                            19341,
-                            1,
-                            RuntimeEndpointFlags.LOCAL
-                        )
-                    ),
-                    RouteResolutionStrategy.ROUTE_RESOLUTION_STRATEGY_SINGLE_OWNER,
-                    null,
-                    0
-                )
-            )
+            Arrays.asList(RuntimeClient.Companion.localRoute(target, 19341))
         );
 
         ConnectorOrchestrator orchestrator = ConnectorOrchestrator.start(null, startSpec);
@@ -60,29 +38,18 @@ public final class Main {
                     " language=java"
             );
 
-            orchestrator.registerHandler(target, (request, continuation) ->
-                RuntimeClient.Companion.replyTypedTo(
-                    request,
-                    target,
-                    "{\"echo\":\"hello-runtime-java\"}"
-                )
-            );
+            orchestrator.registerTextHandler(target, request -> "hello-" + request);
 
-            ConnectorEnvelope response = orchestrator.getJava().ask(
+            String response = orchestrator.getJava().askTextBlocking(
                 "samples-runtime-jvm-java-client",
                 target,
-                "{\"message\":\"hello-runtime-java\"}",
-                new ConnectorPayloadIdentity(
-                    "samples.runtime.jvm.java.echo.request.v1",
-                    1,
-                    ConnectorPayloadFormat.JSON
-                ),
+                "runtime-java",
                 2_000,
                 "echo",
                 ConnectorDeliveryHint.ROUTER_DEFAULT
-            ).get(3, TimeUnit.SECONDS);
+            );
 
-            System.out.println("coakka_runtime_response payload=" + response.payloadUtf8());
+            System.out.println("coakka_runtime_response payload=" + response);
 
             RuntimeStatsSnapshot stats = orchestrator.stats();
             RuntimeClientStats clientStats = orchestrator.clientStats();

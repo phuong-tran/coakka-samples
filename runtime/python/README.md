@@ -2,7 +2,8 @@
 
 Python runtime samples document the `coakka_v2_connector` wheel shape. This
 runtime lane consumes the public Python wheel built against native runtime
-`0.2.0+94a5729`.
+`0.2.0+94a5729` with connector UX generation
+`0.2.0+94a5729-5ab812f`.
 
 ## Run
 
@@ -31,14 +32,7 @@ start_spec = ConnectorStartSpec(
     queue_capacity=128,
     strict_no_drop=True,
     generation=1,
-    routes=[
-        RouteSpec(
-            target="samples.customer.store",
-            endpoints=[
-                EndpointSpec("127.0.0.1", 19102, int(EndpointFlag.LOCAL)),
-            ],
-        )
-    ],
+    routes=[local_route("samples.customer.store", 19102)],
 )
 
 with RuntimeHost.start(start_spec=start_spec) as runtime:

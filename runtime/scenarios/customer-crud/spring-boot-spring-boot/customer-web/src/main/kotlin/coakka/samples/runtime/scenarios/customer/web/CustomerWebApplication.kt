@@ -156,7 +156,7 @@ class CustomerWebConnectorConfiguration {
                             RuntimeEndpointSpec(
                                 host = properties.peerHost,
                                 port = properties.peerPort,
-                                flags = 0,
+                                flags = RuntimeEndpointFlags.NONE,
                             ),
                         ),
                     ),
@@ -395,18 +395,18 @@ private fun parseEndpoint(routeIndex: Int, endpointIndex: Int, value: Any?): Run
     )
 }
 
-private fun parseEndpointFlags(value: Any?): Int = when (value) {
-    null -> 0
-    is Number -> value.toInt()
+private fun parseEndpointFlags(value: Any?): RuntimeEndpointFlags = when (value) {
+    null -> RuntimeEndpointFlags.NONE
+    is Number -> RuntimeEndpointFlags.of(value.toInt())
     is String -> value.split('|', ',', ' ')
         .filter { it.isNotBlank() }
-        .fold(0) { flags, token -> flags or endpointFlag(token) }
-    is List<*> -> value.fold(0) { flags, token -> flags or parseEndpointFlags(token) }
+        .fold(RuntimeEndpointFlags.NONE) { flags, token -> flags or endpointFlag(token) }
+    is List<*> -> value.fold(RuntimeEndpointFlags.NONE) { flags, token -> flags or parseEndpointFlags(token) }
     else -> badRouteReload("endpoint flags must be a number, string, or list")
 }
 
-private fun endpointFlag(token: String): Int = when (token.trim().uppercase()) {
-    "NONE" -> 0
+private fun endpointFlag(token: String): RuntimeEndpointFlags = when (token.trim().uppercase()) {
+    "NONE" -> RuntimeEndpointFlags.NONE
     "LOCAL" -> RuntimeEndpointFlags.LOCAL
     "UNAVAILABLE" -> RuntimeEndpointFlags.UNAVAILABLE
     else -> badRouteReload("unsupported endpoint flag: $token")

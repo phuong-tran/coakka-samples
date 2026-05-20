@@ -6,10 +6,9 @@ artifact.
 It demonstrates:
 
 - embedded native runtime loading
-- runtime version/git diagnostics
-- one process-owned route and one process-owned handler
-- one request/reply round trip
-- basic route/client counters
+- `CoAkka.local(...)` as the Kotlin first-run API
+- one plain-text local handler
+- one request/reply round trip without explicit route or endpoint wiring
 
 Run:
 
@@ -35,7 +34,5 @@ Direct Gradle run from the repository root:
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=0.2.0 git=<git>
-coakka_runtime_response payload={"echo":"hello-runtime-jvm"}
-coakka_runtime_stats generation=1 routes=1 delivered=1 matchedResponses=1
+coakka_runtime_response payload=hello-runtime-jvm
 ```

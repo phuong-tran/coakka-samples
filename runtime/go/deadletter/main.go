@@ -21,14 +21,7 @@ func main() {
 		QueueCapacity:                128,
 		EnableMonitor:                true,
 		Generation:                   1,
-		Routes: []connector.RouteSpec{{
-			Target: liveTarget,
-			Endpoints: []connector.EndpointSpec{{
-				Host:  "127.0.0.1",
-				Port:  19431,
-				Flags: uint32(connector.EndpointFlagLocal),
-			}},
-		}},
+		Routes:                       []connector.RouteSpec{connector.LocalRoute(liveTarget, 19431)},
 	}, "")
 	if err != nil {
 		fail("StartRuntimeHost failed: %v", err)

@@ -1,5 +1,6 @@
 import {
   EndpointFlag,
+  localRoute,
   PayloadFormat,
   PayloadIdentity,
   RuntimeHost,
@@ -16,7 +17,7 @@ const auditEvents = [];
 
 // Runtime route table for the audit process.
 //
-// The audit target is LOCAL because this process owns that handler. Store and
+// The audit target uses localRoute(...) because this process owns that handler. Store and
 // web targets are present as remote route entries so the topology is explicit
 // in diagnostics when customer traffic crosses process boundaries.
 const startSpec = {
@@ -26,10 +27,7 @@ const startSpec = {
   strictNoDrop: true,
   generation: 1,
   routes: [
-    {
-      target: localTarget,
-      endpoints: [{ host: "127.0.0.1", port: 19134, flags: EndpointFlag.LOCAL }],
-    },
+    localRoute(localTarget, 19134),
     {
       target: storeTarget,
       endpoints: [{ host: "127.0.0.1", port: 19132, flags: EndpointFlag.NONE }],

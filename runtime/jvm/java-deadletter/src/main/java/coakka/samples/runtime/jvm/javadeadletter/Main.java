@@ -6,6 +6,7 @@ import coakka.v2.connector.DeadletterSubscription;
 import coakka.v2.connector.RuntimeEndpointFlags;
 import coakka.v2.connector.RuntimeEndpointSpec;
 import coakka.v2.connector.RuntimeOverloadPolicySpec;
+import coakka.v2.connector.RuntimeRouteFlags;
 import coakka.v2.connector.RuntimeRouteSpec;
 import coakka.v2.connector.RuntimeStartSpec;
 import coakka.v2.connector.protocol.ConnectorDeliveryHint;
@@ -46,7 +47,7 @@ public final class Main {
                     ),
                     RouteResolutionStrategy.ROUTE_RESOLUTION_STRATEGY_SINGLE_OWNER,
                     null,
-                    0
+                    RuntimeRouteFlags.NONE
                 )
             )
         );

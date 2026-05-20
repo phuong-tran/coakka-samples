@@ -1,5 +1,6 @@
 import {
   EndpointFlag,
+  localRoute,
   NodeRuntimeClient,
   PayloadFormat,
   PayloadIdentity,
@@ -22,7 +23,7 @@ let revision = 0;
 
 // Runtime route table for the Node.js store process.
 //
-// The store owns localTarget, so that endpoint is LOCAL. peerTarget points to
+// The store owns localTarget, so it uses localRoute(...). peerTarget points to
 // the Spring Boot web process and is intentionally non-local. queueCapacity=128
 // keeps the sample bounded, strictNoDrop=true makes pressure visible, and
 // generation=1 marks the first static route snapshot applied at startup.
@@ -33,10 +34,7 @@ const startSpec = {
   strictNoDrop: true,
   generation: 1,
   routes: [
-    {
-      target: localTarget,
-      endpoints: [{ host: "127.0.0.1", port: 19112, flags: EndpointFlag.LOCAL }],
-    },
+    localRoute(localTarget, 19112),
     {
       target: peerTarget,
       endpoints: [{ host: "127.0.0.1", port: 19111, flags: EndpointFlag.NONE }],

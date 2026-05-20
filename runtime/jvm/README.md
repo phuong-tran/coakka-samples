@@ -2,7 +2,8 @@
 
 JVM runtime samples document the `coakka-jvm-native-runtime-v2` jar shape. This
 runtime lane consumes the public JVM runtime jar built against native runtime
-`0.2.0+94a5729`.
+`0.2.0+94a5729` with connector UX generation
+`0.2.0-g94a5729-5ab812f`.
 
 ## Run
 
@@ -113,7 +114,7 @@ repositories {
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-g94a5729-6b7a3bf")
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-g94a5729-5ab812f")
 }
 ```
 
@@ -131,7 +132,11 @@ val orchestrator = ConnectorOrchestrator.start(
             RuntimeRouteSpec(
                 target = "samples.customer.store",
                 endpoints = listOf(
-                    RuntimeEndpointSpec("127.0.0.1", 19102, RuntimeEndpointFlags.LOCAL),
+                    RuntimeEndpointSpec(
+                        host = "127.0.0.1",
+                        port = 19102,
+                        flags = RuntimeEndpointFlags.LOCAL,
+                    ),
                 ),
             ),
         ),

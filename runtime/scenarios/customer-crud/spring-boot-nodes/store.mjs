@@ -1,5 +1,6 @@
 import {
   EndpointFlag,
+  localRoute,
   NodeRuntimeClient,
   PayloadFormat,
   PayloadIdentity,
@@ -28,7 +29,7 @@ let auditRejected = 0;
 //
 // localTarget is the handler owned by this process. peerTarget points back to
 // the Spring Boot web process, and auditTarget points to the audit Node.js
-// process. Only localTarget is marked LOCAL; the other routes are remote
+// process. Only localTarget uses localRoute(...); the other routes are remote
 // addresses. generation=1 is the first static route snapshot for this demo.
 const startSpec = {
   systemName: "customer-store-node-multi",
@@ -37,10 +38,7 @@ const startSpec = {
   strictNoDrop: true,
   generation: 1,
   routes: [
-    {
-      target: localTarget,
-      endpoints: [{ host: "127.0.0.1", port: 19132, flags: EndpointFlag.LOCAL }],
-    },
+    localRoute(localTarget, 19132),
     {
       target: peerTarget,
       endpoints: [{ host: "127.0.0.1", port: 19131, flags: EndpointFlag.NONE }],

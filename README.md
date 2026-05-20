@@ -118,9 +118,9 @@ docker.io/gabrielgun1983/sample-python-store:0.2.0-94a5729-remote
 ```
 
 Those tags are the current public Node.js/Python container image set. Source
-builds for this container sample target the current connector set
-`0.2.0+94a5729-6b7a3bf` and need a matching runtime-base image only when
-building locally.
+builds for this container sample target the current Node.js/Python connector
+artifact set `0.2.0+94a5729-5ab812f` and need a matching runtime-base image
+only when building locally.
 
 Run the visible container sample:
 
@@ -199,7 +199,8 @@ surface.
 | Goal | Start with | Why |
 | --- | --- | --- |
 | See CoAkka work without installing language toolchains | `bash run.sh containers node-python` or `bash run.sh containers spring-go` | Runs two real processes with browser-visible state and no backend HTTP fallback. |
-| Understand the smallest runtime API | `bash run.sh runtime jvm basic` or the basic sample for your language | Shows start spec, process-owned route, handler registration, ask/reply, and stats. |
+| Understand the smallest runtime API | `bash run.sh runtime jvm basic` | Shows `CoAkka.local`, a local handler, and one ask/reply without route boilerplate. |
+| Understand explicit runtime wiring | `bash run.sh runtime jvm java-basic` or the basic sample for another language | Shows start spec, process-owned route, handler registration, ask/reply, and stats. |
 | Understand route misses and delivery failures | `bash run.sh runtime jvm deadletter` or `bash run.sh runtime python deadletter` | Shows a missing target becoming a matched deadletter instead of a vague timeout. |
 | Understand route generation and reload | `bash run.sh runtime python hot-reload` | Shows newer route snapshots being applied and stale/invalid snapshots rejected. |
 | Understand a normal application workflow | `bash run.sh scenario customer-crud spring-boot-starter-local dev` | Shows browser/API edge plus runtime capabilities in one same-process app. |
@@ -836,7 +837,7 @@ typed runtime target.
 Spring Boot uses the public starter artifact:
 
 ```kotlin
-implementation("coakka.spring:coakka-spring-boot-starter:0.2.0-g94a5729")
+implementation("coakka.spring:coakka-spring-boot-starter:0.2.0-g5ab812f")
 ```
 
 ```kotlin
@@ -869,7 +870,7 @@ fun create(@RequestBody request: CustomerDraft): MutationResponse {
 Quarkus follows the same shape through the public extension artifact:
 
 ```kotlin
-implementation("coakka.quarkus:coakka-quarkus-extension:0.2.0-g94a5729")
+implementation("coakka.quarkus:coakka-quarkus-extension:0.2.0-g5ab812f")
 ```
 
 ```kotlin
@@ -1042,10 +1043,13 @@ tool is missing.
 
 ## Runtime Configuration Notes
 
-Runtime samples use the same small start-spec shape across JVM, Python,
-Node.js, Go, C#, and Rust. The native C/C++, Mojo, and Zig runtime samples use
-the lower C ABI directly and make the same route snapshot and generation
-concepts visible:
+The Kotlin JVM basic sample starts at the Level 1 connector API:
+`CoAkka.local(...)`, `handler(...)`, and `ask(...)`.
+
+Most other runtime samples intentionally use the explicit start-spec shape
+across JVM, Python, Node.js, Go, C#, and Rust so route snapshots and diagnostics
+stay visible. The native C/C++, Mojo, and Zig runtime samples use the lower C
+ABI directly and make the same route snapshot and generation concepts visible:
 
 Read the sample config as one startup declaration for one runtime process:
 
@@ -1463,13 +1467,16 @@ Current public artifact pins:
 | Logger JVM | `coakka.logger:coakka-jvm-native-logger:0.1.0-gba2a66d98eb5` |
 | Logger Python, Node.js, Go, C#, Rust, Mojo, Zig, and native C/C++ | `0.1.0+ba2a66d98eb5` |
 | Runtime native C/C++ | `0.2.0+c124a9e` |
-| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-g94a5729-6b7a3bf` |
-| Runtime Python, Node.js, Go, C#, and Rust | `0.2.0+94a5729-6b7a3bf` |
+| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-g94a5729-5ab812f` |
+| Runtime Python, Node.js, and Go | `0.2.0+94a5729-5ab812f` |
+| Runtime C# and Rust | `0.2.0+94a5729-6b7a3bf` |
 | Runtime Mojo and Zig samples | `0.2.0+c124a9e-10dc009` source packages |
-| Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.2.0-g94a5729` |
-| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.2.0-g94a5729` |
+| Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.2.0-g5ab812f` |
+| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.2.0-g5ab812f` |
 
-The matching artifact note is published at
+The matching connector UX artifact note is published at
+`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-05-21-runtime-connector-5ab812f.md`.
+The matching native/Mojo/Zig artifact note is published at
 `https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-05-18-runtime-native-c124a9e.md`.
 
 ## Public Status

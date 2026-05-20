@@ -5,12 +5,10 @@ import json
 from coakka_v2_connector import (
     ConnectorStartSpec,
     DeliveryHint,
-    EndpointFlag,
-    EndpointSpec,
     PayloadFormat,
     PayloadIdentity,
     RuntimeHost,
-    RouteSpec,
+    local_route,
 )
 
 
@@ -29,25 +27,14 @@ def main() -> None:
     # strict_no_drop=True makes overload visible instead of silently dropping messages.
     # The delivered-request lane is enabled by default for request/reply hosts.
     # generation=1 is the first route-table version; increment it for new route snapshots.
-    # EndpointFlag.LOCAL means the target handler is registered in this process.
+    # local_route(...) hides host/port placeholders for same-process targets.
     start_spec = ConnectorStartSpec(
         system_name="python-runtime-sample",
         node_id="python-runtime-sample-node",
         queue_capacity=128,
         strict_no_drop=True,
         generation=1,
-        routes=[
-            RouteSpec(
-                target=target,
-                endpoints=[
-                    EndpointSpec(
-                        host="127.0.0.1",
-                        port=19311,
-                        flags=int(EndpointFlag.LOCAL),
-                    )
-                ],
-            )
-        ],
+        routes=[local_route(target, 19311)],
     )
 
     with RuntimeHost.start(start_spec=start_spec) as runtime:

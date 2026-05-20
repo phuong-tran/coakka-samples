@@ -4,7 +4,7 @@ set -euo pipefail
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../../../.." && pwd)"
 publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish-public}"
-node_artifact_rel="runtime/node/releases/0.2.0+94a5729-6b7a3bf/coakka-v2-connector-node-0.2.0.tgz"
+node_artifact_rel="runtime/node/releases/0.2.0+94a5729-5ab812f/coakka-v2-connector-node-0.2.0.tgz"
 web_build_task=":runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-web:bootJar"
 web_jar="${repo_root}/runtime/scenarios/customer-crud/spring-boot-spring-boot/customer-web/build/libs/customer-web.jar"
 source "${repo_root}/scripts/resolve-artifact.sh"

@@ -2,7 +2,8 @@
 
 Go runtime samples document the `coakka-v2-connector-go` source package shape.
 This runtime lane consumes the public Go source package built against native
-runtime `0.2.0+94a5729`.
+runtime `0.2.0+94a5729` with connector UX generation
+`0.2.0+94a5729-5ab812f`.
 
 ## Run
 
@@ -28,14 +29,7 @@ runtimeHost, err := connector.StartRuntimeHost(connector.ConnectorStartSpec{
     QueueCapacity:                128,
     EnableMonitor:                true,
     Generation:                   1,
-    Routes: []connector.RouteSpec{{
-        Target: "samples.customer.store",
-        Endpoints: []connector.EndpointSpec{{
-            Host:  "127.0.0.1",
-            Port:  19102,
-            Flags: uint32(connector.EndpointFlagLocal),
-        }},
-    }},
+    Routes:                       []connector.RouteSpec{connector.LocalRoute("samples.customer.store", 19102)},
 }, "")
 if err != nil {
     return err
