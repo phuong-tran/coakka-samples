@@ -67,7 +67,7 @@ COAKKA_ARTIFACT_ROWS=(
   "logger Rust package|logger/rust/releases/0.1.0+ba2a66d98eb5/coakka-logger-rs-0.1.0-spike.tar.gz"
   "logger Native package|logger/native/releases/0.1.0+ba2a66d98eb5/coakka-logger-native-0.1.0.tar.gz"
   "runtime Native package|runtime/native/releases/0.2.0+c124a9e/coakka-runtime-native-v2-0.2.0.tar.gz"
-  "runtime JVM jar|runtime/jvm/releases/0.2.0+94a5729-5ab812f/coakka-jvm-native-runtime-v2-0.2.0-g94a5729-5ab812f.jar"
+  "runtime JVM jar|runtime/jvm/releases/0.2.0+c124a9e-2bab9ee/coakka-jvm-native-runtime-v2-0.2.0-gc124a9e-2bab9ee.jar"
   "runtime Python wheel|runtime/python/releases/0.2.0+94a5729-5ab812f/coakka_v2_connector-0.2.0-py3-none-any.whl"
   "runtime Node package|runtime/node/releases/0.2.0+94a5729-5ab812f/coakka-v2-connector-node-0.2.0.tgz"
   "runtime Go package|runtime/go/releases/0.2.0+94a5729-5ab812f/coakka-v2-connector-go-0.2.0.tar.gz"

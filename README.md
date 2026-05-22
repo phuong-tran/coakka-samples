@@ -1467,7 +1467,7 @@ Current public artifact pins:
 | Logger JVM | `coakka.logger:coakka-jvm-native-logger:0.1.0-gba2a66d98eb5` |
 | Logger Python, Node.js, Go, C#, Rust, Mojo, Zig, and native C/C++ | `0.1.0+ba2a66d98eb5` |
 | Runtime native C/C++ | `0.2.0+c124a9e` |
-| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-g94a5729-5ab812f` |
+| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-gc124a9e-2bab9ee` |
 | Runtime Python, Node.js, and Go | `0.2.0+94a5729-5ab812f` |
 | Runtime C# | `0.2.0+94a5729-2bab9ee` |
 | Runtime Rust | `0.2.0+94a5729-6b7a3bf` |
@@ -1475,7 +1475,10 @@ Current public artifact pins:
 | Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.2.0-g5ab812f` |
 | Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.2.0-g5ab812f` |
 
-The matching connector UX artifact note is published at
+The matching JVM rebundle artifact note is published at
+`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-05-23-runtime-jvm-c124a9e-2bab9ee.md`.
+The matching connector UX artifact note for Python, Node.js, Go, Spring Boot,
+and Quarkus is published at
 `https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-05-21-runtime-connector-5ab812f.md`.
 The matching native/Mojo/Zig artifact note is published at
 `https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-05-21-runtime-native-adjacent-docs-2bab9ee.md`.
