@@ -40,6 +40,13 @@ def resolve_runtime_bind_host(name: str) -> str:
     return socket.gethostbyname(socket.gethostname())
 
 
+def resolve_route_host(host: str) -> str:
+    try:
+        return socket.gethostbyname(host)
+    except socket.gaierror:
+        return host
+
+
 def decode_payload(request: Any) -> dict[str, Any]:
     text = request.payload.decode("utf-8")
     return json.loads(text) if text else {}
@@ -265,7 +272,7 @@ def main() -> None:
     store_runtime_host = os.environ.get("COAKKA_SAMPLE_STORE_RUNTIME_HOST", "python-store")
     store_runtime_port = env_int("COAKKA_SAMPLE_STORE_RUNTIME_PORT", 19232)
     node_runtime_host = os.environ.get("COAKKA_SAMPLE_NODE_RUNTIME_HOST", "node-web")
-    node_route_host = socket.gethostbyname(node_runtime_host)
+    node_route_host = resolve_route_host(node_runtime_host)
     node_runtime_port = env_int("COAKKA_SAMPLE_NODE_RUNTIME_PORT", 19231)
     store = CustomerStore()
 

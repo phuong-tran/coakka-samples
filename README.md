@@ -113,14 +113,14 @@ installing Node.js, Python, Go, Java, protobuf tooling, or native build tools.
 Public Docker Hub images:
 
 ```text
-docker.io/gabrielgun1983/sample-node-web:0.2.0-94a5729-remote
-docker.io/gabrielgun1983/sample-python-store:0.2.0-94a5729-remote
+docker.io/gabrielgun1983/sample-node-web:0.2.0-c124a9e-remote
+docker.io/gabrielgun1983/sample-python-store:0.2.0-c124a9e-remote
 ```
 
 Those tags are the current public Node.js/Python container image set. Source
 builds for this container sample target the current Node.js/Python connector
-artifact set `0.2.0+94a5729-5ab812f` and need a matching runtime-base image
-only when building locally.
+artifact set `0.2.0+94a5729-5ab812f` and load the native runtime from
+`docker.io/gabrielgun1983/runtime-base:0.2.0-c124a9e-remote`.
 
 Run the visible container sample:
 

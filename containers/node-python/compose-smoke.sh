@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+repo_root="$(cd "${script_dir}/../.." && pwd)"
+source "${repo_root}/scripts/sample-utils.sh"
+
 node_port="${COAKKA_SAMPLE_WEB_PORT:-8080}"
 store_port="${COAKKA_SAMPLE_STORE_WEB_PORT:-8081}"
 customer_id="${COAKKA_SAMPLE_SMOKE_CUSTOMER_ID:-cus_container_smoke_001}"
+python_bin="$(coakka_python_bin)"
+
+coakka_require_command "${python_bin}" "Install Python 3, or set COAKKA_PYTHON to a Python 3 executable for smoke validation."
 
 for i in $(seq 1 60); do
   if curl -fsS "http://127.0.0.1:${node_port}/api/runtime" >/dev/null 2>&1 \
@@ -24,15 +31,20 @@ create_response="$(
 )"
 store_state="$(curl -fsS "http://127.0.0.1:${store_port}/api/state")"
 
-node -e '
-const customerId = process.argv[1];
-const createResponse = JSON.parse(process.argv[2]);
-const storeState = JSON.parse(process.argv[3]);
-if (createResponse.response?.status !== "ACCEPTED") {
-  throw new Error("create response was not ACCEPTED");
-}
-if (!storeState.store?.customers?.some((customer) => customer.id === customerId)) {
-  throw new Error("python store did not receive the customer update");
-}
-console.log("[containers/node-python] smoke ok: browser path updates Python store through CoAkka runtime");
-' "${customer_id}" "${create_response}" "${store_state}"
+"${python_bin}" - "${customer_id}" "${create_response}" "${store_state}" <<'PY'
+import json
+import sys
+
+customer_id = sys.argv[1]
+create_response = json.loads(sys.argv[2])
+store_state = json.loads(sys.argv[3])
+
+if create_response.get("response", {}).get("status") != "ACCEPTED":
+    raise SystemExit("create response was not ACCEPTED")
+
+customers = store_state.get("store", {}).get("customers", [])
+if not any(customer.get("id") == customer_id for customer in customers):
+    raise SystemExit("python store did not receive the customer update")
+
+print("[containers/node-python] smoke ok: browser path updates Python store through CoAkka runtime")
+PY

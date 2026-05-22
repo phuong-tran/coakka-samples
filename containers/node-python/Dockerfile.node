@@ -1,13 +1,13 @@
 # syntax=docker/dockerfile:1
 
-ARG COAKKA_RUNTIME_BASE_IMAGE=coakka/runtime-base:0.2.0-94a5729-remote
+ARG COAKKA_RUNTIME_BASE_IMAGE=docker.io/gabrielgun1983/runtime-base:0.2.0-c124a9e-remote
 FROM ${COAKKA_RUNTIME_BASE_IMAGE} AS coakka-runtime
 
 FROM node:22-trixie-slim
 
 ARG COAKKA_RUNTIME_VERSION=0.2.0
-ARG COAKKA_RUNTIME_REVISION=94a5729
-ARG COAKKA_RUNTIME_GENERATION=0.2.0-94a5729-remote
+ARG COAKKA_RUNTIME_REVISION=c124a9e
+ARG COAKKA_RUNTIME_GENERATION=0.2.0-c124a9e-remote
 ARG COAKKA_ARTIFACT_MANIFEST_SHA256=resolved-at-build
 ARG COAKKA_PUBLISH_RAW_BASE=https://raw.githubusercontent.com/phuong-tran/coakka-publish/main
 ARG COAKKA_NODE_ARTIFACT=runtime/node/releases/0.2.0+94a5729-5ab812f/coakka-v2-connector-node-0.2.0.tgz
@@ -21,7 +21,7 @@ LABEL coakka.runtime.generation="${COAKKA_RUNTIME_GENERATION}"
 LABEL coakka.artifact.manifest.sha256="${COAKKA_ARTIFACT_MANIFEST_SHA256}"
 
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends bash ca-certificates curl \
+  && apt-get install -y --no-install-recommends bash ca-certificates curl libstdc++6 \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /sample

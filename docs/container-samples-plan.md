@@ -101,7 +101,7 @@ dependencies, native runtime artifacts, or language connector packages locally.
 The image strategy should have two layers:
 
 ```text
-coakka/runtime-base:<runtime-generation>
+docker.io/gabrielgun1983/runtime-base:<runtime-generation>
   -> public native runtime artifacts
   -> required native runtime dependencies
   -> protobuf runtime/build bits when needed by samples
