@@ -157,7 +157,7 @@ same-process starter API shape is stable.
 This is scaffolded under `quarkus-local/` as a Quarkus/Kotlin same-process proof
 for the `coakka.quarkus:coakka-quarkus-extension` adapter shape. The sample
 consumes the public Quarkus extension built against native runtime
-`0.2.0+94a5729` with connector UX generation `0.2.0-g5ab812f`.
+`0.2.0+c124a9e` with adapter generation `0.2.0-g1c2694b`.
 
 | Surface | Language | Role | HTTP | Runtime endpoint |
 | --- | --- | --- | --- | --- |

@@ -75,8 +75,8 @@ COAKKA_ARTIFACT_ROWS=(
   "runtime Rust package|runtime/rust/releases/0.2.0+94a5729-6b7a3bf/coakka-runtime-rs-0.2.0-spike.tar.gz"
   "runtime Mojo source package|runtime/mojo/releases/0.2.0+c124a9e-2bab9ee/coakka-runtime-mojo-0.2.0-source.tar.gz"
   "runtime Zig source package|runtime/zig/releases/0.2.0+c124a9e-2bab9ee/coakka-runtime-zig-0.2.0-source.tar.gz"
-  "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/0.2.0-g5ab812f/coakka-spring-boot-starter-0.2.0-g5ab812f.jar"
-  "Quarkus extension Maven jar|maven/coakka/quarkus/coakka-quarkus-extension/0.2.0-g5ab812f/coakka-quarkus-extension-0.2.0-g5ab812f.jar"
+  "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/0.2.0-g1c2694b/coakka-spring-boot-starter-0.2.0-g1c2694b.jar"
+  "Quarkus extension Maven jar|maven/coakka/quarkus/coakka-quarkus-extension/0.2.0-g1c2694b/coakka-quarkus-extension-0.2.0-g1c2694b.jar"
 )
 
 coakka_default_publish_root() {

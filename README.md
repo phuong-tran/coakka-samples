@@ -837,7 +837,7 @@ typed runtime target.
 Spring Boot uses the public starter artifact:
 
 ```kotlin
-implementation("coakka.spring:coakka-spring-boot-starter:0.2.0-g5ab812f")
+implementation("coakka.spring:coakka-spring-boot-starter:0.2.0-g1c2694b")
 ```
 
 ```kotlin
@@ -870,7 +870,7 @@ fun create(@RequestBody request: CustomerDraft): MutationResponse {
 Quarkus follows the same shape through the public extension artifact:
 
 ```kotlin
-implementation("coakka.quarkus:coakka-quarkus-extension:0.2.0-g5ab812f")
+implementation("coakka.quarkus:coakka-quarkus-extension:0.2.0-g1c2694b")
 ```
 
 ```kotlin
@@ -1472,8 +1472,8 @@ Current public artifact pins:
 | Runtime C# | `0.2.0+94a5729-2bab9ee` |
 | Runtime Rust | `0.2.0+94a5729-6b7a3bf` |
 | Runtime Mojo and Zig samples | `0.2.0+c124a9e-2bab9ee` source packages |
-| Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.2.0-g5ab812f` |
-| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.2.0-g5ab812f` |
+| Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.2.0-g1c2694b` |
+| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.2.0-g1c2694b` |
 
 The matching JVM rebundle artifact note is published at
 `https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-05-23-runtime-jvm-c124a9e-2bab9ee.md`.

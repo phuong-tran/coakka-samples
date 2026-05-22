@@ -33,8 +33,8 @@ required_rows=(
   "runtime Rust package|runtime/rust/releases/0.2.0+94a5729-6b7a3bf/coakka-runtime-rs-0.2.0-spike.tar.gz"
   "runtime Mojo source package|runtime/mojo/releases/0.2.0+c124a9e-2bab9ee/coakka-runtime-mojo-0.2.0-source.tar.gz"
   "runtime Zig source package|runtime/zig/releases/0.2.0+c124a9e-2bab9ee/coakka-runtime-zig-0.2.0-source.tar.gz"
-  "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/0.2.0-g5ab812f/coakka-spring-boot-starter-0.2.0-g5ab812f.jar"
-  "Quarkus extension Maven jar|maven/coakka/quarkus/coakka-quarkus-extension/0.2.0-g5ab812f/coakka-quarkus-extension-0.2.0-g5ab812f.jar"
+  "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/0.2.0-g1c2694b/coakka-spring-boot-starter-0.2.0-g1c2694b.jar"
+  "Quarkus extension Maven jar|maven/coakka/quarkus/coakka-quarkus-extension/0.2.0-g1c2694b/coakka-quarkus-extension-0.2.0-g1c2694b.jar"
 )
 
 stale_patterns=(
@@ -53,6 +53,8 @@ stale_patterns=(
   "0.1.0-g432""bd75d3e4b"
   "0.1.0-g26e""e0819dc3d"
   "runtime/jvm/releases/0.2.0+94a5729-5ab812f/coakka-jvm-native-runtime-v2-0.2.0-g94a5729-5ab""812f.jar"
+  "maven/coakka/spring/coakka-spring-boot-starter/0.2.0-g5ab""812f/coakka-spring-boot-starter-0.2.0-g5ab812f.jar"
+  "maven/coakka/quarkus/coakka-quarkus-extension/0.2.0-g5ab""812f/coakka-quarkus-extension-0.2.0-g5ab812f.jar"
 )
 
 fail() {
