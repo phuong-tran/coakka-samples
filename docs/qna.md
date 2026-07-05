@@ -472,6 +472,96 @@ CoAkka is a good runtime substrate for CQRS/Event Sourcing, but CQRS/Event
 Sourcing still need their own application contracts and persistence model.
 ```
 
+## Why Does CoAkka Also Have A Logger Surface?
+
+Because logging is one of the easiest places for systems to become
+operationally dishonest.
+
+Many applications say they are using "async logging," but the important
+questions stay blurry:
+
+- where is the queue boundary?
+- what happens when it is full?
+- does the caller block?
+- does the system drop records?
+- can operators see emitted, delivered, and dropped counts?
+
+The CoAkka logger exists to make those answers explicit. It gives applications
+one bounded logging core with visible counters and the same cross-language
+discipline that the runtime applies to capability delivery.
+
+Short answer:
+
+```text
+The logger exists because logs are part of system behavior, not just developer
+convenience. When logging is opaque under pressure, it can distort latency,
+hide loss, and weaken incident analysis.
+```
+
+## When Is The CoAkka Logger Useful?
+
+It is useful when the team wants logging behavior to stay predictable under
+load, across languages, and during incident analysis.
+
+Good fits include:
+
+- runtime-heavy services where queue pressure and deadletters need matching log
+  evidence
+- polyglot deployments that do not want each language logger to drift into a
+  different contract
+- systems where blocking log sinks have already shown up in latency or
+  throughput issues
+- systems where "best effort async logging" has made it hard to explain lost or
+  delayed records
+
+It is less compelling when the application is small, single-language, lightly
+loaded, and a normal framework logger is already sufficient.
+
+## How Does The Logger Help With Trace, Debug, And Runtime Work?
+
+The logger is most useful when it is treated as part of the same operational
+story as the runtime.
+
+The runtime can tell you:
+
+- which target was called
+- which route generation was active
+- whether work was delivered, timed out, or deadlettered
+- whether queue pressure or endpoint state affected delivery
+
+The logger can add:
+
+- correlated application/system records around the same event
+- explicit evidence about whether log records were accepted, delivered, or
+  dropped
+- drain-friendly records for local debug or operator export
+- one shared contract across multiple language hosts
+
+Together they make failure analysis tighter:
+
+```text
+runtime outcome + bounded logger counters + correlated records
+```
+
+That is more useful than a system where runtime behavior is explicit but
+logging becomes vague again under pressure.
+
+## Does The Logger Replace Existing Logging Frameworks?
+
+No, not as a blanket claim.
+
+Yes, it can replace them in paths where the real need is a bounded, explicit,
+cross-language logging contract rather than a large framework feature set.
+
+No, when the application mainly needs framework-native appenders, existing sink
+ecosystems, or local conventions that are already working well.
+
+The useful distinction is the same one that appears elsewhere in CoAkka:
+
+- if the current logger setup is simple and honest under pressure, keep it
+- if logging behavior is now part of performance, runtime diagnostics, and
+  polyglot operational consistency, the CoAkka logger becomes more compelling
+
 ## Can CoAkka Replace A Service Mesh Such As Istio?
 
 Yes, in the class of systems where `Istio` mostly exists to manage internal
@@ -631,6 +721,24 @@ Saga still remains the honest tool when the flow truly crosses:
 - long-running business steps
 - real compensation semantics
 - externally observable intermediate states
+
+## Is Runtime Plus Logger A Good Combination?
+
+Yes.
+
+The runtime gives the application a strict delivery vocabulary. The logger can
+carry the same operational discipline into the evidence around that delivery.
+
+That combination is especially useful when a team wants to follow:
+
+- one request or command into a runtime target
+- one route generation during a rollout or incident
+- one deadletter or timeout back to the surrounding app behavior
+- one pressure event across both work delivery and log delivery
+
+That does not mean every application must adopt both at once. It means the two
+surfaces were designed to fit together when the system wants one clearer story
+for runtime behavior and operational evidence.
 
 ## What Is The Clean Public Position?
 
