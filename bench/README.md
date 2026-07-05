@@ -1,7 +1,7 @@
 # Benchmark And Load Policy
 
-This directory is reserved for repeatable load and benchmark support. It does
-not contain production benchmark claims yet.
+This directory is reserved for repeatable load and benchmark support. Treat the
+files here as reference evidence tied to their metadata and execution context.
 
 Run a local reference profile:
 
@@ -38,12 +38,13 @@ show constrained-queue rejection and matching deadletter counts.
 
 | Class | Directory | Meaning |
 | --- | --- | --- |
-| macOS smoke-load | `macos-smoke/` | Developer-machine reference only. Useful for shape checks and coarse regression checks on the same machine. |
+| macOS smoke-load | `macos-smoke/` | Developer-machine smoke evidence for shape checks and coarse same-machine regression checks. |
 | Linux CI load | `linux-ci/` | Linux runner output. More useful than macOS for public comparison, but still not a bare-metal claim. |
-| Linux hardware benchmark | `linux-hardware/` | Reserved for self-hosted or dedicated Linux hardware runs. This is the right source for durable performance claims. |
+| Linux hardware benchmark | `linux-hardware/` | Reserved for self-hosted or dedicated Linux hardware runs. Use this class when comparing durable Linux measurements. |
 
-Do not compare macOS numbers against Linux numbers as product claims. macOS
-results are allowed only when clearly labeled as reference smoke-load output.
+Do not compare macOS numbers against Linux numbers as if they were the same
+execution context. macOS results stay in the repo as clearly labeled reference
+smoke-load output.
 
 ## Required Metadata
 
@@ -75,12 +76,12 @@ macOS is acceptable for development guardrails:
 - compare changes on the same machine
 
 These runs should answer: did this change obviously regress the sample shape on
-the same developer machine? They should not answer: what is the production
-capacity of CoAkka?
+the same developer machine? They are not a substitute for target-environment
+capacity work.
 
 ## Linux Pending Path
 
 The first Linux step is the manual GitHub Actions `bench-smoke` workflow. It
-emits validated JSON artifacts with the same metadata shape. Later, a
-self-hosted Linux runner can reuse the same output format under
-`linux-hardware/` for durable benchmark claims.
+emits validated JSON artifacts with the same metadata shape. A self-hosted
+Linux runner can reuse the same output format under `linux-hardware/` when a
+dedicated measurement lane is ready.

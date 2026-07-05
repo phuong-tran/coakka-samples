@@ -3,7 +3,7 @@
 This public runtime sample runs a same-process request/reply echo through the Node
 runtime v2 package.
 
-It demonstrates:
+This sample covers:
 
 - package install from the public artifact surface
 - embedded native runtime loading

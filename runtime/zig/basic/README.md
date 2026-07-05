@@ -4,7 +4,7 @@ This sample keeps the runnable Zig entrypoint in this repository while using
 the public Zig source connector package for the reusable runtime helper and
 bundled native runtime library.
 
-It demonstrates:
+This sample covers:
 
 - sample-local Zig code over the published Zig runtime helper
 - source package extraction from the public artifact surface

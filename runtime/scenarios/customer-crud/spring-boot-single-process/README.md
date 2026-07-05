@@ -13,7 +13,7 @@ CoAkka runtime requests from `samples.customer.frontend` to
 `samples.customer.store`; the store handler is owned by the same process and
 replies through runtime request/reply. There is no store REST API.
 
-This is a same-process runtime demo. It proves the target vocabulary, handler
+This is a same-process runtime path. It proves the target vocabulary, handler
 ownership, payload contract, counters, request/reply, and deadletter behavior.
 It does not prove remote cross-process delivery.
 
@@ -21,7 +21,7 @@ It does not prove remote cross-process delivery.
 
 This scenario gives the smallest Spring Boot happy path: customer actions
 succeed while still using the same runtime targets and payload contract as the
-cross-process demos.
+cross-process sample flows.
 
 ## Run
 

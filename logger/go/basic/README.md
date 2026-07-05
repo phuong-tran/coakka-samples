@@ -3,7 +3,7 @@
 This sample extracts the published `coakka-logger-go` tarball into a temporary
 Go module and runs a small logger flow through a local `replace`.
 
-It demonstrates:
+This sample covers:
 
 - native logger version information
 - one accepted `category + message` record

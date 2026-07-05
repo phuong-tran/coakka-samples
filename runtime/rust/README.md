@@ -1,11 +1,8 @@
 # Rust Runtime Samples
 
-Rust runtime samples document the `coakka-runtime-rs` spike tarball shape. This
-runtime lane consumes the public Rust spike tarball built against native
-runtime `0.2.0+94a5729` with connector generation `0.2.0+94a5729-6b7a3bf`.
-
-This lane is intentionally marked as a spike. It proves the runtime shape before
-claiming a stable Rust API or crates.io-ready package.
+Rust runtime samples document the published `coakka-runtime-rs` archive shape.
+This runtime lane consumes the public Rust package built against native runtime
+`0.2.0+c124a9e` with connector generation `0.2.0+c124a9e-66ebe58`.
 
 ## Run
 
@@ -90,8 +87,9 @@ runtime.register_handler("samples.customer.store", |request| {
 `ask_json(...)` below is a convenience helper for JSON samples. It is not the
 runtime saying that only JSON is supported. The runtime contract is an envelope
 with target, payload bytes, message type, schema version, and payload format.
-The Rust package is still a spike, so treat non-JSON helper ergonomics as
-connector API surface work rather than a runtime limitation.
+The Rust package currently ships as an archive package, so treat non-JSON
+helper ergonomics as connector API surface work rather than a runtime
+limitation.
 
 The caller sends one typed runtime request:
 
@@ -112,7 +110,7 @@ stay as a runtime target with request/reply and deadletter semantics.
 
 ## Production Notes
 
-- Treat this package as a spike until the Rust API is promoted.
+- Treat this package as the current published Rust archive line.
 - Keep one active `RuntimeHost` per process.
 - Keep queue sizes bounded.
 - Treat matched deadletters as route/delivery results.

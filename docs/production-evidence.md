@@ -1,10 +1,9 @@
 # Production Evidence
 
-This page is the current evidence ledger for the public sample repository. It
-is intentionally narrower than a production claim. The samples prove the public
-artifact surface is runnable and that the runtime vocabulary is consistent
-across languages; they do not prove capacity for an arbitrary production
-deployment.
+This page is the current evidence ledger for the public sample repository. The
+samples show that the published artifact surface is runnable and that the
+runtime vocabulary stays consistent across languages. Deployment-specific
+capacity and operator acceptance still belong to the target environment.
 
 ## Current Evidence
 
@@ -39,9 +38,9 @@ The web screenshot shows an accepted create command and runtime counters. The
 store screenshot shows the same customer state changed by runtime messages from
 the web process.
 
-## Not Proven Yet
+## Additional Deployment Evidence
 
-These are not public production guarantees yet:
+These areas still need deployment-specific evidence:
 
 - sustained cross-process load under realistic Linux memory and CPU limits
 - peer restart and reconnect behavior across long-running workloads
@@ -54,8 +53,8 @@ These are not public production guarantees yet:
 
 ## Evidence Checklist For A Real Deployment
 
-Before a service treats this runtime path as production-ready, collect evidence
-in the target environment:
+Before a service standardizes on this runtime path, collect evidence in the
+target environment:
 
 | Check | Required observation |
 | --- | --- |
@@ -84,7 +83,7 @@ sample benchmark artifacts must record:
 - whether the result is only a smoke-load reference
 
 The current `bench-smoke` workflow is a shape check. Treat its JSON output as
-public CI evidence, not a production capacity claim.
+public CI evidence, not as a substitute for target-environment capacity work.
 
 ## Current Reading Order
 

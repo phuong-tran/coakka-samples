@@ -3,7 +3,7 @@ set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../../.." && pwd)"
-publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish-public}"
+publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
 source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 
@@ -11,7 +11,7 @@ coakka_require_command dotnet "Install .NET SDK 10 or newer, then retry."
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
-artifact_rel="runtime/csharp/releases/0.2.0+94a5729-2bab9ee/CoAkka.Runtime.0.2.0.nupkg"
+artifact_rel="runtime/csharp/releases/0.2.0+c124a9e-66ebe58/CoAkka.Runtime.0.2.0.nupkg"
 package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/CoAkka.Runtime.0.2.0.nupkg")"
 package_source="$(dirname "${package_path}")"
 export NUGET_PACKAGES="${tmp_dir}/nuget-packages"

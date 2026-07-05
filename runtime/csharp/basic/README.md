@@ -5,7 +5,7 @@ helper API, registers one process-owned text capability, sends one request/reply
 call through the runtime, then checks that a missing target returns a matched
 deadletter.
 
-It demonstrates:
+This sample covers:
 
 - NuGet package install from the public artifact surface
 - embedded native runtime loading

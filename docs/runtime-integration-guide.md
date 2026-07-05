@@ -209,7 +209,7 @@ metadata at startup, and the connector maps those values into
 `RuntimeStartSpec` plus the initial route snapshot.
 
 `host` and `port` identify the runtime endpoint. For a local sample this may be
-`127.0.0.1` plus a demo port. In a real deployment it usually comes from the
+`127.0.0.1` plus a sample port. In a real deployment it usually comes from the
 connector's startup config source, such as Kubernetes, Consul, a config service,
 or framework config.
 
@@ -466,7 +466,8 @@ A caller should:
 6. name the operation for diagnostics
 7. handle success, timeout, and deadletter paths
 
-Start with explicit timeout values. The samples use `2s` for tiny local demos
+Start with explicit timeout values. The samples use `2s` for tiny local sample
+flows
 and `5s` in web scenarios. Production values should come from service SLOs and
 failure budgets, not from the sample defaults.
 

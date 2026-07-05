@@ -4,9 +4,9 @@ FROM debian:stable-slim
 
 ARG TARGETARCH
 ARG COAKKA_RUNTIME_VERSION=0.2.0
-ARG COAKKA_RUNTIME_REVISION=c124a9e
-ARG COAKKA_RUNTIME_GENERATION=0.2.0-c124a9e-remote
-ARG COAKKA_NATIVE_ARTIFACT=runtime/native/releases/0.2.0+c124a9e/coakka-runtime-native-v2-0.2.0.tar.gz
+ARG COAKKA_RUNTIME_REVISION=b8ecfae
+ARG COAKKA_RUNTIME_GENERATION=0.2.0-b8ecfae-local
+ARG COAKKA_NATIVE_ARTIFACT=runtime/native/releases/0.2.0+b8ecfae/coakka-runtime-native-v2-0.2.0.tar.gz
 ARG COAKKA_ARTIFACT_MANIFEST_SHA256=resolved-at-build
 ARG COAKKA_PUBLISH_RAW_BASE=https://raw.githubusercontent.com/phuong-tran/coakka-publish/main
 

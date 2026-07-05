@@ -98,8 +98,8 @@ List response JSON:
 ## Topologies
 
 The customer scenarios keep web-to-store business traffic on the runtime path;
-there is no store REST fallback. Same-process demos keep runtime work inside
-one app or one desktop process for a compact happy path. Cross-process demos run
+there is no store REST fallback. Same-process sample flows keep runtime work inside
+one app or one desktop process for a compact happy path. Cross-process sample flows run
 separate services and require a runtime artifact with cross-process delivery enabled. If remote
 delivery fails, the samples surface an explicit runtime delivery error instead
 of hiding the failure behind HTTP fallback behavior.
@@ -157,7 +157,7 @@ same-process starter API shape is stable.
 This is scaffolded under `quarkus-local/` as a Quarkus/Kotlin same-process proof
 for the `coakka.quarkus:coakka-quarkus-extension` adapter shape. The sample
 consumes the public Quarkus extension built against native runtime
-`0.2.0+c124a9e` with adapter generation `0.2.0-g1c2694b`.
+`0.2.0+b8ecfae` with adapter generation `0.2.0-g11071541ea78`.
 
 | Surface | Language | Role | HTTP | Runtime endpoint |
 | --- | --- | --- | --- | --- |
@@ -219,7 +219,7 @@ Flow:
 4. The desktop UI shows the customer table, route generation, runtime
    version/git, counters, and one intentional route-miss diagnostic.
 
-This scenario has no HTTP API at all. It demonstrates the same target and
+This scenario has no HTTP API at all. It covers the same target and
 payload vocabulary from Python without introducing a web layer.
 
 ### Spring Boot to Spring Boot
@@ -266,7 +266,7 @@ service and replaces the state owner with Go.
 | `customer-store-go` | Go | headless in-memory customer table | none | `127.0.0.1:19122` |
 
 This scenario makes Go feel like a normal service participant, not a special
-synthetic-demo sidecar.
+synthetic sample sidecar.
 
 ### Spring Boot to C#
 

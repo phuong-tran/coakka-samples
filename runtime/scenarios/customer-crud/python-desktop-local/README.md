@@ -1,6 +1,6 @@
 # Python Desktop In-App Runtime Customer CRUD
 
-This scenario mirrors the Kotlin desktop in-app demo with Python and Tk. It runs
+This scenario mirrors the Kotlin desktop in-app flow with Python and Tk. It runs
 one Python process with one CoAkka `RuntimeHost`:
 
 | Role | Target | Transport |

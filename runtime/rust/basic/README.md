@@ -1,9 +1,9 @@
 # Rust Runtime Basic
 
-This public runtime sample unpacks the Rust runtime spike tarball from the
+This public runtime sample unpacks the Rust runtime archive package from the
 public artifact surface and runs its packaged smoke binary.
 
-It demonstrates:
+This sample covers:
 
 - Rust package install from the public artifact surface
 - embedded native runtime loading from the package
@@ -32,4 +32,5 @@ runtime=0.2.0 git=<git> lib=<packaged-native-library>
 response={"echo":{"message":"hello-rust-runtime"}} delivered=1 matched=1 deadletters=1
 ```
 
-This is still a spike package, not a crates.io-ready API.
+This is the current published Rust archive line; crates.io packaging is a
+separate distribution step.

@@ -3,7 +3,7 @@
 This sample runs a same-process request/reply echo through the published JVM runtime v2
 artifact.
 
-It demonstrates:
+This sample covers:
 
 - embedded native runtime loading
 - `CoAkka.local(...)` as the Kotlin first-run API

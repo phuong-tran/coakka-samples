@@ -15,7 +15,7 @@ val coakkaPublishMavenUrl = providers.gradleProperty("coakkaPublishMavenUrl")
     .orElse("https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/maven")
 val coakkaPublishMavenLocal = providers.gradleProperty("coakkaPublishMavenLocal")
     .orElse(providers.environmentVariable("COAKKA_PUBLISH_MAVEN_LOCAL"))
-    .orElse(rootProject.layout.projectDirectory.dir("../coakka-publish-public/maven").asFile.absolutePath)
+    .orElse(rootProject.layout.projectDirectory.dir("../coakka-publish/maven").asFile.absolutePath)
 
 allprojects {
     repositories {

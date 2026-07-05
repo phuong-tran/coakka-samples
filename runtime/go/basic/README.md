@@ -3,7 +3,7 @@
 This public runtime sample runs a same-process request/reply echo through the Go
 runtime v2 package.
 
-It demonstrates:
+This sample covers:
 
 - source package extraction from the public artifact surface
 - embedded native runtime loading

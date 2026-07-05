@@ -3,7 +3,7 @@
 This public runtime sample runs a same-process request/reply echo through the
 public Python runtime v2 wheel.
 
-It demonstrates:
+This sample covers:
 
 - wheel install from the public artifact surface
 - embedded native runtime loading

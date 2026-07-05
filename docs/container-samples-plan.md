@@ -153,7 +153,7 @@ Release rules:
 - build images only from scanner-clean public artifacts
 - publish multi-arch images when both `linux/amd64` and `linux/arm64` are ready
 - do not bake local paths, local cache paths, or credentials into image layers
-- keep experimental transport-specific backend flavors separate until their
+- keep transport-specific backend flavors separate until their
   public surface is explicitly safe
 - sample startup should print/verify the runtime generation it loaded
 
@@ -176,7 +176,7 @@ the slowest part of the first-run experience.
 
 ## Expected Output
 
-The demo should tell the story in logs:
+The sample flow should tell the story in logs:
 
 ```text
 python-store | ready: http://localhost:8081

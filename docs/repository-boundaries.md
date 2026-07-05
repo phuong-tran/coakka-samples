@@ -7,18 +7,18 @@ not try to be every CoAkka repository at once.
 
 | Repository | Role | What to look for |
 | --- | --- | --- |
-| `coakka-samples` | Runnable public examples that consume published artifacts. | Sample code, container demos, framework scenarios, docs, and smoke workflows. |
+| `coakka-samples` | Runnable public examples that consume published artifacts. | Sample code, container flows, framework scenarios, docs, and smoke workflows. |
 | `coakka-publish` | Public artifact distribution surface. | Pinned packages, native archives, source packages, release notes, manifests, and checksums. |
 | Runtime and connector implementation workspaces | Artifact producers consumed through `coakka-publish`. | Source used to build the public artifacts. Public samples should not depend on a local implementation checkout. |
 
 The normal public reader starts here, in `coakka-samples`. The samples resolve
-artifacts from a sibling `coakka-publish-public` checkout when present, or from
+artifacts from a sibling `coakka-publish` checkout when present, or from
 the public raw artifact URL when a local checkout is absent.
 
 ## What This Repo Owns
 
 - sample entrypoints and docs
-- container demos and compose files
+- container flows and compose files
 - framework adapter usage examples
 - language-specific basic, deadletter, hot-reload, pressure, and logger samples
 - artifact pin verification against the public manifest

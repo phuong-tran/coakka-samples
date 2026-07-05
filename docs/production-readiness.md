@@ -107,4 +107,4 @@ operation is safe to retry and how to prevent retry loops from amplifying load.
 5. Move one cross-process or cross-language handler only after the local shape
    is understood.
 6. Run restart, reconnect, memory, and queue-pressure tests in Linux/container
-   conditions before treating the path as production-ready.
+   conditions before standardizing on the path in that environment.

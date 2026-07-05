@@ -13,7 +13,7 @@ delete, and list requests are intended to move from `customer-web` to
 `customer-store` through the runtime route.
 
 Current public artifact note: this walkthrough uses the public TCP transport
-candidate package. It is intended to validate Linux setup, route configuration,
+published package line. It is intended to validate Linux setup, route configuration,
 process ownership, and end-to-end runtime delivery without a store REST API
 fallback.
 

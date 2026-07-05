@@ -106,7 +106,7 @@ capabilities that should not need fake REST just to gain a boundary.
 
 ## See It In 3 Minutes
 
-The fastest visible runtime proof is the container path. It uses pinned Docker
+The fastest visible runtime path is the container path. It uses pinned Docker
 Hub images, so you can test a cross-process runtime delivery path without
 installing Node.js, Python, Go, Java, protobuf tooling, or native build tools.
 
@@ -117,10 +117,10 @@ docker.io/gabrielgun1983/sample-node-web:0.2.0-c124a9e-remote
 docker.io/gabrielgun1983/sample-python-store:0.2.0-c124a9e-remote
 ```
 
-Those tags are the current public Node.js/Python container image set. Source
-builds for this container sample target the current Node.js/Python connector
-artifact set `0.2.0+94a5729-5ab812f` and load the native runtime from
-`docker.io/gabrielgun1983/runtime-base:0.2.0-c124a9e-remote`.
+Those tags are the current published Node.js/Python container image line.
+Repo-local rebuilds for this container sample target the current Node.js and
+Python connector artifact set `0.2.0+c124a9e-66ebe58` and load the refreshed
+native runtime from `coakka/runtime-base:0.2.0-b8ecfae-local`.
 
 Run the visible container sample:
 
@@ -142,7 +142,7 @@ Stop every container sample:
 bash run.sh containers down
 ```
 
-These samples prove two real processes, two language hosts, browser-visible
+These samples show two real processes, two language hosts, browser-visible
 state changes, and runtime delivery with no REST fallback between the sample
 services.
 
@@ -837,7 +837,7 @@ typed runtime target.
 Spring Boot uses the public starter artifact:
 
 ```kotlin
-implementation("coakka.spring:coakka-spring-boot-starter:0.2.0-g1c2694b")
+implementation("coakka.spring:coakka-spring-boot-starter:0.2.0-g11071541ea78")
 ```
 
 ```kotlin
@@ -870,7 +870,7 @@ fun create(@RequestBody request: CustomerDraft): MutationResponse {
 Quarkus follows the same shape through the public extension artifact:
 
 ```kotlin
-implementation("coakka.quarkus:coakka-quarkus-extension:0.2.0-g1c2694b")
+implementation("coakka.quarkus:coakka-quarkus-extension:0.2.0-g11071541ea78")
 ```
 
 ```kotlin
@@ -896,7 +896,7 @@ It is not positioned as a full replacement for SLF4J, Log4J, Logback, or each
 language's standard logging ecosystem. It is a bounded native logging core with
 small host-language connectors.
 
-The logger samples demonstrate:
+The logger samples cover:
 
 - bounded queue capacity
 - pressure rejection and dropped counters
@@ -926,7 +926,7 @@ without requiring the whole application to be rewritten.
 ## Quick Start
 
 Run the default quickstart from the repository root. It checks the local
-toolchain and runs the smallest public-ready JVM logger sample:
+toolchain and runs the smallest published JVM logger sample:
 
 ```sh
 bash run.sh quickstart
@@ -1075,7 +1075,7 @@ RuntimeEndpointFlags  = endpoint state, such as LOCAL or UNAVAILABLE
 | `RuntimeEndpointSpec` | Where can that target be handled? | One concrete endpoint with `host`, `port`, and flags. |
 | `systemName` | Which logical service do I belong to? | Logical runtime participant name used in diagnostics, such as `customer-store`. |
 | `nodeId` | Which concrete instance/process am I? | Concrete process identity used in logs and runtime snapshots; samples may hard-code it, but production should supply a unique value per process/pod at runtime, not bake it into the image. |
-| `queueCapacity = 128` | How much work can runtime buffer before applying pressure? | Bounded queue that is large enough for a demo but still prevents unbounded memory growth. |
+| `queueCapacity = 128` | How much work can runtime buffer before applying pressure? | Bounded queue that is large enough for a sample flow but still prevents unbounded memory growth. |
 | `strictNoDrop = true` | Should overload be visible instead of silently dropping work? | Overload becomes visible as an error/deadletter instead of silently dropping work. |
 | delivered-request lane | Should runtime keep delivered requests on their own runtime lane? | Enabled by default in current connectors; it separates incoming requests this process must handle from replies/deadletters that complete asks this process already sent. |
 | `generation = 1` | Which version of the route table is this? | First route-table snapshot applied at startup. Real services should increment this when applying a new route snapshot. |
@@ -1153,7 +1153,7 @@ language.
 
 ## Integration Guide
 
-After running the demos, use
+After running the sample flows, use
 [Runtime Integration Guide](docs/runtime-integration-guide.md) for the
 production-facing shape: dependencies, start spec, route targets, endpoint
 flags, payload identities, request headers/extra parameters, handler ownership,
@@ -1224,7 +1224,7 @@ a clear worker-host story.
 ### Runtime Capability Samples
 
 Runtime features are listed separately from language coverage so a capability
-does not look missing just because it is demonstrated through one host
+does not look missing just because it is shown through one host
 connector first.
 
 | Capability | Public sample | What it proves |
@@ -1321,16 +1321,15 @@ Planning note: [Container Samples Plan](docs/container-samples-plan.md).
 
 ### Benchmark And Load Status
 
-This repository does not publish production benchmark claims yet. Any macOS
-numbers added here should be treated only as reference smoke-load output for
-checking sample shape and catching obvious regressions on a developer machine.
-Linux benchmark coverage is pending and should be the source of any durable
-runtime performance claims.
+This repository keeps benchmark files as reference evidence. macOS results are
+useful for shape checks and local regression comparison on the same machine.
+Linux results are the comparison path to prefer when readers want a broader
+view of runtime behavior.
 
 Benchmark and load result policy lives in [`bench/README.md`](bench/README.md).
 The harness keeps macOS reference output under `bench/macos-smoke/` and Linux
-runner output under `bench/linux-ci/` so readers do not confuse local development
-guardrails with production performance claims.
+runner output under `bench/linux-ci/` so readers can separate local guardrails
+from Linux runner evidence.
 
 The current harness is manual:
 
@@ -1411,7 +1410,7 @@ logger/
 
 The current public publish surface supports logger package downloads and the
 public native runtime C ABI package. The sample runner resolves public
-artifacts from a sibling `coakka-publish-public` checkout when present, then
+artifacts from a sibling `coakka-publish` checkout when present, then
 falls back to the public raw GitHub URL.
 
 Logger JVM samples use the Maven repository from the public publish checkout:
@@ -1420,7 +1419,7 @@ Logger JVM samples use the Maven repository from the public publish checkout:
 repositories {
     mavenCentral()
     maven {
-        url = uri("/path/to/coakka-publish-public/maven")
+        url = uri("/path/to/coakka-publish/maven")
     }
 }
 
@@ -1430,32 +1429,32 @@ dependencies {
 ```
 
 For local development, the root Gradle build checks a sibling
-`coakka-publish-public` Maven directory first:
+`coakka-publish` Maven directory first:
 
 ```text
 workspace-root/
-  coakka-publish-public/maven/
+  coakka-publish/maven/
   coakka-samples-public/
 ```
 
 Override the local Maven repository path with:
 
 ```sh
-COAKKA_PUBLISH_MAVEN_LOCAL=/path/to/coakka-publish-public/maven bash run.sh logger
+COAKKA_PUBLISH_MAVEN_LOCAL=/path/to/coakka-publish/maven bash run.sh logger
 ```
 
 Python, Node.js, Go, C#, Rust, native C/C++, Mojo, Zig, and non-Maven package
-lanes first look for a sibling `coakka-publish-public` checkout. Use
+lanes first look for a sibling `coakka-publish` checkout. Use
 `COAKKA_PUBLISH_ROOT` to point samples at another public artifact checkout:
 
 ```sh
-COAKKA_PUBLISH_ROOT=/path/to/coakka-publish-public bash run.sh logger
-COAKKA_PUBLISH_ROOT=/path/to/coakka-publish-public bash run.sh runtime native basic
-COAKKA_PUBLISH_ROOT=/path/to/coakka-publish-public bash run.sh runtime
+COAKKA_PUBLISH_ROOT=/path/to/coakka-publish bash run.sh logger
+COAKKA_PUBLISH_ROOT=/path/to/coakka-publish bash run.sh runtime native basic
+COAKKA_PUBLISH_ROOT=/path/to/coakka-publish bash run.sh runtime
 ```
 
 Public package downloads are pinned through
-`coakka-publish-public/artifacts/public-artifacts.tsv`. When a sample resolves
+`coakka-publish/artifacts/public-artifacts.tsv`. When a sample resolves
 an artifact from the local public checkout or from the public raw GitHub URL, it
 verifies the artifact SHA256 from that manifest before unpacking or installing
 the package.
@@ -1466,26 +1465,27 @@ Current public artifact pins:
 | --- | --- |
 | Logger JVM | `coakka.logger:coakka-jvm-native-logger:0.1.0-gba2a66d98eb5` |
 | Logger Python, Node.js, Go, C#, Rust, Mojo, Zig, and native C/C++ | `0.1.0+ba2a66d98eb5` |
-| Runtime native C/C++ | `0.2.0+c124a9e` |
-| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-gc124a9e-2bab9ee` |
-| Runtime Python, Node.js, and Go | `0.2.0+94a5729-5ab812f` |
-| Runtime C# | `0.2.0+94a5729-2bab9ee` |
-| Runtime Rust | `0.2.0+94a5729-6b7a3bf` |
-| Runtime Mojo and Zig samples | `0.2.0+c124a9e-2bab9ee` source packages |
-| Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.2.0-g1c2694b` |
-| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.2.0-g1c2694b` |
+| Runtime native C/C++ | `0.2.0+b8ecfae` |
+| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-gb8ecfae-1107154` |
+| Runtime Python, Node.js, and Go | `0.2.0+c124a9e-66ebe58` |
+| Runtime C# | `0.2.0+c124a9e-66ebe58` |
+| Runtime Rust | `0.2.0+c124a9e-66ebe58` |
+| Runtime Mojo and Zig samples | `0.2.0+c124a9e-66ebe58` source packages |
+| Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.2.0-g11071541ea78` |
+| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.2.0-g11071541ea78` |
 
-The matching JVM rebundle artifact note is published at
-`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-05-23-runtime-jvm-c124a9e-2bab9ee.md`.
-The matching connector UX artifact note for Python, Node.js, Go, Spring Boot,
-and Quarkus is published at
-`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-05-21-runtime-connector-5ab812f.md`.
-The matching native/Mojo/Zig artifact note is published at
-`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-05-21-runtime-native-adjacent-docs-2bab9ee.md`.
+The matching runtime native note is published at
+`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-05-runtime-native-b8ecfae.md`.
+The matching runtime JVM note is published at
+`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-05-runtime-jvm-b8ecfae-1107154.md`.
+The matching non-JVM connector note is published at
+`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-05-runtime-non-jvm-c124a9e-66ebe58.md`.
+The matching Spring Boot and Quarkus adapter note is published at
+`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-05-runtime-jvm-adapters-b8ecfae-1107154.md`.
 
 ## Public Status
 
-Current public native runtime generation: `0.2.0+c124a9e`.
+Current public native runtime generation: `0.2.0+b8ecfae`.
 
 | Lane | Public artifact status | First command |
 | --- | --- | --- |
@@ -1512,7 +1512,7 @@ Current public native runtime generation: `0.2.0+c124a9e`.
 | Runtime container sample: Spring Boot JVM -> Go | public Docker Hub images | `bash run.sh containers spring-go` |
 
 Samples resolve public downloads through
-`coakka-publish-public/artifacts/public-artifacts.tsv` or the matching public
+`coakka-publish/artifacts/public-artifacts.tsv` or the matching public
 raw GitHub URL and verify SHA256 before unpacking or installing an artifact.
 Runtime language and framework samples in this status table are aligned to the
 same native package generation unless a later release note declares otherwise.
@@ -1691,7 +1691,7 @@ under the [Apache License, Version 2.0](LICENSE). See [NOTICE](NOTICE) for the
 repository notice.
 
 Runtime binaries, connector packages, Maven artifacts, and other released
-artifacts consumed by these samples come from `coakka-publish-public` and are
+artifacts consumed by these samples come from `coakka-publish` and are
 covered by the license terms in that artifact repository or the terms included
 with the specific release artifact.
 

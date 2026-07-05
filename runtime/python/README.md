@@ -2,8 +2,8 @@
 
 Python runtime samples document the `coakka_v2_connector` wheel shape. This
 runtime lane consumes the public Python wheel built against native runtime
-`0.2.0+94a5729` with connector UX generation
-`0.2.0+94a5729-5ab812f`.
+`0.2.0+c124a9e` with connector UX generation
+`0.2.0+c124a9e-66ebe58`.
 
 ## Run
 

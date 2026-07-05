@@ -63,7 +63,7 @@ def cpu_model() -> str:
 
 
 def publish_root() -> Path:
-    return Path(os.environ.get("COAKKA_PUBLISH_ROOT", REPO_ROOT.parent / "coakka-publish-public"))
+    return Path(os.environ.get("COAKKA_PUBLISH_ROOT", REPO_ROOT.parent / "coakka-publish"))
 
 
 def native_package_version() -> str | None:

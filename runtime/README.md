@@ -1,6 +1,6 @@
 # Runtime Samples
 
-Runtime samples demonstrate CoAkka runtime v2 as a shared native runtime
+Runtime samples show CoAkka runtime v2 as a shared native runtime
 contract consumed through host-language connectors.
 
 The public publish surface exposes logger packages, the public native
@@ -53,7 +53,7 @@ repositories {
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-gc124a9e-2bab9ee")
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-gb8ecfae-1107154")
 }
 ```
 
@@ -61,7 +61,7 @@ Spring Boot same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("coakka.spring:coakka-spring-boot-starter:0.2.0-g1c2694b")
+    implementation("coakka.spring:coakka-spring-boot-starter:0.2.0-g11071541ea78")
     implementation("org.springframework.boot:spring-boot-starter-web")
 }
 ```
@@ -70,7 +70,7 @@ Quarkus same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("coakka.quarkus:coakka-quarkus-extension:0.2.0-g1c2694b")
+    implementation("coakka.quarkus:coakka-quarkus-extension:0.2.0-g11071541ea78")
     implementation("io.quarkus:quarkus-rest-jackson")
 }
 ```
@@ -79,14 +79,14 @@ Python wheel:
 
 ```sh
 python -m pip install \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/python/releases/0.2.0+94a5729-5ab812f/coakka_v2_connector-0.2.0-py3-none-any.whl"
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/python/releases/0.2.0+c124a9e-66ebe58/coakka_v2_connector-0.2.0-py3-none-any.whl"
 ```
 
 Node.js package:
 
 ```sh
 npm install \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/node/releases/0.2.0+94a5729-5ab812f/coakka-v2-connector-node-0.2.0.tgz"
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/node/releases/0.2.0+c124a9e-66ebe58/coakka-v2-connector-node-0.2.0.tgz"
 ```
 
 Go source package:
@@ -94,7 +94,7 @@ Go source package:
 ```sh
 mkdir -p third_party/coakka-runtime-go
 curl -L \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/go/releases/0.2.0+94a5729-5ab812f/coakka-v2-connector-go-0.2.0.tar.gz" \
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/go/releases/0.2.0+c124a9e-66ebe58/coakka-v2-connector-go-0.2.0.tar.gz" \
   -o /tmp/coakka-v2-connector-go-0.2.0.tar.gz
 tar -C third_party/coakka-runtime-go --strip-components 1 \
   -xzf /tmp/coakka-v2-connector-go-0.2.0.tar.gz
@@ -111,16 +111,16 @@ C# NuGet package from a local feed directory:
 ```sh
 mkdir -p packages
 curl -L \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/csharp/releases/0.2.0+94a5729-2bab9ee/CoAkka.Runtime.0.2.0.nupkg" \
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/csharp/releases/0.2.0+c124a9e-66ebe58/CoAkka.Runtime.0.2.0.nupkg" \
   -o packages/CoAkka.Runtime.0.2.0.nupkg
 dotnet add package CoAkka.Runtime --version 0.2.0 --source ./packages
 ```
 
-Rust is currently a spike tarball, not a crates.io-ready package:
+Rust currently ships as a published archive package:
 
 ```sh
 curl -L \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/rust/releases/0.2.0+94a5729-6b7a3bf/coakka-runtime-rs-0.2.0-spike.tar.gz" \
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/rust/releases/0.2.0+c124a9e-66ebe58/coakka-runtime-rs-0.2.0-spike.tar.gz" \
   -o /tmp/coakka-runtime-rs-0.2.0-spike.tar.gz
 ```
 
@@ -283,7 +283,7 @@ Current samples:
 | Node.js | `node/basic`, `node/deadletter` | public Node package | echo and route-miss deadletter |
 | Go | `go/basic`, `go/deadletter` | public Go source package | echo and route-miss deadletter |
 | C# | `csharp/basic` | public NuGet package | echo and route-miss deadletter |
-| Rust | `rust/basic` | public Rust spike tarball | echo and route-miss deadletter |
+| Rust | `rust/basic` | public Rust archive package | echo and route-miss deadletter |
 | Zig | `zig/basic` | public source package over native C ABI archive | lifecycle/control, raw request/reply, and route-miss deadletter smoke |
 | Mojo | `mojo/basic` | public source package with sample-local shim over native C ABI archive | lifecycle/control, raw request/reply, and route-miss deadletter smoke |
 | Native C/C++ | `native/basic`, `native/pressure` | native C ABI archive | route snapshot, route-miss deadletter, and bounded pressure counters |
@@ -333,7 +333,7 @@ diagnostics. The single-process, starter same-process, Quarkus same-process, and
 topologies give successful CRUD paths through process-owned runtime capabilities
 without an store HTTP API. The cross-process web-to-store path is
 runtime-only and is wired for cross-host delivery through the current public TCP
-transport candidate. If delivery fails, samples return explicit runtime errors
+transport path. If delivery fails, samples return explicit runtime errors
 instead of hiding the failure behind a REST fallback.
 
 For production-facing integration guidance, read:

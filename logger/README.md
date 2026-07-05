@@ -1,6 +1,6 @@
 # Logger Samples
 
-These samples demonstrate the CoAkka logger as a bounded native logging core
+These samples show the CoAkka logger as a bounded native logging core
 consumed through host-language connectors.
 
 Start with JVM:
@@ -27,7 +27,7 @@ From any leaf sample directory, run:
 bash run.sh
 ```
 
-If a sibling `../coakka-publish-public` checkout is not present, the samples download
+If a sibling `../coakka-publish` checkout is not present, the samples download
 the required artifacts from the public `coakka-publish` repository.
 
 The basic samples print:
@@ -59,7 +59,7 @@ Current samples:
 | Node.js | `node/basic`, `node/pressure` | published Node package |
 | Go | `go/basic`, `go/pressure` | published Go source package |
 | C# | `csharp/basic`, `csharp/pressure` | published C# NuGet package |
-| Rust | `rust/basic`, `rust/pressure` | published Rust spike package |
+| Rust | `rust/basic`, `rust/pressure` | published Rust archive package |
 | Zig | `zig/basic` | published native C/C++ archive |
 | Mojo | `mojo/basic` | published native C/C++ archive with a sample-local shim |
 | Native C/C++ | `native/basic`, `native/pressure` | published native C/C++ archive |

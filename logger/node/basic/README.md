@@ -3,7 +3,7 @@
 This sample installs the published `coakka-logger-node` tarball into a temporary
 npm project and runs a small logger flow.
 
-It demonstrates:
+This sample covers:
 
 - native logger version information
 - one accepted `category + message` record

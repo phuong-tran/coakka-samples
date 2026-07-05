@@ -22,15 +22,18 @@ images that already contain the native runtime:
 bash run.sh containers spring-go
 ```
 
-Pinned image tags:
+Currently available remote image tags:
 
 ```text
 docker.io/gabrielgun1983/sample-spring-web:0.1.0-fbab60154993-remote
 docker.io/gabrielgun1983/sample-go-store:0.1.0-fbab60154993-remote
 ```
 
-For the current `0.2.0` container visual proof, use the Node.js/Python
-container sample from the repository root:
+The repo-local Spring Boot and Go sample sources already track Spring starter
+`0.2.0-g11071541ea78` and Go runtime package `0.2.0+c124a9e-66ebe58`. The
+published Spring-Go container image line has not been refreshed onto that train
+yet, so the current cross-process container path to open first is the
+Node.js/Python sample from the repository root:
 
 ```sh
 bash run.sh containers node-python
