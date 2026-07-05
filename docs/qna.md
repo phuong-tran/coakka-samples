@@ -472,6 +472,148 @@ CoAkka is a good runtime substrate for CQRS/Event Sourcing, but CQRS/Event
 Sourcing still need their own application contracts and persistence model.
 ```
 
+## Can CoAkka Replace A Service Mesh Such As Istio?
+
+Not as a blanket statement.
+
+`Istio` and similar service meshes solve network-service problems:
+
+- service-to-service mTLS
+- traffic policy
+- retries and timeout policy
+- canary or weighted rollout
+- ingress and egress control
+- cross-service telemetry
+
+If a system truly has many independent network services, then a service mesh
+can still be the right tool.
+
+Where CoAkka changes the picture is earlier in the design. Many teams create
+internal HTTP or gRPC boundaries before they actually need a real service API
+boundary. Those calls look like services on paper, but functionally they are
+often just application-owned work being moved across processes because that was
+the easiest organizational path at the time.
+
+In that narrower case, CoAkka can reduce the need for a service mesh by
+removing some of the synthetic service edges entirely. If the work stays as a
+runtime capability boundary instead of being promoted into a network service
+too early, there are fewer internal service hops to secure, retry, trace, and
+shape with mesh policy.
+
+Short answer:
+
+```text
+CoAkka does not replace a service mesh everywhere.
+It can make some internal mesh demand disappear by avoiding service boundaries
+that never needed to be public or independent services in the first place.
+```
+
+## Why Do Teams Reach For Istio In The First Place, And How Can CoAkka Change That?
+
+Teams usually reach for a service mesh because the system already contains many
+network-facing backend-to-backend calls, and those calls need uniform
+operational control.
+
+Common reasons are:
+
+- every internal capability became an HTTP or gRPC service
+- each call now needs timeout, retry, and observability policy
+- platform teams need mTLS and traffic governance everywhere
+- deployment rollout needs canary or traffic splitting between service versions
+
+That is a coherent response if the boundaries are real services.
+
+The weaker case is when a large share of those calls are "HTTP because we split
+the codebase that way," not "HTTP because this capability truly needs a stable
+network API boundary." That is the situation people often describe as "fake
+HTTP": the protocol is real, but the service boundary is thinner than the
+operational cost it creates.
+
+CoAkka changes that tradeoff by letting application-owned capability boundaries
+stay as runtime targets first. The work can remain same-process today, move to
+a peer runtime later, and keep one target and route contract without forcing an
+early public-service shape.
+
+That can remove some reasons for Istio in the middle of the system:
+
+- fewer internal network hops
+- fewer per-hop retry and timeout stacks
+- less duplicated service client policy
+- less need to attach mesh behavior to boundaries that are still app-owned
+
+It does not remove reasons for Istio at real service boundaries:
+
+- zero-trust or organization-wide mTLS policy
+- ingress and egress control
+- cross-cluster traffic governance
+- multi-team independently deployed services
+- external-facing API estates
+
+## Can CoAkka Replace Saga?
+
+Not universally.
+
+`Saga` exists to coordinate work that spans multiple independently committed
+boundaries. If one business flow touches several services, stores, or owners
+that cannot share one local transaction, Saga-style choreography or
+orchestration may still be the right answer.
+
+CoAkka can reduce the need for Saga in a narrower but important class of
+systems: cases where the flow was split into distributed service steps before
+the business actually required that much distribution.
+
+If several steps still belong to one application-owned capability boundary,
+keeping them inside one runtime or one deployment can avoid creating a
+distributed consistency problem too early. In those cases the system may not
+need compensating workflows across several services, because the work never had
+to be fragmented into several independently committed hops to begin with.
+
+Short answer:
+
+```text
+CoAkka does not replace Saga as a business coordination pattern.
+It can make Saga unnecessary for flows that were only distributed because the
+system created service boundaries earlier than the business required.
+```
+
+## Why Do Teams Need Saga In The First Place, And How Can CoAkka Change That?
+
+Teams reach for Saga when one business action cannot commit atomically in one
+place anymore.
+
+Typical reasons are:
+
+- several services own different stores
+- each service commits independently
+- the flow is long-running
+- failure requires compensation instead of rollback
+- one team cannot simply wrap the whole path in one local transaction
+
+Saga is appropriate when those conditions are real.
+
+But some systems create that condition themselves by decomposing one
+application-owned flow into many service calls and event hops very early. Once
+that split happens, distributed coordination becomes unavoidable, and Saga
+looks mandatory because the architecture already forced the problem into the
+open.
+
+CoAkka can change that by delaying unnecessary fragmentation. If the work can
+stay within one runtime-owned capability path, the system may be able to use a
+simpler consistency model:
+
+- one local transaction boundary where it fits
+- one outbox boundary where async propagation is truly needed
+- one explicit runtime route instead of several faux-service hops
+- ordinary failure handling instead of multi-step compensation logic
+
+Saga still remains the honest tool when the flow truly crosses:
+
+- separate service owners
+- separate databases with independent commits
+- long-running business steps
+- real compensation semantics
+- externally observable intermediate states
+
 ## What Is The Clean Public Position?
 
 Use this when someone compares CoAkka to gRPC, CQRS, actors, or brokers:
