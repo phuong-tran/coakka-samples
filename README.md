@@ -119,7 +119,7 @@ docker.io/gabrielgun1983/sample-python-store:0.2.0-c124a9e-remote
 
 Those tags are the current published Node.js/Python container image line.
 Repo-local rebuilds for this container sample target the current Node.js and
-Python connector artifact set `0.2.0+c124a9e-66ebe58` and load the refreshed
+Python connector artifact set `0.2.0+c124a9e-c4be778` and load the refreshed
 native runtime from `coakka/runtime-base:0.2.0-b8ecfae-local`.
 
 Run the visible container sample:
@@ -1467,10 +1467,10 @@ Current public artifact pins:
 | Logger Python, Node.js, Go, C#, Rust, Mojo, Zig, and native C/C++ | `0.1.0+ba2a66d98eb5` |
 | Runtime native C/C++ | `0.2.0+b8ecfae` |
 | Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-gb8ecfae-1107154` |
-| Runtime Python, Node.js, and Go | `0.2.0+c124a9e-66ebe58` |
-| Runtime C# | `0.2.0+c124a9e-66ebe58` |
-| Runtime Rust | `0.2.0+c124a9e-66ebe58` |
-| Runtime Mojo and Zig samples | `0.2.0+c124a9e-66ebe58` source packages |
+| Runtime Python, Node.js, and Go | `0.2.0+c124a9e-c4be778` |
+| Runtime C# | `0.2.0+c124a9e-c4be778` |
+| Runtime Rust | `0.2.0+c124a9e-c4be778` |
+| Runtime Mojo and Zig samples | `0.2.0+c124a9e-c4be778` source packages |
 | Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.2.0-g11071541ea78` |
 | Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.2.0-g11071541ea78` |
 
@@ -1479,7 +1479,7 @@ The matching runtime native note is published at
 The matching runtime JVM note is published at
 `https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-05-runtime-jvm-b8ecfae-1107154.md`.
 The matching non-JVM connector note is published at
-`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-05-runtime-non-jvm-c124a9e-66ebe58.md`.
+`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-05-runtime-non-jvm-c124a9e-c4be778.md`.
 The matching Spring Boot and Quarkus adapter note is published at
 `https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-05-runtime-jvm-adapters-b8ecfae-1107154.md`.
 

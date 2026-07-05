@@ -10,7 +10,7 @@ ARG COAKKA_RUNTIME_REVISION=b8ecfae
 ARG COAKKA_RUNTIME_GENERATION=0.2.0-b8ecfae-local
 ARG COAKKA_ARTIFACT_MANIFEST_SHA256=resolved-at-build
 ARG COAKKA_PUBLISH_RAW_BASE=https://raw.githubusercontent.com/phuong-tran/coakka-publish/main
-ARG COAKKA_PYTHON_ARTIFACT=runtime/python/releases/0.2.0+c124a9e-66ebe58/coakka_v2_connector-0.2.0-py3-none-any.whl
+ARG COAKKA_PYTHON_ARTIFACT=runtime/python/releases/0.2.0+c124a9e-c4be778/coakka_v2_connector-0.2.0-py3-none-any.whl
 
 LABEL org.opencontainers.image.title="CoAkka Python store sample"
 LABEL org.opencontainers.image.description="Python store and read-only UI for the CoAkka runtime Node -> Python container sample"

@@ -2,7 +2,7 @@
 
 Rust runtime samples document the published `coakka-runtime-rs` archive shape.
 This runtime lane consumes the public Rust package built against native runtime
-`0.2.0+c124a9e` with connector generation `0.2.0+c124a9e-66ebe58`.
+`0.2.0+c124a9e` with connector generation `0.2.0+c124a9e-c4be778`.
 
 ## Run
 

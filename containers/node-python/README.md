@@ -30,7 +30,7 @@ docker.io/gabrielgun1983/sample-python-store:0.2.0-c124a9e-remote
 
 Those tags are the current published Node.js/Python container image line. The
 local rebuild path in this repository installs the current public Node.js and
-Python connector artifact set `0.2.0+c124a9e-66ebe58` and loads the refreshed
+Python connector artifact set `0.2.0+c124a9e-c4be778` and loads the refreshed
 native runtime from `coakka/runtime-base:0.2.0-b8ecfae-local` through
 `COAKKA_RUNTIME_LIB`.
 

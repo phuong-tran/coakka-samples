@@ -2,7 +2,7 @@
 
 C# runtime samples document the `CoAkka.Runtime` NuGet package shape. This
 runtime lane consumes the public NuGet package built against native runtime
-`0.2.0+c124a9e` with connector generation `0.2.0+c124a9e-66ebe58`.
+`0.2.0+c124a9e` with connector generation `0.2.0+c124a9e-c4be778`.
 
 For a CRUD developer, the point is not to replace ASP.NET Core. Keep HTTP at
 the browser/API edge. Use CoAkka for work that is owned by the application
@@ -21,6 +21,9 @@ bash run.sh runtime csharp basic
 ```
 
 The C# sample expects .NET SDK 10 or newer.
+`RuntimeHost.StartLocal(...)` now auto-selects one free IPv4 loopback port for
+the local route metadata when the sample does not set `diagnosticPort`
+explicitly.
 
 The first-run API is local-first:
 
