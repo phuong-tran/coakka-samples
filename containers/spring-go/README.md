@@ -30,7 +30,7 @@ docker.io/gabrielgun1983/sample-go-store:0.1.0-fbab60154993-remote
 ```
 
 The repo-local Spring Boot and Go sample sources already track Spring starter
-`0.2.0-g11071541ea78` and Go runtime package `0.2.0+c124a9e-c4be778`. The
+`0.2.0-g2d085e5923d9` and Go runtime package `0.2.0+b8ecfae-2d085e5`. The
 published Spring-Go container image line has not been refreshed onto that train
 yet, so the current cross-process container path to open first is the
 Node.js/Python sample from the repository root:

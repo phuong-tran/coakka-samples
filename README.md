@@ -113,14 +113,14 @@ installing Node.js, Python, Go, Java, protobuf tooling, or native build tools.
 Public Docker Hub images:
 
 ```text
-docker.io/gabrielgun1983/sample-node-web:0.2.0-b8ecfae-remote
-docker.io/gabrielgun1983/sample-python-store:0.2.0-b8ecfae-remote
+docker.io/gabrielgun1983/sample-node-web:0.2.0-b8ecfae-2d085e5-remote
+docker.io/gabrielgun1983/sample-python-store:0.2.0-b8ecfae-2d085e5-remote
 ```
 
 Those tags are the current published Node.js/Python container image line. The
-published sample images still install the current public Node.js and Python
-connector artifact set `0.2.0+c124a9e-c4be778`, but they now load the refreshed
-native runtime line from `docker.io/gabrielgun1983/runtime-base:0.2.0-b8ecfae-remote`.
+published sample images install the current public Node.js and Python
+connector artifact set `0.2.0+b8ecfae-2d085e5` over the refreshed native
+runtime line from `docker.io/gabrielgun1983/runtime-base:0.2.0-b8ecfae-remote`.
 Repo-local rebuilds use the same connector set over
 `coakka/runtime-base:0.2.0-b8ecfae-local`.
 
@@ -839,7 +839,7 @@ typed runtime target.
 Spring Boot uses the public starter artifact:
 
 ```kotlin
-implementation("coakka.spring:coakka-spring-boot-starter:0.2.0-g11071541ea78")
+implementation("coakka.spring:coakka-spring-boot-starter:0.2.0-g2d085e5923d9")
 ```
 
 ```kotlin
@@ -872,7 +872,7 @@ fun create(@RequestBody request: CustomerDraft): MutationResponse {
 Quarkus follows the same shape through the public extension artifact:
 
 ```kotlin
-implementation("coakka.quarkus:coakka-quarkus-extension:0.2.0-g11071541ea78")
+implementation("coakka.quarkus:coakka-quarkus-extension:0.2.0-g2d085e5923d9")
 ```
 
 ```kotlin
@@ -1468,22 +1468,22 @@ Current public artifact pins:
 | Logger JVM | `coakka.logger:coakka-jvm-native-logger:0.1.0-gba2a66d98eb5` |
 | Logger Python, Node.js, Go, C#, Rust, Mojo, Zig, and native C/C++ | `0.1.0+ba2a66d98eb5` |
 | Runtime native C/C++ | `0.2.0+b8ecfae` |
-| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-gb8ecfae-1107154` |
-| Runtime Python, Node.js, and Go | `0.2.0+c124a9e-c4be778` |
-| Runtime C# | `0.2.0+c124a9e-c4be778` |
-| Runtime Rust | `0.2.0+c124a9e-c4be778` |
-| Runtime Mojo and Zig samples | `0.2.0+c124a9e-c4be778` source packages |
-| Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.2.0-g11071541ea78` |
-| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.2.0-g11071541ea78` |
+| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-gb8ecfae-2d085e5` |
+| Runtime Python, Node.js, and Go | `0.2.0+b8ecfae-2d085e5` |
+| Runtime C# | `0.2.0+b8ecfae-2d085e5` |
+| Runtime Rust | `0.2.0+b8ecfae-2d085e5` |
+| Runtime Mojo and Zig samples | `0.2.0+b8ecfae-2d085e5` source packages |
+| Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.2.0-g2d085e5923d9` |
+| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.2.0-g2d085e5923d9` |
 
 The matching runtime native note is published at
-`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-05-runtime-native-b8ecfae.md`.
+`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-06-runtime-native-b8ecfae-windows-parity.md`.
 The matching runtime JVM note is published at
-`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-05-runtime-jvm-b8ecfae-1107154.md`.
+`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-06-runtime-jvm-b8ecfae-2d085e5.md`.
 The matching non-JVM connector note is published at
-`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-05-runtime-non-jvm-c124a9e-c4be778.md`.
+`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-06-runtime-non-jvm-b8ecfae-2d085e5.md`.
 The matching Spring Boot and Quarkus adapter note is published at
-`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-05-runtime-jvm-adapters-b8ecfae-1107154.md`.
+`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-06-runtime-jvm-adapters-b8ecfae-2d085e5.md`.
 
 ## Public Status
 

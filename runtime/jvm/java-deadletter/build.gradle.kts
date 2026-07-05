@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-gb8ecfae-1107154")
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-gb8ecfae-2d085e5")
 }
 
 java {

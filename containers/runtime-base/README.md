@@ -29,7 +29,7 @@ docker buildx build \
   --platform linux/arm64 \
   --load \
   -f containers/runtime-base/Dockerfile \
-  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=6d8d533b3584f332be4eb19e42e46f82bead8242c2d1a4aed5cf141f98e8cdf2 \
+  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=2d840db77778b9e2b2b320e019c93da0ce13f569bb304f40fba54ee90aa8ede6 \
   -t coakka/runtime-base:0.2.0-b8ecfae-local \
   .
 ```

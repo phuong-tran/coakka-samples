@@ -2,7 +2,7 @@
 
 C# runtime samples document the `CoAkka.Runtime` NuGet package shape. This
 runtime lane consumes the public NuGet package built against native runtime
-`0.2.0+c124a9e` with connector generation `0.2.0+c124a9e-c4be778`.
+`0.2.0+b8ecfae` with connector generation `0.2.0+b8ecfae-2d085e5`.
 
 For a CRUD developer, the point is not to replace ASP.NET Core. Keep HTTP at
 the browser/API edge. Use CoAkka for work that is owned by the application
@@ -10,8 +10,8 @@ or deployment and should not need an extra REST service just to cross an
 in-process or runtime boundary.
 
 This lane treats macOS and Windows as development/validation hosts. The current
-public NuGet package still bundles the macOS/Linux native runtime set, and most
-server-side deployment work should still be validated on Linux first.
+public NuGet package bundles the macOS/Linux/Windows native runtime set, and
+most server-side deployment work should still be validated on Linux first.
 
 ## Run
 
@@ -209,6 +209,7 @@ deadletter, native loading, lifecycle, and diagnostics baseline.
 
 - Keep one active `RuntimeHost` per process.
 - Keep queue sizes bounded.
-- Treat Windows as a supported development/validation host today, while noting
-  that this public package directory still does not bundle Windows DLLs.
+- Treat Windows as a supported development/validation host with the same
+  package truth as macOS/Linux, while keeping Linux as the normal deployment
+  path for server rollout evidence.
 - Use Linux validation before presenting this lane as a server deployment path.
