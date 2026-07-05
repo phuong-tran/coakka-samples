@@ -12,6 +12,8 @@ python_bin="$(coakka_python_bin)"
 
 coakka_require_command "${python_bin}" "Install Python 3, or set COAKKA_PYTHON to a Python 3 executable for smoke validation."
 
+bash "${script_dir}/run.sh" up -d
+
 for i in $(seq 1 60); do
   if curl -fsS "http://127.0.0.1:${node_port}/api/runtime" >/dev/null 2>&1 \
     && curl -fsS "http://127.0.0.1:${store_port}/api/state" >/dev/null 2>&1; then
