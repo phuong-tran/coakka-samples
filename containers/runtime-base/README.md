@@ -29,7 +29,7 @@ docker buildx build \
   --platform linux/arm64 \
   --load \
   -f containers/runtime-base/Dockerfile \
-  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=862f002ab443c0e6f3607541131fac306d90f7ee208c3ed8b41c0a3d05570e5b \
+  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=2bfa65755f04d8a848f7fd9fbed9c9df22d9ab1e5dc566ec8607ca11d181d226 \
   -t coakka/runtime-base:0.2.0-b8ecfae-local \
   .
 ```
@@ -40,7 +40,7 @@ Publish the refreshed multi-arch image line when a remote tag is ready:
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
   -f containers/runtime-base/Dockerfile \
-  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=862f002ab443c0e6f3607541131fac306d90f7ee208c3ed8b41c0a3d05570e5b \
+  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=2bfa65755f04d8a848f7fd9fbed9c9df22d9ab1e5dc566ec8607ca11d181d226 \
   -t docker.io/gabrielgun1983/runtime-base:0.2.0-b8ecfae-remote \
   --push \
   .

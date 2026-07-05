@@ -92,7 +92,7 @@ docker buildx build \
   --platform linux/amd64,linux/arm64 \
   -f containers/node-python/Dockerfile.python \
   --build-arg COAKKA_RUNTIME_BASE_IMAGE=docker.io/gabrielgun1983/runtime-base:0.2.0-b8ecfae-remote \
-  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=862f002ab443c0e6f3607541131fac306d90f7ee208c3ed8b41c0a3d05570e5b \
+  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=2bfa65755f04d8a848f7fd9fbed9c9df22d9ab1e5dc566ec8607ca11d181d226 \
   -t docker.io/gabrielgun1983/sample-python-store:0.2.0-b8ecfae-remote \
   --push \
   .
@@ -101,7 +101,7 @@ docker buildx build \
   --platform linux/amd64,linux/arm64 \
   -f containers/node-python/Dockerfile.node \
   --build-arg COAKKA_RUNTIME_BASE_IMAGE=docker.io/gabrielgun1983/runtime-base:0.2.0-b8ecfae-remote \
-  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=862f002ab443c0e6f3607541131fac306d90f7ee208c3ed8b41c0a3d05570e5b \
+  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=2bfa65755f04d8a848f7fd9fbed9c9df22d9ab1e5dc566ec8607ca11d181d226 \
   -t docker.io/gabrielgun1983/sample-node-web:0.2.0-b8ecfae-remote \
   --push \
   .
