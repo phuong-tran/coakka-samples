@@ -474,7 +474,12 @@ Sourcing still need their own application contracts and persistence model.
 
 ## Can CoAkka Replace A Service Mesh Such As Istio?
 
-Not as a blanket statement.
+Yes, in the class of systems where `Istio` mostly exists to manage internal
+HTTP/gRPC boundaries that did not need to become full network services in the
+first place.
+
+No, where the system truly has independent network services that need mesh
+policy for security, traffic control, and rollout.
 
 `Istio` and similar service meshes solve network-service problems:
 
@@ -491,8 +496,7 @@ can still be the right tool.
 Where CoAkka changes the picture is earlier in the design. Many teams create
 internal HTTP or gRPC boundaries before they actually need a real service API
 boundary. Those calls look like services on paper, but functionally they are
-often just application-owned work being moved across processes because that was
-the easiest organizational path at the time.
+often application-owned work pushed through network seams too early.
 
 In that narrower case, CoAkka can reduce the need for a service mesh by
 removing some of the synthetic service edges entirely. If the work stays as a
@@ -503,9 +507,12 @@ shape with mesh policy.
 Short answer:
 
 ```text
-CoAkka does not replace a service mesh everywhere.
-It can make some internal mesh demand disappear by avoiding service boundaries
-that never needed to be public or independent services in the first place.
+CoAkka can absolutely remove the need for a service mesh in parts of a system
+that only became "mesh-shaped" because app-owned work was turned into internal
+HTTP/gRPC services too early.
+
+It does not remove the need for a service mesh where the boundaries are real
+network-service boundaries.
 ```
 
 ## Why Do Teams Reach For Istio In The First Place, And How Can CoAkka Change That?
@@ -534,12 +541,15 @@ stay as runtime targets first. The work can remain same-process today, move to
 a peer runtime later, and keep one target and route contract without forcing an
 early public-service shape.
 
-That can remove some reasons for Istio in the middle of the system:
+That can remove a large share of the reasons Istio shows up in the middle of a
+system:
 
 - fewer internal network hops
 - fewer per-hop retry and timeout stacks
 - less duplicated service client policy
 - less need to attach mesh behavior to boundaries that are still app-owned
+- less pressure to govern internal "service" traffic that only exists because
+  the architecture externalized app-owned work too early
 
 It does not remove reasons for Istio at real service boundaries:
 
@@ -551,7 +561,11 @@ It does not remove reasons for Istio at real service boundaries:
 
 ## Can CoAkka Replace Saga?
 
-Not universally.
+Yes, in flows where `Saga` mostly exists to coordinate work that was split
+across service boundaries earlier than the business actually required.
+
+No, where the business flow truly spans independent owners, stores, and
+commit points.
 
 `Saga` exists to coordinate work that spans multiple independently committed
 boundaries. If one business flow touches several services, stores, or owners
@@ -571,9 +585,11 @@ to be fragmented into several independently committed hops to begin with.
 Short answer:
 
 ```text
-CoAkka does not replace Saga as a business coordination pattern.
-It can make Saga unnecessary for flows that were only distributed because the
-system created service boundaries earlier than the business required.
+CoAkka can absolutely make Saga unnecessary for flows that only became
+distributed because the system externalized app-owned work too early.
+
+It does not remove Saga where the flow really crosses independent business and
+transaction boundaries.
 ```
 
 ## Why Do Teams Need Saga In The First Place, And How Can CoAkka Change That?
@@ -605,6 +621,8 @@ simpler consistency model:
 - one outbox boundary where async propagation is truly needed
 - one explicit runtime route instead of several faux-service hops
 - ordinary failure handling instead of multi-step compensation logic
+- business coordination only where the business truly became distributed, not
+  where the architecture distributed it by habit
 
 Saga still remains the honest tool when the flow truly crosses:
 
