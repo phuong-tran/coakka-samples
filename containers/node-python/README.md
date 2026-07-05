@@ -24,15 +24,16 @@ bash run.sh containers node-python
 Currently available remote image tags:
 
 ```text
-docker.io/gabrielgun1983/sample-node-web:0.2.0-c124a9e-remote
-docker.io/gabrielgun1983/sample-python-store:0.2.0-c124a9e-remote
+docker.io/gabrielgun1983/sample-node-web:0.2.0-b8ecfae-remote
+docker.io/gabrielgun1983/sample-python-store:0.2.0-b8ecfae-remote
 ```
 
 Those tags are the current published Node.js/Python container image line. The
 local rebuild path in this repository installs the current public Node.js and
 Python connector artifact set `0.2.0+c124a9e-c4be778` and loads the refreshed
-native runtime from `coakka/runtime-base:0.2.0-b8ecfae-local` through
-`COAKKA_RUNTIME_LIB`.
+native runtime from `docker.io/gabrielgun1983/runtime-base:0.2.0-b8ecfae-remote`.
+The repo-local rebuild path uses the same connector set over
+`coakka/runtime-base:0.2.0-b8ecfae-local` through `COAKKA_RUNTIME_LIB`.
 
 Then open:
 
@@ -92,7 +93,8 @@ docker buildx build \
   --platform linux/amd64,linux/arm64 \
   -f containers/node-python/Dockerfile.python \
   --build-arg COAKKA_RUNTIME_BASE_IMAGE=docker.io/gabrielgun1983/runtime-base:0.2.0-b8ecfae-remote \
-  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=2bfa65755f04d8a848f7fd9fbed9c9df22d9ab1e5dc566ec8607ca11d181d226 \
+  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=6d8d533b3584f332be4eb19e42e46f82bead8242c2d1a4aed5cf141f98e8cdf2 \
+  --build-arg COAKKA_RUNTIME_GENERATION=0.2.0-b8ecfae-remote \
   -t docker.io/gabrielgun1983/sample-python-store:0.2.0-b8ecfae-remote \
   --push \
   .
@@ -101,7 +103,8 @@ docker buildx build \
   --platform linux/amd64,linux/arm64 \
   -f containers/node-python/Dockerfile.node \
   --build-arg COAKKA_RUNTIME_BASE_IMAGE=docker.io/gabrielgun1983/runtime-base:0.2.0-b8ecfae-remote \
-  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=2bfa65755f04d8a848f7fd9fbed9c9df22d9ab1e5dc566ec8607ca11d181d226 \
+  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=6d8d533b3584f332be4eb19e42e46f82bead8242c2d1a4aed5cf141f98e8cdf2 \
+  --build-arg COAKKA_RUNTIME_GENERATION=0.2.0-b8ecfae-remote \
   -t docker.io/gabrielgun1983/sample-node-web:0.2.0-b8ecfae-remote \
   --push \
   .

@@ -13,7 +13,7 @@ coakka/runtime-base:0.2.0-b8ecfae-local
 Current published remote tag:
 
 ```text
-docker.io/gabrielgun1983/runtime-base:0.2.0-c124a9e-remote
+docker.io/gabrielgun1983/runtime-base:0.2.0-b8ecfae-remote
 ```
 
 Current native artifact:
@@ -29,7 +29,7 @@ docker buildx build \
   --platform linux/arm64 \
   --load \
   -f containers/runtime-base/Dockerfile \
-  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=2bfa65755f04d8a848f7fd9fbed9c9df22d9ab1e5dc566ec8607ca11d181d226 \
+  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=6d8d533b3584f332be4eb19e42e46f82bead8242c2d1a4aed5cf141f98e8cdf2 \
   -t coakka/runtime-base:0.2.0-b8ecfae-local \
   .
 ```
@@ -40,7 +40,8 @@ Publish the refreshed multi-arch image line when a remote tag is ready:
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
   -f containers/runtime-base/Dockerfile \
-  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=2bfa65755f04d8a848f7fd9fbed9c9df22d9ab1e5dc566ec8607ca11d181d226 \
+  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=6d8d533b3584f332be4eb19e42e46f82bead8242c2d1a4aed5cf141f98e8cdf2 \
+  --build-arg COAKKA_RUNTIME_GENERATION=0.2.0-b8ecfae-remote \
   -t docker.io/gabrielgun1983/runtime-base:0.2.0-b8ecfae-remote \
   --push \
   .

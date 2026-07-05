@@ -113,14 +113,16 @@ installing Node.js, Python, Go, Java, protobuf tooling, or native build tools.
 Public Docker Hub images:
 
 ```text
-docker.io/gabrielgun1983/sample-node-web:0.2.0-c124a9e-remote
-docker.io/gabrielgun1983/sample-python-store:0.2.0-c124a9e-remote
+docker.io/gabrielgun1983/sample-node-web:0.2.0-b8ecfae-remote
+docker.io/gabrielgun1983/sample-python-store:0.2.0-b8ecfae-remote
 ```
 
-Those tags are the current published Node.js/Python container image line.
-Repo-local rebuilds for this container sample target the current Node.js and
-Python connector artifact set `0.2.0+c124a9e-c4be778` and load the refreshed
-native runtime from `coakka/runtime-base:0.2.0-b8ecfae-local`.
+Those tags are the current published Node.js/Python container image line. The
+published sample images still install the current public Node.js and Python
+connector artifact set `0.2.0+c124a9e-c4be778`, but they now load the refreshed
+native runtime line from `docker.io/gabrielgun1983/runtime-base:0.2.0-b8ecfae-remote`.
+Repo-local rebuilds use the same connector set over
+`coakka/runtime-base:0.2.0-b8ecfae-local`.
 
 Run the visible container sample:
 
