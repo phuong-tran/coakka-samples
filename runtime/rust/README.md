@@ -114,4 +114,6 @@ stay as a runtime target with request/reply and deadletter semantics.
 - Keep one active `RuntimeHost` per process.
 - Keep queue sizes bounded.
 - Treat matched deadletters as route/delivery results.
-- Windows support is not claimed.
+- Treat Windows as a supported development/validation host today, while this
+  published archive still bundles the current macOS/Linux native set.
+- Use Linux validation before presenting this lane as a deployment path.

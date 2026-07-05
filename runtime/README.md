@@ -3,6 +3,10 @@
 Runtime samples show CoAkka runtime v2 as a shared native runtime
 contract consumed through host-language connectors.
 
+For day-to-day development and connector validation, treat macOS and Windows as
+valid host environments. For deployment claims, operational drills, and the
+usual production rollout path, keep Linux as the primary target.
+
 The public publish surface exposes logger packages, the public native
 runtime C ABI package, runtime JVM/language connector packages, and the Spring
 Boot and Quarkus adapters. These samples consume those public artifacts.

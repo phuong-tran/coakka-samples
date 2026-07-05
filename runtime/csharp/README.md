@@ -9,10 +9,9 @@ the browser/API edge. Use CoAkka for work that is owned by the application
 or deployment and should not need an extra REST service just to cross an
 in-process or runtime boundary.
 
-This lane is macOS/Linux-first. Windows support is not claimed yet because most
-server-side .NET deployments can be validated on Linux first, and the current
-goal is to show the boundary/API shape clearly before adding Windows DLL
-packaging.
+This lane treats macOS and Windows as development/validation hosts. The current
+public NuGet package still bundles the macOS/Linux native runtime set, and most
+server-side deployment work should still be validated on Linux first.
 
 ## Run
 
@@ -197,7 +196,7 @@ deadletter, native loading, lifecycle, and diagnostics baseline.
 ## What This Sample Proves
 
 - `dotnet` can install `CoAkka.Runtime` from the public artifact surface.
-- The package can load the native runtime on supported macOS/Linux platforms.
+- The package can load the native runtime on the bundled macOS/Linux platforms.
 - A .NET process can start one process-owned `RuntimeHost`.
 - A .NET process can register a process-owned target handler and call it with
   request/reply.
@@ -210,6 +209,6 @@ deadletter, native loading, lifecycle, and diagnostics baseline.
 
 - Keep one active `RuntimeHost` per process.
 - Keep queue sizes bounded.
-- Treat Windows support as not claimed until a separate DLL packaging and smoke
-  pass exists.
+- Treat Windows as a supported development/validation host today, while noting
+  that this public package directory still does not bundle Windows DLLs.
 - Use Linux validation before presenting this lane as a server deployment path.
