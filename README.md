@@ -108,7 +108,7 @@ capabilities that should not need fake REST just to gain a boundary.
 
 The fastest visible runtime path is the container path. It uses pinned Docker
 Hub images, so you can test a cross-process runtime delivery path without
-installing Node.js, Python, Go, Java, protobuf tooling, or native build tools.
+installing Node.js, Python, Go, Java, or native build tools.
 
 Public Docker Hub images:
 
@@ -1306,7 +1306,7 @@ optional advanced lanes if they become useful for a concrete deployment case,
 but they are not a promise or a requirement for the container story.
 
 The default container path uses pinned Docker Hub images so users can try a
-runtime generation without building protobuf, connector packages, transport
+runtime generation without building connector packages, transport
 dependencies, or native runtime artifacts locally.
 
 Planning note: [Container Samples Plan](docs/container-samples-plan.md).

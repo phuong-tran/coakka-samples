@@ -594,6 +594,14 @@ runtime capability boundary instead of being promoted into a network service
 too early, there are fewer internal service hops to secure, retry, trace, and
 shape with mesh policy.
 
+That often leads to a simpler and more honest boundary shape:
+
+- `nginx` or another ingress handles the public edge
+- an API gateway or app-host handles auth, request policy, and public HTTP
+- standard `TLS` stays at that real public boundary
+- CoAkka handles selected internal capability delivery without forcing every
+  internal handoff to become another sidecar-managed service hop
+
 Short answer:
 
 ```text
@@ -641,6 +649,17 @@ system:
 - less pressure to govern internal "service" traffic that only exists because
   the architecture externalized app-owned work too early
 
+In many product systems that already have a clean public HTTP edge, the
+practical shape is often enough without Istio:
+
+- `nginx`, API gateway, or edge proxy at the public boundary
+- `TLS` at that public boundary
+- CoAkka for selected internal capability delivery
+
+That does not make Istio "wrong." It means the system may not need sidecars
+and mesh policy for traffic that never needed to become a full internal
+service API in the first place.
+
 It does not remove reasons for Istio at real service boundaries:
 
 - zero-trust or organization-wide mTLS policy
@@ -674,6 +693,12 @@ mixing:
 - certificate and identity policy
 - runtime delivery semantics
 
+There is also a practical reason to keep `mTLS` out of the default internal
+story. CoAkka usually carries internal application-owned work, not an
+internet-facing product edge. In many deployments, demanding `mTLS`
+everywhere on that path is more ceremony than value unless the boundary is
+truly cross-team, zero-trust, cross-cluster, or compliance-driven.
+
 That would make the runtime heavier, blur ownership, and turn a delivery
 engine into partial infrastructure.
 
@@ -701,8 +726,8 @@ Examples:
 - Kubernetes, DNS, Consul, or operator data chooses which endpoints should
   appear in a route snapshot
 - app-host or connector code maps that topology into runtime config
-- gateway, sidecar, host TLS stack, or connector addon applies `TLS/mTLS`
-  policy at the real network boundary
+- gateway, host TLS stack, sidecar when truly needed, or connector addon
+  applies `TLS/mTLS` policy at the real network boundary
 
 That is the intended design:
 
@@ -719,6 +744,14 @@ shape is usually:
 - deployment adapter
 
 not a larger `coakka-core-runtime`.
+
+In other words:
+
+```text
+Use mTLS where the network boundary is real and the policy is real.
+Do not drag sidecars into internal application-owned delivery by default just
+because the system already knows Istio.
+```
 
 ## Can CoAkka Replace Saga?
 
