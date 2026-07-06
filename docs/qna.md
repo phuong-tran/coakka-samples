@@ -649,6 +649,77 @@ It does not remove reasons for Istio at real service boundaries:
 - multi-team independently deployed services
 - external-facing API estates
 
+## Why Does CoAkka Not Include Service Discovery Or mTLS In coakka-core-runtime?
+
+It does not, and that is intentional.
+
+`coakka-core-runtime` is a delivery engine. It is not meant to become a
+discovery server, certificate authority, mesh control plane, or cluster
+inventory system.
+
+Service discovery and `mTLS` answer different questions from runtime delivery:
+
+- discovery answers which hosts, endpoints, or replicas should exist
+- `mTLS` answers which identities should be trusted and under what policy
+- runtime delivery answers whether accepted work can be routed and handed to
+  the next responsible hop
+
+Those are not the same responsibility.
+
+If CoAkka pulled discovery and `mTLS` into the core runtime, it would start
+mixing:
+
+- app-host lifecycle
+- platform topology
+- certificate and identity policy
+- runtime delivery semantics
+
+That would make the runtime heavier, blur ownership, and turn a delivery
+engine into partial infrastructure.
+
+Short answer:
+
+```text
+CoAkka does not omit discovery and mTLS by accident.
+It keeps them out of coakka-core-runtime on purpose, because they belong to
+the app-host, platform, or an adapter layer above runtime.
+```
+
+## If A Team Needs Discovery Or mTLS, Where Should That Live?
+
+Above runtime, not inside the core delivery engine.
+
+Typical ownership shapes are:
+
+- app-host wiring
+- connector configuration
+- platform/infra policy
+- connector addons or adapter layers
+
+Examples:
+
+- Kubernetes, DNS, Consul, or operator data chooses which endpoints should
+  appear in a route snapshot
+- app-host or connector code maps that topology into runtime config
+- gateway, sidecar, host TLS stack, or connector addon applies `TLS/mTLS`
+  policy at the real network boundary
+
+That is the intended design:
+
+```text
+topology and identity policy stay above runtime
+runtime executes the route and delivery contract it was given
+```
+
+If a future team wants discovery or `mTLS` support around CoAkka, the right
+shape is usually:
+
+- app-host integration
+- connector addon
+- deployment adapter
+
+not a larger `coakka-core-runtime`.
+
 ## Can CoAkka Replace Saga?
 
 Yes, in flows where `Saga` mostly exists to coordinate work that was split
