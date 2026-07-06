@@ -3,6 +3,7 @@
 [![sample-smoke](https://github.com/phuong-tran/coakka-samples/actions/workflows/sample-smoke.yml/badge.svg)](https://github.com/phuong-tran/coakka-samples/actions/workflows/sample-smoke.yml)
 
 Contribution guide: [CONTRIBUTING.md](CONTRIBUTING.md)
+Support: [SUPPORT.md](SUPPORT.md)
 
 CoAkka is for application-owned work that needs a runtime boundary, not another
 fake backend API.
