@@ -53,7 +53,7 @@ Use gRPC when the boundary is already a real service API:
 - HTTP/2, interceptors, auth, and standard gRPC tooling are desired
 
 Use CoAkka when the team wants a stronger boundary than a direct function call,
-but the work is still an runtime capability:
+but the work is still a runtime capability:
 
 - named target or capability
 - same-process handler today, possible peer-runtime handler later
@@ -172,7 +172,10 @@ application platform.
 
 ## Is CoAkka The Same Thing As Erlang, Akka, Elixir, Or The Actor Model?
 
-No.
+Yes, if the comparison stays at the level of message delivery, named
+destinations, and asynchronous boundaries.
+
+No, when the comparison is about the primary application model.
 
 The names are close enough that people will assume a match, especially with
 `Akka`, but the architectural center is different.
@@ -307,7 +310,7 @@ them a shared part of the application shape.
 CoAkka is useful when the team wants:
 
 - stronger boundary than direct dependency injection
-- less network plumbing tha backend HTTP/gRPC created only for application-owned work
+- less network plumbing than backend HTTP/gRPC created only for application-owned work
 - explicit route, queue, timeout, and deadletter vocabulary
 - same-process-first design with a later peer-runtime path
 - connector-owned startup config and runtime-owned data plane
@@ -986,7 +989,7 @@ for runtime behavior and operational evidence.
 
 ## How Should A User Explain CoAkka In One Short Paragraph?
 
-Use this when someone asks for the short version:
+Short version:
 
 ```text
 CoAkka is a runtime boundary for application-owned capabilities. Instead of
