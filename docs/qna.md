@@ -975,23 +975,20 @@ That does not mean every application must adopt both at once. It means the two
 surfaces were designed to fit together when the system wants one clearer story
 for runtime behavior and operational evidence.
 
-## What Is The Clean Public Position?
+## How Should A User Explain CoAkka In One Short Paragraph?
 
-Use this when someone compares CoAkka to gRPC, CQRS, actors, or brokers:
+Use this when someone asks for the short version:
 
 ```text
-CoAkka is a runtime boundary for runtime capabilities, with a compact
-same-process path and a peer-runtime path through route snapshots. It names
-targets, routes work through a generationed runtime snapshot, applies bounded
-queue policy, and returns response or deadletter outcomes with diagnostics.
+CoAkka is a runtime boundary for application-owned capabilities. Instead of
+turning every internal handoff into another HTTP or gRPC API, it lets an
+application send work to a named target, route that work through a runtime
+snapshot, and receive either a reply or a deadletter with diagnostics.
 
-Internal does not mean same-process-only. It means the first boundary is a
-runtime target boundary instead of a public HTTP/gRPC API boundary. The handler
-can be in the same process, same host, or another runtime participant reached
-through transport. The `LOCAL` endpoint flag is the narrower "handler owned by
-this process" case.
-
-It can carry RPC-style requests, CQRS commands, CQRS queries, events, or
-projection work. Those are payload and application patterns. CoAkka's core
-claim is the runtime boundary, not ownership of every pattern above it.
+It works for same-process delivery and for peer runtime delivery across process
+or host boundaries. The core idea is not "everything becomes an actor," "this
+replaces CQRS," or "this replaces every broker." The core idea is that
+selected application-owned work gets one explicit runtime contract instead of
+being spread across ad-hoc internal APIs, client plumbing, and timeout/retry
+guesswork.
 ```
