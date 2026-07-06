@@ -12,8 +12,8 @@ coakka_require_command tar "Install tar, then retry."
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
-artifact_rel="logger/rust/releases/0.1.0+ba2a66d98eb5/coakka-logger-rs-0.1.0-spike.tar.gz"
-package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-logger-rs-0.1.0-spike.tar.gz")"
+artifact_rel="logger/rust/releases/1.2.1+f50756ebff0d/coakka-logger-rs-1.2.1.tar.gz"
+package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-logger-rs-1.2.1.tar.gz")"
 mkdir -p "${tmp_dir}/package"
 tar -C "${tmp_dir}/package" --strip-components 1 -xzf "${package_path}"
 mkdir -p "${tmp_dir}/consumer/src"
@@ -21,7 +21,7 @@ cp "${script_dir}/main.rs" "${tmp_dir}/consumer/src/main.rs"
 cat > "${tmp_dir}/consumer/Cargo.toml" <<EOF
 [package]
 name = "coakka-logger-rust-basic-sample"
-version = "0.1.0"
+version = "1.2.1"
 edition = "2021"
 
 [dependencies]

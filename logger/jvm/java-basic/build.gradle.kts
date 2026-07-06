@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    implementation("coakka.logger:coakka-jvm-native-logger:0.1.0-gba2a66d98eb5")
+    implementation("coakka.logger:coakka-jvm-native-logger:1.2.1-gf50756ebff0d")
 }
 
 java {

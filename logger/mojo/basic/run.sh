@@ -25,12 +25,12 @@ coakka_native_platform() {
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
-artifact_rel="logger/native/releases/0.1.0+ba2a66d98eb5/coakka-logger-native-0.1.0.tar.gz"
-package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-logger-native-0.1.0.tar.gz")"
+artifact_rel="logger/native/releases/1.2.1+f50756ebff0d/coakka-logger-native-1.2.1.tar.gz"
+package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-logger-native-1.2.1.tar.gz")"
 mkdir -p "${tmp_dir}/package"
 tar -C "${tmp_dir}/package" -xzf "${package_path}"
 
-package_root="${tmp_dir}/package/coakka-logger-native-0.1.0"
+package_root="${tmp_dir}/package/coakka-logger-native-1.2.1"
 platform="$(coakka_native_platform)"
 
 case "$(uname -s)" in

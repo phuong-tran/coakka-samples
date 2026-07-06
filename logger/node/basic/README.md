@@ -25,7 +25,7 @@ bash run.sh logger node basic
 Expected output shape:
 
 ```text
-coakka_logger_info abi=10 version=0.1.0 git=ba2a66d98eb5
+coakka_logger_info abi=10 version=1.2.1 git=f50756ebff0d
 coakka_logger_record sequence=1 level=info category=samples.logger.node.basic message={"event":"hello","language":"node"}
 coakka_logger_stats emitted=1 delivered=1 dropped=0
 ```

@@ -94,7 +94,7 @@ grep -Fq "duplicate artifact path" "${test_output}" ||
   fail "missing duplicate path manifest error"
 
 duplicate_label_root="$(make_publish_root duplicate-label)"
-logger_artifact="logger/native/releases/0.1.0+ba2a66d98eb5/coakka-logger-native-0.1.0-copy.tar.gz"
+logger_artifact="logger/native/releases/1.2.1+f50756ebff0d/coakka-logger-native-1.2.1-copy.tar.gz"
 logger_path="${duplicate_label_root}/${logger_artifact}"
 mkdir -p "$(dirname "${logger_path}")"
 printf 'duplicate label fixture\n' >"${logger_path}"

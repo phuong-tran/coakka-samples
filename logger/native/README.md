@@ -6,7 +6,7 @@ These samples consume the published native C/C++ logger archive from
 The native package is not a Maven artifact. The sample runner resolves:
 
 ```text
-logger/native/releases/0.1.0+ba2a66d98eb5/coakka-logger-native-0.1.0.tar.gz
+logger/native/releases/1.2.1+f50756ebff0d/coakka-logger-native-1.2.1.tar.gz
 ```
 
 It then builds against the archive with CMake:

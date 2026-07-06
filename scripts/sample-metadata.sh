@@ -59,13 +59,15 @@ COAKKA_CONTAINER_ROWS=(
 )
 
 COAKKA_ARTIFACT_ROWS=(
-  "logger JVM jar|logger/jvm/releases/0.1.0+ba2a66d98eb5/coakka-jvm-native-logger-0.1.0.jar"
-  "logger Python wheel|logger/python/releases/0.1.0+ba2a66d98eb5/coakka_logger-0.1.0-py3-none-any.whl"
-  "logger Node package|logger/node/releases/0.1.0+ba2a66d98eb5/coakka-logger-node-0.1.0.tgz"
-  "logger Go package|logger/go/releases/0.1.0+ba2a66d98eb5/coakka-logger-go-0.1.0.tar.gz"
-  "logger C# package|logger/csharp/releases/0.1.0+ba2a66d98eb5/CoAkka.Logger.0.1.0.nupkg"
-  "logger Rust package|logger/rust/releases/0.1.0+ba2a66d98eb5/coakka-logger-rs-0.1.0-spike.tar.gz"
-  "logger Native package|logger/native/releases/0.1.0+ba2a66d98eb5/coakka-logger-native-0.1.0.tar.gz"
+  "logger JVM jar|logger/jvm/releases/1.2.1+f50756ebff0d/coakka-jvm-native-logger-1.2.1-gf50756ebff0d.jar"
+  "logger Python wheel|logger/python/releases/1.2.1+f50756ebff0d/coakka_logger-1.2.1-py3-none-any.whl"
+  "logger Node package|logger/node/releases/1.2.1+f50756ebff0d/coakka-logger-node-1.2.1.tgz"
+  "logger Go package|logger/go/releases/1.2.1+f50756ebff0d/coakka-logger-go-1.2.1.tar.gz"
+  "logger C# package|logger/csharp/releases/1.2.1+f50756ebff0d/CoAkka.Logger.1.2.1.nupkg"
+  "logger Rust package|logger/rust/releases/1.2.1+f50756ebff0d/coakka-logger-rs-1.2.1.tar.gz"
+  "logger Mojo source package|logger/mojo/releases/1.2.1+f50756ebff0d-8264bba/coakka-logger-mojo-1.2.1-source.tar.gz"
+  "logger Zig source package|logger/zig/releases/1.2.1+f50756ebff0d-8264bba/coakka-logger-zig-1.2.1-source.tar.gz"
+  "logger Native package|logger/native/releases/1.2.1+f50756ebff0d/coakka-logger-native-1.2.1.tar.gz"
   "runtime Native package|runtime/native/releases/1.2.1+abde383/coakka-runtime-native-v2-1.2.1.tar.gz"
   "runtime JVM jar|runtime/jvm/releases/1.2.1+abde383-fa29f94/coakka-jvm-native-runtime-v2-1.2.1-gabde383-fa29f94.jar"
   "runtime Python wheel|runtime/python/releases/1.2.1+abde383-fa29f94/coakka_v2_connector-1.2.1-py3-none-any.whl"

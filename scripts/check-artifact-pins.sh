@@ -5,7 +5,7 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/.." && pwd)"
 source "${script_dir}/sample-metadata.sh"
 
-expected_logger_native="0.1.0+ba2a66d98eb5"
+expected_logger_native="1.2.1+f50756ebff0d"
 public_manifest_path="artifacts/public-artifacts.tsv"
 tmp_files=()
 
@@ -17,13 +17,15 @@ cleanup() {
 trap cleanup EXIT
 
 required_rows=(
-  "logger JVM jar|logger/jvm/releases/${expected_logger_native}/coakka-jvm-native-logger-0.1.0.jar"
-  "logger Python wheel|logger/python/releases/${expected_logger_native}/coakka_logger-0.1.0-py3-none-any.whl"
-  "logger Node package|logger/node/releases/${expected_logger_native}/coakka-logger-node-0.1.0.tgz"
-  "logger Go package|logger/go/releases/${expected_logger_native}/coakka-logger-go-0.1.0.tar.gz"
-  "logger C# package|logger/csharp/releases/${expected_logger_native}/CoAkka.Logger.0.1.0.nupkg"
-  "logger Rust package|logger/rust/releases/${expected_logger_native}/coakka-logger-rs-0.1.0-spike.tar.gz"
-  "logger Native package|logger/native/releases/${expected_logger_native}/coakka-logger-native-0.1.0.tar.gz"
+  "logger JVM jar|logger/jvm/releases/${expected_logger_native}/coakka-jvm-native-logger-1.2.1-gf50756ebff0d.jar"
+  "logger Python wheel|logger/python/releases/${expected_logger_native}/coakka_logger-1.2.1-py3-none-any.whl"
+  "logger Node package|logger/node/releases/${expected_logger_native}/coakka-logger-node-1.2.1.tgz"
+  "logger Go package|logger/go/releases/${expected_logger_native}/coakka-logger-go-1.2.1.tar.gz"
+  "logger C# package|logger/csharp/releases/${expected_logger_native}/CoAkka.Logger.1.2.1.nupkg"
+  "logger Rust package|logger/rust/releases/${expected_logger_native}/coakka-logger-rs-1.2.1.tar.gz"
+  "logger Mojo source package|logger/mojo/releases/${expected_logger_native}-8264bba/coakka-logger-mojo-1.2.1-source.tar.gz"
+  "logger Zig source package|logger/zig/releases/${expected_logger_native}-8264bba/coakka-logger-zig-1.2.1-source.tar.gz"
+  "logger Native package|logger/native/releases/${expected_logger_native}/coakka-logger-native-1.2.1.tar.gz"
   "runtime Native package|runtime/native/releases/1.2.1+abde383/coakka-runtime-native-v2-1.2.1.tar.gz"
   "runtime JVM jar|runtime/jvm/releases/1.2.1+abde383-fa29f94/coakka-jvm-native-runtime-v2-1.2.1-gabde383-fa29f94.jar"
   "runtime Python wheel|runtime/python/releases/1.2.1+abde383-fa29f94/coakka_v2_connector-1.2.1-py3-none-any.whl"
