@@ -5,7 +5,7 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../../../.." && pwd)"
 publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
 module_path="github.com/phuong-tran/coakka-runtime-go"
-go_artifact_rel="runtime/go/releases/0.2.0+b8ecfae-2d085e5/coakka-v2-connector-go-0.2.0.tar.gz"
+go_artifact_rel="runtime/go/releases/1.2.1+abde383-fa29f94/coakka-v2-connector-go-1.2.1.tar.gz"
 web_build_task=":runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-web:bootJar"
 web_jar="${repo_root}/runtime/scenarios/customer-crud/spring-boot-spring-boot/customer-web/build/libs/customer-web.jar"
 source "${repo_root}/scripts/resolve-artifact.sh"
@@ -42,7 +42,7 @@ require_go_commands() {
 prepare_go_workspace() {
   local tmp_dir="$1"
   local package_path
-  package_path="$(coakka_resolve_artifact "${publish_root}" "${go_artifact_rel}" "${tmp_dir}/artifacts/coakka-v2-connector-go-0.2.0.tar.gz")"
+  package_path="$(coakka_resolve_artifact "${publish_root}" "${go_artifact_rel}" "${tmp_dir}/artifacts/coakka-v2-connector-go-1.2.1.tar.gz")"
   mkdir -p "${tmp_dir}/package"
   tar -C "${tmp_dir}/package" --strip-components 1 -xzf "${package_path}"
   cp "${script_dir}/store.go" "${tmp_dir}/store.go"

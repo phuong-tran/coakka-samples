@@ -12,8 +12,8 @@ coakka_require_command tar "Install tar, then retry."
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
-artifact_rel="runtime/zig/releases/0.2.0+b8ecfae-2d085e5/coakka-runtime-zig-0.2.0-source.tar.gz"
-package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-runtime-zig-0.2.0-source.tar.gz")"
+artifact_rel="runtime/zig/releases/1.2.1+abde383-fa29f94/coakka-runtime-zig-1.2.1-source.tar.gz"
+package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-runtime-zig-1.2.1-source.tar.gz")"
 mkdir -p "${tmp_dir}/package"
 tar -C "${tmp_dir}/package" --strip-components 1 -xzf "${package_path}"
 

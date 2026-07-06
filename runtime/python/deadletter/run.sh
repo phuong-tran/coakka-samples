@@ -9,7 +9,7 @@ source "${repo_root}/scripts/sample-utils.sh"
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
-artifact_rel="runtime/python/releases/0.2.0+b8ecfae-2d085e5/coakka_v2_connector-0.2.0-py3-none-any.whl"
-wheel_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka_v2_connector-0.2.0-py3-none-any.whl")"
+artifact_rel="runtime/python/releases/1.2.1+abde383-fa29f94/coakka_v2_connector-1.2.1-py3-none-any.whl"
+wheel_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka_v2_connector-1.2.1-py3-none-any.whl")"
 
 coakka_with_python_wheel_env "${wheel_path}" "${script_dir}/main.py"

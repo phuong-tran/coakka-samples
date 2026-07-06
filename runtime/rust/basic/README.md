@@ -28,7 +28,7 @@ Expected output shape:
 
 ```text
 CoAkka Rust runtime smoke ok
-runtime=0.2.0 git=<git> lib=<packaged-native-library>
+runtime=1.2.1 git=<git> lib=<packaged-native-library>
 response={"echo":{"message":"hello-rust-runtime"}} delivered=1 matched=1 deadletters=1
 ```
 

@@ -12,8 +12,8 @@ coakka_require_command npm "Install npm, then retry."
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
-artifact_rel="runtime/node/releases/0.2.0+b8ecfae-2d085e5/coakka-v2-connector-node-0.2.0.tgz"
-package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-v2-connector-node-0.2.0.tgz")"
+artifact_rel="runtime/node/releases/1.2.1+abde383-fa29f94/coakka-v2-connector-node-1.2.1.tgz"
+package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-v2-connector-node-1.2.1.tgz")"
 cp "${script_dir}/main.mjs" "${tmp_dir}/main.mjs"
 
 (

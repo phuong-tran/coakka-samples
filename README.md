@@ -113,16 +113,16 @@ installing Node.js, Python, Go, Java, protobuf tooling, or native build tools.
 Public Docker Hub images:
 
 ```text
-docker.io/gabrielgun1983/sample-node-web:0.2.0-b8ecfae-2d085e5-remote
-docker.io/gabrielgun1983/sample-python-store:0.2.0-b8ecfae-2d085e5-remote
+docker.io/gabrielgun1983/sample-node-web:1.2.1-abde383-fa29f94-remote
+docker.io/gabrielgun1983/sample-python-store:1.2.1-abde383-fa29f94-remote
 ```
 
 Those tags are the current published Node.js/Python container image line. The
 published sample images install the current public Node.js and Python
-connector artifact set `0.2.0+b8ecfae-2d085e5` over the refreshed native
-runtime line from `docker.io/gabrielgun1983/runtime-base:0.2.0-b8ecfae-remote`.
+connector artifact set `1.2.1+abde383-fa29f94` over the refreshed native
+runtime line from `docker.io/gabrielgun1983/runtime-base:1.2.1-abde383-remote`.
 Repo-local rebuilds use the same connector set over
-`coakka/runtime-base:0.2.0-b8ecfae-local`.
+`coakka/runtime-base:1.2.1-abde383-local`.
 
 Run the visible container sample:
 
@@ -839,7 +839,7 @@ typed runtime target.
 Spring Boot uses the public starter artifact:
 
 ```kotlin
-implementation("coakka.spring:coakka-spring-boot-starter:0.2.0-g2d085e5923d9")
+implementation("coakka.spring:coakka-spring-boot-starter:1.2.1-gfa29f94b59f9")
 ```
 
 ```kotlin
@@ -872,7 +872,7 @@ fun create(@RequestBody request: CustomerDraft): MutationResponse {
 Quarkus follows the same shape through the public extension artifact:
 
 ```kotlin
-implementation("coakka.quarkus:coakka-quarkus-extension:0.2.0-g2d085e5923d9")
+implementation("coakka.quarkus:coakka-quarkus-extension:1.2.1-gfa29f94b59f9")
 ```
 
 ```kotlin
@@ -1467,14 +1467,14 @@ Current public artifact pins:
 | --- | --- |
 | Logger JVM | `coakka.logger:coakka-jvm-native-logger:0.1.0-gba2a66d98eb5` |
 | Logger Python, Node.js, Go, C#, Rust, Mojo, Zig, and native C/C++ | `0.1.0+ba2a66d98eb5` |
-| Runtime native C/C++ | `0.2.0+b8ecfae` |
-| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:0.2.0-gb8ecfae-2d085e5` |
-| Runtime Python, Node.js, and Go | `0.2.0+b8ecfae-2d085e5` |
-| Runtime C# | `0.2.0+b8ecfae-2d085e5` |
-| Runtime Rust | `0.2.0+b8ecfae-2d085e5` |
-| Runtime Mojo and Zig samples | `0.2.0+b8ecfae-2d085e5` source packages |
-| Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:0.2.0-g2d085e5923d9` |
-| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:0.2.0-g2d085e5923d9` |
+| Runtime native C/C++ | `1.2.1+abde383` |
+| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:1.2.1-gabde383-fa29f94` |
+| Runtime Python, Node.js, and Go | `1.2.1+abde383-fa29f94` |
+| Runtime C# | `1.2.1+abde383-fa29f94` |
+| Runtime Rust | `1.2.1+abde383-fa29f94` |
+| Runtime Mojo and Zig samples | `1.2.1+abde383-fa29f94` source packages |
+| Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:1.2.1-gfa29f94b59f9` |
+| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:1.2.1-gfa29f94b59f9` |
 
 The matching runtime native note is published at
 `https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-06-runtime-native-b8ecfae-windows-parity.md`.
@@ -1487,7 +1487,7 @@ The matching Spring Boot and Quarkus adapter note is published at
 
 ## Public Status
 
-Current public native runtime generation: `0.2.0+b8ecfae`.
+Current public native runtime generation: `1.2.1+abde383`.
 
 | Lane | Public artifact status | First command |
 | --- | --- | --- |
@@ -1531,7 +1531,7 @@ Runtime language/framework direct runs consume the public runtime artifacts:
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=0.2.0 git=<git>
+coakka_runtime_info abi=1 version=1.2.1 git=<git>
 coakka_runtime_response payload={"echo":"hello-runtime-jvm"}
 coakka_runtime_stats generation=1 routes=1 delivered=1 matchedResponses=1
 ```
@@ -1565,9 +1565,9 @@ bash run.sh runtime native basic
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=0.2.0 git=<git> language=c
+coakka_runtime_info abi=1 version=1.2.1 git=<git> language=c
 coakka_runtime_stats generation=1 routes=1 routeMisses=1 deadletters=1 language=c
-coakka_runtime_info abi=1 version=0.2.0 git=<git> language=cpp
+coakka_runtime_info abi=1 version=1.2.1 git=<git> language=cpp
 coakka_runtime_stats generation=1 routes=1 routeMisses=1 deadletters=1 language=cpp
 ```
 
@@ -1580,7 +1580,7 @@ bash run.sh runtime native pressure
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=0.2.0 git=<git> language=c
+coakka_runtime_info abi=1 version=1.2.1 git=<git> language=c
 coakka_runtime_pressure attempts=64 delivered=<n> rejected=<n> capacity=2 highWatermark=<n> language=c
 coakka_runtime_stats generation=1 routes=1 queueRejected=<n> deadletters=<n> language=c
 ```
@@ -1604,7 +1604,7 @@ Run the smallest JVM logger sample directly through Gradle:
 Expected output shape:
 
 ```text
-coakka_logger_info abi=10 version=0.2.0 git=<git>
+coakka_logger_info abi=10 version=1.2.1 git=<git>
 coakka_logger_record sequence=1 level=info category=samples.logger.jvm.basic message={"event":"hello","language":"jvm"}
 coakka_logger_stats emitted=1 delivered=1 dropped=0
 ```

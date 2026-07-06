@@ -4,7 +4,7 @@ set -euo pipefail
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../../../.." && pwd)"
 publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
-node_artifact_rel="runtime/node/releases/0.2.0+b8ecfae-2d085e5/coakka-v2-connector-node-0.2.0.tgz"
+node_artifact_rel="runtime/node/releases/1.2.1+abde383-fa29f94/coakka-v2-connector-node-1.2.1.tgz"
 web_build_task=":runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-web:bootJar"
 web_jar="${repo_root}/runtime/scenarios/customer-crud/spring-boot-spring-boot/customer-web/build/libs/customer-web.jar"
 source "${repo_root}/scripts/resolve-artifact.sh"
@@ -42,7 +42,7 @@ require_node_commands() {
 prepare_node_workspace() {
   local tmp_dir="$1"
   local package_path
-  package_path="$(coakka_resolve_artifact "${publish_root}" "${node_artifact_rel}" "${tmp_dir}/artifacts/coakka-v2-connector-node-0.2.0.tgz")"
+  package_path="$(coakka_resolve_artifact "${publish_root}" "${node_artifact_rel}" "${tmp_dir}/artifacts/coakka-v2-connector-node-1.2.1.tgz")"
   cp "${script_dir}/store.mjs" "${tmp_dir}/store.mjs"
   cp "${script_dir}/audit.mjs" "${tmp_dir}/audit.mjs"
 

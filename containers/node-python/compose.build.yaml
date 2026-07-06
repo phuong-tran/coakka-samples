@@ -4,9 +4,9 @@ services:
       context: ../..
       dockerfile: containers/node-python/Dockerfile.python
       args:
-        COAKKA_RUNTIME_BASE_IMAGE: ${COAKKA_RUNTIME_BASE_IMAGE:-coakka/runtime-base:0.2.0-b8ecfae-local}
+        COAKKA_RUNTIME_BASE_IMAGE: ${COAKKA_RUNTIME_BASE_IMAGE:-coakka/runtime-base:1.2.1-abde383-local}
         COAKKA_PUBLISH_RAW_BASE: ${COAKKA_PUBLISH_RAW_BASE:-https://raw.githubusercontent.com/phuong-tran/coakka-publish/main}
-    image: coakka/sample-python-store:0.2.0-b8ecfae-2d085e5-local
+    image: coakka/sample-python-store:1.2.1-abde383-fa29f94-local
     hostname: python-store
     environment:
       COAKKA_SAMPLE_STORE_WEB_HOST: 0.0.0.0
@@ -26,9 +26,9 @@ services:
       context: ../..
       dockerfile: containers/node-python/Dockerfile.node
       args:
-        COAKKA_RUNTIME_BASE_IMAGE: ${COAKKA_RUNTIME_BASE_IMAGE:-coakka/runtime-base:0.2.0-b8ecfae-local}
+        COAKKA_RUNTIME_BASE_IMAGE: ${COAKKA_RUNTIME_BASE_IMAGE:-coakka/runtime-base:1.2.1-abde383-local}
         COAKKA_PUBLISH_RAW_BASE: ${COAKKA_PUBLISH_RAW_BASE:-https://raw.githubusercontent.com/phuong-tran/coakka-publish/main}
-    image: coakka/sample-node-web:0.2.0-b8ecfae-2d085e5-local
+    image: coakka/sample-node-web:1.2.1-abde383-fa29f94-local
     hostname: node-web
     depends_on:
       - python-store

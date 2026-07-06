@@ -13,7 +13,7 @@ bash run.sh runtime jvm java-basic
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=0.2.0 git=<git> language=java
+coakka_runtime_info abi=1 version=1.2.1 git=<git> language=java
 coakka_runtime_response payload=hello-runtime-java
 coakka_runtime_stats generation=1 routes=1 delivered=1 matchedResponses=1 language=java
 ```
