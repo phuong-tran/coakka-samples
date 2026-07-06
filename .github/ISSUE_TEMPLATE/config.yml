@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Read the contribution guide
+    url: https://github.com/phuong-tran/coakka-samples/blob/main/CONTRIBUTING.md
+    about: Check repo boundaries and verification expectations before opening an issue.
