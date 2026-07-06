@@ -8,6 +8,9 @@ sample feedback, contact:
 Please use the repository issue tracker for normal sample bugs and documentation
 improvements when public discussion is appropriate.
 
+Feedback, issue reports, docs fixes, and small sponsorships are all
+appreciated.
+
 Please use private contact first for:
 
 - security concerns
