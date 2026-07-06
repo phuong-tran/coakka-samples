@@ -347,8 +347,9 @@ timeouts, and failure vocabulary, CoAkka may be the smaller boundary.
 
 ## Is Adding A Runtime Overkill If The Current System Works?
 
-It can be. If a path is small, stable, single-language, easy to trace, and direct
-service calls already answer the operational questions, keep it direct.
+No, when a path is small, stable, single-language, easy to trace, and direct
+service calls already answer the operational questions. In that case, keep it
+direct.
 
 CoAkka is not an all-or-nothing migration. The intended rollout shape is to wrap
 one boundary first:
