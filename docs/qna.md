@@ -103,7 +103,11 @@ The distinction is ownership:
 
 ## Is CoAkka Equivalent To Dapr?
 
-No.
+Yes, if the comparison is narrow: both can sit between application code and
+remote work, reduce repeated plumbing, and give application teams a more
+structured runtime path than ad-hoc client code.
+
+No, when the comparison is broad and architectural.
 
 `Dapr` is a distributed application runtime with building blocks around
 service invocation, pub/sub, bindings, state stores, secrets, configuration,
@@ -147,6 +151,10 @@ Use CoAkka when the problem is narrower:
 - same-process today, peer runtime later
 - explicit route miss, rejection, reply, and deadletter outcomes
 - less interest in adopting a broader sidecar/component runtime
+
+If the question is specifically about how CoAkka thinks about route ownership
+and peer-runtime delivery instead of a broader sidecar platform, read
+[Runtime Cluster Routing](runtime-cluster-routing.md).
 
 Do not say:
 
