@@ -101,6 +101,137 @@ The distinction is ownership:
 - gRPC owns service API call mechanics.
 - CoAkka owns runtime delivery semantics.
 
+## Is CoAkka Equivalent To Dapr?
+
+No.
+
+`Dapr` is a distributed application runtime with building blocks around
+service invocation, pub/sub, bindings, state stores, secrets, configuration,
+and workflow.
+
+`CoAkka` is much narrower. It is a runtime boundary for application-owned
+capabilities, with typed targets, route snapshots, bounded delivery, replies,
+deadletters, and runtime diagnostics.
+
+Short answer:
+
+```text
+Dapr gives applications a broad distributed-runtime toolbox.
+CoAkka gives application-owned capability delivery one explicit runtime
+contract before that work has to become a larger distributed platform story.
+```
+
+The overlap is easy to see:
+
+- both can sit between application code and remote work
+- both can reduce repeated plumbing in app code
+- both try to keep operational mechanics out of business handlers
+
+The difference is where they want the center of gravity to be:
+
+- Dapr is broader and more infrastructure-shaped
+- CoAkka is narrower and more runtime-boundary-shaped
+
+Use Dapr when the team wants a broader distributed application substrate:
+
+- state store abstraction
+- pub/sub abstraction
+- bindings and component model
+- secrets/config building blocks
+- workflow and broader sidecar/runtime patterns
+
+Use CoAkka when the problem is narrower:
+
+- one application-owned capability boundary
+- typed target instead of another internal URL surface
+- same-process today, peer runtime later
+- explicit route miss, rejection, reply, and deadletter outcomes
+- less interest in adopting a broader sidecar/component runtime
+
+Do not say:
+
+```text
+CoAkka is a Dapr clone.
+```
+
+Say:
+
+```text
+CoAkka overlaps with one part of the problem space Dapr also touches, but it
+is deliberately narrower. It is not trying to become a general distributed
+application platform.
+```
+
+## Is CoAkka The Same Thing As Erlang, Akka, Elixir, Or The Actor Model?
+
+No.
+
+The names are close enough that people will assume a match, especially with
+`Akka`, but the architectural center is different.
+
+`Erlang`, `Elixir`, and `Akka` are strongly associated with the actor model:
+
+- actor identity
+- mailbox ownership
+- supervision trees
+- actor lifecycle
+- actor-to-actor messaging as the native application model
+
+CoAkka does not ask teams to model the system as actors first.
+
+Short answer:
+
+```text
+Actor systems usually make actors the primary unit of design.
+CoAkka makes runtime capability boundaries the primary unit of design.
+```
+
+That means CoAkka is usually closer to:
+
+- target or capability ownership
+- route snapshots
+- bounded delivery and rejection
+- reply or deadletter outcomes
+- polyglot connector boundaries
+
+than it is to:
+
+- actor mailboxes as the default application model
+- supervision hierarchies as the center of failure handling
+- actor identity as the main way to think about business structure
+
+Why people confuse CoAkka with Akka:
+
+- both talk about runtime delivery instead of plain method calls
+- both involve named destinations and message-shaped work
+- both care about failure outcomes and asynchronous boundaries
+
+Why they are still different:
+
+- Akka is actor-first
+- CoAkka is a runtime capability boundary
+- Akka-style systems often want the application model to lean into actors
+- CoAkka does not require the application model to become actor-oriented
+- CoAkka is designed to stay comfortable for app-hosts and CRUD-oriented teams
+  that want a stronger runtime boundary without rebuilding the system as an
+  actor system
+
+Do not say:
+
+```text
+CoAkka is Akka rewritten.
+```
+
+Say:
+
+```text
+CoAkka shares some messaging vocabulary with actor systems, but it is not an
+actor-first runtime model. It is a runtime boundary for application-owned
+capabilities, especially where teams want route ownership, explicit delivery
+outcomes, and polyglot runtime paths without adopting an actor-first
+application model.
+```
+
 ## What Does CoAkka Add Compared With No Runtime Boundary?
 
 Without CoAkka, a system usually chooses one of these paths.
