@@ -1,8 +1,8 @@
 # Production Readiness
 
-CoAkka is an early public runtime surface. The samples are useful for learning
-the model and verifying the published artifacts, but production confidence
-should come from measurements in the environment where the system will run.
+CoAkka is a published runtime product surface. The samples are runnable product
+evidence and integration guidance; production confidence is then attached to
+measurements in the environment where the system will run.
 
 This page is intentionally direct about fit, measurement, and ownership.
 
@@ -41,16 +41,15 @@ CoAkka runtime call:
 That model is useful when those runtime boundaries matter. When the application
 only needs one ordinary service call, the direct service call should stay direct.
 
-## Current Maturity
+## Product Readiness And Deployment Evidence
 
-The public artifacts are published and pinned, but the ecosystem should still
-be treated as an early integration surface until each target deployment has its
-own operating evidence. The sample repository currently spans logger and
+The public artifacts are published and pinned. They are product artifacts, not
+temporary walkthrough assets. The sample repository currently spans logger and
 runtime connector lines on the `1.2.1` generation plus the runtime-client CLI
-line on `1.3.1+2215b0f`; those version numbers do not replace deployment
-validation.
+line on `1.3.1+2215b0f`; those version numbers identify the published lanes,
+while capacity and SLO claims stay tied to each target deployment profile.
 
-Before production use, collect evidence for:
+For each deployment profile, collect evidence for:
 
 - Linux and container operation under realistic deployment limits
 - restart behavior for app hosts and runtime participants
@@ -61,8 +60,9 @@ Before production use, collect evidence for:
 - artifact and native-library loading on the target OS and CPU architecture
 - rollout behavior when route snapshots or payload schemas change
 
-Use the samples as a starting point, not as a substitute for those measurements.
-For the public evidence ledger and known gaps, see
+Use the samples as the supported public integration surface, then attach
+deployment-specific measurements to the environment being standardized. For the
+public evidence ledger and target-environment checklist, see
 [Production Evidence](production-evidence.md).
 
 ## Config Ownership
@@ -105,9 +105,9 @@ operation is safe to retry and how to prevent retry loops from amplifying load.
 1. Run one container sample and one language basic sample.
 2. Read the [Runtime Glossary](runtime-glossary.md) until `target`,
    `envelope`, `payload identity`, `deadletter`, and `generation` are clear.
-3. Wire one non-critical application workflow through a local runtime target.
+3. Wire one bounded application workflow through a local runtime target.
 4. Add deadletter, timeout, queue, and route-generation metrics.
 5. Move one cross-process or cross-language handler only after the local shape
    is understood.
 6. Run restart, reconnect, memory, and queue-pressure tests in Linux/container
-   conditions before standardizing on the path in that environment.
+   conditions as part of standardizing on the path in that environment.

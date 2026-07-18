@@ -15,11 +15,11 @@ Node.js web process
   -> response back to Node.js UI
 ```
 
-The goal is not to prove every framework at once. The goal is to prove that two
-real processes, in two different language hosts, can communicate through the
-same runtime contract while a user can see state change in the browser.
+The goal is not to cover every framework at once. The goal is to show that two
+real processes, in two different language hosts, communicate through the same
+runtime contract while a user can see state change in the browser.
 
-The next container sample keeps that same proof shape but uses a framework web
+The next container sample keeps that same product shape but uses a framework web
 edge and a Go store:
 
 ```text
@@ -35,7 +35,7 @@ Public users may come from Java, Go, Python, Node.js, C#, Rust, Mojo, Zig, or na
 Requiring them to install several toolchains before seeing one runtime delivery
 path creates avoidable friction.
 
-Containers give a shorter first proof:
+Containers give a shorter first-run path:
 
 ```sh
 docker compose up
@@ -56,7 +56,7 @@ runtime approved by their environment.
 
 | Wave | Sample | Purpose |
 | --- | --- | --- |
-| 1 | Node.js web -> Python store | smallest visible cross-language, cross-process proof; sample lives in `containers/node-python` |
+| 1 | Node.js web -> Python store | smallest visible cross-language, cross-process runtime path; sample lives in `containers/node-python` |
 | 1b | Spring Boot JVM web -> Go store | visible framework web edge plus Go store UI; sample lives in `containers/spring-go` |
 | 2 | Python -> Node.js or Go variant | show the pattern is not tied to one caller |
 | 3 | Optional native-image research | only if a concrete deployment case makes it useful |
@@ -184,7 +184,7 @@ node-web     | ready: http://localhost:8080
 python-store | handled: type=samples.container.customer.create.request.v1
 ```
 
-The important proof:
+The important product behavior:
 
 - two containers
 - two processes
@@ -194,7 +194,8 @@ The important proof:
 - explicit failure if runtime delivery fails
 - no REST fallback path
 
-No benchmark claims should be made from this sample.
+This sample is a product walkthrough, not a benchmark source. Benchmark claims
+belong in benchmark artifacts with metadata.
 
 ## Runtime Rules
 

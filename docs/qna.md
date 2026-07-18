@@ -101,6 +101,24 @@ The distinction is ownership:
 - gRPC owns service API call mechanics.
 - CoAkka owns runtime delivery semantics.
 
+## Why L4 Rather Than L7?
+
+CoAkka deliberately keeps the runtime delivery path closer to an L4/runtime
+transport boundary instead of becoming another L7 API framework. The point is
+to move application-owned work by target, route snapshot, bounded queues,
+delivery outcome, and reply matching, not to compete with HTTP/gRPC on
+endpoints, methods, status codes, interceptors, service docs, gateways, or API
+edge tooling.
+
+HTTP and gRPC stay the right L7 choices for public or service API edges. CoAkka
+belongs behind or beside those edges when the work is better modeled as a
+runtime capability than another network API.
+
+Benchmark CoAkka against runtime delivery responsibilities: route selection,
+queue pressure, framing, reply matching, timeout, and deadletter behavior. Do
+not describe it as faster or slower than HTTP/gRPC unless the benchmark
+intentionally includes comparable L7 concerns.
+
 ## Is CoAkka Equivalent To Dapr?
 
 Yes, if the comparison is narrow: both can sit between application code and
@@ -780,7 +798,7 @@ operational cost it creates.
 CoAkka changes that tradeoff by letting application-owned capability boundaries
 stay as runtime targets first. The work can remain same-process today, move to
 a peer runtime later, and keep one target and route contract without forcing an
-early public-service shape.
+premature public-service shape.
 
 That can remove a large share of the reasons Istio shows up in the middle of a
 system:

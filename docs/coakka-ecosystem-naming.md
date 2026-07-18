@@ -12,7 +12,7 @@ specific product name is available.
 | `CoAkka Runtime` | The runtime product family. | Use when explaining runtime delivery, targets, route snapshots, replies, deadletters, and diagnostics. |
 | `coakka-runtime-core` | The native runtime engine and C ABI surface. | Consume only through published artifacts; do not place sink, dashboard, or business schema semantics here. |
 | `coakka-runtime-connector` | Host-language connector packages that bind app-host code to the runtime core. | Show language/framework integration and app-owned handlers. |
-| `coakka-runtime-client` | The CLI runtime client used to drive and diagnose runtime paths. | Show local/native CLI workflows, Docker demo smokes, and scripted request/reply verification. |
+| `coakka-runtime-client` | The CLI runtime client used to drive and diagnose runtime paths. | Show local/native CLI workflows, Docker verification smokes, and scripted request/reply verification. |
 | `coakka-logger` | The bounded logger product surface. | Show logger behavior separately from runtime routing unless a sample intentionally combines both. |
 
 ## Repository Path Names

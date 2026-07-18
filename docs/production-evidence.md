@@ -1,9 +1,10 @@
 # Production Evidence
 
-This page is the current evidence ledger for the public sample repository. The
+This page is the product evidence ledger for the public sample repository. The
 samples show that the published artifact surface is runnable and that the
-runtime vocabulary stays consistent across languages. Deployment-specific
-capacity and operator acceptance still belong to the target environment.
+runtime vocabulary stays consistent across languages. Capacity, SLO, and
+operator-acceptance claims are attached to the target environment where the
+runtime path will operate.
 
 ## Current Evidence
 
@@ -38,9 +39,9 @@ The web screenshot shows an accepted create command and runtime counters. The
 store screenshot shows the same customer state changed by runtime messages from
 the web process.
 
-## Additional Deployment Evidence
+## Deployment Evidence To Collect Per Environment
 
-These areas still need deployment-specific evidence:
+Collect these areas per deployment profile:
 
 - sustained cross-process load under realistic Linux memory and CPU limits
 - peer restart and reconnect behavior across long-running workloads
@@ -51,9 +52,9 @@ These areas still need deployment-specific evidence:
 - operator dashboards, alerts, and incident runbooks
 - package-manager lanes for Mojo and Zig
 
-## Evidence Checklist For A Real Deployment
+## Evidence Checklist For A Deployment
 
-Before a service standardizes on this runtime path, collect evidence in the
+When a service standardizes on this runtime path, collect evidence in the
 target environment:
 
 | Check | Required observation |
@@ -81,6 +82,12 @@ sample benchmark artifacts must record:
 - warmup and measured repetitions
 - aggregation rule
 - whether the result is only a smoke-load reference
+
+Benchmark comparisons should stay at the runtime/L4 delivery boundary. CoAkka
+is not an L7 HTTP/gRPC framework benchmark; do not frame numbers as HTTP/gRPC
+replacement claims. Compare route lookup, bounded admission, framing, delivery
+outcome, reply matching, deadletter behavior, and queue pressure under the same
+payload and transport profile.
 
 The current `bench-smoke` workflow is a shape check. Treat its JSON output as
 public CI evidence, not as a substitute for target-environment capacity work.

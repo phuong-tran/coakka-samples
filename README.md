@@ -140,8 +140,8 @@ That verifies the published `coakka-runtime-client` lane by resolving the
 public manifest, then running `version` and `doctor` from the unpacked native
 prefix.
 
-For a live request/reply proof through the published CLI and native demo
-service, run:
+For a live request/reply path through the published CLI and native service,
+run:
 
 ```sh
 bash run.sh runtime-client docker-demo
@@ -192,7 +192,7 @@ These samples show two real processes, two language hosts, browser-visible
 state changes, and runtime delivery with no REST fallback between the sample
 services.
 
-Current visual proof from the Node.js web to Python store container sample:
+Current visual evidence from the Node.js web to Python store container sample:
 
 ![Node.js web UI showing an accepted create command and runtime counters](docs/assets/container-node-python-create-web.png)
 
@@ -480,8 +480,8 @@ That helps when a system has started to accumulate informal application-owned co
 - failures show up as vague timeouts instead of route and delivery evidence
 - the real contract is scattered across code, config, logs, and team memory
 
-For that value to hold in production, the project still has to prove three
-things:
+For that value to stay reliable in production, every release and deployment
+profile has to keep three properties explicit:
 
 1. the remote transporter runs reliably under load, reconnect, process restart,
    and controlled route reload
@@ -941,8 +941,8 @@ and archive prefix is `coakka-client`.
 
 The published CLI runtime-client release is `1.3.1+2215b0f`. It lives under
 `coakka-publish/cli/releases/1.3.1+2215b0f/` for macOS ARM64, Linux x86_64,
-Linux ARM64, Windows x86_64, and Windows ARM64. The matching Docker demo
-release is under
+Linux ARM64, Windows x86_64, and Windows ARM64. The matching Docker
+verification release is under
 `coakka-publish/demo/coakka-client/releases/1.3.1+2215b0f/`.
 
 This lane is for native CLI verification of runtime behavior: `version`,
@@ -950,10 +950,10 @@ This lane is for native CLI verification of runtime behavior: `version`,
 It is not a dashboard, inspect product, topology authority, or business schema
 registry.
 
-For a live request/reply proof without source checkout or host build tools, run
+For a live request/reply path without source checkout or host build tools, run
 `bash run.sh runtime-client docker-demo`. That uses the published Linux Docker
-demo bundle and verifies `call`, `ask`, and `shell --script` against the bundled
-native customer service.
+verification bundle and verifies `call`, `ask`, and `shell --script` against
+the bundled native customer service.
 
 Read the sample lane landing page at [runtime-client/README.md](runtime-client/README.md).
 
@@ -1250,10 +1250,10 @@ Language-specific entry points:
 
 ## Readiness
 
-CoAkka is an early public runtime surface. It is a good fit when target-based
-runtime delivery, payload identity, deadletters, route snapshots, and
-multi-language handler ownership should be part of the application model. A
-small system that only needs one ordinary REST or gRPC call can keep that
+CoAkka is a published runtime product surface. It is a good fit when
+target-based runtime delivery, payload identity, deadletters, route snapshots,
+and multi-language handler ownership should be part of the application model.
+A small system that only needs one ordinary REST or gRPC call can keep that
 direct shape.
 
 For production fit, measurement checklist, learning path, and config ownership,
@@ -1296,7 +1296,7 @@ Runtime features are listed separately from language coverage so a capability
 does not look missing just because it is shown through one host
 connector first.
 
-| Capability | Public sample | What it proves |
+| Capability | Public sample | What it shows |
 | --- | --- | --- |
 | Request/reply | JVM, Python, Node.js, Go, C#, Rust, native C/C++ basic samples | Typed request/reply through a process-owned route and runtime counters |
 | Raw request/reply | Zig and Mojo basic samples | Raw envelope request/reply through the public C ask-client helpers and delivered-request lane |
@@ -1357,7 +1357,7 @@ podman compose -f containers/spring-go/compose.yaml up
 podman-compose -f containers/spring-go/compose.yaml up
 ```
 
-The intent is to prove two real processes, two language hosts, and one runtime
+The intent is to show two real processes, two language hosts, and one runtime
 delivery path with browser-visible state changes. The Spring Boot JVM to Go
 sample keeps the framework lane practical for this wave.
 
@@ -1394,6 +1394,11 @@ This repository keeps benchmark files as reference evidence. macOS results are
 useful for shape checks and local regression comparison on the same machine.
 Linux results are the comparison path to prefer when readers want a broader
 view of runtime behavior.
+
+Benchmark comparisons should stay at CoAkka's runtime/L4 boundary: route
+lookup, bounded admission, framing, delivery outcome, and reply matching. Do
+not frame these numbers as L7 HTTP/gRPC replacement benchmarks; HTTP and gRPC
+belong at service API edges with different middleware, semantics, and tooling.
 
 Benchmark and load result policy lives in [`bench/README.md`](bench/README.md).
 The harness keeps macOS reference output under `bench/macos-smoke/` and Linux
@@ -1479,9 +1484,10 @@ logger/
 
 The published artifact surface supports logger package downloads, the public
 native runtime C ABI package, runtime connector packages, framework adapters,
-the `coakka-runtime-client` CLI lane, and the published CLI Docker demo bundle.
-The sample runner resolves public artifacts from a sibling `coakka-publish`
-checkout when present, then falls back to the public raw GitHub URL.
+the `coakka-runtime-client` CLI lane, and the published CLI Docker verification
+bundle. The sample runner resolves public artifacts from a sibling
+`coakka-publish` checkout when present, then falls back to the public raw
+GitHub URL.
 
 Logger JVM samples use the Maven repository from the public publish checkout:
 

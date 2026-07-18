@@ -248,10 +248,10 @@ RuntimeStartSpec
       endpoint host=127.0.0.1 port=19301 flags=LOCAL
 ```
 
-The sample values are not production sizing. They are visible defaults that make
-the boundary easy to read. In a real deployment, `nodeId`, endpoint host, and
-route generation should come from deployment config, platform metadata, service
-discovery, or a control plane.
+The sample values are illustrative, not capacity guidance. They are visible
+defaults that make the boundary easy to read. In a real deployment, `nodeId`,
+endpoint host, and route generation should come from deployment config,
+platform metadata, service discovery, or a control plane.
 
 `separateDeliveredRequestLane` protects the ask/reply path from inbound handler
 work. A runtime host can receive requests for local handlers while it is also
