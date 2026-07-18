@@ -218,6 +218,18 @@ That Docker path is for Linux bundle verification from the published artifact
 layout. The older `docker-demo` runner command remains available as a
 compatibility alias for the existing release archive path.
 
+For a more visible Docker CLI walkthrough, run:
+
+```sh
+bash run.sh runtime-client docker-walkthrough
+```
+
+That command uses the same published Docker bundle, starts two native runtime
+service containers, prints their service names, ports, and routes, then runs
+`coakka-client` from the CLI container against both services. It also runs one
+shell script that switches from one runtime endpoint to the other inside the
+same CLI session.
+
 The fastest browser-visible app-host path is the Node.js/Python container path.
 It uses the refreshed `1.3.1` runtime artifact line, so you can test a
 cross-process runtime delivery path without installing Node.js, Python, Go,
@@ -1035,6 +1047,11 @@ For a live request/reply path without source checkout or host build tools, run
 `bash run.sh runtime-client docker-bundle`. That uses the published Linux
 Docker verification bundle and verifies `call`, `ask`, and `shell --script`
 against the bundled native customer service.
+
+For a more guided Docker CLI experience, run
+`bash run.sh runtime-client docker-walkthrough`. It starts two native runtime
+services from the same published bundle, prints each service name, port, and
+route, then drives both with `coakka-client` from a Docker CLI container.
 
 Read the sample lane landing page at [runtime-client/README.md](runtime-client/README.md).
 

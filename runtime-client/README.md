@@ -45,6 +45,7 @@ Run the published CLI runtime client smoke:
 bash run.sh runtime-client
 bash run.sh runtime-client version
 bash run.sh runtime-client doctor
+bash run.sh runtime-client docker-walkthrough
 ```
 
 The runner resolves the matching archive from a sibling `coakka-publish`
@@ -78,6 +79,24 @@ That command resolves the published Docker verification bundle for the host
 architecture, builds the tiny CLI and customer-service images from the staged
 artifacts, then verifies `call`, `ask`, and `shell --script` request/reply
 round-trips.
+
+Run the guided Docker CLI walkthrough when the goal is to see the runtime-client
+experience rather than just verify the bundle:
+
+```sh
+bash run.sh runtime-client docker-walkthrough
+```
+
+That path starts two native runtime service containers from the same published
+bundle:
+
+```text
+service=customer-east port=19091 route=customer.east.create
+service=customer-west port=19091 route=customer.west.create
+```
+
+Then it runs `coakka-client` from the CLI container against both services and
+runs one shell script that switches endpoints inside the same CLI session.
 
 ## Published Release
 
@@ -130,6 +149,11 @@ demo/coakka-client/releases/1.3.1+2215b0f/
 The `demo/` path segment is part of the already-published artifact layout.
 Public docs and commands describe this as the Linux Docker verification bundle.
 The runner still accepts `docker-demo` as a compatibility alias.
+
+The sample runner also provides `docker-walkthrough`, which uses that published
+bundle to bring up two native runtime services and drive them with the packaged
+`coakka-client` inside Docker. That is a sample experience command, not a
+separate published artifact.
 
 ## CLI Runtime Path
 

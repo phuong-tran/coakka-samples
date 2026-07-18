@@ -179,3 +179,21 @@ created:customer#script-ask
 
 The older `docker-demo` runner command remains a compatibility alias for the
 existing artifact layout.
+
+Use the guided walkthrough when the goal is to see the Docker CLI workflow:
+
+```sh
+bash run.sh runtime-client docker-walkthrough
+```
+
+That command resolves the same published Docker bundle, starts two native
+runtime service containers, prints the service names, ports, and routes, then
+uses the CLI container to call both runtimes:
+
+```text
+service=customer-east port=19091 route=customer.east.create
+service=customer-west port=19091 route=customer.west.create
+```
+
+The final check is a `coakka-client shell --script` run that switches from
+`customer-east:19091` to `customer-west:19091` inside one CLI shell session.

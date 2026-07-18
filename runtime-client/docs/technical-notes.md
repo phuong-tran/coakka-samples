@@ -109,6 +109,12 @@ Use Docker verification only when the Linux bundle path needs a live check:
 bash run.sh runtime-client docker-bundle
 ```
 
+Use `docker-walkthrough` when the goal is a guided CLI experience. It reuses
+the same published bundle but adds a temporary Compose override with two native
+runtime service containers and prints the service, port, and route before each
+`coakka-client` call. This remains sample orchestration; it does not add a new
+runtime-core responsibility or a new published artifact lane.
+
 The animated walkthrough and MP4 recording in this repository are visual
 product evidence. The command surface remains verified by scripts and artifact
 checksum checks, not by the recording itself.

@@ -29,7 +29,7 @@ Usage:
   bash run.sh <lane>/<language>/<sample>
   bash run.sh containers/<sample> [command]
   bash run.sh runtime/scenarios/<track>/<topology> <command>
-  bash run.sh runtime-client [check|version|doctor|docker-bundle]
+  bash run.sh runtime-client [check|version|doctor|docker-bundle|docker-walkthrough]
 
 Examples:
   bash run.sh
