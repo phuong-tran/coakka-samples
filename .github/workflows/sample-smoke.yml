@@ -46,6 +46,7 @@ jobs:
           bash -n run.sh
           bash -n logger/run-all.sh
           bash -n runtime/run-all.sh
+          bash -n runtime-client/run.sh
           bash -n scripts/check-artifact-pins.sh
           bash -n scripts/doctor.sh
           bash -n scripts/resolve-artifact.sh
@@ -101,3 +102,6 @@ jobs:
           bash run.sh runtime node basic
           bash run.sh runtime native basic
           bash run.sh runtime native pressure
+
+      - name: Run public runtime client smoke
+        run: bash run.sh runtime-client
