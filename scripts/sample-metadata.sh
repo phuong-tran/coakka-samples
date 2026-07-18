@@ -106,6 +106,7 @@ EOF
 
 Runtime client sample:
   runtime-client/check            Verify the published CoAkka Runtime CLI client archive
+  runtime-client/docker-demo      Verify call/ask against the published Docker demo bundle
 
 Scenario tracks:
 EOF
