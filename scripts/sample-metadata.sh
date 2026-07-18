@@ -104,6 +104,9 @@ EOF
 
   cat <<'EOF'
 
+Runtime client sample:
+  runtime-client/check            Verify the published CoAkka Runtime CLI client archive
+
 Scenario tracks:
 EOF
 

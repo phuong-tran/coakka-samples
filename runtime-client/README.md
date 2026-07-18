@@ -16,6 +16,21 @@ It is not an inspect dashboard, a topology authority, or a business schema
 registry. Topology, route ownership, delivery semantics, and capability truth
 stay in CoAkka Runtime. Sample payloads stay owned by the sample workflow.
 
+## Quick Check
+
+Run the published CLI runtime client smoke:
+
+```sh
+bash run.sh runtime-client
+bash run.sh runtime-client version
+bash run.sh runtime-client doctor
+```
+
+The runner resolves the matching archive from a sibling `coakka-publish`
+checkout when present, otherwise it falls back to the public raw artifact URL.
+Every artifact is verified against `artifacts/public-artifacts.tsv` before it
+is unpacked.
+
 ## Current Public Release
 
 The current public CLI runtime client release is:

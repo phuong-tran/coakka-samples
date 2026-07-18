@@ -28,8 +28,8 @@ while package-manager lanes remain planned.
 | Problem | Internal application work often becomes fake backend HTTP, spreading one contract across URLs, clients, retries, timeout mapping, status mapping, and logs. |
 | What CoAkka is | A runtime boundary for application capabilities: callers ask a typed target, route snapshots decide ownership, and replies/deadletters carry runtime diagnostics. |
 | What it is not | Not a replacement for public HTTP/gRPC edges, auth, service discovery, deployment policy, CQRS, or ordinary direct calls that are already enough. |
-| Run this | `bash run.sh containers node-python` or `bash run.sh runtime jvm basic` |
-| Observe this | The caller uses a target, the owner can be another process/language, and failures surface as runtime outcomes instead of hidden REST fallback behavior. |
+| Run this | `bash run.sh runtime-client` for the published CLI runtime client, then `bash run.sh containers node-python` or `bash run.sh runtime jvm basic` for app-host samples. |
+| Observe this | The CLI reports runtime build diagnostics from the published client archive. App-host samples then show targets, process ownership, and runtime outcomes instead of hidden REST fallback behavior. |
 
 Evidence and repo boundaries:
 [Production Evidence](docs/production-evidence.md),
@@ -1547,7 +1547,7 @@ Current public native runtime generation: `1.2.1+abde383`.
 | Runtime Go | public | `bash run.sh runtime go basic` |
 | Runtime C# | public | `bash run.sh runtime csharp basic` |
 | Runtime Rust | public | `bash run.sh runtime rust basic` |
-| Runtime CLI client | public release docs | `runtime-client/README.md` |
+| Runtime CLI client | public | `bash run.sh runtime-client` |
 | Logger Mojo | source sample | `bash run.sh logger mojo basic` |
 | Logger Zig | source sample | `bash run.sh logger zig basic` |
 | Runtime Mojo | source sample | `bash run.sh runtime mojo basic` |

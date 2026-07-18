@@ -17,6 +17,7 @@ Usage:
   bash run.sh all
   bash run.sh logger
   bash run.sh runtime
+  bash run.sh runtime-client
   bash run.sh containers
   bash run.sh scenarios
   bash run.sh scenarios check
@@ -28,6 +29,7 @@ Usage:
   bash run.sh <lane>/<language>/<sample>
   bash run.sh containers/<sample> [command]
   bash run.sh runtime/scenarios/<track>/<topology> <command>
+  bash run.sh runtime-client [check|version|doctor]
 
 Examples:
   bash run.sh
@@ -42,6 +44,7 @@ Examples:
 Lanes:
   logger
   runtime
+  runtime-client
   containers
 
 Logger languages:
@@ -216,13 +219,25 @@ case "$1" in
       coakka_die "Usage: bash run.sh runtime [<jvm|python|node|go|csharp|rust|zig|mojo|native>] <sample>"
     fi
     ;;
+  runtime-client)
+    shift
+    bash "${script_dir}/runtime-client/run.sh" "$@"
+    ;;
   scenario)
     shift
     run_scenario "$@"
     ;;
-  logger/*|runtime/*|containers/*)
+  logger/*|runtime/*|runtime-client|runtime-client/*|containers/*)
     sample_path="$1"
     shift
+    if [[ "${sample_path}" == runtime-client ]]; then
+      bash "${script_dir}/runtime-client/run.sh" "$@"
+      exit 0
+    fi
+    if [[ "${sample_path}" == runtime-client/* ]]; then
+      bash "${script_dir}/runtime-client/run.sh" "${sample_path#runtime-client/}" "$@"
+      exit 0
+    fi
     run_sample_path "${sample_path}" "$@"
     ;;
   *)
