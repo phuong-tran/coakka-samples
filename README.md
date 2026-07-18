@@ -1494,7 +1494,7 @@ repositories {
 }
 
 dependencies {
-    implementation("coakka.logger:coakka-jvm-native-logger:0.1.0-gba2a66d98eb5")
+    implementation("coakka.logger:coakka-jvm-native-logger:1.2.1-gf50756ebff0d")
 }
 ```
 
@@ -1529,12 +1529,19 @@ an artifact from the local public checkout or from the public raw GitHub URL, it
 verifies the artifact SHA256 from that manifest before unpacking or installing
 the package.
 
+The sample artifact-pin smoke validates manifest rows by default. The heavier
+local `coakka-publish` surface gate is opt-in:
+
+```sh
+COAKKA_PIN_CHECK_PUBLISH_GATE=1 bash scripts/check-artifact-pins.sh
+```
+
 Pinned public artifact lines used by these samples:
 
 | Lane | Release |
 | --- | --- |
-| Logger JVM | `coakka.logger:coakka-jvm-native-logger:0.1.0-gba2a66d98eb5` |
-| Logger Python, Node.js, Go, C#, Rust, Mojo, Zig, and native C/C++ | `0.1.0+ba2a66d98eb5` |
+| Logger JVM | `coakka.logger:coakka-jvm-native-logger:1.2.1-gf50756ebff0d` |
+| Logger Python, Node.js, Go, C#, Rust, Mojo, Zig, and native C/C++ | `1.2.1+f50756ebff0d` |
 | Runtime native C/C++ | `1.2.1+abde383` |
 | Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:1.2.1-gabde383-fa29f94` |
 | Runtime Python, Node.js, and Go | `1.2.1+abde383-fa29f94` |

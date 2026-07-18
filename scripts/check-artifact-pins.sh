@@ -6,6 +6,7 @@ repo_root="$(cd "${script_dir}/.." && pwd)"
 source "${script_dir}/sample-metadata.sh"
 
 expected_logger_native="1.2.1+f50756ebff0d"
+expected_runtime_client="1.3.1+2215b0f"
 public_manifest_path="artifacts/public-artifacts.tsv"
 tmp_files=()
 
@@ -37,6 +38,13 @@ required_rows=(
   "runtime Zig source package|runtime/zig/releases/1.2.1+abde383-fa29f94/coakka-runtime-zig-1.2.1-source.tar.gz"
   "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/1.2.1-gfa29f94b59f9/coakka-spring-boot-starter-1.2.1-gfa29f94b59f9.jar"
   "Quarkus extension Maven jar|maven/coakka/quarkus/coakka-quarkus-extension/1.2.1-gfa29f94b59f9/coakka-quarkus-extension-1.2.1-gfa29f94b59f9.jar"
+  "coakka-client linux-x86_64|cli/releases/${expected_runtime_client}/coakka-client-v2-1.3.1-linux-x86_64.tar.gz"
+  "coakka-client linux-aarch64|cli/releases/${expected_runtime_client}/coakka-client-v2-1.3.1-linux-aarch64.tar.gz"
+  "coakka-client macos-aarch64|cli/releases/${expected_runtime_client}/coakka-client-v2-1.3.1-macos-aarch64.tar.gz"
+  "coakka-client windows-x86_64|cli/releases/${expected_runtime_client}/coakka-client-v2-1.3.1-windows-x86_64.tar.gz"
+  "coakka-client windows-aarch64|cli/releases/${expected_runtime_client}/coakka-client-v2-1.3.1-windows-aarch64.tar.gz"
+  "coakka-client docker-demo linux-x86_64|demo/coakka-client/releases/${expected_runtime_client}/coakka-client-docker-demo-v2-1.3.1-linux-x86_64.tar.gz"
+  "coakka-client docker-demo linux-aarch64|demo/coakka-client/releases/${expected_runtime_client}/coakka-client-docker-demo-v2-1.3.1-linux-aarch64.tar.gz"
 )
 
 stale_patterns=(
@@ -98,10 +106,10 @@ validate_manifest_rows() {
       fail "${source_name} manifest has unsafe path on row ${line_no}: ${relative_path}"
     fi
     case "${relative_path}" in
-      logger/*/releases/*|runtime/*/releases/*|maven/coakka/*/*/*/*.jar)
+      logger/*/releases/*|runtime/*/releases/*|maven/coakka/*/*/*/*.jar|cli/releases/*|demo/coakka-client/releases/*)
         ;;
       *)
-        fail "${source_name} manifest has path outside the current public surface on row ${line_no}: ${relative_path}"
+        fail "${source_name} manifest has path outside the published artifact surface on row ${line_no}: ${relative_path}"
         ;;
     esac
     if [[ "${seen_paths}" == *$'\n'"${relative_path}"$'\n'* ]]; then
@@ -200,6 +208,11 @@ check_local_artifacts() {
 
 check_local_publish_gate() {
   local publish_root verify_script
+  if [[ "${COAKKA_PIN_CHECK_PUBLISH_GATE:-0}" != "1" ]]; then
+    printf '[skip] local public publish verification gate disabled; set COAKKA_PIN_CHECK_PUBLISH_GATE=1 to enable\n'
+    return 0
+  fi
+
   publish_root="$(coakka_default_publish_root "${repo_root}")"
   verify_script="${publish_root}/scripts/verify-public-surface.sh"
   if [[ ! -x "${verify_script}" ]]; then
@@ -238,4 +251,4 @@ check_local_artifacts
 check_local_publish_gate
 check_public_artifacts
 
-printf '[ok] artifact pins match the current public publish surface\n'
+printf '[ok] artifact pins match the published artifact surface\n'

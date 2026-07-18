@@ -43,9 +43,12 @@ only needs one ordinary service call, the direct service call should stay direct
 
 ## Current Maturity
 
-The public artifacts are still `0.1.x` generation packages. Treat them as an
-early integration surface, not as a mature ecosystem with broad community
-tooling and operational history.
+The public artifacts are published and pinned, but the ecosystem should still
+be treated as an early integration surface until each target deployment has its
+own operating evidence. The sample repository currently spans logger and
+runtime connector lines on the `1.2.1` generation plus the runtime-client CLI
+line on `1.3.1+2215b0f`; those version numbers do not replace deployment
+validation.
 
 Before production use, collect evidence for:
 

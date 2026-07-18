@@ -129,10 +129,10 @@ separate contract.
 Recommended tag discipline:
 
 ```text
-0.1.0-fbab60154993-remote
-0.1.0-fbab60154993-remote-local
-0.1.0-fbab60154993-remote-linux-amd64
-0.1.0-fbab60154993-remote-linux-arm64
+<artifact-generation>-remote
+<artifact-generation>-remote-local
+<artifact-generation>-remote-linux-amd64
+<artifact-generation>-remote-linux-arm64
 ```
 
 Documentation should use pinned tags. `latest` can exist for convenience, but

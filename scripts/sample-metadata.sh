@@ -79,6 +79,13 @@ COAKKA_ARTIFACT_ROWS=(
   "runtime Zig source package|runtime/zig/releases/1.2.1+abde383-fa29f94/coakka-runtime-zig-1.2.1-source.tar.gz"
   "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/1.2.1-gfa29f94b59f9/coakka-spring-boot-starter-1.2.1-gfa29f94b59f9.jar"
   "Quarkus extension Maven jar|maven/coakka/quarkus/coakka-quarkus-extension/1.2.1-gfa29f94b59f9/coakka-quarkus-extension-1.2.1-gfa29f94b59f9.jar"
+  "coakka-client linux-x86_64|cli/releases/1.3.1+2215b0f/coakka-client-v2-1.3.1-linux-x86_64.tar.gz"
+  "coakka-client linux-aarch64|cli/releases/1.3.1+2215b0f/coakka-client-v2-1.3.1-linux-aarch64.tar.gz"
+  "coakka-client macos-aarch64|cli/releases/1.3.1+2215b0f/coakka-client-v2-1.3.1-macos-aarch64.tar.gz"
+  "coakka-client windows-x86_64|cli/releases/1.3.1+2215b0f/coakka-client-v2-1.3.1-windows-x86_64.tar.gz"
+  "coakka-client windows-aarch64|cli/releases/1.3.1+2215b0f/coakka-client-v2-1.3.1-windows-aarch64.tar.gz"
+  "coakka-client docker-demo linux-x86_64|demo/coakka-client/releases/1.3.1+2215b0f/coakka-client-docker-demo-v2-1.3.1-linux-x86_64.tar.gz"
+  "coakka-client docker-demo linux-aarch64|demo/coakka-client/releases/1.3.1+2215b0f/coakka-client-docker-demo-v2-1.3.1-linux-aarch64.tar.gz"
 )
 
 coakka_default_publish_root() {

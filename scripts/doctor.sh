@@ -134,11 +134,13 @@ print_artifact_source() {
     if [[ "${missing_artifacts}" -eq 0 ]]; then
       printf '  [ok] all pinned local artifacts are present\n'
     else
-      printf '  local checkout is incomplete for the current public artifact set; samples can still download missing artifacts from public raw base\n'
+      printf '  local checkout is incomplete for the published artifact set; samples can still download missing artifacts from public raw base\n'
     fi
 
     if [[ -x "${verify_script}" ]]; then
-      if "${verify_script}" >/dev/null 2>&1; then
+      if [[ "${COAKKA_PIN_CHECK_PUBLISH_GATE:-0}" != "1" ]]; then
+        printf '  [skip] public publish verification gate disabled; set COAKKA_PIN_CHECK_PUBLISH_GATE=1 to enable\n'
+      elif "${verify_script}" >/dev/null 2>&1; then
         printf '  [ok] public publish verification gate passes\n'
       else
         printf '  [warn] public publish verification gate failed\n'
@@ -205,7 +207,7 @@ cat <<'EOF'
 
 Runtime samples:
   Runtime JVM, Python, Node.js, Go, C#, Rust, native C/C++, Spring Boot, and
-  Quarkus samples are backed by the current public publish surface. Zig and
+  Quarkus samples are backed by the published artifact surface. Zig and
   Mojo runtime samples use public source connector packages. Zig and Mojo
   logger samples use the public native logger archive. Both lanes require local
   Zig/Mojo toolchains.
