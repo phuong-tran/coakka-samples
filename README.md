@@ -1409,6 +1409,9 @@ Benchmark comparisons should stay at CoAkka's runtime/L4 boundary: route
 lookup, bounded admission, framing, delivery outcome, and reply matching. Do
 not frame these numbers as L7 HTTP/gRPC replacement benchmarks; HTTP and gRPC
 belong at service API edges with different middleware, semantics, and tooling.
+If no same-class runtime comparator exists, use benchmarks for CoAkka release
+regression and deployment-profile evidence instead of forcing an uneven
+protocol comparison.
 
 Benchmark and load result policy lives in [`bench/README.md`](bench/README.md).
 The harness keeps macOS reference output under `bench/macos-smoke/` and Linux

@@ -93,6 +93,8 @@ is not an L7 HTTP/gRPC framework benchmark; do not frame numbers as HTTP/gRPC
 replacement claims. Compare route lookup, bounded admission, framing, delivery
 outcome, reply matching, deadletter behavior, and queue pressure under the same
 payload and transport profile.
+If no same-class runtime comparator exists, use benchmark artifacts for CoAkka
+release regression and deployment-profile capacity evidence.
 
 The current `bench-smoke` workflow is a shape check. Treat its JSON output as
 public CI evidence, not as a substitute for target-environment capacity work.

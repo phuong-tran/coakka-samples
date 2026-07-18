@@ -123,6 +123,14 @@ queue pressure, framing, reply matching, timeout, and deadletter behavior. Do
 not describe it as faster or slower than HTTP/gRPC unless the benchmark
 intentionally includes comparable L7 concerns.
 
+A fair benchmark needs a same-class comparator. Bun vs Node is a reasonable
+kind of comparison because both are JavaScript runtimes competing for many of
+the same jobs. CoAkka vs HTTP/gRPC is not that shape: HTTP/gRPC is an L7 API
+boundary, while CoAkka Runtime is a capability-delivery boundary. If there is
+no comparable runtime system with target routing, bounded admission,
+reply/deadletter matching, and route ownership, the honest comparison is
+against CoAkka's own releases and deployment profiles.
+
 Even when CoAkka has practical runtime advantages, benchmark numbers should
 stay supporting evidence. The main claim is cleaner application boundary
 ownership: HTTP/gRPC for real API edges, CoAkka Runtime for app-owned capability
