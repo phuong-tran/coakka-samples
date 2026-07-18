@@ -13,8 +13,11 @@ Available samples:
 
 ```sh
 bash run.sh containers node-python
-bash run.sh containers spring-go
 ```
+
+The Spring Boot JVM to Go container lane is kept as a compose skeleton, but it
+does not default to the older published image line. Use the Spring-Go source
+scenario until refreshed `1.3.1` container images are supplied explicitly.
 
 Stop all running container samples:
 
@@ -28,9 +31,6 @@ Direct runtime equivalents:
 docker compose -f containers/node-python/compose.yaml up
 podman compose -f containers/node-python/compose.yaml up
 podman-compose -f containers/node-python/compose.yaml up
-docker compose -f containers/spring-go/compose.yaml up
-podman compose -f containers/spring-go/compose.yaml up
-podman-compose -f containers/spring-go/compose.yaml up
 ```
 
 The first sample is intentionally small: a Node.js web process sends customer
@@ -38,7 +38,7 @@ commands through the CoAkka runtime to a Python store process. The Node UI is
 the browser edge; the Python UI is a read-only view of store state changed by
 runtime messages.
 
-The Spring Boot JVM to Go sample uses the same visible two-container shape with
-a framework web edge and a Go store. Framework native-image builds are not the
-default container path; they remain optional research if a concrete deployment
-case needs that packaging shape.
+The Spring Boot JVM to Go source scenario uses the same visible web-edge/store
+shape with a framework web edge and a Go store. Framework native-image builds
+are not the default container path; they remain optional research if a concrete
+deployment case needs that packaging shape.

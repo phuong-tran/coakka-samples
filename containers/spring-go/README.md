@@ -15,32 +15,31 @@ Browser -> Spring Boot HTTP edge -> CoAkka runtime -> Go store -> CoAkka runtime
 
 The Go UI is observation-only. There is no Spring-to-Go REST fallback.
 
-Run through the repository entrypoint. The default path uses prebuilt Spring-Go
-images that already contain the native runtime:
+The repo-local Spring Boot and Go sample sources track Spring starter
+`1.3.1-g0a0aa76` and Go runtime package `1.3.1+bda2ef5-0a0aa76`. The old
+Spring-Go container image line is intentionally not used by default anymore,
+because it was built from an earlier runtime generation.
+
+Until refreshed Spring-Go images are published, use the source scenario for
+this topology:
 
 ```sh
-bash run.sh containers spring-go
+bash run.sh scenario customer-crud spring-boot-go dev
 ```
 
-Published remote image tags for this sample lane:
-
-```text
-docker.io/gabrielgun1983/sample-spring-web:0.1.0-fbab60154993-remote
-docker.io/gabrielgun1983/sample-go-store:0.1.0-fbab60154993-remote
-```
-
-These tags are prebuilt sample images, not the canonical artifact download
-surface. Direct CoAkka archives, packages, manifests, and checksums are owned by
-[`coakka-publish`](https://github.com/phuong-tran/coakka-publish).
-
-The repo-local Spring Boot and Go sample sources already track Spring starter
-`1.2.1-gfa29f94b59f9` and Go runtime package `1.2.1+abde383-fa29f94`. The
-published Spring-Go container image line has not been refreshed onto that train
-yet, so the recommended cross-process container path to open first is the
-Node.js/Python sample from the repository root:
+The recommended container path for this release train is the verified
+Node.js/Python container sample:
 
 ```sh
 bash run.sh containers node-python
+```
+
+If a maintainer supplies refreshed images explicitly, the compose path remains:
+
+```sh
+COAKKA_SAMPLE_SPRING_WEB_IMAGE=<spring-web-1.3.1-image> \
+COAKKA_SAMPLE_GO_STORE_IMAGE=<go-store-1.3.1-image> \
+bash run.sh containers spring-go
 ```
 
 Then open:

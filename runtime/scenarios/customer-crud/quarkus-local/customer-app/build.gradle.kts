@@ -11,7 +11,7 @@ val quarkusPlatformVersion = "3.35.2"
 dependencies {
     implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
     implementation(project(":runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-contract"))
-    implementation("coakka.quarkus:coakka-quarkus-extension:1.2.1-gfa29f94b59f9")
+    implementation("coakka.quarkus:coakka-quarkus-extension:1.3.1-g0a0aa76")
     implementation("io.quarkus:quarkus-arc")
     implementation("io.quarkus:quarkus-kotlin")
     implementation("io.quarkus:quarkus-rest-jackson")

@@ -7,6 +7,9 @@ source "${repo_root}/scripts/sample-utils.sh"
 
 compose_file="${script_dir}/compose.yaml"
 build_compose_file="${script_dir}/compose.build.yaml"
+runtime_base_dockerfile="${repo_root}/containers/runtime-base/Dockerfile"
+runtime_base_image="${COAKKA_RUNTIME_BASE_IMAGE:-coakka/runtime-base:1.3.1-bda2ef5-local}"
+artifact_manifest_sha256="${COAKKA_ARTIFACT_MANIFEST_SHA256:-9447f42cfc136ca19f518c94ca777192f8062332a63dfeff95be19a2a2f51ce7}"
 
 print_usage() {
   cat <<'EOF'
@@ -74,6 +77,25 @@ compose_cmd() {
   esac
 }
 
+detect_platform() {
+  if [[ -n "${COAKKA_CONTAINER_PLATFORM:-}" ]]; then
+    printf '%s\n' "${COAKKA_CONTAINER_PLATFORM}"
+    return 0
+  fi
+
+  case "$(uname -m)" in
+    arm64|aarch64)
+      printf 'linux/arm64\n'
+      ;;
+    x86_64|amd64)
+      printf 'linux/amd64\n'
+      ;;
+    *)
+      coakka_die "Unsupported host architecture '$(uname -m)'. Set COAKKA_CONTAINER_PLATFORM explicitly."
+      ;;
+  esac
+}
+
 run_compose() {
   local compose_path="$1"
   shift
@@ -83,6 +105,22 @@ run_compose() {
   # shellcheck disable=SC2206
   local command_parts=(${command_string})
   "${command_parts[@]}" -f "${compose_path}" "$@"
+}
+
+run_build() {
+  local engine platform
+  engine="$(detect_engine)"
+  platform="$(detect_platform)"
+  coakka_note "building ${runtime_base_image} for ${platform}"
+  "${engine}" build \
+    --platform "${platform}" \
+    -f "${runtime_base_dockerfile}" \
+    --build-arg "COAKKA_PUBLISH_RAW_BASE=${COAKKA_PUBLISH_RAW_BASE:-https://raw.githubusercontent.com/phuong-tran/coakka-publish/main}" \
+    --build-arg "COAKKA_ARTIFACT_MANIFEST_SHA256=${artifact_manifest_sha256}" \
+    -t "${runtime_base_image}" \
+    "${repo_root}"
+  export COAKKA_RUNTIME_BASE_IMAGE="${runtime_base_image}"
+  run_compose "${build_compose_file}" build "$@"
 }
 
 run_check() {
@@ -100,7 +138,7 @@ case "${1:-up}" in
     ;;
   build)
     shift || true
-    run_compose "${build_compose_file}" build "$@"
+    run_build "$@"
     ;;
   smoke)
     bash "${script_dir}/compose-smoke.sh"

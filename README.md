@@ -175,31 +175,33 @@ bash run.sh runtime-client docker-demo
 That Docker path is for Linux bundle verification from the published artifact
 layout.
 
-The fastest browser-visible app-host path is still the container path. It uses
-pinned Docker Hub images, so you can test a cross-process runtime delivery path
-without installing Node.js, Python, Go, Java, or native build tools.
+The fastest browser-visible app-host path is the Node.js/Python container path.
+It uses the refreshed `1.3.1` runtime artifact line, so you can test a
+cross-process runtime delivery path without installing Node.js, Python, Go,
+Java, or native build tools.
 
-Docker Hub is not the canonical artifact download surface. It is the prebuilt
-sample-image lane. Public native archives, connector packages, CLI client
-archives, checksums, and manifests still live in `coakka-publish`.
+Docker Hub is not the canonical artifact download surface. It is only the
+sample-image lane after maintainers push a container tag. Public native
+archives, connector packages, CLI client archives, checksums, and manifests
+still live in `coakka-publish`.
 
-Public Docker Hub images:
+Node.js/Python image tags for this release train:
 
 ```text
-docker.io/gabrielgun1983/sample-node-web:1.2.1-abde383-fa29f94-remote
-docker.io/gabrielgun1983/sample-python-store:1.2.1-abde383-fa29f94-remote
+docker.io/gabrielgun1983/sample-node-web:1.3.1-bda2ef5-0a0aa76-remote
+docker.io/gabrielgun1983/sample-python-store:1.3.1-bda2ef5-0a0aa76-remote
 ```
 
-Those tags are the published Node.js/Python container image line used by this
-sample. The published sample images install the pinned Node.js and Python
-connector artifact set `1.2.1+abde383-fa29f94` over the native runtime base
-line from `docker.io/gabrielgun1983/runtime-base:1.2.1-abde383-remote`.
-Repo-local rebuilds use the same connector set over
-`coakka/runtime-base:1.2.1-abde383-local`.
+Those tags are the intended Node.js/Python container image line used by this
+sample. The sample images install the pinned Node.js and Python connector
+artifact set `1.3.1+bda2ef5-0a0aa76` over the native runtime base line
+`1.3.1+bda2ef5`. Repo-local rebuilds use the same connector set over
+`coakka/runtime-base:1.3.1-bda2ef5-local`.
 
 Run the visible container sample:
 
 ```sh
+bash run.sh containers node-python build
 bash run.sh containers node-python
 ```
 
@@ -273,7 +275,7 @@ surface.
 
 | Goal | Start with | Why |
 | --- | --- | --- |
-| See CoAkka work without installing language toolchains | `bash run.sh containers node-python` or `bash run.sh containers spring-go` | Runs two real processes with browser-visible state and no backend HTTP fallback. |
+| See CoAkka work without installing language toolchains | `bash run.sh containers node-python` | Runs two real processes with browser-visible state and no backend HTTP fallback. |
 | Understand the smallest runtime API | `bash run.sh runtime jvm basic` | Shows `CoAkka.local`, a local handler, and one ask/reply without route boilerplate. |
 | Understand explicit runtime wiring | `bash run.sh runtime jvm java-basic` or the basic sample for another language | Shows start spec, process-owned route, handler registration, ask/reply, and stats. |
 | Understand route misses and delivery failures | `bash run.sh runtime jvm deadletter` or `bash run.sh runtime python deadletter` | Shows a missing target becoming a matched deadletter instead of a vague timeout. |
@@ -916,7 +918,7 @@ typed runtime target.
 Spring Boot uses the public starter artifact:
 
 ```kotlin
-implementation("coakka.spring:coakka-spring-boot-starter:1.2.1-gfa29f94b59f9")
+implementation("coakka.spring:coakka-spring-boot-starter:1.3.1-g0a0aa76")
 ```
 
 ```kotlin
@@ -949,7 +951,7 @@ fun create(@RequestBody request: CustomerDraft): MutationResponse {
 Quarkus follows the same shape through the public extension artifact:
 
 ```kotlin
-implementation("coakka.quarkus:coakka-quarkus-extension:1.2.1-gfa29f94b59f9")
+implementation("coakka.quarkus:coakka-quarkus-extension:1.3.1-g0a0aa76")
 ```
 
 ```kotlin
@@ -1352,16 +1354,14 @@ Current gaps:
 
 ### Container Sample Direction
 
-Containerized samples are the low-friction public path. The first target is a
-lightweight Node.js web UI calling a Python customer store through the CoAkka
-runtime. The second target adds a Spring Boot JVM web edge talking to a Go
-store, with both sides exposing browser-visible state.
+Containerized samples are the low-friction public path. The current refreshed
+target is a lightweight Node.js web UI calling a Python customer store through
+the CoAkka runtime.
 
 Run the wave 1 sample:
 
 ```sh
 bash run.sh containers node-python
-bash run.sh containers spring-go
 ```
 
 Then open:
@@ -1369,8 +1369,6 @@ Then open:
 ```text
 http://localhost:8080
 http://localhost:8081
-http://localhost:8090
-http://localhost:8091
 ```
 
 Stop all container samples:
@@ -1385,14 +1383,13 @@ Or run Compose directly:
 docker compose -f containers/node-python/compose.yaml up
 podman compose -f containers/node-python/compose.yaml up
 podman-compose -f containers/node-python/compose.yaml up
-docker compose -f containers/spring-go/compose.yaml up
-podman compose -f containers/spring-go/compose.yaml up
-podman-compose -f containers/spring-go/compose.yaml up
 ```
 
 The intent is to show two real processes, two language hosts, and one runtime
 delivery path with browser-visible state changes. The Spring Boot JVM to Go
-sample keeps the framework lane practical for this wave.
+container lane remains a compose skeleton until its image-source path is
+refreshed onto the same `1.3.1` runtime line; the Spring-Go source scenario is
+the supported framework path for this train.
 
 Framework native-image builds are deliberately not the primary public sample
 path. For Java and Kotlin framework applications, the JVM remains the expected
@@ -1604,28 +1601,28 @@ Pinned public artifact lines used by these samples:
 | --- | --- |
 | Logger JVM | `coakka.logger:coakka-jvm-native-logger:1.2.1-gf50756ebff0d` |
 | Logger Python, Node.js, Go, C#, Rust, Mojo, Zig, and native C/C++ | `1.2.1+f50756ebff0d` |
-| Runtime native C/C++ | `1.2.1+abde383` |
-| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:1.2.1-gabde383-fa29f94` |
-| Runtime Python, Node.js, and Go | `1.2.1+abde383-fa29f94` |
-| Runtime C# | `1.2.1+abde383-fa29f94` |
-| Runtime Rust | `1.2.1+abde383-fa29f94` |
-| Runtime Mojo and Zig samples | `1.2.1+abde383-fa29f94` source packages |
+| Runtime native C/C++ | `1.3.1+bda2ef5` |
+| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:1.3.1-gbda2ef5-0a0aa76` |
+| Runtime Python, Node.js, and Go | `1.3.1+bda2ef5-0a0aa76` |
+| Runtime C# | `1.3.1+bda2ef5-0a0aa76` |
+| Runtime Rust | `1.3.1+bda2ef5-0a0aa76` |
+| Runtime Mojo and Zig samples | `1.3.1+bda2ef5-0a0aa76` source packages |
 | Runtime CLI client | `coakka-runtime-client` lane, `coakka-client` command, `1.3.1+2215b0f` |
-| Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:1.2.1-gfa29f94b59f9` |
-| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:1.2.1-gfa29f94b59f9` |
+| Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:1.3.1-g0a0aa76` |
+| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:1.3.1-g0a0aa76` |
 
 The matching runtime native note is published at
-`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-06-runtime-native-b8ecfae-windows-parity.md`.
+`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-18-runtime-native-1.3.1-bda2ef5.md`.
 The matching runtime JVM note is published at
-`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-06-runtime-jvm-b8ecfae-2d085e5.md`.
+`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-18-runtime-jvm-1.3.1-0a0aa76.md`.
 The matching non-JVM connector note is published at
-`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-06-runtime-non-jvm-b8ecfae-2d085e5.md`.
+`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-18-runtime-non-jvm-1.3.1-0a0aa76.md`.
 The matching Spring Boot and Quarkus adapter note is published at
-`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-06-runtime-jvm-adapters-b8ecfae-2d085e5.md`.
+`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-18-runtime-jvm-adapters-1.3.1-0a0aa76.md`.
 
 ## Public Status
 
-Pinned runtime connector/native generation: `1.2.1+abde383`.
+Pinned runtime connector/native generation: `1.3.1+bda2ef5`.
 Published runtime-client CLI generation: `1.3.1+2215b0f`.
 
 | Lane | Public artifact status | First command |
@@ -1650,8 +1647,7 @@ Published runtime-client CLI generation: `1.3.1+2215b0f`.
 | Runtime Mojo | source sample | `bash run.sh runtime mojo basic` |
 | Runtime Zig | source sample | `bash run.sh runtime zig basic` |
 | Runtime Spring Boot and Quarkus adapters | public | `bash run.sh scenarios check` |
-| Runtime container sample: Node.js -> Python | public Docker Hub images | `bash run.sh containers node-python` |
-| Runtime container sample: Spring Boot JVM -> Go | public Docker Hub images | `bash run.sh containers spring-go` |
+| Runtime container sample: Node.js -> Python | refreshed container image line | `bash run.sh containers node-python` |
 
 Samples resolve public downloads through
 `coakka-publish/artifacts/public-artifacts.tsv` or the matching public
@@ -1671,7 +1667,7 @@ Runtime language/framework direct runs consume the public runtime artifacts:
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=1.2.1 git=<git>
+coakka_runtime_info abi=1 version=1.3.1 git=<git>
 coakka_runtime_response payload={"echo":"hello-runtime-jvm"}
 coakka_runtime_stats generation=1 routes=1 delivered=1 matchedResponses=1
 ```
@@ -1705,9 +1701,9 @@ bash run.sh runtime native basic
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=1.2.1 git=<git> language=c
+coakka_runtime_info abi=1 version=1.3.1 git=<git> language=c
 coakka_runtime_stats generation=1 routes=1 routeMisses=1 deadletters=1 language=c
-coakka_runtime_info abi=1 version=1.2.1 git=<git> language=cpp
+coakka_runtime_info abi=1 version=1.3.1 git=<git> language=cpp
 coakka_runtime_stats generation=1 routes=1 routeMisses=1 deadletters=1 language=cpp
 ```
 
@@ -1720,7 +1716,7 @@ bash run.sh runtime native pressure
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=1.2.1 git=<git> language=c
+coakka_runtime_info abi=1 version=1.3.1 git=<git> language=c
 coakka_runtime_pressure attempts=64 delivered=<n> rejected=<n> capacity=2 highWatermark=<n> language=c
 coakka_runtime_stats generation=1 routes=1 queueRejected=<n> deadletters=<n> language=c
 ```

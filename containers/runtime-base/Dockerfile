@@ -3,10 +3,10 @@
 FROM debian:stable-slim
 
 ARG TARGETARCH
-ARG COAKKA_RUNTIME_VERSION=1.2.1
-ARG COAKKA_RUNTIME_REVISION=abde383
-ARG COAKKA_RUNTIME_GENERATION=1.2.1-abde383-local
-ARG COAKKA_NATIVE_ARTIFACT=runtime/native/releases/1.2.1+abde383/coakka-runtime-native-v2-1.2.1.tar.gz
+ARG COAKKA_RUNTIME_VERSION=1.3.1
+ARG COAKKA_RUNTIME_REVISION=bda2ef5
+ARG COAKKA_RUNTIME_GENERATION=1.3.1-bda2ef5-local
+ARG COAKKA_NATIVE_ARTIFACT=runtime/native/releases/1.3.1+bda2ef5/coakka-runtime-native-v2-1.3.1.tar.gz
 ARG COAKKA_ARTIFACT_MANIFEST_SHA256=resolved-at-build
 ARG COAKKA_PUBLISH_RAW_BASE=https://raw.githubusercontent.com/phuong-tran/coakka-publish/main
 
@@ -39,9 +39,9 @@ RUN bash -lc 'set -eu; \
   fi; \
   mkdir -p /tmp/coakka-artifacts /tmp/coakka-native runtime; \
   source /opt/coakka/scripts/resolve-artifact.sh; \
-  package_path="$(coakka_resolve_artifact /not-present "${COAKKA_NATIVE_ARTIFACT}" /tmp/coakka-artifacts/coakka-runtime-native-v2-1.2.1.tar.gz)"; \
+  package_path="$(coakka_resolve_artifact /not-present "${COAKKA_NATIVE_ARTIFACT}" /tmp/coakka-artifacts/coakka-runtime-native-v2-1.3.1.tar.gz)"; \
   tar -xzf "${package_path}" -C /tmp/coakka-native; \
-  install -m 0755 "/tmp/coakka-native/coakka-runtime-native-v2-1.2.1/native/${coakka_platform}/libcoakka_runtime_v2.so" /opt/coakka/runtime/libcoakka_runtime_v2.so; \
+  install -m 0755 "/tmp/coakka-native/coakka-runtime-native-v2-1.3.1/native/${coakka_platform}/libcoakka_runtime_v2.so" /opt/coakka/runtime/libcoakka_runtime_v2.so; \
   printf "COAKKA_RUNTIME_VERSION=%s\nCOAKKA_RUNTIME_REVISION=%s\nCOAKKA_RUNTIME_GENERATION=%s\nCOAKKA_NATIVE_ARTIFACT=%s\nCOAKKA_PLATFORM=%s\n" \
     "${COAKKA_RUNTIME_VERSION}" \
     "${COAKKA_RUNTIME_REVISION}" \

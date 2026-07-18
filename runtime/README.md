@@ -12,7 +12,7 @@ runtime C ABI package, runtime JVM/language connector packages, and the Spring
 Boot and Quarkus adapters. These samples consume those public artifacts.
 
 This `runtime/` directory is the app-host connector sample lane. Its pinned
-connector artifacts are still on the `1.2.1+abde383-fa29f94` generation. The
+connector artifacts use the `1.3.1+bda2ef5-0a0aa76` generation. The
 separate `coakka-runtime-client` CLI sample lane lives under
 [`../runtime-client`](../runtime-client/README.md) and is published as
 `1.3.1+2215b0f`.
@@ -63,7 +63,7 @@ repositories {
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:1.2.1-gabde383-fa29f94")
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:1.3.1-gbda2ef5-0a0aa76")
 }
 ```
 
@@ -71,7 +71,7 @@ Spring Boot same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("coakka.spring:coakka-spring-boot-starter:1.2.1-gfa29f94b59f9")
+    implementation("coakka.spring:coakka-spring-boot-starter:1.3.1-g0a0aa76")
     implementation("org.springframework.boot:spring-boot-starter-web")
 }
 ```
@@ -80,7 +80,7 @@ Quarkus same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("coakka.quarkus:coakka-quarkus-extension:1.2.1-gfa29f94b59f9")
+    implementation("coakka.quarkus:coakka-quarkus-extension:1.3.1-g0a0aa76")
     implementation("io.quarkus:quarkus-rest-jackson")
 }
 ```
@@ -89,14 +89,14 @@ Python wheel:
 
 ```sh
 python -m pip install \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/python/releases/1.2.1+abde383-fa29f94/coakka_v2_connector-1.2.1-py3-none-any.whl"
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/python/releases/1.3.1+bda2ef5-0a0aa76/coakka_v2_connector-1.3.1-py3-none-any.whl"
 ```
 
 Node.js package:
 
 ```sh
 npm install \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/node/releases/1.2.1+abde383-fa29f94/coakka-v2-connector-node-1.2.1.tgz"
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/node/releases/1.3.1+bda2ef5-0a0aa76/coakka-v2-connector-node-1.3.1.tgz"
 ```
 
 Go source package:
@@ -104,10 +104,10 @@ Go source package:
 ```sh
 mkdir -p third_party/coakka-runtime-go
 curl -L \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/go/releases/1.2.1+abde383-fa29f94/coakka-v2-connector-go-1.2.1.tar.gz" \
-  -o /tmp/coakka-v2-connector-go-1.2.1.tar.gz
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/go/releases/1.3.1+bda2ef5-0a0aa76/coakka-v2-connector-go-1.3.1.tar.gz" \
+  -o /tmp/coakka-v2-connector-go-1.3.1.tar.gz
 tar -C third_party/coakka-runtime-go --strip-components 1 \
-  -xzf /tmp/coakka-v2-connector-go-1.2.1.tar.gz
+  -xzf /tmp/coakka-v2-connector-go-1.3.1.tar.gz
 ```
 
 ```go
@@ -121,17 +121,17 @@ C# NuGet package from a local feed directory:
 ```sh
 mkdir -p packages
 curl -L \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/csharp/releases/1.2.1+abde383-fa29f94/CoAkka.Runtime.1.2.1.nupkg" \
-  -o packages/CoAkka.Runtime.1.2.1.nupkg
-dotnet add package CoAkka.Runtime --version 1.2.1 --source ./packages
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/csharp/releases/1.3.1+bda2ef5-0a0aa76/CoAkka.Runtime.1.3.1.nupkg" \
+  -o packages/CoAkka.Runtime.1.3.1.nupkg
+dotnet add package CoAkka.Runtime --version 1.3.1 --source ./packages
 ```
 
 Rust currently ships as a published archive package:
 
 ```sh
 curl -L \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/rust/releases/1.2.1+abde383-fa29f94/coakka-runtime-rs-1.2.1-spike.tar.gz" \
-  -o /tmp/coakka-runtime-rs-1.2.1-spike.tar.gz
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/rust/releases/1.3.1+bda2ef5-0a0aa76/coakka-runtime-rs-1.3.1-spike.tar.gz" \
+  -o /tmp/coakka-runtime-rs-1.3.1-spike.tar.gz
 ```
 
 After dependency setup, every host follows the same shape:

@@ -57,7 +57,7 @@ runtime approved by their environment.
 | Wave | Sample | Purpose |
 | --- | --- | --- |
 | 1 | Node.js web -> Python store | smallest visible cross-language, cross-process runtime path; sample lives in `containers/node-python` |
-| 1b | Spring Boot JVM web -> Go store | visible framework web edge plus Go store UI; sample lives in `containers/spring-go` |
+| 1b | Spring Boot JVM web -> Go store | visible framework web edge plus Go store UI; compose skeleton exists, refreshed image-source path pending |
 | 2 | Python -> Node.js or Go variant | show the pattern is not tied to one caller |
 | 3 | Optional native-image research | only if a concrete deployment case makes it useful |
 
@@ -67,8 +67,8 @@ more useful than many heavy examples that are hard to run.
 Current wave 1 command:
 
 ```sh
+bash run.sh containers node-python build
 bash run.sh containers node-python
-bash run.sh containers spring-go
 ```
 
 ## Image Strategy
@@ -215,8 +215,8 @@ The final command shape can be decided during implementation, but the target UX
 should be close to:
 
 ```sh
+bash run.sh containers node-python build
 bash run.sh containers node-python
-bash run.sh containers spring-go
 ```
 
 with direct runtime equivalents documented:

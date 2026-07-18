@@ -23,9 +23,10 @@ runtime path will operate.
 ## Visual Evidence
 
 The Node.js web to Python store container sample was captured from the
-prebuilt public image path:
+refreshed local image path:
 
 ```sh
+bash run.sh containers node-python build
 bash run.sh containers node-python up -d
 bash run.sh containers node-python smoke
 ```

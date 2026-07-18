@@ -6,7 +6,7 @@ These samples consume the published runtime v2 native C/C++ archive from
 The native package is not a Maven artifact. The sample runner resolves:
 
 ```text
-runtime/native/releases/1.2.1+abde383/coakka-runtime-native-v2-1.2.1.tar.gz
+runtime/native/releases/1.3.1+bda2ef5/coakka-runtime-native-v2-1.3.1.tar.gz
 ```
 
 It then builds against the archive with CMake target:

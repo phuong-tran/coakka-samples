@@ -36,7 +36,6 @@ Examples:
   bash run.sh logger basic
   bash run.sh logger/python/pressure
   bash run.sh containers node-python
-  bash run.sh containers spring-go
   bash run.sh containers down
   bash run.sh scenarios
   bash run.sh scenarios check

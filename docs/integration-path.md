@@ -12,12 +12,6 @@ Start with a container sample:
 bash run.sh containers node-python
 ```
 
-or:
-
-```sh
-bash run.sh containers spring-go
-```
-
 Look for the visible shape:
 
 ```text
