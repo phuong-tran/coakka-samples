@@ -171,9 +171,11 @@ The fastest terminal-first check is the runtime client path:
 bash run.sh runtime-client
 ```
 
-Watch the runtime-client typed automation video:
+Watch the runtime-client CLI walkthrough:
 
-[![CoAkka Runtime Client typed automation](docs/assets/coakka-runtime-client.png)](docs/assets/coakka-runtime-client.mp4)
+![CoAkka Runtime Client CLI walkthrough](docs/assets/coakka-runtime-client.gif)
+
+Full recording: [coakka-runtime-client.mp4](docs/assets/coakka-runtime-client.mp4)
 
 Read the runtime-client docs for the product introduction, command usage, and
 technical notes:

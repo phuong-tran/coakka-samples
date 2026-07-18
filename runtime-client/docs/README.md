@@ -16,9 +16,11 @@ This docs set is for users who want more than the short sample README:
 - [Technical Notes](technical-notes.md): artifact layout, runtime boundary,
   transport profile, payload metadata, and verification posture.
 
-Start with the typed automation video when you want a visual walkthrough:
+Start with the CLI walkthrough when you want to see the command flow:
 
-[![CoAkka Runtime Client typed automation](../../docs/assets/coakka-runtime-client.png)](../../docs/assets/coakka-runtime-client.mp4)
+![CoAkka Runtime Client CLI walkthrough](../../docs/assets/coakka-runtime-client.gif)
+
+Full recording: [coakka-runtime-client.mp4](../../docs/assets/coakka-runtime-client.mp4)
 
 Then run the local smoke:
 

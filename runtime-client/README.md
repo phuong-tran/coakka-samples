@@ -22,14 +22,16 @@ It is not an inspect dashboard, a topology authority, or a business schema
 registry. Topology, route ownership, delivery semantics, and capability truth
 stay in CoAkka Runtime. Sample payloads stay owned by the sample workflow.
 
-## Typed Automation Video
+## CLI Walkthrough
 
-[![CoAkka Runtime Client typed automation](../docs/assets/coakka-runtime-client.png)](../docs/assets/coakka-runtime-client.mp4)
+![CoAkka Runtime Client CLI walkthrough](../docs/assets/coakka-runtime-client.gif)
 
-The video shows the packaged `coakka-client` driving a native runtime host over
-the TCP frame profile. It opens with CLI help for discoverability, then runs
-`version`, `doctor`, `call`, `ask`, a JSON payload-file request, and
+The walkthrough shows the packaged `coakka-client` driving a native runtime
+host over the TCP frame profile. It opens with CLI help for discoverability,
+then runs `version`, `doctor`, `call`, `ask`, a JSON payload-file request, and
 `shell --script`.
+
+Full recording: [coakka-runtime-client.mp4](../docs/assets/coakka-runtime-client.mp4)
 
 ## Quick Check
 

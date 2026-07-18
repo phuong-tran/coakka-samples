@@ -106,6 +106,6 @@ Use Docker verification only when the Linux bundle path needs a live check:
 bash run.sh runtime-client docker-bundle
 ```
 
-The video asset in this repository is visual product evidence. The command
-surface remains verified by scripts and artifact checksum checks, not by the
-video itself.
+The animated walkthrough and MP4 recording in this repository are visual
+product evidence. The command surface remains verified by scripts and artifact
+checksum checks, not by the recording itself.
