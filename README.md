@@ -951,8 +951,8 @@ registry.
 
 For a live request/reply proof without source checkout or host build tools, run
 `bash run.sh runtime-client docker-demo`. That uses the published Linux Docker
-demo bundle and verifies `call` plus `ask` against the bundled native customer
-service.
+demo bundle and verifies `call`, `ask`, and `shell --script` against the bundled
+native customer service.
 
 Read the sample lane landing page at [runtime-client/README.md](runtime-client/README.md).
 

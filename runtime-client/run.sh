@@ -157,6 +157,19 @@ coakka_runtime_client_docker_demo() {
     coakka_die "Docker demo ask did not return expected reply."
   printf '%s\n' "${output}"
 
+  output="$(docker compose -f "${bundle_root}/compose.yaml" run --rm --no-deps -T cli \
+    shell \
+    --host customer-service \
+    --port 19091 \
+    --script payloads/customer-create-shell.coakka)"
+  grep -Fq 'created:customer#script' <<<"${output}" ||
+    coakka_die "Docker demo shell script did not return the expected call reply."
+  grep -Fq 'created:customer#script-ask' <<<"${output}" ||
+    coakka_die "Docker demo shell script did not return the expected ask reply."
+  grep -Fq '"payload_text": "created:{\"customer_id\":\"script\",\"tier\":\"violet\"}' <<<"${output}" ||
+    coakka_die "Docker demo shell script did not return the expected JSON reply."
+  printf '%s\n' "${output}"
+
   coakka_runtime_client_cleanup
 }
 

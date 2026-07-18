@@ -40,7 +40,7 @@ bash run.sh runtime-client docker-demo
 
 That command resolves the published Docker demo bundle for the host architecture,
 builds the tiny CLI and customer-service images from the staged artifacts, then
-verifies one `call` and one `ask` request/reply round-trip.
+verifies `call`, `ask`, and `shell --script` request/reply round-trips.
 
 ## Current Public Release
 
