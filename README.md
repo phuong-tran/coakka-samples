@@ -148,8 +148,8 @@ run:
 bash run.sh runtime-client docker-demo
 ```
 
-That Docker path is for Linux bundle verification. It does not need a recorded
-video unless a later release specifically asks for Docker evidence.
+That Docker path is for Linux bundle verification from the published artifact
+layout.
 
 The fastest browser-visible app-host path is still the container path. It uses
 pinned Docker Hub images, so you can test a cross-process runtime delivery path

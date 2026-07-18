@@ -76,10 +76,9 @@ The product path is the same on every supported platform: run a native CoAkka
 Runtime host, then use the packaged `coakka-client` command to drive the
 runtime target and inspect the explicit reply, timeout, or deadletter outcome.
 
-macOS is only a convenient host for future video capture because it is easy to
-record locally. It is not the product boundary. Linux, Windows, and Docker
-lanes remain verification targets; they should pass without needing recorded
-video evidence for every run.
+Linux, Windows, macOS, and Docker lanes are verification targets for the same
+CLI contract. Platform-specific packaging should prove that the same commands
+and runtime outcomes work from the published artifact layout.
 
 Future runnable samples in this directory should prefer this shape:
 
