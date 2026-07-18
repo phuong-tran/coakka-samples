@@ -164,7 +164,7 @@ var response = await runtime.AskJsonAsync(
 ```
 
 The ASP.NET Core adapter shape on top of that runtime API is one API endpoint
-calling an runtime target, while the store logic is a capability instead
+calling a runtime target, while the store logic is a capability instead
 of a backend HTTP endpoint:
 
 ```csharp

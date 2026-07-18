@@ -25,7 +25,7 @@ specific product surface when the distinction matters:
 | `CoAkka Runtime` | Runtime product family and runtime delivery model. |
 | `coakka-runtime-core` | Native runtime engine and C ABI surface. |
 | `coakka-runtime-connector` | Host-language and framework connector packages. |
-| `coakka-runtime-client` | CLI runtime client. The current public command and archive names use `coakka-client`. |
+| `coakka-runtime-client` | CLI runtime client. The published command and archive names use `coakka-client`. |
 | `coakka-logger` | Bounded logger product surface. |
 
 For the full wording rule, read

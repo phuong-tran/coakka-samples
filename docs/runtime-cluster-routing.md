@@ -309,7 +309,7 @@ flowchart LR
     a -.->|"fail closed until compatible"| c
 ```
 
-The current public remote hardening path requires matching runtime-to-runtime
+The published remote hardening path requires matching runtime-to-runtime
 wire profiles. A future transporter can be added behind the same host-facing C
 ABI only when compatibility is made explicit. Do not assume a route can mix
 transport engines just because every process exposes the same connector API.

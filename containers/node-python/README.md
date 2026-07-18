@@ -21,17 +21,18 @@ that already contain the native runtime:
 bash run.sh containers node-python
 ```
 
-Currently available remote image tags:
+Published remote image tags for this sample lane:
 
 ```text
 docker.io/gabrielgun1983/sample-node-web:1.2.1-abde383-fa29f94-remote
 docker.io/gabrielgun1983/sample-python-store:1.2.1-abde383-fa29f94-remote
 ```
 
-Those tags are the current published Node.js/Python container image line. The
-local rebuild path in this repository installs the current public Node.js and
-Python connector artifact set `1.2.1+abde383-fa29f94` and loads the refreshed
-native runtime from `docker.io/gabrielgun1983/runtime-base:1.2.1-abde383-remote`.
+Those tags are the published Node.js/Python container image line used by this
+sample. The local rebuild path in this repository installs the pinned public
+Node.js and Python connector artifact set `1.2.1+abde383-fa29f94` and loads the
+native runtime base from
+`docker.io/gabrielgun1983/runtime-base:1.2.1-abde383-remote`.
 The repo-local rebuild path uses the same connector set over
 `coakka/runtime-base:1.2.1-abde383-local` through `COAKKA_RUNTIME_LIB`.
 
@@ -77,14 +78,14 @@ If the selected runtime artifact cannot complete cross-process delivery, the
 Node web UI shows the runtime error. The sample intentionally has no REST
 fallback; a successful customer update must cross the runtime path.
 
-Build the current local image line after building `coakka/runtime-base:1.2.1-abde383-local`:
+Build the local image line after building `coakka/runtime-base:1.2.1-abde383-local`:
 
 ```sh
 bash run.sh containers node-python build
 ```
 
 The remote image line is still useful for the fastest first run. The local
-image line is the current repo-side rebuild path.
+image line is the repo-side rebuild path for this pinned connector generation.
 
 Maintainer multi-arch publish commands:
 

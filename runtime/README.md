@@ -11,6 +11,12 @@ The public publish surface exposes logger packages, the public native
 runtime C ABI package, runtime JVM/language connector packages, and the Spring
 Boot and Quarkus adapters. These samples consume those public artifacts.
 
+This `runtime/` directory is the app-host connector sample lane. Its pinned
+connector artifacts are still on the `1.2.1+abde383-fa29f94` generation. The
+separate `coakka-runtime-client` CLI sample lane lives under
+[`../runtime-client`](../runtime-client/README.md) and is published as
+`1.3.1+2215b0f`.
+
 The runtime lane is not introduced as a generic framework. It starts from
 the connector-boundary problem:
 
@@ -221,7 +227,7 @@ CoAkka keeps that path as typed runtime messages with request/reply and
 deadletter behavior.
 
 `Local-first` in these samples does not mean the runtime is limited to one
-process. It means the first boundary is an runtime boundary instead of
+process. It means the first boundary is a runtime boundary instead of
 a public HTTP/gRPC service API. The handler may be in the same process, another
 process on the same host, or another runtime participant reached through the
 transport path. Only `RuntimeEndpointFlags.LOCAL` has the strict process-local
@@ -335,10 +341,10 @@ The first scenario implementations are:
 They run web, desktop, store, and audit shapes and expose clear runtime
 diagnostics. The single-process, starter same-process, Quarkus same-process, and desktop
 topologies give successful CRUD paths through process-owned runtime capabilities
-without an store HTTP API. The cross-process web-to-store path is
-runtime-only and is wired for cross-host delivery through the current public TCP
-transport path. If delivery fails, samples return explicit runtime errors
-instead of hiding the failure behind a REST fallback.
+without a store HTTP API. The cross-process web-to-store path is runtime-only
+and is wired for cross-host delivery through the published public TCP transport
+profile. If delivery fails, samples return explicit runtime errors instead of
+hiding the failure behind a REST fallback.
 
 For production-facing integration guidance, read:
 

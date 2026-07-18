@@ -12,10 +12,10 @@ The browser or smoke command talks to `customer-web`. Customer create, update,
 delete, and list requests are intended to move from `customer-web` to
 `customer-store` through the runtime route.
 
-Current public artifact note: this walkthrough uses the public TCP transport
-published package line. It is intended to validate Linux setup, route configuration,
-process ownership, and end-to-end runtime delivery without a store REST API
-fallback.
+Published artifact note: this walkthrough uses the public TCP transport package
+line pinned by the runtime connector samples. It is intended to validate Linux
+setup, route configuration, process ownership, and end-to-end runtime delivery
+without a store REST API fallback.
 
 ## Requirements
 

@@ -59,7 +59,7 @@ Before production use, collect evidence for:
 - rollout behavior when route snapshots or payload schemas change
 
 Use the samples as a starting point, not as a substitute for those measurements.
-For the current public evidence ledger and known gaps, see
+For the public evidence ledger and known gaps, see
 [Production Evidence](production-evidence.md).
 
 ## Config Ownership

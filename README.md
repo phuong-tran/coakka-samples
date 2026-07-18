@@ -28,7 +28,7 @@ while package-manager lanes remain planned.
 | Problem | Internal application work often becomes fake backend HTTP, spreading one contract across URLs, clients, retries, timeout mapping, status mapping, and logs. |
 | What CoAkka is | A runtime boundary for application capabilities: callers ask a typed target, route snapshots decide ownership, and replies/deadletters carry runtime diagnostics. |
 | What it is not | Not a replacement for public HTTP/gRPC edges, auth, service discovery, deployment policy, CQRS, or ordinary direct calls that are already enough. |
-| Run this | `bash run.sh runtime-client` for the published CLI runtime client, then `bash run.sh containers node-python` or `bash run.sh runtime jvm basic` for app-host samples. |
+| Run this | `bash run.sh runtime-client` for the published runtime-client CLI, then `bash run.sh containers node-python` or `bash run.sh runtime jvm basic` for app-host connector samples. |
 | Observe this | The CLI reports runtime build diagnostics from the published client archive. App-host samples then show targets, process ownership, and runtime outcomes instead of hidden REST fallback behavior. |
 
 Evidence and repo boundaries:
@@ -120,7 +120,7 @@ specific product surface when the distinction matters:
 | `CoAkka Runtime` | Runtime product family: targets, route snapshots, replies, deadletters, lifecycle, and diagnostics. |
 | `coakka-runtime-core` | Native runtime engine and public C ABI surface. |
 | `coakka-runtime-connector` | Host-language and framework connector packages consumed by app-hosts. |
-| `coakka-runtime-client` | CLI runtime client. The current command and archive names use `coakka-client`. |
+| `coakka-runtime-client` | CLI runtime client. The published command and archive names use `coakka-client`. |
 | `coakka-logger` | Bounded logger product surface, separate from runtime routing. |
 
 The existing `runtime/` and `logger/` directories are stable sample command
@@ -136,8 +136,9 @@ bash run.sh runtime-client
 ```
 
 That verifies the published `coakka-runtime-client` lane by resolving the
-current `coakka-client` archive, checking its SHA256 against the public
-manifest, then running `version` and `doctor` from the unpacked native prefix.
+`coakka-client` `1.3.1+2215b0f` archive, checking its SHA256 against the
+public manifest, then running `version` and `doctor` from the unpacked native
+prefix.
 
 For a live request/reply proof through the published CLI and native demo
 service, run:
@@ -160,10 +161,10 @@ docker.io/gabrielgun1983/sample-node-web:1.2.1-abde383-fa29f94-remote
 docker.io/gabrielgun1983/sample-python-store:1.2.1-abde383-fa29f94-remote
 ```
 
-Those tags are the current published Node.js/Python container image line. The
-published sample images install the current public Node.js and Python
-connector artifact set `1.2.1+abde383-fa29f94` over the refreshed native
-runtime line from `docker.io/gabrielgun1983/runtime-base:1.2.1-abde383-remote`.
+Those tags are the published Node.js/Python container image line used by this
+sample. The published sample images install the pinned Node.js and Python
+connector artifact set `1.2.1+abde383-fa29f94` over the native runtime base
+line from `docker.io/gabrielgun1983/runtime-base:1.2.1-abde383-remote`.
 Repo-local rebuilds use the same connector set over
 `coakka/runtime-base:1.2.1-abde383-local`.
 
@@ -935,13 +936,13 @@ route declaration and handler registration explicit.
 
 ## CoAkka Runtime Client
 
-`coakka-runtime-client` is the CLI runtime client lane. Its current public
-command and archive prefix is `coakka-client`.
+`coakka-runtime-client` is the CLI runtime client lane. Its published command
+and archive prefix is `coakka-client`.
 
-The current public CLI runtime client release is `1.3.1+2215b0f`, published
-under `coakka-publish/cli/releases/1.3.1+2215b0f/` for macOS ARM64, Linux
-x86_64, Linux ARM64, Windows x86_64, and Windows ARM64. The matching Docker
-demo release is under
+The published CLI runtime-client release is `1.3.1+2215b0f`. It lives under
+`coakka-publish/cli/releases/1.3.1+2215b0f/` for macOS ARM64, Linux x86_64,
+Linux ARM64, Windows x86_64, and Windows ARM64. The matching Docker demo
+release is under
 `coakka-publish/demo/coakka-client/releases/1.3.1+2215b0f/`.
 
 This lane is for native CLI verification of runtime behavior: `version`,
@@ -1312,7 +1313,7 @@ Current gaps:
 | Gap | Status |
 | --- | --- |
 | Cross-process route apply/reload scenario | Route apply covered by `runtime/scenarios/customer-crud/spring-boot-spring-boot/routes.yml`; live cross-host delivery capture pending |
-| Language connector runtime pressure samples | Tracked separately from native intake pressure; current public connector samples cover request/reply, deadletter, and route snapshot apply/reload |
+| Language connector runtime pressure samples | Tracked separately from native intake pressure; pinned connector samples cover request/reply, deadletter, and route snapshot apply/reload |
 | Two-machine Linux walkthrough | Manual setup documented in [`docs/two-machine-linux.md`](docs/two-machine-linux.md); live two-host capture pending |
 | Repeatable benchmark harness | Manual smoke-load harness present; Linux CI workflow is manual; Linux hardware benchmark remains pending |
 
@@ -1476,12 +1477,11 @@ logger/
 
 ## Artifact Source
 
-The current public publish surface supports logger package downloads, the
-public native runtime C ABI package, runtime connector packages, framework
-adapters, the `coakka-runtime-client` CLI lane, and the published CLI Docker
-demo bundle. The sample runner resolves public artifacts from a sibling
-`coakka-publish` checkout when present, then falls back to the public raw
-GitHub URL.
+The published artifact surface supports logger package downloads, the public
+native runtime C ABI package, runtime connector packages, framework adapters,
+the `coakka-runtime-client` CLI lane, and the published CLI Docker demo bundle.
+The sample runner resolves public artifacts from a sibling `coakka-publish`
+checkout when present, then falls back to the public raw GitHub URL.
 
 Logger JVM samples use the Maven repository from the public publish checkout:
 
@@ -1529,7 +1529,7 @@ an artifact from the local public checkout or from the public raw GitHub URL, it
 verifies the artifact SHA256 from that manifest before unpacking or installing
 the package.
 
-Current public artifact pins:
+Pinned public artifact lines used by these samples:
 
 | Lane | Release |
 | --- | --- |
@@ -1556,8 +1556,8 @@ The matching Spring Boot and Quarkus adapter note is published at
 
 ## Public Status
 
-Current public native runtime generation: `1.2.1+abde383`.
-Current public runtime CLI client generation: `1.3.1+2215b0f`.
+Pinned runtime connector/native generation: `1.2.1+abde383`.
+Published runtime-client CLI generation: `1.3.1+2215b0f`.
 
 | Lane | Public artifact status | First command |
 | --- | --- | --- |

@@ -33,7 +33,7 @@ updates runner commands, workflows, and user-facing docs together.
 
 ## Runtime Client Naming
 
-The product lane is `coakka-runtime-client`. The current published binary and
+The product lane is `coakka-runtime-client`. The published binary and
 archive names still use `coakka-client` because that is the established command
 and release artifact name.
 
@@ -41,8 +41,8 @@ When documenting the CLI, use this shape:
 
 ```text
 coakka-runtime-client is the CLI runtime client.
-The current command is coakka-client.
-The current public release is 1.3.1+2215b0f.
+The published command is coakka-client.
+The published runtime-client release is 1.3.1+2215b0f.
 ```
 
 The CLI runtime client is not the dashboard, inspect surface, or a business

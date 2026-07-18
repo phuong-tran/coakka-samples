@@ -54,7 +54,7 @@ class CustomerStoreBackendResource(private val store: InMemoryCustomerStore) {
 }
 ```
 
-The web resource then needs a REST client for an runtime call:
+The web resource then needs a REST client for a runtime call:
 
 ```kotlin
 @RegisterRestClient(configKey = "customer-store")

@@ -4,25 +4,25 @@ This image packages the public native runtime artifact for container samples.
 It is not a separate runtime contract; it is a Docker layer over the published
 runtime archive.
 
-Current local rebuild tag:
+Pinned local rebuild tag:
 
 ```text
 coakka/runtime-base:1.2.1-abde383-local
 ```
 
-Current published remote tag:
+Published remote tag for this runtime-base line:
 
 ```text
 docker.io/gabrielgun1983/runtime-base:1.2.1-abde383-remote
 ```
 
-Current native artifact:
+Pinned native runtime artifact:
 
 ```text
 runtime/native/releases/1.2.1+abde383/coakka-runtime-native-v2-1.2.1.tar.gz
 ```
 
-Build the current local image from the repository root:
+Build the local image from the repository root:
 
 ```sh
 docker buildx build \

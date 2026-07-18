@@ -5,7 +5,7 @@ are intentionally small, but the integration shape should stay the same:
 
 For vocabulary first, start with [Runtime Glossary](runtime-glossary.md). For
 fit and operational ownership, read
-[Production Readiness](production-readiness.md). For the current public
+[Production Readiness](production-readiness.md). For the public sample
 evidence checklist, read [Production Evidence](production-evidence.md). For
 repository ownership boundaries, read
 [Repository Boundaries](repository-boundaries.md).
@@ -17,16 +17,16 @@ repository ownership boundaries, read
 5. send typed requests/events to peer targets
 6. handle deadletters and shut down cleanly
 
-## Current Public Transport
+## Published Public Transport
 
-The public publish surface currently exposes logger packages, the public native
+The published artifact surface exposes logger packages, the public native
 runtime C ABI package, runtime JVM/language connector packages, and the Spring
-Boot and Quarkus adapters. With a matching public artifact checkout,
-local in-process request/reply samples and cross-process customer scenarios keep
+Boot and Quarkus adapters. With a matching public artifact checkout, local
+in-process request/reply samples and cross-process customer scenarios keep
 business traffic on the runtime path.
 
 Delivery failures remain explicit runtime failures. The samples should not hide
-route, queue, or transporter failures behind an store HTTP fallback.
+route, queue, or transporter failures behind a store HTTP fallback.
 HTTP stays at real external edges such as the browser-facing web API.
 
 The customer scenario exposes that distinction through a `deliveryMode` field:

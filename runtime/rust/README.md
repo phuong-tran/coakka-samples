@@ -110,10 +110,10 @@ stay as a runtime target with request/reply and deadletter semantics.
 
 ## Production Notes
 
-- Treat this package as the current published Rust archive line.
+- Treat this package as the pinned published Rust archive line.
 - Keep one active `RuntimeHost` per process.
 - Keep queue sizes bounded.
 - Treat matched deadletters as route/delivery results.
 - Treat Windows as a supported development/validation host today, while this
-  published archive still bundles the current macOS/Linux native set.
+  published archive still bundles the pinned macOS/Linux native set.
 - Use Linux validation before presenting this lane as a deployment path.

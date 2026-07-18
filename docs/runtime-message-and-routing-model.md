@@ -117,7 +117,7 @@ to deliver.
 Start from a user-facing request, not from the runtime. A frontend may call a
 REST endpoint such as `POST /checkout`. The app still validates the HTTP
 request, checks auth, reads the body, and decides which business work must run.
-CoAkka begins when that app code needs to call an runtime target.
+CoAkka begins when that app code needs to call a runtime target.
 
 Most business logic has one of two shapes.
 

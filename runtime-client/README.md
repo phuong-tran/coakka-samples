@@ -1,7 +1,7 @@
 # CoAkka Runtime Client Samples
 
 `coakka-runtime-client` is the CLI runtime client lane for CoAkka Runtime.
-The current public command and archive names use `coakka-client`.
+The published command and archive names use `coakka-client`.
 
 This lane is for native CLI workflows that show how an operator or developer
 can drive a runtime path without building a web UI:
@@ -42,9 +42,9 @@ That command resolves the published Docker demo bundle for the host architecture
 builds the tiny CLI and customer-service images from the staged artifacts, then
 verifies `call`, `ask`, and `shell --script` request/reply round-trips.
 
-## Current Public Release
+## Published Release
 
-The current public CLI runtime client release is:
+The published CLI runtime-client release is:
 
 ```text
 coakka-runtime-client product lane

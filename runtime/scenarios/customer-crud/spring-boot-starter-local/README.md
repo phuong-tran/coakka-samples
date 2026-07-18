@@ -157,7 +157,7 @@ class CustomerCapabilityHandlers(private val customerStore: InMemoryCustomerStor
 }
 ```
 
-The HTTP controller now reads like CRUD code again. It asks an runtime capability
+The HTTP controller now reads like CRUD code again. It asks a runtime capability
 target; it does not construct route tables, decode envelopes, or own native
 runtime lifecycle:
 

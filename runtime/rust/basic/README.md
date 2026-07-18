@@ -32,5 +32,5 @@ runtime=1.2.1 git=<git> lib=<packaged-native-library>
 response={"echo":{"message":"hello-rust-runtime"}} delivered=1 matched=1 deadletters=1
 ```
 
-This is the current published Rust archive line; crates.io packaging is a
+This is the pinned published Rust archive line; crates.io packaging is a
 separate distribution step.
