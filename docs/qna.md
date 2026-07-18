@@ -24,6 +24,10 @@ API surface before it needs to be one. It can start as a same-process runtime
 target, move to a peer runtime later, and keep the same target, payload, route,
 and deadletter vocabulary across that change.
 
+The hard part is the boundary mindset, not winning a protocol benchmark. CoAkka
+asks teams to stop turning app-owned handoffs into extra L7 APIs by default and
+to name that work as runtime targets when the ownership fits.
+
 ## Is CoAkka Equivalent To gRPC?
 
 No.
@@ -118,6 +122,11 @@ Benchmark CoAkka against runtime delivery responsibilities: route selection,
 queue pressure, framing, reply matching, timeout, and deadletter behavior. Do
 not describe it as faster or slower than HTTP/gRPC unless the benchmark
 intentionally includes comparable L7 concerns.
+
+Even when CoAkka has practical runtime advantages, benchmark numbers should
+stay supporting evidence. The main claim is cleaner application boundary
+ownership: HTTP/gRPC for real API edges, CoAkka Runtime for app-owned capability
+delivery behind or beside those edges.
 
 ## Is CoAkka Equivalent To Dapr?
 

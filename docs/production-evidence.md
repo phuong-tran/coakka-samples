@@ -83,6 +83,11 @@ sample benchmark artifacts must record:
 - aggregation rule
 - whether the result is only a smoke-load reference
 
+Benchmark artifacts are supporting evidence, not the main product positioning.
+CoAkka's primary claim is the runtime capability boundary: target ownership,
+route snapshots, bounded delivery, replies, deadletters, and diagnostics for
+application-owned work.
+
 Benchmark comparisons should stay at the runtime/L4 delivery boundary. CoAkka
 is not an L7 HTTP/gRPC framework benchmark; do not frame numbers as HTTP/gRPC
 replacement claims. Compare route lookup, bounded admission, framing, delivery

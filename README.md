@@ -28,6 +28,7 @@ while package-manager lanes remain planned.
 | Problem | Internal application work often becomes fake backend HTTP, spreading one contract across URLs, clients, retries, timeout mapping, status mapping, and logs. |
 | What CoAkka is | A runtime boundary for application capabilities: callers ask a typed target, route snapshots decide ownership, and replies/deadletters carry runtime diagnostics. |
 | What it is not | Not a replacement for public HTTP/gRPC edges, auth, service discovery, deployment policy, CQRS, or ordinary direct calls that are already enough. |
+| Benchmark posture | Benchmarks are evidence and regression guardrails, not the main product claim; the harder shift is modeling app-owned work as runtime targets instead of another L7 API. |
 | Run this | `bash run.sh runtime-client` for the published runtime-client CLI, then `bash run.sh containers node-python` or `bash run.sh runtime jvm basic` for app-host connector samples. |
 | Observe this | The CLI reports runtime build diagnostics from the published client archive. App-host samples then show targets, process ownership, and runtime outcomes instead of hidden REST fallback behavior. |
 
@@ -479,6 +480,10 @@ That helps when a system has started to accumulate informal application-owned co
 - moving one implementation to another language forces client and config churn
 - failures show up as vague timeouts instead of route and delivery evidence
 - the real contract is scattered across code, config, logs, and team memory
+
+The hard part is usually not the transport mechanics. It is the mindset shift:
+keep real HTTP/gRPC at API edges, and stop promoting app-owned handoffs into
+extra L7 services when a runtime target is the cleaner boundary.
 
 For that value to stay reliable in production, every release and deployment
 profile has to keep three properties explicit:
@@ -1394,6 +1399,11 @@ This repository keeps benchmark files as reference evidence. macOS results are
 useful for shape checks and local regression comparison on the same machine.
 Linux results are the comparison path to prefer when readers want a broader
 view of runtime behavior.
+
+Benchmark results are not the primary positioning for CoAkka, even when the
+runtime path has practical advantages. The product argument is about changing
+the boundary model first; numbers are there to validate regressions and
+deployment profiles after that model is understood.
 
 Benchmark comparisons should stay at CoAkka's runtime/L4 boundary: route
 lookup, bounded admission, framing, delivery outcome, and reply matching. Do
