@@ -114,6 +114,7 @@ Runtime client sample:
   runtime-client/check            Verify the published CoAkka Runtime CLI client archive
   runtime-client/docker-bundle     Verify call/ask against the published Linux Docker bundle
   runtime-client/docker-walkthrough Run coakka-client against two native runtime services in Docker
+  runtime-client/dockerhub-demo    Run the published Docker Hub runtime-client demo image
 
 Scenario tracks:
 EOF

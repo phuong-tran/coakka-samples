@@ -46,6 +46,7 @@ bash run.sh runtime-client
 bash run.sh runtime-client version
 bash run.sh runtime-client doctor
 bash run.sh runtime-client docker-walkthrough
+bash run.sh runtime-client dockerhub-demo
 ```
 
 The runner resolves the matching archive from a sibling `coakka-publish`
@@ -97,6 +98,27 @@ service=customer-west port=19091 route=customer.west.create
 
 Then it runs `coakka-client` from the CLI container against both services and
 runs one shell script that switches endpoints inside the same CLI session.
+
+Run the published Docker Hub image when the goal is the lowest-friction Docker
+path:
+
+```sh
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote
+```
+
+or:
+
+```sh
+bash run.sh runtime-client dockerhub-demo
+```
+
+The image starts two native runtime services inside the container, prints their
+service names, ports, and routes, then runs the packaged `coakka-client`
+against both services. Passing `client` runs the CLI directly:
+
+```sh
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote client --help
+```
 
 ## Published Release
 
@@ -154,6 +176,15 @@ The sample runner also provides `docker-walkthrough`, which uses that published
 bundle to bring up two native runtime services and drive them with the packaged
 `coakka-client` inside Docker. That is a sample experience command, not a
 separate published artifact.
+
+The Docker Hub demo image is:
+
+```text
+docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote
+```
+
+It is a prebuilt convenience image for the same runtime-client walkthrough.
+The public release archives and checksums remain in `coakka-publish`.
 
 ## CLI Runtime Path
 

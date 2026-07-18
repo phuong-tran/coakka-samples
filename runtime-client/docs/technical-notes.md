@@ -115,6 +115,13 @@ runtime service containers and prints the service, port, and route before each
 `coakka-client` call. This remains sample orchestration; it does not add a new
 runtime-core responsibility or a new published artifact lane.
 
+The Docker Hub image
+`docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote`
+prebuilds that walkthrough into one container. It contains the published
+`coakka-client` and native demo service artifacts for Linux amd64/arm64 and
+starts two native runtime service processes before driving them from the CLI.
+It is a sample-image lane, not the canonical binary artifact surface.
+
 The animated walkthrough and MP4 recording in this repository are visual
 product evidence. The command surface remains verified by scripts and artifact
 checksum checks, not by the recording itself.

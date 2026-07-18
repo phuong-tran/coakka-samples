@@ -9,6 +9,7 @@ source "${repo_root}/scripts/sample-utils.sh"
 
 COAKKA_RUNTIME_CLIENT_RELEASE_ID="1.3.1+2215b0f"
 COAKKA_RUNTIME_CLIENT_VERSION="1.3.1"
+COAKKA_RUNTIME_CLIENT_DEMO_IMAGE_DEFAULT="docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote"
 coakka_runtime_client_tmp_dir=""
 coakka_runtime_client_compose_dir=""
 coakka_runtime_client_compose_override=""
@@ -52,10 +53,12 @@ Usage:
   bash run.sh runtime-client doctor
   bash run.sh runtime-client docker-bundle
   bash run.sh runtime-client docker-walkthrough
+  bash run.sh runtime-client dockerhub-demo
 
 Environment:
   COAKKA_PUBLISH_ROOT       local coakka-publish checkout
   COAKKA_PUBLISH_RAW_BASE   raw public fallback URL
+  COAKKA_RUNTIME_CLIENT_DEMO_IMAGE Docker Hub demo image tag
 EOF
 }
 
@@ -379,6 +382,19 @@ coakka_runtime_client_docker_walkthrough() {
   coakka_runtime_client_cleanup
 }
 
+coakka_runtime_client_dockerhub_demo() {
+  local image="${COAKKA_RUNTIME_CLIENT_DEMO_IMAGE:-${COAKKA_RUNTIME_CLIENT_DEMO_IMAGE_DEFAULT}}"
+
+  coakka_require_command docker "Install Docker, then retry."
+  echo "[coakka-runtime-client] docker image=${image}"
+  docker run --rm "${image}" "$@"
+}
+
+coakka_runtime_client_dockerhub_build_push() {
+  COAKKA_RUNTIME_CLIENT_DEMO_IMAGE="${COAKKA_RUNTIME_CLIENT_DEMO_IMAGE:-${COAKKA_RUNTIME_CLIENT_DEMO_IMAGE_DEFAULT}}" \
+    bash "${script_dir}/dockerhub-demo/build-and-push.sh"
+}
+
 command_name="${1:-check}"
 case "${command_name}" in
   check|smoke)
@@ -396,6 +412,13 @@ case "${command_name}" in
     ;;
   docker-walkthrough|docker-cli)
     coakka_runtime_client_docker_walkthrough
+    ;;
+  dockerhub-demo|dockerhub)
+    shift || true
+    coakka_runtime_client_dockerhub_demo "$@"
+    ;;
+  dockerhub-build-push)
+    coakka_runtime_client_dockerhub_build_push
     ;;
   help|-h|--help)
     print_usage

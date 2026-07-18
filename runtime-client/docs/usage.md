@@ -197,3 +197,19 @@ service=customer-west port=19091 route=customer.west.create
 
 The final check is a `coakka-client shell --script` run that switches from
 `customer-east:19091` to `customer-west:19091` inside one CLI shell session.
+
+## Docker Hub Demo Image
+
+Use the Docker Hub image when the goal is a one-command runtime-client demo:
+
+```sh
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote
+```
+
+The default command starts two native runtime services inside the container and
+uses `coakka-client` to call both. To run the packaged CLI directly:
+
+```sh
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote client --help
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote client version --output json
+```

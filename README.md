@@ -230,6 +230,21 @@ service containers, prints their service names, ports, and routes, then runs
 shell script that switches from one runtime endpoint to the other inside the
 same CLI session.
 
+For the Docker Hub path with no local artifact unpacking or Compose build, run:
+
+```sh
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote
+```
+
+or through the sample runner:
+
+```sh
+bash run.sh runtime-client dockerhub-demo
+```
+
+That image starts two native runtime services inside the container and uses the
+packaged `coakka-client` to call both routes.
+
 The fastest browser-visible app-host path is the Node.js/Python container path.
 It uses the refreshed `1.3.1` runtime artifact line, so you can test a
 cross-process runtime delivery path without installing Node.js, Python, Go,
@@ -239,15 +254,18 @@ Docker Hub is not the canonical artifact download surface. It is the prebuilt
 sample-image lane. Public native archives, connector packages, CLI client
 archives, checksums, and manifests still live in `coakka-publish`.
 
-Node.js/Python image tags for this release train:
+Docker Hub image tags for this release train:
 
 ```text
+docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote
 docker.io/gabrielgun1983/sample-node-web:1.3.1-bda2ef5-0a0aa76-remote
 docker.io/gabrielgun1983/sample-python-store:1.3.1-bda2ef5-0a0aa76-remote
 ```
 
-Those tags are the published Node.js/Python container image line used by this
-sample. The sample images install the pinned Node.js and Python connector
+Those tags are the published runtime-client and Node.js/Python container image
+lines used by these samples. The runtime-client demo image installs the
+published `coakka-client` `1.3.1+2215b0f` and native demo service artifacts.
+The Node.js/Python sample images install the pinned Node.js and Python connector
 artifact set `1.3.1+bda2ef5-0a0aa76` over the native runtime base line
 `1.3.1+bda2ef5`. Repo-local rebuilds use the same connector set over
 `coakka/runtime-base:1.3.1-bda2ef5-local`.
@@ -1052,6 +1070,12 @@ For a more guided Docker CLI experience, run
 `bash run.sh runtime-client docker-walkthrough`. It starts two native runtime
 services from the same published bundle, prints each service name, port, and
 route, then drives both with `coakka-client` from a Docker CLI container.
+
+For the Docker Hub one-command path, run
+`bash run.sh runtime-client dockerhub-demo` or
+`docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote`.
+That image starts the native runtime services and runs `coakka-client` inside
+one container.
 
 Read the sample lane landing page at [runtime-client/README.md](runtime-client/README.md).
 
