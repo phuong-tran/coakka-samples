@@ -3,6 +3,79 @@
 This note captures recurring questions about the CoAkka runtime story.
 It is intentionally incomplete and should grow as users ask sharper questions.
 
+## Table Of Contents
+
+Positioning:
+
+- [Is CoAkka Architecturally Distinct?](#is-coakka-architecturally-distinct)
+- [What Does CoAkka Add Compared With No Runtime Boundary?](#what-does-coakka-add-compared-with-no-runtime-boundary)
+- [When Is CoAkka Worth Adding?](#when-is-coakka-worth-adding)
+- [Is Adding A Runtime Overkill If The Current System Works?](#is-adding-a-runtime-overkill-if-the-current-system-works)
+- [Is The CoAkka Boundary A Business Boundary Or Technical Boundary?](#is-the-coakka-boundary-a-business-boundary-or-technical-boundary)
+
+L7, mesh, and platform boundaries:
+
+- [Is CoAkka Equivalent To gRPC?](#is-coakka-equivalent-to-grpc)
+- [Is CoAkka A gRPC Add-On?](#is-coakka-a-grpc-add-on)
+- [Why L4 Rather Than L7?](#why-l4-rather-than-l7)
+- [Can CoAkka Replace A Service Mesh Such As Istio?](#can-coakka-replace-a-service-mesh-such-as-istio)
+- [Why Do Teams Reach For Istio In The First Place, And How Can CoAkka Change That?](#why-do-teams-reach-for-istio-in-the-first-place-and-how-can-coakka-change-that)
+- [Why Does CoAkka Not Include Service Discovery Or mTLS In coakka-core-runtime?](#why-does-coakka-not-include-service-discovery-or-mtls-in-coakka-core-runtime)
+- [If A Team Needs Discovery Or mTLS, Where Should That Live?](#if-a-team-needs-discovery-or-mtls-where-should-that-live)
+
+Runtime and application patterns:
+
+- [Is CoAkka Equivalent To Dapr?](#is-coakka-equivalent-to-dapr)
+- [Is CoAkka The Same Thing As Erlang, Akka, Elixir, Or The Actor Model?](#is-coakka-the-same-thing-as-erlang-akka-elixir-or-the-actor-model)
+- [Is CoAkka Equivalent To CQRS?](#is-coakka-equivalent-to-cqrs)
+- [Does CoAkka Replace CQRS Or App-Level Policy?](#does-coakka-replace-cqrs-or-app-level-policy)
+- [Can CoAkka Implement CQRS?](#can-coakka-implement-cqrs)
+- [Can CoAkka Implement Event Sourcing?](#can-coakka-implement-event-sourcing)
+- [Can CoAkka Replace Saga?](#can-coakka-replace-saga)
+- [Why Do Teams Need Saga In The First Place, And How Can CoAkka Change That?](#why-do-teams-need-saga-in-the-first-place-and-how-can-coakka-change-that)
+
+Logger and explanation:
+
+- [Why Does CoAkka Also Have A Logger Surface?](#why-does-coakka-also-have-a-logger-surface)
+- [When Is The CoAkka Logger Useful?](#when-is-the-coakka-logger-useful)
+- [How Does The Logger Help With Trace, Debug, And Runtime Work?](#how-does-the-logger-help-with-trace-debug-and-runtime-work)
+- [Does The Logger Replace Existing Logging Frameworks?](#does-the-logger-replace-existing-logging-frameworks)
+- [Is Runtime Plus Logger A Good Combination?](#is-runtime-plus-logger-a-good-combination)
+- [How Should A User Explain CoAkka In One Short Paragraph?](#how-should-a-user-explain-coakka-in-one-short-paragraph)
+
+## Quick Decision Table
+
+| Question | CoAkka answer | Use the other thing when |
+| --- | --- | --- |
+| Direct calls | Use CoAkka only when a runtime boundary is worth making explicit. | The path is small, stable, single-language, and easy to trace directly. |
+| gRPC | CoAkka is not gRPC; it avoids promoting app-owned capabilities into L7 APIs too early. | The boundary is a real service API with generated clients, HTTP/2 semantics, and service ownership. |
+| HTTP/API gateway | CoAkka sits behind or beside the app-host edge. | The caller is external, public, or needs product API semantics. |
+| Dapr | CoAkka is narrower: target routing, bounded delivery, replies, deadletters, and diagnostics. | The team wants a broad distributed application runtime with state, pub/sub, bindings, secrets, and workflow. |
+| Akka/Erlang/Elixir | CoAkka shares some messaging vocabulary but is not actor-first. | The team wants actors, supervision trees, actor identity, and actor lifecycle as the application model. |
+| CQRS/Event Sourcing | CoAkka can carry commands, queries, events, projections, and replay work. | The question is command validation, aggregate invariants, event store, consistency, or read-model design. |
+| Saga | CoAkka can reduce Saga pressure when the split was premature. | The flow truly crosses independent owners, stores, commits, or long-running compensation semantics. |
+| Istio/service mesh | CoAkka can remove synthetic internal service hops. | The system has real network-service boundaries needing zero-trust mTLS, traffic governance, or cross-cluster policy. |
+| Discovery/mTLS | Keep it above runtime: app-host, connector addon, platform, or mesh. | The network boundary and identity policy are real platform concerns. |
+| Logger | CoAkka logger gives bounded, cross-language operational evidence. | A normal framework logger is already honest under pressure and enough for the app. |
+
+## Runtime Boundary Shape
+
+The normal public path keeps L7 and business policy above the runtime:
+
+```text
+external client
+  -> ingress/nginx or API gateway
+  -> app-host/controller/resource
+  -> connector
+  -> CoAkka runtime
+  -> target handler
+```
+
+The app-host owns request parsing, authentication, authorization, validation,
+CQRS/app policy, and the decision to submit work. CoAkka starts after that
+decision and owns runtime delivery: target routing, route generation, bounded
+admission, timeout, reply, deadletter, health, and diagnostics.
+
 ## Is CoAkka Architecturally Distinct?
 
 Yes, in a narrow and specific way.
