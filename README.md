@@ -15,11 +15,11 @@ Many teams create deployment-owned HTTP endpoints just to move work between
 application components or services. That spreads one application-owned contract across
 URLs, clients, retries, timeouts, status mapping, and error handling.
 
-This repository shows that model through runnable samples for JVM, Python,
-Node.js, Go, C#, Rust, native integrations, framework adapters, and logger
-packages built from the public CoAkka artifact surface. Mojo and Zig are
-tracked as public source-package runtime sample lanes while package-manager
-lanes remain planned.
+This repository shows that model through runnable samples for CoAkka Runtime
+connectors, the CoAkka Runtime CLI client, framework adapters, native
+integrations, and coakka-logger packages built from the public CoAkka artifact
+surface. Mojo and Zig are tracked as public source-package runtime sample lanes
+while package-manager lanes remain planned.
 
 ## Start Here
 
@@ -34,12 +34,14 @@ lanes remain planned.
 Evidence and repo boundaries:
 [Production Evidence](docs/production-evidence.md),
 [Repository Boundaries](docs/repository-boundaries.md),
+[CoAkka Ecosystem Naming](docs/coakka-ecosystem-naming.md),
 [Production Readiness](docs/production-readiness.md).
 
 ## Table of Contents
 
 - [Start Here](#start-here)
 - [What Problem Does CoAkka Solve?](#what-problem-does-coakka-solve)
+- [CoAkka Naming](#coakka-naming)
 - [See It In 3 Minutes](#see-it-in-3-minutes)
 - [Before And After](#before-and-after)
 - [Which Sample Should I Run?](#which-sample-should-i-run)
@@ -57,6 +59,7 @@ Evidence and repo boundaries:
 - [Sample Integration Checklist](#sample-integration-checklist)
 - [Runtime Scenarios](#runtime-scenarios)
 - [Framework Adapters](#framework-adapters)
+- [CoAkka Runtime Client](#coakka-runtime-client)
 - [Logger](#logger)
 - [Runtime And Logger Together](#runtime-and-logger-together)
 - [Quick Start](#quick-start)
@@ -106,6 +109,23 @@ CoAkka does not replace HTTP at real edges, gRPC at real service API
 boundaries, CQRS, authorization, ingress, service discovery, or deployment
 policy. It gives application hosts a shared runtime vocabulary for application
 capabilities that should not need fake REST just to gain a boundary.
+
+## CoAkka Naming
+
+`CoAkka` is the ecosystem and brand prefix. Public sample docs should name the
+specific product surface when the distinction matters:
+
+| Name | Meaning |
+| --- | --- |
+| `CoAkka Runtime` | Runtime product family: targets, route snapshots, replies, deadletters, lifecycle, and diagnostics. |
+| `coakka-runtime-core` | Native runtime engine and public C ABI surface. |
+| `coakka-runtime-connector` | Host-language and framework connector packages consumed by app-hosts. |
+| `coakka-runtime-client` | CLI runtime client. The current command and archive names use `coakka-client`. |
+| `coakka-logger` | Bounded logger product surface, separate from runtime routing. |
+
+The existing `runtime/` and `logger/` directories are stable sample command
+categories. Do not read those path names as the full product taxonomy. For the
+wording rule, read [CoAkka Ecosystem Naming](docs/coakka-ecosystem-naming.md).
 
 ## See It In 3 Minutes
 
@@ -893,6 +913,24 @@ For teams that want to see the runtime connector surface without framework
 adapter help, `runtime/scenarios/customer-crud/spring-boot-single-process` keeps
 route declaration and handler registration explicit.
 
+## CoAkka Runtime Client
+
+`coakka-runtime-client` is the CLI runtime client lane. Its current public
+command and archive prefix is `coakka-client`.
+
+The current public CLI runtime client release is `1.3.1+2215b0f`, published
+under `coakka-publish/cli/releases/1.3.1+2215b0f/` for macOS ARM64, Linux
+x86_64, Linux ARM64, Windows x86_64, and Windows ARM64. The matching Docker
+demo release is under
+`coakka-publish/demo/coakka-client/releases/1.3.1+2215b0f/`.
+
+This lane is for native CLI verification of runtime behavior: `version`,
+`doctor`, request/reply calls, `ask` alias behavior, and bounded script mode.
+It is not a dashboard, inspect product, topology authority, or business schema
+registry.
+
+Read the sample lane landing page at [runtime-client/README.md](runtime-client/README.md).
+
 ## Logger
 
 The logger is the second CoAkka surface in this repository.
@@ -1476,6 +1514,7 @@ Current public artifact pins:
 | Runtime C# | `1.2.1+abde383-fa29f94` |
 | Runtime Rust | `1.2.1+abde383-fa29f94` |
 | Runtime Mojo and Zig samples | `1.2.1+abde383-fa29f94` source packages |
+| Runtime CLI client | `coakka-runtime-client` lane, `coakka-client` command, `1.3.1+2215b0f` |
 | Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:1.2.1-gfa29f94b59f9` |
 | Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:1.2.1-gfa29f94b59f9` |
 
@@ -1508,6 +1547,7 @@ Current public native runtime generation: `1.2.1+abde383`.
 | Runtime Go | public | `bash run.sh runtime go basic` |
 | Runtime C# | public | `bash run.sh runtime csharp basic` |
 | Runtime Rust | public | `bash run.sh runtime rust basic` |
+| Runtime CLI client | public release docs | `runtime-client/README.md` |
 | Logger Mojo | source sample | `bash run.sh logger mojo basic` |
 | Logger Zig | source sample | `bash run.sh logger zig basic` |
 | Runtime Mojo | source sample | `bash run.sh runtime mojo basic` |
