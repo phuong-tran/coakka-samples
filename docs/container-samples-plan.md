@@ -67,7 +67,6 @@ more useful than many heavy examples that are hard to run.
 Current wave 1 command:
 
 ```sh
-bash run.sh containers node-python build
 bash run.sh containers node-python
 ```
 
@@ -215,7 +214,6 @@ The final command shape can be decided during implementation, but the target UX
 should be close to:
 
 ```sh
-bash run.sh containers node-python build
 bash run.sh containers node-python
 ```
 

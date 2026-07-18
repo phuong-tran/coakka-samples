@@ -14,14 +14,14 @@ Browser -> Node HTTP edge -> CoAkka runtime -> Python store -> CoAkka runtime re
 
 The Python UI is observation-only. There is no Node-to-Python REST fallback.
 
-Build the local image line once, then run through the repository entrypoint:
+Run through the repository entrypoint. The default path uses published
+multi-arch images that already contain the native runtime:
 
 ```sh
-bash run.sh containers node-python build
 bash run.sh containers node-python
 ```
 
-Maintainer remote image publish targets for this sample lane:
+Published remote image tags for this sample lane:
 
 ```text
 docker.io/gabrielgun1983/sample-node-web:1.3.1-bda2ef5-0a0aa76-remote
@@ -29,10 +29,11 @@ docker.io/gabrielgun1983/sample-python-store:1.3.1-bda2ef5-0a0aa76-remote
 ```
 
 Those tags are sample image targets, not the canonical artifact download
-location. The local rebuild path in this repository installs the pinned public
-Node.js and Python connector artifact set `1.3.1+bda2ef5-0a0aa76` from
-[`coakka-publish`](https://github.com/phuong-tran/coakka-publish) and loads the
-native runtime base from `coakka/runtime-base:1.3.1-bda2ef5-local` through
+location. The published images install the pinned public Node.js and Python
+connector artifact set `1.3.1+bda2ef5-0a0aa76` from
+[`coakka-publish`](https://github.com/phuong-tran/coakka-publish) and load the
+native runtime base from
+`docker.io/gabrielgun1983/runtime-base:1.3.1-bda2ef5-remote` through
 `COAKKA_RUNTIME_LIB`.
 
 Then open:
@@ -84,8 +85,8 @@ Build the local image line from the repository root:
 bash run.sh containers node-python build
 ```
 
-The remote image line is useful after it is pushed. The local image line is the
-repo-side rebuild path for this pinned connector generation.
+The published remote image line is the fastest first run. The local image line
+is the repo-side rebuild path for this pinned connector generation.
 
 Maintainer multi-arch publish commands:
 

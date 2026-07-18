@@ -180,10 +180,9 @@ It uses the refreshed `1.3.1` runtime artifact line, so you can test a
 cross-process runtime delivery path without installing Node.js, Python, Go,
 Java, or native build tools.
 
-Docker Hub is not the canonical artifact download surface. It is only the
-sample-image lane after maintainers push a container tag. Public native
-archives, connector packages, CLI client archives, checksums, and manifests
-still live in `coakka-publish`.
+Docker Hub is not the canonical artifact download surface. It is the prebuilt
+sample-image lane. Public native archives, connector packages, CLI client
+archives, checksums, and manifests still live in `coakka-publish`.
 
 Node.js/Python image tags for this release train:
 
@@ -192,7 +191,7 @@ docker.io/gabrielgun1983/sample-node-web:1.3.1-bda2ef5-0a0aa76-remote
 docker.io/gabrielgun1983/sample-python-store:1.3.1-bda2ef5-0a0aa76-remote
 ```
 
-Those tags are the intended Node.js/Python container image line used by this
+Those tags are the published Node.js/Python container image line used by this
 sample. The sample images install the pinned Node.js and Python connector
 artifact set `1.3.1+bda2ef5-0a0aa76` over the native runtime base line
 `1.3.1+bda2ef5`. Repo-local rebuilds use the same connector set over
@@ -201,7 +200,6 @@ artifact set `1.3.1+bda2ef5-0a0aa76` over the native runtime base line
 Run the visible container sample:
 
 ```sh
-bash run.sh containers node-python build
 bash run.sh containers node-python
 ```
 
@@ -1647,7 +1645,7 @@ Published runtime-client CLI generation: `1.3.1+2215b0f`.
 | Runtime Mojo | source sample | `bash run.sh runtime mojo basic` |
 | Runtime Zig | source sample | `bash run.sh runtime zig basic` |
 | Runtime Spring Boot and Quarkus adapters | public | `bash run.sh scenarios check` |
-| Runtime container sample: Node.js -> Python | refreshed container image line | `bash run.sh containers node-python` |
+| Runtime container sample: Node.js -> Python | public Docker Hub images | `bash run.sh containers node-python` |
 
 Samples resolve public downloads through
 `coakka-publish/artifacts/public-artifacts.tsv` or the matching public
