@@ -138,7 +138,7 @@ bash run.sh runtime-client
 
 Watch the runtime-client typed automation video:
 
-[![CoAkka Runtime Client typed automation](docs/assets/coakka-runtime-client-typed-automation.png)](docs/assets/coakka-runtime-client-typed-automation.mp4)
+[![CoAkka Runtime Client typed automation](docs/assets/coakka-runtime-client.png)](docs/assets/coakka-runtime-client.mp4)
 
 Read the runtime-client docs for the product introduction, command usage, and
 technical notes:

@@ -14,7 +14,7 @@ This docs set is for users who want more than the short sample README:
 
 Start with the typed automation video when you want a visual walkthrough:
 
-[![CoAkka Runtime Client typed automation](../../docs/assets/coakka-runtime-client-typed-automation.png)](../../docs/assets/coakka-runtime-client-typed-automation.mp4)
+[![CoAkka Runtime Client typed automation](../../docs/assets/coakka-runtime-client.png)](../../docs/assets/coakka-runtime-client.mp4)
 
 Then run the local smoke:
 

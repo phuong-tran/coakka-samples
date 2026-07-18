@@ -24,7 +24,7 @@ stay in CoAkka Runtime. Sample payloads stay owned by the sample workflow.
 
 ## Typed Automation Video
 
-[![CoAkka Runtime Client typed automation](../docs/assets/coakka-runtime-client-typed-automation.png)](../docs/assets/coakka-runtime-client-typed-automation.mp4)
+[![CoAkka Runtime Client typed automation](../docs/assets/coakka-runtime-client.png)](../docs/assets/coakka-runtime-client.mp4)
 
 The video shows the packaged `coakka-client` driving a native runtime host over
 the TCP frame profile. It opens with CLI help for discoverability, then runs
