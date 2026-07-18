@@ -29,6 +29,10 @@ docker.io/gabrielgun1983/sample-spring-web:0.1.0-fbab60154993-remote
 docker.io/gabrielgun1983/sample-go-store:0.1.0-fbab60154993-remote
 ```
 
+These tags are prebuilt sample images, not the canonical artifact download
+surface. Direct CoAkka archives, packages, manifests, and checksums are owned by
+[`coakka-publish`](https://github.com/phuong-tran/coakka-publish).
+
 The repo-local Spring Boot and Go sample sources already track Spring starter
 `1.2.1-gfa29f94b59f9` and Go runtime package `1.2.1+abde383-fa29f94`. The
 published Spring-Go container image line has not been refreshed onto that train

@@ -4,6 +4,10 @@ This image packages the public native runtime artifact for container samples.
 It is not a separate runtime contract; it is a Docker layer over the published
 runtime archive.
 
+The canonical native runtime archive, manifest, and checksum rows live in
+[`coakka-publish`](https://github.com/phuong-tran/coakka-publish). This image is
+only the container sample base that consumes that published runtime artifact.
+
 Pinned local rebuild tag:
 
 ```text

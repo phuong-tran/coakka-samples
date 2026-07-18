@@ -29,8 +29,10 @@ docker.io/gabrielgun1983/sample-python-store:1.2.1-abde383-fa29f94-remote
 ```
 
 Those tags are the published Node.js/Python container image line used by this
-sample. The local rebuild path in this repository installs the pinned public
-Node.js and Python connector artifact set `1.2.1+abde383-fa29f94` and loads the
+sample. They are prebuilt sample images, not the canonical artifact download
+location. The local rebuild path in this repository installs the pinned public
+Node.js and Python connector artifact set `1.2.1+abde383-fa29f94` from
+[`coakka-publish`](https://github.com/phuong-tran/coakka-publish) and loads the
 native runtime base from
 `docker.io/gabrielgun1983/runtime-base:1.2.1-abde383-remote`.
 The repo-local rebuild path uses the same connector set over
@@ -73,6 +75,8 @@ The Dockerfiles are the image-source path for maintainers. They download the
 public Node.js and Python runtime connector artifacts, verify them through the
 public artifact manifest before install, then load the native runtime from the
 pinned runtime-base image. The prebuilt images are the recommended user path.
+Use `coakka-publish` when the user needs direct package/archive downloads or
+checksums outside the container sample.
 
 If the selected runtime artifact cannot complete cross-process delivery, the
 Node web UI shows the runtime error. The sample intentionally has no REST

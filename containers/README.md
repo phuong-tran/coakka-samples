@@ -3,6 +3,12 @@
 Container samples show the runtime boundary without requiring every host
 language toolchain on the user's machine.
 
+Docker images in this directory are a runnable sample UX, not the canonical
+artifact distribution channel. Public archives, packages, manifests, and
+checksums live in
+[`coakka-publish`](https://github.com/phuong-tran/coakka-publish); container
+images consume those artifacts to make first-run checks faster.
+
 Available samples:
 
 ```sh

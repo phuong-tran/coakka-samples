@@ -179,6 +179,10 @@ The fastest browser-visible app-host path is still the container path. It uses
 pinned Docker Hub images, so you can test a cross-process runtime delivery path
 without installing Node.js, Python, Go, Java, or native build tools.
 
+Docker Hub is not the canonical artifact download surface. It is the prebuilt
+sample-image lane. Public native archives, connector packages, CLI client
+archives, checksums, and manifests still live in `coakka-publish`.
+
 Public Docker Hub images:
 
 ```text
@@ -1405,6 +1409,10 @@ The default container path uses pinned Docker Hub images so users can try a
 runtime generation without building connector packages, transport
 dependencies, or native runtime artifacts locally.
 
+Those Docker images are convenience wrappers around published CoAkka artifacts.
+They are not the primary release location; use `coakka-publish` for direct
+artifact downloads and checksums.
+
 Planning note: [Container Samples Plan](docs/container-samples-plan.md).
 
 ### Samples By Language
@@ -1578,6 +1586,10 @@ Public package downloads are pinned through
 an artifact from the local public checkout or from the public raw GitHub URL, it
 verifies the artifact SHA256 from that manifest before unpacking or installing
 the package.
+
+Docker samples follow the same ownership rule. Docker Hub image tags provide a
+ready-to-run sample path, while the runtime and connector artifacts installed
+by those images are still sourced from the public publish surface.
 
 The sample artifact-pin smoke validates manifest rows by default. The heavier
 local `coakka-publish` surface gate is opt-in:
