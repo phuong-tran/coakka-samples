@@ -142,7 +142,8 @@ Watch the runtime-client typed automation video:
 
 Read the runtime-client docs for the product introduction, command usage, and
 technical notes:
-[runtime-client/docs/](runtime-client/docs/).
+[runtime-client/docs/](runtime-client/docs/). Direct platform downloads are in
+[runtime-client/README.md#published-release](runtime-client/README.md#published-release).
 
 That verifies the published `coakka-runtime-client` lane by resolving the
 `coakka-client` `1.3.1+2215b0f` archive, checking its SHA256 against the

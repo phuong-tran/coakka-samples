@@ -68,7 +68,20 @@ coakka-client command and archive prefix
 1.3.1+2215b0f release id
 ```
 
-Published artifacts are resolved from `coakka-publish`:
+Direct downloads:
+
+| Platform | Archive |
+| --- | --- |
+| macOS ARM64 | [coakka-client-v2-1.3.1-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.1+2215b0f/coakka-client-v2-1.3.1-macos-aarch64.tar.gz) |
+| Linux x86_64 | [coakka-client-v2-1.3.1-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.1+2215b0f/coakka-client-v2-1.3.1-linux-x86_64.tar.gz) |
+| Linux ARM64 | [coakka-client-v2-1.3.1-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.1+2215b0f/coakka-client-v2-1.3.1-linux-aarch64.tar.gz) |
+| Windows x86_64 | [coakka-client-v2-1.3.1-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.1+2215b0f/coakka-client-v2-1.3.1-windows-x86_64.tar.gz) |
+| Windows ARM64 | [coakka-client-v2-1.3.1-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.1+2215b0f/coakka-client-v2-1.3.1-windows-aarch64.tar.gz) |
+
+Checksums:
+[SHA256SUMS](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.1+2215b0f/SHA256SUMS)
+
+The same published artifacts are resolved from `coakka-publish`:
 
 ```text
 cli/releases/1.3.1+2215b0f/
