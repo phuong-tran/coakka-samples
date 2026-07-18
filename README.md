@@ -140,6 +140,10 @@ Watch the runtime-client typed automation video:
 
 [![CoAkka Runtime Client typed automation](docs/assets/coakka-runtime-client-typed-automation.png)](docs/assets/coakka-runtime-client-typed-automation.mp4)
 
+Read the runtime-client docs for the product introduction, command usage, and
+technical notes:
+[runtime-client/docs/](runtime-client/docs/).
+
 That verifies the published `coakka-runtime-client` lane by resolving the
 `coakka-client` `1.3.1+2215b0f` archive, checking its SHA256 against the
 public manifest, then running `version` and `doctor` from the unpacked native

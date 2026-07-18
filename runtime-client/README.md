@@ -3,6 +3,12 @@
 `coakka-runtime-client` is the CLI runtime client lane for CoAkka Runtime.
 The published command and archive names use `coakka-client`.
 
+Detailed docs live under [docs/](docs/):
+
+- [Introduction](docs/introduction.md)
+- [Usage Guide](docs/usage.md)
+- [Technical Notes](docs/technical-notes.md)
+
 This lane is for native CLI workflows that show how an operator or developer
 can drive a runtime path without building a web UI:
 
