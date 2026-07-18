@@ -8,6 +8,9 @@ business schemas, topology truth, dashboard behavior, or inspect-product scope.
 The product lane is `coakka-runtime-client`. The published executable and
 archive prefix is `coakka-client`.
 
+The archive intentionally ships `coakka-client` as the command name. A
+`coakka-runtime-client` executable is not part of this release surface.
+
 Current release line:
 
 ```text

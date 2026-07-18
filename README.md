@@ -159,6 +159,9 @@ specific product surface when the distinction matters:
 | `coakka-runtime-client` | CLI runtime client. The published command and archive names use `coakka-client`. |
 | `coakka-logger` | Bounded logger product surface, separate from runtime routing. |
 
+When using the CLI archive, run `coakka-client`. `coakka-runtime-client` is the
+product lane and sample directory name, not an executable name in this release.
+
 The existing `runtime/` and `logger/` directories are stable sample command
 categories. Do not read those path names as the full product taxonomy. For the
 wording rule, read [CoAkka Ecosystem Naming](docs/coakka-ecosystem-naming.md).
@@ -179,7 +182,9 @@ Full recording: [coakka-runtime-client.mp4](docs/assets/coakka-runtime-client.mp
 
 Read the runtime-client docs for the product introduction, command usage, and
 technical notes:
-[runtime-client/docs/](runtime-client/docs/). Direct platform downloads are in
+[runtime-client/docs/](runtime-client/docs/)
+([public GitHub path](https://github.com/phuong-tran/coakka-samples/tree/main/runtime-client/docs)).
+Direct platform downloads are in
 [runtime-client/README.md#published-release](runtime-client/README.md#published-release).
 
 That verifies the published `coakka-runtime-client` lane by resolving the
@@ -192,6 +197,21 @@ run:
 
 ```sh
 bash run.sh runtime-client docker-bundle
+```
+
+Abbreviated expected shape; Docker Compose status lines and generated message
+IDs may vary:
+
+```text
+created:customer#42
+created:customer#ask
+created:customer#script
+created:customer#script-ask
+{
+  "ok": true,
+  "message_kind": "MESSAGE_KIND_RESPONSE",
+  "payload_text": "created:{\"customer_id\":\"script\",\"tier\":\"violet\"}"
+}
 ```
 
 That Docker path is for Linux bundle verification from the published artifact
@@ -994,6 +1014,9 @@ route declaration and handler registration explicit.
 
 `coakka-runtime-client` is the CLI runtime client lane. Its published command
 and archive prefix is `coakka-client`.
+
+If a shell reports `coakka-runtime-client: command not found`, use
+`coakka-client --help`. The longer name is the product lane, not the binary.
 
 The published CLI runtime-client release is `1.3.1+2215b0f`. It lives under
 `coakka-publish/cli/releases/1.3.1+2215b0f/` for macOS ARM64, Linux x86_64,

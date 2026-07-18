@@ -17,6 +17,9 @@ coakka-client call --help
 coakka-client shell --help
 ```
 
+The installed command is `coakka-client`. `coakka-runtime-client` is the
+product lane and sample directory name, not a command shipped in this release.
+
 ## Command Discovery
 
 Top-level help lists the public command surface:
@@ -158,6 +161,21 @@ bash run.sh runtime-client docker-bundle
 The command resolves the published Docker verification bundle, builds the tiny
 CLI and customer-service images from the staged artifacts, then verifies
 `call`, `ask`, and `shell --script` request/reply round-trips.
+
+Abbreviated expected shape; Docker Compose status lines and generated message
+IDs may vary:
+
+```text
+created:customer#42
+created:customer#ask
+created:customer#script
+created:customer#script-ask
+{
+  "ok": true,
+  "message_kind": "MESSAGE_KIND_RESPONSE",
+  "payload_text": "created:{\"customer_id\":\"script\",\"tier\":\"violet\"}"
+}
+```
 
 The older `docker-demo` runner command remains a compatibility alias for the
 existing artifact layout.

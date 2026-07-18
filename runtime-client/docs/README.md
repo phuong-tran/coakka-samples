@@ -3,6 +3,9 @@
 `coakka-runtime-client` is the CLI runtime client for CoAkka Runtime. The
 published command and archive prefix is `coakka-client`.
 
+After unpacking a published archive, run `coakka-client --help`. The
+`coakka-runtime-client` name identifies this product lane and docs folder.
+
 Public runtime-client archives are distributed through
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish), while this
 repository provides runnable samples, docs, and verification commands.

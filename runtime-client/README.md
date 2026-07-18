@@ -3,6 +3,10 @@
 `coakka-runtime-client` is the CLI runtime client lane for CoAkka Runtime.
 The published command and archive names use `coakka-client`.
 
+Run `coakka-client --help` after unpacking a published archive. If
+`coakka-runtime-client` is not found, that is expected for this release: it is
+the product lane and sample directory name, not the executable name.
+
 Detailed docs live under [docs/](docs/):
 
 - [Introduction](docs/introduction.md)
@@ -55,6 +59,21 @@ verification is needed:
 bash run.sh runtime-client docker-bundle
 ```
 
+Abbreviated expected shape; Docker Compose status lines and generated message
+IDs may vary:
+
+```text
+created:customer#42
+created:customer#ask
+created:customer#script
+created:customer#script-ask
+{
+  "ok": true,
+  "message_kind": "MESSAGE_KIND_RESPONSE",
+  "payload_text": "created:{\"customer_id\":\"script\",\"tier\":\"violet\"}"
+}
+```
+
 That command resolves the published Docker verification bundle for the host
 architecture, builds the tiny CLI and customer-service images from the staged
 artifacts, then verifies `call`, `ask`, and `shell --script` request/reply
@@ -69,6 +88,10 @@ coakka-runtime-client product lane
 coakka-client command and archive prefix
 1.3.1+2215b0f release id
 ```
+
+The executable inside each archive is `bin/coakka-client` on macOS/Linux and
+`bin/coakka-client.exe` on Windows. The longer `coakka-runtime-client` name is
+used for the product lane, docs, and sample directory.
 
 Direct downloads:
 
