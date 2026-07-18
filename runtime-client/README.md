@@ -50,7 +50,7 @@ Run the zero-install Linux Docker verification bundle when live Linux bundle
 verification is needed:
 
 ```sh
-bash run.sh runtime-client docker-demo
+bash run.sh runtime-client docker-bundle
 ```
 
 That command resolves the published Docker verification bundle for the host
@@ -97,6 +97,10 @@ The matching Docker verification release is:
 ```text
 demo/coakka-client/releases/1.3.1+2215b0f/
 ```
+
+The `demo/` path segment is part of the already-published artifact layout.
+Public docs and commands describe this as the Linux Docker verification bundle.
+The runner still accepts `docker-demo` as a compatibility alias.
 
 ## CLI Runtime Path
 

@@ -99,7 +99,7 @@ bash -n run.sh runtime-client/run.sh
 Use Docker verification only when the Linux bundle path needs a live check:
 
 ```sh
-bash run.sh runtime-client docker-demo
+bash run.sh runtime-client docker-bundle
 ```
 
 The video asset in this repository is visual product evidence. The command

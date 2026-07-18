@@ -28,8 +28,8 @@ docker.io/gabrielgun1983/sample-node-web:1.3.1-bda2ef5-0a0aa76-remote
 docker.io/gabrielgun1983/sample-python-store:1.3.1-bda2ef5-0a0aa76-remote
 ```
 
-Those tags are sample image targets, not the canonical artifact download
-location. The published images install the pinned public Node.js and Python
+Those tags are published sample images, not the canonical artifact download
+location. They install the pinned public Node.js and Python
 connector artifact set `1.3.1+bda2ef5-0a0aa76` from
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) and load the
 native runtime base from

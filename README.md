@@ -46,6 +46,21 @@ or from the public raw GitHub artifact URLs when that checkout is absent.
 | Run this | `bash run.sh runtime-client` for the published runtime-client CLI, then `bash run.sh containers node-python` or `bash run.sh runtime jvm basic` for app-host connector samples. |
 | Observe this | The CLI reports runtime build diagnostics from the published client archive. App-host samples then show targets, process ownership, and runtime outcomes instead of hidden REST fallback behavior. |
 
+Fast public path:
+
+```sh
+git clone https://github.com/phuong-tran/coakka-samples.git
+cd coakka-samples
+bash run.sh runtime-client
+bash run.sh containers node-python
+```
+
+The first sample verifies the published `coakka-client` archive from
+`coakka-publish`. The second sample pulls the published Docker Hub
+Node.js/Python images and runs a two-process runtime path. Use
+[`coakka-publish`](https://github.com/phuong-tran/coakka-publish) for direct
+archive, package, checksum, manifest, or release-note downloads.
+
 Evidence and repo boundaries:
 [Production Evidence](docs/production-evidence.md),
 [Repository Boundaries](docs/repository-boundaries.md),
@@ -169,11 +184,12 @@ For a live request/reply path through the published CLI and native service,
 run:
 
 ```sh
-bash run.sh runtime-client docker-demo
+bash run.sh runtime-client docker-bundle
 ```
 
 That Docker path is for Linux bundle verification from the published artifact
-layout.
+layout. The older `docker-demo` runner command remains available as a
+compatibility alias for the existing release archive path.
 
 The fastest browser-visible app-host path is the Node.js/Python container path.
 It uses the refreshed `1.3.1` runtime artifact line, so you can test a
@@ -984,9 +1000,9 @@ It is not a dashboard, inspect product, topology authority, or business schema
 registry.
 
 For a live request/reply path without source checkout or host build tools, run
-`bash run.sh runtime-client docker-demo`. That uses the published Linux Docker
-verification bundle and verifies `call`, `ask`, and `shell --script` against
-the bundled native customer service.
+`bash run.sh runtime-client docker-bundle`. That uses the published Linux
+Docker verification bundle and verifies `call`, `ask`, and `shell --script`
+against the bundled native customer service.
 
 Read the sample lane landing page at [runtime-client/README.md](runtime-client/README.md).
 

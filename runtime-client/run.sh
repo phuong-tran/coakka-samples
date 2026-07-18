@@ -36,7 +36,7 @@ Usage:
   bash run.sh runtime-client check
   bash run.sh runtime-client version
   bash run.sh runtime-client doctor
-  bash run.sh runtime-client docker-demo
+  bash run.sh runtime-client docker-bundle
 
 Environment:
   COAKKA_PUBLISH_ROOT       local coakka-publish checkout
@@ -62,7 +62,7 @@ coakka_runtime_client_docker_platform() {
   case "$(uname -m)" in
     arm64|aarch64) printf '%s\n' "linux-aarch64" ;;
     x86_64|amd64) printf '%s\n' "linux-x86_64" ;;
-    *) coakka_die "Unsupported Docker demo host architecture: $(uname -m)" ;;
+    *) coakka_die "Unsupported Docker bundle host architecture: $(uname -m)" ;;
   esac
 }
 
@@ -125,7 +125,7 @@ coakka_runtime_client_docker_demo() {
   tar -C "${tmp_dir}/package" -xzf "${package_path}"
 
   bundle_root="${tmp_dir}/package/coakka-client-docker-demo-v2-${COAKKA_RUNTIME_CLIENT_VERSION}-${platform}"
-  coakka_require_file "${bundle_root}/compose.yaml" "The published Docker demo archive is incomplete."
+  coakka_require_file "${bundle_root}/compose.yaml" "The published Docker verification archive is incomplete."
   coakka_runtime_client_compose_dir="${bundle_root}"
 
   docker compose -f "${bundle_root}/compose.yaml" build >/dev/null
@@ -144,7 +144,7 @@ coakka_runtime_client_docker_demo() {
     sleep 0.5
   done
   [[ "${output}" == "created:customer#42" ]] ||
-    coakka_die "Docker demo call did not return expected reply."
+    coakka_die "Docker bundle call did not return expected reply."
   printf '%s\n' "${output}"
 
   output="$(docker compose -f "${bundle_root}/compose.yaml" run --rm --no-deps -T cli \
@@ -154,7 +154,7 @@ coakka_runtime_client_docker_demo() {
     --route customer.create \
     --payload "customer#ask")"
   [[ "${output}" == "created:customer#ask" ]] ||
-    coakka_die "Docker demo ask did not return expected reply."
+    coakka_die "Docker bundle ask did not return expected reply."
   printf '%s\n' "${output}"
 
   output="$(docker compose -f "${bundle_root}/compose.yaml" run --rm --no-deps -T cli \
@@ -163,11 +163,11 @@ coakka_runtime_client_docker_demo() {
     --port 19091 \
     --script payloads/customer-create-shell.coakka)"
   grep -Fq 'created:customer#script' <<<"${output}" ||
-    coakka_die "Docker demo shell script did not return the expected call reply."
+    coakka_die "Docker bundle shell script did not return the expected call reply."
   grep -Fq 'created:customer#script-ask' <<<"${output}" ||
-    coakka_die "Docker demo shell script did not return the expected ask reply."
+    coakka_die "Docker bundle shell script did not return the expected ask reply."
   grep -Fq '"payload_text": "created:{\"customer_id\":\"script\",\"tier\":\"violet\"}' <<<"${output}" ||
-    coakka_die "Docker demo shell script did not return the expected JSON reply."
+    coakka_die "Docker bundle shell script did not return the expected JSON reply."
   printf '%s\n' "${output}"
 
   coakka_runtime_client_cleanup
@@ -185,7 +185,7 @@ case "${command_name}" in
   doctor)
     coakka_runtime_client_run doctor --output json
     ;;
-  docker-demo)
+  docker-bundle|docker-demo)
     coakka_runtime_client_docker_demo
     ;;
   help|-h|--help)

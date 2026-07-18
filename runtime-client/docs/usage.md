@@ -152,9 +152,12 @@ Use the Docker path when live Linux bundle verification is needed without a
 host toolchain:
 
 ```sh
-bash run.sh runtime-client docker-demo
+bash run.sh runtime-client docker-bundle
 ```
 
 The command resolves the published Docker verification bundle, builds the tiny
 CLI and customer-service images from the staged artifacts, then verifies
 `call`, `ask`, and `shell --script` request/reply round-trips.
+
+The older `docker-demo` runner command remains a compatibility alias for the
+existing artifact layout.
