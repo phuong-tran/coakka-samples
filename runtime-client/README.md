@@ -31,6 +31,17 @@ checkout when present, otherwise it falls back to the public raw artifact URL.
 Every artifact is verified against `artifacts/public-artifacts.tsv` before it
 is unpacked.
 
+Run the zero-install Linux Docker demo bundle only when Docker live verification
+is needed:
+
+```sh
+bash run.sh runtime-client docker-demo
+```
+
+That command resolves the published Docker demo bundle for the host architecture,
+builds the tiny CLI and customer-service images from the staged artifacts, then
+verifies one `call` and one `ask` request/reply round-trip.
+
 ## Current Public Release
 
 The current public CLI runtime client release is:
@@ -64,8 +75,8 @@ The main video/demo path should run on macOS with a native CoAkka Runtime host
 and the native `coakka-client` command. That makes the CLI behavior the center
 of the proof instead of relying on a browser UI.
 
-Docker remains useful as a fast verification lane for Linux bundles. Docker
-does not need a recorded video unless a later release specifically needs it.
+Docker remains useful as a verification lane for Linux bundles. Docker does not
+need a recorded video unless a later release specifically needs it.
 
 Future runnable samples in this directory should prefer this shape:
 

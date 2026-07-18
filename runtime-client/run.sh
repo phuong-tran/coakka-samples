@@ -10,8 +10,15 @@ source "${repo_root}/scripts/sample-utils.sh"
 COAKKA_RUNTIME_CLIENT_RELEASE_ID="1.3.1+2215b0f"
 COAKKA_RUNTIME_CLIENT_VERSION="1.3.1"
 coakka_runtime_client_tmp_dir=""
+coakka_runtime_client_compose_dir=""
 
 coakka_runtime_client_cleanup() {
+  if [[ -n "${coakka_runtime_client_compose_dir}" &&
+        -f "${coakka_runtime_client_compose_dir}/compose.yaml" &&
+        -n "$(command -v docker 2>/dev/null || true)" ]]; then
+    docker compose -f "${coakka_runtime_client_compose_dir}/compose.yaml" down -v >/dev/null 2>&1 || true
+    coakka_runtime_client_compose_dir=""
+  fi
   if [[ -n "${coakka_runtime_client_tmp_dir}" ]]; then
     rm -rf "${coakka_runtime_client_tmp_dir}"
     coakka_runtime_client_tmp_dir=""
@@ -29,6 +36,7 @@ Usage:
   bash run.sh runtime-client check
   bash run.sh runtime-client version
   bash run.sh runtime-client doctor
+  bash run.sh runtime-client docker-demo
 
 Environment:
   COAKKA_PUBLISH_ROOT       local coakka-publish checkout
@@ -47,6 +55,14 @@ coakka_runtime_client_platform() {
     *)
       coakka_die "Unsupported runtime-client sample platform: ${system}/${machine}. Use the published Windows archive directly on Windows."
       ;;
+  esac
+}
+
+coakka_runtime_client_docker_platform() {
+  case "$(uname -m)" in
+    arm64|aarch64) printf '%s\n' "linux-aarch64" ;;
+    x86_64|amd64) printf '%s\n' "linux-x86_64" ;;
+    *) coakka_die "Unsupported Docker demo host architecture: $(uname -m)" ;;
   esac
 }
 
@@ -89,6 +105,61 @@ coakka_runtime_client_run() {
   coakka_runtime_client_cleanup
 }
 
+coakka_runtime_client_docker_demo() {
+  local platform artifact_name artifact_rel tmp_dir package_path bundle_root output
+  platform="$(coakka_runtime_client_docker_platform)"
+  artifact_name="coakka-client-docker-demo-v2-${COAKKA_RUNTIME_CLIENT_VERSION}-${platform}.tar.gz"
+  artifact_rel="demo/coakka-client/releases/${COAKKA_RUNTIME_CLIENT_RELEASE_ID}/${artifact_name}"
+
+  coakka_require_command docker "Install Docker with the Compose plugin, then retry."
+  coakka_require_command tar "Install tar, then retry."
+  docker compose version >/dev/null 2>&1 ||
+    coakka_die "Docker Compose plugin is required. Verify 'docker compose version' works."
+
+  coakka_runtime_client_cleanup
+  tmp_dir="$(mktemp -d)"
+  coakka_runtime_client_tmp_dir="${tmp_dir}"
+
+  package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/${artifact_name}")"
+  mkdir -p "${tmp_dir}/package"
+  tar -C "${tmp_dir}/package" -xzf "${package_path}"
+
+  bundle_root="${tmp_dir}/package/coakka-client-docker-demo-v2-${COAKKA_RUNTIME_CLIENT_VERSION}-${platform}"
+  coakka_require_file "${bundle_root}/compose.yaml" "The published Docker demo archive is incomplete."
+  coakka_runtime_client_compose_dir="${bundle_root}"
+
+  docker compose -f "${bundle_root}/compose.yaml" build >/dev/null
+  docker compose -f "${bundle_root}/compose.yaml" up -d customer-service >/dev/null
+
+  output=""
+  for _ in $(seq 1 60); do
+    if output="$(docker compose -f "${bundle_root}/compose.yaml" run --rm --no-deps -T cli \
+        call \
+        --host customer-service \
+        --port 19091 \
+        --route customer.create \
+        --payload "customer#42" 2>/dev/null)"; then
+      [[ "${output}" == "created:customer#42" ]] && break
+    fi
+    sleep 0.5
+  done
+  [[ "${output}" == "created:customer#42" ]] ||
+    coakka_die "Docker demo call did not return expected reply."
+  printf '%s\n' "${output}"
+
+  output="$(docker compose -f "${bundle_root}/compose.yaml" run --rm --no-deps -T cli \
+    ask \
+    --host customer-service \
+    --port 19091 \
+    --route customer.create \
+    --payload "customer#ask")"
+  [[ "${output}" == "created:customer#ask" ]] ||
+    coakka_die "Docker demo ask did not return expected reply."
+  printf '%s\n' "${output}"
+
+  coakka_runtime_client_cleanup
+}
+
 command_name="${1:-check}"
 case "${command_name}" in
   check|smoke)
@@ -100,6 +171,9 @@ case "${command_name}" in
     ;;
   doctor)
     coakka_runtime_client_run doctor --output json
+    ;;
+  docker-demo)
+    coakka_runtime_client_docker_demo
     ;;
   help|-h|--help)
     print_usage
