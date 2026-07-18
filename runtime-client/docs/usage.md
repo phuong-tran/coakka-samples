@@ -158,4 +158,3 @@ bash run.sh runtime-client docker-demo
 The command resolves the published Docker verification bundle, builds the tiny
 CLI and customer-service images from the staged artifacts, then verifies
 `call`, `ask`, and `shell --script` request/reply round-trips.
-

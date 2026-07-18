@@ -43,4 +43,3 @@ coakka-client call or ask
 That keeps the product story focused on the runtime boundary: target names,
 payload identity, route ownership, explicit replies, and explicit failure
 outcomes.
-

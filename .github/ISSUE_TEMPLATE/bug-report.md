@@ -19,9 +19,9 @@ Describe the failure in one short paragraph.
 
 ## Reproduction
 
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 ## Expected Result
 

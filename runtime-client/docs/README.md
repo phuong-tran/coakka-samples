@@ -21,4 +21,3 @@ Then run the local smoke:
 ```sh
 bash run.sh runtime-client
 ```
-

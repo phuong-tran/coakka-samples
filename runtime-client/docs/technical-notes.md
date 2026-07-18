@@ -92,4 +92,3 @@ bash run.sh runtime-client docker-demo
 The video asset in this repository is visual product evidence. The command
 surface remains verified by scripts and artifact checksum checks, not by the
 video itself.
-
