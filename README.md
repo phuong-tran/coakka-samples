@@ -129,9 +129,29 @@ wording rule, read [CoAkka Ecosystem Naming](docs/coakka-ecosystem-naming.md).
 
 ## See It In 3 Minutes
 
-The fastest visible runtime path is the container path. It uses pinned Docker
-Hub images, so you can test a cross-process runtime delivery path without
-installing Node.js, Python, Go, Java, or native build tools.
+The fastest terminal-first check is the runtime client path:
+
+```sh
+bash run.sh runtime-client
+```
+
+That verifies the published `coakka-runtime-client` lane by resolving the
+current `coakka-client` archive, checking its SHA256 against the public
+manifest, then running `version` and `doctor` from the unpacked native prefix.
+
+For a live request/reply proof through the published CLI and native demo
+service, run:
+
+```sh
+bash run.sh runtime-client docker-demo
+```
+
+That Docker path is for Linux bundle verification. It does not need a recorded
+video unless a later release specifically asks for Docker evidence.
+
+The fastest browser-visible app-host path is still the container path. It uses
+pinned Docker Hub images, so you can test a cross-process runtime delivery path
+without installing Node.js, Python, Go, Java, or native build tools.
 
 Public Docker Hub images:
 
@@ -1456,10 +1476,12 @@ logger/
 
 ## Artifact Source
 
-The current public publish surface supports logger package downloads and the
-public native runtime C ABI package. The sample runner resolves public
-artifacts from a sibling `coakka-publish` checkout when present, then
-falls back to the public raw GitHub URL.
+The current public publish surface supports logger package downloads, the
+public native runtime C ABI package, runtime connector packages, framework
+adapters, the `coakka-runtime-client` CLI lane, and the published CLI Docker
+demo bundle. The sample runner resolves public artifacts from a sibling
+`coakka-publish` checkout when present, then falls back to the public raw
+GitHub URL.
 
 Logger JVM samples use the Maven repository from the public publish checkout:
 
@@ -1535,6 +1557,7 @@ The matching Spring Boot and Quarkus adapter note is published at
 ## Public Status
 
 Current public native runtime generation: `1.2.1+abde383`.
+Current public runtime CLI client generation: `1.3.1+2215b0f`.
 
 | Lane | Public artifact status | First command |
 | --- | --- | --- |
