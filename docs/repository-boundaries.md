@@ -8,12 +8,16 @@ not try to be every CoAkka repository at once.
 | Repository | Role | What to look for |
 | --- | --- | --- |
 | `coakka-samples` | Runnable public examples that consume published artifacts. | Sample code, container flows, framework scenarios, docs, and smoke workflows. |
-| `coakka-publish` | Public artifact distribution surface. | Pinned packages, native archives, source packages, release notes, manifests, and checksums. |
+| [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) | Public artifact distribution surface. | Pinned packages, native archives, source packages, release notes, manifests, and checksums. |
 | Runtime and connector implementation workspaces | Artifact producers consumed through `coakka-publish`. | Source used to build the public artifacts. Public samples should not depend on a local implementation checkout. |
 
 The normal public reader starts here, in `coakka-samples`. The samples resolve
 artifacts from a sibling `coakka-publish` checkout when present, or from
 the public raw artifact URL when a local checkout is absent.
+
+Use `coakka-samples` to run examples. Use
+[`coakka-publish`](https://github.com/phuong-tran/coakka-publish) to download
+released binaries, package archives, release notes, manifests, and checksums.
 
 ## Product Naming Boundary
 

@@ -21,6 +21,19 @@ integrations, and coakka-logger packages built from the public CoAkka artifact
 surface. Mojo and Zig are tracked as public source-package runtime sample lanes
 while package-manager lanes remain planned.
 
+## Where Downloads Live
+
+This repository is the runnable sample repository. Public binaries, packages,
+checksums, manifests, and release notes live in the artifact distribution
+repository:
+
+[`coakka-publish`](https://github.com/phuong-tran/coakka-publish)
+
+Use `coakka-samples` when you want to run examples. Use `coakka-publish` when
+you want to download a released archive or package directly. The sample runner
+will resolve artifacts from a sibling `coakka-publish` checkout when present,
+or from the public raw GitHub artifact URLs when that checkout is absent.
+
 ## Start Here
 
 | Question | Short answer |
@@ -28,6 +41,7 @@ while package-manager lanes remain planned.
 | Problem | Internal application work often becomes fake backend HTTP, spreading one contract across URLs, clients, retries, timeout mapping, status mapping, and logs. |
 | What CoAkka is | A runtime boundary for application capabilities: callers ask a typed target, route snapshots decide ownership, and replies/deadletters carry runtime diagnostics. |
 | What it is not | Not a replacement for public HTTP/gRPC edges, auth, service discovery, deployment policy, CQRS, or ordinary direct calls that are already enough. |
+| Where to download | Public artifacts live in [`coakka-publish`](https://github.com/phuong-tran/coakka-publish); this repo consumes those artifacts through runnable samples. |
 | Benchmark posture | Benchmarks are evidence and regression guardrails, not the main product claim; the harder shift is modeling app-owned work as runtime targets instead of another L7 API. |
 | Run this | `bash run.sh runtime-client` for the published runtime-client CLI, then `bash run.sh containers node-python` or `bash run.sh runtime jvm basic` for app-host connector samples. |
 | Observe this | The CLI reports runtime build diagnostics from the published client archive. App-host samples then show targets, process ownership, and runtime outcomes instead of hidden REST fallback behavior. |
@@ -40,6 +54,7 @@ Evidence and repo boundaries:
 
 ## Table of Contents
 
+- [Where Downloads Live](#where-downloads-live)
 - [Start Here](#start-here)
 - [What Problem Does CoAkka Solve?](#what-problem-does-coakka-solve)
 - [CoAkka Naming](#coakka-naming)
@@ -1504,12 +1519,19 @@ logger/
 
 ## Artifact Source
 
-The published artifact surface supports logger package downloads, the public
-native runtime C ABI package, runtime connector packages, framework adapters,
-the `coakka-runtime-client` CLI lane, and the published CLI Docker verification
-bundle. The sample runner resolves public artifacts from a sibling
-`coakka-publish` checkout when present, then falls back to the public raw
-GitHub URL.
+Public artifact downloads are owned by
+[`coakka-publish`](https://github.com/phuong-tran/coakka-publish), not by this
+sample repository. That repository contains logger package downloads, the
+public native runtime C ABI package, runtime connector packages, framework
+adapters, the `coakka-runtime-client` CLI lane, release notes, manifests, and
+checksums.
+
+The sample runner resolves public artifacts from a sibling `coakka-publish`
+checkout when present, then falls back to the public raw GitHub URL:
+
+```text
+https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/
+```
 
 Logger JVM samples use the Maven repository from the public publish checkout:
 
