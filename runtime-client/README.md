@@ -72,13 +72,17 @@ Direct downloads:
 
 | Platform | Archive |
 | --- | --- |
-| macOS ARM64 | [coakka-client-v2-1.3.1-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.1+2215b0f/coakka-client-v2-1.3.1-macos-aarch64.tar.gz) |
-| Linux x86_64 | [coakka-client-v2-1.3.1-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.1+2215b0f/coakka-client-v2-1.3.1-linux-x86_64.tar.gz) |
-| Linux ARM64 | [coakka-client-v2-1.3.1-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.1+2215b0f/coakka-client-v2-1.3.1-linux-aarch64.tar.gz) |
-| Windows x86_64 | [coakka-client-v2-1.3.1-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.1+2215b0f/coakka-client-v2-1.3.1-windows-x86_64.tar.gz) |
-| Windows ARM64 | [coakka-client-v2-1.3.1-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.1+2215b0f/coakka-client-v2-1.3.1-windows-aarch64.tar.gz) |
+| macOS ARM64 | [coakka-client-v2-1.3.1-macos-aarch64.tar.gz](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/coakka-client-v2-1.3.1-macos-aarch64.tar.gz) |
+| Linux x86_64 | [coakka-client-v2-1.3.1-linux-x86_64.tar.gz](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/coakka-client-v2-1.3.1-linux-x86_64.tar.gz) |
+| Linux ARM64 | [coakka-client-v2-1.3.1-linux-aarch64.tar.gz](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/coakka-client-v2-1.3.1-linux-aarch64.tar.gz) |
+| Windows x86_64 | [coakka-client-v2-1.3.1-windows-x86_64.tar.gz](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/coakka-client-v2-1.3.1-windows-x86_64.tar.gz) |
+| Windows ARM64 | [coakka-client-v2-1.3.1-windows-aarch64.tar.gz](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/coakka-client-v2-1.3.1-windows-aarch64.tar.gz) |
 
-Checksums:
+Full release page and manifest:
+[CoAkka Public Artifacts 1.3.1](https://github.com/phuong-tran/coakka-publish/releases/tag/coakka-public-artifacts-v1.3.1),
+[public-artifacts.tsv](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/public-artifacts.tsv)
+
+Per-lane checksums:
 [SHA256SUMS](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.1+2215b0f/SHA256SUMS)
 
 The same published artifacts are resolved from `coakka-publish`:

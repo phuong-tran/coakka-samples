@@ -30,9 +30,14 @@ repository:
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish)
 
 Use `coakka-samples` when you want to run examples. Use `coakka-publish` when
-you want to download a released archive or package directly. The sample runner
-will resolve artifacts from a sibling `coakka-publish` checkout when present,
-or from the public raw GitHub artifact URLs when that checkout is absent.
+you want to download a released archive or package directly. The fastest direct
+download entrypoint is the GitHub Release page:
+
+[`CoAkka Public Artifacts 1.3.1`](https://github.com/phuong-tran/coakka-publish/releases/tag/coakka-public-artifacts-v1.3.1)
+
+The sample runner will resolve artifacts from a sibling `coakka-publish`
+checkout when present, or from the public raw GitHub artifact URLs when that
+checkout is absent.
 
 ## Start Here
 
@@ -58,8 +63,8 @@ bash run.sh containers node-python
 The first sample verifies the published `coakka-client` archive from
 `coakka-publish`. The second sample pulls the published Docker Hub
 Node.js/Python images and runs a two-process runtime path. Use
-[`coakka-publish`](https://github.com/phuong-tran/coakka-publish) for direct
-archive, package, checksum, manifest, or release-note downloads.
+[`CoAkka Public Artifacts 1.3.1`](https://github.com/phuong-tran/coakka-publish/releases/tag/coakka-public-artifacts-v1.3.1)
+for direct archive, package, checksum, manifest, or release-note downloads.
 
 Evidence and repo boundaries:
 [Production Evidence](docs/production-evidence.md),
