@@ -1,7 +1,7 @@
 # QNA
 
-This note captures recurring questions about the CoAkka runtime story.
-It is intentionally incomplete and should grow as users ask sharper questions.
+This note captures recurring questions about the CoAkka runtime story and is
+updated as users ask sharper questions.
 
 ## Table Of Contents
 
@@ -12,6 +12,8 @@ Positioning:
 - [When Is CoAkka Worth Adding?](#when-is-coakka-worth-adding)
 - [Is Adding A Runtime Overkill If The Current System Works?](#is-adding-a-runtime-overkill-if-the-current-system-works)
 - [Is The CoAkka Boundary A Business Boundary Or Technical Boundary?](#is-the-coakka-boundary-a-business-boundary-or-technical-boundary)
+- [Does CoAkka Handle Auth Or Authorization?](#does-coakka-handle-auth-or-authorization)
+- [How Does Observability And Trace Context Work?](#how-does-observability-and-trace-context-work)
 
 L7, mesh, and platform boundaries:
 
@@ -21,6 +23,7 @@ L7, mesh, and platform boundaries:
 - [Can CoAkka Replace A Service Mesh Such As Istio?](#can-coakka-replace-a-service-mesh-such-as-istio)
 - [Why Do Teams Reach For Istio In The First Place, And How Can CoAkka Change That?](#why-do-teams-reach-for-istio-in-the-first-place-and-how-can-coakka-change-that)
 - [Why Does CoAkka Not Include Service Discovery Or mTLS In coakka-core-runtime?](#why-does-coakka-not-include-service-discovery-or-mtls-in-coakka-core-runtime)
+- [Why Is Demanding mTLS Inside Core A Layer Violation?](#why-is-demanding-mtls-inside-core-a-layer-violation)
 - [If A Team Needs Discovery Or mTLS, Where Should That Live?](#if-a-team-needs-discovery-or-mtls-where-should-that-live)
 
 Runtime and application patterns:
@@ -31,6 +34,9 @@ Runtime and application patterns:
 - [Does CoAkka Replace CQRS Or App-Level Policy?](#does-coakka-replace-cqrs-or-app-level-policy)
 - [Can CoAkka Implement CQRS?](#can-coakka-implement-cqrs)
 - [Can CoAkka Implement Event Sourcing?](#can-coakka-implement-event-sourcing)
+- [Is CoAkka Equivalent To Temporal Or A Workflow Engine?](#is-coakka-equivalent-to-temporal-or-a-workflow-engine)
+- [Is CoAkka Equivalent To Kafka Or RabbitMQ?](#is-coakka-equivalent-to-kafka-or-rabbitmq)
+- [How Does CoAkka Relate To The Outbox Pattern?](#how-does-coakka-relate-to-the-outbox-pattern)
 - [Can CoAkka Replace Saga?](#can-coakka-replace-saga)
 - [Why Do Teams Need Saga In The First Place, And How Can CoAkka Change That?](#why-do-teams-need-saga-in-the-first-place-and-how-can-coakka-change-that)
 
@@ -53,6 +59,11 @@ Logger and explanation:
 | Dapr | CoAkka is narrower: target routing, bounded delivery, replies, deadletters, and diagnostics. | The team wants a broad distributed application runtime with state, pub/sub, bindings, secrets, and workflow. |
 | Akka/Erlang/Elixir | CoAkka shares some messaging vocabulary but is not actor-first. | The team wants actors, supervision trees, actor identity, and actor lifecycle as the application model. |
 | CQRS/Event Sourcing | CoAkka can carry commands, queries, events, projections, and replay work. | The question is command validation, aggregate invariants, event store, consistency, or read-model design. |
+| Temporal/workflow engines | CoAkka can deliver work into workflow steps or handlers. | The system needs durable workflow history, timers, retries, compensation, or human-in-the-loop orchestration. |
+| Kafka/RabbitMQ | CoAkka can reduce broker use for app-owned request/reply handoffs. | The system needs durable topics, consumer groups, replay, fanout, or broker-owned backpressure semantics. |
+| Outbox | CoAkka can route dispatcher or projection work after the app commits. | The question is transactional durability between a database commit and asynchronous publication. |
+| Auth/authz | CoAkka carries already-submitted runtime work and reports delivery outcomes. | The question is identity proof, tenant policy, permission checks, or business authorization. |
+| Observability/OTel | CoAkka exposes runtime delivery facts that app-hosts can correlate. | The question is trace collection, span export, dashboards, sampling, or organization-wide telemetry policy. |
 | Saga | CoAkka can reduce Saga pressure when the split was premature. | The flow truly crosses independent owners, stores, commits, or long-running compensation semantics. |
 | Istio/service mesh | CoAkka can remove synthetic internal service hops. | The system has real network-service boundaries needing zero-trust mTLS, traffic governance, or cross-cluster policy. |
 | Discovery/mTLS | Keep it above runtime: app-host, connector addon, platform, or mesh. | The network boundary and identity policy are real platform concerns. |
@@ -64,11 +75,14 @@ The normal public path keeps L7 and business policy above the runtime:
 
 ```text
 external client
-  -> ingress/nginx or API gateway
-  -> app-host/controller/resource
+  -> ingress/nginx or API gateway (TLS/mTLS, edge policy)
+  -> app-host/controller/resource (auth, CQRS, validation)
   -> connector
-  -> CoAkka runtime
+  -> CoAkka runtime (target, route, bounded admission, reply/deadletter)
   -> target handler
+
+optional real network hop:
+  connector addon or transport profile with TLS/mTLS where that boundary is real
 ```
 
 The app-host owns request parsing, authentication, authorization, validation,
@@ -195,6 +209,12 @@ Benchmark CoAkka against runtime delivery responsibilities: route selection,
 queue pressure, framing, reply matching, timeout, and deadletter behavior. Do
 not describe it as faster or slower than HTTP/gRPC unless the benchmark
 intentionally includes comparable L7 concerns.
+
+L4/runtime transport has a mechanical advantage for this class of work: fewer
+bytes to parse, no method/path/status mapping, no L7 interceptor chain, and
+bounded admission at the runtime intake. That can show up as lower overhead and
+more predictable behavior under queue pressure. Keep that as supporting
+evidence, not the main product claim.
 
 A fair benchmark needs a same-class comparator. Bun vs Node is a reasonable
 kind of comparison because both are JavaScript runtimes competing for many of
@@ -638,6 +658,67 @@ CoAkka runtime delivers already-submitted work by target and reports delivery
 outcomes.
 ```
 
+## Does CoAkka Handle Auth Or Authorization?
+
+Not as the default authority.
+
+Authentication and authorization belong above runtime unless a specific
+connector, adapter, or deployment profile explicitly owns that policy.
+
+Typical ownership:
+
+- ingress, gateway, or app-host proves caller identity
+- controller, CQRS bus, framework adapter, or connector filter checks tenant
+  and operation policy
+- receiver still protects important business rules
+- CoAkka runtime delivers work that has already been accepted for submission
+
+Runtime can carry useful context such as source, target, headers, correlation
+IDs, route generation, and delivery outcome. That context helps audit and
+diagnostics, but it is not the same thing as deciding who is allowed to call a
+target.
+
+Short answer:
+
+```text
+Auth/authz decide whether work is allowed to enter the runtime path.
+CoAkka runtime decides whether accepted work can be routed, admitted,
+delivered, replied to, timed out, or deadlettered.
+```
+
+Do not make `coakka-core-runtime` the system's policy authority just because it
+sees messages. That would mix application security rules with the delivery
+engine and make the core harder to reason about.
+
+## How Does Observability And Trace Context Work?
+
+CoAkka should make runtime delivery observable without becoming the
+organization's telemetry platform.
+
+The app-host or connector should create or propagate request context before
+submitting work. Runtime can then report delivery facts around that context:
+
+- source and target
+- route generation
+- accepted, rejected, timeout, reply, or deadletter outcome
+- queue pressure and endpoint state
+- message or correlation identifiers when available
+
+If the deployment uses OpenTelemetry, the bridge belongs in the app-host,
+connector, framework adapter, logger integration, or observability addon. The
+core runtime should expose stable delivery facts; it should not own span export,
+sampling policy, collector configuration, dashboards, or vendor-specific
+telemetry behavior.
+
+Short answer:
+
+```text
+Trace context enters above runtime and can be carried through runtime metadata.
+CoAkka contributes target, route, queue, reply, timeout, and deadletter facts.
+Telemetry export belongs to the host, connector, logger, or observability
+adapter.
+```
+
 ## Can CoAkka Implement CQRS?
 
 Yes, CoAkka can be used as the runtime dispatch layer for CQRS.
@@ -722,6 +803,90 @@ Short answer:
 CoAkka is a good runtime substrate for CQRS/Event Sourcing, but CQRS/Event
 Sourcing still need their own application contracts and persistence model.
 ```
+
+## Is CoAkka Equivalent To Temporal Or A Workflow Engine?
+
+No.
+
+Temporal and similar workflow engines own durable workflow execution:
+
+- persisted workflow history
+- timers and sleeps
+- activity retries
+- long-running orchestration
+- compensation or recovery policy
+- worker task queues
+
+CoAkka owns runtime delivery to application targets. It can be useful inside or
+beside a workflow system when a workflow step needs to call a runtime
+capability, but it does not replace durable workflow history or orchestration
+semantics.
+
+Use Temporal or another workflow engine when the central problem is durable
+workflow state, long timers, human-in-the-loop orchestration, or replayable
+execution history.
+
+Use CoAkka when the central problem is delivery of accepted work to a named
+runtime target with bounded admission, route ownership, reply, timeout, and
+deadletter outcomes.
+
+## Is CoAkka Equivalent To Kafka Or RabbitMQ?
+
+No.
+
+Kafka and RabbitMQ are brokers. They are the right tools when the system needs
+broker-owned durability or messaging semantics:
+
+- durable topics or queues
+- consumer groups
+- replay or retention
+- fanout
+- broker-level ordering and backpressure policy
+- independent producer and consumer lifecycles
+
+CoAkka is a runtime delivery boundary for application-owned capabilities. It
+can reduce the need to introduce a broker for simple internal request/reply
+handoffs, but it should not be described as a replacement for broker semantics.
+
+Short answer:
+
+```text
+Use Kafka or RabbitMQ when the broker is the right durability and distribution
+boundary. Use CoAkka when the work is an app-owned runtime capability and the
+team needs route, queue, reply, timeout, and deadletter semantics without
+promoting the handoff into broker-owned messaging.
+```
+
+## How Does CoAkka Relate To The Outbox Pattern?
+
+The outbox pattern solves a different problem: making a database commit and
+asynchronous publication durable together.
+
+CoAkka can sit after an outbox dispatcher or carry projection work, but it does
+not replace the transactional outbox boundary.
+
+Typical shape:
+
+```text
+app transaction
+  -> write domain row and outbox row
+  -> commit
+  -> outbox dispatcher
+  -> CoAkka target or broker topic
+```
+
+Use outbox when the key question is:
+
+- did the business state commit?
+- did the async message become durable with that commit?
+- can the dispatcher resume safely after crash?
+
+Use CoAkka when the key question is:
+
+- which target should receive already-accepted work?
+- can runtime admit it now?
+- did it reply, time out, or deadletter?
+- what route and queue diagnostics explain the outcome?
 
 ## Why Does CoAkka Also Have A Logger Surface?
 
@@ -959,6 +1124,45 @@ Short answer:
 CoAkka does not omit discovery and mTLS by accident.
 It keeps them out of coakka-core-runtime on purpose, because they belong to
 the app-host, platform, or an adapter layer above runtime.
+```
+
+## Why Is Demanding mTLS Inside Core A Layer Violation?
+
+Because it applies service-mesh thinking to the runtime delivery engine.
+
+Inside a normal app-owned path, the runtime is already behind the public edge
+and behind app-host policy:
+
+```text
+public edge: nginx / gateway + TLS or mTLS
+  -> app-host: auth, CQRS, tenant policy, validation
+    -> CoAkka runtime: target, route generation, queue pressure, reply/deadletter
+      -> target handler
+
+optional real network hop:
+  -> connector addon or transport profile with TLS/mTLS
+```
+
+Putting `mTLS` directly into `coakka-core-runtime` would force the delivery
+engine to own certificate lifecycle, identity policy, and platform topology.
+That mixes four layers that should stay separate:
+
+- app-host lifecycle
+- platform topology
+- certificate and identity policy
+- runtime delivery semantics
+
+That does not improve the common same-deployment, same-team, app-owned handoff.
+It makes the core larger, harder to test, harder to embed, and closer to a
+partial service mesh.
+
+Short answer:
+
+```text
+Use mTLS at ingress, gateways, sidecars, connector addons, or real transport
+boundaries where identity policy is real. Do not put it in coakka-core-runtime
+by default; core runtime should execute the route and delivery contract it was
+given.
 ```
 
 ## If A Team Needs Discovery Or mTLS, Where Should That Live?

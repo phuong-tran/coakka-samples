@@ -627,14 +627,16 @@ the same target, source, route-generation, and deadletter vocabulary.
 - whether delivery missed a route, hit queue pressure, timed out, or matched a
   response/deadletter
 
-For deeper comparisons with REST/gRPC, CQRS, Event Sourcing, and business
-versus runtime boundaries, read [docs/qna.md](docs/qna.md).
+For deeper comparisons with REST/gRPC, service mesh, CQRS, Event Sourcing,
+workflow engines, brokers, security policy, observability, and business versus
+runtime boundaries, read [docs/qna.md](docs/qna.md).
 
 ## Questions And Answers
 
 Common positioning questions are collected in [docs/qna.md](docs/qna.md).
-Start there for comparisons with gRPC, CQRS, Event Sourcing, and business
-versus runtime boundaries.
+Start there for the quick decision table and comparisons with gRPC, Dapr,
+Akka/Erlang/Elixir, CQRS, Event Sourcing, Temporal-style workflow engines,
+Kafka/RabbitMQ, Saga, Istio, mTLS, auth/authz, observability, and logger scope.
 
 ## How It Works
 
