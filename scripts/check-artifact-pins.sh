@@ -49,6 +49,7 @@ required_rows=(
   "coakka-runtime-inspect linux-x86_64|runtime-inspect/native/releases/1.3.1+e664986/coakka-runtime-inspect-v2-1.3.1-linux-x86_64.tar.gz"
   "coakka-runtime-inspect macos-aarch64|runtime-inspect/native/releases/1.3.1+e664986/coakka-runtime-inspect-v2-1.3.1-macos-aarch64.tar.gz"
   "coakka-runtime-inspect windows-x86_64|runtime-inspect/native/releases/1.3.1+6c63864/coakka-runtime-inspect-v2-1.3.1-windows-x86_64.tar.gz"
+  "coakka-runtime-inspect windows-aarch64|runtime-inspect/native/releases/1.3.1+5c70234/coakka-runtime-inspect-v2-1.3.1-windows-aarch64.tar.gz"
 )
 
 stale_patterns=(

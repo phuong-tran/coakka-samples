@@ -40,7 +40,7 @@ Environment:
   COAKKA_RUNTIME_INSPECT_BIN=/path/to/coakka-runtime-inspect
 
 Notes:
-  check verifies docs and, on macOS ARM64, Linux, or Windows x86_64, the
+  check verifies docs and, on macOS ARM64, Linux, or Windows, the
   published inspect archive checksum through the public artifact manifest.
   published-smoke extracts the published platform archive and runs command
   plus snapshot smoke from that prefix.
@@ -66,6 +66,7 @@ coakka_runtime_inspect_platform() {
     Darwin:arm64|Darwin:aarch64) printf '%s\n' "macos-aarch64" ;;
     Linux:aarch64|Linux:arm64) printf '%s\n' "linux-aarch64" ;;
     Linux:x86_64|Linux:amd64) printf '%s\n' "linux-x86_64" ;;
+    MINGW*:aarch64|MINGW*:arm64|MSYS*:aarch64|MSYS*:arm64|CYGWIN*:aarch64|CYGWIN*:arm64) printf '%s\n' "windows-aarch64" ;;
     MINGW*:x86_64|MSYS*:x86_64|CYGWIN*:x86_64) printf '%s\n' "windows-x86_64" ;;
     *)
       return 1
@@ -76,6 +77,7 @@ coakka_runtime_inspect_platform() {
 coakka_runtime_inspect_release_id_for_platform() {
   local platform="$1"
   case "${platform}" in
+    windows-aarch64) printf '%s\n' "1.3.1+5c70234" ;;
     windows-x86_64) printf '%s\n' "1.3.1+6c63864" ;;
     macos-aarch64|linux-aarch64|linux-x86_64) printf '%s\n' "1.3.1+e664986" ;;
     *) return 1 ;;
@@ -106,7 +108,7 @@ run_check() {
     cleanup
   else
     echo "published_artifact=not-available-for-this-platform"
-    echo "published_platforms=macos-aarch64,linux-aarch64,linux-x86_64,windows-x86_64"
+    echo "published_platforms=macos-aarch64,linux-aarch64,linux-x86_64,windows-x86_64,windows-aarch64"
   fi
   if [[ -x "${inspect_bin}" ]]; then
     echo "local_binary=${inspect_bin}"
@@ -142,7 +144,7 @@ smoke_inspect_binary() {
 run_published_smoke() {
   local platform archive_path package_root published_bin
   platform="$(coakka_runtime_inspect_platform)" ||
-    coakka_die "Published runtime-inspect archive is currently available for macOS ARM64, Linux x86_64/ARM64, and Windows x86_64 only."
+    coakka_die "Published runtime-inspect archive is currently available for macOS ARM64, Linux x86_64/ARM64, and Windows x86_64/ARM64 only."
 
   coakka_require_command tar "Install tar, then retry."
   tmp_dir="$(mktemp -d)"

@@ -1093,9 +1093,8 @@ The inspect lane is not a dashboard, schema registry, service discovery
 server, mTLS control plane, or topology authority. Runtime core remains the
 source of truth; inspect reads and renders runtime facts.
 
-Current sample status: the macOS ARM64, Linux x86_64, Linux ARM64, and Windows
-x86_64 inspect archives are published in `coakka-publish`; Windows ARM64
-remains pending.
+Current sample status: the macOS ARM64, Linux x86_64, Linux ARM64, Windows
+x86_64, and Windows ARM64 inspect archives are published in `coakka-publish`.
 
 ```sh
 bash run.sh runtime-inspect check
@@ -1722,7 +1721,7 @@ Pinned public artifact lines used by these samples:
 | Runtime Rust | `1.3.1+bda2ef5-0a0aa76` |
 | Runtime Mojo and Zig samples | `1.3.1+bda2ef5-0a0aa76` source packages |
 | Runtime CLI client | `coakka-runtime-client` lane, `coakka-client` command, `1.3.1+2215b0f` |
-| Runtime inspect | `1.3.1+e664986` macOS ARM64 and Linux x86_64/ARM64 archives; `1.3.1+6c63864` Windows x86_64 archive; Windows ARM64 pending |
+| Runtime inspect | `1.3.1+e664986` macOS ARM64 and Linux x86_64/ARM64 archives; `1.3.1+6c63864` Windows x86_64 archive; `1.3.1+5c70234` Windows ARM64 archive |
 | Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:1.3.1-g0a0aa76` |
 | Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:1.3.1-g0a0aa76` |
 
@@ -1740,8 +1739,8 @@ The matching Spring Boot and Quarkus adapter note is published at
 Pinned runtime connector/native generation: `1.3.1+bda2ef5`.
 Published runtime-client CLI generation: `1.3.1+2215b0f`.
 Runtime inspect public artifact: `1.3.1+e664986` for macOS ARM64 and Linux
-x86_64/ARM64; `1.3.1+6c63864` for Windows x86_64. Windows ARM64 remains
-pending.
+x86_64/ARM64; `1.3.1+6c63864` for Windows x86_64; `1.3.1+5c70234` for
+Windows ARM64.
 
 | Lane | Public artifact status | First command |
 | --- | --- | --- |
@@ -1760,7 +1759,7 @@ pending.
 | Runtime C# | public | `bash run.sh runtime csharp basic` |
 | Runtime Rust | public | `bash run.sh runtime rust basic` |
 | Runtime CLI client | public | `bash run.sh runtime-client` |
-| Runtime inspect | public macOS ARM64, Linux x86_64/ARM64, and Windows x86_64 archives, local/native fallback | `bash run.sh runtime-inspect check` |
+| Runtime inspect | public macOS ARM64, Linux x86_64/ARM64, and Windows x86_64/ARM64 archives, local/native fallback | `bash run.sh runtime-inspect check` |
 | Logger Mojo | source sample | `bash run.sh logger mojo basic` |
 | Logger Zig | source sample | `bash run.sh logger zig basic` |
 | Runtime Mojo | source sample | `bash run.sh runtime mojo basic` |

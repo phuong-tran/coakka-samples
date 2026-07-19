@@ -6,8 +6,8 @@ runtime address, both use runtime-owned truth, and both keep route try behavior
 aligned with `call` / `ask`.
 
 This sample lane can verify the published macOS ARM64, Linux x86_64, Linux
-ARM64, and Windows x86_64 inspect archives from `coakka-publish`. Windows
-ARM64 remains a local/native verification lane until its archive is cut.
+ARM64, Windows x86_64, and Windows ARM64 inspect archives from
+`coakka-publish`.
 
 Detailed docs live under [docs/](docs/):
 
@@ -24,7 +24,7 @@ bash run.sh runtime-inspect
 bash run.sh runtime-inspect check
 ```
 
-On macOS ARM64, Linux x86_64/ARM64, or Windows x86_64, run the published
+On macOS ARM64, Linux x86_64/ARM64, or Windows x86_64/ARM64, run the published
 archive smoke:
 
 ```sh
@@ -76,6 +76,7 @@ The current published inspect release is:
 coakka-runtime-inspect native UI
 1.3.1+e664986 release id for macOS ARM64, Linux x86_64, Linux ARM64
 1.3.1+6c63864 release id for Windows x86_64
+1.3.1+5c70234 release id for Windows ARM64
 ```
 
 Direct download:
@@ -87,6 +88,8 @@ Direct download:
 [coakka-runtime-inspect-v2-1.3.1-macos-aarch64.tar.gz](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/coakka-runtime-inspect-v2-1.3.1-macos-aarch64.tar.gz)
 
 [coakka-runtime-inspect-v2-1.3.1-windows-x86_64.tar.gz](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/coakka-runtime-inspect-v2-1.3.1-windows-x86_64.tar.gz)
+
+[coakka-runtime-inspect-v2-1.3.1-windows-aarch64.tar.gz](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/coakka-runtime-inspect-v2-1.3.1-windows-aarch64.tar.gz)
 
 Full release page and manifest:
 [CoAkka Public Artifacts 1.3.1](https://github.com/phuong-tran/coakka-publish/releases/tag/coakka-public-artifacts-v1.3.1),
