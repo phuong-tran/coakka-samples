@@ -41,9 +41,9 @@ Environment:
   COAKKA_RUNTIME_INSPECT_BIN=/path/to/coakka-runtime-inspect
 
 Notes:
-  check verifies docs and, on macOS ARM64, the published inspect archive
+  check verifies docs and, on macOS ARM64 or Linux ARM64, the published inspect archive
   checksum through the public artifact manifest.
-  published-smoke extracts the published macOS ARM64 archive and runs command
+  published-smoke extracts the published platform archive and runs command
   plus snapshot smoke from that prefix.
   local-smoke requires a native coakka-runtime-inspect binary from the sibling
   core repository or COAKKA_RUNTIME_INSPECT_BIN.
@@ -65,6 +65,7 @@ coakka_runtime_inspect_platform() {
   machine="$(uname -m)"
   case "${system}:${machine}" in
     Darwin:arm64|Darwin:aarch64) printf '%s\n' "macos-aarch64" ;;
+    Linux:aarch64|Linux:arm64) printf '%s\n' "linux-aarch64" ;;
     *)
       return 1
       ;;
@@ -93,7 +94,7 @@ run_check() {
     cleanup
   else
     echo "published_artifact=not-available-for-this-platform"
-    echo "published_platforms=macos-aarch64"
+    echo "published_platforms=macos-aarch64,linux-aarch64"
   fi
   if [[ -x "${inspect_bin}" ]]; then
     echo "local_binary=${inspect_bin}"
@@ -129,7 +130,7 @@ smoke_inspect_binary() {
 run_published_smoke() {
   local platform archive_path package_root published_bin
   platform="$(coakka_runtime_inspect_platform)" ||
-    coakka_die "Published runtime-inspect archive is currently available for macOS ARM64 only."
+    coakka_die "Published runtime-inspect archive is currently available for macOS ARM64 and Linux ARM64 only."
 
   coakka_require_command tar "Install tar, then retry."
   tmp_dir="$(mktemp -d)"
@@ -139,8 +140,19 @@ run_published_smoke() {
   package_root="${tmp_dir}/package/coakka-runtime-inspect-v2-${COAKKA_RUNTIME_INSPECT_VERSION}-${platform}"
   published_bin="${package_root}/bin/coakka-runtime-inspect"
 
-  DYLD_LIBRARY_PATH="${package_root}/lib${DYLD_LIBRARY_PATH:+:${DYLD_LIBRARY_PATH}}" \
-    smoke_inspect_binary "${published_bin}"
+  case "$(uname -s)" in
+    Darwin)
+      DYLD_LIBRARY_PATH="${package_root}/lib${DYLD_LIBRARY_PATH:+:${DYLD_LIBRARY_PATH}}" \
+        smoke_inspect_binary "${published_bin}"
+      ;;
+    Linux)
+      LD_LIBRARY_PATH="${package_root}/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}" \
+        smoke_inspect_binary "${published_bin}"
+      ;;
+    *)
+      coakka_die "Unsupported runtime-inspect published smoke host."
+      ;;
+  esac
 
   cleanup
   echo "coakka-runtime-inspect published smoke ok"

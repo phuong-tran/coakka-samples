@@ -24,10 +24,10 @@ targets, routes, pressure, and outcomes directly.
 ## Current Sample Status
 
 The inspect binary is implemented in the native v2 runtime repository. The
-first public inspect archive is available for macOS ARM64 as
-`1.3.1+e664986`.
+current public inspect archive generation is available for macOS ARM64 and
+Linux ARM64 as `1.3.1+e664986`.
 
 Use `check` for public sample wiring and archive metadata verification. Use
-`published-smoke` on macOS ARM64 to run the published archive. Use
+`published-smoke` on macOS ARM64 or Linux ARM64 to run the published archive. Use
 `local-smoke` or `serve` when a local `coakka-runtime-inspect` binary is
 available.

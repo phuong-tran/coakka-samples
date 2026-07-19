@@ -5,9 +5,10 @@ It is the visual sibling of `coakka-client`: both point at a caller-supplied
 runtime address, both use runtime-owned truth, and both keep route try behavior
 aligned with `call` / `ask`.
 
-This sample lane can verify the published macOS ARM64 inspect archive from
-`coakka-publish`. Linux and Windows inspect archives are not published yet, so
-those platforms remain local/native verification lanes for now.
+This sample lane can verify the published macOS ARM64 and Linux ARM64 inspect
+archives from `coakka-publish`. Linux x86_64 and Windows inspect archives are
+not published yet, so those platforms remain local/native verification lanes
+for now.
 
 Detailed docs live under [docs/](docs/):
 
@@ -24,7 +25,7 @@ bash run.sh runtime-inspect
 bash run.sh runtime-inspect check
 ```
 
-On macOS ARM64, run the published archive smoke:
+On macOS ARM64 or Linux ARM64, run the published archive smoke:
 
 ```sh
 bash run.sh runtime-inspect published-smoke
@@ -75,9 +76,12 @@ The current published inspect release is:
 coakka-runtime-inspect native UI
 1.3.1+e664986 release id
 macOS ARM64 archive
+Linux ARM64 archive
 ```
 
 Direct download:
+
+[coakka-runtime-inspect-v2-1.3.1-linux-aarch64.tar.gz](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/coakka-runtime-inspect-v2-1.3.1-linux-aarch64.tar.gz)
 
 [coakka-runtime-inspect-v2-1.3.1-macos-aarch64.tar.gz](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/coakka-runtime-inspect-v2-1.3.1-macos-aarch64.tar.gz)
 

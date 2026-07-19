@@ -353,7 +353,7 @@ surface.
 | Understand explicit runtime wiring | `bash run.sh runtime jvm java-basic` or the basic sample for another language | Shows start spec, process-owned route, handler registration, ask/reply, and stats. |
 | Understand route misses and delivery failures | `bash run.sh runtime jvm deadletter` or `bash run.sh runtime python deadletter` | Shows a missing target becoming a matched deadletter instead of a vague timeout. |
 | Understand route generation and reload | `bash run.sh runtime python hot-reload` | Shows newer route snapshots being applied and stale/invalid snapshots rejected. |
-| Understand browser runtime exploration | `bash run.sh runtime-inspect check` then `bash run.sh runtime-inspect local-smoke` with a local native build | Shows inspect as the UI sibling of `coakka-client` without claiming a published inspect archive yet. |
+| Understand browser runtime exploration | `bash run.sh runtime-inspect check` then `bash run.sh runtime-inspect published-smoke` on a published host | Shows inspect as the UI sibling of `coakka-client` using the public native UI archive. |
 | Understand a normal application workflow | `bash run.sh scenario customer-crud spring-boot-starter-local dev` | Shows browser/API edge plus runtime capabilities in one same-process app. |
 | Compare same-process app shape with cross-process shape | `bash run.sh scenario customer-crud spring-boot-spring-boot dev` | Keeps customer traffic runtime-only between web and store processes. |
 | Start from Spring Boot annotations | `runtime/scenarios/customer-crud/spring-boot-starter-local` | Uses `@CoAkkaHandler` and `CoAkkaRuntimeClient` instead of manual route/handler wiring. |
@@ -1093,8 +1093,9 @@ The inspect lane is not a dashboard, schema registry, service discovery
 server, mTLS control plane, or topology authority. Runtime core remains the
 source of truth; inspect reads and renders runtime facts.
 
-Current sample status: the macOS ARM64 inspect archive is published in
-`coakka-publish`; Linux and Windows inspect archives are not published yet.
+Current sample status: the macOS ARM64 and Linux ARM64 inspect archives are
+published in `coakka-publish`; Linux x86_64 and Windows inspect archives are
+not published yet.
 
 ```sh
 bash run.sh runtime-inspect check
@@ -1721,7 +1722,7 @@ Pinned public artifact lines used by these samples:
 | Runtime Rust | `1.3.1+bda2ef5-0a0aa76` |
 | Runtime Mojo and Zig samples | `1.3.1+bda2ef5-0a0aa76` source packages |
 | Runtime CLI client | `coakka-runtime-client` lane, `coakka-client` command, `1.3.1+2215b0f` |
-| Runtime inspect | `1.3.1+e664986` macOS ARM64 archive; Linux/Windows pending |
+| Runtime inspect | `1.3.1+e664986` macOS ARM64 and Linux ARM64 archives; Linux x86_64/Windows pending |
 | Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:1.3.1-g0a0aa76` |
 | Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:1.3.1-g0a0aa76` |
 
@@ -1738,8 +1739,8 @@ The matching Spring Boot and Quarkus adapter note is published at
 
 Pinned runtime connector/native generation: `1.3.1+bda2ef5`.
 Published runtime-client CLI generation: `1.3.1+2215b0f`.
-Runtime inspect public artifact: `1.3.1+e664986` for macOS ARM64; Linux and
-Windows inspect archives are pending.
+Runtime inspect public artifact: `1.3.1+e664986` for macOS ARM64 and Linux
+ARM64; Linux x86_64 and Windows inspect archives are pending.
 
 | Lane | Public artifact status | First command |
 | --- | --- | --- |
@@ -1758,7 +1759,7 @@ Windows inspect archives are pending.
 | Runtime C# | public | `bash run.sh runtime csharp basic` |
 | Runtime Rust | public | `bash run.sh runtime rust basic` |
 | Runtime CLI client | public | `bash run.sh runtime-client` |
-| Runtime inspect | public macOS ARM64 archive, local/native fallback | `bash run.sh runtime-inspect check` |
+| Runtime inspect | public macOS ARM64 and Linux ARM64 archives, local/native fallback | `bash run.sh runtime-inspect check` |
 | Logger Mojo | source sample | `bash run.sh logger mojo basic` |
 | Logger Zig | source sample | `bash run.sh logger zig basic` |
 | Runtime Mojo | source sample | `bash run.sh runtime mojo basic` |
