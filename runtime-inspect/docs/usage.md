@@ -7,13 +7,13 @@ bash run.sh runtime-inspect check
 ```
 
 That command verifies the sample docs and reports whether a local inspect
-binary is available. On macOS ARM64 or Linux ARM64, it also resolves the
+binary is available. On macOS ARM64 or Linux x86_64/ARM64, it also resolves the
 published inspect archive from `coakka-publish` and verifies its checksum against
 `artifacts/public-artifacts.tsv`.
 
 ## Published Archive Smoke
 
-Run the published macOS ARM64 or Linux ARM64 archive smoke:
+Run the published macOS ARM64 or Linux x86_64/ARM64 archive smoke:
 
 ```sh
 bash run.sh runtime-inspect published-smoke
@@ -23,7 +23,7 @@ The smoke extracts the published archive, runs `version`, `doctor`,
 `help serve`, and reads one `local-linked-runtime` snapshot with a diagnostic
 route.
 
-Linux x86_64 and Windows inspect archives are not published in this drop.
+Windows inspect archives are not published in this drop.
 
 ## Local Native Smoke
 

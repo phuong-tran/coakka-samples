@@ -41,7 +41,7 @@ Environment:
   COAKKA_RUNTIME_INSPECT_BIN=/path/to/coakka-runtime-inspect
 
 Notes:
-  check verifies docs and, on macOS ARM64 or Linux ARM64, the published inspect archive
+  check verifies docs and, on macOS ARM64 or Linux, the published inspect archive
   checksum through the public artifact manifest.
   published-smoke extracts the published platform archive and runs command
   plus snapshot smoke from that prefix.
@@ -66,6 +66,7 @@ coakka_runtime_inspect_platform() {
   case "${system}:${machine}" in
     Darwin:arm64|Darwin:aarch64) printf '%s\n' "macos-aarch64" ;;
     Linux:aarch64|Linux:arm64) printf '%s\n' "linux-aarch64" ;;
+    Linux:x86_64|Linux:amd64) printf '%s\n' "linux-x86_64" ;;
     *)
       return 1
       ;;
@@ -94,7 +95,7 @@ run_check() {
     cleanup
   else
     echo "published_artifact=not-available-for-this-platform"
-    echo "published_platforms=macos-aarch64,linux-aarch64"
+    echo "published_platforms=macos-aarch64,linux-aarch64,linux-x86_64"
   fi
   if [[ -x "${inspect_bin}" ]]; then
     echo "local_binary=${inspect_bin}"
@@ -130,7 +131,7 @@ smoke_inspect_binary() {
 run_published_smoke() {
   local platform archive_path package_root published_bin
   platform="$(coakka_runtime_inspect_platform)" ||
-    coakka_die "Published runtime-inspect archive is currently available for macOS ARM64 and Linux ARM64 only."
+    coakka_die "Published runtime-inspect archive is currently available for macOS ARM64 and Linux x86_64/ARM64 only."
 
   coakka_require_command tar "Install tar, then retry."
   tmp_dir="$(mktemp -d)"
