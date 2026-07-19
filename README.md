@@ -260,14 +260,17 @@ Docker Hub image tags for this release train:
 
 ```text
 docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote
+docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-d7ab7fa-remote
 docker.io/gabrielgun1983/sample-node-web:1.3.1-bda2ef5-0a0aa76-remote
 docker.io/gabrielgun1983/sample-python-store:1.3.1-bda2ef5-0a0aa76-remote
 ```
 
-Those tags are the published runtime-client and Node.js/Python container image
-lines used by these samples. The runtime-client demo image installs the
-published `coakka-client` `1.3.1+2215b0f` and native demo service artifacts.
-The Node.js/Python sample images install the pinned Node.js and Python connector
+Those tags are the published runtime-client, runtime-inspect, and Node.js/Python
+container image lines used by these samples. The runtime-client demo image
+installs the published `coakka-client` `1.3.1+2215b0f` and native demo service
+artifacts. The runtime-inspect sample image installs the published Linux
+`coakka-runtime-inspect` `1.3.1+d7ab7fa` archives. The Node.js/Python sample
+images install the pinned Node.js and Python connector
 artifact set `1.3.1+bda2ef5-0a0aa76` over the native runtime base line
 `1.3.1+bda2ef5`. Repo-local rebuilds use the same connector set over
 `coakka/runtime-base:1.3.1-bda2ef5-local`.
@@ -1103,12 +1106,17 @@ bash run.sh runtime-inspect local-smoke
 bash run.sh runtime-inspect serve
 bash run.sh runtime-inspect docker-smoke
 bash run.sh runtime-inspect docker-serve
+bash run.sh runtime-inspect dockerhub-smoke
 ```
 
 For Docker, run `bash run.sh runtime-inspect docker-smoke` to build and smoke a
 local image from the published Linux archive, or
 `bash run.sh runtime-inspect docker-serve` to expose the browser UI on
 `http://127.0.0.1:18080`.
+
+For the Docker Hub zero-install path, run
+`bash run.sh runtime-inspect dockerhub-smoke` or
+`docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-d7ab7fa-remote`.
 
 Read the sample lane landing page at [runtime-inspect/README.md](runtime-inspect/README.md).
 

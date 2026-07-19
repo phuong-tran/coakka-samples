@@ -9,6 +9,7 @@ source "${repo_root}/scripts/sample-utils.sh"
 
 COAKKA_RUNTIME_INSPECT_VERSION="1.3.1"
 COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE_DEFAULT="coakka-runtime-inspect-sample:1.3.1-local"
+COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE_DEFAULT="docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-d7ab7fa-remote"
 
 core_root="${COAKKA_CORE_ROOT:-${repo_root}/../coakkaCoreNativeDev}"
 inspect_bin="${COAKKA_RUNTIME_INSPECT_BIN:-${core_root}/build-v2/coakka-runtime-inspect}"
@@ -36,6 +37,8 @@ Usage:
   bash run.sh runtime-inspect serve
   bash run.sh runtime-inspect docker-smoke
   bash run.sh runtime-inspect docker-serve
+  bash run.sh runtime-inspect dockerhub-smoke
+  bash run.sh runtime-inspect dockerhub-serve
 
 Environment:
   COAKKA_PUBLISH_ROOT       local coakka-publish checkout
@@ -43,6 +46,7 @@ Environment:
   COAKKA_CORE_ROOT=/path/to/coakkaCoreNativeDev
   COAKKA_RUNTIME_INSPECT_BIN=/path/to/coakka-runtime-inspect
   COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE=coakka-runtime-inspect-sample:1.3.1-local
+  COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE=docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-d7ab7fa-remote
   COAKKA_RUNTIME_INSPECT_DOCKER_PORT=18080
 
 Notes:
@@ -56,6 +60,8 @@ Notes:
   docker-smoke builds a local image from the published Linux archive and runs
   command smoke inside the container.
   docker-serve runs the same image and exposes the browser UI on the host.
+  dockerhub-smoke pulls the published Docker Hub image and runs command smoke.
+  dockerhub-serve runs the published Docker Hub image and exposes the UI.
 EOF
 }
 
@@ -273,6 +279,31 @@ run_docker_serve() {
     "${image}" serve "$@"
 }
 
+run_dockerhub_smoke() {
+  local image="${COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE:-${COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE_DEFAULT}}"
+
+  coakka_require_command docker "Install Docker, then retry."
+  echo "[coakka-runtime-inspect] docker image=${image}"
+  docker run --rm "${image}" smoke
+  echo "coakka-runtime-inspect Docker Hub smoke ok"
+}
+
+run_dockerhub_serve() {
+  local image="${COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE:-${COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE_DEFAULT}}"
+  local host_port="${COAKKA_RUNTIME_INSPECT_DOCKER_PORT:-18080}"
+
+  coakka_require_command docker "Install Docker, then retry."
+  echo "[coakka-runtime-inspect] docker image=${image}"
+  exec docker run --rm \
+    -p "${host_port}:18080" \
+    "${image}" serve "$@"
+}
+
+run_dockerhub_build_push() {
+  COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE="${COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE:-${COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE_DEFAULT}}" \
+    bash "${script_dir}/dockerhub/build-and-push.sh"
+}
+
 command_name="${1:-check}"
 case "${command_name}" in
   check)
@@ -294,6 +325,16 @@ case "${command_name}" in
   docker-serve)
     shift || true
     run_docker_serve "$@"
+    ;;
+  dockerhub-smoke|dockerhub)
+    run_dockerhub_smoke
+    ;;
+  dockerhub-serve)
+    shift || true
+    run_dockerhub_serve "$@"
+    ;;
+  dockerhub-build-push)
+    run_dockerhub_build_push
     ;;
   help|-h|--help)
     print_usage

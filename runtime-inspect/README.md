@@ -136,3 +136,17 @@ COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE=coakka-runtime-inspect-sample:local \
 COAKKA_RUNTIME_INSPECT_DOCKER_PORT=18081 \
   bash run.sh runtime-inspect docker-serve
 ```
+
+Run the published Docker Hub image without preparing a local artifact context:
+
+```sh
+bash run.sh runtime-inspect dockerhub-smoke
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-d7ab7fa-remote
+```
+
+Serve the browser UI from Docker Hub:
+
+```sh
+bash run.sh runtime-inspect dockerhub-serve
+docker run --rm -p 18080:18080 docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-d7ab7fa-remote serve
+```

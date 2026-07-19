@@ -31,7 +31,7 @@ Usage:
   bash run.sh containers/<sample> [command]
   bash run.sh runtime/scenarios/<track>/<topology> <command>
   bash run.sh runtime-client [check|version|doctor|docker-bundle|docker-walkthrough|dockerhub-demo]
-  bash run.sh runtime-inspect [check|published-smoke|local-smoke|serve|docker-smoke|docker-serve]
+  bash run.sh runtime-inspect [check|published-smoke|local-smoke|serve|docker-smoke|docker-serve|dockerhub-smoke]
 
 Examples:
   bash run.sh

@@ -128,6 +128,7 @@ Runtime inspect sample:
   runtime-inspect/serve           Start the browser inspect UI from a local native build
   runtime-inspect/docker-smoke    Build a local Docker image from the published Linux inspect archive and smoke it
   runtime-inspect/docker-serve    Start the browser inspect UI from that local Docker image
+  runtime-inspect/dockerhub-smoke Run the published Docker Hub inspect sample image
 
 Scenario tracks:
 EOF

@@ -125,6 +125,29 @@ Pass route-try flags after `docker-serve`:
 bash run.sh runtime-inspect docker-serve --connect host.docker.internal:19091
 ```
 
+## Docker Hub Image
+
+Use the Docker Hub image when the goal is a one-command browser-visible inspect
+path without building a local image:
+
+```sh
+bash run.sh runtime-inspect dockerhub-smoke
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-d7ab7fa-remote
+```
+
+Serve the browser UI:
+
+```sh
+bash run.sh runtime-inspect dockerhub-serve
+docker run --rm -p 18080:18080 docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-d7ab7fa-remote serve
+```
+
+Route-try can still point at a caller-supplied runtime address:
+
+```sh
+bash run.sh runtime-inspect dockerhub-serve --connect host.docker.internal:19091
+```
+
 ## Binary Override
 
 Use a non-default binary path:
