@@ -13,4 +13,6 @@ Use these docs together with the local sample runner:
 bash run.sh runtime-inspect check
 bash run.sh runtime-inspect published-smoke
 bash run.sh runtime-inspect local-smoke
+bash run.sh runtime-inspect docker-smoke
+bash run.sh runtime-inspect docker-serve
 ```

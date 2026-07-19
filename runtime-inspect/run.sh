@@ -8,9 +8,11 @@ source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 
 COAKKA_RUNTIME_INSPECT_VERSION="1.3.1"
+COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE_DEFAULT="coakka-runtime-inspect-sample:1.3.1-local"
 
 core_root="${COAKKA_CORE_ROOT:-${repo_root}/../coakkaCoreNativeDev}"
 inspect_bin="${COAKKA_RUNTIME_INSPECT_BIN:-${core_root}/build-v2/coakka-runtime-inspect}"
+docker_context_root="${COAKKA_RUNTIME_INSPECT_DOCKER_CONTEXT:-${repo_root}/build/runtime-inspect-docker/context}"
 tmp_dir=""
 
 cleanup() {
@@ -32,12 +34,16 @@ Usage:
   bash run.sh runtime-inspect published-smoke
   bash run.sh runtime-inspect local-smoke
   bash run.sh runtime-inspect serve
+  bash run.sh runtime-inspect docker-smoke
+  bash run.sh runtime-inspect docker-serve
 
 Environment:
   COAKKA_PUBLISH_ROOT       local coakka-publish checkout
   COAKKA_PUBLISH_RAW_BASE   raw public fallback URL
   COAKKA_CORE_ROOT=/path/to/coakkaCoreNativeDev
   COAKKA_RUNTIME_INSPECT_BIN=/path/to/coakka-runtime-inspect
+  COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE=coakka-runtime-inspect-sample:1.3.1-local
+  COAKKA_RUNTIME_INSPECT_DOCKER_PORT=18080
 
 Notes:
   check verifies docs and, on macOS ARM64, Linux, or Windows, the
@@ -47,6 +53,9 @@ Notes:
   local-smoke requires a native coakka-runtime-inspect binary from the sibling
   core repository or COAKKA_RUNTIME_INSPECT_BIN.
   serve starts the browser UI from that local binary.
+  docker-smoke builds a local image from the published Linux archive and runs
+  command smoke inside the container.
+  docker-serve runs the same image and exposes the browser UI on the host.
 EOF
 }
 
@@ -81,6 +90,23 @@ coakka_runtime_inspect_release_id_for_platform() {
     windows-x86_64) printf '%s\n' "1.3.1+6c63864" ;;
     macos-aarch64|linux-aarch64|linux-x86_64) printf '%s\n' "1.3.1+e664986" ;;
     *) return 1 ;;
+  esac
+}
+
+coakka_runtime_inspect_docker_platform() {
+  case "$(uname -m)" in
+    arm64|aarch64) printf '%s\n' "linux-aarch64" ;;
+    x86_64|amd64) printf '%s\n' "linux-x86_64" ;;
+    *) coakka_die "Unsupported runtime-inspect Docker host architecture: $(uname -m)" ;;
+  esac
+}
+
+coakka_runtime_inspect_docker_platform_arg() {
+  local platform="$1"
+  case "${platform}" in
+    linux-aarch64) printf '%s\n' "linux/arm64" ;;
+    linux-x86_64) printf '%s\n' "linux/amd64" ;;
+    *) coakka_die "Unsupported runtime-inspect Docker platform: ${platform}" ;;
   esac
 }
 
@@ -141,6 +167,30 @@ smoke_inspect_binary() {
   rm -rf "${smoke_tmp}"
 }
 
+prepare_docker_context() {
+  local platform="$1"
+  local archive_path package_root
+
+  coakka_require_command tar "Install tar, then retry."
+  tmp_dir="$(mktemp -d)"
+  archive_path="$(resolve_published_archive "${platform}")"
+  mkdir -p "${tmp_dir}/package"
+  tar -C "${tmp_dir}/package" -xzf "${archive_path}"
+  package_root="${tmp_dir}/package/coakka-runtime-inspect-v2-${COAKKA_RUNTIME_INSPECT_VERSION}-${platform}"
+  coakka_require_executable_file "${package_root}/bin/coakka-runtime-inspect" \
+    "The published Linux inspect archive is incomplete."
+
+  rm -rf "${docker_context_root}"
+  mkdir -p "${docker_context_root}/inspect"
+  cp -R "${package_root}/." "${docker_context_root}/inspect/"
+  cp "${script_dir}/docker/Dockerfile" "${docker_context_root}/Dockerfile"
+  cp "${script_dir}/docker/entrypoint.sh" "${docker_context_root}/entrypoint.sh"
+  chmod +x "${docker_context_root}/entrypoint.sh"
+  cleanup
+
+  printf '%s\n' "${docker_context_root}"
+}
+
 run_published_smoke() {
   local platform archive_path package_root published_bin
   platform="$(coakka_runtime_inspect_platform)" ||
@@ -193,6 +243,35 @@ run_serve() {
     "$@"
 }
 
+run_docker_smoke() {
+  local platform docker_platform image context_root
+  platform="$(coakka_runtime_inspect_docker_platform)"
+  docker_platform="$(coakka_runtime_inspect_docker_platform_arg "${platform}")"
+  image="${COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE:-${COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE_DEFAULT}}"
+
+  coakka_require_command docker "Install Docker, then retry."
+  context_root="$(prepare_docker_context "${platform}")"
+  docker build --platform "${docker_platform}" --tag "${image}" "${context_root}" >/dev/null
+  docker run --rm --platform "${docker_platform}" "${image}" smoke
+  echo "coakka-runtime-inspect docker smoke ok"
+}
+
+run_docker_serve() {
+  local platform docker_platform image context_root host_port
+  platform="$(coakka_runtime_inspect_docker_platform)"
+  docker_platform="$(coakka_runtime_inspect_docker_platform_arg "${platform}")"
+  image="${COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE:-${COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE_DEFAULT}}"
+  host_port="${COAKKA_RUNTIME_INSPECT_DOCKER_PORT:-18080}"
+
+  coakka_require_command docker "Install Docker, then retry."
+  context_root="$(prepare_docker_context "${platform}")"
+  docker build --platform "${docker_platform}" --tag "${image}" "${context_root}" >/dev/null
+  exec docker run --rm \
+    --platform "${docker_platform}" \
+    -p "${host_port}:18080" \
+    "${image}" serve "$@"
+}
+
 command_name="${1:-check}"
 case "${command_name}" in
   check)
@@ -207,6 +286,13 @@ case "${command_name}" in
   serve)
     shift || true
     run_serve "$@"
+    ;;
+  docker-smoke)
+    run_docker_smoke
+    ;;
+  docker-serve)
+    shift || true
+    run_docker_serve "$@"
     ;;
   help|-h|--help)
     print_usage

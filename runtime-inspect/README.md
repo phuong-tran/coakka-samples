@@ -43,6 +43,17 @@ To start the browser UI from that local binary:
 bash run.sh runtime-inspect serve
 ```
 
+To try inspect through Docker without installing the native binary on the host:
+
+```sh
+bash run.sh runtime-inspect docker-smoke
+bash run.sh runtime-inspect docker-serve
+```
+
+`docker-smoke` builds a local image from the published Linux inspect archive and
+runs command smoke inside the container. `docker-serve` exposes the browser UI
+on `http://127.0.0.1:18080` by default.
+
 For local/native smoke, the sample expects:
 
 ```text
@@ -94,3 +105,29 @@ Direct download:
 Full release page and manifest:
 [CoAkka Public Artifacts 1.3.1](https://github.com/phuong-tran/coakka-publish/releases/tag/coakka-public-artifacts-v1.3.1),
 [public-artifacts.tsv](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/public-artifacts.tsv)
+
+## Docker
+
+The Docker path is a sample convenience wrapper around the published Linux
+inspect archive. It is not the canonical artifact download surface and it does
+not move HTTP serving into runtime core.
+
+Build and smoke the local image:
+
+```sh
+bash run.sh runtime-inspect docker-smoke
+```
+
+Run the browser UI:
+
+```sh
+bash run.sh runtime-inspect docker-serve
+```
+
+Override the image tag or host port:
+
+```sh
+COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE=coakka-runtime-inspect-sample:local \
+COAKKA_RUNTIME_INSPECT_DOCKER_PORT=18081 \
+  bash run.sh runtime-inspect docker-serve
+```

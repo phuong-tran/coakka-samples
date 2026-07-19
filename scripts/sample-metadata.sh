@@ -126,6 +126,8 @@ Runtime inspect sample:
   runtime-inspect/published-smoke Smoke the published platform coakka-runtime-inspect archive
   runtime-inspect/local-smoke     Smoke a sibling native coakka-runtime-inspect build
   runtime-inspect/serve           Start the browser inspect UI from a local native build
+  runtime-inspect/docker-smoke    Build a local Docker image from the published Linux inspect archive and smoke it
+  runtime-inspect/docker-serve    Start the browser inspect UI from that local Docker image
 
 Scenario tracks:
 EOF

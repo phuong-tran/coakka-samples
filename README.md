@@ -353,7 +353,7 @@ surface.
 | Understand explicit runtime wiring | `bash run.sh runtime jvm java-basic` or the basic sample for another language | Shows start spec, process-owned route, handler registration, ask/reply, and stats. |
 | Understand route misses and delivery failures | `bash run.sh runtime jvm deadletter` or `bash run.sh runtime python deadletter` | Shows a missing target becoming a matched deadletter instead of a vague timeout. |
 | Understand route generation and reload | `bash run.sh runtime python hot-reload` | Shows newer route snapshots being applied and stale/invalid snapshots rejected. |
-| Understand browser runtime exploration | `bash run.sh runtime-inspect check` then `bash run.sh runtime-inspect published-smoke` on a published host | Shows inspect as the UI sibling of `coakka-client` using the public native UI archive. |
+| Understand browser runtime exploration | `bash run.sh runtime-inspect check` then `bash run.sh runtime-inspect published-smoke` or `bash run.sh runtime-inspect docker-smoke` | Shows inspect as the UI sibling of `coakka-client` using the public native UI archive or a local Docker image built from it. |
 | Understand a normal application workflow | `bash run.sh scenario customer-crud spring-boot-starter-local dev` | Shows browser/API edge plus runtime capabilities in one same-process app. |
 | Compare same-process app shape with cross-process shape | `bash run.sh scenario customer-crud spring-boot-spring-boot dev` | Keeps customer traffic runtime-only between web and store processes. |
 | Start from Spring Boot annotations | `runtime/scenarios/customer-crud/spring-boot-starter-local` | Uses `@CoAkkaHandler` and `CoAkkaRuntimeClient` instead of manual route/handler wiring. |
@@ -1101,7 +1101,14 @@ bash run.sh runtime-inspect check
 bash run.sh runtime-inspect published-smoke
 bash run.sh runtime-inspect local-smoke
 bash run.sh runtime-inspect serve
+bash run.sh runtime-inspect docker-smoke
+bash run.sh runtime-inspect docker-serve
 ```
+
+For Docker, run `bash run.sh runtime-inspect docker-smoke` to build and smoke a
+local image from the published Linux archive, or
+`bash run.sh runtime-inspect docker-serve` to expose the browser UI on
+`http://127.0.0.1:18080`.
 
 Read the sample lane landing page at [runtime-inspect/README.md](runtime-inspect/README.md).
 
@@ -1759,7 +1766,7 @@ Windows ARM64.
 | Runtime C# | public | `bash run.sh runtime csharp basic` |
 | Runtime Rust | public | `bash run.sh runtime rust basic` |
 | Runtime CLI client | public | `bash run.sh runtime-client` |
-| Runtime inspect | public macOS ARM64, Linux x86_64/ARM64, and Windows x86_64/ARM64 archives, local/native fallback | `bash run.sh runtime-inspect check` |
+| Runtime inspect | public macOS ARM64, Linux x86_64/ARM64, and Windows x86_64/ARM64 archives, local/native fallback, local Docker image wrapper | `bash run.sh runtime-inspect check` |
 | Logger Mojo | source sample | `bash run.sh logger mojo basic` |
 | Logger Zig | source sample | `bash run.sh logger zig basic` |
 | Runtime Mojo | source sample | `bash run.sh runtime mojo basic` |

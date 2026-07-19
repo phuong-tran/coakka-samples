@@ -27,6 +27,17 @@ route.
 
 All five current inspect native platforms are published.
 
+## Docker Smoke
+
+Build and smoke a local Docker image from the published Linux inspect archive:
+
+```sh
+bash run.sh runtime-inspect docker-smoke
+```
+
+The image runs `version`, `doctor`, `help serve`, and a
+`local-linked-runtime` snapshot check inside the container.
+
 ## Local Native Smoke
 
 Build the inspect binary in the sibling core repository:
@@ -83,6 +94,33 @@ bash run.sh runtime-inspect serve --connect 127.0.0.1:19091
 
 `--connect` configures the remote runtime request path for the Try Route panel.
 It does not make `/api/snapshot` a remote runtime reader in this release.
+
+## Start Through Docker
+
+Run inspect through the local Docker image:
+
+```sh
+bash run.sh runtime-inspect docker-serve
+```
+
+The default host URL is still:
+
+```text
+http://127.0.0.1:18080
+```
+
+Override the host port:
+
+```sh
+COAKKA_RUNTIME_INSPECT_DOCKER_PORT=18081 \
+  bash run.sh runtime-inspect docker-serve
+```
+
+Pass route-try flags after `docker-serve`:
+
+```sh
+bash run.sh runtime-inspect docker-serve --connect host.docker.internal:19091
+```
 
 ## Binary Override
 
