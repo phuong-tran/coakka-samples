@@ -89,7 +89,8 @@ coakka_runtime_inspect_release_id_for_platform() {
     windows-aarch64) printf '%s\n' "1.3.1+5c70234" ;;
     windows-x86_64) printf '%s\n' "1.3.1+6c63864" ;;
     macos-aarch64) printf '%s\n' "1.3.1+d7ab7fa" ;;
-    linux-aarch64|linux-x86_64) printf '%s\n' "1.3.1+e664986" ;;
+    linux-aarch64) printf '%s\n' "1.3.1+d7ab7fa" ;;
+    linux-x86_64) printf '%s\n' "1.3.1+e664986" ;;
     *) return 1 ;;
   esac
 }

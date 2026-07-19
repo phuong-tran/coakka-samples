@@ -103,6 +103,9 @@ Run inspect through the local Docker image:
 bash run.sh runtime-inspect docker-serve
 ```
 
+The sample image installs the Linux shared-library dependency required by the
+published native inspect archive. No host-side runtime install is required.
+
 The default host URL is still:
 
 ```text

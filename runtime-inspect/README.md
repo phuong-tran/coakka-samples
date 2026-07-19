@@ -86,7 +86,8 @@ The current published inspect release is:
 ```text
 coakka-runtime-inspect native UI
 1.3.1+d7ab7fa release id for macOS ARM64
-1.3.1+e664986 release id for Linux x86_64, Linux ARM64
+1.3.1+d7ab7fa release id for Linux ARM64
+1.3.1+e664986 release id for Linux x86_64
 1.3.1+6c63864 release id for Windows x86_64
 1.3.1+5c70234 release id for Windows ARM64
 ```
@@ -112,6 +113,9 @@ Full release page and manifest:
 The Docker path is a sample convenience wrapper around the published Linux
 inspect archive. It is not the canonical artifact download surface and it does
 not move HTTP serving into runtime core.
+
+The image installs the small OS shared-library dependency needed by the native
+Linux inspect binary, so users do not have to prepare the host machine first.
 
 Build and smoke the local image:
 
