@@ -85,6 +85,10 @@ COAKKA_ARTIFACT_ROWS=(
   "coakka-client windows-aarch64|cli/releases/1.3.1+2215b0f/coakka-client-v2-1.3.1-windows-aarch64.tar.gz"
   "coakka-client docker-demo linux-x86_64|demo/coakka-client/releases/1.3.1+2215b0f/coakka-client-docker-demo-v2-1.3.1-linux-x86_64.tar.gz"
   "coakka-client docker-demo linux-aarch64|demo/coakka-client/releases/1.3.1+2215b0f/coakka-client-docker-demo-v2-1.3.1-linux-aarch64.tar.gz"
+  "coakka-runtime-inspect linux-aarch64|runtime-inspect/native/releases/1.3.1+e664986/coakka-runtime-inspect-v2-1.3.1-linux-aarch64.tar.gz"
+  "coakka-runtime-inspect linux-x86_64|runtime-inspect/native/releases/1.3.1+e664986/coakka-runtime-inspect-v2-1.3.1-linux-x86_64.tar.gz"
+  "coakka-runtime-inspect macos-aarch64|runtime-inspect/native/releases/1.3.1+e664986/coakka-runtime-inspect-v2-1.3.1-macos-aarch64.tar.gz"
+  "coakka-runtime-inspect windows-x86_64|runtime-inspect/native/releases/1.3.1+6c63864/coakka-runtime-inspect-v2-1.3.1-windows-x86_64.tar.gz"
 )
 
 coakka_default_publish_root() {
@@ -117,8 +121,8 @@ Runtime client sample:
   runtime-client/dockerhub-demo    Run the published Docker Hub runtime-client demo image
 
 Runtime inspect sample:
-  runtime-inspect/check           Verify inspect docs and published macOS archive metadata when available
-  runtime-inspect/published-smoke Smoke the published macOS coakka-runtime-inspect archive
+  runtime-inspect/check           Verify inspect docs and published archive metadata when available
+  runtime-inspect/published-smoke Smoke the published platform coakka-runtime-inspect archive
   runtime-inspect/local-smoke     Smoke a sibling native coakka-runtime-inspect build
   runtime-inspect/serve           Start the browser inspect UI from a local native build
 

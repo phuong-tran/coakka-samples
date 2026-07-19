@@ -7,7 +7,6 @@ publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
 source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 
-COAKKA_RUNTIME_INSPECT_RELEASE_ID="1.3.1+e664986"
 COAKKA_RUNTIME_INSPECT_VERSION="1.3.1"
 
 core_root="${COAKKA_CORE_ROOT:-${repo_root}/../coakkaCoreNativeDev}"
@@ -41,8 +40,8 @@ Environment:
   COAKKA_RUNTIME_INSPECT_BIN=/path/to/coakka-runtime-inspect
 
 Notes:
-  check verifies docs and, on macOS ARM64 or Linux, the published inspect archive
-  checksum through the public artifact manifest.
+  check verifies docs and, on macOS ARM64, Linux, or Windows x86_64, the
+  published inspect archive checksum through the public artifact manifest.
   published-smoke extracts the published platform archive and runs command
   plus snapshot smoke from that prefix.
   local-smoke requires a native coakka-runtime-inspect binary from the sibling
@@ -67,17 +66,28 @@ coakka_runtime_inspect_platform() {
     Darwin:arm64|Darwin:aarch64) printf '%s\n' "macos-aarch64" ;;
     Linux:aarch64|Linux:arm64) printf '%s\n' "linux-aarch64" ;;
     Linux:x86_64|Linux:amd64) printf '%s\n' "linux-x86_64" ;;
+    MINGW*:x86_64|MSYS*:x86_64|CYGWIN*:x86_64) printf '%s\n' "windows-x86_64" ;;
     *)
       return 1
       ;;
   esac
 }
 
+coakka_runtime_inspect_release_id_for_platform() {
+  local platform="$1"
+  case "${platform}" in
+    windows-x86_64) printf '%s\n' "1.3.1+6c63864" ;;
+    macos-aarch64|linux-aarch64|linux-x86_64) printf '%s\n' "1.3.1+e664986" ;;
+    *) return 1 ;;
+  esac
+}
+
 resolve_published_archive() {
   local platform="$1"
-  local artifact_name artifact_rel
+  local artifact_name artifact_rel release_id
+  release_id="$(coakka_runtime_inspect_release_id_for_platform "${platform}")"
   artifact_name="coakka-runtime-inspect-v2-${COAKKA_RUNTIME_INSPECT_VERSION}-${platform}.tar.gz"
-  artifact_rel="runtime-inspect/native/releases/${COAKKA_RUNTIME_INSPECT_RELEASE_ID}/${artifact_name}"
+  artifact_rel="runtime-inspect/native/releases/${release_id}/${artifact_name}"
 
   mkdir -p "${tmp_dir}/artifacts"
   coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/${artifact_name}"
@@ -91,11 +101,12 @@ run_check() {
     tmp_dir="$(mktemp -d)"
     archive_path="$(resolve_published_archive "${platform}")"
     echo "published_artifact=${platform}"
+    echo "published_release_id=$(coakka_runtime_inspect_release_id_for_platform "${platform}")"
     echo "published_archive=${archive_path}"
     cleanup
   else
     echo "published_artifact=not-available-for-this-platform"
-    echo "published_platforms=macos-aarch64,linux-aarch64,linux-x86_64"
+    echo "published_platforms=macos-aarch64,linux-aarch64,linux-x86_64,windows-x86_64"
   fi
   if [[ -x "${inspect_bin}" ]]; then
     echo "local_binary=${inspect_bin}"
@@ -131,7 +142,7 @@ smoke_inspect_binary() {
 run_published_smoke() {
   local platform archive_path package_root published_bin
   platform="$(coakka_runtime_inspect_platform)" ||
-    coakka_die "Published runtime-inspect archive is currently available for macOS ARM64 and Linux x86_64/ARM64 only."
+    coakka_die "Published runtime-inspect archive is currently available for macOS ARM64, Linux x86_64/ARM64, and Windows x86_64 only."
 
   coakka_require_command tar "Install tar, then retry."
   tmp_dir="$(mktemp -d)"
@@ -139,7 +150,10 @@ run_published_smoke() {
   mkdir -p "${tmp_dir}/package"
   tar -C "${tmp_dir}/package" -xzf "${archive_path}"
   package_root="${tmp_dir}/package/coakka-runtime-inspect-v2-${COAKKA_RUNTIME_INSPECT_VERSION}-${platform}"
-  published_bin="${package_root}/bin/coakka-runtime-inspect"
+  case "${platform}" in
+    windows-*) published_bin="${package_root}/bin/coakka-runtime-inspect.exe" ;;
+    *) published_bin="${package_root}/bin/coakka-runtime-inspect" ;;
+  esac
 
   case "$(uname -s)" in
     Darwin)
@@ -149,6 +163,9 @@ run_published_smoke() {
     Linux)
       LD_LIBRARY_PATH="${package_root}/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}" \
         smoke_inspect_binary "${published_bin}"
+      ;;
+    MINGW*|MSYS*|CYGWIN*)
+      smoke_inspect_binary "${published_bin}"
       ;;
     *)
       coakka_die "Unsupported runtime-inspect published smoke host."

@@ -45,6 +45,10 @@ required_rows=(
   "coakka-client windows-aarch64|cli/releases/${expected_runtime_client}/coakka-client-v2-1.3.1-windows-aarch64.tar.gz"
   "coakka-client docker-demo linux-x86_64|demo/coakka-client/releases/${expected_runtime_client}/coakka-client-docker-demo-v2-1.3.1-linux-x86_64.tar.gz"
   "coakka-client docker-demo linux-aarch64|demo/coakka-client/releases/${expected_runtime_client}/coakka-client-docker-demo-v2-1.3.1-linux-aarch64.tar.gz"
+  "coakka-runtime-inspect linux-aarch64|runtime-inspect/native/releases/1.3.1+e664986/coakka-runtime-inspect-v2-1.3.1-linux-aarch64.tar.gz"
+  "coakka-runtime-inspect linux-x86_64|runtime-inspect/native/releases/1.3.1+e664986/coakka-runtime-inspect-v2-1.3.1-linux-x86_64.tar.gz"
+  "coakka-runtime-inspect macos-aarch64|runtime-inspect/native/releases/1.3.1+e664986/coakka-runtime-inspect-v2-1.3.1-macos-aarch64.tar.gz"
+  "coakka-runtime-inspect windows-x86_64|runtime-inspect/native/releases/1.3.1+6c63864/coakka-runtime-inspect-v2-1.3.1-windows-x86_64.tar.gz"
 )
 
 stale_patterns=(
@@ -106,7 +110,7 @@ validate_manifest_rows() {
       fail "${source_name} manifest has unsafe path on row ${line_no}: ${relative_path}"
     fi
     case "${relative_path}" in
-      logger/*/releases/*|runtime/*/releases/*|maven/coakka/*/*/*/*.jar|cli/releases/*|demo/coakka-client/releases/*)
+      logger/*/releases/*|runtime/*/releases/*|runtime-inspect/native/releases/*|maven/coakka/*/*/*/*.jar|cli/releases/*|demo/coakka-client/releases/*)
         ;;
       *)
         fail "${source_name} manifest has path outside the published artifact surface on row ${line_no}: ${relative_path}"
