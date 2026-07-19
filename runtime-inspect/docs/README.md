@@ -11,5 +11,6 @@ Use these docs together with the local sample runner:
 
 ```sh
 bash run.sh runtime-inspect check
+bash run.sh runtime-inspect published-smoke
 bash run.sh runtime-inspect local-smoke
 ```

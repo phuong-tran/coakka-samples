@@ -28,6 +28,13 @@ remote_runtime=false
 
 That is intentional until a dedicated remote read/observe adapter exists.
 
+## Published Archive Status
+
+The first public inspect archive is `1.3.1+e664986` for macOS ARM64. The
+sample runner verifies that archive through the same manifest/checksum resolver
+used by the runtime-client lane. Linux and Windows inspect archives should be
+added only after platform-native package verification exists for those hosts.
+
 ## Route Try
 
 When `serve --connect host:port` is provided, the browser Try Route panel uses

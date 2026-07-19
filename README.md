@@ -1093,11 +1093,12 @@ The inspect lane is not a dashboard, schema registry, service discovery
 server, mTLS control plane, or topology authority. Runtime core remains the
 source of truth; inspect reads and renders runtime facts.
 
-Current sample status: local/native verification is available, but public
-inspect archives are not published in `coakka-publish` yet.
+Current sample status: the macOS ARM64 inspect archive is published in
+`coakka-publish`; Linux and Windows inspect archives are not published yet.
 
 ```sh
 bash run.sh runtime-inspect check
+bash run.sh runtime-inspect published-smoke
 bash run.sh runtime-inspect local-smoke
 bash run.sh runtime-inspect serve
 ```
@@ -1720,7 +1721,7 @@ Pinned public artifact lines used by these samples:
 | Runtime Rust | `1.3.1+bda2ef5-0a0aa76` |
 | Runtime Mojo and Zig samples | `1.3.1+bda2ef5-0a0aa76` source packages |
 | Runtime CLI client | `coakka-runtime-client` lane, `coakka-client` command, `1.3.1+2215b0f` |
-| Runtime inspect | local/native sample lane; public artifact not yet published |
+| Runtime inspect | `1.3.1+e664986` macOS ARM64 archive; Linux/Windows pending |
 | Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:1.3.1-g0a0aa76` |
 | Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:1.3.1-g0a0aa76` |
 
@@ -1737,8 +1738,8 @@ The matching Spring Boot and Quarkus adapter note is published at
 
 Pinned runtime connector/native generation: `1.3.1+bda2ef5`.
 Published runtime-client CLI generation: `1.3.1+2215b0f`.
-Runtime inspect public artifact: not yet published; local/native sample lane
-available.
+Runtime inspect public artifact: `1.3.1+e664986` for macOS ARM64; Linux and
+Windows inspect archives are pending.
 
 | Lane | Public artifact status | First command |
 | --- | --- | --- |
@@ -1757,7 +1758,7 @@ available.
 | Runtime C# | public | `bash run.sh runtime csharp basic` |
 | Runtime Rust | public | `bash run.sh runtime rust basic` |
 | Runtime CLI client | public | `bash run.sh runtime-client` |
-| Runtime inspect | local/native sample lane | `bash run.sh runtime-inspect check` |
+| Runtime inspect | public macOS ARM64 archive, local/native fallback | `bash run.sh runtime-inspect check` |
 | Logger Mojo | source sample | `bash run.sh logger mojo basic` |
 | Logger Zig | source sample | `bash run.sh logger zig basic` |
 | Runtime Mojo | source sample | `bash run.sh runtime mojo basic` |

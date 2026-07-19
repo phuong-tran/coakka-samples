@@ -117,7 +117,8 @@ Runtime client sample:
   runtime-client/dockerhub-demo    Run the published Docker Hub runtime-client demo image
 
 Runtime inspect sample:
-  runtime-inspect/check           Verify the inspect sample docs and local lane wiring
+  runtime-inspect/check           Verify inspect docs and published macOS archive metadata when available
+  runtime-inspect/published-smoke Smoke the published macOS coakka-runtime-inspect archive
   runtime-inspect/local-smoke     Smoke a sibling native coakka-runtime-inspect build
   runtime-inspect/serve           Start the browser inspect UI from a local native build
 
