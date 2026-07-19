@@ -116,6 +116,11 @@ Runtime client sample:
   runtime-client/docker-walkthrough Run coakka-client against two native runtime services in Docker
   runtime-client/dockerhub-demo    Run the published Docker Hub runtime-client demo image
 
+Runtime inspect sample:
+  runtime-inspect/check           Verify the inspect sample docs and local lane wiring
+  runtime-inspect/local-smoke     Smoke a sibling native coakka-runtime-inspect build
+  runtime-inspect/serve           Start the browser inspect UI from a local native build
+
 Scenario tracks:
 EOF
 

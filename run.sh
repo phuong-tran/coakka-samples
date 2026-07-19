@@ -18,6 +18,7 @@ Usage:
   bash run.sh logger
   bash run.sh runtime
   bash run.sh runtime-client
+  bash run.sh runtime-inspect
   bash run.sh containers
   bash run.sh scenarios
   bash run.sh scenarios check
@@ -30,6 +31,7 @@ Usage:
   bash run.sh containers/<sample> [command]
   bash run.sh runtime/scenarios/<track>/<topology> <command>
   bash run.sh runtime-client [check|version|doctor|docker-bundle|docker-walkthrough|dockerhub-demo]
+  bash run.sh runtime-inspect [check|local-smoke|serve]
 
 Examples:
   bash run.sh
@@ -44,6 +46,7 @@ Lanes:
   logger
   runtime
   runtime-client
+  runtime-inspect
   containers
 
 Logger languages:
@@ -222,11 +225,15 @@ case "$1" in
     shift
     bash "${script_dir}/runtime-client/run.sh" "$@"
     ;;
+  runtime-inspect)
+    shift
+    bash "${script_dir}/runtime-inspect/run.sh" "$@"
+    ;;
   scenario)
     shift
     run_scenario "$@"
     ;;
-  logger/*|runtime/*|runtime-client|runtime-client/*|containers/*)
+  logger/*|runtime/*|runtime-client|runtime-client/*|runtime-inspect|runtime-inspect/*|containers/*)
     sample_path="$1"
     shift
     if [[ "${sample_path}" == runtime-client ]]; then
@@ -235,6 +242,14 @@ case "$1" in
     fi
     if [[ "${sample_path}" == runtime-client/* ]]; then
       bash "${script_dir}/runtime-client/run.sh" "${sample_path#runtime-client/}" "$@"
+      exit 0
+    fi
+    if [[ "${sample_path}" == runtime-inspect ]]; then
+      bash "${script_dir}/runtime-inspect/run.sh" "$@"
+      exit 0
+    fi
+    if [[ "${sample_path}" == runtime-inspect/* ]]; then
+      bash "${script_dir}/runtime-inspect/run.sh" "${sample_path#runtime-inspect/}" "$@"
       exit 0
     fi
     run_sample_path "${sample_path}" "$@"

@@ -96,6 +96,7 @@ Evidence and repo boundaries:
 - [Runtime Scenarios](#runtime-scenarios)
 - [Framework Adapters](#framework-adapters)
 - [CoAkka Runtime Client](#coakka-runtime-client)
+- [CoAkka Runtime Inspect](#coakka-runtime-inspect)
 - [Logger](#logger)
 - [Runtime And Logger Together](#runtime-and-logger-together)
 - [Quick Start](#quick-start)
@@ -157,6 +158,7 @@ specific product surface when the distinction matters:
 | `coakka-runtime-core` | Native runtime engine and public C ABI surface. |
 | `coakka-runtime-connector` | Host-language and framework connector packages consumed by app-hosts. |
 | `coakka-runtime-client` | CLI runtime client. The published command and archive names use `coakka-client`. |
+| `coakka-runtime-inspect` | Browser runtime explorer and route-try UI. |
 | `coakka-logger` | Bounded logger product surface, separate from runtime routing. |
 
 When using the CLI archive, run `coakka-client`. `coakka-runtime-client` is the
@@ -351,6 +353,7 @@ surface.
 | Understand explicit runtime wiring | `bash run.sh runtime jvm java-basic` or the basic sample for another language | Shows start spec, process-owned route, handler registration, ask/reply, and stats. |
 | Understand route misses and delivery failures | `bash run.sh runtime jvm deadletter` or `bash run.sh runtime python deadletter` | Shows a missing target becoming a matched deadletter instead of a vague timeout. |
 | Understand route generation and reload | `bash run.sh runtime python hot-reload` | Shows newer route snapshots being applied and stale/invalid snapshots rejected. |
+| Understand browser runtime exploration | `bash run.sh runtime-inspect check` then `bash run.sh runtime-inspect local-smoke` with a local native build | Shows inspect as the UI sibling of `coakka-client` without claiming a published inspect archive yet. |
 | Understand a normal application workflow | `bash run.sh scenario customer-crud spring-boot-starter-local dev` | Shows browser/API edge plus runtime capabilities in one same-process app. |
 | Compare same-process app shape with cross-process shape | `bash run.sh scenario customer-crud spring-boot-spring-boot dev` | Keeps customer traffic runtime-only between web and store processes. |
 | Start from Spring Boot annotations | `runtime/scenarios/customer-crud/spring-boot-starter-local` | Uses `@CoAkkaHandler` and `CoAkkaRuntimeClient` instead of manual route/handler wiring. |
@@ -1079,6 +1082,28 @@ one container.
 
 Read the sample lane landing page at [runtime-client/README.md](runtime-client/README.md).
 
+## CoAkka Runtime Inspect
+
+`coakka-runtime-inspect` is the browser runtime explorer lane for CoAkka
+Runtime. It is close to `coakka-client`, but visual: it renders runtime
+identity, route catalog, endpoint topology, health, pressure, recent events,
+and a Try Route form that can copy an equivalent `coakka-client` command.
+
+The inspect lane is not a dashboard, schema registry, service discovery
+server, mTLS control plane, or topology authority. Runtime core remains the
+source of truth; inspect reads and renders runtime facts.
+
+Current sample status: local/native verification is available, but public
+inspect archives are not published in `coakka-publish` yet.
+
+```sh
+bash run.sh runtime-inspect check
+bash run.sh runtime-inspect local-smoke
+bash run.sh runtime-inspect serve
+```
+
+Read the sample lane landing page at [runtime-inspect/README.md](runtime-inspect/README.md).
+
 ## Logger
 
 The logger is the second CoAkka surface in this repository.
@@ -1695,6 +1720,7 @@ Pinned public artifact lines used by these samples:
 | Runtime Rust | `1.3.1+bda2ef5-0a0aa76` |
 | Runtime Mojo and Zig samples | `1.3.1+bda2ef5-0a0aa76` source packages |
 | Runtime CLI client | `coakka-runtime-client` lane, `coakka-client` command, `1.3.1+2215b0f` |
+| Runtime inspect | local/native sample lane; public artifact not yet published |
 | Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:1.3.1-g0a0aa76` |
 | Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:1.3.1-g0a0aa76` |
 
@@ -1711,6 +1737,8 @@ The matching Spring Boot and Quarkus adapter note is published at
 
 Pinned runtime connector/native generation: `1.3.1+bda2ef5`.
 Published runtime-client CLI generation: `1.3.1+2215b0f`.
+Runtime inspect public artifact: not yet published; local/native sample lane
+available.
 
 | Lane | Public artifact status | First command |
 | --- | --- | --- |
@@ -1729,6 +1757,7 @@ Published runtime-client CLI generation: `1.3.1+2215b0f`.
 | Runtime C# | public | `bash run.sh runtime csharp basic` |
 | Runtime Rust | public | `bash run.sh runtime rust basic` |
 | Runtime CLI client | public | `bash run.sh runtime-client` |
+| Runtime inspect | local/native sample lane | `bash run.sh runtime-inspect check` |
 | Logger Mojo | source sample | `bash run.sh logger mojo basic` |
 | Logger Zig | source sample | `bash run.sh logger zig basic` |
 | Runtime Mojo | source sample | `bash run.sh runtime mojo basic` |
