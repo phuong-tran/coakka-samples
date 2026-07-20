@@ -1736,7 +1736,7 @@ Pinned public artifact lines used by these samples:
 | Runtime Rust | `1.3.1+bda2ef5-0a0aa76` |
 | Runtime Mojo and Zig samples | `1.3.1+bda2ef5-0a0aa76` source packages |
 | Runtime CLI client | `coakka-runtime-client` lane, `coakka-client` command, `1.3.1+2215b0f` |
-| Runtime inspect | `1.3.1+d7ab7fa` macOS ARM64, Linux x86_64, and Linux ARM64 archives; `1.3.1+6c63864` Windows x86_64 archive; `1.3.1+5c70234` Windows ARM64 archive |
+| Runtime inspect | `1.3.1+d7ab7fa` macOS ARM64, Linux x86_64, Linux ARM64, Windows x86_64, and Windows ARM64 archives |
 | Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:1.3.1-g0a0aa76` |
 | Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:1.3.1-g0a0aa76` |
 
@@ -1754,8 +1754,7 @@ The matching Spring Boot and Quarkus adapter note is published at
 Pinned runtime connector/native generation: `1.3.1+bda2ef5`.
 Published runtime-client CLI generation: `1.3.1+2215b0f`.
 Runtime inspect public artifact: `1.3.1+d7ab7fa` for macOS ARM64, Linux
-x86_64, and Linux ARM64, `1.3.1+6c63864` for Windows x86_64, and
-`1.3.1+5c70234` for Windows ARM64.
+x86_64, Linux ARM64, Windows x86_64, and Windows ARM64.
 
 | Lane | Public artifact status | First command |
 | --- | --- | --- |

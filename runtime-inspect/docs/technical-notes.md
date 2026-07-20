@@ -31,8 +31,7 @@ That is intentional until a dedicated remote read/observe adapter exists.
 ## Published Archive Status
 
 The current public inspect archive generation is `1.3.1+d7ab7fa` for macOS
-ARM64, Linux x86_64, and Linux ARM64, `1.3.1+6c63864` for Windows x86_64, and
-`1.3.1+5c70234` for Windows ARM64. The sample runner
+ARM64, Linux x86_64, Linux ARM64, Windows x86_64, and Windows ARM64. The sample runner
 verifies those archives through the same manifest/checksum resolver used by the
 runtime-client lane.
 

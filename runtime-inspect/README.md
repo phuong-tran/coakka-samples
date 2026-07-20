@@ -88,8 +88,8 @@ coakka-runtime-inspect native UI
 1.3.1+d7ab7fa release id for macOS ARM64
 1.3.1+d7ab7fa release id for Linux x86_64
 1.3.1+d7ab7fa release id for Linux ARM64
-1.3.1+6c63864 release id for Windows x86_64
-1.3.1+5c70234 release id for Windows ARM64
+1.3.1+d7ab7fa release id for Windows x86_64
+1.3.1+d7ab7fa release id for Windows ARM64
 ```
 
 Direct download:
