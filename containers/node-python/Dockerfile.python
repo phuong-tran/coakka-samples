@@ -21,7 +21,7 @@ LABEL coakka.runtime.generation="${COAKKA_RUNTIME_GENERATION}"
 LABEL coakka.artifact.manifest.sha256="${COAKKA_ARTIFACT_MANIFEST_SHA256}"
 
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends bash ca-certificates curl libstdc++6 \
+  && apt-get install -y --no-install-recommends bash ca-certificates curl \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /sample

@@ -119,8 +119,8 @@ inspect archive. It is not the canonical artifact download surface and it does
 not move HTTP serving into runtime core.
 
 The image copies the published Linux inspect archive as-is. It does not install
-protobuf, absl, libuv, libstdc++, or libgcc packages; those dependencies must
-be absent from the public native archive itself.
+native implementation runtime packages; the public native archive itself must
+carry that boundary.
 
 Build and smoke the local image:
 

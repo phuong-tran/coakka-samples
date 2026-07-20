@@ -104,9 +104,9 @@ bash run.sh runtime-inspect docker-serve
 ```
 
 The sample image copies the published Linux inspect archive as-is. It does not
-install protobuf, absl, libuv, libstdc++, or libgcc packages; the public archive
-must already be self-contained apart from the normal Linux system libraries
-provided by the base image.
+install native implementation runtime packages; the public archive must already
+be self-contained apart from the normal Linux system libraries provided by the
+base image.
 
 The default host URL is still:
 

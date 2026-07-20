@@ -270,7 +270,7 @@ container image lines used by these samples. The runtime-client demo image
 bundles the published `coakka-client` `1.3.1+2215b0f` and native demo service
 artifacts. The runtime-inspect sample image copies the published Linux
 `coakka-runtime-inspect` Linux `1.3.1+4ce41f19` archives without installing
-protobuf, absl, libuv, libstdc++, or libgcc packages. The Node.js/Python sample images
+native implementation runtime packages. The Node.js/Python sample images
 install the pinned Node.js and Python connector artifact set
 `1.3.1+bda2ef5-0a0aa76` over the native runtime base line `1.3.1+bda2ef5`.
 Repo-local rebuilds use the same connector set over

@@ -1190,7 +1190,7 @@ thing as moving `mTLS` into `coakka-core-runtime`.
 - the addon may terminate or initiate HTTPS at an HTTP boundary it owns
 - that still does not make the core runtime an identity-policy engine
 - it also does not replace the separate runtime-to-runtime transport question
-  such as the current `CAF` lane
+  such as the current private transport lane
 
 That is the intended design:
 

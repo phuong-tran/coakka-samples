@@ -57,7 +57,7 @@ Node.js, Go, C#, Rust, Mojo and Zig source samples, and native C/C++.
 | `payload` | Raw bytes carried by the envelope. |
 | `messageType` | Stable payload contract name. |
 | `payloadSchemaVersion` | Schema version for that payload contract. |
-| `payloadFormat` | JSON, protobuf, text, binary, and so on. |
+| `payloadFormat` | JSON, typed binary, text, binary, and so on. |
 
 ## Timeout And Retry
 

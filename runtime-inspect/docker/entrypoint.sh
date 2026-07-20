@@ -32,12 +32,35 @@ assert_self_contained_native_deps() {
       ldd "${inspect_bin}" "${runtime_lib}" 2>&1 || true
   )"
 
-  if printf '%s\n' "${report}" | grep -Eiq 'not found|lib(protobuf|absl|uv|stdc\+\+|gcc)'; then
+  if printf '%s\n' "${report}" | grep -Eiq 'not found'; then
     echo "[coakka-runtime-inspect-sample] native bundle is not self-contained" >&2
-    echo "[coakka-runtime-inspect-sample] public inspect artifacts must not require protobuf, absl, libuv, libstdc++, or libgcc packages in the image" >&2
-    printf '%s\n' "${report}" >&2
     exit 1
   fi
+
+  while IFS= read -r dep; do
+    [[ -n "${dep}" ]] || continue
+    case "${dep}" in
+      linux-vdso.so.1|libcoakka_runtime_v2.so|libm.so.6|libc.so.6|ld-linux-x86-64.so.2|ld-linux-aarch64.so.1)
+        ;;
+      *)
+        echo "[coakka-runtime-inspect-sample] native bundle declares a non-allowed dynamic dependency" >&2
+        exit 1
+        ;;
+    esac
+  done < <(
+    printf '%s\n' "${report}" |
+      awk '
+        /^[[:space:]]*$/ { next }
+        /:$/ { next }
+        $1 == "statically" { next }
+        index($1, "/") == 1 {
+          n = split($1, parts, "/")
+          print parts[n]
+          next
+        }
+        { print $1 }
+      '
+  )
 }
 
 run_smoke() {

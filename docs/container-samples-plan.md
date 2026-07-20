@@ -94,8 +94,8 @@ later.
 ## Prebuilt Docker Hub Images
 
 Prebuilt images are the fastest product-shipping path for developer rollout.
-They let a user try the runtime before building protobuf, transport
-dependencies, native runtime artifacts, or language connector packages locally.
+They let a user try the runtime before building native runtime artifacts or
+language connector packages locally.
 
 The image strategy should have two layers:
 
@@ -103,8 +103,8 @@ The image strategy should have two layers:
 docker.io/gabrielgun1983/runtime-base:<runtime-generation>
   -> public native runtime artifacts
   -> required native runtime dependencies
-  -> protobuf runtime/build bits when needed by samples
-  -> remote transport dependencies when needed by the selected runtime flavor
+  -> wire runtime/build bits when needed by samples
+  -> runtime transport dependencies when needed by the selected runtime flavor
   -> CA certificates
   -> version/diagnostic metadata
 

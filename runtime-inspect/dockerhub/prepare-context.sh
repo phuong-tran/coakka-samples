@@ -22,14 +22,14 @@ require_self_contained_dockerfiles() {
   local matches
   matches="$(
     grep -EIn \
-      'apt-get[[:space:]]+install|apk[[:space:]]+add|dnf[[:space:]]+install|yum[[:space:]]+install|libprotobuf|libabsl|libuv' \
+      'apt-get[[:space:]]+install|apk[[:space:]]+add|dnf[[:space:]]+install|yum[[:space:]]+install' \
       "${sample_dir}/docker/Dockerfile" \
       "${script_dir}/Dockerfile" 2>/dev/null || true
   )"
 
   if [[ -n "${matches}" ]]; then
     printf '%s\n' "${matches}" >&2
-    coakka_die "runtime-inspect Docker Hub image must use self-contained native archives and must not install protobuf, absl, or libuv runtime packages."
+    coakka_die "runtime-inspect Docker Hub image must use self-contained native archives and must not install native runtime packages."
   fi
 }
 
@@ -58,10 +58,21 @@ prepare_platform() {
   rm -rf "${tmp_dir}"
 }
 
+linux_native_dep_allowed() {
+  case "$1" in
+    libcoakka_runtime_v2.so|libm.so.6|libc.so.6|ld-linux-x86-64.so.2|ld-linux-aarch64.so.1)
+      return 0
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
 require_linux_archive_self_contained() {
   local platform="$1"
   local package_root="$2"
-  local path report matches
+  local path dep
 
   case "${platform}" in
     linux-aarch64|linux-x86_64) ;;
@@ -73,16 +84,11 @@ require_linux_archive_self_contained() {
       "${package_root}/bin/coakka-runtime-inspect" \
       "${package_root}/lib/libcoakka_runtime_v2.so"; do
     coakka_require_file "${path}" "The published Linux inspect archive is incomplete."
-    report="$(objdump -p "${path}" 2>/dev/null | grep 'NEEDED' || true)"
-    matches="$(
-      printf '%s\n' "${report}" |
-        grep -Eiq 'libuv|libcaf|libprotobuf|libabsl|libstdc\+\+|libgcc|libwinpthread' &&
-        printf '%s\n' "${report}" || true
-    )"
-    if [[ -n "${matches}" ]]; then
-      printf '%s\n' "${matches}" >&2
-      coakka_die "published ${platform} inspect archive is not self-contained: ${path}"
-    fi
+    while IFS= read -r dep; do
+      [[ -n "${dep}" ]] || continue
+      linux_native_dep_allowed "${dep}" ||
+        coakka_die "published ${platform} inspect archive declares a non-allowed dynamic dependency: ${path}"
+    done < <(objdump -p "${path}" 2>/dev/null | awk '$1 == "NEEDED" { print $2 }')
   done
 }
 

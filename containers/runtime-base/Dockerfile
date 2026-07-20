@@ -20,7 +20,7 @@ LABEL coakka.native.artifact="${COAKKA_NATIVE_ARTIFACT}"
 LABEL coakka.artifact.manifest.sha256="${COAKKA_ARTIFACT_MANIFEST_SHA256}"
 
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends bash ca-certificates curl libstdc++6 tar \
+  && apt-get install -y --no-install-recommends bash ca-certificates curl tar \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt/coakka

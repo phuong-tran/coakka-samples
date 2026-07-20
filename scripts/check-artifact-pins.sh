@@ -70,8 +70,6 @@ stale_patterns=(
   "runtime/jvm/releases/0.2.0+94a5729-5ab812f/coakka-jvm-native-runtime-v2-0.2.0-g94a5729-5ab""812f.jar"
   "maven/coakka/spring/coakka-spring-boot-starter/0.2.0-g5ab""812f/coakka-spring-boot-starter-0.2.0-g5ab812f.jar"
   "maven/coakka/quarkus/coakka-quarkus-extension/0.2.0-g5ab""812f/coakka-quarkus-extension-0.2.0-g5ab812f.jar"
-  "libprotobuf""32t64"
-  "libuv""1"
 )
 
 fail() {
@@ -215,19 +213,19 @@ check_local_artifacts() {
 
 check_local_publish_gate() {
   local publish_root verify_script
-  if [[ "${COAKKA_PIN_CHECK_PUBLISH_GATE:-0}" != "1" ]]; then
-    printf '[skip] local public publish verification gate disabled; set COAKKA_PIN_CHECK_PUBLISH_GATE=1 to enable\n'
+  if [[ "${COAKKA_PIN_CHECK_PUBLISH_GATE:-1}" != "1" ]]; then
+    printf '[skip] local public publish verification gate disabled\n'
     return 0
   fi
 
   publish_root="$(coakka_default_publish_root "${repo_root}")"
-  verify_script="${publish_root}/scripts/verify-public-surface.sh"
+  verify_script="${publish_root}/scripts/check-native-artifact-linkage.sh"
   if [[ ! -x "${verify_script}" ]]; then
     printf '[skip] local public publish verification gate not found at %s\n' "${verify_script}"
     return 0
   fi
 
-  "${verify_script}" >/dev/null 2>&1
+  "${verify_script}" >/dev/null
 }
 
 check_public_artifacts() {
