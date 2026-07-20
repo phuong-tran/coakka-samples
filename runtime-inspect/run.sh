@@ -71,6 +71,8 @@ require_docs() {
   coakka_require_file "${script_dir}/docs/introduction.md" "The runtime-inspect introduction must be present."
   coakka_require_file "${script_dir}/docs/usage.md" "The runtime-inspect usage guide must be present."
   coakka_require_file "${script_dir}/docs/technical-notes.md" "The runtime-inspect technical notes must be present."
+  coakka_require_file "${repo_root}/docs/assets/coakka-runtime-inspect.gif" "The runtime-inspect GIF walkthrough must be present."
+  coakka_require_file "${repo_root}/docs/assets/coakka-runtime-inspect.mp4" "The runtime-inspect MP4 walkthrough must be present."
 }
 
 coakka_runtime_inspect_platform() {

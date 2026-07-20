@@ -1092,6 +1092,12 @@ Runtime. It is close to `coakka-client`, but visual: it renders runtime
 identity, route catalog, endpoint topology, health, pressure, recent events,
 and a Try Route form that can copy an equivalent `coakka-client` command.
 
+Watch the runtime-inspect browser walkthrough:
+
+![CoAkka Runtime Inspect browser walkthrough](docs/assets/coakka-runtime-inspect.gif)
+
+Full recording: [coakka-runtime-inspect.mp4](docs/assets/coakka-runtime-inspect.mp4)
+
 The inspect lane is not a dashboard, schema registry, service discovery
 server, mTLS control plane, or topology authority. Runtime core remains the
 source of truth; inspect reads and renders runtime facts.

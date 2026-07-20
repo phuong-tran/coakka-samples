@@ -1,4 +1,4 @@
-# CoAkka Runtime Inspect Technical Notes
+trước# CoAkka Runtime Inspect Technical Notes
 
 `coakka-runtime-inspect` sits above `coakka-runtime-core`.
 
@@ -34,6 +34,11 @@ The current public inspect archive generation is `1.3.1+d7ab7fa` for macOS
 ARM64, Linux x86_64, Linux ARM64, Windows x86_64, and Windows ARM64. The sample runner
 verifies those archives through the same manifest/checksum resolver used by the
 runtime-client lane.
+
+The browser walkthrough GIF and MP4 were recorded on macOS from the published
+macOS ARM64 inspect archive. The recording used two local native runtime
+responders on `127.0.0.1:19091` and `127.0.0.1:19092`; it did not use Docker,
+UTM, JVM, or a language connector.
 
 ## Route Try
 
