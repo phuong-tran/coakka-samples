@@ -90,8 +90,8 @@ The current published inspect release is:
 ```text
 coakka-runtime-inspect native UI
 1.3.1+d7ab7fa release id for macOS ARM64
-1.3.1+d7ab7fa release id for Linux x86_64
-1.3.1+d7ab7fa release id for Linux ARM64
+1.3.1+4ce41f19 release id for Linux x86_64
+1.3.1+4ce41f19 release id for Linux ARM64
 1.3.1+d7ab7fa release id for Windows x86_64
 1.3.1+d7ab7fa release id for Windows ARM64
 ```
@@ -118,8 +118,9 @@ The Docker path is a sample convenience wrapper around the published Linux
 inspect archive. It is not the canonical artifact download surface and it does
 not move HTTP serving into runtime core.
 
-The image installs the small OS shared-library dependency needed by the native
-Linux inspect binary, so users do not have to prepare the host machine first.
+The image copies the published Linux inspect archive as-is. It does not install
+protobuf, absl, libuv, libstdc++, or libgcc packages; those dependencies must
+be absent from the public native archive itself.
 
 Build and smoke the local image:
 
@@ -145,12 +146,12 @@ Run the published Docker Hub image without preparing a local artifact context:
 
 ```sh
 bash run.sh runtime-inspect dockerhub-smoke
-docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-d7ab7fa-remote
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-4ce41f19-remote
 ```
 
 Serve the browser UI from Docker Hub:
 
 ```sh
 bash run.sh runtime-inspect dockerhub-serve
-docker run --rm -p 18080:18080 docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-d7ab7fa-remote serve
+docker run --rm -p 18080:18080 docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-4ce41f19-remote serve
 ```

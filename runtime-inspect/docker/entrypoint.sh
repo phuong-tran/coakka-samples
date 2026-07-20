@@ -2,6 +2,7 @@
 set -euo pipefail
 
 inspect_bin="/opt/coakka-runtime-inspect/bin/coakka-runtime-inspect"
+runtime_lib="/opt/coakka-runtime-inspect/lib/libcoakka_runtime_v2.so"
 
 print_usage() {
   cat <<'EOF'
@@ -19,13 +20,34 @@ Commands:
 EOF
 }
 
+assert_self_contained_native_deps() {
+  if ! command -v ldd >/dev/null 2>&1; then
+    echo "[coakka-runtime-inspect-sample] cannot verify Linux native dependencies: ldd is unavailable" >&2
+    exit 1
+  fi
+
+  local report
+  report="$(
+    LD_LIBRARY_PATH=/opt/coakka-runtime-inspect/lib \
+      ldd "${inspect_bin}" "${runtime_lib}" 2>&1 || true
+  )"
+
+  if printf '%s\n' "${report}" | grep -Eiq 'not found|lib(protobuf|absl|uv|stdc\+\+|gcc)'; then
+    echo "[coakka-runtime-inspect-sample] native bundle is not self-contained" >&2
+    echo "[coakka-runtime-inspect-sample] public inspect artifacts must not require protobuf, absl, libuv, libstdc++, or libgcc packages in the image" >&2
+    printf '%s\n' "${report}" >&2
+    exit 1
+  fi
+}
+
 run_smoke() {
   local snapshot_json
   snapshot_json="$(mktemp)"
 
+  assert_self_contained_native_deps
   "${inspect_bin}" version >/dev/null
   "${inspect_bin}" doctor >/dev/null
-  "${inspect_bin}" help serve | grep -F "GET /api/snapshot" >/dev/null
+  "${inspect_bin}" help serve | grep -F "Serve a local read-first inspect UI" >/dev/null
   "${inspect_bin}" snapshot \
     --output json \
     --local-route inspect.echo=127.0.0.1:19001 >"${snapshot_json}"

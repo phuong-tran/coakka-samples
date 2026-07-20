@@ -103,8 +103,10 @@ Run inspect through the local Docker image:
 bash run.sh runtime-inspect docker-serve
 ```
 
-The sample image installs the Linux shared-library dependency required by the
-published native inspect archive. No host-side runtime install is required.
+The sample image copies the published Linux inspect archive as-is. It does not
+install protobuf, absl, libuv, libstdc++, or libgcc packages; the public archive
+must already be self-contained apart from the normal Linux system libraries
+provided by the base image.
 
 The default host URL is still:
 
@@ -132,14 +134,14 @@ path without building a local image:
 
 ```sh
 bash run.sh runtime-inspect dockerhub-smoke
-docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-d7ab7fa-remote
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-4ce41f19-remote
 ```
 
 Serve the browser UI:
 
 ```sh
 bash run.sh runtime-inspect dockerhub-serve
-docker run --rm -p 18080:18080 docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-d7ab7fa-remote serve
+docker run --rm -p 18080:18080 docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-4ce41f19-remote serve
 ```
 
 Route-try can still point at a caller-supplied runtime address:

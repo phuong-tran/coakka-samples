@@ -45,8 +45,8 @@ required_rows=(
   "coakka-client windows-aarch64|cli/releases/${expected_runtime_client}/coakka-client-v2-1.3.1-windows-aarch64.tar.gz"
   "coakka-client docker-demo linux-x86_64|demo/coakka-client/releases/${expected_runtime_client}/coakka-client-docker-demo-v2-1.3.1-linux-x86_64.tar.gz"
   "coakka-client docker-demo linux-aarch64|demo/coakka-client/releases/${expected_runtime_client}/coakka-client-docker-demo-v2-1.3.1-linux-aarch64.tar.gz"
-  "coakka-runtime-inspect linux-aarch64|runtime-inspect/native/releases/1.3.1+d7ab7fa/coakka-runtime-inspect-v2-1.3.1-linux-aarch64.tar.gz"
-  "coakka-runtime-inspect linux-x86_64|runtime-inspect/native/releases/1.3.1+d7ab7fa/coakka-runtime-inspect-v2-1.3.1-linux-x86_64.tar.gz"
+  "coakka-runtime-inspect linux-aarch64|runtime-inspect/native/releases/1.3.1+4ce41f19/coakka-runtime-inspect-v2-1.3.1-linux-aarch64.tar.gz"
+  "coakka-runtime-inspect linux-x86_64|runtime-inspect/native/releases/1.3.1+4ce41f19/coakka-runtime-inspect-v2-1.3.1-linux-x86_64.tar.gz"
   "coakka-runtime-inspect macos-aarch64|runtime-inspect/native/releases/1.3.1+d7ab7fa/coakka-runtime-inspect-v2-1.3.1-macos-aarch64.tar.gz"
   "coakka-runtime-inspect windows-x86_64|runtime-inspect/native/releases/1.3.1+d7ab7fa/coakka-runtime-inspect-v2-1.3.1-windows-x86_64.tar.gz"
   "coakka-runtime-inspect windows-aarch64|runtime-inspect/native/releases/1.3.1+d7ab7fa/coakka-runtime-inspect-v2-1.3.1-windows-aarch64.tar.gz"
@@ -70,6 +70,8 @@ stale_patterns=(
   "runtime/jvm/releases/0.2.0+94a5729-5ab812f/coakka-jvm-native-runtime-v2-0.2.0-g94a5729-5ab""812f.jar"
   "maven/coakka/spring/coakka-spring-boot-starter/0.2.0-g5ab""812f/coakka-spring-boot-starter-0.2.0-g5ab812f.jar"
   "maven/coakka/quarkus/coakka-quarkus-extension/0.2.0-g5ab""812f/coakka-quarkus-extension-0.2.0-g5ab812f.jar"
+  "libprotobuf""32t64"
+  "libuv""1"
 )
 
 fail() {

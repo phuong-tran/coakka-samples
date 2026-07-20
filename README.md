@@ -260,19 +260,20 @@ Docker Hub image tags for this release train:
 
 ```text
 docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote
-docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-d7ab7fa-remote
+docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-4ce41f19-remote
 docker.io/gabrielgun1983/sample-node-web:1.3.1-bda2ef5-0a0aa76-remote
 docker.io/gabrielgun1983/sample-python-store:1.3.1-bda2ef5-0a0aa76-remote
 ```
 
 Those tags are the published runtime-client, runtime-inspect, and Node.js/Python
 container image lines used by these samples. The runtime-client demo image
-installs the published `coakka-client` `1.3.1+2215b0f` and native demo service
-artifacts. The runtime-inspect sample image installs the published Linux
-`coakka-runtime-inspect` `1.3.1+d7ab7fa` archives. The Node.js/Python sample
-images install the pinned Node.js and Python connector
-artifact set `1.3.1+bda2ef5-0a0aa76` over the native runtime base line
-`1.3.1+bda2ef5`. Repo-local rebuilds use the same connector set over
+bundles the published `coakka-client` `1.3.1+2215b0f` and native demo service
+artifacts. The runtime-inspect sample image copies the published Linux
+`coakka-runtime-inspect` Linux `1.3.1+4ce41f19` archives without installing
+protobuf, absl, libuv, libstdc++, or libgcc packages. The Node.js/Python sample images
+install the pinned Node.js and Python connector artifact set
+`1.3.1+bda2ef5-0a0aa76` over the native runtime base line `1.3.1+bda2ef5`.
+Repo-local rebuilds use the same connector set over
 `coakka/runtime-base:1.3.1-bda2ef5-local`.
 
 Run the visible container sample:
@@ -1122,7 +1123,7 @@ local image from the published Linux archive, or
 
 For the Docker Hub zero-install path, run
 `bash run.sh runtime-inspect dockerhub-smoke` or
-`docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-d7ab7fa-remote`.
+`docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-4ce41f19-remote`.
 
 Read the sample lane landing page at [runtime-inspect/README.md](runtime-inspect/README.md).
 
@@ -1719,8 +1720,8 @@ verifies the artifact SHA256 from that manifest before unpacking or installing
 the package.
 
 Docker samples follow the same ownership rule. Docker Hub image tags provide a
-ready-to-run sample path, while the runtime and connector artifacts installed
-by those images are still sourced from the public publish surface.
+ready-to-run sample path, while the runtime and connector artifacts bundled by
+those images are still sourced from the public publish surface.
 
 The sample artifact-pin smoke validates manifest rows by default. The heavier
 local `coakka-publish` surface gate is opt-in:
@@ -1742,7 +1743,7 @@ Pinned public artifact lines used by these samples:
 | Runtime Rust | `1.3.1+bda2ef5-0a0aa76` |
 | Runtime Mojo and Zig samples | `1.3.1+bda2ef5-0a0aa76` source packages |
 | Runtime CLI client | `coakka-runtime-client` lane, `coakka-client` command, `1.3.1+2215b0f` |
-| Runtime inspect | `1.3.1+d7ab7fa` macOS ARM64, Linux x86_64, Linux ARM64, Windows x86_64, and Windows ARM64 archives |
+| Runtime inspect | `1.3.1+4ce41f19` Linux x86_64/ARM64 archives; `1.3.1+d7ab7fa` macOS ARM64 and Windows x86_64/ARM64 archives |
 | Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:1.3.1-g0a0aa76` |
 | Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:1.3.1-g0a0aa76` |
 
@@ -1759,8 +1760,8 @@ The matching Spring Boot and Quarkus adapter note is published at
 
 Pinned runtime connector/native generation: `1.3.1+bda2ef5`.
 Published runtime-client CLI generation: `1.3.1+2215b0f`.
-Runtime inspect public artifact: `1.3.1+d7ab7fa` for macOS ARM64, Linux
-x86_64, Linux ARM64, Windows x86_64, and Windows ARM64.
+Runtime inspect public artifact: `1.3.1+4ce41f19` for Linux x86_64/ARM64 and
+`1.3.1+d7ab7fa` for macOS ARM64 and Windows x86_64/ARM64.
 
 | Lane | Public artifact status | First command |
 | --- | --- | --- |

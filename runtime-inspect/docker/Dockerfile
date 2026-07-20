@@ -1,9 +1,5 @@
 FROM ubuntu:24.04
 
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends libprotobuf32t64 libuv1 \
-  && rm -rf /var/lib/apt/lists/*
-
 COPY inspect/ /opt/coakka-runtime-inspect/
 COPY entrypoint.sh /usr/local/bin/coakka-runtime-inspect-sample
 

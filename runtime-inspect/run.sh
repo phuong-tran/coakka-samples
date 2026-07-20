@@ -9,7 +9,7 @@ source "${repo_root}/scripts/sample-utils.sh"
 
 COAKKA_RUNTIME_INSPECT_VERSION="1.3.1"
 COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE_DEFAULT="coakka-runtime-inspect-sample:1.3.1-local"
-COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE_DEFAULT="docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-d7ab7fa-remote"
+COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE_DEFAULT="docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-4ce41f19-remote"
 
 core_root="${COAKKA_CORE_ROOT:-${repo_root}/../coakkaCoreNativeDev}"
 inspect_bin="${COAKKA_RUNTIME_INSPECT_BIN:-${core_root}/build-v2/coakka-runtime-inspect}"
@@ -46,7 +46,7 @@ Environment:
   COAKKA_CORE_ROOT=/path/to/coakkaCoreNativeDev
   COAKKA_RUNTIME_INSPECT_BIN=/path/to/coakka-runtime-inspect
   COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE=coakka-runtime-inspect-sample:1.3.1-local
-  COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE=docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-d7ab7fa-remote
+  COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE=docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-4ce41f19-remote
   COAKKA_RUNTIME_INSPECT_DOCKER_PORT=18080
 
 Notes:
@@ -75,6 +75,21 @@ require_docs() {
   coakka_require_file "${repo_root}/docs/assets/coakka-runtime-inspect.mp4" "The runtime-inspect MP4 walkthrough must be present."
 }
 
+require_self_contained_dockerfiles() {
+  local matches
+  matches="$(
+    grep -EIn \
+      'apt-get[[:space:]]+install|apk[[:space:]]+add|dnf[[:space:]]+install|yum[[:space:]]+install|libprotobuf|libabsl|libuv' \
+      "${script_dir}/docker/Dockerfile" \
+      "${script_dir}/dockerhub/Dockerfile" 2>/dev/null || true
+  )"
+
+  if [[ -n "${matches}" ]]; then
+    printf '%s\n' "${matches}" >&2
+    coakka_die "runtime-inspect Docker images must use self-contained native archives and must not install protobuf, absl, or libuv runtime packages."
+  fi
+}
+
 coakka_runtime_inspect_platform() {
   local system machine
   system="$(uname -s)"
@@ -94,7 +109,8 @@ coakka_runtime_inspect_platform() {
 coakka_runtime_inspect_release_id_for_platform() {
   local platform="$1"
   case "${platform}" in
-    macos-aarch64|linux-aarch64|linux-x86_64|windows-aarch64|windows-x86_64) printf '%s\n' "1.3.1+d7ab7fa" ;;
+    linux-aarch64|linux-x86_64) printf '%s\n' "1.3.1+4ce41f19" ;;
+    macos-aarch64|windows-aarch64|windows-x86_64) printf '%s\n' "1.3.1+d7ab7fa" ;;
     *) return 1 ;;
   esac
 }
@@ -127,10 +143,40 @@ resolve_published_archive() {
   coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/${artifact_name}"
 }
 
+require_linux_archive_self_contained() {
+  local platform="$1"
+  local package_root="$2"
+  local path report matches
+
+  case "${platform}" in
+    linux-aarch64|linux-x86_64) ;;
+    *) coakka_die "dependency gate only supports Linux inspect Docker archives: ${platform}" ;;
+  esac
+
+  coakka_require_command objdump "Install binutils, then retry."
+  for path in \
+      "${package_root}/bin/coakka-runtime-inspect" \
+      "${package_root}/lib/libcoakka_runtime_v2.so"; do
+    coakka_require_file "${path}" "The published Linux inspect archive is incomplete."
+    report="$(objdump -p "${path}" 2>/dev/null | grep 'NEEDED' || true)"
+    matches="$(
+      printf '%s\n' "${report}" |
+        grep -Eiq 'libuv|libcaf|libprotobuf|libabsl|libstdc\+\+|libgcc|libwinpthread' &&
+        printf '%s\n' "${report}" || true
+    )"
+    if [[ -n "${matches}" ]]; then
+      printf '%s\n' "${matches}" >&2
+      coakka_die "published ${platform} inspect archive is not self-contained: ${path}"
+    fi
+  done
+}
+
 run_check() {
   require_docs
+  require_self_contained_dockerfiles
   echo "coakka-runtime-inspect sample check"
   echo "docs=ok"
+  echo "docker_native_deps=self-contained-contract"
   if platform="$(coakka_runtime_inspect_platform)"; then
     tmp_dir="$(mktemp -d)"
     archive_path="$(resolve_published_archive "${platform}")"
@@ -162,7 +208,7 @@ smoke_inspect_binary() {
 
   "${binary_path}" version >/dev/null
   "${binary_path}" doctor >/dev/null
-  "${binary_path}" help serve | grep -F "GET /api/snapshot" >/dev/null
+  "${binary_path}" help serve | grep -F "Serve a local read-first inspect UI" >/dev/null
   "${binary_path}" snapshot \
     --output json \
     --local-route inspect.echo=127.0.0.1:19001 >"${snapshot_json}"
@@ -185,6 +231,7 @@ prepare_docker_context() {
   package_root="${tmp_dir}/package/coakka-runtime-inspect-v2-${COAKKA_RUNTIME_INSPECT_VERSION}-${platform}"
   coakka_require_executable_file "${package_root}/bin/coakka-runtime-inspect" \
     "The published Linux inspect archive is incomplete."
+  require_linux_archive_self_contained "${platform}" "${package_root}"
 
   rm -rf "${docker_context_root}"
   mkdir -p "${docker_context_root}/inspect"
