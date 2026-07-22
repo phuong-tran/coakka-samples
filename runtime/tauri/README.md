@@ -1,6 +1,6 @@
 # Tauri Runtime Samples
 
-These samples cover the source-adjacent Tauri intent connector lane.
+These samples cover the published Tauri intent source connector lane.
 
 The frontend boundary is intentionally narrow: JavaScript sends an intent to a
 Rust command, Rust executes the intent, and JavaScript receives a projected

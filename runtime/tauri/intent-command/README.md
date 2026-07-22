@@ -1,6 +1,6 @@
 # Tauri Intent Command
 
-This source-adjacent sample runs the command-level path that a Tauri app would
+This sample runs the command-level path that a Tauri app would
 use:
 
 ```text

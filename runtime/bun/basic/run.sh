@@ -3,8 +3,9 @@ set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../../.." && pwd)"
-connector_root="${COAKKA_CONNECTOR_ROOT:-${repo_root}/../coakkaJVMConnector}"
-bun_package_root="${COAKKA_BUN_CONNECTOR_ROOT:-${connector_root}/bun}"
+publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
+artifact_rel="runtime/bun/releases/1.3.1+bda2ef5-15d262e/coakka-v2-connector-bun-1.3.1.tgz"
+source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 
 if ! command -v bun >/dev/null 2>&1; then
@@ -16,19 +17,11 @@ if ! command -v bun >/dev/null 2>&1; then
 fi
 
 coakka_require_command bun "Install Bun or set BUN_INSTALL to a user-local Bun install, then retry."
-coakka_require_file "${bun_package_root}/package.json" \
-  "Set COAKKA_BUN_CONNECTOR_ROOT to a local coakka-v2-connector-bun checkout."
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
 
-(
-  cd "${bun_package_root}"
-  bun run pack:release >/dev/null
-)
-
-package_path="$(find "${bun_package_root}" -maxdepth 1 -name 'coakka-v2-connector-bun-*.tgz' | head -n 1)"
-coakka_require_file "${package_path}" "Run bun/scripts/smoke-packaged-package.sh in the connector workspace first."
+package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-v2-connector-bun-1.3.1.tgz")"
 
 cp "${script_dir}/main.mjs" "${tmp_dir}/main.mjs"
 

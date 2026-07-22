@@ -5,7 +5,7 @@ connector package.
 
 This sample covers:
 
-- install from the sibling Bun connector package checkout
+- install from the published Bun connector package
 - embedded native runtime loading
 - runtime version/git diagnostics
 - one process-owned route and one process-owned handler

@@ -1,7 +1,7 @@
 # Tauri Desktop Intent
 
-This source-adjacent sample is a real Tauri v2 desktop app scaffold for the
-CoAkka intent boundary.
+This sample is a real Tauri v2 desktop app scaffold for the CoAkka intent
+boundary.
 
 The WebView UI sends one intent through Tauri `invoke`. Rust owns the
 `RuntimeIntentDispatcher`, converts the intent to a runtime ask, handles the

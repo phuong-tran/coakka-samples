@@ -2,11 +2,8 @@
 
 These samples exercise the Bun-facing CoAkka runtime connector lane.
 
-The current Bun lane is still source-adjacent: it consumes the sibling
-`coakkaJVMConnector/bun` package checkout when present instead of claiming a
-published `coakka-publish` artifact. That keeps the sample useful for connector
-validation without pretending the Bun package has joined the public release
-surface yet.
+The current Bun lane consumes the published `coakka-v2-connector-bun` tarball
+from `coakka-publish`.
 
 ## Samples
 

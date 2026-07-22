@@ -11,9 +11,10 @@ The public publish surface exposes logger packages, the public native
 runtime C ABI package, runtime JVM/language connector packages, and the Spring
 Boot and Quarkus adapters. These samples consume those public artifacts.
 
-This `runtime/` directory is the app-host connector sample lane. Its pinned
-connector artifacts use the `1.3.1+bda2ef5-0a0aa76` generation. The
-separate `coakka-runtime-client` CLI sample lane lives under
+This `runtime/` directory is the app-host connector sample lane. Most pinned
+connector artifacts use the `1.3.1+bda2ef5-0a0aa76` generation. Bun and Tauri
+use the later `1.3.1+bda2ef5-15d262e` generation. The separate
+`coakka-runtime-client` CLI sample lane lives under
 [`../runtime-client`](../runtime-client/README.md) and is published as
 `1.3.1+2215b0f`.
 
@@ -102,23 +103,20 @@ npm install \
 Bun package:
 
 ```sh
-# Source-adjacent until the Bun lane joins the public coakka-publish surface.
-COAKKA_BUN_CONNECTOR_ROOT=../coakkaJVMConnector/bun \
-  bash run.sh runtime bun basic
+bash run.sh runtime bun basic
 ```
 
 Tauri intent bridge:
 
 ```sh
-# Source-adjacent until the Tauri lane joins the public coakka-publish surface.
 bash run.sh runtime tauri intent-command
 bash run.sh runtime tauri desktop-intent
 ```
 
-Source-adjacent Bun and Tauri gate:
+Bun and Tauri release gate:
 
 ```sh
-bash scripts/verify-source-adjacent-runtime-lanes.sh
+bash scripts/verify-runtime-release-lanes.sh
 ```
 
 Go source package:
