@@ -9,9 +9,11 @@ The package carries the native runtime resources. A sample user installs the
 published Bun package and runs `RuntimeHost`; there is no separate native
 runtime install step.
 
-Walkthrough recording status: planned. This lane should get the same short
-GIF/MP4 treatment as `coakka-runtime-client` and `coakka-runtime-inspect` once
-the Bun sample wording is stable.
+Watch the Bun runtime walkthrough:
+
+![CoAkka Runtime Bun walkthrough](../../docs/assets/coakka-runtime-bun.gif)
+
+Full recording: [coakka-runtime-bun.mp4](../../docs/assets/coakka-runtime-bun.mp4)
 
 ## Samples
 

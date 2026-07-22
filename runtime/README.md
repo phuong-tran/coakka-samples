@@ -119,9 +119,15 @@ Bun and Tauri release gate:
 bash scripts/verify-runtime-release-lanes.sh
 ```
 
-Bun and Tauri are the next lanes planned for short walkthrough recordings, like
-the existing `coakka-runtime-client` and `coakka-runtime-inspect` recordings.
-Until those assets land, the commands above are the canonical runnable proof.
+Bun walkthrough:
+
+![CoAkka Runtime Bun walkthrough](../docs/assets/coakka-runtime-bun.gif)
+
+Full recording: [coakka-runtime-bun.mp4](../docs/assets/coakka-runtime-bun.mp4)
+
+Tauri is the next lane planned for the same short walkthrough recording style.
+Until that asset lands, the Tauri commands above are the canonical runnable
+proof.
 
 Go source package:
 
