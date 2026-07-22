@@ -6,9 +6,11 @@ The frontend boundary is intentionally narrow: JavaScript sends an intent to a
 Rust command, Rust executes the intent, and JavaScript receives a projected
 result. The samples do not expose CoAkka runtime envelopes to WebView code.
 
-Walkthrough recording status: planned. The intended recording should show the
-same boundary twice: first as the command-level smoke, then as the desktop
-WebView calling the Rust command.
+Watch the Tauri intent walkthrough:
+
+![CoAkka Runtime Tauri walkthrough](../../docs/assets/coakka-runtime-tauri.gif)
+
+Full recording: [coakka-runtime-tauri.mp4](../../docs/assets/coakka-runtime-tauri.mp4)
 
 ## Samples
 

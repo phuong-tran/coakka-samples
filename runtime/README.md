@@ -125,9 +125,11 @@ Bun walkthrough:
 
 Full recording: [coakka-runtime-bun.mp4](../docs/assets/coakka-runtime-bun.mp4)
 
-Tauri is the next lane planned for the same short walkthrough recording style.
-Until that asset lands, the Tauri commands above are the canonical runnable
-proof.
+Tauri walkthrough:
+
+![CoAkka Runtime Tauri walkthrough](../docs/assets/coakka-runtime-tauri.gif)
+
+Full recording: [coakka-runtime-tauri.mp4](../docs/assets/coakka-runtime-tauri.mp4)
 
 Go source package:
 
