@@ -7,6 +7,7 @@ This sample covers:
 
 - install from the published Bun connector package
 - embedded native runtime loading
+- no runtime package dependency install beyond the published connector package
 - runtime version/git diagnostics
 - one process-owned route and one process-owned handler
 - one request/reply round trip

@@ -11,6 +11,9 @@ It does not start a desktop WebView yet. The goal is to prove the boundary
 before adding Tauri app scaffolding: the caller submits an intent, Rust handles
 it through the native runtime, and the result is projected back as JSON.
 
+Use this sample as the terminal-friendly half of the future Tauri walkthrough.
+It proves the Rust command boundary without UI noise.
+
 Run from this directory:
 
 ```sh

@@ -7,6 +7,10 @@ The WebView UI sends one intent through Tauri `invoke`. Rust owns the
 `RuntimeIntentDispatcher`, converts the intent to a runtime ask, handles the
 target locally, and returns an intent result projection to the WebView.
 
+Use this sample as the visual half of the future Tauri walkthrough. The
+recording should show WebView intent submission and the projected Rust result,
+not internal runtime transport details.
+
 Run the non-UI smoke from this directory:
 
 ```sh
