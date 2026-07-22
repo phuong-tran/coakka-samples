@@ -220,7 +220,7 @@ case "$1" in
     elif [[ "$#" -eq 3 ]]; then
       run_sample_path "runtime/$2/$3"
     else
-      coakka_die "Usage: bash run.sh runtime [<jvm|python|node|go|csharp|rust|zig|mojo|native>] <sample>"
+      coakka_die "Usage: bash run.sh runtime [<jvm|python|node|bun|tauri|go|csharp|rust|zig|mojo|native>] <sample>"
     fi
     ;;
   runtime-client)

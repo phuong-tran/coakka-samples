@@ -115,6 +115,12 @@ bash run.sh runtime tauri intent-command
 bash run.sh runtime tauri desktop-intent
 ```
 
+Source-adjacent Bun and Tauri gate:
+
+```sh
+bash scripts/verify-source-adjacent-runtime-lanes.sh
+```
+
 Go source package:
 
 ```sh
