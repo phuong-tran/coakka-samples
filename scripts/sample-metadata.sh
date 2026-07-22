@@ -33,7 +33,7 @@ COAKKA_SAMPLE_ROWS=(
   "runtime|bun|basic|Run one local request/reply echo from Bun"
   "runtime|tauri|intent-command|Run one intent through the Tauri-shaped Rust command bridge"
   "runtime|tauri|desktop-intent|Run the Tauri desktop intent app host smoke"
-  "runtime|electron|desktop-intent|Run one renderer intent through the Electron main-process runtime bridge"
+  "runtime|electron|basic|Run one renderer intent through the Electron main-process runtime bridge"
   "runtime|go|basic|Run one local request/reply echo from Go"
   "runtime|go|deadletter|Verify a missing Go route returns a matched deadletter"
   "runtime|csharp|basic|Run one local request/reply echo from C#"

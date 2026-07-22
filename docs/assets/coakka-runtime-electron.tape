@@ -28,7 +28,7 @@ Enter
 Show
 
 Sleep 800ms
-Type "bash run.sh runtime electron desktop-intent 2>&1 | grep -E 'downloading public artifact|coakka_electron_runtime_response'"
+Type "bash run.sh runtime electron basic 2>&1 | grep -E 'downloading public artifact|coakka_electron_runtime_response'"
 Enter
 
 Sleep 14s

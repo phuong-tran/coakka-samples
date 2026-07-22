@@ -11,6 +11,12 @@ Run it from the repository root:
 bash run.sh runtime electron desktop-intent
 ```
 
+The public first-run alias is:
+
+```sh
+bash run.sh runtime electron basic
+```
+
 Expected output shape:
 
 ```text

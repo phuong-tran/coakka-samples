@@ -13,7 +13,7 @@ Full recording: [coakka-runtime-electron.mp4](../../docs/assets/coakka-runtime-e
 ## Run
 
 ```sh
-bash run.sh runtime electron desktop-intent
+bash run.sh runtime electron basic
 ```
 
 Renderer code does not import the runtime connector and does not own runtime

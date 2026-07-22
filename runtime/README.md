@@ -117,7 +117,7 @@ bash run.sh runtime tauri desktop-intent
 Electron intent bridge:
 
 ```sh
-bash run.sh runtime electron desktop-intent
+bash run.sh runtime electron basic
 ```
 
 Bun, Tauri, and Electron release gate:
