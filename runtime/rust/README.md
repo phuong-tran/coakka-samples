@@ -10,6 +10,12 @@ This runtime lane consumes the public Rust package built against native runtime
 bash run.sh runtime rust basic
 ```
 
+Watch the Rust runtime walkthrough:
+
+![CoAkka Runtime Rust walkthrough](../../docs/assets/coakka-runtime-rust.gif)
+
+Full recording: [coakka-runtime-rust.mp4](../../docs/assets/coakka-runtime-rust.mp4)
+
 Rust samples expect a working Rust/Cargo toolchain.
 
 ## Before: Backend HTTP

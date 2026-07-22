@@ -13,6 +13,12 @@ bash run.sh runtime python deadletter
 bash run.sh runtime python hot-reload
 ```
 
+Watch the Python runtime walkthrough:
+
+![CoAkka Runtime Python walkthrough](../../docs/assets/coakka-runtime-python.gif)
+
+Full recording: [coakka-runtime-python.mp4](../../docs/assets/coakka-runtime-python.mp4)
+
 The Python samples run from disposable virtual environments. They install the
 published wheel into a temporary venv, run the sample, and remove the venv on
 exit so the user's global Python installation is not modified.

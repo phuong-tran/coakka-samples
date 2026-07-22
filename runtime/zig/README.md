@@ -9,3 +9,9 @@ Run the basic sample:
 ```sh
 bash run.sh runtime zig basic
 ```
+
+Watch the Zig runtime walkthrough:
+
+![CoAkka Runtime Zig walkthrough](../../docs/assets/coakka-runtime-zig.gif)
+
+Full recording: [coakka-runtime-zig.mp4](../../docs/assets/coakka-runtime-zig.mp4)

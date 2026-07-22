@@ -12,6 +12,12 @@ bash run.sh runtime go basic
 bash run.sh runtime go deadletter
 ```
 
+Watch the Go runtime walkthrough:
+
+![CoAkka Runtime Go walkthrough](../../docs/assets/coakka-runtime-go.gif)
+
+Full recording: [coakka-runtime-go.mp4](../../docs/assets/coakka-runtime-go.mp4)
+
 Go runtime v2 samples expect Go 1.23 or newer.
 
 ## Integration Recipe

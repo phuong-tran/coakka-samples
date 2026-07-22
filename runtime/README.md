@@ -119,17 +119,73 @@ Bun and Tauri release gate:
 bash scripts/verify-runtime-release-lanes.sh
 ```
 
-Bun walkthrough:
+## Walkthroughs
+
+JVM:
+
+![CoAkka Runtime JVM walkthrough](../docs/assets/coakka-runtime-jvm.gif)
+
+Full recording: [coakka-runtime-jvm.mp4](../docs/assets/coakka-runtime-jvm.mp4)
+
+Python:
+
+![CoAkka Runtime Python walkthrough](../docs/assets/coakka-runtime-python.gif)
+
+Full recording: [coakka-runtime-python.mp4](../docs/assets/coakka-runtime-python.mp4)
+
+Node.js:
+
+![CoAkka Runtime Node.js walkthrough](../docs/assets/coakka-runtime-node.gif)
+
+Full recording: [coakka-runtime-node.mp4](../docs/assets/coakka-runtime-node.mp4)
+
+Bun:
 
 ![CoAkka Runtime Bun walkthrough](../docs/assets/coakka-runtime-bun.gif)
 
 Full recording: [coakka-runtime-bun.mp4](../docs/assets/coakka-runtime-bun.mp4)
 
-Tauri walkthrough:
+Tauri:
 
 ![CoAkka Runtime Tauri walkthrough](../docs/assets/coakka-runtime-tauri.gif)
 
 Full recording: [coakka-runtime-tauri.mp4](../docs/assets/coakka-runtime-tauri.mp4)
+
+Go:
+
+![CoAkka Runtime Go walkthrough](../docs/assets/coakka-runtime-go.gif)
+
+Full recording: [coakka-runtime-go.mp4](../docs/assets/coakka-runtime-go.mp4)
+
+C#:
+
+![CoAkka Runtime C# walkthrough](../docs/assets/coakka-runtime-csharp.gif)
+
+Full recording: [coakka-runtime-csharp.mp4](../docs/assets/coakka-runtime-csharp.mp4)
+
+Rust:
+
+![CoAkka Runtime Rust walkthrough](../docs/assets/coakka-runtime-rust.gif)
+
+Full recording: [coakka-runtime-rust.mp4](../docs/assets/coakka-runtime-rust.mp4)
+
+Zig:
+
+![CoAkka Runtime Zig walkthrough](../docs/assets/coakka-runtime-zig.gif)
+
+Full recording: [coakka-runtime-zig.mp4](../docs/assets/coakka-runtime-zig.mp4)
+
+Mojo:
+
+![CoAkka Runtime Mojo walkthrough](../docs/assets/coakka-runtime-mojo.gif)
+
+Full recording: [coakka-runtime-mojo.mp4](../docs/assets/coakka-runtime-mojo.mp4)
+
+Native C/C++:
+
+![CoAkka Runtime Native C/C++ walkthrough](../docs/assets/coakka-runtime-native.gif)
+
+Full recording: [coakka-runtime-native.mp4](../docs/assets/coakka-runtime-native.mp4)
 
 Go source package:
 

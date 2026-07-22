@@ -10,3 +10,9 @@ Run the basic sample:
 ```sh
 bash run.sh runtime mojo basic
 ```
+
+Watch the Mojo runtime walkthrough:
+
+![CoAkka Runtime Mojo walkthrough](../../docs/assets/coakka-runtime-mojo.gif)
+
+Full recording: [coakka-runtime-mojo.mp4](../../docs/assets/coakka-runtime-mojo.mp4)

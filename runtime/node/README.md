@@ -12,6 +12,12 @@ bash run.sh runtime node basic
 bash run.sh runtime node deadletter
 ```
 
+Watch the Node.js runtime walkthrough:
+
+![CoAkka Runtime Node.js walkthrough](../../docs/assets/coakka-runtime-node.gif)
+
+Full recording: [coakka-runtime-node.mp4](../../docs/assets/coakka-runtime-node.mp4)
+
 ## Integration Recipe
 
 Install the package through your normal package management path. The samples

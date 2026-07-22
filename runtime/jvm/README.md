@@ -14,6 +14,12 @@ bash run.sh runtime jvm deadletter
 bash run.sh runtime jvm java-deadletter
 ```
 
+Watch the JVM runtime walkthrough:
+
+![CoAkka Runtime JVM walkthrough](../../docs/assets/coakka-runtime-jvm.gif)
+
+Full recording: [coakka-runtime-jvm.mp4](../../docs/assets/coakka-runtime-jvm.mp4)
+
 Direct Gradle runs:
 
 ```sh

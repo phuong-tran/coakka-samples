@@ -21,6 +21,12 @@ Run the native runtime sample:
 bash run.sh runtime native basic
 ```
 
+Watch the Native C/C++ runtime walkthrough:
+
+![CoAkka Runtime Native C/C++ walkthrough](../../docs/assets/coakka-runtime-native.gif)
+
+Full recording: [coakka-runtime-native.mp4](../../docs/assets/coakka-runtime-native.mp4)
+
 The basic sample uses the public C ABI directly from both C and C++. It starts
 a runtime, applies a route snapshot, submits a one-way request to a missing
 route, and verifies route-miss/deadletter diagnostics.

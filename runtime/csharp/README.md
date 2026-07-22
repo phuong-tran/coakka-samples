@@ -19,6 +19,12 @@ most server-side deployment work should still be validated on Linux first.
 bash run.sh runtime csharp basic
 ```
 
+Watch the C# runtime walkthrough:
+
+![CoAkka Runtime C# walkthrough](../../docs/assets/coakka-runtime-csharp.gif)
+
+Full recording: [coakka-runtime-csharp.mp4](../../docs/assets/coakka-runtime-csharp.mp4)
+
 The C# sample expects .NET SDK 10 or newer.
 `RuntimeHost.StartLocal(...)` now auto-selects one free IPv4 loopback port for
 the local route metadata when the sample does not set `diagnosticPort`
