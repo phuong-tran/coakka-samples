@@ -4,7 +4,7 @@ set -euo pipefail
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../../.." && pwd)"
 publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
-artifact_rel="runtime/bun/releases/1.3.1+bda2ef5-04a53ae/coakka-v2-connector-bun-1.3.1.tgz"
+artifact_rel="runtime/bun/releases/1.3.1+bda2ef5-247df1b/coakka-v2-connector-bun-1.3.1.tgz"
 source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 

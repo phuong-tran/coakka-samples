@@ -13,7 +13,7 @@ Boot and Quarkus adapters. These samples consume those public artifacts.
 
 This `runtime/` directory is the app-host connector sample lane. Most pinned
 connector artifacts use the `1.3.1+bda2ef5-0a0aa76` generation. Bun and Tauri
-use the later `1.3.1+bda2ef5-04a53ae` generation. The separate
+use the later `1.3.1+bda2ef5-247df1b` generation. The separate
 `coakka-runtime-client` CLI sample lane lives under
 [`../runtime-client`](../runtime-client/README.md) and is published as
 `1.3.1+2215b0f`.
