@@ -1,0 +1,23 @@
+[package]
+name = "coakka-sample-tauri-desktop-intent"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+name = "coakka_sample_tauri_desktop_intent"
+path = "src/lib.rs"
+
+[[bin]]
+name = "coakka-sample-tauri-desktop-intent"
+path = "src/main.rs"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+coakka-runtime-rs = { path = "../../../../../coakkaJVMConnector/rust" }
+coakka-tauri-intents = { path = "../../../../../coakkaJVMConnector/tauri-intents" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tauri = { version = "2", features = [] }

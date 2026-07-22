@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CoAkka Tauri Intent</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="toolbar">
+        <div>
+          <h1>CoAkka Tauri Intent</h1>
+          <p>WebView sends intent. Rust executes.</p>
+        </div>
+        <button id="send-intent" type="button">Send Intent</button>
+      </section>
+
+      <section class="workspace">
+        <label for="message">Message</label>
+        <textarea id="message" spellcheck="false">hello-tauri-desktop</textarea>
+        <pre id="result" aria-live="polite">{}</pre>
+      </section>
+    </main>
+    <script src="./main.js" type="module"></script>
+  </body>
+</html>

@@ -112,6 +112,7 @@ Tauri intent bridge:
 ```sh
 # Source-adjacent until the Tauri lane joins the public coakka-publish surface.
 bash run.sh runtime tauri intent-command
+bash run.sh runtime tauri desktop-intent
 ```
 
 Go source package:

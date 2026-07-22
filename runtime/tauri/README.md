@@ -9,3 +9,5 @@ result. The samples do not expose CoAkka runtime envelopes to WebView code.
 ## Samples
 
 - `intent-command`: run the Rust command-level path a Tauri app would call.
+- `desktop-intent`: compile and test a real Tauri v2 desktop app scaffold whose
+  WebView calls one Rust intent command.

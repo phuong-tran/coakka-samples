@@ -32,6 +32,7 @@ COAKKA_SAMPLE_ROWS=(
   "runtime|node|deadletter|Verify a missing Node.js route returns a matched deadletter"
   "runtime|bun|basic|Run one local request/reply echo from Bun"
   "runtime|tauri|intent-command|Run one intent through the Tauri-shaped Rust command bridge"
+  "runtime|tauri|desktop-intent|Run the Tauri desktop intent app host smoke"
   "runtime|go|basic|Run one local request/reply echo from Go"
   "runtime|go|deadletter|Verify a missing Go route returns a matched deadletter"
   "runtime|csharp|basic|Run one local request/reply echo from C#"
