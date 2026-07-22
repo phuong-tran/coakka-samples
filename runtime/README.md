@@ -13,7 +13,8 @@ Boot and Quarkus adapters. These samples consume those public artifacts.
 
 This `runtime/` directory is the app-host connector sample lane. Most pinned
 connector artifacts use the `1.3.1+bda2ef5-0a0aa76` generation. Bun and Tauri
-use the later `1.3.1+bda2ef5-247df1b` generation. The separate
+use the later `1.3.1+bda2ef5-247df1b` generation. Electron uses
+`1.3.1+bda2ef5-4e0cab0`. The separate
 `coakka-runtime-client` CLI sample lane lives under
 [`../runtime-client`](../runtime-client/README.md) and is published as
 `1.3.1+2215b0f`.
@@ -113,7 +114,13 @@ bash run.sh runtime tauri intent-command
 bash run.sh runtime tauri desktop-intent
 ```
 
-Bun and Tauri release gate:
+Electron intent bridge:
+
+```sh
+bash run.sh runtime electron desktop-intent
+```
+
+Bun, Tauri, and Electron release gate:
 
 ```sh
 bash scripts/verify-runtime-release-lanes.sh
@@ -150,6 +157,12 @@ Tauri:
 ![CoAkka Runtime Tauri walkthrough](../docs/assets/coakka-runtime-tauri.gif)
 
 Full recording: [coakka-runtime-tauri.mp4](../docs/assets/coakka-runtime-tauri.mp4)
+
+Electron:
+
+![CoAkka Runtime Electron walkthrough](../docs/assets/coakka-runtime-electron.gif)
+
+Full recording: [coakka-runtime-electron.mp4](../docs/assets/coakka-runtime-electron.mp4)
 
 Go:
 

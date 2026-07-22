@@ -4,6 +4,12 @@ Electron runtime samples document the `coakka-v2-connector-electron` package
 shape. The renderer sends one intent through preload and IPC; the Electron main
 process owns the CoAkka runtime host and returns the projected result.
 
+Watch the Electron runtime walkthrough:
+
+![CoAkka Runtime Electron walkthrough](../../docs/assets/coakka-runtime-electron.gif)
+
+Full recording: [coakka-runtime-electron.mp4](../../docs/assets/coakka-runtime-electron.mp4)
+
 ## Run
 
 ```sh
