@@ -28,6 +28,12 @@ bash "${script_dir}/node/basic/run.sh"
 echo "[logger/run-all] Node.js pressure"
 bash "${script_dir}/node/pressure/run.sh"
 
+echo "[logger/run-all] Bun basic"
+bash "${script_dir}/bun/basic/run.sh"
+
+echo "[logger/run-all] Bun pressure"
+bash "${script_dir}/bun/pressure/run.sh"
+
 echo "[logger/run-all] Go basic"
 bash "${script_dir}/go/basic/run.sh"
 
