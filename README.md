@@ -18,8 +18,8 @@ URLs, clients, retries, timeouts, status mapping, and error handling.
 This repository shows that model through runnable samples for CoAkka Runtime
 connectors, the CoAkka Runtime CLI client, framework adapters, native
 integrations, and coakka-logger packages built from the public CoAkka artifact
-surface. Mojo and Zig are tracked as public source-package runtime sample lanes
-while package-manager lanes remain planned.
+surface. Runtime samples currently include JVM, Python, Node.js, Bun, Electron,
+Tauri, Go, C#, Rust, Mojo, Zig, and native C/C++ lanes.
 
 ## Where Downloads Live
 
@@ -570,8 +570,8 @@ The value is not adding one more transport option. The value is standardizing
 the boundary between an application host and the runtime so the same delivery
 terms apply across services and languages:
 
-- one runtime contract for JVM, Python, Node.js, Go, C#, Rust, Mojo and Zig
-  source packages, and native C/C++
+- one runtime contract for JVM, Python, Node.js, Bun, Electron, Tauri, Go, C#,
+  Rust, Mojo and Zig source packages, and native C/C++
 - one vocabulary for target names, route snapshots, generations, and handler
   ownership
 - one diagnostic model for request/reply, deadletters, queue pressure, and
@@ -1410,6 +1410,9 @@ Language-specific entry points:
 - [JVM runtime samples](runtime/jvm/README.md)
 - [Python runtime samples](runtime/python/README.md)
 - [Node.js runtime samples](runtime/node/README.md)
+- [Bun runtime samples](runtime/bun/README.md)
+- [Electron runtime samples](runtime/electron/README.md)
+- [Tauri runtime samples](runtime/tauri/README.md)
 - [Go runtime samples](runtime/go/README.md)
 - [C# runtime samples](runtime/csharp/README.md)
 - [Rust runtime samples](runtime/rust/README.md)
@@ -1437,10 +1440,12 @@ does and does not contain, read
 
 Android and PHP are intentionally not in the current sample matrix yet.
 
-Mojo and Zig now have logger basic samples plus public source-package runtime
-lifecycle, raw request/reply, and route-miss deadletter samples. Package-manager
-lanes remain planned; they should grow through the same FFI-based connector
-boundary before any framework or scenario sample claims.
+Bun and Electron now have public runtime package samples, and Tauri has a
+public source connector sample lane. Mojo and Zig have logger basic samples
+plus public source-package runtime lifecycle, raw request/reply, and
+route-miss deadletter samples. Package-manager lanes for source-package
+connectors remain planned; they should grow through the same FFI-based
+connector boundary before any framework or scenario sample claims.
 
 Android is a likely future connector target, but it is a different kind of
 runtime host. The useful Android shape is not "Spring Boot on a phone"; it is a
@@ -1468,7 +1473,8 @@ connector first.
 
 | Capability | Public sample | What it shows |
 | --- | --- | --- |
-| Request/reply | JVM, Python, Node.js, Go, C#, Rust, native C/C++ basic samples | Typed request/reply through a process-owned route and runtime counters |
+| Request/reply | JVM, Python, Node.js, Bun, Electron, Go, C#, Rust, native C/C++ basic samples | Typed request/reply through a process-owned route and runtime counters |
+| Desktop intent bridge | Tauri and Electron intent samples | Frontend code sends intent-shaped work to the host process; Rust or Electron main owns runtime execution |
 | Raw request/reply | Zig and Mojo basic samples | Raw envelope request/reply through the public C ask-client helpers and delivered-request lane |
 | Runtime lifecycle/control | Zig and Mojo basic samples | Public native runtime load, route snapshot apply, start, stats read, and stop |
 | Deadletter | JVM, Java, Python, Node.js, Go deadletter samples; Zig and Mojo basic route miss; native basic route miss | Missing-route accounting and matched pending requests |
@@ -1549,13 +1555,14 @@ Planning note: [Container Samples Plan](docs/container-samples-plan.md).
 
 ### Samples By Language
 
-| Lane | JVM | Python | Node.js | Go | C# | Rust | Mojo | Zig | Native C/C++ |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Runtime v2 basic | `runtime/jvm/basic`, `runtime/jvm/java-basic` | `runtime/python/basic` | `runtime/node/basic` | `runtime/go/basic` | `runtime/csharp/basic` | `runtime/rust/basic` | `runtime/mojo/basic` | `runtime/zig/basic` | `runtime/native/basic` |
-| Runtime v2 deadletter | `runtime/jvm/deadletter`, `runtime/jvm/java-deadletter` | `runtime/python/deadletter` | `runtime/node/deadletter` | `runtime/go/deadletter` | - | - | - | - | - |
-| Runtime v2 pressure | - | - | - | - | - | - | - | - | `runtime/native/pressure` |
-| Logger basic | `logger/jvm/basic`, `logger/jvm/java-basic` | `logger/python/basic` | `logger/node/basic` | `logger/go/basic` | `logger/csharp/basic` | `logger/rust/basic` | `logger/mojo/basic` | `logger/zig/basic` | `logger/native/basic` |
-| Logger pressure | `logger/jvm/pressure`, `logger/jvm/java-pressure` | `logger/python/pressure` | `logger/node/pressure` | `logger/go/pressure` | `logger/csharp/pressure` | `logger/rust/pressure` | - | - | `logger/native/pressure` |
+| Lane | JVM | Python | Node.js | Bun | Electron | Tauri | Go | C# | Rust | Mojo | Zig | Native C/C++ |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Runtime v2 basic | `runtime/jvm/basic`, `runtime/jvm/java-basic` | `runtime/python/basic` | `runtime/node/basic` | `runtime/bun/basic` | `runtime/electron/basic` | `runtime/tauri/intent-command` | `runtime/go/basic` | `runtime/csharp/basic` | `runtime/rust/basic` | `runtime/mojo/basic` | `runtime/zig/basic` | `runtime/native/basic` |
+| Runtime v2 desktop intent | - | - | - | - | `runtime/electron/basic` | `runtime/tauri/desktop-intent` | - | - | - | - | - | - |
+| Runtime v2 deadletter | `runtime/jvm/deadletter`, `runtime/jvm/java-deadletter` | `runtime/python/deadletter` | `runtime/node/deadletter` | - | - | - | `runtime/go/deadletter` | - | - | - | - | - |
+| Runtime v2 pressure | - | - | - | - | - | - | - | - | - | - | - | `runtime/native/pressure` |
+| Logger basic | `logger/jvm/basic`, `logger/jvm/java-basic` | `logger/python/basic` | `logger/node/basic` | - | - | - | `logger/go/basic` | `logger/csharp/basic` | `logger/rust/basic` | `logger/mojo/basic` | `logger/zig/basic` | `logger/native/basic` |
+| Logger pressure | `logger/jvm/pressure`, `logger/jvm/java-pressure` | `logger/python/pressure` | `logger/node/pressure` | - | - | - | `logger/go/pressure` | `logger/csharp/pressure` | `logger/rust/pressure` | - | - | `logger/native/pressure` |
 
 ### Benchmark And Load Status
 
@@ -1739,6 +1746,8 @@ Pinned public artifact lines used by these samples:
 | Runtime native C/C++ | `1.3.1+bda2ef5` |
 | Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:1.3.1-gbda2ef5-0a0aa76` |
 | Runtime Python, Node.js, and Go | `1.3.1+bda2ef5-0a0aa76` |
+| Runtime Bun and Tauri samples | `1.3.1+bda2ef5-247df1b` |
+| Runtime Electron sample | `1.3.1+bda2ef5-4e0cab0` |
 | Runtime C# | `1.3.1+bda2ef5-0a0aa76` |
 | Runtime Rust | `1.3.1+bda2ef5-0a0aa76` |
 | Runtime Mojo and Zig samples | `1.3.1+bda2ef5-0a0aa76` source packages |
@@ -1776,6 +1785,9 @@ Runtime inspect public artifact: `1.3.1+4ce41f19` for Linux x86_64/ARM64 and
 | Runtime JVM | public | `bash run.sh runtime jvm basic` |
 | Runtime Python | public | `bash run.sh runtime python basic` |
 | Runtime Node.js | public | `bash run.sh runtime node basic` |
+| Runtime Bun | public | `bash run.sh runtime bun basic` |
+| Runtime Electron | public | `bash run.sh runtime electron basic` |
+| Runtime Tauri | public source sample | `bash run.sh runtime tauri intent-command` |
 | Runtime Go | public | `bash run.sh runtime go basic` |
 | Runtime C# | public | `bash run.sh runtime csharp basic` |
 | Runtime Rust | public | `bash run.sh runtime rust basic` |
@@ -1942,10 +1954,13 @@ If native loading fails, first check:
 
 - the selected publish repo path
 - the relevant `manifest.json` under the local publish checkout
-- Runtime v2 and logger JVM/Python/Node.js/Go/C#/Rust samples use all-in-one
-  language artifacts for supported platforms; no separate per-platform native
-  download is required for those language lanes.
-- Mojo and Zig runtime samples use public source connector packages with
+- Runtime v2 JVM/Python/Node.js/Bun/Electron/Go/C#/Rust samples consume
+  language artifacts that bundle or resolve the supported-platform native
+  runtime; no separate per-platform native download is required for normal
+  sample use.
+- Logger JVM/Python/Node.js/Go/C#/Rust samples use all-in-one language
+  artifacts for supported platforms.
+- Tauri, Mojo, and Zig runtime samples use public source connector packages with
   bundled native runtime libraries.
 - Mojo and Zig logger samples use the published native logger archive.
 - Native C/C++ samples use the published native archive and select the current
