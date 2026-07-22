@@ -54,6 +54,8 @@ Logger languages:
   python
   node
   bun
+  electron
+  tauri
   go
   csharp
   rust
@@ -211,7 +213,7 @@ case "$1" in
     elif [[ "$#" -eq 3 ]]; then
       run_sample_path "logger/$2/$3"
     else
-      coakka_die "Usage: bash run.sh logger [<jvm|python|node|bun|go|csharp|rust|zig|mojo|native>] <sample>"
+      coakka_die "Usage: bash run.sh logger [<jvm|python|node|bun|electron|tauri|go|csharp|rust|zig|mojo|native>] <sample>"
     fi
     ;;
   runtime)

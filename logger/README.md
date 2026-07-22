@@ -56,8 +56,8 @@ extends the same operational mindset to log delivery:
 
 - bounded admission instead of hidden buffering
 - explicit counters instead of vague "async logger" claims
-- native-core semantics that stay aligned across JVM, Python, Node.js, Bun, Go,
-  C#, Rust, and native hosts
+- native-core semantics that stay aligned across JVM, Python, Node.js, Bun,
+  Electron, Tauri, Go, C#, Rust, and native hosts
 - cleaner correlation between runtime events and application/system logs
 
 That makes the logger useful for:
@@ -147,6 +147,8 @@ Current samples:
 | Python | `python/basic`, `python/pressure` | published Python wheel |
 | Node.js | `node/basic`, `node/pressure` | published Node package |
 | Bun | `bun/basic`, `bun/pressure` | published Bun package |
+| Electron | `electron/basic` | published Electron package |
+| Tauri | `tauri/basic` | published Tauri source package |
 | Go | `go/basic`, `go/pressure` | published Go source package |
 | C# | `csharp/basic`, `csharp/pressure` | published C# NuGet package |
 | Rust | `rust/basic`, `rust/pressure` | published Rust archive package |

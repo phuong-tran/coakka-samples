@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+  <body>
+    <script>
+      window.coakkaLogger
+        .log({
+          intentId: "electron-logger-basic-1",
+          source: "electron-renderer",
+          level: "info",
+          category: "samples.logger.electron.basic",
+          message: '{"event":"hello","language":"electron"}',
+          awaitDrainMs: 1000,
+        })
+        .then((result) => window.coakkaLogger.finish(result))
+        .catch((error) => window.coakkaLogger.finish({ error: String(error) }));
+    </script>
+  </body>
+</html>

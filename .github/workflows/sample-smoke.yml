@@ -80,6 +80,7 @@ jobs:
           node --check logger/node/pressure/main.mjs
           node --check logger/bun/basic/main.mjs
           node --check logger/bun/pressure/main.mjs
+          node --check logger/electron/basic/main.mjs
 
       - name: Check public artifact pins
         run: |
