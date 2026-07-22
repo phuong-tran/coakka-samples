@@ -19,6 +19,7 @@ bash "${repo_root}/run.sh" list >"${listing_file}"
 require_sample_listing "runtime/bun/basic"
 require_sample_listing "runtime/tauri/intent-command"
 require_sample_listing "runtime/tauri/desktop-intent"
+require_sample_listing "runtime/electron/desktop-intent"
 
 echo "[runtime-release-lanes] bun"
 bash "${repo_root}/run.sh" runtime bun basic
@@ -28,6 +29,9 @@ bash "${repo_root}/run.sh" runtime tauri intent-command
 
 echo "[runtime-release-lanes] tauri desktop-intent"
 bash "${repo_root}/run.sh" runtime tauri desktop-intent
+
+echo "[runtime-release-lanes] electron desktop-intent"
+bash "${repo_root}/run.sh" runtime electron desktop-intent
 
 echo "[runtime-release-lanes] artifact pin guards"
 bash "${repo_root}/scripts/test-artifact-pins.sh"

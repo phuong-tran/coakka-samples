@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CoAkka Electron Runtime Intent Sample</title>
+  </head>
+  <body>
+    <main id="status">pending</main>
+    <script>
+      window.addEventListener("DOMContentLoaded", async () => {
+        const result = await window.coakka.intent({
+          intentId: "electron-sample-intent-1",
+          source: "electron-renderer",
+          target: "samples.electron.intent.echo",
+          operation: "echo",
+          payload: { message: "hello-electron-runtime" },
+          payloadIdentity: {
+            messageType: "samples.electron.intent.echo.request.v1",
+            payloadSchemaVersion: 1,
+            payloadFormat: "json",
+          },
+          timeoutMs: 2000,
+        });
+        document.getElementById("status").textContent = JSON.stringify(result);
+        await window.coakka.finish(result);
+      });
+    </script>
+  </body>
+</html>
