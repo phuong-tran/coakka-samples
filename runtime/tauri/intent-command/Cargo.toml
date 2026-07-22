@@ -1,0 +1,10 @@
+[package]
+name = "coakka-sample-tauri-intent-command"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+coakka-runtime-rs = { path = "../../../../coakkaJVMConnector/rust" }
+coakka-tauri-intents = { path = "../../../../coakkaJVMConnector/tauri-intents" }
+serde_json = "1.0"

@@ -99,6 +99,21 @@ npm install \
   "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/node/releases/1.3.1+bda2ef5-0a0aa76/coakka-v2-connector-node-1.3.1.tgz"
 ```
 
+Bun package:
+
+```sh
+# Source-adjacent until the Bun lane joins the public coakka-publish surface.
+COAKKA_BUN_CONNECTOR_ROOT=../coakkaJVMConnector/bun \
+  bash run.sh runtime bun basic
+```
+
+Tauri intent bridge:
+
+```sh
+# Source-adjacent until the Tauri lane joins the public coakka-publish surface.
+bash run.sh runtime tauri intent-command
+```
+
 Go source package:
 
 ```sh
@@ -213,6 +228,8 @@ Concrete copy-paste recipes:
 - [JVM runtime recipe](jvm/README.md#integration-recipe)
 - [Python runtime recipe](python/README.md#integration-recipe)
 - [Node.js runtime recipe](node/README.md#integration-recipe)
+- [Bun runtime recipe](bun/README.md#integration-recipe)
+- [Tauri intent bridge recipe](tauri/README.md)
 - [Go runtime recipe](go/README.md#integration-recipe)
 - [Spring Boot starter scenario](scenarios/customer-crud/spring-boot-starter-local)
 - [Quarkus same-process scenario](scenarios/customer-crud/quarkus-local)

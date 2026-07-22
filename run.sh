@@ -64,6 +64,8 @@ Runtime languages:
   jvm
   python
   node
+  bun
+  tauri
   go
   csharp
   rust

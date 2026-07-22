@@ -30,6 +30,8 @@ COAKKA_SAMPLE_ROWS=(
   "runtime|python|hot-reload|Apply route snapshots and reject stale/invalid generations from Python"
   "runtime|node|basic|Run one local request/reply echo from Node.js"
   "runtime|node|deadletter|Verify a missing Node.js route returns a matched deadletter"
+  "runtime|bun|basic|Run one local request/reply echo from Bun"
+  "runtime|tauri|intent-command|Run one intent through the Tauri-shaped Rust command bridge"
   "runtime|go|basic|Run one local request/reply echo from Go"
   "runtime|go|deadletter|Verify a missing Go route returns a matched deadletter"
   "runtime|csharp|basic|Run one local request/reply echo from C#"
