@@ -68,6 +68,9 @@ The packages are:
 - `coakka-logger-bun@1.2.2`
 - `coakka-logger-electron@1.2.2`
 
+If you want to test npm first without cloning any CoAkka source repository,
+use [First npm Smoke](first-npm-smoke.md).
+
 ## Then Read The Artifact Repo
 
 Use `coakka-publish` when you need exact released files, checksums, release

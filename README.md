@@ -6,6 +6,7 @@ Contribution guide: [CONTRIBUTING.md](CONTRIBUTING.md)
 Support: [SUPPORT.md](SUPPORT.md)
 Changelog: [CHANGELOG.md](CHANGELOG.md)
 New to CoAkka: [docs/new-to-coakka.md](docs/new-to-coakka.md)
+First npm smoke: [docs/first-npm-smoke.md](docs/first-npm-smoke.md)
 Sample lanes: [docs/sample-lanes.md](docs/sample-lanes.md)
 
 CoAkka is a native-backed runtime and logger toolkit for application-owned
@@ -63,7 +64,7 @@ checkout is absent.
 | What it is not | Not a replacement for public HTTP/gRPC edges, auth, service discovery, deployment policy, CQRS, or ordinary direct calls that are already enough. |
 | Where to download | Public artifacts live in [`coakka-publish`](https://github.com/phuong-tran/coakka-publish); this repo consumes those artifacts through runnable samples. |
 | Benchmark posture | Benchmarks are evidence and regression guardrails, not the main product claim; the harder shift is modeling app-owned work as runtime targets instead of another L7 API. |
-| Run this | `bash run.sh runtime-client` for the published runtime-client CLI, then `bash run.sh containers node-python` or `bash run.sh runtime jvm basic` for app-host connector samples. |
+| Run this | `bash run.sh runtime-client` for the published runtime-client CLI, or [First npm Smoke](docs/first-npm-smoke.md) for the smallest Node.js runtime/logger package check. |
 | Observe this | The CLI reports runtime build diagnostics from the published client archive. App-host samples then show targets, process ownership, and runtime outcomes instead of hidden REST fallback behavior. |
 
 Fast public path:
