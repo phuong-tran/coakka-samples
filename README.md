@@ -5,6 +5,7 @@
 Contribution guide: [CONTRIBUTING.md](CONTRIBUTING.md)
 Support: [SUPPORT.md](SUPPORT.md)
 Changelog: [CHANGELOG.md](CHANGELOG.md)
+Sample lanes: [docs/sample-lanes.md](docs/sample-lanes.md)
 
 CoAkka is for application-owned work that needs a runtime boundary, not another
 fake backend API.
@@ -82,6 +83,7 @@ Evidence and repo boundaries:
 - [See It In 3 Minutes](#see-it-in-3-minutes)
 - [Before And After](#before-and-after)
 - [Which Sample Should I Run?](#which-sample-should-i-run)
+- [Sample Lanes](docs/sample-lanes.md)
 - [When CoAkka Helps](#when-coakka-helps)
 - [Incremental Rollout](#incremental-rollout)
 - [Core Runtime Vocabulary](#core-runtime-vocabulary)
@@ -1562,8 +1564,8 @@ Planning note: [Container Samples Plan](docs/container-samples-plan.md).
 | Runtime v2 desktop intent | - | - | - | - | `runtime/electron/basic` | `runtime/tauri/desktop-intent` | - | - | - | - | - | - |
 | Runtime v2 deadletter | `runtime/jvm/deadletter`, `runtime/jvm/java-deadletter` | `runtime/python/deadletter` | `runtime/node/deadletter` | - | - | - | `runtime/go/deadletter` | - | - | - | - | - |
 | Runtime v2 pressure | - | - | - | - | - | - | - | - | - | - | - | `runtime/native/pressure` |
-| Logger basic | `logger/jvm/basic`, `logger/jvm/java-basic` | `logger/python/basic` | `logger/node/basic` | - | - | - | `logger/go/basic` | `logger/csharp/basic` | `logger/rust/basic` | `logger/mojo/basic` | `logger/zig/basic` | `logger/native/basic` |
-| Logger pressure | `logger/jvm/pressure`, `logger/jvm/java-pressure` | `logger/python/pressure` | `logger/node/pressure` | - | - | - | `logger/go/pressure` | `logger/csharp/pressure` | `logger/rust/pressure` | - | - | `logger/native/pressure` |
+| Logger basic | `logger/jvm/basic`, `logger/jvm/java-basic` | `logger/python/basic` | `logger/node/basic` | `logger/bun/basic` | `logger/electron/basic` | `logger/tauri/basic` | `logger/go/basic` | `logger/csharp/basic` | `logger/rust/basic` | `logger/mojo/basic` | `logger/zig/basic` | `logger/native/basic` |
+| Logger pressure | `logger/jvm/pressure`, `logger/jvm/java-pressure` | `logger/python/pressure` | `logger/node/pressure` | `logger/bun/pressure` | - | - | `logger/go/pressure` | `logger/csharp/pressure` | `logger/rust/pressure` | - | - | `logger/native/pressure` |
 
 ### Benchmark And Load Status
 
@@ -1778,6 +1780,9 @@ Runtime inspect public artifact: `1.3.1+4ce41f19` for Linux x86_64/ARM64 and
 | Logger JVM | public | `bash run.sh logger basic` |
 | Logger Python | public | `bash run.sh logger python basic` |
 | Logger Node.js | public | `bash run.sh logger node basic` |
+| Logger Bun | public | `bash run.sh logger bun basic` |
+| Logger Electron | public | `bash run.sh logger electron basic` |
+| Logger Tauri | public source sample | `bash run.sh logger tauri basic` |
 | Logger Go | public | `bash run.sh logger go basic` |
 | Logger C# | public | `bash run.sh logger csharp basic` |
 | Logger Rust | public | `bash run.sh logger rust basic` |

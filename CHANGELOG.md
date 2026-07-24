@@ -8,6 +8,8 @@ details live in
 
 - Added this root changelog so readers can see how the sample ecosystem changed
   without walking every sample directory.
+- Added a public sample-lanes map and refreshed root sample tables for
+  Bun, Tauri, and Electron logger lanes.
 
 ## 2026-07-23
 
