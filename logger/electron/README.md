@@ -1,7 +1,6 @@
 # Electron Logger Samples
 
-Electron samples consume the published `coakka-logger-electron` tarball from
-`coakka-publish`.
+Electron samples consume `coakka-logger-electron@1.2.1` from npm.
 
 - [Story](#story)
 - [Before And After](#before-and-after)
@@ -43,7 +42,7 @@ bash run.sh logger electron basic
 
 Current samples:
 
-- `basic`: install the published tarball into a temporary Electron app, send
+- `basic`: install the published package into a temporary Electron app, send
   one renderer log intent through preload/IPC, drain it in the main process,
   and print counters
 

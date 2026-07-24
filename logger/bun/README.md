@@ -1,13 +1,12 @@
 # Bun Logger Samples
 
-Bun samples consume the published `coakka-logger-bun` tarball from
-`coakka-publish`.
+Bun samples consume `coakka-logger-bun@1.2.1` from npm.
 
 Current samples:
 
-- `basic`: install the published tarball into a temporary Bun project, load the
+- `basic`: install the published package into a temporary Bun project, load the
   embedded native logger, emit one record, drain it, and print counters
-- `pressure`: install the published tarball, fill a queue with capacity `2`,
+- `pressure`: install the published package, fill a queue with capacity `2`,
   observe rejected writes, drain the accepted records, and print dropped counters
 
 Run:

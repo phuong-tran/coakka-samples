@@ -70,20 +70,22 @@ expected output details.
 
 ## Artifact Rule
 
-Public samples consume artifacts from
-[`coakka-publish`](https://github.com/phuong-tran/coakka-publish). The runner
+Public samples consume current public distribution surfaces. JavaScript
+runtime/logger samples install registry-verified npm coordinates. Other
+artifact-backed samples consume artifacts from
+[`coakka-publish`](https://github.com/phuong-tran/coakka-publish); the runner
 uses a sibling `coakka-publish` checkout when available, then falls back to the
 public raw GitHub artifact URL.
 
-Every resolved artifact is checked against
+Every resolved artifact-backed sample input is checked against
 `coakka-publish/artifacts/public-artifacts.tsv` before the sample unpacks or
 installs it.
 
-Package-manager lanes such as npm, Go modules, crates.io, and apt/deb are
-planned in `coakka-publish`, but samples should not present them as current
-until the matching package-manager artifact and verification path exist. Until
-then, GitHub Release assets, raw artifact URLs, Maven layout, and the public
-artifact manifest remain the canonical sample inputs.
+The npm package-manager lane is current for Node.js, Bun, and Electron
+runtime/logger packages, so those JavaScript samples install registry
+coordinates. Go modules, crates.io, and apt/deb remain planned in
+`coakka-publish`; samples should not present those lanes as current until the
+matching package-manager artifact and verification path exist.
 
 ## Boundary Rule
 

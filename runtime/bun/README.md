@@ -2,8 +2,7 @@
 
 These samples exercise the Bun-facing CoAkka runtime connector lane.
 
-The current Bun lane consumes the published `coakka-v2-connector-bun` tarball
-from `coakka-publish`.
+The current Bun lane consumes `coakka-v2-connector-bun@1.3.1` from npm.
 
 The package carries the native runtime resources. A sample user installs the
 published Bun package and runs `RuntimeHost`; there is no separate native

@@ -5,7 +5,7 @@ runtime v2 package.
 
 This sample covers:
 
-- package install from the public artifact surface
+- package install from npm
 - embedded native runtime loading
 - runtime version/git diagnostics
 - one process-owned route and one process-owned handler

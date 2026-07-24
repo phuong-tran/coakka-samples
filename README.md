@@ -37,7 +37,8 @@ download entrypoint is the GitHub Release page:
 
 [`CoAkka Public Artifacts 1.3.1`](https://github.com/phuong-tran/coakka-publish/releases/tag/coakka-public-artifacts-v1.3.1)
 
-The sample runner will resolve artifacts from a sibling `coakka-publish`
+JavaScript runtime/logger samples install the current npm packages. Other
+artifact-backed samples resolve artifacts from a sibling `coakka-publish`
 checkout when present, or from the public raw GitHub artifact URLs when that
 checkout is absent.
 
@@ -1723,16 +1724,18 @@ COAKKA_PUBLISH_ROOT=/path/to/coakka-publish bash run.sh runtime native basic
 COAKKA_PUBLISH_ROOT=/path/to/coakka-publish bash run.sh runtime
 ```
 
-Public package downloads are pinned through
-`coakka-publish/artifacts/public-artifacts.tsv`. When a sample resolves
-an artifact from the local public checkout or from the public raw GitHub URL, it
+Artifact-backed package downloads are pinned through
+`coakka-publish/artifacts/public-artifacts.tsv`. When a sample resolves an
+artifact from the local public checkout or from the public raw GitHub URL, it
 verifies the artifact SHA256 from that manifest before unpacking or installing
-the package.
+the package. JavaScript runtime/logger samples use registry-verified npm
+coordinates instead.
 
-Future package-manager lanes such as npm, Go modules, crates.io, and apt/deb
-belong to the public distribution roadmap in `coakka-publish`. Samples should
-continue to use the manifest-backed release surface until those channels are
-published and verified as current.
+The npm package-manager lane is published and verified for JavaScript runtime
+and logger samples. Future package-manager lanes such as Go modules, crates.io,
+and apt/deb belong to the public distribution roadmap in `coakka-publish`.
+Samples should continue to use the manifest-backed release surface until those
+channels are published and verified as current.
 
 Docker samples follow the same ownership rule. Docker Hub image tags provide a
 ready-to-run sample path, while the runtime and connector artifacts bundled by
