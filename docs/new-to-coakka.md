@@ -61,9 +61,9 @@ bash run.sh logger electron basic
 
 The packages are:
 
-- `coakka-v2-connector-node@1.3.5`
-- `coakka-v2-connector-bun@1.3.5`
-- `coakka-v2-connector-electron@1.3.5`
+- `coakka-v2-connector-node@1.3.6`
+- `coakka-v2-connector-bun@1.3.6`
+- `coakka-v2-connector-electron@1.3.6`
 - `coakka-logger-node@1.2.4`
 - `coakka-logger-bun@1.2.4`
 - `coakka-logger-electron@1.2.4`

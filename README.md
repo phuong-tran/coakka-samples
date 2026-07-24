@@ -279,8 +279,8 @@ Docker Hub image tags for this release train:
 ```text
 docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote
 docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-4ce41f19-remote
-docker.io/gabrielgun1983/sample-node-web:1.3.1-bda2ef5-0a0aa76-remote
-docker.io/gabrielgun1983/sample-python-store:1.3.1-bda2ef5-0a0aa76-remote
+docker.io/gabrielgun1983/sample-node-web:1.3.1-0da8c2d9-8ff6f32-remote
+docker.io/gabrielgun1983/sample-python-store:1.3.1-0da8c2d9-8ff6f32-remote
 ```
 
 Those tags are the published runtime-client, runtime-inspect, and Node.js/Python
@@ -290,9 +290,9 @@ artifacts. The runtime-inspect sample image copies the published Linux
 `coakka-runtime-inspect` Linux `1.3.1+4ce41f19` archives without installing
 native implementation runtime packages. The Node.js/Python sample images
 install the pinned Node.js and Python connector artifact set
-`1.3.1+bda2ef5-0a0aa76` over the native runtime base line `1.3.1+bda2ef5`.
+`1.3.1+0da8c2d9-8ff6f32` over the native runtime base line `1.3.1+0da8c2d9`.
 Repo-local rebuilds use the same connector set over
-`coakka/runtime-base:1.3.1-bda2ef5-local`.
+`coakka/runtime-base:1.3.1-0da8c2d9-local`.
 
 Run the visible container sample:
 
@@ -1016,7 +1016,7 @@ typed runtime target.
 Spring Boot uses the public starter artifact:
 
 ```kotlin
-implementation("coakka.spring:coakka-spring-boot-starter:1.3.1-g0a0aa76")
+implementation("coakka.spring:coakka-spring-boot-starter:1.3.1-g0da8c2d9-8ff6f32")
 ```
 
 ```kotlin
@@ -1049,7 +1049,7 @@ fun create(@RequestBody request: CustomerDraft): MutationResponse {
 Quarkus follows the same shape through the public extension artifact:
 
 ```kotlin
-implementation("coakka.quarkus:coakka-quarkus-extension:1.3.1-g0a0aa76")
+implementation("coakka.quarkus:coakka-quarkus-extension:1.3.1-g0da8c2d9-8ff6f32")
 ```
 
 ```kotlin
@@ -1768,31 +1768,25 @@ Pinned public artifact lines used by these samples:
 | --- | --- |
 | Logger JVM | `coakka.logger:coakka-jvm-native-logger:1.2.1-gf50756ebff0d` |
 | Logger Python, Node.js, Go, C#, Rust, Mojo, Zig, and native C/C++ | `1.2.1+f50756ebff0d` |
-| Runtime native C/C++ | `1.3.1+bda2ef5` |
-| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:1.3.1-gbda2ef5-0a0aa76` |
-| Runtime Python, Node.js, and Go | `1.3.1+bda2ef5-0a0aa76` |
-| Runtime Bun and Tauri samples | `1.3.1+bda2ef5-247df1b` |
-| Runtime Electron sample | `1.3.1+bda2ef5-4e0cab0` |
-| Runtime C# | `1.3.1+bda2ef5-0a0aa76` |
-| Runtime Rust | `1.3.1+bda2ef5-0a0aa76` |
-| Runtime Mojo and Zig samples | `1.3.1+bda2ef5-0a0aa76` source packages |
+| Runtime native C/C++ | `1.3.1+0da8c2d9` |
+| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:1.3.1-g0da8c2d9-8ff6f32` |
+| Runtime Python, Node.js, and Go | `1.3.1+0da8c2d9-8ff6f32` |
+| Runtime Bun and Tauri samples | `1.3.1+0da8c2d9-8ff6f32` |
+| Runtime Electron sample | `1.3.1+0da8c2d9-8ff6f32` |
+| Runtime C# | `1.3.1+0da8c2d9-8ff6f32` |
+| Runtime Rust | `1.3.1+0da8c2d9-8ff6f32` |
+| Runtime Mojo and Zig samples | `1.3.1+0da8c2d9-8ff6f32` source packages |
 | Runtime CLI client | `coakka-runtime-client` lane, `coakka-client` command, `1.3.1+2215b0f` |
 | Runtime inspect | `1.3.1+4ce41f19` Linux x86_64/ARM64 archives; `1.3.1+d7ab7fa` macOS ARM64 and Windows x86_64/ARM64 archives |
-| Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:1.3.1-g0a0aa76` |
-| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:1.3.1-g0a0aa76` |
+| Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:1.3.1-g0da8c2d9-8ff6f32` |
+| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:1.3.1-g0da8c2d9-8ff6f32` |
 
-The matching runtime native note is published at
-`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-18-runtime-native-1.3.1-bda2ef5.md`.
-The matching runtime JVM note is published at
-`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-18-runtime-jvm-1.3.1-0a0aa76.md`.
-The matching non-JVM connector note is published at
-`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-18-runtime-non-jvm-1.3.1-0a0aa76.md`.
-The matching Spring Boot and Quarkus adapter note is published at
-`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-18-runtime-jvm-adapters-1.3.1-0a0aa76.md`.
+The matching runtime hotfix note is published at
+`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-25-runtime-stop-backpressure-hotfix-8ff6f32.md`.
 
 ## Public Status
 
-Pinned runtime connector/native generation: `1.3.1+bda2ef5`.
+Pinned runtime connector/native generation: `1.3.1+0da8c2d9`.
 Published runtime-client CLI generation: `1.3.1+2215b0f`.
 Runtime inspect public artifact: `1.3.1+4ce41f19` for Linux x86_64/ARM64 and
 `1.3.1+d7ab7fa` for macOS ARM64 and Windows x86_64/ARM64.

@@ -7,7 +7,7 @@ publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
 source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 
-artifact_rel="runtime/python/releases/1.3.1+bda2ef5-0a0aa76/coakka_v2_connector-1.3.1-py3-none-any.whl"
+artifact_rel="runtime/python/releases/1.3.1+0da8c2d9-8ff6f32/coakka_v2_connector-1.3.1-py3-none-any.whl"
 
 print_usage() {
   cat <<'EOF'

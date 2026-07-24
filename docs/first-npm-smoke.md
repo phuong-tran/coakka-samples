@@ -9,7 +9,7 @@ packages from the public registry and a temporary local project.
 mkdir coakka-runtime-first-run
 cd coakka-runtime-first-run
 npm init -y
-npm install coakka-v2-connector-node@1.3.5
+npm install coakka-v2-connector-node@1.3.6
 ```
 
 Create `runtime.mjs`:

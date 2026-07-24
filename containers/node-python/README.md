@@ -24,16 +24,16 @@ bash run.sh containers node-python
 Published remote image tags for this sample lane:
 
 ```text
-docker.io/gabrielgun1983/sample-node-web:1.3.1-bda2ef5-0a0aa76-remote
-docker.io/gabrielgun1983/sample-python-store:1.3.1-bda2ef5-0a0aa76-remote
+docker.io/gabrielgun1983/sample-node-web:1.3.1-0da8c2d9-8ff6f32-remote
+docker.io/gabrielgun1983/sample-python-store:1.3.1-0da8c2d9-8ff6f32-remote
 ```
 
 Those tags are published sample images, not the canonical artifact download
 location. They install the pinned public Node.js and Python
-connector artifact set `1.3.1+bda2ef5-0a0aa76` from
+connector artifact set `1.3.1+0da8c2d9-8ff6f32` from
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) and load the
 native runtime base from
-`docker.io/gabrielgun1983/runtime-base:1.3.1-bda2ef5-remote` through
+`docker.io/gabrielgun1983/runtime-base:1.3.1-0da8c2d9-remote` through
 `COAKKA_RUNTIME_LIB`.
 
 Then open:
@@ -94,20 +94,20 @@ Maintainer multi-arch publish commands:
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
   -f containers/node-python/Dockerfile.python \
-  --build-arg COAKKA_RUNTIME_BASE_IMAGE=docker.io/gabrielgun1983/runtime-base:1.3.1-bda2ef5-remote \
-  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=9447f42cfc136ca19f518c94ca777192f8062332a63dfeff95be19a2a2f51ce7 \
-  --build-arg COAKKA_RUNTIME_GENERATION=1.3.1-bda2ef5-0a0aa76-remote \
-  -t docker.io/gabrielgun1983/sample-python-store:1.3.1-bda2ef5-0a0aa76-remote \
+  --build-arg COAKKA_RUNTIME_BASE_IMAGE=docker.io/gabrielgun1983/runtime-base:1.3.1-0da8c2d9-remote \
+  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=370429b517d093e14e5fcdfe1df108b0672fa5c342e84b1e975f2b2aea6092ad \
+  --build-arg COAKKA_RUNTIME_GENERATION=1.3.1-0da8c2d9-8ff6f32-remote \
+  -t docker.io/gabrielgun1983/sample-python-store:1.3.1-0da8c2d9-8ff6f32-remote \
   --push \
   .
 
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
   -f containers/node-python/Dockerfile.node \
-  --build-arg COAKKA_RUNTIME_BASE_IMAGE=docker.io/gabrielgun1983/runtime-base:1.3.1-bda2ef5-remote \
-  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=9447f42cfc136ca19f518c94ca777192f8062332a63dfeff95be19a2a2f51ce7 \
-  --build-arg COAKKA_RUNTIME_GENERATION=1.3.1-bda2ef5-0a0aa76-remote \
-  -t docker.io/gabrielgun1983/sample-node-web:1.3.1-bda2ef5-0a0aa76-remote \
+  --build-arg COAKKA_RUNTIME_BASE_IMAGE=docker.io/gabrielgun1983/runtime-base:1.3.1-0da8c2d9-remote \
+  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=370429b517d093e14e5fcdfe1df108b0672fa5c342e84b1e975f2b2aea6092ad \
+  --build-arg COAKKA_RUNTIME_GENERATION=1.3.1-0da8c2d9-8ff6f32-remote \
+  -t docker.io/gabrielgun1983/sample-node-web:1.3.1-0da8c2d9-8ff6f32-remote \
   --push \
   .
 ```
