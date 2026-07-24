@@ -9,8 +9,10 @@ This scenario runs:
 | `customer-audit-node` | Node.js | headless mutation event receiver | none | `samples.customer.audit` | `127.0.0.1:19134` |
 
 The Spring Boot web service reuses the same customer UI/API from the
-Spring-to-Spring scenario. The Node.js store owns state and emits typed audit
-events to a second Node.js service after create, update, and delete operations.
+Spring-to-Spring scenario. The Node.js services use
+`coakka-v2-connector-node@1.3.1` from npm; the store owns state and emits typed
+audit events to a second Node.js service after create, update, and delete
+operations.
 
 ## Runtime Transport Note
 

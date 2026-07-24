@@ -3,11 +3,8 @@ set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../../../.." && pwd)"
-publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
-node_artifact_rel="runtime/node/releases/1.3.1+bda2ef5-0a0aa76/coakka-v2-connector-node-1.3.1.tgz"
 web_build_task=":runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-web:bootJar"
 web_jar="${repo_root}/runtime/scenarios/customer-crud/spring-boot-spring-boot/customer-web/build/libs/customer-web.jar"
-source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 
 print_usage() {
@@ -41,15 +38,13 @@ require_node_commands() {
 
 prepare_node_workspace() {
   local tmp_dir="$1"
-  local package_path
-  package_path="$(coakka_resolve_artifact "${publish_root}" "${node_artifact_rel}" "${tmp_dir}/artifacts/coakka-v2-connector-node-1.3.1.tgz")"
   cp "${script_dir}/store.mjs" "${tmp_dir}/store.mjs"
   cp "${script_dir}/audit.mjs" "${tmp_dir}/audit.mjs"
 
   (
     cd "${tmp_dir}"
     npm init -y >/dev/null
-    npm install "${package_path}" >/dev/null
+    npm install coakka-v2-connector-node@1.3.1 >/dev/null
   )
 }
 

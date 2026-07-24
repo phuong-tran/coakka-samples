@@ -97,14 +97,13 @@ python -m pip install \
 Node.js package:
 
 ```sh
-npm install \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/node/releases/1.3.1+bda2ef5-0a0aa76/coakka-v2-connector-node-1.3.1.tgz"
+npm install coakka-v2-connector-node@1.3.1
 ```
 
 Bun package:
 
 ```sh
-bash run.sh runtime bun basic
+bun add coakka-v2-connector-bun@1.3.1
 ```
 
 Tauri intent bridge:
@@ -117,7 +116,7 @@ bash run.sh runtime tauri desktop-intent
 Electron intent bridge:
 
 ```sh
-bash run.sh runtime electron basic
+npm install coakka-v2-connector-electron@1.3.1
 ```
 
 Bun, Tauri, and Electron release gate:

@@ -3,13 +3,10 @@ set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../../../.." && pwd)"
-publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
-source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 
 web_build_task=":runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-web:bootJar"
 web_jar="${repo_root}/runtime/scenarios/customer-crud/spring-boot-spring-boot/customer-web/build/libs/customer-web.jar"
-node_artifact_rel="runtime/node/releases/1.3.1+bda2ef5-0a0aa76/coakka-v2-connector-node-1.3.1.tgz"
 
 print_usage() {
   cat <<'EOF'
@@ -52,16 +49,15 @@ run_web() {
 run_store() {
   require_node_commands
 
-  local tmp_dir package_path
+  local tmp_dir
   tmp_dir="$(mktemp -d)"
   trap "rm -rf '${tmp_dir}'" EXIT
-  package_path="$(coakka_resolve_artifact "${publish_root}" "${node_artifact_rel}" "${tmp_dir}/artifacts/coakka-v2-connector-node-1.3.1.tgz")"
   cp "${script_dir}/store.mjs" "${tmp_dir}/store.mjs"
 
   (
     cd "${tmp_dir}"
     npm init -y >/dev/null
-    npm install "${package_path}" >/dev/null
+    npm install coakka-v2-connector-node@1.3.1 >/dev/null
     exec node store.mjs
   )
 }
@@ -70,15 +66,14 @@ run_dev() {
   require_web_commands
   require_node_commands
 
-  local tmp_dir package_path store_pid web_pid
+  local tmp_dir store_pid web_pid
   tmp_dir="$(mktemp -d)"
-  package_path="$(coakka_resolve_artifact "${publish_root}" "${node_artifact_rel}" "${tmp_dir}/artifacts/coakka-v2-connector-node-1.3.1.tgz")"
   cp "${script_dir}/store.mjs" "${tmp_dir}/store.mjs"
 
   (
     cd "${tmp_dir}"
     npm init -y >/dev/null
-    npm install "${package_path}" >/dev/null
+    npm install coakka-v2-connector-node@1.3.1 >/dev/null
   )
   bash "${repo_root}/gradlew" -p "${repo_root}" "${web_build_task}" --quiet
   stop_ports
@@ -119,17 +114,16 @@ check_scenario() {
   require_web_commands
   require_node_commands
 
-  local tmp_dir package_path
+  local tmp_dir
   tmp_dir="$(mktemp -d)"
   trap "rm -rf '${tmp_dir}'" EXIT
-  package_path="$(coakka_resolve_artifact "${publish_root}" "${node_artifact_rel}" "${tmp_dir}/artifacts/coakka-v2-connector-node-1.3.1.tgz")"
   cp "${script_dir}/store.mjs" "${tmp_dir}/store.mjs"
 
   bash "${repo_root}/gradlew" -p "${repo_root}" "${web_build_task}" --quiet
   (
     cd "${tmp_dir}"
     npm init -y >/dev/null
-    npm install "${package_path}" >/dev/null
+    npm install coakka-v2-connector-node@1.3.1 >/dev/null
     node --check store.mjs
   )
   coakka_note "check ok: built Spring Boot web jar and verified Node.js store"
