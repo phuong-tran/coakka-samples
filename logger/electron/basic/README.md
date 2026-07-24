@@ -1,6 +1,6 @@
 # Electron Logger Basic
 
-This sample installs `coakka-logger-electron@1.2.2` from npm into a
+This sample installs `coakka-logger-electron@1.2.3` from npm into a
 temporary Electron app. Renderer JavaScript sends one log intent through
 preload/IPC; the main process owns the logger bridge.
 
