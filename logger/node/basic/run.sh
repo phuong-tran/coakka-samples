@@ -15,6 +15,6 @@ cp "${script_dir}/main.mjs" "${tmp_dir}/main.mjs"
 (
   cd "${tmp_dir}"
   npm init -y >/dev/null
-  npm install coakka-logger-node@1.2.1 >/dev/null
+  npm install coakka-logger-node@1.2.2 >/dev/null
   node main.mjs
 )

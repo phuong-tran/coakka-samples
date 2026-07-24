@@ -61,12 +61,12 @@ bash run.sh logger electron basic
 
 The packages are:
 
-- `coakka-v2-connector-node@1.3.1`
-- `coakka-v2-connector-bun@1.3.1`
-- `coakka-v2-connector-electron@1.3.1`
-- `coakka-logger-node@1.2.1`
-- `coakka-logger-bun@1.2.1`
-- `coakka-logger-electron@1.2.1`
+- `coakka-v2-connector-node@1.3.2`
+- `coakka-v2-connector-bun@1.3.2`
+- `coakka-v2-connector-electron@1.3.2`
+- `coakka-logger-node@1.2.2`
+- `coakka-logger-bun@1.2.2`
+- `coakka-logger-electron@1.2.2`
 
 ## Then Read The Artifact Repo
 

@@ -26,7 +26,7 @@ resolve_electron_logger_package() {
     fi
   fi
 
-  printf '%s\n' "coakka-logger-electron@1.2.1"
+  printf '%s\n' "coakka-logger-electron@1.2.2"
 }
 
 resolve_node_logger_package_for_local_connector() {

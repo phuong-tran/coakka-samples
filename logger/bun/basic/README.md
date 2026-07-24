@@ -1,6 +1,6 @@
 # Bun Logger Basic
 
-This sample installs `coakka-logger-bun@1.2.1` from npm into a temporary
+This sample installs `coakka-logger-bun@1.2.2` from npm into a temporary
 Bun project and runs a small logger flow.
 
 This sample covers:
