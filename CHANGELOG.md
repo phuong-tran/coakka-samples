@@ -6,8 +6,7 @@ details live in
 
 ## 2026-07-24
 
-- Added this root changelog so readers can see how the sample ecosystem changed
-  without walking every sample directory.
+- Documented the public runnable sample surface in a root changelog.
 - Added a public sample-lanes map and refreshed root sample tables for
   Bun, Tauri, and Electron logger lanes.
 
