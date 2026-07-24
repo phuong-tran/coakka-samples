@@ -57,7 +57,7 @@ run_store() {
   (
     cd "${tmp_dir}"
     npm init -y >/dev/null
-    npm install coakka-v2-connector-node@1.3.4 >/dev/null
+    npm install coakka-v2-connector-node@1.3.5 >/dev/null
     exec node store.mjs
   )
 }
@@ -73,7 +73,7 @@ run_dev() {
   (
     cd "${tmp_dir}"
     npm init -y >/dev/null
-    npm install coakka-v2-connector-node@1.3.4 >/dev/null
+    npm install coakka-v2-connector-node@1.3.5 >/dev/null
   )
   bash "${repo_root}/gradlew" -p "${repo_root}" "${web_build_task}" --quiet
   stop_ports
@@ -123,7 +123,7 @@ check_scenario() {
   (
     cd "${tmp_dir}"
     npm init -y >/dev/null
-    npm install coakka-v2-connector-node@1.3.4 >/dev/null
+    npm install coakka-v2-connector-node@1.3.5 >/dev/null
     node --check store.mjs
   )
   coakka_note "check ok: built Spring Boot web jar and verified Node.js store"

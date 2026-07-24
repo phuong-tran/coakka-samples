@@ -1,6 +1,6 @@
 # Electron Logger Samples
 
-Electron samples consume `coakka-logger-electron@1.2.3` from npm.
+Electron samples consume `coakka-logger-electron@1.2.4` from npm.
 
 - [Story](#story)
 - [Before And After](#before-and-after)

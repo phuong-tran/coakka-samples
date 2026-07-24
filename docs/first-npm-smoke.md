@@ -9,7 +9,7 @@ packages from the public registry and a temporary local project.
 mkdir coakka-runtime-first-run
 cd coakka-runtime-first-run
 npm init -y
-npm install coakka-v2-connector-node@1.3.4
+npm install coakka-v2-connector-node@1.3.5
 ```
 
 Create `runtime.mjs`:
@@ -73,7 +73,7 @@ Expected shape:
 mkdir coakka-logger-first-run
 cd coakka-logger-first-run
 npm init -y
-npm install coakka-logger-node@1.2.3
+npm install coakka-logger-node@1.2.4
 ```
 
 Create `logger.mjs`:

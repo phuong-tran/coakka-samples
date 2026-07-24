@@ -9,7 +9,7 @@ This scenario runs:
 
 The Spring Boot web service reuses the same customer UI/API from the
 Spring-to-Spring scenario. The Node.js store uses the published
-`coakka-v2-connector-node@1.3.4` npm package and runs as a headless message
+`coakka-v2-connector-node@1.3.5` npm package and runs as a headless message
 handler.
 
 ## Runtime Transport Note

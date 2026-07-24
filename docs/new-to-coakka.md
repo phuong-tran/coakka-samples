@@ -61,12 +61,12 @@ bash run.sh logger electron basic
 
 The packages are:
 
-- `coakka-v2-connector-node@1.3.4`
-- `coakka-v2-connector-bun@1.3.4`
-- `coakka-v2-connector-electron@1.3.4`
-- `coakka-logger-node@1.2.3`
-- `coakka-logger-bun@1.2.3`
-- `coakka-logger-electron@1.2.3`
+- `coakka-v2-connector-node@1.3.5`
+- `coakka-v2-connector-bun@1.3.5`
+- `coakka-v2-connector-electron@1.3.5`
+- `coakka-logger-node@1.2.4`
+- `coakka-logger-bun@1.2.4`
+- `coakka-logger-electron@1.2.4`
 
 If you want to test npm first without cloning any CoAkka source repository,
 use [First npm Smoke](first-npm-smoke.md).
