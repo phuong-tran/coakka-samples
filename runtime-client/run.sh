@@ -7,7 +7,8 @@ publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
 source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 
-COAKKA_RUNTIME_CLIENT_RELEASE_ID="1.3.1+2215b0f"
+COAKKA_RUNTIME_CLIENT_RELEASE_ID="1.3.1+0da8c2d9"
+COAKKA_RUNTIME_CLIENT_DOCKER_BUNDLE_RELEASE_ID="1.3.1+2215b0f"
 COAKKA_RUNTIME_CLIENT_VERSION="1.3.1"
 COAKKA_RUNTIME_CLIENT_DEMO_IMAGE_DEFAULT="docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote"
 coakka_runtime_client_tmp_dir=""
@@ -128,7 +129,7 @@ coakka_runtime_client_resolve_docker_bundle() {
   local tmp_dir="$2"
   local artifact_name artifact_rel package_path bundle_root
   artifact_name="coakka-client-docker-demo-v2-${COAKKA_RUNTIME_CLIENT_VERSION}-${platform}.tar.gz"
-  artifact_rel="demo/coakka-client/releases/${COAKKA_RUNTIME_CLIENT_RELEASE_ID}/${artifact_name}"
+  artifact_rel="demo/coakka-client/releases/${COAKKA_RUNTIME_CLIENT_DOCKER_BUNDLE_RELEASE_ID}/${artifact_name}"
 
   package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/${artifact_name}")"
   mkdir -p "${tmp_dir}/package"
@@ -218,7 +219,7 @@ coakka_runtime_client_docker_demo() {
   local platform artifact_name artifact_rel tmp_dir package_path bundle_root output
   platform="$(coakka_runtime_client_docker_platform)"
   artifact_name="coakka-client-docker-demo-v2-${COAKKA_RUNTIME_CLIENT_VERSION}-${platform}.tar.gz"
-  artifact_rel="demo/coakka-client/releases/${COAKKA_RUNTIME_CLIENT_RELEASE_ID}/${artifact_name}"
+  artifact_rel="demo/coakka-client/releases/${COAKKA_RUNTIME_CLIENT_DOCKER_BUNDLE_RELEASE_ID}/${artifact_name}"
 
   coakka_require_command docker "Install Docker with the Compose plugin, then retry."
   coakka_require_command tar "Install tar, then retry."

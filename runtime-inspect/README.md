@@ -89,11 +89,11 @@ The current published inspect release is:
 
 ```text
 coakka-runtime-inspect native UI
-1.3.1+d7ab7fa release id for macOS ARM64
-1.3.1+4ce41f19 release id for Linux x86_64
-1.3.1+4ce41f19 release id for Linux ARM64
-1.3.1+d7ab7fa release id for Windows x86_64
-1.3.1+d7ab7fa release id for Windows ARM64
+1.3.1+0da8c2d9 release id for macOS ARM64
+1.3.1+0da8c2d9 release id for Linux x86_64
+1.3.1+0da8c2d9 release id for Linux ARM64
+1.3.1+0da8c2d9 release id for Windows x86_64
+1.3.1+0da8c2d9 release id for Windows ARM64
 ```
 
 Direct download:

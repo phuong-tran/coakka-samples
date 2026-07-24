@@ -127,7 +127,7 @@ The published CLI runtime-client release is:
 ```text
 coakka-runtime-client product lane
 coakka-client command and archive prefix
-1.3.1+2215b0f release id
+1.3.1+0da8c2d9 release id
 ```
 
 The executable inside each archive is `bin/coakka-client` on macOS/Linux and
@@ -149,12 +149,12 @@ Full release page and manifest:
 [public-artifacts.tsv](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/public-artifacts.tsv)
 
 Per-lane checksums:
-[SHA256SUMS](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.1+2215b0f/SHA256SUMS)
+[SHA256SUMS](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.1+0da8c2d9/SHA256SUMS)
 
 The same published artifacts are resolved from `coakka-publish`:
 
 ```text
-cli/releases/1.3.1+2215b0f/
+cli/releases/1.3.1+0da8c2d9/
   coakka-client-v2-1.3.1-macos-aarch64.tar.gz
   coakka-client-v2-1.3.1-linux-x86_64.tar.gz
   coakka-client-v2-1.3.1-linux-aarch64.tar.gz

@@ -208,7 +208,7 @@ Direct platform downloads are in
 [runtime-client/README.md#published-release](runtime-client/README.md#published-release).
 
 That verifies the published `coakka-runtime-client` lane by resolving the
-`coakka-client` `1.3.1+2215b0f` archive, checking its SHA256 against the
+`coakka-client` `1.3.1+0da8c2d9` archive, checking its SHA256 against the
 public manifest, then running `version` and `doctor` from the unpacked native
 prefix.
 
@@ -1075,10 +1075,10 @@ and archive prefix is `coakka-client`.
 If a shell reports `coakka-runtime-client: command not found`, use
 `coakka-client --help`. The longer name is the product lane, not the binary.
 
-The published CLI runtime-client release is `1.3.1+2215b0f`. It lives under
-`coakka-publish/cli/releases/1.3.1+2215b0f/` for macOS ARM64, Linux x86_64,
-Linux ARM64, Windows x86_64, and Windows ARM64. The matching Docker
-verification release is under
+The published CLI runtime-client release is `1.3.1+0da8c2d9`. It lives under
+`coakka-publish/cli/releases/1.3.1+0da8c2d9/` for macOS ARM64, Linux x86_64,
+Linux ARM64, Windows x86_64, and Windows ARM64. The Docker verification
+release is still under
 `coakka-publish/demo/coakka-client/releases/1.3.1+2215b0f/`.
 
 This lane is for native CLI verification of runtime behavior: `version`,
@@ -1776,8 +1776,8 @@ Pinned public artifact lines used by these samples:
 | Runtime C# | `1.3.1+0da8c2d9-8ff6f32` |
 | Runtime Rust | `1.3.1+0da8c2d9-8ff6f32` |
 | Runtime Mojo and Zig samples | `1.3.1+0da8c2d9-8ff6f32` source packages |
-| Runtime CLI client | `coakka-runtime-client` lane, `coakka-client` command, `1.3.1+2215b0f` |
-| Runtime inspect | `1.3.1+4ce41f19` Linux x86_64/ARM64 archives; `1.3.1+d7ab7fa` macOS ARM64 and Windows x86_64/ARM64 archives |
+| Runtime CLI client | `coakka-runtime-client` lane, `coakka-client` command, `1.3.1+0da8c2d9` |
+| Runtime inspect | `1.3.1+0da8c2d9` macOS ARM64, Linux x86_64/ARM64, and Windows x86_64/ARM64 archives |
 | Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:1.3.1-g0da8c2d9-8ff6f32` |
 | Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:1.3.1-g0da8c2d9-8ff6f32` |
 
@@ -1787,9 +1787,9 @@ The matching runtime hotfix note is published at
 ## Public Status
 
 Pinned runtime connector/native generation: `1.3.1+0da8c2d9`.
-Published runtime-client CLI generation: `1.3.1+2215b0f`.
-Runtime inspect public artifact: `1.3.1+4ce41f19` for Linux x86_64/ARM64 and
-`1.3.1+d7ab7fa` for macOS ARM64 and Windows x86_64/ARM64.
+Published runtime-client CLI generation: `1.3.1+0da8c2d9`.
+Runtime inspect public artifact: `1.3.1+0da8c2d9` for macOS ARM64, Linux
+x86_64/ARM64, and Windows x86_64/ARM64.
 
 | Lane | Public artifact status | First command |
 | --- | --- | --- |

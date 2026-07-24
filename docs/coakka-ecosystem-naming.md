@@ -42,7 +42,7 @@ When documenting the CLI, use this shape:
 ```text
 coakka-runtime-client is the CLI runtime client.
 The published command is coakka-client.
-The published runtime-client release is 1.3.1+2215b0f.
+The published runtime-client release is 1.3.1+0da8c2d9.
 ```
 
 The CLI runtime client is not the dashboard, inspect surface, or a business

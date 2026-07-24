@@ -4,6 +4,15 @@ This changelog summarizes the public runnable sample surface. Artifact release
 details live in
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish).
 
+## 2026-07-25
+
+- Pointed native `coakka-client` and `coakka-runtime-inspect` sample lanes at
+  the `1.3.1+0da8c2d9` stop-backpressure hotfix artifacts.
+- Kept Docker bundle and Docker Hub sample image pins on their previously
+  published generation until the Docker sample line is recut.
+- Refreshed artifact manifest checksum pins used by container rebuild docs and
+  sample scripts.
+
 ## 2026-07-24
 
 - Documented the public runnable sample surface in a root changelog.

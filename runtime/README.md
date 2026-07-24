@@ -17,7 +17,7 @@ use the later `1.3.1+0da8c2d9-8ff6f32` generation. Electron uses
 `1.3.1+0da8c2d9-8ff6f32`. The separate
 `coakka-runtime-client` CLI sample lane lives under
 [`../runtime-client`](../runtime-client/README.md) and is published as
-`1.3.1+2215b0f`.
+`1.3.1+0da8c2d9`.
 
 The runtime lane is not introduced as a generic framework. It starts from
 the connector-boundary problem:

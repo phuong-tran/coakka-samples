@@ -46,7 +46,7 @@ only needs one ordinary service call, the direct service call should stay direct
 The public artifacts are published and pinned. They are product artifacts, not
 temporary walkthrough assets. The runtime native and connector samples are on
 the `1.3.1` generation, and the runtime-client CLI line is
-`1.3.1+2215b0f`. The logger product lane is published separately on its pinned
+`1.3.1+0da8c2d9`. The logger product lane is published separately on its pinned
 `1.2.1` generation. Those version numbers identify the published lanes, while
 capacity and SLO claims stay tied to each target deployment profile.
 
