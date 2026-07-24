@@ -1729,6 +1729,11 @@ an artifact from the local public checkout or from the public raw GitHub URL, it
 verifies the artifact SHA256 from that manifest before unpacking or installing
 the package.
 
+Future package-manager lanes such as npm, Go modules, crates.io, and apt/deb
+belong to the public distribution roadmap in `coakka-publish`. Samples should
+continue to use the manifest-backed release surface until those channels are
+published and verified as current.
+
 Docker samples follow the same ownership rule. Docker Hub image tags provide a
 ready-to-run sample path, while the runtime and connector artifacts bundled by
 those images are still sourced from the public publish surface.

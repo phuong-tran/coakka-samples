@@ -79,6 +79,12 @@ Every resolved artifact is checked against
 `coakka-publish/artifacts/public-artifacts.tsv` before the sample unpacks or
 installs it.
 
+Package-manager lanes such as npm, Go modules, crates.io, and apt/deb are
+planned in `coakka-publish`, but samples should not present them as current
+until the matching package-manager artifact and verification path exist. Until
+then, GitHub Release assets, raw artifact URLs, Maven layout, and the public
+artifact manifest remain the canonical sample inputs.
+
 ## Boundary Rule
 
 Samples should show the public boundary a user owns:

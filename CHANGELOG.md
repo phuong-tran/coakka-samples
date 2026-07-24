@@ -9,6 +9,8 @@ details live in
 - Documented the public runnable sample surface in a root changelog.
 - Added a public sample-lanes map and refreshed root sample tables for
   Bun, Tauri, and Electron logger lanes.
+- Documented package-manager lanes as planned distribution paths while keeping
+  current samples on the manifest-backed artifact surface.
 
 ## 2026-07-23
 
