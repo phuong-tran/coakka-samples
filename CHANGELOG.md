@@ -6,10 +6,9 @@ details live in
 
 ## 2026-07-25
 
-- Pointed native `coakka-client` and `coakka-runtime-inspect` sample lanes at
-  the `1.3.1+0da8c2d9` stop-backpressure hotfix artifacts.
-- Kept Docker bundle and Docker Hub sample image pins on their previously
-  published generation until the Docker sample line is recut.
+- Pointed native `coakka-client`, `coakka-runtime-inspect`, `coakka-client`
+  Docker bundle, and Docker Hub sample lanes at the `1.3.1+0da8c2d9`
+  stop-backpressure hotfix artifacts/images.
 - Refreshed artifact manifest checksum pins used by container rebuild docs and
   sample scripts.
 

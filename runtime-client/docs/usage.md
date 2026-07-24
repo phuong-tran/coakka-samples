@@ -203,13 +203,13 @@ The final check is a `coakka-client shell --script` run that switches from
 Use the Docker Hub image when the goal is a one-command runtime-client demo:
 
 ```sh
-docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-0da8c2d9-remote
 ```
 
 The default command starts two native runtime services inside the container and
 uses `coakka-client` to call both. To run the packaged CLI directly:
 
 ```sh
-docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote client --help
-docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote client version --output json
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-0da8c2d9-remote client --help
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-0da8c2d9-remote client version --output json
 ```

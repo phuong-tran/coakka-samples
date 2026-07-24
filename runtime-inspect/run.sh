@@ -9,7 +9,7 @@ source "${repo_root}/scripts/sample-utils.sh"
 
 COAKKA_RUNTIME_INSPECT_VERSION="1.3.1"
 COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE_DEFAULT="coakka-runtime-inspect-sample:1.3.1-local"
-COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE_DEFAULT="docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-4ce41f19-remote"
+COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE_DEFAULT="docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-0da8c2d9-remote"
 
 core_root="${COAKKA_CORE_ROOT:-${repo_root}/../coakkaCoreNativeDev}"
 inspect_bin="${COAKKA_RUNTIME_INSPECT_BIN:-${core_root}/build-v2/coakka-runtime-inspect}"
@@ -46,7 +46,7 @@ Environment:
   COAKKA_CORE_ROOT=/path/to/coakkaCoreNativeDev
   COAKKA_RUNTIME_INSPECT_BIN=/path/to/coakka-runtime-inspect
   COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE=coakka-runtime-inspect-sample:1.3.1-local
-  COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE=docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-4ce41f19-remote
+  COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE=docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-0da8c2d9-remote
   COAKKA_RUNTIME_INSPECT_DOCKER_PORT=18080
 
 Notes:

@@ -7,7 +7,7 @@ source "${script_dir}/sample-metadata.sh"
 
 expected_logger_native="1.2.1+f50756ebff0d"
 expected_runtime_client_native="1.3.1+0da8c2d9"
-expected_runtime_client_docker="1.3.1+2215b0f"
+expected_runtime_client_docker="1.3.1+0da8c2d9"
 expected_runtime_inspect_native="1.3.1+0da8c2d9"
 public_manifest_path="artifacts/public-artifacts.tsv"
 tmp_files=()

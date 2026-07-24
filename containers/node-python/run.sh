@@ -9,7 +9,7 @@ compose_file="${script_dir}/compose.yaml"
 build_compose_file="${script_dir}/compose.build.yaml"
 runtime_base_dockerfile="${repo_root}/containers/runtime-base/Dockerfile"
 runtime_base_image="${COAKKA_RUNTIME_BASE_IMAGE:-coakka/runtime-base:1.3.1-0da8c2d9-local}"
-artifact_manifest_sha256="${COAKKA_ARTIFACT_MANIFEST_SHA256:-979d83e103237c69ae326724d6d9866290247dd905aea5419657d7f2bc47c40b}"
+artifact_manifest_sha256="${COAKKA_ARTIFACT_MANIFEST_SHA256:-a86a74b0e2299c5ad040454edd7fffe3b2e0e871959d6e01d659e9865361669f}"
 
 print_usage() {
   cat <<'EOF'

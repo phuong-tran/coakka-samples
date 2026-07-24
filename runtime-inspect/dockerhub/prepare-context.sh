@@ -13,7 +13,7 @@ context_root="${COAKKA_RUNTIME_INSPECT_DOCKERHUB_CONTEXT:-${repo_root}/build/run
 
 release_id_for_platform() {
   case "$1" in
-    linux-aarch64|linux-x86_64) printf '%s\n' "1.3.1+4ce41f19" ;;
+    linux-aarch64|linux-x86_64) printf '%s\n' "1.3.1+0da8c2d9" ;;
     *) coakka_die "Unsupported Docker Hub inspect platform: $1" ;;
   esac
 }

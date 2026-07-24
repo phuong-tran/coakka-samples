@@ -253,7 +253,7 @@ same CLI session.
 For the Docker Hub path with no local artifact unpacking or Compose build, run:
 
 ```sh
-docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-0da8c2d9-remote
 ```
 
 or through the sample runner:
@@ -277,17 +277,17 @@ archives, checksums, and manifests still live in `coakka-publish`.
 Docker Hub image tags for this release train:
 
 ```text
-docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote
-docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-4ce41f19-remote
+docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-0da8c2d9-remote
+docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-0da8c2d9-remote
 docker.io/gabrielgun1983/sample-node-web:1.3.1-0da8c2d9-8ff6f32-remote
 docker.io/gabrielgun1983/sample-python-store:1.3.1-0da8c2d9-8ff6f32-remote
 ```
 
 Those tags are the published runtime-client, runtime-inspect, and Node.js/Python
 container image lines used by these samples. The runtime-client demo image
-bundles the published `coakka-client` `1.3.1+2215b0f` and native demo service
+bundles the published `coakka-client` `1.3.1+0da8c2d9` and native demo service
 artifacts. The runtime-inspect sample image copies the published Linux
-`coakka-runtime-inspect` Linux `1.3.1+4ce41f19` archives without installing
+`coakka-runtime-inspect` Linux `1.3.1+0da8c2d9` archives without installing
 native implementation runtime packages. The Node.js/Python sample images
 install the pinned Node.js and Python connector artifact set
 `1.3.1+0da8c2d9-8ff6f32` over the native runtime base line `1.3.1+0da8c2d9`.
@@ -1079,7 +1079,7 @@ The published CLI runtime-client release is `1.3.1+0da8c2d9`. It lives under
 `coakka-publish/cli/releases/1.3.1+0da8c2d9/` for macOS ARM64, Linux x86_64,
 Linux ARM64, Windows x86_64, and Windows ARM64. The Docker verification
 release is still under
-`coakka-publish/demo/coakka-client/releases/1.3.1+2215b0f/`.
+`coakka-publish/demo/coakka-client/releases/1.3.1+0da8c2d9/`.
 
 This lane is for native CLI verification of runtime behavior: `version`,
 `doctor`, request/reply calls, `ask` alias behavior, and bounded script mode.
@@ -1098,7 +1098,7 @@ route, then drives both with `coakka-client` from a Docker CLI container.
 
 For the Docker Hub one-command path, run
 `bash run.sh runtime-client dockerhub-demo` or
-`docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote`.
+`docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-0da8c2d9-remote`.
 That image starts the native runtime services and runs `coakka-client` inside
 one container.
 
@@ -1141,7 +1141,7 @@ local image from the published Linux archive, or
 
 For the Docker Hub zero-install path, run
 `bash run.sh runtime-inspect dockerhub-smoke` or
-`docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-4ce41f19-remote`.
+`docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-0da8c2d9-remote`.
 
 Read the sample lane landing page at [runtime-inspect/README.md](runtime-inspect/README.md).
 

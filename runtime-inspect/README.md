@@ -146,12 +146,12 @@ Run the published Docker Hub image without preparing a local artifact context:
 
 ```sh
 bash run.sh runtime-inspect dockerhub-smoke
-docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-4ce41f19-remote
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-0da8c2d9-remote
 ```
 
 Serve the browser UI from Docker Hub:
 
 ```sh
 bash run.sh runtime-inspect dockerhub-serve
-docker run --rm -p 18080:18080 docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-4ce41f19-remote serve
+docker run --rm -p 18080:18080 docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-0da8c2d9-remote serve
 ```

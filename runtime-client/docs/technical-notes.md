@@ -50,7 +50,7 @@ cli/releases/1.3.1+0da8c2d9/
 The matching Docker verification bundle lives under:
 
 ```text
-demo/coakka-client/releases/1.3.1+2215b0f/
+demo/coakka-client/releases/1.3.1+0da8c2d9/
 ```
 
 The `demo/` path segment is an existing artifact layout name. Public wording
@@ -116,7 +116,7 @@ runtime service containers and prints the service, port, and route before each
 runtime-core responsibility or a new published artifact lane.
 
 The Docker Hub image
-`docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote`
+`docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-0da8c2d9-remote`
 prebuilds that walkthrough into one container. It contains the published
 `coakka-client` and native demo service artifacts for Linux amd64/arm64 and
 starts two native runtime service processes before driving them from the CLI.

@@ -103,7 +103,7 @@ Run the published Docker Hub image when the goal is the lowest-friction Docker
 path:
 
 ```sh
-docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-0da8c2d9-remote
 ```
 
 or:
@@ -117,7 +117,7 @@ service names, ports, and routes, then runs the packaged `coakka-client`
 against both services. Passing `client` runs the CLI directly:
 
 ```sh
-docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote client --help
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-0da8c2d9-remote client --help
 ```
 
 ## Published Release
@@ -165,7 +165,7 @@ cli/releases/1.3.1+0da8c2d9/
 The matching Docker verification release is:
 
 ```text
-demo/coakka-client/releases/1.3.1+2215b0f/
+demo/coakka-client/releases/1.3.1+0da8c2d9/
 ```
 
 The `demo/` path segment is part of the already-published artifact layout.
@@ -180,7 +180,7 @@ separate published artifact.
 The Docker Hub demo image is:
 
 ```text
-docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-2215b0f-remote
+docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-0da8c2d9-remote
 ```
 
 It is a prebuilt convenience image for the same runtime-client walkthrough.
