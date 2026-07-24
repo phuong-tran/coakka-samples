@@ -5,10 +5,22 @@
 Contribution guide: [CONTRIBUTING.md](CONTRIBUTING.md)
 Support: [SUPPORT.md](SUPPORT.md)
 Changelog: [CHANGELOG.md](CHANGELOG.md)
+New to CoAkka: [docs/new-to-coakka.md](docs/new-to-coakka.md)
 Sample lanes: [docs/sample-lanes.md](docs/sample-lanes.md)
 
-CoAkka is for application-owned work that needs a runtime boundary, not another
-fake backend API.
+CoAkka is a native-backed runtime and logger toolkit for application-owned
+work. It helps an app route work by target name, handle request/reply,
+deadletters, bounded queues, diagnostics, and native-backed logging without
+turning every internal boundary into another hand-written HTTP endpoint.
+
+If you are new, start with [New To CoAkka](docs/new-to-coakka.md).
+
+Public repository map:
+
+| Repository | Use it for | Link |
+| --- | --- | --- |
+| `coakka-samples` | Runnable examples and code you can inspect first. | https://github.com/phuong-tran/coakka-samples |
+| `coakka-publish` | Released packages, native archives, manifests, checksums, compatibility matrix, and release notes. | https://github.com/phuong-tran/coakka-publish |
 
 It gives application hosts a shared runtime vocabulary: target, route snapshot,
 typed payload, reply, deadletter, and delivery diagnostics.
@@ -79,6 +91,7 @@ Evidence and repo boundaries:
 
 - [Where Downloads Live](#where-downloads-live)
 - [Start Here](#start-here)
+- [New To CoAkka](docs/new-to-coakka.md)
 - [What Problem Does CoAkka Solve?](#what-problem-does-coakka-solve)
 - [CoAkka Naming](#coakka-naming)
 - [See It In 3 Minutes](#see-it-in-3-minutes)

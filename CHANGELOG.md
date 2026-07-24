@@ -9,8 +9,10 @@ details live in
 - Documented the public runnable sample surface in a root changelog.
 - Added a public sample-lanes map and refreshed root sample tables for
   Bun, Tauri, and Electron logger lanes.
-- Documented package-manager lanes as planned distribution paths while keeping
-  current samples on the manifest-backed artifact surface.
+- Moved JavaScript runtime/logger samples to the published npm packages.
+- Added a first-reader `New To CoAkka` entrypoint that explains the runtime,
+  logger, package install path, and the relationship between `coakka-samples`
+  and `coakka-publish`.
 
 ## 2026-07-23
 
