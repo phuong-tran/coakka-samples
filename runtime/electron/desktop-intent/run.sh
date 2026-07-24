@@ -35,7 +35,57 @@ resolve_electron_package() {
     "${tmp_dir}/artifacts/coakka-v2-connector-electron-1.3.1.tgz"
 }
 
+resolve_node_package_for_local_connector() {
+  local connector_root package_path
+  connector_root="${COAKKA_CONNECTOR_ROOT:-}"
+  if [[ -z "${connector_root}" || ! -d "${connector_root}/node" ]]; then
+    return 0
+  fi
+
+  (
+    cd "${connector_root}/node"
+    npm run pack:release >/dev/null
+  )
+  package_path="$(find "${connector_root}/node" -maxdepth 1 -name 'coakka-v2-connector-node-*.tgz' | head -n 1)"
+  if [[ -n "${package_path}" ]]; then
+    printf '%s\n' "${package_path}"
+  fi
+}
+
+prepare_local_connector_package() {
+  local electron_package="$1"
+  local node_package="$2"
+  local package_dir patched_package
+
+  if [[ -z "${node_package}" ]]; then
+    printf '%s\n' "${electron_package}"
+    return 0
+  fi
+
+  package_dir="${tmp_dir}/electron-package"
+  mkdir -p "${package_dir}"
+  COPYFILE_DISABLE=1 tar -xzf "${electron_package}" -C "${package_dir}"
+  python3 - "${package_dir}/package/package.json" "${node_package}" <<'PY'
+import json
+import sys
+
+package_json = sys.argv[1]
+node_package = sys.argv[2]
+with open(package_json, "r", encoding="utf-8") as fh:
+    package = json.load(fh)
+package.setdefault("dependencies", {})["coakka-v2-connector-node"] = f"file:{node_package}"
+with open(package_json, "w", encoding="utf-8") as fh:
+    json.dump(package, fh, indent=2)
+    fh.write("\n")
+PY
+  patched_package="${tmp_dir}/coakka-v2-connector-electron-local.tgz"
+  COPYFILE_DISABLE=1 tar -C "${package_dir}" -czf "${patched_package}" package
+  printf '%s\n' "${patched_package}"
+}
+
 package_path="$(resolve_electron_package)"
+node_package_path="$(resolve_node_package_for_local_connector)"
+package_path="$(prepare_local_connector_package "${package_path}" "${node_package_path}")"
 
 cp "${script_dir}/main.mjs" "${tmp_dir}/main.mjs"
 cp "${script_dir}/preload.cjs" "${tmp_dir}/preload.cjs"
