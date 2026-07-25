@@ -1,6 +1,6 @@
 # Go Logger Samples
 
-Go logger samples consume `github.com/phuong-tran/coakka-logger-go@v1.2.1`.
+Go logger samples consume `github.com/phuong-tran/coakka-logger-go@v1.2.2`.
 The package embeds native logger generation `1.2.1+f50756ebff0d` for macOS,
 Linux, and Windows.
 
@@ -28,7 +28,7 @@ Current samples:
 Install the package through normal Go module resolution:
 
 ```sh
-go get github.com/phuong-tran/coakka-logger-go@v1.2.1
+go get github.com/phuong-tran/coakka-logger-go@v1.2.2
 ```
 
 Run:

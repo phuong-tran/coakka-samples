@@ -1,6 +1,6 @@
 # Go Logger Basic
 
-This sample installs `github.com/phuong-tran/coakka-logger-go@v1.2.1` into a
+This sample installs `github.com/phuong-tran/coakka-logger-go@v1.2.2` into a
 temporary Go module and runs a small logger flow through the embedded native
 logger package.
 
