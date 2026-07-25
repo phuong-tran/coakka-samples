@@ -1,7 +1,7 @@
 # Python Logger Basic
 
-This sample installs the published `coakka-logger` wheel into a temporary
-directory and runs a small logger flow.
+This sample installs `coakka-logger==1.2.1` from PyPI into a temporary
+environment and runs a small logger flow.
 
 This sample covers:
 

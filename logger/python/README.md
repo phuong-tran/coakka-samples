@@ -1,16 +1,14 @@
 # Python Logger Samples
 
-Python samples consume the published `coakka-logger` GitHub Release wheel from
-`coakka-publish`. PyPI publishing is a separate package-manager step. Until
-that upload is verified, use the GitHub Release wheel path shown here instead
-of `pip install coakka-logger`.
+Python samples consume `coakka-logger==1.2.1` from PyPI. The GitHub Release
+wheel in `coakka-publish` remains the checksum-tracked artifact mirror.
 
 Current samples:
 
-- `basic`: install the published wheel into a temporary site-packages directory,
-  load the embedded native logger, emit one record, drain it, and print counters
-- `pressure`: install the published wheel, fill a queue with capacity `2`,
-  observe rejected writes, drain the accepted records, and print dropped counters
+- `basic`: install the PyPI package into a temporary environment, load the
+  embedded native logger, emit one record, drain it, and print counters
+- `pressure`: install the PyPI package, fill a queue with capacity `2`, observe
+  rejected writes, drain the accepted records, and print dropped counters
 
 Run:
 
