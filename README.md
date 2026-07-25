@@ -1756,10 +1756,11 @@ the package. JavaScript runtime/logger samples use registry-verified npm
 coordinates instead.
 
 The npm package-manager lane is published and verified for JavaScript runtime
-and logger samples. Future package-manager lanes such as Go modules, crates.io,
-and apt/deb belong to the public distribution roadmap in `coakka-publish`.
-Samples should continue to use the manifest-backed release surface until those
-channels are published and verified as current.
+and logger samples. The Go module lane is published and verified for Go
+runtime/logger samples. Future package-manager lanes such as crates.io and
+apt/deb belong to the public distribution roadmap in `coakka-publish`. Samples
+should continue to use the manifest-backed release surface until those channels
+are published and verified as current.
 
 Docker samples follow the same ownership rule. Docker Hub image tags provide a
 ready-to-run sample path, while the runtime and connector artifacts bundled by

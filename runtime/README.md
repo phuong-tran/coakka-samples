@@ -198,21 +198,10 @@ Native C/C++:
 
 Full recording: [coakka-runtime-native.mp4](../docs/assets/coakka-runtime-native.mp4)
 
-Go source package:
+Go module:
 
 ```sh
-mkdir -p third_party/coakka-runtime-go
-curl -L \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/go/releases/1.3.1+0da8c2d9-8ff6f32/coakka-v2-connector-go-1.3.1.tar.gz" \
-  -o /tmp/coakka-v2-connector-go-1.3.1.tar.gz
-tar -C third_party/coakka-runtime-go --strip-components 1 \
-  -xzf /tmp/coakka-v2-connector-go-1.3.1.tar.gz
-```
-
-```go
-require github.com/phuong-tran/coakka-runtime-go v0.0.0
-
-replace github.com/phuong-tran/coakka-runtime-go => ./third_party/coakka-runtime-go
+go get github.com/phuong-tran/coakka-runtime-go@v1.3.2
 ```
 
 C# NuGet package from a local feed directory:
@@ -392,7 +381,7 @@ Current samples:
 | JVM | `jvm/basic`, `jvm/deadletter`, `jvm/java-deadletter` | public JVM runtime jar | echo and Kotlin/Java route-miss deadletter observation |
 | Python | `python/basic`, `python/deadletter`, `python/hot-reload` | public Python wheel | echo, route-miss deadletter, and route snapshot hot reload |
 | Node.js | `node/basic`, `node/deadletter` | public Node package | echo and route-miss deadletter |
-| Go | `go/basic`, `go/deadletter` | public Go source package | echo and route-miss deadletter |
+| Go | `go/basic`, `go/deadletter` | public Go module | echo and route-miss deadletter |
 | C# | `csharp/basic` | public NuGet package | echo and route-miss deadletter |
 | Rust | `rust/basic` | public Rust archive package | echo and route-miss deadletter |
 | Zig | `zig/basic` | public source package over native C ABI archive | lifecycle/control, raw request/reply, and route-miss deadletter smoke |

@@ -1,9 +1,22 @@
 # Go Runtime Samples
 
-Go runtime samples document the `coakka-v2-connector-go` source package shape.
-This runtime lane consumes the public Go source package built against native
-runtime `1.3.1+0da8c2d9` with connector UX generation
-`1.3.1+0da8c2d9-8ff6f32`.
+Go runtime samples consume `github.com/phuong-tran/coakka-runtime-go@v1.3.2`.
+The package embeds native runtime generation `1.3.2+caff6d6d` for macOS,
+Linux, and Windows.
+
+## New To CoAkka
+
+CoAkka is a native-backed runtime and logger toolkit for application-owned
+work. It helps an app route work by target name, handle request/reply,
+deadletters, bounded queues, diagnostics, and native-backed logging without
+turning every internal boundary into another hand-written HTTP endpoint.
+
+Use these public repositories to orient first:
+
+- `https://github.com/phuong-tran/coakka-runtime-go`
+- `https://github.com/phuong-tran/coakka-logger-go`
+- `https://github.com/phuong-tran/coakka-publish`
+- `https://github.com/phuong-tran/coakka-samples`
 
 ## Run
 
@@ -22,14 +35,14 @@ Go runtime v2 samples expect Go 1.23 or newer.
 
 ## Integration Recipe
 
-The current public sample path unpacks the public tarball into a temporary
-workspace and uses a local `replace` for the fixed module path
-`github.com/phuong-tran/coakka-runtime-go`.
+Install the package through normal Go module resolution:
 
-After the public Go module repository is opened and tagged, this sample lane
-can move to normal `go get` install flow. Until then, the tarball-local
-`replace` keeps the sample honest and runnable from the published artifact
-surface.
+```sh
+go get github.com/phuong-tran/coakka-runtime-go@v1.3.2
+```
+
+The samples create a disposable Go module, require that public coordinate, run
+the sample, and remove the temporary workspace on exit.
 
 Start one runtime host per process:
 

@@ -1,7 +1,8 @@
 # Go Logger Basic
 
-This sample extracts the published `coakka-logger-go` tarball into a temporary
-Go module and runs a small logger flow through a local `replace`.
+This sample installs `github.com/phuong-tran/coakka-logger-go@v1.2.1` into a
+temporary Go module and runs a small logger flow through the embedded native
+logger package.
 
 This sample covers:
 

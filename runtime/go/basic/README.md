@@ -5,7 +5,7 @@ runtime v2 package.
 
 This sample covers:
 
-- source package extraction from the public artifact surface
+- public Go module install from `github.com/phuong-tran/coakka-runtime-go`
 - embedded native runtime loading
 - runtime version/git diagnostics
 - one process-owned route and one process-owned handler
@@ -27,7 +27,7 @@ bash run.sh runtime go basic
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=1.3.1 git=<git>
+coakka_runtime_info abi=1 version=1.3.2 git=<git>
 coakka_runtime_response payload={"echo":"hello-runtime-go"}
 coakka_runtime_stats generation=1 routes=1 delivered=1 matchedResponses=1
 ```

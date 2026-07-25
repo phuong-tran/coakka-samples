@@ -3,12 +3,9 @@ set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../../../.." && pwd)"
-publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
 module_path="github.com/phuong-tran/coakka-runtime-go"
-go_artifact_rel="runtime/go/releases/1.3.1+0da8c2d9-8ff6f32/coakka-v2-connector-go-1.3.1.tar.gz"
 web_build_task=":runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-web:bootJar"
 web_jar="${repo_root}/runtime/scenarios/customer-crud/spring-boot-spring-boot/customer-web/build/libs/customer-web.jar"
-source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 
 print_usage() {
@@ -36,15 +33,10 @@ require_web_commands() {
 
 require_go_commands() {
   coakka_require_command go "Install Go 1.23 or newer, then retry."
-  coakka_require_command tar "Install tar, then retry."
 }
 
 prepare_go_workspace() {
   local tmp_dir="$1"
-  local package_path
-  package_path="$(coakka_resolve_artifact "${publish_root}" "${go_artifact_rel}" "${tmp_dir}/artifacts/coakka-v2-connector-go-1.3.1.tar.gz")"
-  mkdir -p "${tmp_dir}/package"
-  tar -C "${tmp_dir}/package" --strip-components 1 -xzf "${package_path}"
   cp "${script_dir}/store.go" "${tmp_dir}/store.go"
 
   cat > "${tmp_dir}/go.mod" <<EOF
@@ -52,9 +44,7 @@ module coakka-runtime-spring-boot-go-store
 
 go 1.23.0
 
-require ${module_path} v0.0.0
-
-replace ${module_path} => ./package
+require ${module_path} v1.3.2
 EOF
 }
 
