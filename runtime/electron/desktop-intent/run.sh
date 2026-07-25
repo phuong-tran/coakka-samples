@@ -26,7 +26,7 @@ resolve_electron_package() {
     fi
   fi
 
-  printf '%s\n' "coakka-v2-connector-electron@1.3.6"
+  printf '%s\n' "coakka-v2-connector-electron@1.3.8"
 }
 
 resolve_node_package_for_local_connector() {

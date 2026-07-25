@@ -4,7 +4,7 @@ This sample fills a small bounded logger queue without draining it first. The
 native logger accepts records up to capacity, rejects later writes with
 `queue_full`, and reports the rejected writes as dropped.
 
-The runner installs `coakka-logger-bun@1.2.4` from npm into a temporary Bun
+The runner installs `coakka-logger-bun@1.2.6` from npm into a temporary Bun
 project.
 
 Run from this directory:

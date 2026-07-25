@@ -19,6 +19,6 @@ cp "${script_dir}/main.mjs" "${tmp_dir}/main.mjs"
   "type": "module"
 }
 JSON
-  bun add coakka-logger-bun@1.2.4 >/dev/null
+  bun add coakka-logger-bun@1.2.6 >/dev/null
   bun main.mjs
 )
