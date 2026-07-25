@@ -24,21 +24,18 @@ bash run.sh containers node-python
 Published remote image tags for this sample lane:
 
 ```text
-docker.io/gabrielgun1983/sample-node-web:1.3.2-caff6d6d-6d5ea58-remote
+docker.io/gabrielgun1983/sample-node-web:1.3.2-caff6d6d-b46f705-remote
 docker.io/gabrielgun1983/sample-python-store:1.3.2-caff6d6d-6d5ea58-remote
 ```
 
 Those tags are published sample images, not the canonical artifact download
-location. They install the previously published Node.js and Python connector
-artifact set `1.3.2+caff6d6d-6d5ea58` from
+location. They install the pinned public Node.js connector artifact set
+`1.3.2+caff6d6d-b46f705` and Python connector artifact set
+`1.3.2+caff6d6d-6d5ea58` from
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) and load the
 native runtime base from
 `docker.io/gabrielgun1983/runtime-base:1.3.2-caff6d6d-remote` through
 `COAKKA_RUNTIME_LIB`.
-
-The repo-local rebuild path consumes the current pinned Node.js connector
-artifact set `1.3.2+caff6d6d-b46f705`; Python remains on
-`1.3.2+caff6d6d-6d5ea58`.
 
 Then open:
 
