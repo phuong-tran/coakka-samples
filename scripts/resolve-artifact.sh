@@ -88,7 +88,7 @@ coakka_resolve_artifact() {
     return 0
   fi
 
-  local raw_base="${COAKKA_PUBLISH_RAW_BASE:-https://raw.githubusercontent.com/phuong-tran/coakka-publish/main}"
+  local raw_base="${COAKKA_PUBLISH_RAW_BASE:-https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge}"
   local url="${raw_base%/}/${relative_path}"
 
   mkdir -p "$(dirname "${download_target}")"

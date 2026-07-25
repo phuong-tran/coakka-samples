@@ -4,9 +4,9 @@ services:
       context: ../..
       dockerfile: containers/node-python/Dockerfile.python
       args:
-        COAKKA_RUNTIME_BASE_IMAGE: ${COAKKA_RUNTIME_BASE_IMAGE:-coakka/runtime-base:1.3.1-0da8c2d9-local}
-        COAKKA_PUBLISH_RAW_BASE: ${COAKKA_PUBLISH_RAW_BASE:-https://raw.githubusercontent.com/phuong-tran/coakka-publish/main}
-    image: coakka/sample-python-store:1.3.1-0da8c2d9-8ff6f32-local
+        COAKKA_RUNTIME_BASE_IMAGE: ${COAKKA_RUNTIME_BASE_IMAGE:-coakka/runtime-base:1.3.2-caff6d6d-local}
+        COAKKA_PUBLISH_RAW_BASE: ${COAKKA_PUBLISH_RAW_BASE:-https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge}
+    image: coakka/sample-python-store:1.3.2-caff6d6d-6d5ea58-local
     hostname: python-store
     environment:
       COAKKA_SAMPLE_STORE_WEB_HOST: 0.0.0.0
@@ -26,9 +26,9 @@ services:
       context: ../..
       dockerfile: containers/node-python/Dockerfile.node
       args:
-        COAKKA_RUNTIME_BASE_IMAGE: ${COAKKA_RUNTIME_BASE_IMAGE:-coakka/runtime-base:1.3.1-0da8c2d9-local}
-        COAKKA_PUBLISH_RAW_BASE: ${COAKKA_PUBLISH_RAW_BASE:-https://raw.githubusercontent.com/phuong-tran/coakka-publish/main}
-    image: coakka/sample-node-web:1.3.1-0da8c2d9-8ff6f32-local
+        COAKKA_RUNTIME_BASE_IMAGE: ${COAKKA_RUNTIME_BASE_IMAGE:-coakka/runtime-base:1.3.2-caff6d6d-local}
+        COAKKA_PUBLISH_RAW_BASE: ${COAKKA_PUBLISH_RAW_BASE:-https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge}
+    image: coakka/sample-node-web:1.3.2-caff6d6d-6d5ea58-local
     hostname: node-web
     depends_on:
       - python-store

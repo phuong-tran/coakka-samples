@@ -103,7 +103,7 @@ Run the published Docker Hub image when the goal is the lowest-friction Docker
 path:
 
 ```sh
-docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-0da8c2d9-remote
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.2-caff6d6d-remote
 ```
 
 or:
@@ -117,7 +117,7 @@ service names, ports, and routes, then runs the packaged `coakka-client`
 against both services. Passing `client` runs the CLI directly:
 
 ```sh
-docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-0da8c2d9-remote client --help
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.2-caff6d6d-remote client --help
 ```
 
 ## Published Release
@@ -127,7 +127,7 @@ The published CLI runtime-client release is:
 ```text
 coakka-runtime-client product lane
 coakka-client command and archive prefix
-1.3.1+0da8c2d9 release id
+1.3.2+caff6d6d release id
 ```
 
 The executable inside each archive is `bin/coakka-client` on macOS/Linux and
@@ -138,34 +138,34 @@ Direct downloads:
 
 | Platform | Archive |
 | --- | --- |
-| macOS ARM64 | [coakka-client-v2-1.3.1-macos-aarch64.tar.gz](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/coakka-client-v2-1.3.1-macos-aarch64.tar.gz) |
-| Linux x86_64 | [coakka-client-v2-1.3.1-linux-x86_64.tar.gz](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/coakka-client-v2-1.3.1-linux-x86_64.tar.gz) |
-| Linux ARM64 | [coakka-client-v2-1.3.1-linux-aarch64.tar.gz](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/coakka-client-v2-1.3.1-linux-aarch64.tar.gz) |
-| Windows x86_64 | [coakka-client-v2-1.3.1-windows-x86_64.tar.gz](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/coakka-client-v2-1.3.1-windows-x86_64.tar.gz) |
-| Windows ARM64 | [coakka-client-v2-1.3.1-windows-aarch64.tar.gz](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/coakka-client-v2-1.3.1-windows-aarch64.tar.gz) |
+| macOS ARM64 | [coakka-client-v2-1.3.2-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/cli/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-macos-aarch64.tar.gz) |
+| Linux x86_64 | [coakka-client-v2-1.3.2-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/cli/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-linux-x86_64.tar.gz) |
+| Linux ARM64 | [coakka-client-v2-1.3.2-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/cli/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-linux-aarch64.tar.gz) |
+| Windows x86_64 | [coakka-client-v2-1.3.2-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/cli/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-windows-x86_64.tar.gz) |
+| Windows ARM64 | [coakka-client-v2-1.3.2-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/cli/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-windows-aarch64.tar.gz) |
 
 Full release page and manifest:
-[CoAkka Public Artifacts 1.3.1](https://github.com/phuong-tran/coakka-publish/releases/tag/coakka-public-artifacts-v1.3.1),
-[public-artifacts.tsv](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/public-artifacts.tsv)
+[CoAkka Public Artifacts 1.3.2](https://github.com/phuong-tran/coakka-publish/tree/release/js-native-payload-bridge),
+[public-artifacts.tsv](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/artifacts/public-artifacts.tsv)
 
 Per-lane checksums:
-[SHA256SUMS](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.1+0da8c2d9/SHA256SUMS)
+[SHA256SUMS](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/cli/releases/1.3.2+caff6d6d/SHA256SUMS)
 
 The same published artifacts are resolved from `coakka-publish`:
 
 ```text
-cli/releases/1.3.1+0da8c2d9/
-  coakka-client-v2-1.3.1-macos-aarch64.tar.gz
-  coakka-client-v2-1.3.1-linux-x86_64.tar.gz
-  coakka-client-v2-1.3.1-linux-aarch64.tar.gz
-  coakka-client-v2-1.3.1-windows-x86_64.tar.gz
-  coakka-client-v2-1.3.1-windows-aarch64.tar.gz
+cli/releases/1.3.2+caff6d6d/
+  coakka-client-v2-1.3.2-macos-aarch64.tar.gz
+  coakka-client-v2-1.3.2-linux-x86_64.tar.gz
+  coakka-client-v2-1.3.2-linux-aarch64.tar.gz
+  coakka-client-v2-1.3.2-windows-x86_64.tar.gz
+  coakka-client-v2-1.3.2-windows-aarch64.tar.gz
 ```
 
 The matching Docker verification release is:
 
 ```text
-demo/coakka-client/releases/1.3.1+0da8c2d9/
+demo/coakka-client/releases/1.3.2+caff6d6d/
 ```
 
 The `demo/` path segment is part of the already-published artifact layout.
@@ -180,7 +180,7 @@ separate published artifact.
 The Docker Hub demo image is:
 
 ```text
-docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-0da8c2d9-remote
+docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.2-caff6d6d-remote
 ```
 
 It is a prebuilt convenience image for the same runtime-client walkthrough.

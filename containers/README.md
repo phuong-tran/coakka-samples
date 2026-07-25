@@ -17,7 +17,7 @@ bash run.sh containers node-python
 
 The Spring Boot JVM to Go container lane is kept as a compose skeleton, but it
 does not default to the older published image line. Use the Spring-Go source
-scenario until refreshed `1.3.1` container images are supplied explicitly.
+scenario until refreshed `1.3.2` container images are supplied explicitly.
 
 Stop all running container samples:
 

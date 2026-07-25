@@ -48,7 +48,7 @@ Use `coakka-samples` when you want to run examples. Use `coakka-publish` when
 you want to download a released archive or package directly. The fastest direct
 download entrypoint is the GitHub Release page:
 
-[`CoAkka Public Artifacts 1.3.1`](https://github.com/phuong-tran/coakka-publish/releases/tag/coakka-public-artifacts-v1.3.1)
+[`CoAkka Public Artifacts 1.3.2`](https://github.com/phuong-tran/coakka-publish/tree/release/js-native-payload-bridge)
 
 JavaScript runtime/logger samples install the current npm packages. Other
 artifact-backed samples resolve artifacts from a sibling `coakka-publish`
@@ -79,7 +79,7 @@ bash run.sh containers node-python
 The first sample verifies the published `coakka-client` archive from
 `coakka-publish`. The second sample pulls the published Docker Hub
 Node.js/Python images and runs a two-process runtime path. Use
-[`CoAkka Public Artifacts 1.3.1`](https://github.com/phuong-tran/coakka-publish/releases/tag/coakka-public-artifacts-v1.3.1)
+[`CoAkka Public Artifacts 1.3.2`](https://github.com/phuong-tran/coakka-publish/tree/release/js-native-payload-bridge)
 for direct archive, package, checksum, manifest, or release-note downloads.
 
 Evidence and repo boundaries:
@@ -208,7 +208,7 @@ Direct platform downloads are in
 [runtime-client/README.md#published-release](runtime-client/README.md#published-release).
 
 That verifies the published `coakka-runtime-client` lane by resolving the
-`coakka-client` `1.3.1+0da8c2d9` archive, checking its SHA256 against the
+`coakka-client` `1.3.2+caff6d6d` archive, checking its SHA256 against the
 public manifest, then running `version` and `doctor` from the unpacked native
 prefix.
 
@@ -253,7 +253,7 @@ same CLI session.
 For the Docker Hub path with no local artifact unpacking or Compose build, run:
 
 ```sh
-docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-0da8c2d9-remote
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.2-caff6d6d-remote
 ```
 
 or through the sample runner:
@@ -266,7 +266,7 @@ That image starts two native runtime services inside the container and uses the
 packaged `coakka-client` to call both routes.
 
 The fastest browser-visible app-host path is the Node.js/Python container path.
-It uses the refreshed `1.3.1` runtime artifact line, so you can test a
+It uses the refreshed `1.3.2` runtime artifact line, so you can test a
 cross-process runtime delivery path without installing Node.js, Python, Go,
 Java, or native build tools.
 
@@ -277,22 +277,22 @@ archives, checksums, and manifests still live in `coakka-publish`.
 Docker Hub image tags for this release train:
 
 ```text
-docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-0da8c2d9-remote
-docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-0da8c2d9-remote
-docker.io/gabrielgun1983/sample-node-web:1.3.1-0da8c2d9-8ff6f32-remote
-docker.io/gabrielgun1983/sample-python-store:1.3.1-0da8c2d9-8ff6f32-remote
+docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.2-caff6d6d-remote
+docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.2-caff6d6d-remote
+docker.io/gabrielgun1983/sample-node-web:1.3.2-caff6d6d-6d5ea58-remote
+docker.io/gabrielgun1983/sample-python-store:1.3.2-caff6d6d-6d5ea58-remote
 ```
 
 Those tags are the published runtime-client, runtime-inspect, and Node.js/Python
 container image lines used by these samples. The runtime-client demo image
-bundles the published `coakka-client` `1.3.1+0da8c2d9` and native demo service
+bundles the published `coakka-client` `1.3.2+caff6d6d` and native demo service
 artifacts. The runtime-inspect sample image copies the published Linux
-`coakka-runtime-inspect` Linux `1.3.1+0da8c2d9` archives without installing
+`coakka-runtime-inspect` Linux `1.3.2+caff6d6d` archives without installing
 native implementation runtime packages. The Node.js/Python sample images
 install the pinned Node.js and Python connector artifact set
-`1.3.1+0da8c2d9-8ff6f32` over the native runtime base line `1.3.1+0da8c2d9`.
+`1.3.2+caff6d6d-6d5ea58` over the native runtime base line `1.3.2+caff6d6d`.
 Repo-local rebuilds use the same connector set over
-`coakka/runtime-base:1.3.1-0da8c2d9-local`.
+`coakka/runtime-base:1.3.2-caff6d6d-local`.
 
 Run the visible container sample:
 
@@ -1022,7 +1022,7 @@ typed runtime target.
 Spring Boot uses the public starter artifact:
 
 ```kotlin
-implementation("coakka.spring:coakka-spring-boot-starter:1.3.1-g0da8c2d9-8ff6f32")
+implementation("coakka.spring:coakka-spring-boot-starter:1.3.2-gcaff6d6d-6d5ea58")
 ```
 
 ```kotlin
@@ -1055,7 +1055,7 @@ fun create(@RequestBody request: CustomerDraft): MutationResponse {
 Quarkus follows the same shape through the public extension artifact:
 
 ```kotlin
-implementation("coakka.quarkus:coakka-quarkus-extension:1.3.1-g0da8c2d9-8ff6f32")
+implementation("coakka.quarkus:coakka-quarkus-extension:1.3.2-gcaff6d6d-6d5ea58")
 ```
 
 ```kotlin
@@ -1081,11 +1081,11 @@ and archive prefix is `coakka-client`.
 If a shell reports `coakka-runtime-client: command not found`, use
 `coakka-client --help`. The longer name is the product lane, not the binary.
 
-The published CLI runtime-client release is `1.3.1+0da8c2d9`. It lives under
-`coakka-publish/cli/releases/1.3.1+0da8c2d9/` for macOS ARM64, Linux x86_64,
+The published CLI runtime-client release is `1.3.2+caff6d6d`. It lives under
+`coakka-publish/cli/releases/1.3.2+caff6d6d/` for macOS ARM64, Linux x86_64,
 Linux ARM64, Windows x86_64, and Windows ARM64. The Docker verification
 release is still under
-`coakka-publish/demo/coakka-client/releases/1.3.1+0da8c2d9/`.
+`coakka-publish/demo/coakka-client/releases/1.3.2+caff6d6d/`.
 
 This lane is for native CLI verification of runtime behavior: `version`,
 `doctor`, request/reply calls, `ask` alias behavior, and bounded script mode.
@@ -1104,7 +1104,7 @@ route, then drives both with `coakka-client` from a Docker CLI container.
 
 For the Docker Hub one-command path, run
 `bash run.sh runtime-client dockerhub-demo` or
-`docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.1-0da8c2d9-remote`.
+`docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.2-caff6d6d-remote`.
 That image starts the native runtime services and runs `coakka-client` inside
 one container.
 
@@ -1147,7 +1147,7 @@ local image from the published Linux archive, or
 
 For the Docker Hub zero-install path, run
 `bash run.sh runtime-inspect dockerhub-smoke` or
-`docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-0da8c2d9-remote`.
+`docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.2-caff6d6d-remote`.
 
 Read the sample lane landing page at [runtime-inspect/README.md](runtime-inspect/README.md).
 
@@ -1553,7 +1553,7 @@ podman-compose -f containers/node-python/compose.yaml up
 The intent is to show two real processes, two language hosts, and one runtime
 delivery path with browser-visible state changes. The Spring Boot JVM to Go
 container lane remains a compose skeleton until its image-source path is
-refreshed onto the same `1.3.1` runtime line; the Spring-Go source scenario is
+refreshed onto the same `1.3.2` runtime line; the Spring-Go source scenario is
 the supported framework path for this train.
 
 Framework native-image builds are deliberately not the primary public sample
@@ -1701,7 +1701,7 @@ The sample runner resolves public artifacts from a sibling `coakka-publish`
 checkout when present, then falls back to the public raw GitHub URL:
 
 ```text
-https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/
+https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/
 ```
 
 Logger JVM samples use the Maven repository from the public publish checkout:
@@ -1774,27 +1774,27 @@ Pinned public artifact lines used by these samples:
 | --- | --- |
 | Logger JVM | `coakka.logger:coakka-jvm-native-logger:1.2.1-gf50756ebff0d` |
 | Logger Python, Node.js, Go, C#, Rust, Mojo, Zig, and native C/C++ | `1.2.1+f50756ebff0d` |
-| Runtime native C/C++ | `1.3.1+0da8c2d9` |
-| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:1.3.1-g0da8c2d9-8ff6f32` |
-| Runtime Python, Node.js, and Go | `1.3.1+0da8c2d9-8ff6f32` |
-| Runtime Bun and Tauri samples | `1.3.1+0da8c2d9-8ff6f32` |
-| Runtime Electron sample | `1.3.1+0da8c2d9-8ff6f32` |
-| Runtime C# | `1.3.1+0da8c2d9-8ff6f32` |
-| Runtime Rust | `1.3.1+0da8c2d9-8ff6f32` |
-| Runtime Mojo and Zig samples | `1.3.1+0da8c2d9-8ff6f32` source packages |
-| Runtime CLI client | `coakka-runtime-client` lane, `coakka-client` command, `1.3.1+0da8c2d9` |
-| Runtime inspect | `1.3.1+0da8c2d9` macOS ARM64, Linux x86_64/ARM64, and Windows x86_64/ARM64 archives |
-| Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:1.3.1-g0da8c2d9-8ff6f32` |
-| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:1.3.1-g0da8c2d9-8ff6f32` |
+| Runtime native C/C++ | `1.3.2+caff6d6d` |
+| Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:1.3.2-gcaff6d6d-6d5ea58` |
+| Runtime Python, Node.js, and Go | `1.3.2+caff6d6d-6d5ea58` |
+| Runtime Bun and Tauri samples | `1.3.2+caff6d6d-6d5ea58` |
+| Runtime Electron sample | `1.3.2+caff6d6d-6d5ea58` |
+| Runtime C# | `1.3.2+caff6d6d-6d5ea58` |
+| Runtime Rust | `1.3.2+caff6d6d-6d5ea58` |
+| Runtime Mojo and Zig samples | `1.3.2+caff6d6d-6d5ea58` source packages |
+| Runtime CLI client | `coakka-runtime-client` lane, `coakka-client` command, `1.3.2+caff6d6d` |
+| Runtime inspect | `1.3.2+caff6d6d` macOS ARM64, Linux x86_64/ARM64, and Windows x86_64/ARM64 archives |
+| Spring Boot starter | `coakka.spring:coakka-spring-boot-starter:1.3.2-gcaff6d6d-6d5ea58` |
+| Quarkus extension | `coakka.quarkus:coakka-quarkus-extension:1.3.2-gcaff6d6d-6d5ea58` |
 
 The matching runtime hotfix note is published at
-`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-25-runtime-stop-backpressure-hotfix-8ff6f32.md`.
+`https://github.com/phuong-tran/coakka-publish/blob/main/docs/releases/2026-07-25-runtime-tooling-1.3.2-caff6d6d.md`.
 
 ## Public Status
 
-Pinned runtime connector/native generation: `1.3.1+0da8c2d9`.
-Published runtime-client CLI generation: `1.3.1+0da8c2d9`.
-Runtime inspect public artifact: `1.3.1+0da8c2d9` for macOS ARM64, Linux
+Pinned runtime connector/native generation: `1.3.2+caff6d6d`.
+Published runtime-client CLI generation: `1.3.2+caff6d6d`.
+Runtime inspect public artifact: `1.3.2+caff6d6d` for macOS ARM64, Linux
 x86_64/ARM64, and Windows x86_64/ARM64.
 
 | Lane | Public artifact status | First command |
@@ -1846,7 +1846,7 @@ Runtime language/framework direct runs consume the public runtime artifacts:
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=1.3.1 git=<git>
+coakka_runtime_info abi=1 version=1.3.2 git=<git>
 coakka_runtime_response payload={"echo":"hello-runtime-jvm"}
 coakka_runtime_stats generation=1 routes=1 delivered=1 matchedResponses=1
 ```
@@ -1880,9 +1880,9 @@ bash run.sh runtime native basic
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=1.3.1 git=<git> language=c
+coakka_runtime_info abi=1 version=1.3.2 git=<git> language=c
 coakka_runtime_stats generation=1 routes=1 routeMisses=1 deadletters=1 language=c
-coakka_runtime_info abi=1 version=1.3.1 git=<git> language=cpp
+coakka_runtime_info abi=1 version=1.3.2 git=<git> language=cpp
 coakka_runtime_stats generation=1 routes=1 routeMisses=1 deadletters=1 language=cpp
 ```
 
@@ -1895,7 +1895,7 @@ bash run.sh runtime native pressure
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=1.3.1 git=<git> language=c
+coakka_runtime_info abi=1 version=1.3.2 git=<git> language=c
 coakka_runtime_pressure attempts=64 delivered=<n> rejected=<n> capacity=2 highWatermark=<n> language=c
 coakka_runtime_stats generation=1 routes=1 queueRejected=<n> deadletters=<n> language=c
 ```

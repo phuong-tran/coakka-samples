@@ -7,8 +7,8 @@ publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
 source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 
-release_id="${COAKKA_RUNTIME_CLIENT_RELEASE_ID:-1.3.1+0da8c2d9}"
-release_version="${COAKKA_RUNTIME_CLIENT_VERSION:-1.3.1}"
+release_id="${COAKKA_RUNTIME_CLIENT_RELEASE_ID:-1.3.2+caff6d6d}"
+release_version="${COAKKA_RUNTIME_CLIENT_VERSION:-1.3.2}"
 context_root="${COAKKA_RUNTIME_CLIENT_DOCKERHUB_CONTEXT:-${repo_root}/build/runtime-client-dockerhub-demo/context}"
 
 prepare_platform() {

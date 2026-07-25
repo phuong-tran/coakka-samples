@@ -1,16 +1,16 @@
 # syntax=docker/dockerfile:1
 
-ARG COAKKA_RUNTIME_BASE_IMAGE=coakka/runtime-base:1.3.1-0da8c2d9-local
+ARG COAKKA_RUNTIME_BASE_IMAGE=coakka/runtime-base:1.3.2-caff6d6d-local
 FROM ${COAKKA_RUNTIME_BASE_IMAGE} AS coakka-runtime
 
 FROM node:22-trixie-slim
 
-ARG COAKKA_RUNTIME_VERSION=1.3.1
-ARG COAKKA_RUNTIME_REVISION=0da8c2d9
-ARG COAKKA_RUNTIME_GENERATION=1.3.1-0da8c2d9-8ff6f32-local
+ARG COAKKA_RUNTIME_VERSION=1.3.2
+ARG COAKKA_RUNTIME_REVISION=caff6d6d
+ARG COAKKA_RUNTIME_GENERATION=1.3.2-caff6d6d-6d5ea58-local
 ARG COAKKA_ARTIFACT_MANIFEST_SHA256=resolved-at-build
-ARG COAKKA_PUBLISH_RAW_BASE=https://raw.githubusercontent.com/phuong-tran/coakka-publish/main
-ARG COAKKA_NODE_ARTIFACT=runtime/node/releases/1.3.1+0da8c2d9-8ff6f32/coakka-v2-connector-node-1.3.6.tgz
+ARG COAKKA_PUBLISH_RAW_BASE=https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge
+ARG COAKKA_NODE_ARTIFACT=runtime/node/releases/1.3.2+caff6d6d-6d5ea58/coakka-v2-connector-node-1.3.9.tgz
 
 LABEL org.opencontainers.image.title="CoAkka Node web to Python store sample"
 LABEL org.opencontainers.image.description="Node.js web edge for the CoAkka runtime Node -> Python container sample"
@@ -32,7 +32,7 @@ RUN bash -lc 'set -eu; \
   export COAKKA_PUBLISH_RAW_BASE; \
   mkdir -p /tmp/coakka-artifacts; \
   source /sample/scripts/resolve-artifact.sh; \
-  package_path="$(coakka_resolve_artifact /not-present "${COAKKA_NODE_ARTIFACT}" /tmp/coakka-artifacts/coakka-v2-connector-node-1.3.6.tgz)"; \
+  package_path="$(coakka_resolve_artifact /not-present "${COAKKA_NODE_ARTIFACT}" /tmp/coakka-artifacts/coakka-v2-connector-node-1.3.9.tgz)"; \
   npm init -y >/dev/null; \
   npm install "${package_path}" --omit=dev >/dev/null; \
   rm -rf /tmp/coakka-artifacts /root/.npm'
