@@ -15,7 +15,7 @@ Set WindowBar "Colorful"
 Set WindowBarSize 32
 
 Hide
-Type "cd /Users/phuongtran/workingDir/coakka-samples"
+Type "cd /path/to/coakka-samples"
 Enter
 Type 'export COAKKA_PUBLISH_ROOT="/tmp/coakka-public-only-mojo-video-$(date +%s)"'
 Enter
