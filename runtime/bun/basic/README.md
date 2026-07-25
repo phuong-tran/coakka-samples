@@ -5,7 +5,7 @@ connector package.
 
 This sample covers:
 
-- install `coakka-v2-connector-bun@1.3.8` from npm
+- install `coakka-v2-connector-bun@1.3.9` from npm
 - embedded native runtime loading
 - no runtime package dependency install beyond the published connector package
 - runtime version/git diagnostics

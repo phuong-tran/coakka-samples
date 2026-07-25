@@ -26,7 +26,7 @@ resolve_electron_package() {
     fi
   fi
 
-  printf '%s\n' "coakka-v2-connector-electron@1.3.8"
+  printf '%s\n' "coakka-v2-connector-electron@1.3.9"
 }
 
 resolve_node_package_for_local_connector() {
@@ -88,6 +88,6 @@ cp "${script_dir}/index.html" "${tmp_dir}/index.html"
 (
   cd "${tmp_dir}"
   npm init -y >/dev/null
-  npm install "${package_path}" electron@^38.0.0 >/dev/null
+  npm install --prefer-online "${package_path}" electron@^38.0.0 >/dev/null
   npx electron main.mjs
 )
