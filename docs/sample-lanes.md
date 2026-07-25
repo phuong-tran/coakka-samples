@@ -84,8 +84,8 @@ installs it.
 The npm package-manager lane is current for Node.js, Bun, and Electron
 runtime/logger packages, so those JavaScript samples install registry
 coordinates. The Go module lane is also current for runtime/logger samples:
-`github.com/phuong-tran/coakka-runtime-go@v1.3.5` and
-`github.com/phuong-tran/coakka-logger-go@v1.2.4`. crates.io and apt/deb remain
+`github.com/phuong-tran/coakka-runtime-go@v1.3.6` and
+`github.com/phuong-tran/coakka-logger-go@v1.2.5`. crates.io and apt/deb remain
 planned in `coakka-publish`; samples should not present those lanes as current
 until the matching package-manager artifact and verification path exists.
 

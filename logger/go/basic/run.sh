@@ -17,7 +17,7 @@ module coakka-logger-go-basic-sample
 
 go 1.22
 
-require ${module_path} v1.2.4
+require ${module_path} v1.2.5
 EOF
 
 (
