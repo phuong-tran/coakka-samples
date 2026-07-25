@@ -279,7 +279,7 @@ Docker Hub image tags for this release train:
 ```text
 docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.2-caff6d6d-remote
 docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.2-caff6d6d-remote
-docker.io/gabrielgun1983/sample-node-web:1.3.2-caff6d6d-b46f705-remote
+docker.io/gabrielgun1983/sample-node-web:1.3.2-caff6d6d-6d5ea58-remote
 docker.io/gabrielgun1983/sample-python-store:1.3.2-caff6d6d-6d5ea58-remote
 ```
 
@@ -288,10 +288,11 @@ container image lines used by these samples. The runtime-client demo image
 bundles the published `coakka-client` `1.3.2+caff6d6d` and native demo service
 artifacts. The runtime-inspect sample image copies the published Linux
 `coakka-runtime-inspect` Linux `1.3.2+caff6d6d` archives without installing
-native implementation runtime packages. The Node.js/Python sample images
-install the pinned Node.js connector artifact set
-`1.3.2+caff6d6d-b46f705` and Python connector artifact set
-`1.3.2+caff6d6d-6d5ea58` over the native runtime base line `1.3.2+caff6d6d`.
+native implementation runtime packages. The published Node.js/Python sample
+images install the previously published Node.js and Python connector artifact
+set `1.3.2+caff6d6d-6d5ea58` over the native runtime base line
+`1.3.2+caff6d6d`; repo-local rebuilds consume the current pinned Node.js
+connector artifact set `1.3.2+caff6d6d-b46f705`.
 Repo-local rebuilds use the same connector set over
 `coakka/runtime-base:1.3.2-caff6d6d-local`.
 
