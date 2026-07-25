@@ -114,10 +114,11 @@ response = runtime.ask_json(
 
 Use the context manager or call `close()` during application shutdown.
 
-## Before: Backend HTTP
+## Before: Fake Backend HTTP
 
-A same-process capability can become a small Flask/FastAPI service just to look
-distributed:
+The browser/API edge can be real HTTP and should stay HTTP. The fake part is
+the second private endpoint a team adds only so app-owned store work has
+something URL-shaped to call:
 
 ```python
 @app.post("/backend/customers")
@@ -125,7 +126,8 @@ def create_customer(command: CustomerDraft):
     return store.create(command)
 ```
 
-The web/API side then forwards business work through HTTP:
+The web/API side then forwards the same customer command through that private
+HTTP surface:
 
 ```python
 reply = requests.post(
@@ -142,15 +144,15 @@ customer = reply.json()
 Read the address change like this:
 
 ```text
-Before backend HTTP:
-  POST /backend/customers -> route function
+Before fake backend HTTP:
+  POST /api/customers -> requests.post("http://customer-store/backend/customers")
 
 After CoAkka:
-  target = "samples.customer.store" -> registered handler
+  POST /api/customers -> target "samples.customer.store" -> registered handler
 ```
 
-The target plays a similar addressing role to a backend HTTP path, but it is
-runtime routing vocabulary, not an HTTP URL.
+The target replaces the private backend URL. It is runtime routing vocabulary,
+not another HTTP endpoint.
 
 With CoAkka, the store is a runtime target:
 
@@ -187,11 +189,11 @@ response = runtime.ask_json(
 )
 ```
 
-The extra backend HTTP path spreads application runtime work across URL config,
-HTTP parsing, headers, middleware, status/error mapping, timeout policy, and
-test setup. CoAkka keeps the runtime path as a typed runtime message with
-request/reply and deadletter behavior, while HTTP remains available for real
-client-facing or legacy boundaries. Existing code using
+The extra backend endpoint spreads application runtime work across URL config,
+HTTP parsing, headers, middleware, status/error mapping, timeout policy,
+retry policy, logs, and test setup. CoAkka keeps that work as a runtime target
+with typed request/reply and deadletter behavior, while HTTP remains at real
+client-facing, partner, or legacy boundaries. Existing code using
 `ConnectorOrchestrator.start(...)` still works as the compatibility name; new
 samples use `RuntimeHost.start(...)`.
 

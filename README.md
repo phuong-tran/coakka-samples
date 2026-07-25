@@ -984,9 +984,10 @@ Spring Boot and Quarkus samples show the same boundary inside familiar
 framework code: keep HTTP at the browser/API edge, and route store work
 as a runtime capability.
 
-### Before: Backend HTTP
+### Before: Fake Backend HTTP
 
-The traditional split adds a backend endpoint:
+The browser/API route is real HTTP. The fake part is adding a second private
+backend endpoint only so app-owned store work has something URL-shaped to call:
 
 ```kotlin
 @RestController
@@ -999,8 +1000,8 @@ class CustomerStoreBackendController(private val store: InMemoryCustomerStore) {
 }
 ```
 
-The browser-facing controller forwards business work through a backend HTTP
-client:
+The browser-facing controller then forwards the same customer command through
+that private HTTP client:
 
 ```kotlin
 @RestController
@@ -1014,9 +1015,11 @@ class CustomerController(private val storeClient: CustomerStoreRestClient) {
 }
 ```
 
-That is a normal shape for a real REST boundary. For store work, the
-sample instead keeps HTTP at `/api/...` and moves the runtime call onto a
-typed runtime target.
+That is a normal shape for a real REST boundary. It becomes fake HTTP when the
+endpoint exists only to wrap capability code owned by the same app or team. The
+sample keeps HTTP at `/api/...` and moves store work onto a typed runtime
+target instead of growing URL config, HTTP parsing, status mapping, timeout
+policy, retries, logs, and test fixtures for another private HTTP surface.
 
 ### After: Same-Process Runtime Capability
 
