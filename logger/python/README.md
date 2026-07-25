@@ -1,6 +1,6 @@
 # Python Logger Samples
 
-Python samples consume `coakka-logger==1.2.1` from PyPI. The GitHub Release
+Python samples consume `coakka-logger==1.2.2` from PyPI. The GitHub Release
 wheel in `coakka-publish` remains the checksum-tracked artifact mirror.
 
 Current samples:

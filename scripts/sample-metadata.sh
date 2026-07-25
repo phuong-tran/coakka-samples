@@ -67,7 +67,7 @@ COAKKA_CONTAINER_ROWS=(
 
 COAKKA_ARTIFACT_ROWS=(
   "logger JVM jar|logger/jvm/releases/1.2.1+f50756ebff0d/coakka-jvm-native-logger-1.2.1-gf50756ebff0d.jar"
-  "logger Python wheel|logger/python/releases/1.2.1+f50756ebff0d/coakka_logger-1.2.1-py3-none-any.whl"
+  "logger Python wheel|logger/python/releases/1.2.1+f50756ebff0d/coakka_logger-1.2.2-py3-none-any.whl"
   "logger Node package|logger/node/releases/1.2.1+f50756ebff0d/coakka-logger-node-1.2.1.tgz"
   "logger Bun package|logger/bun/releases/1.2.1+f50756ebff0d-6fdcc69/coakka-logger-bun-1.2.1.tgz"
   "logger Electron package|logger/electron/releases/1.2.1+f50756ebff0d-3e8a6ae/coakka-logger-electron-1.2.1.tgz"
