@@ -22,8 +22,9 @@ Full recording: [coakka-runtime-python.mp4](../../docs/assets/coakka-runtime-pyt
 The Python samples run from disposable virtual environments. They install the
 published GitHub Release wheel into a temporary venv, run the sample, and
 remove the venv on exit so the user's global Python installation is not
-modified. PyPI publishing is a separate package-manager step; these samples do
-not claim that normal `pip install coakka-v2-connector` is available yet.
+modified. PyPI publishing is a separate package-manager step. Until that upload
+is verified, use the GitHub Release wheel path shown here instead of
+`pip install coakka-v2-connector`.
 
 ## Integration Recipe
 
