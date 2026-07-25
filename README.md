@@ -345,25 +345,31 @@ browser
 
 ## Before And After
 
-Before:
+Before, the browser/API edge can be real HTTP, but work owned by the same app
+or team often gets a second backend HTTP surface only so another module or
+process can call it:
 
 ```text
-Spring API -> backend HTTP -> Go store
-Node job   -> backend HTTP -> Python worker
-C# API     -> backend HTTP -> JVM renderer
+POST /api/customers
+  -> fetch("http://customer-store/backend/customers")
+  -> POST /backend/customers
+  -> store.create(...)
 ```
 
-After:
+After, HTTP stays at the real edge and the fake backend URL becomes a runtime
+target:
 
 ```text
-Spring API -> CoAkka target -> Go store
-Node job   -> CoAkka target -> Python worker
-C# API     -> CoAkka target -> JVM renderer
+POST /api/customers
+  -> CoAkka target "samples.customer.store.create"
+  -> store.create(...)
+  -> runtime reply or deadletter
 ```
 
 The point is not that every backend HTTP call is wrong. The point is that
-application-to-application work often wants a stable capability name, typed payload,
-route ownership, and explicit delivery outcome more than it wants another URL
+application-owned work often wants a stable capability name, typed payload,
+route ownership, and explicit delivery outcome more than it wants URL wiring,
+headers, status mapping, retries, and test fixtures for another private HTTP
 surface.
 
 ## Which Sample Should I Run?

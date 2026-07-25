@@ -105,10 +105,11 @@ process.on("SIGTERM", () => {
 });
 ```
 
-## Before: Backend HTTP
+## Before: Fake Backend HTTP
 
-The store often becomes a backend Express/Fastify endpoint created only so
-another process can call it:
+The public API route can be real HTTP. The problem starts when the store also
+becomes a backend Express/Fastify endpoint created only so work owned by the
+same app or team has an address:
 
 ```js
 app.post("/backend/customers", async (req, res) => {
@@ -117,7 +118,8 @@ app.post("/backend/customers", async (req, res) => {
 });
 ```
 
-The web/API side then forwards business work through HTTP:
+The web/API side then forwards the same customer command through that private
+HTTP surface:
 
 ```js
 app.post("/api/customers", async (req, res) => {
@@ -135,15 +137,15 @@ app.post("/api/customers", async (req, res) => {
 Read the address change like this:
 
 ```text
-Before backend HTTP:
-  POST /backend/customers -> route handler
+Before fake backend HTTP:
+  POST /api/customers -> fetch("http://customer-store/backend/customers")
 
 After CoAkka:
-  target = "samples.customer.store" -> registered handler
+  POST /api/customers -> target "samples.customer.store" -> registered handler
 ```
 
-The target plays a similar addressing role to a backend HTTP path, but it is
-runtime routing vocabulary, not an HTTP URL.
+The target replaces the private backend URL. It is runtime routing vocabulary,
+not another HTTP endpoint.
 
 With CoAkka, the store is a runtime target:
 

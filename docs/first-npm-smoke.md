@@ -1,15 +1,72 @@
 # First npm Smoke
 
-This page is the smallest no-checkout path for a new user. It uses only npm
+This page is the smallest no-checkout path for a new npm user. It uses only
 packages from the public registry and a temporary local project.
 
-## Runtime Echo
+More onboarding docs live here:
+https://github.com/phuong-tran/coakka-samples/tree/main/docs
+
+The runtime example is intentionally shaped like a common backend refactor:
+keep real HTTP at the browser/API edge, but stop creating a second fake backend
+HTTP endpoint just to call application-owned work.
+
+## Runtime: Replace Fake Backend HTTP
+
+The example operation is one customer command:
+
+```json
+{
+  "id": "cust-001",
+  "name": "Ada Lovelace"
+}
+```
+
+### Before
+
+This is the shape CoAkka is meant to remove when the backend HTTP boundary is
+only there to give local work owned by the same app or team an address:
+
+```js
+// customer-store process or module
+app.post("/backend/customers", async (req, res) => {
+  const customer = await store.create(req.body);
+  res.json({ status: "created", customer });
+});
+
+// browser-facing API process or module
+app.post("/api/customers", async (req, res) => {
+  const reply = await fetch("http://customer-store/backend/customers", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(req.body),
+  });
+
+  res.json(await reply.json());
+});
+```
+
+That backend URL is not a product API. It is plumbing for application work:
+URL config, HTTP parsing, headers, status mapping, timeout mapping, and test
+fixtures before the store even runs.
+
+### After
+
+With CoAkka, the store work has a runtime target instead of a fake backend URL:
+
+```text
+POST /api/customers
+  -> ask target "samples.customer.store.create"
+  -> registered handler
+  -> runtime reply or deadletter
+```
+
+Install the runtime package:
 
 ```sh
 mkdir coakka-runtime-first-run
 cd coakka-runtime-first-run
 npm init -y
-npm install coakka-v2-connector-node@1.3.6
+npm install coakka-v2-connector-node
 ```
 
 Create `runtime.mjs`:
@@ -24,10 +81,12 @@ import {
   RuntimeHost,
 } from "coakka-v2-connector-node";
 
-const target = "first.user.echo";
+const target = "samples.customer.store.create";
+const store = new Map();
+
 const runtime = RuntimeHost.start({
-  systemName: "first-user-runtime",
-  nodeId: "first-user-runtime-node",
+  systemName: "customer-app",
+  nodeId: "customer-app-node-1",
   queueCapacity: 64,
   strictNoDrop: true,
   generation: 1,
@@ -35,17 +94,29 @@ const runtime = RuntimeHost.start({
 });
 
 try {
-  runtime.registerHandler(target, (request) =>
-    NodeRuntimeClient.makeJsonReplyFromRequestIdentity(request, target, { ok: true }),
-  );
+  runtime.registerHandler(target, (request) => {
+    const draft = JSON.parse(Buffer.from(request.payload).toString("utf8"));
+    const customer = {
+      id: draft.id,
+      name: draft.name,
+      createdBy: request.source,
+    };
+    store.set(customer.id, customer);
+
+    return NodeRuntimeClient.makeJsonReplyFromRequestIdentity(request, target, {
+      status: "created",
+      customer,
+      storedCount: store.size,
+    });
+  });
 
   const response = await runtime.askJson(
-    "first-user-client",
+    "customer-api",
     target,
-    { hello: "coakka" },
-    new PayloadIdentity("first.user.echo.request.v1", 1, PayloadFormat.JSON),
+    { id: "cust-001", name: "Ada Lovelace" },
+    new PayloadIdentity("samples.customer.create.request.v1", 1, PayloadFormat.JSON),
     2000,
-    "echo",
+    "create_customer",
     DeliveryHint.ROUTER_DEFAULT,
   );
 
@@ -64,8 +135,16 @@ node runtime.mjs
 Expected shape:
 
 ```text
-{ ok: true }
+{
+  status: 'created',
+  customer: { id: 'cust-001', name: 'Ada Lovelace', createdBy: 'customer-api' },
+  storedCount: 1
+}
 ```
+
+The browser/API HTTP route can still exist in a real app. The difference is
+that the controller asks a runtime target instead of forwarding to
+`/backend/customers`.
 
 ## Logger Record
 
@@ -73,7 +152,7 @@ Expected shape:
 mkdir coakka-logger-first-run
 cd coakka-logger-first-run
 npm init -y
-npm install coakka-logger-node@1.2.4
+npm install coakka-logger-node
 ```
 
 Create `logger.mjs`:
