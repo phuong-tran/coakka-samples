@@ -90,7 +90,7 @@ dependencies {
 Python wheel:
 
 ```sh
-python -m pip install coakka-v2-connector==1.3.3
+python -m pip install coakka-v2-connector==1.3.4
 ```
 
 Node.js package:
