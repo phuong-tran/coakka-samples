@@ -22,8 +22,14 @@ Go runtime v2 samples expect Go 1.23 or newer.
 
 ## Integration Recipe
 
-Add the package through your normal module path. The samples unpack the public
-tarball into a temporary workspace for each run.
+The current public sample path unpacks the public tarball into a temporary
+workspace and uses a local `replace` for the fixed module path
+`github.com/phuong-tran/coakka-runtime-go`.
+
+After the public Go module repository is opened and tagged, this sample lane
+can move to normal `go get` install flow. Until then, the tarball-local
+`replace` keeps the sample honest and runnable from the published artifact
+surface.
 
 Start one runtime host per process:
 

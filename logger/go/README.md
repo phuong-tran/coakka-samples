@@ -1,7 +1,10 @@
 # Go Logger Samples
 
 Go samples consume the published `coakka-logger-go` source tarball from
-`coakka-publish`.
+`coakka-publish`. The module path is fixed as
+`github.com/phuong-tran/coakka-logger-go`, but these samples intentionally use
+a tarball-local `replace` until the public Go module repository is opened and
+tagged.
 
 Current samples:
 
@@ -10,6 +13,9 @@ Current samples:
   print counters
 - `pressure`: extract the published tarball, fill a queue with capacity `2`,
   observe rejected writes, drain the accepted records, and print dropped counters
+
+After the module repository exists, this lane can move to normal `go get`
+without changing the runtime/logger sample behavior.
 
 Run:
 
