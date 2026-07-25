@@ -20,14 +20,17 @@ Watch the Python runtime walkthrough:
 Full recording: [coakka-runtime-python.mp4](../../docs/assets/coakka-runtime-python.mp4)
 
 The Python samples run from disposable virtual environments. They install the
-published wheel into a temporary venv, run the sample, and remove the venv on
-exit so the user's global Python installation is not modified.
+published GitHub Release wheel into a temporary venv, run the sample, and
+remove the venv on exit so the user's global Python installation is not
+modified. PyPI publishing is a separate package-manager step; these samples do
+not claim that normal `pip install coakka-v2-connector` is available yet.
 
 ## Integration Recipe
 
-Install the wheel through your normal packaging path. The samples resolve the
-public wheel into a temporary directory, install it into a disposable venv, and
-remove the venv on exit.
+Install the wheel through your normal packaging path. Today, the samples
+resolve the public GitHub Release wheel into a temporary directory, install it
+into a disposable venv, and remove the venv on exit. After the PyPI lane is
+published and verified, this section can move to the registry install path.
 
 Start one `RuntimeHost` per process:
 

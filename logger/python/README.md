@@ -1,7 +1,8 @@
 # Python Logger Samples
 
-Python samples consume the published `coakka-logger` wheel from
-`coakka-publish`.
+Python samples consume the published `coakka-logger` GitHub Release wheel from
+`coakka-publish`. PyPI publishing is a separate package-manager step; these
+samples do not claim that normal `pip install coakka-logger` is available yet.
 
 Current samples:
 
