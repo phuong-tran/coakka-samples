@@ -17,7 +17,7 @@ module coakka-logger-go-pressure-sample
 
 go 1.22
 
-require ${module_path} v1.2.2
+require ${module_path} v1.2.4
 EOF
 
 (
