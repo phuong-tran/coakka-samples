@@ -1,9 +1,8 @@
 # Python Runtime Samples
 
-Python runtime samples document the `coakka_v2_connector` wheel shape. This
-runtime lane consumes the public Python wheel built against native runtime
-`1.3.1+0da8c2d9` with connector UX generation
-`1.3.1+0da8c2d9-8ff6f32`.
+Python runtime samples document the `coakka_v2_connector` package shape. This
+runtime lane consumes `coakka-v2-connector==1.3.2` from PyPI, built against
+native runtime generation `1.3.2+caff6d6d`.
 
 ## Run
 
@@ -20,18 +19,19 @@ Watch the Python runtime walkthrough:
 Full recording: [coakka-runtime-python.mp4](../../docs/assets/coakka-runtime-python.mp4)
 
 The Python samples run from disposable virtual environments. They install the
-published GitHub Release wheel into a temporary venv, run the sample, and
-remove the venv on exit so the user's global Python installation is not
-modified. PyPI publishing is a separate package-manager step. Until that upload
-is verified, use the GitHub Release wheel path shown here instead of
-`pip install coakka-v2-connector`.
+published PyPI package into a temporary venv, run the sample, and remove the
+venv on exit so the user's global Python installation is not modified.
 
 ## Integration Recipe
 
-Install the wheel through your normal packaging path. Today, the samples
-resolve the public GitHub Release wheel into a temporary directory, install it
-into a disposable venv, and remove the venv on exit. After the PyPI lane is
-published and verified, this section can move to the registry install path.
+Install the package through your normal packaging path:
+
+```sh
+python -m pip install coakka-v2-connector==1.3.2
+```
+
+The samples install that PyPI package into a disposable venv and remove the
+venv on exit.
 
 Start one `RuntimeHost` per process:
 

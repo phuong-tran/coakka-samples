@@ -90,8 +90,7 @@ dependencies {
 Python wheel:
 
 ```sh
-python -m pip install \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/python/releases/1.3.1+0da8c2d9-8ff6f32/coakka_v2_connector-1.3.1-py3-none-any.whl"
+python -m pip install coakka-v2-connector==1.3.2
 ```
 
 Node.js package:
