@@ -9,9 +9,9 @@ print_usage() {
 coakka-runtime-inspect Docker sample
 
 Usage:
-  docker run --rm coakka-runtime-inspect-sample:1.3.1-local smoke
-  docker run --rm -p 18080:18080 coakka-runtime-inspect-sample:1.3.1-local serve
-  docker run --rm coakka-runtime-inspect-sample:1.3.1-local inspect version --output json
+  docker run --rm coakka-runtime-inspect-sample:1.3.2-local smoke
+  docker run --rm -p 18080:18080 coakka-runtime-inspect-sample:1.3.2-local serve
+  docker run --rm coakka-runtime-inspect-sample:1.3.2-local inspect version --output json
 
 Commands:
   smoke    Run version, doctor, help serve, and snapshot checks.

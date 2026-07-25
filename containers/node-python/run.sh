@@ -8,8 +8,8 @@ source "${repo_root}/scripts/sample-utils.sh"
 compose_file="${script_dir}/compose.yaml"
 build_compose_file="${script_dir}/compose.build.yaml"
 runtime_base_dockerfile="${repo_root}/containers/runtime-base/Dockerfile"
-runtime_base_image="${COAKKA_RUNTIME_BASE_IMAGE:-coakka/runtime-base:1.3.1-0da8c2d9-local}"
-artifact_manifest_sha256="${COAKKA_ARTIFACT_MANIFEST_SHA256:-a86a74b0e2299c5ad040454edd7fffe3b2e0e871959d6e01d659e9865361669f}"
+runtime_base_image="${COAKKA_RUNTIME_BASE_IMAGE:-coakka/runtime-base:1.3.2-caff6d6d-local}"
+artifact_manifest_sha256="${COAKKA_ARTIFACT_MANIFEST_SHA256:-bf76eeca490f0411d4235d908e85769b465a1c17cf9ed0b35d1459a7215657c2}"
 
 print_usage() {
   cat <<'EOF'
@@ -115,7 +115,7 @@ run_build() {
   "${engine}" build \
     --platform "${platform}" \
     -f "${runtime_base_dockerfile}" \
-    --build-arg "COAKKA_PUBLISH_RAW_BASE=${COAKKA_PUBLISH_RAW_BASE:-https://raw.githubusercontent.com/phuong-tran/coakka-publish/main}" \
+    --build-arg "COAKKA_PUBLISH_RAW_BASE=${COAKKA_PUBLISH_RAW_BASE:-https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge}" \
     --build-arg "COAKKA_ARTIFACT_MANIFEST_SHA256=${artifact_manifest_sha256}" \
     -t "${runtime_base_image}" \
     "${repo_root}"

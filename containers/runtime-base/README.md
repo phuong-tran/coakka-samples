@@ -11,19 +11,19 @@ only the container sample base that consumes that published runtime artifact.
 Pinned local rebuild tag:
 
 ```text
-coakka/runtime-base:1.3.1-0da8c2d9-local
+coakka/runtime-base:1.3.2-caff6d6d-local
 ```
 
 Published remote tag for this runtime-base line:
 
 ```text
-docker.io/gabrielgun1983/runtime-base:1.3.1-0da8c2d9-remote
+docker.io/gabrielgun1983/runtime-base:1.3.2-caff6d6d-remote
 ```
 
 Pinned native runtime artifact:
 
 ```text
-runtime/native/releases/1.3.1+0da8c2d9/coakka-runtime-native-v2-1.3.1.tar.gz
+runtime/native/releases/1.3.2+caff6d6d/coakka-runtime-native-v2-1.3.2.tar.gz
 ```
 
 Build the local image from the repository root:
@@ -33,8 +33,8 @@ docker buildx build \
   --platform linux/arm64 \
   --load \
   -f containers/runtime-base/Dockerfile \
-  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=a86a74b0e2299c5ad040454edd7fffe3b2e0e871959d6e01d659e9865361669f \
-  -t coakka/runtime-base:1.3.1-0da8c2d9-local \
+  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=bf76eeca490f0411d4235d908e85769b465a1c17cf9ed0b35d1459a7215657c2 \
+  -t coakka/runtime-base:1.3.2-caff6d6d-local \
   .
 ```
 
@@ -44,9 +44,9 @@ Publish the refreshed multi-arch image line when a remote tag is ready:
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
   -f containers/runtime-base/Dockerfile \
-  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=a86a74b0e2299c5ad040454edd7fffe3b2e0e871959d6e01d659e9865361669f \
-  --build-arg COAKKA_RUNTIME_GENERATION=1.3.1-0da8c2d9-remote \
-  -t docker.io/gabrielgun1983/runtime-base:1.3.1-0da8c2d9-remote \
+  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=bf76eeca490f0411d4235d908e85769b465a1c17cf9ed0b35d1459a7215657c2 \
+  --build-arg COAKKA_RUNTIME_GENERATION=1.3.2-caff6d6d-remote \
+  -t docker.io/gabrielgun1983/runtime-base:1.3.2-caff6d6d-remote \
   --push \
   .
 ```

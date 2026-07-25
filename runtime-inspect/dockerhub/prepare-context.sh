@@ -8,12 +8,12 @@ publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
 source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 
-release_version="${COAKKA_RUNTIME_INSPECT_VERSION:-1.3.1}"
+release_version="${COAKKA_RUNTIME_INSPECT_VERSION:-1.3.2}"
 context_root="${COAKKA_RUNTIME_INSPECT_DOCKERHUB_CONTEXT:-${repo_root}/build/runtime-inspect-dockerhub/context}"
 
 release_id_for_platform() {
   case "$1" in
-    linux-aarch64|linux-x86_64) printf '%s\n' "1.3.1+0da8c2d9" ;;
+    linux-aarch64|linux-x86_64) printf '%s\n' "1.3.2+caff6d6d" ;;
     *) coakka_die "Unsupported Docker Hub inspect platform: $1" ;;
   esac
 }

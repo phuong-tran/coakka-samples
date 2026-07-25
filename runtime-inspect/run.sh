@@ -7,9 +7,9 @@ publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
 source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 
-COAKKA_RUNTIME_INSPECT_VERSION="1.3.1"
-COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE_DEFAULT="coakka-runtime-inspect-sample:1.3.1-local"
-COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE_DEFAULT="docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-0da8c2d9-remote"
+COAKKA_RUNTIME_INSPECT_VERSION="1.3.2"
+COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE_DEFAULT="coakka-runtime-inspect-sample:1.3.2-local"
+COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE_DEFAULT="docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.2-caff6d6d-remote"
 
 core_root="${COAKKA_CORE_ROOT:-${repo_root}/../coakkaCoreNativeDev}"
 inspect_bin="${COAKKA_RUNTIME_INSPECT_BIN:-${core_root}/build-v2/coakka-runtime-inspect}"
@@ -45,8 +45,8 @@ Environment:
   COAKKA_PUBLISH_RAW_BASE   raw public fallback URL
   COAKKA_CORE_ROOT=/path/to/coakkaCoreNativeDev
   COAKKA_RUNTIME_INSPECT_BIN=/path/to/coakka-runtime-inspect
-  COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE=coakka-runtime-inspect-sample:1.3.1-local
-  COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE=docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-0da8c2d9-remote
+  COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE=coakka-runtime-inspect-sample:1.3.2-local
+  COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE=docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.2-caff6d6d-remote
   COAKKA_RUNTIME_INSPECT_DOCKER_PORT=18080
 
 Notes:
@@ -109,7 +109,7 @@ coakka_runtime_inspect_platform() {
 coakka_runtime_inspect_release_id_for_platform() {
   local platform="$1"
   case "${platform}" in
-    linux-aarch64|linux-x86_64|macos-aarch64|windows-aarch64|windows-x86_64) printf '%s\n' "1.3.1+0da8c2d9" ;;
+    linux-aarch64|linux-x86_64|macos-aarch64|windows-aarch64|windows-x86_64) printf '%s\n' "1.3.2+caff6d6d" ;;
     *) return 1 ;;
   esac
 }

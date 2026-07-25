@@ -89,28 +89,28 @@ The current published inspect release is:
 
 ```text
 coakka-runtime-inspect native UI
-1.3.1+0da8c2d9 release id for macOS ARM64
-1.3.1+0da8c2d9 release id for Linux x86_64
-1.3.1+0da8c2d9 release id for Linux ARM64
-1.3.1+0da8c2d9 release id for Windows x86_64
-1.3.1+0da8c2d9 release id for Windows ARM64
+1.3.2+caff6d6d release id for macOS ARM64
+1.3.2+caff6d6d release id for Linux x86_64
+1.3.2+caff6d6d release id for Linux ARM64
+1.3.2+caff6d6d release id for Windows x86_64
+1.3.2+caff6d6d release id for Windows ARM64
 ```
 
 Direct download:
 
-[coakka-runtime-inspect-v2-1.3.1-linux-aarch64.tar.gz](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/coakka-runtime-inspect-v2-1.3.1-linux-aarch64.tar.gz)
+[coakka-runtime-inspect-v2-1.3.2-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/runtime-inspect/native/releases/1.3.2+caff6d6d/coakka-runtime-inspect-v2-1.3.2-linux-aarch64.tar.gz)
 
-[coakka-runtime-inspect-v2-1.3.1-linux-x86_64.tar.gz](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/coakka-runtime-inspect-v2-1.3.1-linux-x86_64.tar.gz)
+[coakka-runtime-inspect-v2-1.3.2-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/runtime-inspect/native/releases/1.3.2+caff6d6d/coakka-runtime-inspect-v2-1.3.2-linux-x86_64.tar.gz)
 
-[coakka-runtime-inspect-v2-1.3.1-macos-aarch64.tar.gz](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/coakka-runtime-inspect-v2-1.3.1-macos-aarch64.tar.gz)
+[coakka-runtime-inspect-v2-1.3.2-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/runtime-inspect/native/releases/1.3.2+caff6d6d/coakka-runtime-inspect-v2-1.3.2-macos-aarch64.tar.gz)
 
-[coakka-runtime-inspect-v2-1.3.1-windows-x86_64.tar.gz](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/coakka-runtime-inspect-v2-1.3.1-windows-x86_64.tar.gz)
+[coakka-runtime-inspect-v2-1.3.2-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/runtime-inspect/native/releases/1.3.2+caff6d6d/coakka-runtime-inspect-v2-1.3.2-windows-x86_64.tar.gz)
 
-[coakka-runtime-inspect-v2-1.3.1-windows-aarch64.tar.gz](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/coakka-runtime-inspect-v2-1.3.1-windows-aarch64.tar.gz)
+[coakka-runtime-inspect-v2-1.3.2-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/runtime-inspect/native/releases/1.3.2+caff6d6d/coakka-runtime-inspect-v2-1.3.2-windows-aarch64.tar.gz)
 
 Full release page and manifest:
-[CoAkka Public Artifacts 1.3.1](https://github.com/phuong-tran/coakka-publish/releases/tag/coakka-public-artifacts-v1.3.1),
-[public-artifacts.tsv](https://github.com/phuong-tran/coakka-publish/releases/download/coakka-public-artifacts-v1.3.1/public-artifacts.tsv)
+[CoAkka Public Artifacts 1.3.2](https://github.com/phuong-tran/coakka-publish/tree/release/js-native-payload-bridge),
+[public-artifacts.tsv](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/artifacts/public-artifacts.tsv)
 
 ## Docker
 
@@ -146,12 +146,12 @@ Run the published Docker Hub image without preparing a local artifact context:
 
 ```sh
 bash run.sh runtime-inspect dockerhub-smoke
-docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-0da8c2d9-remote
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.2-caff6d6d-remote
 ```
 
 Serve the browser UI from Docker Hub:
 
 ```sh
 bash run.sh runtime-inspect dockerhub-serve
-docker run --rm -p 18080:18080 docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.1-0da8c2d9-remote serve
+docker run --rm -p 18080:18080 docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.2-caff6d6d-remote serve
 ```
