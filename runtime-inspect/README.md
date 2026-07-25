@@ -98,19 +98,19 @@ coakka-runtime-inspect native UI
 
 Direct download:
 
-[coakka-runtime-inspect-v2-1.3.2-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/runtime-inspect/native/releases/1.3.2+caff6d6d/coakka-runtime-inspect-v2-1.3.2-linux-aarch64.tar.gz)
+[coakka-runtime-inspect-v2-1.3.2-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime-inspect/native/releases/1.3.2+caff6d6d/coakka-runtime-inspect-v2-1.3.2-linux-aarch64.tar.gz)
 
-[coakka-runtime-inspect-v2-1.3.2-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/runtime-inspect/native/releases/1.3.2+caff6d6d/coakka-runtime-inspect-v2-1.3.2-linux-x86_64.tar.gz)
+[coakka-runtime-inspect-v2-1.3.2-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime-inspect/native/releases/1.3.2+caff6d6d/coakka-runtime-inspect-v2-1.3.2-linux-x86_64.tar.gz)
 
-[coakka-runtime-inspect-v2-1.3.2-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/runtime-inspect/native/releases/1.3.2+caff6d6d/coakka-runtime-inspect-v2-1.3.2-macos-aarch64.tar.gz)
+[coakka-runtime-inspect-v2-1.3.2-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime-inspect/native/releases/1.3.2+caff6d6d/coakka-runtime-inspect-v2-1.3.2-macos-aarch64.tar.gz)
 
-[coakka-runtime-inspect-v2-1.3.2-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/runtime-inspect/native/releases/1.3.2+caff6d6d/coakka-runtime-inspect-v2-1.3.2-windows-x86_64.tar.gz)
+[coakka-runtime-inspect-v2-1.3.2-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime-inspect/native/releases/1.3.2+caff6d6d/coakka-runtime-inspect-v2-1.3.2-windows-x86_64.tar.gz)
 
-[coakka-runtime-inspect-v2-1.3.2-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/runtime-inspect/native/releases/1.3.2+caff6d6d/coakka-runtime-inspect-v2-1.3.2-windows-aarch64.tar.gz)
+[coakka-runtime-inspect-v2-1.3.2-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime-inspect/native/releases/1.3.2+caff6d6d/coakka-runtime-inspect-v2-1.3.2-windows-aarch64.tar.gz)
 
 Full release page and manifest:
-[CoAkka Public Artifacts 1.3.2](https://github.com/phuong-tran/coakka-publish/tree/release/js-native-payload-bridge),
-[public-artifacts.tsv](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/artifacts/public-artifacts.tsv)
+[CoAkka Public Artifacts 1.3.2](https://github.com/phuong-tran/coakka-publish/tree/main),
+[public-artifacts.tsv](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/artifacts/public-artifacts.tsv)
 
 ## Docker
 

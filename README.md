@@ -48,7 +48,7 @@ Use `coakka-samples` when you want to run examples. Use `coakka-publish` when
 you want to download a released archive or package directly. The fastest direct
 download entrypoint is the GitHub Release page:
 
-[`CoAkka Public Artifacts 1.3.2`](https://github.com/phuong-tran/coakka-publish/tree/release/js-native-payload-bridge)
+[`CoAkka Public Artifacts 1.3.2`](https://github.com/phuong-tran/coakka-publish/tree/main)
 
 JavaScript runtime/logger samples install the current npm packages. Other
 artifact-backed samples resolve artifacts from a sibling `coakka-publish`
@@ -79,7 +79,7 @@ bash run.sh containers node-python
 The first sample verifies the published `coakka-client` archive from
 `coakka-publish`. The second sample pulls the published Docker Hub
 Node.js/Python images and runs a two-process runtime path. Use
-[`CoAkka Public Artifacts 1.3.2`](https://github.com/phuong-tran/coakka-publish/tree/release/js-native-payload-bridge)
+[`CoAkka Public Artifacts 1.3.2`](https://github.com/phuong-tran/coakka-publish/tree/main)
 for direct archive, package, checksum, manifest, or release-note downloads.
 
 Evidence and repo boundaries:
@@ -279,7 +279,7 @@ Docker Hub image tags for this release train:
 ```text
 docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.2-caff6d6d-remote
 docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.2-caff6d6d-remote
-docker.io/gabrielgun1983/sample-node-web:1.3.2-caff6d6d-6d5ea58-remote
+docker.io/gabrielgun1983/sample-node-web:1.3.2-caff6d6d-b46f705-remote
 docker.io/gabrielgun1983/sample-python-store:1.3.2-caff6d6d-6d5ea58-remote
 ```
 
@@ -289,7 +289,8 @@ bundles the published `coakka-client` `1.3.2+caff6d6d` and native demo service
 artifacts. The runtime-inspect sample image copies the published Linux
 `coakka-runtime-inspect` Linux `1.3.2+caff6d6d` archives without installing
 native implementation runtime packages. The Node.js/Python sample images
-install the pinned Node.js and Python connector artifact set
+install the pinned Node.js connector artifact set
+`1.3.2+caff6d6d-b46f705` and Python connector artifact set
 `1.3.2+caff6d6d-6d5ea58` over the native runtime base line `1.3.2+caff6d6d`.
 Repo-local rebuilds use the same connector set over
 `coakka/runtime-base:1.3.2-caff6d6d-local`.
@@ -1701,7 +1702,7 @@ The sample runner resolves public artifacts from a sibling `coakka-publish`
 checkout when present, then falls back to the public raw GitHub URL:
 
 ```text
-https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/
+https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/
 ```
 
 Logger JVM samples use the Maven repository from the public publish checkout:
@@ -1776,9 +1777,9 @@ Pinned public artifact lines used by these samples:
 | Logger Python, Node.js, Go, C#, Rust, Mojo, Zig, and native C/C++ | `1.2.1+f50756ebff0d` |
 | Runtime native C/C++ | `1.3.2+caff6d6d` |
 | Runtime JVM | `coakka.v2:coakka-jvm-native-runtime-v2:1.3.2-gcaff6d6d-6d5ea58` |
-| Runtime Python, Node.js, and Go | `1.3.2+caff6d6d-6d5ea58` |
-| Runtime Bun and Tauri samples | `1.3.2+caff6d6d-6d5ea58` |
-| Runtime Electron sample | `1.3.2+caff6d6d-6d5ea58` |
+| Runtime Python and Go | `1.3.2+caff6d6d-6d5ea58` |
+| Runtime Node.js, Bun, and Electron | `1.3.2+caff6d6d-b46f705` |
+| Runtime Tauri samples | `1.3.2+caff6d6d-6d5ea58` |
 | Runtime C# | `1.3.2+caff6d6d-6d5ea58` |
 | Runtime Rust | `1.3.2+caff6d6d-6d5ea58` |
 | Runtime Mojo and Zig samples | `1.3.2+caff6d6d-6d5ea58` source packages |

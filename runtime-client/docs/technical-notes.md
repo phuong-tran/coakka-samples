@@ -23,18 +23,18 @@ Published CLI archives:
 
 | Platform | Archive |
 | --- | --- |
-| macOS ARM64 | [coakka-client-v2-1.3.2-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/cli/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-macos-aarch64.tar.gz) |
-| Linux x86_64 | [coakka-client-v2-1.3.2-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/cli/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-linux-x86_64.tar.gz) |
-| Linux ARM64 | [coakka-client-v2-1.3.2-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/cli/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-linux-aarch64.tar.gz) |
-| Windows x86_64 | [coakka-client-v2-1.3.2-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/cli/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-windows-x86_64.tar.gz) |
-| Windows ARM64 | [coakka-client-v2-1.3.2-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/cli/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-windows-aarch64.tar.gz) |
+| macOS ARM64 | [coakka-client-v2-1.3.2-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-macos-aarch64.tar.gz) |
+| Linux x86_64 | [coakka-client-v2-1.3.2-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-linux-x86_64.tar.gz) |
+| Linux ARM64 | [coakka-client-v2-1.3.2-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-linux-aarch64.tar.gz) |
+| Windows x86_64 | [coakka-client-v2-1.3.2-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-windows-x86_64.tar.gz) |
+| Windows ARM64 | [coakka-client-v2-1.3.2-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-windows-aarch64.tar.gz) |
 
 Full release page and manifest:
-[CoAkka Public Artifacts 1.3.2](https://github.com/phuong-tran/coakka-publish/tree/release/js-native-payload-bridge),
-[public-artifacts.tsv](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/artifacts/public-artifacts.tsv)
+[CoAkka Public Artifacts 1.3.2](https://github.com/phuong-tran/coakka-publish/tree/main),
+[public-artifacts.tsv](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/artifacts/public-artifacts.tsv)
 
 Per-lane checksums:
-[SHA256SUMS](https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge/cli/releases/1.3.2+caff6d6d/SHA256SUMS)
+[SHA256SUMS](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.2+caff6d6d/SHA256SUMS)
 
 Artifact layout:
 

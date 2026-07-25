@@ -16,7 +16,7 @@ services:
       - coakka-node-python
 
   node-web:
-    image: ${COAKKA_SAMPLE_NODE_WEB_IMAGE:-docker.io/gabrielgun1983/sample-node-web:1.3.2-caff6d6d-6d5ea58-remote}
+    image: ${COAKKA_SAMPLE_NODE_WEB_IMAGE:-docker.io/gabrielgun1983/sample-node-web:1.3.2-caff6d6d-b46f705-remote}
     hostname: node-web
     depends_on:
       - python-store

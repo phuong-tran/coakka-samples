@@ -9,7 +9,7 @@ ARG COAKKA_RUNTIME_VERSION=1.3.2
 ARG COAKKA_RUNTIME_REVISION=caff6d6d
 ARG COAKKA_RUNTIME_GENERATION=1.3.2-caff6d6d-6d5ea58-local
 ARG COAKKA_ARTIFACT_MANIFEST_SHA256=resolved-at-build
-ARG COAKKA_PUBLISH_RAW_BASE=https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge
+ARG COAKKA_PUBLISH_RAW_BASE=https://raw.githubusercontent.com/phuong-tran/coakka-publish/main
 ARG COAKKA_PYTHON_ARTIFACT=runtime/python/releases/1.3.2+caff6d6d-6d5ea58/coakka_v2_connector-1.3.2-py3-none-any.whl
 
 LABEL org.opencontainers.image.title="CoAkka Python store sample"

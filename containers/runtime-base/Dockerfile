@@ -8,7 +8,7 @@ ARG COAKKA_RUNTIME_REVISION=caff6d6d
 ARG COAKKA_RUNTIME_GENERATION=1.3.2-caff6d6d-local
 ARG COAKKA_NATIVE_ARTIFACT=runtime/native/releases/1.3.2+caff6d6d/coakka-runtime-native-v2-1.3.2.tar.gz
 ARG COAKKA_ARTIFACT_MANIFEST_SHA256=resolved-at-build
-ARG COAKKA_PUBLISH_RAW_BASE=https://raw.githubusercontent.com/phuong-tran/coakka-publish/release/js-native-payload-bridge
+ARG COAKKA_PUBLISH_RAW_BASE=https://raw.githubusercontent.com/phuong-tran/coakka-publish/main
 
 LABEL org.opencontainers.image.title="CoAkka runtime base"
 LABEL org.opencontainers.image.description="Shared native runtime base for CoAkka container samples"
