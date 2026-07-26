@@ -1,7 +1,7 @@
 # Repository Boundaries
 
-This repository is the public runnable sample surface. It intentionally does
-not try to be every CoAkka repository at once.
+CoAkka keeps runnable examples and released artifacts in separate public
+repositories. Neither repository tries to be every CoAkka workspace at once.
 
 ## Repositories
 
@@ -11,9 +11,9 @@ not try to be every CoAkka repository at once.
 | [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) | Public artifact distribution surface. | Pinned packages, native archives, source packages, release notes, manifests, and checksums. |
 | Runtime and connector implementation workspaces | Artifact producers consumed through `coakka-publish`. | Source used to build the public artifacts. Public samples should not depend on a local implementation checkout. |
 
-The normal public reader starts here, in `coakka-samples`. The samples resolve
-artifacts from a sibling `coakka-publish` checkout when present, or from
-the public raw artifact URL when a local checkout is absent.
+The normal public reader starts in `coakka-samples`. The samples resolve
+artifacts from a sibling `coakka-publish` checkout when present, or from the
+public raw artifact URL when a local checkout is absent.
 
 Use `coakka-samples` to run examples. Use
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) to download
@@ -35,7 +35,7 @@ specific product surface when the distinction matters:
 For the full wording rule, read
 [CoAkka Ecosystem Naming](coakka-ecosystem-naming.md).
 
-## What This Repo Owns
+## What coakka-samples Owns
 
 - sample entrypoints and docs
 - container flows and compose files
@@ -44,7 +44,7 @@ For the full wording rule, read
 - artifact pin verification against the public manifest
 - public smoke workflows
 
-## What This Repo Does Not Own
+## What coakka-samples Does Not Own
 
 - native runtime implementation
 - package publishing pipeline

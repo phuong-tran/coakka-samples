@@ -1,6 +1,6 @@
 # CoAkka Ecosystem Naming
 
-This repository treats `CoAkka` as the ecosystem and brand prefix. Public docs
+Public CoAkka docs treat `CoAkka` as the ecosystem and brand prefix. They
 should avoid using `coakka` alone as a concrete package identity when a more
 specific product name is available.
 
@@ -8,7 +8,7 @@ specific product name is available.
 
 | Name | Meaning | Sample responsibility |
 | --- | --- | --- |
-| `CoAkka` | The ecosystem and brand family. | Use for the whole sample repository, project identity, and cross-product docs. |
+| `CoAkka` | The ecosystem and brand family. | Use for the project identity and cross-product docs. |
 | `CoAkka Runtime` | The runtime product family. | Use when explaining runtime delivery, targets, route snapshots, replies, deadletters, and diagnostics. |
 | `coakka-runtime-core` | The native runtime engine and C ABI surface. | Consume only through published artifacts; do not place sink, dashboard, or business schema semantics here. |
 | `coakka-runtime-connector` | Host-language connector packages that bind app-host code to the runtime core. | Show language/framework integration and app-owned handlers. |
@@ -42,7 +42,8 @@ When documenting the CLI, use this shape:
 ```text
 coakka-runtime-client is the CLI runtime client.
 The published command is coakka-client.
-The published runtime-client release is 1.3.1+0da8c2d9.
+The published runtime-client release follows the current public runtime tools
+generation in `coakka-publish`.
 ```
 
 The CLI runtime client is not the dashboard, inspect surface, or a business
