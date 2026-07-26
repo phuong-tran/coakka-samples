@@ -90,6 +90,7 @@ Evidence and repo boundaries:
 [Runtime Glossary](docs/runtime-glossary.md),
 [Runtime Message And Routing Model](docs/runtime-message-and-routing-model.md),
 [Runtime Integration Guide](docs/runtime-integration-guide.md),
+[Incremental Adoption](docs/incremental-adoption.md),
 [Cluster Routing](docs/runtime-cluster-routing.md),
 [Questions And Answers](docs/qna.md),
 and
