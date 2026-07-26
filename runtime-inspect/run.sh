@@ -136,7 +136,7 @@ resolve_published_archive() {
   local artifact_name artifact_rel release_id
   release_id="$(coakka_runtime_inspect_release_id_for_platform "${platform}")"
   artifact_name="coakka-runtime-inspect-v2-${COAKKA_RUNTIME_INSPECT_VERSION}-${platform}.tar.gz"
-  artifact_rel="runtime-inspect/native/releases/${release_id}/${artifact_name}"
+  artifact_rel="coakka-tools/coakka-runtime-inspect/releases/${release_id}/${artifact_name}"
 
   mkdir -p "${tmp_dir}/artifacts"
   coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/${artifact_name}"

@@ -46,18 +46,18 @@ required_rows=(
   "runtime Tauri source package|runtime/tauri/releases/1.3.2+caff6d6d-6d5ea58/coakka-runtime-tauri-intents-1.3.2-source.tar.gz"
   "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/1.3.2-gcaff6d6d-6d5ea58/coakka-spring-boot-starter-1.3.2-gcaff6d6d-6d5ea58.jar"
   "Quarkus extension Maven jar|maven/coakka/quarkus/coakka-quarkus-extension/1.3.2-gcaff6d6d-6d5ea58/coakka-quarkus-extension-1.3.2-gcaff6d6d-6d5ea58.jar"
-  "coakka-client linux-x86_64|cli/releases/${expected_runtime_client_native}/coakka-client-v2-1.3.2-linux-x86_64.tar.gz"
-  "coakka-client linux-aarch64|cli/releases/${expected_runtime_client_native}/coakka-client-v2-1.3.2-linux-aarch64.tar.gz"
-  "coakka-client macos-aarch64|cli/releases/${expected_runtime_client_native}/coakka-client-v2-1.3.2-macos-aarch64.tar.gz"
-  "coakka-client windows-x86_64|cli/releases/${expected_runtime_client_native}/coakka-client-v2-1.3.2-windows-x86_64.tar.gz"
-  "coakka-client windows-aarch64|cli/releases/${expected_runtime_client_native}/coakka-client-v2-1.3.2-windows-aarch64.tar.gz"
-  "coakka-client docker-demo linux-x86_64|demo/coakka-client/releases/${expected_runtime_client_docker}/coakka-client-docker-demo-v2-1.3.2-linux-x86_64.tar.gz"
-  "coakka-client docker-demo linux-aarch64|demo/coakka-client/releases/${expected_runtime_client_docker}/coakka-client-docker-demo-v2-1.3.2-linux-aarch64.tar.gz"
-  "coakka-runtime-inspect linux-aarch64|runtime-inspect/native/releases/${expected_runtime_inspect_native}/coakka-runtime-inspect-v2-1.3.2-linux-aarch64.tar.gz"
-  "coakka-runtime-inspect linux-x86_64|runtime-inspect/native/releases/${expected_runtime_inspect_native}/coakka-runtime-inspect-v2-1.3.2-linux-x86_64.tar.gz"
-  "coakka-runtime-inspect macos-aarch64|runtime-inspect/native/releases/${expected_runtime_inspect_native}/coakka-runtime-inspect-v2-1.3.2-macos-aarch64.tar.gz"
-  "coakka-runtime-inspect windows-x86_64|runtime-inspect/native/releases/${expected_runtime_inspect_native}/coakka-runtime-inspect-v2-1.3.2-windows-x86_64.tar.gz"
-  "coakka-runtime-inspect windows-aarch64|runtime-inspect/native/releases/${expected_runtime_inspect_native}/coakka-runtime-inspect-v2-1.3.2-windows-aarch64.tar.gz"
+  "coakka-client linux-x86_64|coakka-tools/coakka-client/releases/${expected_runtime_client_native}/coakka-client-v2-1.3.2-linux-x86_64.tar.gz"
+  "coakka-client linux-aarch64|coakka-tools/coakka-client/releases/${expected_runtime_client_native}/coakka-client-v2-1.3.2-linux-aarch64.tar.gz"
+  "coakka-client macos-aarch64|coakka-tools/coakka-client/releases/${expected_runtime_client_native}/coakka-client-v2-1.3.2-macos-aarch64.tar.gz"
+  "coakka-client windows-x86_64|coakka-tools/coakka-client/releases/${expected_runtime_client_native}/coakka-client-v2-1.3.2-windows-x86_64.tar.gz"
+  "coakka-client windows-aarch64|coakka-tools/coakka-client/releases/${expected_runtime_client_native}/coakka-client-v2-1.3.2-windows-aarch64.tar.gz"
+  "coakka-client docker-demo linux-x86_64|coakka-tools/coakka-client/docker-demo/releases/${expected_runtime_client_docker}/coakka-client-docker-demo-v2-1.3.2-linux-x86_64.tar.gz"
+  "coakka-client docker-demo linux-aarch64|coakka-tools/coakka-client/docker-demo/releases/${expected_runtime_client_docker}/coakka-client-docker-demo-v2-1.3.2-linux-aarch64.tar.gz"
+  "coakka-runtime-inspect linux-aarch64|coakka-tools/coakka-runtime-inspect/releases/${expected_runtime_inspect_native}/coakka-runtime-inspect-v2-1.3.2-linux-aarch64.tar.gz"
+  "coakka-runtime-inspect linux-x86_64|coakka-tools/coakka-runtime-inspect/releases/${expected_runtime_inspect_native}/coakka-runtime-inspect-v2-1.3.2-linux-x86_64.tar.gz"
+  "coakka-runtime-inspect macos-aarch64|coakka-tools/coakka-runtime-inspect/releases/${expected_runtime_inspect_native}/coakka-runtime-inspect-v2-1.3.2-macos-aarch64.tar.gz"
+  "coakka-runtime-inspect windows-x86_64|coakka-tools/coakka-runtime-inspect/releases/${expected_runtime_inspect_native}/coakka-runtime-inspect-v2-1.3.2-windows-x86_64.tar.gz"
+  "coakka-runtime-inspect windows-aarch64|coakka-tools/coakka-runtime-inspect/releases/${expected_runtime_inspect_native}/coakka-runtime-inspect-v2-1.3.2-windows-aarch64.tar.gz"
 )
 
 stale_patterns=(
@@ -119,7 +119,7 @@ validate_manifest_rows() {
       fail "${source_name} manifest has unsafe path on row ${line_no}: ${relative_path}"
     fi
     case "${relative_path}" in
-      logger/*/releases/*|runtime/*/releases/*|runtime-inspect/native/releases/*|maven/coakka/*/*/*/*.jar|cli/releases/*|demo/coakka-client/releases/*)
+      logger/*/releases/*|runtime/*/releases/*|runtime-inspect/native/releases/*|maven/coakka/*/*/*/*.jar|cli/releases/*|demo/coakka-client/releases/*|coakka-tools/*/releases/*|coakka-tools/*/*/releases/*)
         ;;
       *)
         fail "${source_name} manifest has path outside the published artifact surface on row ${line_no}: ${relative_path}"

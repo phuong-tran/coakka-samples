@@ -17,7 +17,7 @@ prepare_platform() {
   local archive_name archive_rel tmp_dir archive_path extracted_root
 
   archive_name="coakka-client-docker-demo-v2-${release_version}-${coakka_platform}.tar.gz"
-  archive_rel="demo/coakka-client/releases/${release_id}/${archive_name}"
+  archive_rel="coakka-tools/coakka-client/docker-demo/releases/${release_id}/${archive_name}"
   tmp_dir="$(mktemp -d)"
 
   archive_path="$(coakka_resolve_artifact "${publish_root}" "${archive_rel}" "${tmp_dir}/${archive_name}")"

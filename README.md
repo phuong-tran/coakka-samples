@@ -1086,10 +1086,10 @@ If a shell reports `coakka-runtime-client: command not found`, use
 `coakka-client --help`. The longer name is the product lane, not the binary.
 
 The published CLI runtime-client release is `1.3.2+caff6d6d`. It lives under
-`coakka-publish/cli/releases/1.3.2+caff6d6d/` for macOS ARM64, Linux x86_64,
+`coakka-publish/coakka-tools/coakka-client/releases/1.3.2+caff6d6d/` for macOS ARM64, Linux x86_64,
 Linux ARM64, Windows x86_64, and Windows ARM64. The Docker verification
 release is still under
-`coakka-publish/demo/coakka-client/releases/1.3.2+caff6d6d/`.
+`coakka-publish/coakka-tools/coakka-client/docker-demo/releases/1.3.2+caff6d6d/`.
 
 This lane is for native CLI verification of runtime behavior: `version`,
 `doctor`, request/reply calls, `ask` alias behavior, and bounded script mode.

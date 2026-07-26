@@ -40,7 +40,7 @@ prepare_platform() {
 
   release_id="$(release_id_for_platform "${coakka_platform}")"
   archive_name="coakka-runtime-inspect-v2-${release_version}-${coakka_platform}.tar.gz"
-  archive_rel="runtime-inspect/native/releases/${release_id}/${archive_name}"
+  archive_rel="coakka-tools/coakka-runtime-inspect/releases/${release_id}/${archive_name}"
   tmp_dir="$(mktemp -d)"
 
   archive_path="$(coakka_resolve_artifact "${publish_root}" "${archive_rel}" "${tmp_dir}/${archive_name}")"

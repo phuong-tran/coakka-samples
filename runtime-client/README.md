@@ -138,23 +138,23 @@ Direct downloads:
 
 | Platform | Archive |
 | --- | --- |
-| macOS ARM64 | [coakka-client-v2-1.3.2-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-macos-aarch64.tar.gz) |
-| Linux x86_64 | [coakka-client-v2-1.3.2-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-linux-x86_64.tar.gz) |
-| Linux ARM64 | [coakka-client-v2-1.3.2-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-linux-aarch64.tar.gz) |
-| Windows x86_64 | [coakka-client-v2-1.3.2-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-windows-x86_64.tar.gz) |
-| Windows ARM64 | [coakka-client-v2-1.3.2-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-windows-aarch64.tar.gz) |
+| macOS ARM64 | [coakka-client-v2-1.3.2-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-macos-aarch64.tar.gz) |
+| Linux x86_64 | [coakka-client-v2-1.3.2-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-linux-x86_64.tar.gz) |
+| Linux ARM64 | [coakka-client-v2-1.3.2-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-linux-aarch64.tar.gz) |
+| Windows x86_64 | [coakka-client-v2-1.3.2-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-windows-x86_64.tar.gz) |
+| Windows ARM64 | [coakka-client-v2-1.3.2-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/1.3.2+caff6d6d/coakka-client-v2-1.3.2-windows-aarch64.tar.gz) |
 
 Full release page and manifest:
 [CoAkka Public Artifacts 1.3.2](https://github.com/phuong-tran/coakka-publish/tree/main),
 [public-artifacts.tsv](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/artifacts/public-artifacts.tsv)
 
 Per-lane checksums:
-[SHA256SUMS](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/cli/releases/1.3.2+caff6d6d/SHA256SUMS)
+[SHA256SUMS](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/1.3.2+caff6d6d/SHA256SUMS)
 
 The same published artifacts are resolved from `coakka-publish`:
 
 ```text
-cli/releases/1.3.2+caff6d6d/
+coakka-tools/coakka-client/releases/1.3.2+caff6d6d/
   coakka-client-v2-1.3.2-macos-aarch64.tar.gz
   coakka-client-v2-1.3.2-linux-x86_64.tar.gz
   coakka-client-v2-1.3.2-linux-aarch64.tar.gz
@@ -165,7 +165,7 @@ cli/releases/1.3.2+caff6d6d/
 The matching Docker verification release is:
 
 ```text
-demo/coakka-client/releases/1.3.2+caff6d6d/
+coakka-tools/coakka-client/docker-demo/releases/1.3.2+caff6d6d/
 ```
 
 The `demo/` path segment is part of the already-published artifact layout.
