@@ -1,1 +1,1 @@
-../../coakkaCoreNativeDev/public-docs/common/new-to-coakka.md
+common/new-to-coakka.md
