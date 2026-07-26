@@ -19,6 +19,7 @@ L7, mesh, and platform boundaries:
 
 - [Is CoAkka Equivalent To gRPC?](#is-coakka-equivalent-to-grpc)
 - [Is CoAkka A gRPC Add-On?](#is-coakka-a-grpc-add-on)
+- [Do Spring Users Still Need @FeignClient?](#do-spring-users-still-need-feignclient)
 - [Why L4 Rather Than L7?](#why-l4-rather-than-l7)
 - [Can CoAkka Replace A Service Mesh Such As Istio?](#can-coakka-replace-a-service-mesh-such-as-istio)
 - [Why Do Teams Reach For Istio In The First Place, And How Can CoAkka Change That?](#why-do-teams-reach-for-istio-in-the-first-place-and-how-can-coakka-change-that)
@@ -55,6 +56,7 @@ Logger and explanation:
 | --- | --- | --- |
 | Direct calls | Use CoAkka only when a runtime boundary is worth making explicit. | The path is small, stable, single-language, and easy to trace directly. |
 | gRPC | CoAkka is not gRPC; it avoids promoting app-owned capabilities into L7 APIs too early. | The boundary is a real service API with generated clients, HTTP/2 semantics, and service ownership. |
+| Spring `@FeignClient` | CoAkka can remove Feign from app-owned runtime handoffs that only became HTTP to gain an address. | The target is a real HTTP service API with independent ownership, URL/discovery policy, and HTTP client semantics. |
 | HTTP/API gateway | CoAkka sits behind or beside the app-host edge. | The caller is external, public, or needs product API semantics. |
 | Dapr | CoAkka is narrower: target routing, bounded delivery, replies, deadletters, and diagnostics. | The team wants a broad distributed application runtime with state, pub/sub, bindings, secrets, and workflow. |
 | Akka/Erlang/Elixir | CoAkka shares some messaging vocabulary but is not actor-first. | The team wants actors, supervision trees, actor identity, and actor lifecycle as the application model. |
@@ -191,6 +193,55 @@ The distinction is ownership:
 
 - gRPC owns service API call mechanics.
 - CoAkka owns runtime delivery semantics.
+
+## Do Spring Users Still Need @FeignClient?
+
+Sometimes yes, but not for the boundary CoAkka is meant to remove.
+
+Spring Cloud OpenFeign's `@FeignClient` is useful when a Spring application is
+calling a real HTTP service API. In that shape, the HTTP boundary is the
+contract: service name or URL, request path, request/response DTOs, status-code
+mapping, headers, interceptors, timeouts, retries, auth propagation, load
+balancing, and observability all belong to the service-to-service call.
+
+The problem starts when `@FeignClient` is used only because an application
+capability was split into another module, process, or language host and needed
+an address. The team then creates a backend HTTP endpoint that is not a product
+API and not a true service boundary. Feign makes that endpoint convenient to
+call, but it also preserves the L7 shape:
+
+```text
+Spring controller
+  -> @FeignClient
+  -> backend HTTP endpoint
+  -> application-owned work
+```
+
+That can spread one internal handoff across URL strings, controller methods,
+HTTP status mapping, client interfaces, retry policy, timeout policy, and test
+fixtures before the business handler runs.
+
+With CoAkka, the Spring edge can stay Spring and HTTP where it belongs. After
+authentication, authorization, validation, and request mapping, the app submits
+work to a runtime target:
+
+```text
+Spring controller
+  -> CoAkka target "billing.invoice.create"
+  -> local or peer runtime handler
+  -> reply or deadletter
+```
+
+The call-site no longer needs a fake backend HTTP API or a Feign client just to
+reach application-owned work. CoAkka owns target routing, active route
+generation, bounded admission, timeout, reply matching, deadletters, and
+diagnostics. The Spring app still owns business validation, user policy,
+transaction boundaries, and the public HTTP response.
+
+Keep `@FeignClient` when the target is truly an HTTP service API with separate
+ownership or platform policy. Prefer CoAkka when the target is an application
+capability that should be named, routed, observed, and moved without turning it
+into another backend HTTP service.
 
 ## Why L4 Rather Than L7?
 
