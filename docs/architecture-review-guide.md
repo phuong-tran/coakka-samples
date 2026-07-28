@@ -28,6 +28,7 @@ A useful review should:
 A weak review usually:
 
 - reads only the README and assumes the whole architecture
+- treats "not widely known yet" as proof that the architecture is weak
 - calls "not HTTP" a weakness without explaining which application boundary
   truly needs public HTTP semantics
 - treats route snapshots, deadletters, bounded queues, or logger pressure as
@@ -36,6 +37,37 @@ A weak review usually:
   mesh rules automatically belong at every internal boundary
 - calls multi-language support "scope creep" without addressing why one
   vocabulary across host languages is part of the design
+
+## Popularity Is Not Architecture Evidence
+
+Popularity is evidence of adoption, not evidence of correct boundary
+placement.
+
+A project being new, less known, or not yet common in a vendor ecosystem is an
+adoption risk. It is not proof that the architecture is wrong. A review may
+name that risk, but it should call it what it is:
+
+```text
+adoption maturity risk
+```
+
+Do not turn unfamiliarity into a technical conclusion.
+
+The opposite mistake is also common: a popular pattern can still be a workaround
+for a misplaced boundary. HTTP-shaped internal APIs, sidecar policies,
+infrastructure retries, and client wrappers can be familiar, widely deployed,
+and still be the wrong model for a specific application-owned capability.
+
+A credible review should separate these questions:
+
+- Is the concept architecturally coherent?
+- Is the public contract documented and stable enough for the reviewed use
+  case?
+- Is the implementation evidence strong enough for the claimed maturity level?
+- Is ecosystem adoption broad enough for the buyer's operational risk tolerance?
+
+Those are different questions. Collapsing them into "unknown project, therefore
+weak architecture" is not a review; it is a popularity heuristic.
 
 ## Read These First
 
