@@ -6,6 +6,7 @@ Contribution guide: [CONTRIBUTING.md](CONTRIBUTING.md)
 Support: [SUPPORT.md](SUPPORT.md)
 Changelog: [CHANGELOG.md](CHANGELOG.md)
 New to CoAkka: [docs/new-to-coakka.md](docs/new-to-coakka.md)
+CoAkka story: [docs/coakka-story.md](docs/coakka-story.md)
 First npm smoke: [docs/first-npm-smoke.md](docs/first-npm-smoke.md)
 Sample lanes: [docs/sample-lanes.md](docs/sample-lanes.md)
 Spring Boot: [docs/coakka-spring-boot.md](docs/coakka-spring-boot.md)
@@ -99,6 +100,7 @@ Node.js/Python images and runs a two-process runtime path. Use
 for direct archive, package, checksum, manifest, or release-note downloads.
 
 Evidence and repo boundaries:
+[The CoAkka Story](docs/coakka-story.md),
 [Production Evidence](docs/production-evidence.md),
 [Repository Boundaries](docs/repository-boundaries.md),
 [CoAkka Ecosystem Naming](docs/coakka-ecosystem-naming.md),
