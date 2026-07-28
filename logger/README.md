@@ -29,6 +29,10 @@ easy to audit under pressure, keep it. The reason to use this logger is when
 the team wants logging behavior that stays explicit under load instead of
 becoming another hidden source of stalls, heap growth, or ambiguous loss.
 
+Swift logger source packaging is prepared for SwiftPM with the native logger
+generation `1.2.1+f50756ebff0d`. Runnable Swift samples are pending the public
+SwiftPM repository, tag, and sample resolution path.
+
 ## Why The Logger Matters
 
 Logging is not free. The wrong logging path can quietly damage application
@@ -152,6 +156,7 @@ Current samples:
 | Go | `go/basic`, `go/pressure` | published Go source package |
 | C# | `csharp/basic`, `csharp/pressure` | published C# NuGet package |
 | Rust | `rust/basic`, `rust/pressure` | published Rust archive package |
+| Swift | pending | SwiftPM source package prepared; public sample runner pending |
 | Zig | `zig/basic` | published native C/C++ archive |
 | Mojo | `mojo/basic` | published native C/C++ archive with a sample-local shim |
 | Native C/C++ | `native/basic`, `native/pressure` | published native C/C++ archive |
