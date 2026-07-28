@@ -247,13 +247,15 @@ check_public_artifacts() {
   raw_base="${COAKKA_PUBLISH_RAW_BASE:-${COAKKA_PUBLISH_RAW_BASE_DEFAULT}}"
   manifest_tmp="$(mktemp "${TMPDIR:-/tmp}/coakka-public-artifacts.XXXXXX")"
   tmp_files+=("${manifest_tmp}")
-  curl -fsSL --max-time 10 "${raw_base%/}/${public_manifest_path}" -o "${manifest_tmp}" ||
+  curl -fsSL --retry 5 --retry-all-errors --retry-delay 2 --max-time 20 \
+    "${raw_base%/}/${public_manifest_path}" -o "${manifest_tmp}" ||
     fail "public artifact manifest is missing: ${public_manifest_path}"
   check_manifest_required_rows "${manifest_tmp}" "public raw"
 
   for row in "${required_rows[@]}"; do
     IFS='|' read -r label relative_path <<<"${row}"
-    curl -fsI --max-time 10 "${raw_base%/}/${relative_path}" >/dev/null ||
+    curl -fsI --retry 5 --retry-all-errors --retry-delay 2 --max-time 20 \
+      "${raw_base%/}/${relative_path}" >/dev/null ||
       fail "public artifact URL missing ${label}: ${relative_path}"
   done
 }
