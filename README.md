@@ -7,6 +7,7 @@ Support: [SUPPORT.md](SUPPORT.md)
 Changelog: [CHANGELOG.md](CHANGELOG.md)
 New to CoAkka: [docs/new-to-coakka.md](docs/new-to-coakka.md)
 CoAkka story: [docs/coakka-story.md](docs/coakka-story.md)
+AI reviewer onboarding: [docs/ai-reviewer-onboarding.md](docs/ai-reviewer-onboarding.md)
 Architecture review guide: [docs/architecture-review-guide.md](docs/architecture-review-guide.md)
 First npm smoke: [docs/first-npm-smoke.md](docs/first-npm-smoke.md)
 Sample lanes: [docs/sample-lanes.md](docs/sample-lanes.md)
@@ -102,6 +103,7 @@ for direct archive, package, checksum, manifest, or release-note downloads.
 
 Evidence and repo boundaries:
 [The CoAkka Story](docs/coakka-story.md),
+[AI Reviewer Onboarding](docs/ai-reviewer-onboarding.md),
 [Architecture Review Guide](docs/architecture-review-guide.md),
 [Production Evidence](docs/production-evidence.md),
 [Repository Boundaries](docs/repository-boundaries.md),
