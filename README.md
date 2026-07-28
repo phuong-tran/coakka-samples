@@ -88,6 +88,8 @@ Evidence and repo boundaries:
 [CoAkka Ecosystem Naming](docs/coakka-ecosystem-naming.md),
 [Production Readiness](docs/production-readiness.md),
 [How It Works](docs/how-it-works.md),
+[CoAkka Runtime Client](docs/coakka-runtime-client.md),
+[CoAkka Runtime Inspect](docs/coakka-runtime-inspect.md),
 [Runtime Glossary](docs/runtime-glossary.md),
 [Runtime Message And Routing Model](docs/runtime-message-and-routing-model.md),
 [Runtime Integration Guide](docs/runtime-integration-guide.md),

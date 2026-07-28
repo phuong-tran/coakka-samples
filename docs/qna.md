@@ -12,6 +12,8 @@ Positioning:
 - [When Is CoAkka Worth Adding?](#when-is-coakka-worth-adding)
 - [Is Adding A Runtime Overkill If The Current System Works?](#is-adding-a-runtime-overkill-if-the-current-system-works)
 - [Is The CoAkka Boundary A Business Boundary Or Technical Boundary?](#is-the-coakka-boundary-a-business-boundary-or-technical-boundary)
+- [Does CoAkka Have A Dashboard?](#does-coakka-have-a-dashboard)
+- [How Do Users Test Runtime Targets Compared With curl Or Swagger?](#how-do-users-test-runtime-targets-compared-with-curl-or-swagger)
 - [Does CoAkka Handle Auth Or Authorization?](#does-coakka-handle-auth-or-authorization)
 - [How Does Observability And Trace Context Work?](#how-does-observability-and-trace-context-work)
 
@@ -65,6 +67,8 @@ Logger and explanation:
 | Kafka/RabbitMQ | CoAkka can reduce broker use for app-owned request/reply handoffs. | The system needs durable topics, consumer groups, replay, fanout, or broker-owned backpressure semantics. |
 | Outbox | CoAkka can route dispatcher or projection work after the app commits. | The question is transactional durability between a database commit and asynchronous publication. |
 | Auth/authz | CoAkka carries already-submitted runtime work and reports delivery outcomes. | The question is identity proof, tenant policy, permission checks, or business authorization. |
+| Dashboard | `coakka-runtime-inspect` is a runtime explorer, not an admin dashboard or observability platform. | The team needs fleet dashboards, alerting, long-term metrics, tracing, or tenant operations. |
+| curl/Swagger | Use `coakka-client` or inspect route-try for runtime targets. | The boundary is an HTTP API with paths, methods, status codes, and OpenAPI docs. |
 | Observability/OTel | CoAkka exposes runtime delivery facts that app-hosts can correlate. | The question is trace collection, span export, dashboards, sampling, or organization-wide telemetry policy. |
 | Saga | CoAkka can reduce Saga pressure when the split was premature. | The flow truly crosses independent owners, stores, commits, or long-running compensation semantics. |
 | Istio/service mesh | CoAkka can remove synthetic internal service hops. | The system has real network-service boundaries needing zero-trust mTLS, traffic governance, or cross-cluster policy. |
@@ -91,6 +95,56 @@ The app-host owns request parsing, authentication, authorization, validation,
 CQRS/app policy, and the decision to submit work. CoAkka starts after that
 decision and owns runtime delivery: target routing, route generation, bounded
 admission, timeout, reply, deadletter, health, and diagnostics.
+
+## Does CoAkka Have A Dashboard?
+
+Not in the sense of an admin dashboard or observability platform.
+
+CoAkka has two public runtime tooling surfaces:
+
+- `coakka-client`: terminal-first runtime client for diagnostics, `call`,
+  `ask`, scripted checks, and explicit reply/timeout/deadletter outcomes
+- `coakka-runtime-inspect`: browser runtime explorer and route-try UI for
+  runtime identity, route catalog, endpoint topology, health, pressure, recent
+  events, and copied `coakka-client` commands
+
+Those tools make runtime facts visible. They are not the source of truth for
+topology, not a schema registry, not a service discovery server, not an mTLS
+control plane, and not a replacement for an organization's telemetry stack.
+
+Use existing observability tools for dashboards, alerting, traces, metrics,
+retention, fleet operations, and incident workflows. Use CoAkka tooling to
+inspect or drive the runtime boundary itself.
+
+For the tool docs, read [CoAkka Runtime Client](coakka-runtime-client.md) and
+[CoAkka Runtime Inspect](coakka-runtime-inspect.md).
+
+## How Do Users Test Runtime Targets Compared With curl Or Swagger?
+
+Use the right tool for the boundary.
+
+Use `curl`, Postman, Swagger, or OpenAPI tooling when the boundary is an HTTP
+API:
+
+```text
+HTTP method + path + status code + API schema
+```
+
+Use `coakka-client` or `coakka-runtime-inspect` when the boundary is a CoAkka
+runtime target:
+
+```text
+target + payload identity + route snapshot + reply, timeout, or deadletter
+```
+
+`coakka-client` is the closest runtime equivalent to a terminal probe: it can
+drive `call` / `ask`, run `doctor`, print version diagnostics, and execute a
+scripted command batch. `coakka-runtime-inspect` gives a browser route-try form
+for the same runtime shape and can copy an equivalent `coakka-client` command.
+
+This is why CoAkka does not need to turn every runtime target into an HTTP
+endpoint just to make it testable. HTTP APIs remain testable through HTTP
+tools. Runtime targets become testable through runtime tools.
 
 ## Is CoAkka Architecturally Distinct?
 
