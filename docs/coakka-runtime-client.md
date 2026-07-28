@@ -3,6 +3,10 @@
 `coakka-runtime-client` is the CLI runtime client lane for CoAkka Runtime. The
 published command and archive prefix are `coakka-client`.
 
+![CoAkka Runtime Client CLI walkthrough](assets/coakka-runtime-client.gif)
+
+Full recording: [coakka-runtime-client.mp4](assets/coakka-runtime-client.mp4)
+
 Use `coakka-client` when the runtime path itself should be visible from a
 terminal or script:
 

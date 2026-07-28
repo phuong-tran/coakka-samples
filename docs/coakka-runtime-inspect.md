@@ -3,6 +3,10 @@
 `coakka-runtime-inspect` is the browser runtime explorer and route-try UI for
 CoAkka Runtime. It is the visual sibling of `coakka-client`.
 
+![CoAkka Runtime Inspect browser walkthrough](assets/coakka-runtime-inspect.gif)
+
+Full recording: [coakka-runtime-inspect.mp4](assets/coakka-runtime-inspect.mp4)
+
 Use inspect when a user needs to see runtime facts in a browser:
 
 - runtime identity
