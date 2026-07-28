@@ -24,6 +24,20 @@ Public repository map:
 | --- | --- | --- |
 | `coakka-samples` | Runnable examples and code you can inspect first. | https://github.com/phuong-tran/coakka-samples |
 | `coakka-publish` | Released packages, native archives, manifests, checksums, compatibility matrix, and release notes. | https://github.com/phuong-tran/coakka-publish |
+| `coakka-runtime-go` | Go module for target routing, request/reply, deadletters, and diagnostics. | https://github.com/phuong-tran/coakka-runtime-go |
+| `coakka-logger-go` | Go module for bounded native-backed logging and pressure counters. | https://github.com/phuong-tran/coakka-logger-go |
+| `coakka-runtime-swift` | SwiftPM runtime package for macOS ARM64. | https://github.com/phuong-tran/coakka-runtime-swift |
+| `coakka-logger-swift` | SwiftPM logger package for macOS ARM64. | https://github.com/phuong-tran/coakka-logger-swift |
+
+Current package links:
+
+| Channel | Runtime | Logger | Sample |
+| --- | --- | --- | --- |
+| NuGet | [`CoAkka.Runtime` 1.3.3](https://www.nuget.org/packages/CoAkka.Runtime/1.3.3) | [`CoAkka.Logger` 1.2.2](https://www.nuget.org/packages/CoAkka.Logger/1.2.2) | `bash run.sh runtime csharp basic` |
+| npm | [`coakka-v2-connector-node` 1.3.9](https://www.npmjs.com/package/coakka-v2-connector-node/v/1.3.9) | [`coakka-logger-node` 1.2.6](https://www.npmjs.com/package/coakka-logger-node/v/1.2.6) | `bash run.sh runtime node basic` |
+| PyPI | [`coakka-v2-connector` 1.3.4](https://pypi.org/project/coakka-v2-connector/1.3.4/) | [`coakka-logger` 1.2.2](https://pypi.org/project/coakka-logger/1.2.2/) | `bash run.sh runtime python basic` |
+| Go modules | [`coakka-runtime-go` v1.3.10](https://pkg.go.dev/github.com/phuong-tran/coakka-runtime-go@v1.3.10) | [`coakka-logger-go` v1.2.5](https://pkg.go.dev/github.com/phuong-tran/coakka-logger-go@v1.2.5) | `bash run.sh runtime go basic` |
+| SwiftPM | [`coakka-runtime-swift` v1.3.2](https://github.com/phuong-tran/coakka-runtime-swift/releases/tag/v1.3.2) | [`coakka-logger-swift` v1.2.1](https://github.com/phuong-tran/coakka-logger-swift/releases/tag/v1.2.1) | `bash run.sh runtime swift basic` |
 
 It gives application hosts a shared runtime vocabulary: target, route snapshot,
 typed payload, reply, deadletter, and delivery diagnostics.
