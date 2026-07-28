@@ -28,7 +28,7 @@ expected output details.
 | Go | public | `bash run.sh runtime go basic` | Includes basic and deadletter samples. |
 | C# | public | `bash run.sh runtime csharp basic` | Uses the public .NET package. |
 | Rust | public | `bash run.sh runtime rust basic` | Uses the public Rust package shape. |
-| Swift | prepared | pending | SwiftPM source package is prepared; public repository, tag, and sample runner are pending. |
+| Swift | public | `bash run.sh runtime swift basic` | Uses the public SwiftPM tag for macOS ARM64. |
 | Mojo | source sample | `bash run.sh runtime mojo basic` | Source connector package over the public native runtime. |
 | Zig | source sample | `bash run.sh runtime zig basic` | Source connector package over the public native runtime. |
 | Native C/C++ | public | `bash run.sh runtime native basic` | Uses the public C ABI archive. |
@@ -46,7 +46,7 @@ expected output details.
 | Go | public | `bash run.sh logger go basic` | Includes basic and pressure samples. |
 | C# | public | `bash run.sh logger csharp basic` | Uses the public .NET logger package. |
 | Rust | public | `bash run.sh logger rust basic` | Uses the public Rust logger package shape. |
-| Swift | prepared | pending | SwiftPM source package is prepared; public repository, tag, and sample runner are pending. |
+| Swift | public | `bash run.sh logger swift basic` | Uses the public SwiftPM tag for macOS ARM64. |
 | Mojo | source sample | `bash run.sh logger mojo basic` | Source connector package over the public logger native package. |
 | Zig | source sample | `bash run.sh logger zig basic` | Source connector package over the public logger native package. |
 | Native C/C++ | public | `bash run.sh logger native basic` | Uses the public native logger archive. |
@@ -87,11 +87,13 @@ The npm package-manager lane is current for Node.js, Bun, and Electron
 runtime/logger packages, so those JavaScript samples install registry
 coordinates. The Go module lane is also current for runtime/logger samples:
 `github.com/phuong-tran/coakka-runtime-go@v1.3.10` and
-`github.com/phuong-tran/coakka-logger-go@v1.2.5`. crates.io and apt/deb remain
-planned in `coakka-publish`. SwiftPM runtime/logger packages are source
-prepared but not current public sample lanes yet; samples should not present
-Swift or other pending package-manager lanes as current until the matching
-package-manager artifact and verification path exists.
+`github.com/phuong-tran/coakka-logger-go@v1.2.5`. SwiftPM is current for
+macOS ARM64 runtime/logger samples:
+`github.com/phuong-tran/coakka-runtime-swift@1.3.2` and
+`github.com/phuong-tran/coakka-logger-swift@1.2.1`. crates.io and apt/deb
+remain planned in `coakka-publish`; samples should not present those lanes as
+current until the matching package-manager artifact and verification path
+exists.
 
 ## Boundary Rule
 

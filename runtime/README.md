@@ -19,9 +19,9 @@ use the later `1.3.1+0da8c2d9-8ff6f32` generation. Electron uses
 [`../runtime-client`](../runtime-client/README.md) and is published as
 `1.3.1+0da8c2d9`.
 
-Swift runtime source packaging is prepared for SwiftPM with the native runtime
-generation `1.3.2+caff6d6d`. Runnable Swift samples are not listed here until
-the public SwiftPM repository, tag, and sample resolution path are promoted.
+Swift runtime is published as a SwiftPM package for macOS ARM64 at
+`github.com/phuong-tran/coakka-runtime-swift@1.3.2` with native runtime
+generation `1.3.2+caff6d6d`.
 
 The runtime lane is not introduced as a generic framework. It starts from
 the connector-boundary problem:
@@ -388,7 +388,7 @@ Current samples:
 | Go | `go/basic`, `go/deadletter` | public Go module | echo and route-miss deadletter |
 | C# | `csharp/basic` | public NuGet package | echo and route-miss deadletter |
 | Rust | `rust/basic` | public Rust archive package | echo and route-miss deadletter |
-| Swift | pending | SwiftPM source package prepared | public repository, tag, and sample runner pending |
+| Swift | `swift/basic` | public SwiftPM package | echo request/reply |
 | Zig | `zig/basic` | public source package over native C ABI archive | lifecycle/control, raw request/reply, and route-miss deadletter smoke |
 | Mojo | `mojo/basic` | public source package with sample-local shim over native C ABI archive | lifecycle/control, raw request/reply, and route-miss deadletter smoke |
 | Native C/C++ | `native/basic`, `native/pressure` | native C ABI archive | route snapshot, route-miss deadletter, and bounded pressure counters |

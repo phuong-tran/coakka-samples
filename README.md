@@ -36,10 +36,7 @@ This repository shows that model through runnable samples for CoAkka Runtime
 connectors, the CoAkka Runtime CLI client, framework adapters, native
 integrations, and coakka-logger packages built from the public CoAkka artifact
 surface. Runtime samples currently include JVM, Python, Node.js, Bun, Electron,
-Tauri, Go, C#, Rust, Mojo, Zig, and native C/C++ lanes.
-Swift runtime and logger source lanes are prepared, but this repository will
-only add runnable Swift sample commands after the public SwiftPM repositories
-and tags are promoted.
+Tauri, Go, C#, Rust, Swift, Mojo, Zig, and native C/C++ lanes.
 
 ## Where Downloads Live
 
@@ -929,11 +926,8 @@ The logger samples cover:
 - pressure rejection and dropped counters
 - manual drain behavior
 - native ABI/version/git diagnostics
-- the same logging behavior from JVM, Python, Node.js, Go, C#, Rust, Mojo, Zig,
-  and native C/C++
-
-Swift logger source packaging is prepared for SwiftPM, but public runnable
-samples are pending the SwiftPM repository and tag promotion.
+- the same logging behavior from JVM, Python, Node.js, Go, C#, Rust, Swift,
+  Mojo, Zig, and native C/C++
 
 Use it when the useful property is predictable logging behavior across language
 ports, especially under constrained machines, queue pressure, or incident
@@ -973,10 +967,6 @@ Check what your machine can run without launching a sample:
 ```sh
 bash run.sh doctor
 ```
-
-Swift runtime and logger sample commands are intentionally not listed yet. Add
-them here only after the public SwiftPM package repositories, tags, and sample
-resolution path are verified.
 
 List the available samples:
 
@@ -1238,11 +1228,10 @@ Android and PHP are intentionally not in the current sample matrix yet.
 Bun and Electron now have public runtime package samples, and Tauri has a
 public source connector sample lane. Mojo and Zig have logger basic samples
 plus public source-package runtime lifecycle, raw request/reply, and
-route-miss deadletter samples. Swift runtime and logger source lanes are
-prepared for SwiftPM, with public sample commands pending public repository and
-tag promotion. Package-manager lanes for source-package connectors remain
-planned; they should grow through the same connector boundary before any
-framework or scenario sample claims.
+route-miss deadletter samples. Swift now has public SwiftPM runtime and logger
+basic samples for macOS ARM64. Package-manager lanes for source-package
+connectors remain planned; they should grow through the same connector boundary
+before any framework or scenario sample claims.
 
 Android is a likely future connector target, but it is a different kind of
 runtime host. The useful Android shape is not "Spring Boot on a phone"; it is a

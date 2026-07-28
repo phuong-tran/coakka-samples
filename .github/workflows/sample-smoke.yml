@@ -61,6 +61,8 @@ jobs:
           bash -n logger/csharp/pressure/run.sh
           bash -n logger/rust/basic/run.sh
           bash -n logger/rust/pressure/run.sh
+          bash -n logger/swift/basic/run.sh
+          bash -n runtime/swift/basic/run.sh
 
       - name: Check script syntax
         run: |

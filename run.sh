@@ -59,6 +59,7 @@ Logger languages:
   go
   csharp
   rust
+  swift
   zig
   mojo
   native
@@ -73,6 +74,7 @@ Runtime languages:
   go
   csharp
   rust
+  swift
   zig
   mojo
   native
