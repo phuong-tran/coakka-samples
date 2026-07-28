@@ -13,7 +13,24 @@ specific product name is available.
 | `coakka-runtime-core` | The native runtime engine and C ABI surface. | Consume only through published artifacts; do not place sink, dashboard, or business schema semantics here. |
 | `coakka-runtime-connector` | Host-language connector packages that bind app-host code to the runtime core. | Show language/framework integration and app-owned handlers. |
 | `coakka-runtime-client` | The CLI runtime client used to drive and diagnose runtime paths. | Show local/native CLI workflows, Docker verification smokes, and scripted request/reply verification. |
+| `coakka-runtime-inspect` | The browser-visible runtime inspection surface. | Show runtime diagnostics, route state, and operator-oriented visibility without making it the runtime owner. |
 | `coakka-logger` | The bounded logger product surface. | Show logger behavior separately from runtime routing unless a sample intentionally combines both. |
+
+## Public Repository Names
+
+| Repository | Public role |
+| --- | --- |
+| `coakka-samples` | Runnable public samples, scenarios, screenshots, videos, and sample commands. |
+| `coakka-publish` | Public artifact mirror, release notes, compatibility matrix, package-manager status, checksums, and tool downloads. |
+| `coakka-runtime-go` | Go module for CoAkka Runtime. |
+| `coakka-logger-go` | Go module for CoAkka Logger. |
+| `coakka-runtime-swift` | SwiftPM package for CoAkka Runtime on macOS ARM64. |
+| `coakka-logger-swift` | SwiftPM package for CoAkka Logger on macOS ARM64. |
+
+Package repos should keep root READMEs short and link deeper concept docs from
+`docs/`. Shared wording for those package docs is controlled by
+`coakkaCoreNativeDev/public-docs/package-repos/` before it is copied to public
+package repositories.
 
 ## Repository Path Names
 
@@ -58,6 +75,7 @@ by CoAkka Runtime.
 - Use `coakka-runtime-core` for native engine or C ABI packaging.
 - Use `coakka-runtime-connector` for language and framework connectors.
 - Use `coakka-runtime-client` for CLI-driven runtime workflows.
+- Use `coakka-runtime-inspect` for browser-visible runtime inspection workflows.
 - Use `coakka-logger` for logger samples and logger packages.
 - Avoid calling every package simply `CoAkka`; that hides which boundary owns
   behavior.
