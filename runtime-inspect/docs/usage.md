@@ -40,18 +40,11 @@ The image runs `version`, `doctor`, `help serve`, and a
 
 ## Local Native Smoke
 
-Build the inspect binary in the sibling core repository:
+Point the sample at a local inspect binary, then run:
 
 ```sh
-cd ../coakkaCoreNativeDev
-cmake --build build-v2 --target coakka_v2_coakka_runtime_inspect
-cd ../coakka-samples
-```
-
-Then run:
-
-```sh
-bash run.sh runtime-inspect local-smoke
+COAKKA_RUNTIME_INSPECT_BIN=/path/to/coakka-runtime-inspect \
+  bash run.sh runtime-inspect local-smoke
 ```
 
 The smoke runs:
@@ -69,7 +62,8 @@ runtime-owned route catalog includes `inspect.echo`.
 Start inspect from the local native binary:
 
 ```sh
-bash run.sh runtime-inspect serve
+COAKKA_RUNTIME_INSPECT_BIN=/path/to/coakka-runtime-inspect \
+  bash run.sh runtime-inspect serve
 ```
 
 The default UI address is:

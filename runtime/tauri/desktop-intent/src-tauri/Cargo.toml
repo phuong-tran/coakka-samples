@@ -16,8 +16,9 @@ path = "src/main.rs"
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-coakka-runtime-rs = { path = "../../../../../coakkaJVMConnector/rust" }
-coakka-tauri-intents = { path = "../../../../../coakkaJVMConnector/tauri-intents" }
+# Direct local builds must point these paths at an unpacked public Tauri source artifact.
+coakka-runtime-rs = { path = ".coakka-public/coakka-runtime-rs" }
+coakka-tauri-intents = { path = ".coakka-public/coakka-tauri-intents" }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 tauri = { version = "2", features = [] }

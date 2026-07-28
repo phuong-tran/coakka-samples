@@ -58,13 +58,7 @@ bash run.sh runtime-inspect docker-serve
 runs command smoke inside the container. `docker-serve` exposes the browser UI
 on `http://127.0.0.1:18080` by default.
 
-For local/native smoke, the sample expects:
-
-```text
-../coakkaCoreNativeDev/build-v2/coakka-runtime-inspect
-```
-
-Override it with:
+For local/native smoke, point the sample at a local inspect binary:
 
 ```sh
 COAKKA_RUNTIME_INSPECT_BIN=/path/to/coakka-runtime-inspect \

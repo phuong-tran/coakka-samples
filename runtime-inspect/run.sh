@@ -11,8 +11,14 @@ COAKKA_RUNTIME_INSPECT_VERSION="1.3.2"
 COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE_DEFAULT="coakka-runtime-inspect-sample:1.3.2-local"
 COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE_DEFAULT="docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.2-caff6d6d-remote"
 
-core_root="${COAKKA_CORE_ROOT:-${repo_root}/../coakkaCoreNativeDev}"
-inspect_bin="${COAKKA_RUNTIME_INSPECT_BIN:-${core_root}/build-v2/coakka-runtime-inspect}"
+core_root="${COAKKA_CORE_ROOT:-}"
+if [[ -n "${COAKKA_RUNTIME_INSPECT_BIN:-}" ]]; then
+  inspect_bin="${COAKKA_RUNTIME_INSPECT_BIN}"
+elif [[ -n "${core_root}" ]]; then
+  inspect_bin="${core_root}/build-v2/coakka-runtime-inspect"
+else
+  inspect_bin=""
+fi
 docker_context_root="${COAKKA_RUNTIME_INSPECT_DOCKER_CONTEXT:-${repo_root}/build/runtime-inspect-docker/context}"
 tmp_dir=""
 
@@ -43,7 +49,6 @@ Usage:
 Environment:
   COAKKA_PUBLISH_ROOT       local coakka-publish checkout
   COAKKA_PUBLISH_RAW_BASE   raw public fallback URL
-  COAKKA_CORE_ROOT=/path/to/coakkaCoreNativeDev
   COAKKA_RUNTIME_INSPECT_BIN=/path/to/coakka-runtime-inspect
   COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE=coakka-runtime-inspect-sample:1.3.2-local
   COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE=docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.2-caff6d6d-remote
@@ -54,8 +59,8 @@ Notes:
   published inspect archive checksum through the public artifact manifest.
   published-smoke extracts the published platform archive and runs command
   plus snapshot smoke from that prefix.
-  local-smoke requires a native coakka-runtime-inspect binary from the sibling
-  core repository or COAKKA_RUNTIME_INSPECT_BIN.
+  local-smoke requires COAKKA_RUNTIME_INSPECT_BIN, or COAKKA_CORE_ROOT when
+  running beside a local source checkout.
   serve starts the browser UI from that local binary.
   docker-smoke builds a local image from the published Linux archive and runs
   command smoke inside the container.
@@ -198,7 +203,7 @@ run_check() {
     echo "local_smoke_hint=bash run.sh runtime-inspect local-smoke"
   else
     echo "local_binary=missing"
-    echo "build_hint=cmake --build ${core_root}/build-v2 --target coakka_v2_coakka_runtime_inspect"
+    echo "build_hint=set COAKKA_RUNTIME_INSPECT_BIN to a local coakka-runtime-inspect binary"
   fi
 }
 
@@ -287,13 +292,13 @@ run_published_smoke() {
 }
 
 run_local_smoke() {
-  coakka_require_executable_file "${inspect_bin}" "Build coakkaCoreNativeDev v2 first, or set COAKKA_RUNTIME_INSPECT_BIN."
+  coakka_require_executable_file "${inspect_bin}" "Set COAKKA_RUNTIME_INSPECT_BIN to a local coakka-runtime-inspect binary."
   smoke_inspect_binary "${inspect_bin}"
   echo "coakka-runtime-inspect local smoke ok"
 }
 
 run_serve() {
-  coakka_require_executable_file "${inspect_bin}" "Build coakkaCoreNativeDev v2 first, or set COAKKA_RUNTIME_INSPECT_BIN."
+  coakka_require_executable_file "${inspect_bin}" "Set COAKKA_RUNTIME_INSPECT_BIN to a local coakka-runtime-inspect binary."
   exec "${inspect_bin}" serve \
     --host "${COAKKA_RUNTIME_INSPECT_HOST:-127.0.0.1}" \
     --port "${COAKKA_RUNTIME_INSPECT_PORT:-18080}" \
