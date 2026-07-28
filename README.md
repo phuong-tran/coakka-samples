@@ -8,6 +8,8 @@ Changelog: [CHANGELOG.md](CHANGELOG.md)
 New to CoAkka: [docs/new-to-coakka.md](docs/new-to-coakka.md)
 First npm smoke: [docs/first-npm-smoke.md](docs/first-npm-smoke.md)
 Sample lanes: [docs/sample-lanes.md](docs/sample-lanes.md)
+Spring Boot: [docs/coakka-spring-boot.md](docs/coakka-spring-boot.md)
+Quarkus: [docs/coakka-quarkus.md](docs/coakka-quarkus.md)
 
 CoAkka is a native-backed runtime and logger toolkit for application-owned
 work. It helps an app route work by target name, handle request/reply,
@@ -88,6 +90,8 @@ Evidence and repo boundaries:
 [CoAkka Ecosystem Naming](docs/coakka-ecosystem-naming.md),
 [Production Readiness](docs/production-readiness.md),
 [How It Works](docs/how-it-works.md),
+[CoAkka Spring Boot](docs/coakka-spring-boot.md),
+[CoAkka Quarkus](docs/coakka-quarkus.md),
 [CoAkka Runtime Client](docs/coakka-runtime-client.md),
 [CoAkka Runtime Inspect](docs/coakka-runtime-inspect.md),
 [Runtime Glossary](docs/runtime-glossary.md),
@@ -124,6 +128,8 @@ and
 - [Sample Integration Checklist](#sample-integration-checklist)
 - [Runtime Scenarios](#runtime-scenarios)
 - [Framework Adapters](#framework-adapters)
+- [CoAkka Spring Boot](docs/coakka-spring-boot.md)
+- [CoAkka Quarkus](docs/coakka-quarkus.md)
 - [CoAkka Runtime Client](#coakka-runtime-client)
 - [CoAkka Runtime Inspect](#coakka-runtime-inspect)
 - [Logger](#logger)
@@ -811,94 +817,15 @@ Current customer topologies:
 ## Framework Adapters
 
 Spring Boot and Quarkus samples show the same boundary inside familiar
-framework code: keep HTTP at the browser/API edge, and route store work
-as a runtime capability.
+framework code: keep HTTP at the browser/API edge, and route selected store work
+as runtime capabilities instead of inventing private backend HTTP endpoints.
 
-### Before: Fake Backend HTTP
+Read the shared framework onboarding docs:
 
-The browser/API route is real HTTP. The fake part is adding a second private
-backend endpoint only so app-owned store work has something URL-shaped to call:
+- [CoAkka Spring Boot](docs/coakka-spring-boot.md)
+- [CoAkka Quarkus](docs/coakka-quarkus.md)
 
-```kotlin
-@RestController
-@RequestMapping("/backend/customers")
-class CustomerStoreBackendController(private val store: InMemoryCustomerStore) {
-    @PostMapping
-    fun create(@RequestBody request: CustomerDraft): MutationResponse {
-        return store.create(request)
-    }
-}
-```
-
-The browser-facing controller then forwards the same customer command through
-that private HTTP client:
-
-```kotlin
-@RestController
-@RequestMapping("/api/customers")
-class CustomerController(private val storeClient: CustomerStoreRestClient) {
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    fun createCustomer(@RequestBody request: CustomerDraft): MutationResponse {
-        return storeClient.create(request)
-    }
-}
-```
-
-That is a normal shape for a real REST boundary. It becomes fake HTTP when the
-endpoint exists only to wrap capability code owned by the same app or team. The
-sample keeps HTTP at `/api/...` and moves store work onto a typed runtime
-target instead of growing URL config, HTTP parsing, status mapping, timeout
-policy, retries, logs, and test fixtures for another private HTTP surface.
-
-### After: Same-Process Runtime Capability
-
-Spring Boot uses the public starter artifact:
-
-```kotlin
-implementation("coakka.spring:coakka-spring-boot-starter:1.3.2-gcaff6d6d-6d5ea58")
-```
-
-```kotlin
-@Component
-class CustomerCapabilityHandlers(private val store: InMemoryCustomerStore) {
-    @CoAkkaHandler("samples.customer.create")
-    fun create(command: CustomerDraft): MutationResponse {
-        return store.create(command)
-    }
-}
-```
-
-The controller still owns real HTTP ingress, but it asks a runtime capability
-rather than a backend HTTP endpoint:
-
-```kotlin
-@PostMapping("/api/customers")
-@ResponseStatus(HttpStatus.CREATED)
-fun create(@RequestBody request: CustomerDraft): MutationResponse {
-    return coakka.askBlocking(
-        "samples.customer.create",
-        request,
-        MutationResponse::class.java,
-        "create_customer",
-        5_000,
-    )
-}
-```
-
-Quarkus follows the same shape through the public extension artifact:
-
-```kotlin
-implementation("coakka.quarkus:coakka-quarkus-extension:1.3.2-gcaff6d6d-6d5ea58")
-```
-
-```kotlin
-@ApplicationScoped
-@CoAkkaHandler("samples.customer.store")
-class CustomerCapabilityHandler(...) : CoAkkaLocalHandler
-```
-
-Read the concrete walkthroughs here:
+Then inspect the concrete sample paths:
 
 - `runtime/scenarios/customer-crud/spring-boot-starter-local`
 - `runtime/scenarios/customer-crud/quarkus-local`

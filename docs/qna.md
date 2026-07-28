@@ -31,6 +31,7 @@ L7, mesh, and platform boundaries:
 
 Runtime and application patterns:
 
+- [How Should Spring Boot And Quarkus Users Think About CoAkka?](#how-should-spring-boot-and-quarkus-users-think-about-coakka)
 - [Is CoAkka Equivalent To Dapr?](#is-coakka-equivalent-to-dapr)
 - [Is CoAkka The Same Thing As Erlang, Akka, Elixir, Or The Actor Model?](#is-coakka-the-same-thing-as-erlang-akka-elixir-or-the-actor-model)
 - [Is CoAkka Equivalent To CQRS?](#is-coakka-equivalent-to-cqrs)
@@ -59,6 +60,7 @@ Logger and explanation:
 | Direct calls | Use CoAkka only when a runtime boundary is worth making explicit. | The path is small, stable, single-language, and easy to trace directly. |
 | gRPC | CoAkka is not gRPC; it avoids promoting app-owned capabilities into L7 APIs too early. | The boundary is a real service API with generated clients, HTTP/2 semantics, and service ownership. |
 | Spring `@FeignClient` | CoAkka can remove Feign from app-owned runtime handoffs that only became HTTP to gain an address. | The target is a real HTTP service API with independent ownership, URL/discovery policy, and HTTP client semantics. |
+| Spring Boot/Quarkus | Use the framework adapters to keep HTTP at the app edge and route selected app-owned work as runtime targets. | The work is just ordinary in-process code or a real external HTTP service API. |
 | HTTP/API gateway | CoAkka sits behind or beside the app-host edge. | The caller is external, public, or needs product API semantics. |
 | Dapr | CoAkka is narrower: target routing, bounded delivery, replies, deadletters, and diagnostics. | The team wants a broad distributed application runtime with state, pub/sub, bindings, secrets, and workflow. |
 | Akka/Erlang/Elixir | CoAkka shares some messaging vocabulary but is not actor-first. | The team wants actors, supervision trees, actor identity, and actor lifecycle as the application model. |
@@ -95,6 +97,34 @@ The app-host owns request parsing, authentication, authorization, validation,
 CQRS/app policy, and the decision to submit work. CoAkka starts after that
 decision and owns runtime delivery: target routing, route generation, bounded
 admission, timeout, reply, deadletter, health, and diagnostics.
+
+## How Should Spring Boot And Quarkus Users Think About CoAkka?
+
+Treat CoAkka as a runtime capability boundary inside the application host, not
+as a replacement for Spring Boot or Quarkus.
+
+Spring Boot and Quarkus should still own the familiar framework concerns:
+HTTP resources/controllers, dependency injection, configuration, lifecycle,
+validation, security, transactions, and the public response shape. CoAkka starts
+after the app has decided that work should be submitted to a runtime target.
+
+The useful split is:
+
+```text
+Spring Boot or Quarkus edge
+  -> app policy and request mapping
+  -> CoAkka target
+  -> local or peer runtime handler
+  -> reply or deadletter
+```
+
+That lets teams remove fake backend HTTP endpoints from app-owned handoffs
+without giving up the framework that already hosts the application. A handler
+can start as same-process work and later move behind another runtime route while
+the caller keeps the same target vocabulary.
+
+Read [CoAkka Spring Boot](coakka-spring-boot.md) and
+[CoAkka Quarkus](coakka-quarkus.md) for framework-specific onboarding.
 
 ## Does CoAkka Have A Dashboard?
 
