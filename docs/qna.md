@@ -256,6 +256,9 @@ Round-robin is a policy; target-aware routing, bounded admission, pressure,
 and delivery evidence are the contract.
 ```
 
+For endpoint selection, route generation, failover attempts, and cluster-style
+route snapshots, read [Runtime Cluster Routing](runtime-cluster-routing.md).
+
 ## Does CoAkka Have A Dashboard?
 
 Not in the sense of an admin dashboard or observability platform.
