@@ -69,17 +69,14 @@ request/reply matching, deadletters, and stats.
 
 Containerized deployment does not change this model. The image is still a
 normal application image, and operators still provide environment variables,
-config files, service DNS, pod identity, or control-plane route data the way
-they would for any app. The app or connector reads that configuration at
-startup and maps it into `RuntimeStartSpec` plus route snapshots. CoAkka runtime
-does not require a special container image shape and does not fetch Docker or
-Kubernetes metadata by itself.
+config files, service DNS, or pod identity the way they would for any app. The
+app or connector reads that configuration at startup and maps it into
+`RuntimeStartSpec` plus route snapshots.
 
-Kubernetes is a common deployment path, not a runtime dependency. The same
-route contract works with Docker Compose service names, on-prem VM or
-bare-metal hostnames, static LAN addresses, edge gateways, and IoT deployment
-registries as long as the connector can map the environment into endpoint
-`host` and `port`.
+The same route contract works with Kubernetes Service DNS, Docker Compose
+service names, on-prem VM or bare-metal hostnames, static LAN addresses, edge
+gateways, and IoT deployment registries as long as the connector maps the
+environment into endpoint `host` and `port`.
 
 ```mermaid
 flowchart LR
@@ -258,8 +255,7 @@ The sample values are illustrative, not capacity guidance. They are visible
 defaults that make the boundary easy to read. In a common Kubernetes deployment,
 the peer endpoint can be a stable Service DNS name and `generation = 1` can
 remain valid while Kubernetes changes the pod list underneath. Use deployment
-config, platform metadata, service discovery, or a control plane when the
-CoAkka route snapshot itself must change.
+config or platform metadata when the CoAkka route snapshot itself must change.
 
 `separateDeliveredRequestLane` protects the ask/reply path from inbound handler
 work. A runtime host can receive requests for local handlers while it is also

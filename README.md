@@ -106,7 +106,7 @@ checkout is absent.
 | --- | --- |
 | Problem | Internal application work often becomes fake backend HTTP, spreading one contract across URLs, clients, retries, timeout mapping, status mapping, and logs. |
 | What CoAkka is | A runtime boundary for application capabilities: callers ask a typed target, route snapshots decide ownership, and replies/deadletters carry runtime diagnostics. |
-| What it is not | Not a replacement for public HTTP/gRPC edges, auth, service discovery, deployment policy, CQRS, or ordinary direct calls that are already enough. |
+| What it is not | Not a replacement for public HTTP/gRPC edges, auth, deployment policy, CQRS, or ordinary direct calls that are already enough. |
 | Where to download | Public artifacts live in [`coakka-publish`](https://github.com/phuong-tran/coakka-publish); this repo consumes those artifacts through runnable samples. |
 | Benchmark posture | Benchmarks are evidence and regression guardrails, not the main product claim; the harder shift is modeling app-owned work as runtime targets instead of another L7 API. |
 | Run this | `bash run.sh containers node-python` if Docker is available. Use `bash run.sh runtime node basic` as the no-Docker runtime fallback. |
@@ -233,9 +233,9 @@ that target is owned. If delivery fails, the result is a runtime failure or
 deadletter with source, target, route generation, and reason.
 
 CoAkka does not replace HTTP at real edges, gRPC at real service API
-boundaries, CQRS, authorization, ingress, service discovery, or deployment
-policy. It gives application hosts a shared runtime vocabulary for application
-capabilities that should not need fake REST just to gain a boundary.
+boundaries, CQRS, authorization, ingress, or deployment policy. It gives
+application hosts a shared runtime vocabulary for application capabilities that
+should not need fake REST just to gain a boundary.
 
 ## CoAkka Naming
 
@@ -708,7 +708,7 @@ profile has to keep three properties explicit:
 The intended shape is a small runtime core, host-language connectors that feed
 startup config and business handlers, route snapshots that can be re-applied
 with defined semantics when needed, and infrastructure that still owns ingress,
-discovery, and deployment policy. That gives an organization a shared
+service addressing, and deployment policy. That gives an organization a shared
 integration substrate without forcing every service into the same application
 framework.
 
@@ -944,9 +944,9 @@ Watch the runtime-inspect browser walkthrough:
 
 Full recording: [coakka-runtime-inspect.mp4](docs/assets/coakka-runtime-inspect.mp4)
 
-The inspect lane is not a dashboard, schema registry, service discovery
-server, mTLS control plane, or topology authority. Runtime core remains the
-source of truth; inspect reads and renders runtime facts.
+The inspect lane is a runtime explorer, not the owner of fleet topology,
+business schema, or production operations policy. Runtime core remains the
+source of runtime facts; inspect reads and renders those facts.
 
 Current sample status: the macOS ARM64, Linux x86_64, Linux ARM64, Windows
 x86_64, and Windows ARM64 inspect archives are published in `coakka-publish`.
@@ -1168,7 +1168,7 @@ RuntimeEndpointFlags  = endpoint state, such as LOCAL or UNAVAILABLE
 | `source` | Who is sending this request or reply? | Caller or responder identity used for diagnostics, correlation, and reply naming. |
 | `headers` | Which request context should travel with this envelope? | Small string map for host-side context such as tenant, request id, idempotency key, or diagnostics. Business arguments should stay in payload. |
 | `strategy` | If a target has multiple eligible endpoints, how should runtime choose one? | Route selection policy such as single owner, weighted round robin, or rendezvous hash. |
-| `host` / `port` | What endpoint identity should runtime use? | Endpoint address for a process-owned listener or remote runtime handoff; samples may use `127.0.0.1`, but production should read it from env, platform metadata, service discovery, or a control-plane route snapshot. Replicas of the same app role should normally share the same runtime port while host identity comes from service DNS, pod DNS/IP, or the control plane. |
+| `host` / `port` | What endpoint identity should runtime use? | Endpoint address for a process-owned listener or remote runtime handoff; samples may use `127.0.0.1`, but production should read it from env, platform metadata, or deployment config. Replicas of the same app role should normally share the same runtime port while host identity comes from service DNS, pod DNS/IP, or another platform-provided address. |
 | `RuntimeEndpointFlags.LOCAL` | Is the handler in this process? | This process owns the target and should register the handler. |
 | `RuntimeEndpointFlags.UNAVAILABLE` | Should this endpoint stay visible but receive no new work? | Endpoint remains in the snapshot but is excluded from new route selection. |
 | no `LOCAL` flag | Is this a peer endpoint instead of my handler? | The endpoint is a peer/remote endpoint, not a handler owned by this process. |
@@ -1185,11 +1185,11 @@ The [detailed runtime model](docs/runtime-message-and-routing-model.md#delivered
 includes billing-style diagrams for the `true`/`false` cases.
 
 Samples construct route specs directly so the runtime pieces are visible.
-Real integrations should usually generate route specs from config, service
-discovery, or a control plane. CoAkka does not remove the need to know which
-capability a system calls; it centralizes that knowledge in a route snapshot
-with generation, strategy, endpoint flags, diagnostics, and deadletters instead
-of scattering it across clients.
+Real integrations should usually generate route specs from the config and
+platform address source the team already uses. CoAkka does not remove the need
+to know which capability a system calls; it centralizes that knowledge in a
+route snapshot with generation, strategy, endpoint flags, diagnostics, and
+deadletters instead of scattering it across clients.
 
 For example, a route with `target = "samples.runtime.jvm.echo"` and one
 endpoint marked `LOCAL` means:

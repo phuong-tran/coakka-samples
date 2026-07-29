@@ -309,18 +309,18 @@ Kubernetes changes underneath:
 The route generation changes only when the CoAkka route snapshot changes, not
 for every normal Kubernetes pod churn event.
 
-Kubernetes is the common production mental model, not a CoAkka requirement.
-CoAkka only needs route endpoints that the connector can hand to the runtime:
+For Kubernetes, start with the Service DNS endpoint. For other environments,
+start with that environment's normal service address:
 
 ```text
 target -> host:port
 ```
 
-That endpoint can come from Kubernetes Service DNS, Docker Compose service
-names, on-prem VM or bare-metal hostnames, static LAN addresses, an edge
-gateway, or an IoT deployment registry. The same rule remains: start with the
-environment's native service address, then expand endpoints only when CoAkka
-should choose among them itself.
+That address may be Kubernetes Service DNS, a Docker Compose service name, an
+on-prem VM or bare-metal hostname, a static LAN address, an edge gateway, or an
+IoT deployment registry value. The same rule remains: use the platform's
+normal service address first, then expand endpoints only when CoAkka should
+choose among them itself.
 
 Advanced endpoint expansion, weighted policies, and generation changes are
 covered later. Do not start there unless the default Service DNS shape is not
@@ -415,8 +415,7 @@ val billingRoute = RuntimeRouteSpec(
 ```
 
 Do not read this as business code hard-coding `billing-a/b/c`. Read it as
-topology input from Kubernetes EndpointSlice data, DNS, Consul, Helm values,
-static deployment config, or a control-plane feed:
+topology input prepared by deployment config or an advanced topology owner:
 
 ```text
 topology input
@@ -549,8 +548,8 @@ app retry        -> new business attempt, idempotency and user semantics
 ```
 
 If a deployment needs hard atomic cutover across every participant, that is a
-deployment/control-plane policy. CoAkka runtime should make skew visible; it
-should not pretend distributed rollout is globally atomic.
+deployment rollout policy. CoAkka runtime should make skew visible; it should
+not pretend distributed rollout is globally atomic.
 
 For the deeper rules, read
 [Runtime Cluster Routing](runtime-cluster-routing.md).
@@ -654,7 +653,7 @@ That keeps responsibility clear:
 | Nginx / gateway | Public HTTP edge, TLS/mTLS when needed, request limits | Runtime target semantics |
 | App-host | Business admission, auth context, validation | Route selection internals |
 | CoAkka runtime | Envelope delivery, route generation, bounded admission | Public API status vocabulary |
-| Handler | Business capability | Transport retries and peer discovery policy |
+| Handler | Business capability | Transport retries and peer topology policy |
 
 mTLS belongs where the network boundary and identity policy are real. That may
 be ingress, API gateway, sidecar, connector addon, or a true cross-service
@@ -702,8 +701,8 @@ val startSpec = RuntimeStartSpec(
 )
 ```
 
-The runtime does not need to secretly read Kubernetes metadata. The app-host or
-connector maps platform config into `RuntimeStartSpec` and the route snapshot.
+The app-host or connector maps platform config into `RuntimeStartSpec` and the
+route snapshot.
 
 For more deployment detail, read
 [Containerized Runtime Notes](containerized-runtime.md).
@@ -717,7 +716,7 @@ Start by identifying the symptom. Do not tune every knob at once.
 | Short burst causes rejection | Queue depth, burst size, timeout budget | Increase queue only if memory budget allows and burst is bounded | Usually none |
 | Sustained overload | Handler latency and throughput | Add handler/runtime instances or shard the target | Add CPU/pods only if the handler can use them |
 | Slow downstream dependency | Handler timing and downstream calls | Reduce timeout budget, add backpressure, isolate target | Fix database/network/service dependency |
-| Route misses | Target name and active generation | Fix route snapshot or publish newer generation | Fix config/discovery feed |
+| Route misses | Target name and active generation | Fix route snapshot or publish newer generation | Fix platform/config feed |
 | Too many internal HTTP APIs | Ownership boundary | Keep app-owned work behind runtime targets | Avoid adding mesh policy just to govern accidental service APIs |
 | External trust boundary | Public ingress and identity policy | Keep runtime behind app-host admission | Use nginx/API-gateway TLS/mTLS where needed |
 | Unclear failure | Deadletter/log fields | Preserve target, generation, reason, source | Correlate with gateway/app-host traces |

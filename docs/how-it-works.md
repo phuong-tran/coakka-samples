@@ -30,17 +30,15 @@ configuration, builds the runtime start spec, applies route snapshots,
 registers process-owned handlers, maps payloads, and ties framework lifecycle
 to runtime start and shutdown.
 
-The runtime core stays platform-agnostic. It does not read Spring config,
-environment variables, Kubernetes objects, Consul state, service mesh policy,
-or language-framework metadata by itself. It receives explicit API calls from
-the connector and applies the runtime contract.
+The runtime core stays platform-agnostic. The connector receives framework and
+platform configuration, then passes explicit start specs, route snapshots,
+handlers, envelopes, and lifecycle calls into the runtime.
 
 ## Startup Configuration
 
-CoAkka runtime does not fetch platform configuration by itself. The connector
-or framework adapter owns that work: it reads the host environment, validates
-the shape, builds a start spec and route snapshot, then passes those values
-through the runtime API.
+The connector or framework adapter reads the host environment, validates the
+shape, builds a start spec and route snapshot, then passes those values through
+the runtime API.
 
 ```mermaid
 flowchart LR
@@ -57,12 +55,13 @@ flowchart LR
 ```
 
 Configuration sources can be files, process environment, framework config,
-Kubernetes ConfigMaps or Secrets, Service DNS, Consul, another config service,
-or an operator/control plane. Those sources stay outside the runtime contract.
+Kubernetes ConfigMaps or Secrets, Service DNS, Helm values, static deployment
+config, or another config service. The connector maps those sources into the
+runtime contract.
 
 For most container deployments this is startup work, not a continuous hostname
 update loop. A pod or service gets its advertised host from Kubernetes
-metadata, Service DNS, environment, or a control plane when the process starts.
+metadata, Service DNS, or environment when the process starts.
 Replicas of the same app role normally share the same runtime port.
 
 The separation keeps responsibilities testable:
@@ -75,8 +74,8 @@ The separation keeps responsibilities testable:
 ## Route Apply
 
 Route apply is the critical API shape. Startup uses it for the initial route
-snapshot. Hot reload uses the same shape later if an operator or control plane
-needs to change routes without restarting the process.
+snapshot. Hot reload uses the same shape later if an operator needs to change
+routes without restarting the process.
 
 ```text
 applyRoutes(generation, routes) -> applied | stale_generation | invalid_snapshot

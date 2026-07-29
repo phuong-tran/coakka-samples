@@ -58,9 +58,8 @@ RuntimeStartSpec
 | `generation` | Which version of the route table is this? | Start with `1`; keep it stable for a stable Service DNS route, and increment only when the CoAkka route snapshot changes. |
 | `routes` | What targets does this runtime know how to route? | Target-to-endpoint map. Local targets are owned here; peer targets point elsewhere. |
 
-The runtime does not read environment variables, Kubernetes metadata, or
-service-discovery data by itself. The app host or connector maps deployment
-configuration into these fields and passes the start spec to the runtime.
+The app host or connector maps deployment configuration into these fields and
+passes the start spec to the runtime.
 
 ### Reading The Runtime Types
 
@@ -213,31 +212,30 @@ generation = 2
 The system still has to know the same relationship. The difference is that the
 relationship enters one runtime contract. That makes topology easier to
 inspect, diagnose, keep consistent across languages, and reload when an
-operator or control plane actually needs a live route change. Route misses,
-unavailable endpoints, and queue pressure become runtime outcomes with shared
-deadletter and stats vocabulary instead of each client inventing its own
-failure shape.
+operator actually needs a live route change. Route misses, unavailable
+endpoints, and queue pressure become runtime outcomes with shared deadletter
+and stats vocabulary instead of each client inventing its own failure shape.
 
 Samples often construct `RuntimeRouteSpec` directly so the moving parts are
-visible. Real integrations should usually generate route specs from framework
-config, Kubernetes or Consul data, service discovery, Helm values, or a control
-plane.
+visible. Real integrations should usually generate route specs from the
+platform and app configuration the team already uses, such as framework config,
+Kubernetes values, Helm values, or static deployment config.
 
 This should feel like ordinary application configuration in Kubernetes: the app
 reads env, framework config, Helm values, ConfigMaps, Service DNS, or pod
 metadata at startup, and the connector maps those values into
 `RuntimeStartSpec` plus the initial route snapshot.
 
-Kubernetes is common, not required. CoAkka is portable because the runtime route
-contract only needs endpoint data:
+For Kubernetes, start with the Service DNS endpoint. For other environments,
+start with that environment's normal service address:
 
 ```text
 target -> host:port
 ```
 
-That `host:port` can come from Kubernetes Service DNS, Docker Compose service
-names, on-prem VM or bare-metal hostnames, static LAN addresses, an edge
-gateway, or an IoT deployment registry. Use the native service address for the
+That `host:port` may be Kubernetes Service DNS, a Docker Compose service name,
+an on-prem VM or bare-metal hostname, a static LAN address, an edge gateway, or
+an IoT deployment registry value. Use the native service address for the
 environment first; expand endpoints only when CoAkka itself should choose among
 them.
 
@@ -248,10 +246,10 @@ or framework config.
 
 Do not read `127.0.0.1` samples as the production model. In Kubernetes, `host`
 is commonly a Service DNS name, pod DNS name, advertised pod IP, or a value
-produced by a control plane. If one application role has multiple replicas, keep
-the runtime port stable across those replicas. For example, three `billing`
-pods can all advertise port `19301`; the differing part is the host identity or
-the Service DNS indirection.
+provided by deployment config. If one application role has multiple replicas,
+keep the runtime port stable across those replicas. For example, three
+`billing` pods can all advertise port `19301`; the differing part is the host
+identity or the Service DNS indirection.
 
 Two common route shapes are:
 
