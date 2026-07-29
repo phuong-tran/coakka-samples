@@ -32,6 +32,7 @@ L7, mesh, and platform boundaries:
 Runtime and application patterns:
 
 - [How Should Spring Boot And Quarkus Users Think About CoAkka?](#how-should-spring-boot-and-quarkus-users-think-about-coakka)
+- [If Many Services Call Each Other, Will CoAkka Maintain Too Many Sockets?](#if-many-services-call-each-other-will-coakka-maintain-too-many-sockets)
 - [Is CoAkka Equivalent To Dapr?](#is-coakka-equivalent-to-dapr)
 - [Is CoAkka The Same Thing As Erlang, Akka, Elixir, Or The Actor Model?](#is-coakka-the-same-thing-as-erlang-akka-elixir-or-the-actor-model)
 - [Is CoAkka Equivalent To CQRS?](#is-coakka-equivalent-to-cqrs)
@@ -72,6 +73,7 @@ Logger and explanation:
 | Dashboard | `coakka-runtime-inspect` is a runtime explorer, not an admin dashboard or observability platform. | The team needs fleet dashboards, alerting, long-term metrics, tracing, or tenant operations. |
 | curl/Swagger | Use `coakka-client` or inspect route-try for runtime targets. | The boundary is an HTTP API with paths, methods, status codes, and OpenAPI docs. |
 | Observability/OTel | CoAkka exposes runtime delivery facts that app-hosts can correlate. | The question is trace collection, span export, dashboards, sampling, or organization-wide telemetry policy. |
+| Many service calls | CoAkka routes logical envelopes to targets; socket mechanics stay in transport/runtime policy. | The system truly needs a public service API or a service-mesh governed network boundary. |
 | Saga | CoAkka can reduce Saga pressure when the split was premature. | The flow truly crosses independent owners, stores, commits, or long-running compensation semantics. |
 | Istio/service mesh | CoAkka can remove synthetic internal service hops. | The system has real network-service boundaries needing zero-trust mTLS, traffic governance, or cross-cluster policy. |
 | Discovery/mTLS | Keep it above runtime: app-host, connector addon, platform, or mesh. | The network boundary and identity policy are real platform concerns. |
@@ -125,6 +127,63 @@ the caller keeps the same target vocabulary.
 
 Read [CoAkka Spring Boot](coakka-spring-boot.md) and
 [CoAkka Quarkus](coakka-quarkus.md) for framework-specific onboarding.
+
+## If Many Services Call Each Other, Will CoAkka Maintain Too Many Sockets?
+
+This is a good performance question because sockets do have real cost: file
+descriptors, buffers, TLS or session state, wakeups, kernel scheduling, and
+failure handling.
+
+The important distinction is that CoAkka does not make a socket the application
+contract.
+
+Application code talks in terms of:
+
+```text
+caller -> target -> envelope -> reply, timeout, or deadletter
+```
+
+Transport/runtime code owns:
+
+```text
+peer connection -> reuse/pool/multiplex/idle cleanup -> bounded delivery
+```
+
+That means a CoAkka target, capability, or logical call should not be read as
+"one dedicated socket." A transport profile can reuse connections, open them
+only when needed, evict idle connections, cap peer connections, and multiplex
+multiple logical envelopes through the same physical connection when the
+transport supports it.
+
+Routing is also policy, not the socket contract. If several handlers can serve
+the same target, a route policy may use round-robin. It may also choose by
+locality, route generation, health, pressure, affinity, or another application
+runtime policy. Round-robin is useful when handlers are equivalent; it should
+not be the only vocabulary.
+
+If a target is overloaded, the correct response is not to hide the problem by
+opening sockets without limit or retrying invisibly at an infrastructure layer.
+CoAkka should make overload visible as bounded queue pressure, rejection,
+timeout, or deadletter evidence. Then the owner can choose the right fix:
+
+- increase a queue only when the workload is a bounded burst
+- add handler or service instances when throughput is genuinely too low
+- shard a target when ownership can be partitioned
+- apply backpressure or rate limits when callers submit too fast
+- revisit service boundaries if the graph has become accidental full mesh
+
+A queue is a buffer, not a replacement for capacity. If the system needs more
+capacity, add capacity. If the system needs a larger short burst window, tune
+the queue. If the graph is too tangled, fix the ownership boundary.
+
+The short answer:
+
+```text
+CoAkka routes envelopes, not sockets.
+Socket count is a transport/runtime concern.
+Overload should be reported honestly, not hidden by unbounded connections or
+infrastructure retries.
+```
 
 ## Does CoAkka Have A Dashboard?
 
