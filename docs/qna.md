@@ -34,6 +34,7 @@ Runtime and application patterns:
 - [How Should Spring Boot And Quarkus Users Think About CoAkka?](#how-should-spring-boot-and-quarkus-users-think-about-coakka)
 - [If Many Services Call Each Other, Will CoAkka Maintain Too Many Sockets?](#if-many-services-call-each-other-will-coakka-maintain-too-many-sockets)
 - [How Does CoAkka Balance Load Across Handlers Or Service Instances?](#how-does-coakka-balance-load-across-handlers-or-service-instances)
+- [Does A CoAkka Spec Need To List Every Service Instance?](#does-a-coakka-spec-need-to-list-every-service-instance)
 - [Is CoAkka Equivalent To Dapr?](#is-coakka-equivalent-to-dapr)
 - [Is CoAkka The Same Thing As Erlang, Akka, Elixir, Or The Actor Model?](#is-coakka-the-same-thing-as-erlang-akka-elixir-or-the-actor-model)
 - [Is CoAkka Equivalent To CQRS?](#is-coakka-equivalent-to-cqrs)
@@ -76,9 +77,10 @@ Logger and explanation:
 | Observability/OTel | CoAkka exposes runtime delivery facts that app-hosts can correlate. | The question is trace collection, span export, dashboards, sampling, or organization-wide telemetry policy. |
 | Many service calls | CoAkka routes logical envelopes to targets; socket mechanics stay in transport/runtime policy. | The system truly needs a public service API or a service-mesh governed network boundary. |
 | Load balancing | CoAkka can choose among equivalent handlers by target-aware route policy and pressure, not only by connection shape. | The boundary is an HTTP upstream pool, where Nginx/gateway load balancing is already the right tool. |
+| Service instances | App-facing specs declare process identity and capability ownership; route snapshots declare eligible endpoints. | The caller truly owns a fixed peer list and endpoint names are part of the business contract. |
 | Saga | CoAkka can reduce Saga pressure when the split was premature. | The flow truly crosses independent owners, stores, commits, or long-running compensation semantics. |
 | Istio/service mesh | CoAkka can remove synthetic internal service hops. | The system has real network-service boundaries needing zero-trust mTLS, traffic governance, or cross-cluster policy. |
-| Discovery/mTLS | Keep it above runtime: app-host, connector addon, platform, or mesh. | The network boundary and identity policy are real platform concerns. |
+| Discovery/mTLS | Keep it above runtime: ingress/nginx, API gateway, app-host, connector addon, platform, or mesh. | The network boundary and identity policy are real platform concerns. |
 | Logger | CoAkka logger gives bounded, cross-language operational evidence. | A normal framework logger is already honest under pressure and enough for the app. |
 
 ## Runtime Boundary Shape
@@ -176,6 +178,14 @@ failure responses at the edge boundary. CoAkka applies the same idea one layer
 lower, at the runtime target boundary: bounded queues, visible pressure,
 timeouts, rejection, and deadletter evidence.
 
+| Concern | Nginx / gateway boundary | CoAkka runtime boundary |
+| --- | --- | --- |
+| Main unit | HTTP request and upstream | Runtime envelope and target |
+| Capacity shape | Connection/request limits, buffers, upstream timeouts | Bounded queues, admission policy, timeout budget |
+| Load shape | Upstream pool | Eligible handlers or peer runtime endpoints |
+| Overload signal | HTTP failure response or timeout | Rejection, timeout, pressure, or deadletter evidence |
+| What should not leak | Upstream internals into product API semantics | Socket/peer mechanics into application target semantics |
+
 The correct response to overload is not to hide the problem by opening sockets
 without limit or retrying invisibly at an infrastructure layer. CoAkka should
 make overload attributable. Then the owner can choose the right fix:
@@ -211,6 +221,14 @@ CoAkka applies the same kind of discipline at a different boundary. It routes
 runtime envelopes to named targets. If several handlers or service instances
 can serve the same target, the runtime or connector can choose a route policy
 for that target.
+
+| Question | Nginx / gateway answer | CoAkka answer |
+| --- | --- | --- |
+| What is balanced? | HTTP requests | Runtime envelopes |
+| What is selected? | An upstream server | A handler or peer endpoint for a target |
+| What is the stable caller vocabulary? | URL, method, headers, status shape | Target, payload identity, reply/deadletter shape |
+| What can influence selection? | Upstream health, weights, connection/request state | Route generation, pressure, health, locality, affinity, shard key |
+| Where does evidence belong? | Access logs, upstream status, gateway metrics | Route snapshot, handler acceptance, pressure, reply/timeout/deadletter |
 
 The simplest policy can be round-robin. But round-robin is only one policy,
 not the contract. A production-shaped runtime may choose by:
@@ -258,6 +276,65 @@ and delivery evidence are the contract.
 
 For endpoint selection, route generation, failover attempts, and cluster-style
 route snapshots, read [Runtime Cluster Routing](runtime-cluster-routing.md).
+
+## Does A CoAkka Spec Need To List Every Service Instance?
+
+No. An app-facing CoAkka spec should not force the caller to know every service
+replica such as `billing-a`, `billing-b`, or `billing-c`.
+
+The caller should use a stable runtime target:
+
+```text
+billing.charge.create
+billing.invoice.issue
+```
+
+The app or connector spec describes this process and the capabilities it owns
+or can handle. It is about identity, handlers, queue policy, and the runtime
+boundary this process participates in.
+
+The topology belongs somewhere else: route snapshots, deployment config,
+platform discovery, or a control-plane feed. That layer can say:
+
+```text
+target = billing.charge.create
+eligible endpoints = billing-runtime-a, billing-runtime-b, billing-runtime-c
+generation = 42
+strategy = weighted_round_robin
+```
+
+That distinction keeps the boundary clean:
+
+- callers use target names, not replica names
+- handlers register the capabilities they own or can handle
+- route snapshots describe which endpoints are currently eligible
+- deployment or control-plane code owns topology changes
+- transport code owns connection mechanics
+
+In local or static bootstrap mode, a start spec may carry an initial route
+snapshot so the runtime can start without an external control plane. That is
+still topology input, not the application contract. The important rule is that
+business code should not have to name every replica just to call a capability.
+
+For a concrete start-spec shape, read
+[Runtime Integration Guide](runtime-integration-guide.md) and
+[Runtime Message And Routing Model](runtime-message-and-routing-model.md). For
+a deployment-shaped example that maps environment and platform config into
+`RuntimeStartSpec`, read
+[Containerized Runtime Notes](containerized-runtime.md).
+
+If a caller must know `billing-a`, `billing-b`, and `billing-c`, the system has
+slipped back into caller-owned topology. CoAkka avoids that by keeping the
+stable app vocabulary at the target boundary and the mutable deployment
+vocabulary in route snapshots.
+
+The short answer:
+
+```text
+App specs declare process identity and capability ownership.
+Route snapshots declare topology.
+Callers use targets, not replica names.
+```
 
 ## Does CoAkka Have A Dashboard?
 
@@ -1369,6 +1446,13 @@ Service discovery and `mTLS` answer different questions from runtime delivery:
 
 Those are not the same responsibility.
 
+| Boundary | Good fit | Keep out of this layer |
+| --- | --- | --- |
+| Ingress / `nginx` / API gateway | Public edge `TLS/mTLS`, request policy, external trust | Runtime target ownership |
+| App-host | Auth, tenant rules, validation, business admission | Certificate inventory and mesh control |
+| Connector addon / adapter | Optional `TLS/mTLS` for a real transport boundary | Core runtime delivery semantics |
+| `coakka-core-runtime` | Target routing, bounded queues, pressure, reply/deadletter | Discovery server, CA, service mesh policy |
+
 If CoAkka pulled discovery and `mTLS` into the core runtime, it would start
 mixing:
 
@@ -1382,6 +1466,18 @@ story. CoAkka usually carries internal application-owned work, not an
 internet-facing product edge. In many deployments, demanding `mTLS`
 everywhere on that path is more ceremony than value unless the boundary is
 truly cross-team, zero-trust, cross-cluster, or compliance-driven.
+
+The common default should be boring: terminate and enforce external transport
+security at the real edge, such as `nginx`, an API gateway, an ingress
+controller, or the app-host TLS stack. After the app-host has authenticated,
+authorized, validated, and decided to submit runtime work, adding per-service
+`mTLS` to every internal capability handoff often means the system is treating
+app-owned work as a fleet of public network services.
+
+That can be correct in a zero-trust service estate. It is not automatically
+correct for ordinary same-team, same-deployment capability delivery. In those
+cases, per-service `mTLS` may be a patch for a boundary that was promoted to a
+network service too early.
 
 That would make the runtime heavier, blur ownership, and turn a delivery
 engine into partial infrastructure.
@@ -1427,10 +1523,10 @@ partial service mesh.
 Short answer:
 
 ```text
-Use mTLS at ingress, gateways, sidecars, connector addons, or real transport
-boundaries where identity policy is real. Do not put it in coakka-core-runtime
-by default; core runtime should execute the route and delivery contract it was
-given.
+Use TLS/mTLS at ingress, nginx, API gateways, sidecars, connector addons, or
+real transport boundaries where identity policy is real. Do not put it in
+coakka-core-runtime by default; core runtime should execute the route and
+delivery contract it was given.
 ```
 
 ## If A Team Needs Discovery Or mTLS, Where Should That Live?
@@ -1449,8 +1545,8 @@ Examples:
 - Kubernetes, DNS, Consul, or operator data chooses which endpoints should
   appear in a route snapshot
 - app-host or connector code maps that topology into runtime config
-- gateway, host TLS stack, sidecar when truly needed, or connector addon
-  applies `TLS/mTLS` policy at the real network boundary
+- ingress, `nginx`, API gateway, host TLS stack, sidecar when truly needed, or
+  connector addon applies `TLS/mTLS` policy at the real network boundary
 
 That also means a future HTTP/TLS-oriented connector addon is not the same
 thing as moving `mTLS` into `coakka-core-runtime`.
@@ -1480,8 +1576,10 @@ In other words:
 
 ```text
 Use mTLS where the network boundary is real and the policy is real.
-Do not drag sidecars into internal application-owned delivery by default just
-because the system already knows Istio.
+For ordinary internal app-owned delivery, prefer ingress/nginx/API-gateway TLS
+and app-host policy first. Avoid making per-service mTLS and sidecars the
+default for every capability handoff just because the system already knows
+Istio.
 ```
 
 ## Can CoAkka Replace Saga?
