@@ -130,9 +130,9 @@ Read [CoAkka Spring Boot](coakka-spring-boot.md) and
 
 ## If Many Services Call Each Other, Will CoAkka Maintain Too Many Sockets?
 
-This is a good performance question because sockets do have real cost: file
-descriptors, buffers, TLS or session state, wakeups, kernel scheduling, and
-failure handling.
+This is a good performance question because sockets do have real cost:
+connection resources, buffers, session state, wakeups, scheduling, and failure
+handling.
 
 The important distinction is that CoAkka does not make a socket the application
 contract.
