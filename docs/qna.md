@@ -35,6 +35,7 @@ Runtime and application patterns:
 - [If Many Services Call Each Other, Will CoAkka Maintain Too Many Sockets?](#if-many-services-call-each-other-will-coakka-maintain-too-many-sockets)
 - [How Does CoAkka Balance Load Across Handlers Or Service Instances?](#how-does-coakka-balance-load-across-handlers-or-service-instances)
 - [Does A CoAkka Spec Need To List Every Service Instance?](#does-a-coakka-spec-need-to-list-every-service-instance)
+- [What Happens If Runtime Participants See Different Route Generations?](#what-happens-if-runtime-participants-see-different-route-generations)
 - [Is CoAkka Equivalent To Dapr?](#is-coakka-equivalent-to-dapr)
 - [Is CoAkka The Same Thing As Erlang, Akka, Elixir, Or The Actor Model?](#is-coakka-the-same-thing-as-erlang-akka-elixir-or-the-actor-model)
 - [Is CoAkka Equivalent To CQRS?](#is-coakka-equivalent-to-cqrs)
@@ -159,11 +160,10 @@ only when needed, evict idle connections, cap peer connections, and multiplex
 multiple logical envelopes through the same physical connection when the
 transport supports it.
 
-Routing is also policy, not the socket contract. If several handlers can serve
-the same target, a route policy may use round-robin. It may also choose by
-locality, route generation, health, pressure, affinity, or another application
-runtime policy. Round-robin is useful when handlers are equivalent; it should
-not be the only vocabulary.
+Routing is also policy, not the socket contract. In the common Kubernetes
+Service DNS shape, CoAkka may see one endpoint and Kubernetes distributes to
+pods. If CoAkka is given expanded endpoints, advanced route policy can choose
+by pressure, locality, shard key, affinity, or another runtime policy.
 
 Overload is normal in real systems. The goal is not to pretend it will never
 happen, and it is also not to reject or deadletter immediately when the first
@@ -222,24 +222,31 @@ runtime envelopes to named targets. If several handlers or service instances
 can serve the same target, the runtime or connector can choose a route policy
 for that target.
 
+In the common Kubernetes Service DNS shape, CoAkka may see only one route
+endpoint:
+
+```text
+billing -> billing.default.svc.cluster.local:19301
+```
+
+In that case CoAkka is not doing pod-level round-robin, because the route table
+has one endpoint for `billing`. Kubernetes distributes traffic to backing pods
+through its Service, EndpointSlice, kube-proxy, CNI, session-affinity, and
+topology policy. Use expanded endpoints only when CoAkka should see each pod or
+runtime participant directly.
+
 | Question | Nginx / gateway answer | CoAkka answer |
 | --- | --- | --- |
 | What is balanced? | HTTP requests | Runtime envelopes |
 | What is selected? | An upstream server | A handler or peer endpoint for a target |
 | What is the stable caller vocabulary? | URL, method, headers, status shape | Target, payload identity, reply/deadletter shape |
-| What can influence selection? | Upstream health, weights, connection/request state | Route generation, pressure, health, locality, affinity, shard key |
+| What can influence selection? | Upstream health, weights, connection/request state | Service DNS by default; advanced route policy when CoAkka sees multiple endpoints |
 | Where does evidence belong? | Access logs, upstream status, gateway metrics | Route snapshot, handler acceptance, pressure, reply/timeout/deadletter |
 
-The simplest policy can be round-robin. But round-robin is only one policy,
-not the contract. A production-shaped runtime may choose by:
-
-- route snapshot or generation
-- handler health
-- queue pressure
-- locality
-- affinity
-- shard key or tenant key
-- caller or deployment policy
+Round-robin, weighted routing, pressure-aware routing, affinity, and shard-key
+routing are advanced expanded-endpoint concerns. If the route uses one
+Kubernetes Service DNS endpoint, prefer the boring path: CoAkka routes to that
+endpoint and Kubernetes distributes to pods.
 
 The contract is not:
 
@@ -259,19 +266,20 @@ used, whether the handler accepted the work, whether pressure affected the
 decision, and whether the outcome was a reply, timeout, rejection, or
 deadletter.
 
-If a handler is overloaded, CoAkka should not keep sending work blindly just
-because that handler is next in a round-robin list. It should account for
-pressure and policy. If all available handlers are over capacity, the honest
-result is bounded waiting, rejection, timeout, or deadletter evidence,
-depending on the runtime contract.
+If a selected handler is overloaded, CoAkka should not keep sending work
+blindly just because that endpoint is present in the route snapshot. It should
+account for pressure and policy. If all available handlers are over capacity,
+the honest result is bounded waiting, rejection, timeout, or deadletter
+evidence, depending on the runtime contract.
 
 The short answer:
 
 ```text
 Nginx balances HTTP requests at the edge.
-CoAkka balances runtime envelopes at the target boundary.
-Round-robin is a policy; target-aware routing, bounded admission, pressure,
-and delivery evidence are the contract.
+With Service DNS, CoAkka sees one endpoint and Kubernetes distributes to pods.
+With expanded endpoints, CoAkka can balance runtime envelopes at the target boundary.
+Round-robin and weighted routing are advanced policies for expanded endpoints.
+Bounded admission, pressure, and delivery evidence are the contract.
 ```
 
 For endpoint selection, route generation, failover attempts, and cluster-style
@@ -294,7 +302,20 @@ or can handle. It is about identity, handlers, queue policy, and the runtime
 boundary this process participates in.
 
 The topology belongs somewhere else: route snapshots, deployment config,
-platform discovery, or a control-plane feed. That layer can say:
+platform discovery, or a control-plane feed. In the common Kubernetes Service
+DNS shape, that layer can be simple:
+
+```text
+target = billing.charge.create
+endpoint = billing.default.svc.cluster.local:19301
+generation = 1
+```
+
+CoAkka sees one route endpoint. Kubernetes owns how that service maps to the
+current pod IP list.
+
+When CoAkka needs direct endpoint visibility, the same topology layer can
+expand the route snapshot:
 
 ```text
 target = billing.charge.create
@@ -302,6 +323,9 @@ eligible endpoints = billing-runtime-a, billing-runtime-b, billing-runtime-c
 generation = 42
 strategy = weighted_round_robin
 ```
+
+Weighted round-robin only makes sense in the expanded shape, because CoAkka
+must know the candidate endpoints before it can choose among them.
 
 That distinction keeps the boundary clean:
 
@@ -334,7 +358,80 @@ The short answer:
 App specs declare process identity and capability ownership.
 Route snapshots declare topology.
 Callers use targets, not replica names.
+Kubernetes Service DNS can keep generation and endpoint lists simple by default.
 ```
+
+## What Happens If Runtime Participants See Different Route Generations?
+
+This is an advanced routing question, not a normal first-run concern.
+
+Most systems should not hit this often.
+
+For the common Kubernetes shape, a route can stay at `generation = 1` for a
+long time:
+
+```text
+billing -> billing.default.svc.cluster.local:19301
+```
+
+Scaling pods behind that Service DNS name usually changes Kubernetes
+Service/EndpointSlice state, not the CoAkka route snapshot. In that default
+shape, backend teams should not think about route generations every day.
+
+Generation skew matters only when the CoAkka route snapshot itself changes:
+new target, new service endpoint, expanded pod endpoints, endpoint flags,
+strategy change, hot reload, or rollback.
+
+When that happens during rollout, skew should be visible, not surprising.
+
+`generation` is a version on a route snapshot. It protects a runtime process
+from stale route updates and gives diagnostics a concrete route version to
+report. It is not Raft, leader election, or a promise that every process in a
+deployment changes routes at the same instant.
+
+Each process enforces a strict local rule:
+
+| Situation | Expected behavior |
+| --- | --- |
+| incoming generation is older than active | reject stale snapshot |
+| incoming generation is newer but invalid | reject snapshot and keep active routes |
+| incoming generation is newer and valid | atomically replace local route table |
+| rollback is needed | publish a newer valid generation |
+
+Across processes, temporary skew is normal:
+
+```text
+checkout active generation = 43
+billing active generation = 42
+```
+
+The important contract is evidence. Route decisions, timeouts, rejections, and
+deadletters should report the target and generation involved. In-flight work
+keeps the generation used when it was routed; a newer generation affects new
+route decisions, not work already selected under the old route snapshot.
+
+If a caller on generation 43 reaches a peer still on generation 42, the runtime
+should not guess or silently downgrade semantics. The result must be explicit:
+reply, rejection, timeout, or deadletter with route evidence.
+
+If a new service endpoint has never registered a handler for that target, it
+cannot successfully handle the work. That should appear as route/handler
+evidence, not as an ambiguous success or hidden fallback.
+
+If a system requires atomic cutover across all participants, that belongs above
+core runtime: deployment policy, endpoint draining, a single route publisher,
+or a control plane. CoAkka core runtime should make skew diagnosable; it should
+not pretend distributed rollout is globally atomic.
+
+The short answer:
+
+```text
+Generation protects route state from stale updates and makes skew diagnosable.
+It does not make distributed rollout globally atomic.
+```
+
+For the deeper routing rules, read
+[Runtime Cluster Routing](runtime-cluster-routing.md).
 
 ## Does CoAkka Have A Dashboard?
 

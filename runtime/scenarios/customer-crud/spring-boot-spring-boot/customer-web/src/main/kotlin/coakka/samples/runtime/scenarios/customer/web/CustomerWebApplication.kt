@@ -156,6 +156,7 @@ class CustomerWebConnectorConfiguration {
                             RuntimeEndpointSpec(
                                 host = properties.peerHost,
                                 port = properties.peerPort,
+                                // NONE = PEER from this process's view: eligible, but not local.
                                 flags = RuntimeEndpointFlags.NONE,
                             ),
                         ),

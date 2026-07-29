@@ -55,7 +55,7 @@ RuntimeStartSpec
 | `queueCapacity` | How much work can runtime buffer before applying pressure? | Bounded queue size. Start conservative, measure pressure, then tune. |
 | `strictNoDrop` | Should overload be visible instead of silently dropping work? | Prefer `true` while integrating so overload becomes visible. |
 | delivered-request lane | Should runtime keep delivered requests on their own runtime lane? | Enabled by default in current connectors; keep the default for request/reply services so inbound handler work does not delay reply/deadletter matching. |
-| `generation` | Which version of the route table is this? | Monotonic route-table version. Increment when applying a new route snapshot. |
+| `generation` | Which version of the route table is this? | Start with `1`; keep it stable for a stable Service DNS route, and increment only when the CoAkka route snapshot changes. |
 | `routes` | What targets does this runtime know how to route? | Target-to-endpoint map. Local targets are owned here; peer targets point elsewhere. |
 
 The runtime does not read environment variables, Kubernetes metadata, or
@@ -71,7 +71,7 @@ The nested types are route-table vocabulary, not business domain objects.
 | `RuntimeStartSpec` | What does this process declare when joining runtime? | Full startup/config declaration for one runtime process. |
 | `RuntimeRouteSpec` | Which target/capability is routed where? | One route-table row: a target/capability and its endpoint candidates. |
 | `RuntimeEndpointSpec` | Where can that target be handled? | One endpoint with `host`, `port`, and endpoint flags. |
-| `RuntimeEndpointFlags` | What is the endpoint's routing state? | Endpoint state used by route selection, such as `LOCAL` or `UNAVAILABLE`. |
+| `RuntimeEndpointFlags` | What is the endpoint's routing state? | Endpoint state used by route selection, such as `NONE`, `LOCAL`, or `UNAVAILABLE`. |
 
 Example shape:
 
@@ -79,7 +79,7 @@ Example shape:
 RuntimeStartSpec
   systemName = customer-store
   nodeId = customer-store-pod-7
-  generation = 12
+  generation = 1
   routes:
     RuntimeRouteSpec
       target = samples.customer.store
@@ -94,7 +94,7 @@ Read that as:
 
 ```text
 This process is one customer-store runtime participant. Its current route-table
-generation is 12. It owns the samples.customer.store target locally, so this
+generation is 1. It owns the samples.customer.store target locally, so this
 process must register the handler for that target.
 ```
 
@@ -157,8 +157,15 @@ lane. Treat `true` as the default; use `false` only for very small one-way
 hosts after measurement.
 
 `generation` is the route snapshot version. The first snapshot commonly starts
-at `1` and is usually enough for ordinary container startup. A route reload, if
-used, should publish a newer generation. The runtime rejects stale generations
+at `1`. For ordinary Kubernetes deployments that route to a stable Service DNS
+endpoint such as `billing.default.svc.cluster.local:19301`, `generation = 1`
+can remain valid for a long time. Pod scale-up, scale-down, and rescheduling
+usually change Kubernetes Service/EndpointSlice state underneath without
+changing the CoAkka route snapshot.
+
+Publish a newer generation only when the CoAkka route snapshot changes: a new
+target, a different service endpoint, expanded pod endpoints, endpoint flags,
+route strategy, hot reload, or rollback. The runtime rejects stale generations
 so an old config update cannot silently roll back the active route table.
 
 `routes` is the target-to-endpoint map. Each route names a stable capability
@@ -181,13 +188,26 @@ the client owns timeout mapping, retry wrapper, status handling, logging,
 and correlation conventions
 ```
 
-With CoAkka, the connector maps that topology into runtime route state:
+With CoAkka, the connector maps that relationship into runtime route state.
+Start with the familiar Kubernetes Service DNS shape when it fits:
 
 ```text
 target = samples.customer.store
-endpoints = customer-store runtime endpoint(s)
-strategy = SINGLE_OWNER | WEIGHTED_ROUND_ROBIN | RENDEZVOUS_HASH
-generation = 12
+endpoint = customer-store.default.svc.cluster.local:19301
+generation = 1
+```
+
+In that shape, CoAkka sees one peer endpoint and Kubernetes distributes to the
+pods behind the Service. The backend caller still asks for
+`samples.customer.store`; it does not list pod names.
+
+Only expand the route when CoAkka itself should choose among endpoints:
+
+```text
+target = samples.customer.store
+endpoints = customer-store-a, customer-store-b, customer-store-c
+strategy = WEIGHTED_ROUND_ROBIN or RENDEZVOUS_HASH
+generation = 2
 ```
 
 The system still has to know the same relationship. The difference is that the
@@ -207,6 +227,19 @@ This should feel like ordinary application configuration in Kubernetes: the app
 reads env, framework config, Helm values, ConfigMaps, Service DNS, or pod
 metadata at startup, and the connector maps those values into
 `RuntimeStartSpec` plus the initial route snapshot.
+
+Kubernetes is common, not required. CoAkka is portable because the runtime route
+contract only needs endpoint data:
+
+```text
+target -> host:port
+```
+
+That `host:port` can come from Kubernetes Service DNS, Docker Compose service
+names, on-prem VM or bare-metal hostnames, static LAN addresses, an edge
+gateway, or an IoT deployment registry. Use the native service address for the
+environment first; expand endpoints only when CoAkka itself should choose among
+them.
 
 `host` and `port` identify the runtime endpoint. For a local sample this may be
 `127.0.0.1` plus a sample port. In a real deployment it usually comes from the
@@ -243,6 +276,11 @@ For container and Kubernetes examples, see
 `RuntimeEndpointFlags.LOCAL` means the endpoint belongs to this process. Only
 targets with a process-owned endpoint should have a handler registered in this
 process.
+
+`RuntimeEndpointFlags.NONE` means no special endpoint flag is set. In
+caller-side route snapshots, read `NONE` as `PEER`: a normal eligible endpoint
+from this process's view. It can receive work, but this process does not own
+that handler locally. In a caller process, peer endpoints normally use `NONE`.
 
 `RuntimeEndpointFlags.UNAVAILABLE` means the endpoint remains visible in the
 snapshot but should be excluded from new request route selection. Use it for
@@ -355,6 +393,9 @@ according to business rules.
 
 ## Route Resolution Strategy
 
+This is an advanced section. Most Kubernetes deployments should start with a
+stable Service DNS endpoint and let Kubernetes distribute to pods.
+
 Route strategy answers this question:
 
 ```text
@@ -363,7 +404,10 @@ choose?
 ```
 
 This is runtime routing policy. It is not business priority, authorization,
-or retry policy.
+or retry policy. If the route has one Kubernetes Service DNS endpoint, start
+there and let Kubernetes distribute to pods. Strategy selection becomes useful
+when CoAkka sees multiple endpoints or when one target has explicit ownership
+rules.
 
 | Strategy | Question it answers | Typical use |
 | --- | --- | --- |
@@ -413,6 +457,9 @@ which is useful when ownership or cache locality matters.
 Endpoint flags and strategy work together:
 
 - `LOCAL` says the endpoint belongs to this process.
+- `NONE` says no special endpoint state is set. In caller-side route
+  snapshots, read it as `PEER`: a normal eligible endpoint from this process's
+  view.
 - `UNAVAILABLE` keeps an endpoint visible but excludes it from new route
   selection.
 - `strategy` chooses among endpoints that remain eligible.

@@ -179,6 +179,7 @@ private class CustomerDesktopRuntime private constructor(
 	                                RuntimeEndpointSpec(
 	                                    host = STORE_HOST,
 	                                    port = FRONTEND_PORT,
+	                                    // NONE = PEER from this process's view: eligible, but not local.
 	                                    flags = RuntimeEndpointFlags.NONE,
 	                                ),
 	                            ),
@@ -210,6 +211,7 @@ private class CustomerDesktopRuntime private constructor(
 	                                RuntimeEndpointSpec(
 	                                    host = STORE_HOST,
 	                                    port = STORE_PORT,
+	                                    // NONE = PEER from this process's view: eligible, but not local.
 	                                    flags = RuntimeEndpointFlags.NONE,
 	                                ),
 	                            ),

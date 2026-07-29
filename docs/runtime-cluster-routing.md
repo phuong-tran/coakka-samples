@@ -1,16 +1,27 @@
 # Runtime Cluster Routing
 
-This note explains the cluster-style routing model behind the samples. It is a
-runtime delivery feature, not an application-host feature. The call-site asks
-for a target; the runtime decides which eligible endpoint handles that target
-inside the active route generation.
+This note explains the cluster-style routing model behind the advanced routing
+samples. It is a runtime delivery feature, not an application-host feature.
+The call-site asks for a target; the runtime decides which eligible endpoint
+handles that target inside the active route generation.
+
+If a deployment uses the familiar Kubernetes Service DNS shape:
+
+```text
+billing -> billing.default.svc.cluster.local:19301
+```
+
+CoAkka sees one endpoint, Kubernetes distributes to backing pods, and
+`generation = 1` may be enough for a long time. Start there unless CoAkka
+needs to see individual runtime endpoints.
 
 ## What Cluster Means Here
 
 In CoAkka, a cluster is not a membership system, a service mesh, or a business
 workflow coordinator.
 
-It is a route shape:
+The cluster-style shape starts when CoAkka should see multiple endpoints for
+one target:
 
 ```text
 target = samples.customer.store
@@ -97,9 +108,14 @@ business intent, correlation, active generation, and monotonic deadline budget.
 ## Route Generation Discipline
 
 `generation` is a route-snapshot version, not a distributed consensus term.
-The runtime applies a newer snapshot locally and rejects stale snapshots, but it
-does not elect a leader, merge competing snapshots, or repair split-brain by
-itself.
+For ordinary Kubernetes deployments that route to a stable Service DNS endpoint
+such as `billing.default.svc.cluster.local:19301`, `generation = 1` may be the
+only generation used for a long time. Pod churn below that Service DNS name
+does not necessarily change the CoAkka route snapshot.
+
+When the CoAkka route snapshot does change, the runtime applies a newer
+snapshot locally and rejects stale snapshots, but it does not elect a leader,
+merge competing snapshots, or repair split-brain by itself.
 
 Use these rules when publishing route snapshots:
 
@@ -118,6 +134,113 @@ This keeps the runtime boundary small. The runtime can fail closed on stale or
 incompatible route state and report the active generation in diagnostics; the
 deployment control plane owns the single-writer or quorum rule that decides
 which route snapshot is next.
+
+## Generation Skew During Rollout
+
+Two runtime participants can temporarily observe different route generations
+during rollout:
+
+```text
+checkout active generation = 43
+billing active generation = 42
+```
+
+That is normal distributed configuration skew. `generation` is evidence and
+stale-update protection; it is not a promise that every process in a deployment
+changes routes at the same instant.
+
+The local rule is strict:
+
+| Situation | Runtime behavior |
+| --- | --- |
+| incoming generation is older than active | reject the stale snapshot and keep the active route table |
+| incoming generation is newer but invalid | reject the invalid snapshot and keep the active route table |
+| incoming generation is newer and valid | atomically replace the local route table |
+| rollback is needed | publish another valid snapshot with a higher generation |
+
+The cross-process rule is honest:
+
+| Situation | Required behavior |
+| --- | --- |
+| Process A routes with generation 43 while process B still has generation 42 | Allow temporary skew, but report selected/active generations in evidence. |
+| A request is already in flight under generation 42 | Keep generation 42 evidence for that request; a newer snapshot affects new route decisions. |
+| A peer cannot accept the selected target or route state | Return an explicit reply, rejection, timeout, or deadletter; do not silently invent a route. |
+| The deployment requires atomic route cutover across all participants | Solve that above runtime with deployment/control-plane policy. |
+
+This distinction prevents two opposite mistakes:
+
+- pretending route rollout is globally atomic when there is no control-plane
+  consensus contract
+- treating temporary generation skew as invisible noise with no diagnostic
+  evidence
+
+If a caller on generation 43 reaches a peer still on generation 42, the runtime
+contract is not to guess what the operator meant. The contract is to produce an
+attributable outcome:
+
+```text
+reply
+rejection
+timeout
+deadletter with target, endpoint, reason, and generation evidence
+```
+
+Example with one target:
+
+```text
+generation 42
+  route billing -> billing.default.svc.cluster.local:19301
+
+generation 43
+  route billing -> billing-v2.default.svc.cluster.local:19301
+```
+
+If checkout has applied generation 43 but `billing-v2` is not ready, checkout
+must not silently reinterpret the request as generation 42. It can only use the
+active generation 43 route state it has accepted:
+
+```text
+checkout selects billing-v2 under generation 43
+  -> reply if billing-v2 accepts and handles billing
+  -> rejection if the selected endpoint refuses work
+  -> timeout if the caller budget expires
+  -> deadletter if target, endpoint, or route state cannot satisfy delivery
+```
+
+If `billing-v2` is a brand-new service that has never registered a handler for
+`billing`, it should not be able to complete the request as `billing`. The
+failure is a route/handler mismatch, not a special distributed-systems mystery.
+Diagnostics should show the selected endpoint, target, generation, and failure
+reason.
+
+If the operator wants the old endpoint to remain a fallback during rollout,
+that must be represented in generation 43 itself:
+
+```text
+generation 43
+  route billing -> [billing-v2, billing]
+  strategy: weighted or failover policy chosen by the route publisher
+```
+
+If the operator wants to roll back after generation 43 has been accepted, the
+rollback is another explicit newer snapshot:
+
+```text
+generation 44
+  route billing -> billing.default.svc.cluster.local:19301
+```
+
+For hard cutovers, the platform should drain old endpoints, publish the new
+snapshot, wait for convergence, or use a single-writer/control-plane rule
+before sending traffic that requires the new topology everywhere. CoAkka core
+runtime should not become the consensus system just to hide rollout discipline.
+
+The short version:
+
+```text
+Generation protects route state from stale updates and makes skew diagnosable.
+It does not pretend distributed rollout is globally atomic.
+```
 
 ## Retry Versus Failover
 
@@ -193,6 +316,10 @@ again.
 
 The app host or connector maps platform config into a route snapshot. The shape
 below is illustrative and mirrors the route vocabulary used by the samples:
+
+In these caller-side snapshots, `flags: [NONE]` should be read as `PEER`: the
+endpoint is eligible, but the current process does not own that handler
+locally. `NONE` remains the zero flag in the API.
 
 ```yaml
 generation: 42

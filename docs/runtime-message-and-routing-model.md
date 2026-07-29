@@ -75,6 +75,12 @@ startup and maps it into `RuntimeStartSpec` plus route snapshots. CoAkka runtime
 does not require a special container image shape and does not fetch Docker or
 Kubernetes metadata by itself.
 
+Kubernetes is a common deployment path, not a runtime dependency. The same
+route contract works with Docker Compose service names, on-prem VM or
+bare-metal hostnames, static LAN addresses, edge gateways, and IoT deployment
+registries as long as the connector can map the environment into endpoint
+`host` and `port`.
+
 ```mermaid
 flowchart LR
     platform[Docker / Kubernetes<br/>env, config, DNS, pod metadata]
@@ -230,7 +236,7 @@ and what route table should it start with?"
 | `queueCapacity` | How much runtime work can this process buffer? | Start bounded and conservative; tune from pressure counters. |
 | `strictNoDrop` | Should overload become visible? | Prefer `true` while integrating so rejection is observable. |
 | `separateDeliveredRequestLane` | Should runtime keep delivered requests on their own runtime lane? | Prefer `true` for request/reply hosts. |
-| `generation` | Which route snapshot version is active at startup? | Start at `1`; increment for newer route snapshots. |
+| `generation` | Which route snapshot version is active at startup? | Start at `1`; keep it stable for a stable Service DNS route, and increment only when the CoAkka route snapshot changes. |
 | `routes` | Which targets can this process route? | Map target names to local or peer endpoints. |
 
 Example shape:
@@ -249,9 +255,11 @@ RuntimeStartSpec
 ```
 
 The sample values are illustrative, not capacity guidance. They are visible
-defaults that make the boundary easy to read. In a real deployment, `nodeId`,
-endpoint host, and route generation should come from deployment config,
-platform metadata, service discovery, or a control plane.
+defaults that make the boundary easy to read. In a common Kubernetes deployment,
+the peer endpoint can be a stable Service DNS name and `generation = 1` can
+remain valid while Kubernetes changes the pod list underneath. Use deployment
+config, platform metadata, service discovery, or a control plane when the
+CoAkka route snapshot itself must change.
 
 `separateDeliveredRequestLane` protects the ask/reply path from inbound handler
 work. A runtime host can receive requests for local handlers while it is also
@@ -368,10 +376,22 @@ A route snapshot is a versioned table. It lets app code ask for a stable target
 without hard-coding whether the handler is same-process, same-host, or in a
 peer runtime.
 
+The simplest Kubernetes peer route can be one Service DNS endpoint:
+
+```text
+generation = 1
+target = samples.customer.store
+endpoint = customer-store.default.svc.cluster.local:19301
+```
+
+In that shape, CoAkka sees one endpoint and Kubernetes distributes to backing
+pods. Expanded endpoint lists and route strategies are optional advanced
+shapes, used when CoAkka should choose among endpoints itself.
+
 ```mermaid
 flowchart LR
     ask[Envelope target<br/>samples.customer.store]
-    snapshot[Active route snapshot<br/>generation 12]
+    snapshot[Active route snapshot<br/>generation 1]
     local[LOCAL endpoint<br/>this process owns handler]
     peer[Peer endpoint<br/>another runtime host]
     unavailable[UNAVAILABLE endpoint<br/>not eligible]
@@ -389,8 +409,9 @@ flowchart LR
 | `RuntimeRouteSpec` | One target row in the route table. |
 | `RuntimeEndpointSpec` | One eligible or visible endpoint for that target. |
 | `RuntimeEndpointFlags.LOCAL` | This process owns the handler and must register it. |
+| `RuntimeEndpointFlags.NONE` | Zero flag. In caller-side route snapshots, read it as `PEER`: a normal eligible endpoint from this process's view. |
 | `RuntimeEndpointFlags.UNAVAILABLE` | Endpoint stays visible but should not receive new work. |
-| generation | Monotonic version. Stale generations should not replace newer active routes. |
+| generation | Monotonic version. Start with `1`; stale generations should not replace newer active routes. |
 
 If `target`, route table, and handler registration do not match, the runtime
 does not guess. The caller should see a route-miss deadletter.
@@ -636,8 +657,8 @@ Start with visible, conservative behavior. Tune from stats and failure evidence.
 | `queueCapacity` | Bounded and conservative. | Legitimate bursts are rejected and memory budget allows more buffering. | Latency grows, memory is tight, or pressure should surface earlier. |
 | `strictNoDrop` | `true` while integrating. | Usually keep true. | Only for a measured fire-and-forget path that can drop safely. |
 | `separateDeliveredRequestLane` | `true` for request/reply hosts. | Inbound delivered requests delay reply/deadletter matching for outgoing asks. | Only for tiny one-way-only hosts after measurement. |
-| route `generation` | Start at `1`, increment on updates. | Applying a newer route snapshot. | Never reuse old generations for new topology. |
-| endpoint flags | `LOCAL` only where this process owns the handler. | This process begins owning a target. | Endpoint is draining or temporarily unavailable. |
+| route `generation` | Start at `1`; keep it stable for a stable Service DNS route. | Applying a newer CoAkka route snapshot. | Never reuse old generations for new topology. |
+| endpoint flags | `LOCAL` only where this process owns the handler; `NONE` as `PEER` for ordinary eligible peer endpoints. | This process begins owning a target. | Endpoint is draining or temporarily unavailable. |
 | headers / metadata | Minimal request context. | Diagnostics need tenant, request id, trace id, or idempotency key. | Data is actually business payload. |
 
 ## Reading A Sample
