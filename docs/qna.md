@@ -33,6 +33,7 @@ Runtime and application patterns:
 
 - [How Should Spring Boot And Quarkus Users Think About CoAkka?](#how-should-spring-boot-and-quarkus-users-think-about-coakka)
 - [If Many Services Call Each Other, Will CoAkka Maintain Too Many Sockets?](#if-many-services-call-each-other-will-coakka-maintain-too-many-sockets)
+- [How Does CoAkka Balance Load Across Handlers Or Service Instances?](#how-does-coakka-balance-load-across-handlers-or-service-instances)
 - [Is CoAkka Equivalent To Dapr?](#is-coakka-equivalent-to-dapr)
 - [Is CoAkka The Same Thing As Erlang, Akka, Elixir, Or The Actor Model?](#is-coakka-the-same-thing-as-erlang-akka-elixir-or-the-actor-model)
 - [Is CoAkka Equivalent To CQRS?](#is-coakka-equivalent-to-cqrs)
@@ -74,6 +75,7 @@ Logger and explanation:
 | curl/Swagger | Use `coakka-client` or inspect route-try for runtime targets. | The boundary is an HTTP API with paths, methods, status codes, and OpenAPI docs. |
 | Observability/OTel | CoAkka exposes runtime delivery facts that app-hosts can correlate. | The question is trace collection, span export, dashboards, sampling, or organization-wide telemetry policy. |
 | Many service calls | CoAkka routes logical envelopes to targets; socket mechanics stay in transport/runtime policy. | The system truly needs a public service API or a service-mesh governed network boundary. |
+| Load balancing | CoAkka can choose among equivalent handlers by target-aware route policy and pressure, not only by connection shape. | The boundary is an HTTP upstream pool, where Nginx/gateway load balancing is already the right tool. |
 | Saga | CoAkka can reduce Saga pressure when the split was premature. | The flow truly crosses independent owners, stores, commits, or long-running compensation semantics. |
 | Istio/service mesh | CoAkka can remove synthetic internal service hops. | The system has real network-service boundaries needing zero-trust mTLS, traffic governance, or cross-cluster policy. |
 | Discovery/mTLS | Keep it above runtime: app-host, connector addon, platform, or mesh. | The network boundary and identity policy are real platform concerns. |
@@ -161,10 +163,22 @@ locality, route generation, health, pressure, affinity, or another application
 runtime policy. Round-robin is useful when handlers are equivalent; it should
 not be the only vocabulary.
 
-If a target is overloaded, the correct response is not to hide the problem by
-opening sockets without limit or retrying invisibly at an infrastructure layer.
-CoAkka should make overload visible as bounded queue pressure, rejection,
-timeout, or deadletter evidence. Then the owner can choose the right fix:
+Overload is normal in real systems. The goal is not to pretend it will never
+happen, and it is also not to reject or deadletter immediately when the first
+burst appears. The goal is bounded admission: absorb the short burst, report
+pressure honestly, and fail clearly only when delivery would violate the
+runtime contract.
+
+That is the same operating discipline people already accept at the HTTP edge
+with Nginx or a gateway. Nginx does not make upstream capacity infinite. It
+keeps connection limits, request buffers, upstream timeouts, queues, and clear
+failure responses at the edge boundary. CoAkka applies the same idea one layer
+lower, at the runtime target boundary: bounded queues, visible pressure,
+timeouts, rejection, and deadletter evidence.
+
+The correct response to overload is not to hide the problem by opening sockets
+without limit or retrying invisibly at an infrastructure layer. CoAkka should
+make overload attributable. Then the owner can choose the right fix:
 
 - increase a queue only when the workload is a bounded burst
 - add handler or service instances when throughput is genuinely too low
@@ -181,8 +195,65 @@ The short answer:
 ```text
 CoAkka routes envelopes, not sockets.
 Socket count is a transport/runtime concern.
-Overload should be reported honestly, not hidden by unbounded connections or
-infrastructure retries.
+Overload is expected; it should be bounded, visible, and attributable.
+```
+
+## How Does CoAkka Balance Load Across Handlers Or Service Instances?
+
+CoAkka should not be described as an HTTP load balancer.
+
+Nginx is a useful comparison because it shows the right discipline at the
+right boundary. Nginx balances HTTP requests across upstream servers at an
+edge or service API boundary. It owns HTTP connection handling, upstream pools,
+request buffering, timeouts, and failure responses for that boundary.
+
+CoAkka applies the same kind of discipline at a different boundary. It routes
+runtime envelopes to named targets. If several handlers or service instances
+can serve the same target, the runtime or connector can choose a route policy
+for that target.
+
+The simplest policy can be round-robin. But round-robin is only one policy,
+not the contract. A production-shaped runtime may choose by:
+
+- route snapshot or generation
+- handler health
+- queue pressure
+- locality
+- affinity
+- shard key or tenant key
+- caller or deployment policy
+
+The contract is not:
+
+```text
+open one socket to every service and hope the network balances it
+```
+
+The contract is:
+
+```text
+target -> route snapshot -> selected handler or peer -> reply, timeout, or deadletter
+```
+
+That distinction matters. Nginx can say which upstream handled an HTTP
+request. CoAkka should say which target was selected, which route snapshot was
+used, whether the handler accepted the work, whether pressure affected the
+decision, and whether the outcome was a reply, timeout, rejection, or
+deadletter.
+
+If a handler is overloaded, CoAkka should not keep sending work blindly just
+because that handler is next in a round-robin list. It should account for
+pressure and policy. If all available handlers are over capacity, the honest
+result is bounded waiting, rejection, timeout, or deadletter evidence,
+depending on the runtime contract.
+
+The short answer:
+
+```text
+Nginx balances HTTP requests at the edge.
+CoAkka balances runtime envelopes at the target boundary.
+Round-robin is a policy; target-aware routing, bounded admission, pressure,
+and delivery evidence are the contract.
 ```
 
 ## Does CoAkka Have A Dashboard?
