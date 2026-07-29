@@ -1,16 +1,23 @@
 # New To CoAkka
 
-CoAkka is a native-backed runtime and logger toolkit for application-owned
-work. It helps an app route work by target name, handle request/reply,
-deadletters, bounded queues, diagnostics, and native-backed logging without
-turning every internal boundary into another hand-written HTTP endpoint.
+CoAkka Runtime is a native-backed capability runtime for application-owned
+work across processes and languages. It helps an app route work by target
+name, handle request/reply, deadletters, bounded queues, and diagnostics
+without turning every internal boundary into another hand-written HTTP
+endpoint.
+
+Application-owned work means capability code governed by the same product or
+application boundary, even when it runs in another process, language,
+container, or host.
+
+CoAkka Logger is a separate bounded logging surface in the same ecosystem.
 
 If you are evaluating CoAkka for the first time, read it in this order:
 
 | Step | Read or run | Why |
 | --- | --- | --- |
 | 1 | This page | Understand the problem and repository map. |
-| 2 | `coakka-samples` quick run | See a target, handler, reply, and logger output. |
+| 2 | `bash run.sh containers node-python` | See two real processes, two languages, browser-visible state, and no backend HTTP fallback. |
 | 3 | [Runtime Field Guide](runtime-field-guide.md) | Connect the sample to Kubernetes, topology, queues, overload, Nginx, and mTLS boundaries. |
 | 4 | [How It Works](how-it-works.md) | Understand app-host, connector, runtime, route snapshot, and handler ownership. |
 | 5 | [Runtime Integration Guide](runtime-integration-guide.md) | Map an existing service into `RuntimeStartSpec`, routes, handlers, and shutdown. |
@@ -84,30 +91,41 @@ APIs still belong to the application architecture around CoAkka.
 
 ## First Learning Path
 
-1. Clone and run the smallest samples:
+1. Clone the samples repo and run the golden path:
 
    ```sh
    git clone https://github.com/phuong-tran/coakka-samples.git
    cd coakka-samples
+   bash run.sh containers node-python
+   ```
+
+   This path uses the published container images to show two runtime
+   participants in different languages. It is the best first proof that CoAkka
+   is not just a local function-call wrapper.
+
+2. If Docker is not available, run the smallest local runtime and logger
+   package checks:
+
+   ```sh
    bash run.sh runtime node basic
    bash run.sh logger node basic
    ```
 
-2. Try the no-checkout npm smoke if you want to start from package-manager
+3. Try the no-checkout npm smoke if you want to start from package-manager
    install commands:
 
    https://github.com/phuong-tran/coakka-samples/blob/main/docs/first-npm-smoke.md
 
-3. Read [Runtime Field Guide](runtime-field-guide.md) before jumping into
+4. Read [Runtime Field Guide](runtime-field-guide.md) before jumping into
    advanced routing details. It explains the practical path from a local
    runtime to Kubernetes Service DNS, stable targets, route snapshots, bounded
    queues, overload signals, Nginx, mTLS placement, and logger evidence.
 
-4. Read sample docs for the lane you care about:
+5. Read sample docs for the lane you care about:
 
    https://github.com/phuong-tran/coakka-samples/tree/main/docs
 
-5. Check released artifacts, checksums, and compatibility status:
+6. Check released artifacts, checksums, and compatibility status:
 
    https://github.com/phuong-tran/coakka-publish
    https://github.com/phuong-tran/coakka-publish/blob/main/docs/compatibility-matrix.md

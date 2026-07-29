@@ -659,7 +659,7 @@ That keeps responsibility clear:
 mTLS belongs where the network boundary and identity policy are real. That may
 be ingress, API gateway, sidecar, connector addon, or a true cross-service
 transport boundary. It should not become a default requirement inside
-`coakka-core-runtime` for every app-owned capability handoff.
+`coakka-runtime-core` for every app-owned capability handoff.
 
 ## Stage 8: Move To Containers
 

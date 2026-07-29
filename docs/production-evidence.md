@@ -88,7 +88,7 @@ CoAkka's primary claim is the runtime capability boundary: target ownership,
 route snapshots, bounded delivery, replies, deadletters, and diagnostics for
 application-owned work.
 
-Benchmark comparisons should stay at the runtime/L4 delivery boundary. CoAkka
+Benchmark comparisons should stay at the transport-backed runtime delivery boundary. CoAkka
 is not an L7 HTTP/gRPC framework benchmark; do not frame numbers as HTTP/gRPC
 replacement claims. Compare route lookup, bounded admission, framing, delivery
 outcome, reply matching, deadletter behavior, and queue pressure under the same

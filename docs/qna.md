@@ -1,4 +1,4 @@
-# QNA
+# Questions And Answers
 
 This note captures recurring questions about the CoAkka runtime story and is
 updated as users ask sharper questions.
@@ -22,10 +22,10 @@ L7, mesh, and platform boundaries:
 - [Is CoAkka Equivalent To gRPC?](#is-coakka-equivalent-to-grpc)
 - [Is CoAkka A gRPC Add-On?](#is-coakka-a-grpc-add-on)
 - [Do Spring Users Still Need @FeignClient?](#do-spring-users-still-need-feignclient)
-- [Why L4 Rather Than L7?](#why-l4-rather-than-l7)
+- [Why A Transport-Backed Runtime Boundary Instead Of Another L7 Application API?](#why-a-transport-backed-runtime-boundary-instead-of-another-l7-application-api)
 - [Can CoAkka Replace A Service Mesh Such As Istio?](#can-coakka-replace-a-service-mesh-such-as-istio)
 - [Why Do Teams Reach For Istio In The First Place, And How Can CoAkka Change That?](#why-do-teams-reach-for-istio-in-the-first-place-and-how-can-coakka-change-that)
-- [Why Does CoAkka Not Include Service Discovery Or mTLS In coakka-core-runtime?](#why-does-coakka-not-include-service-discovery-or-mtls-in-coakka-core-runtime)
+- [Why Does CoAkka Not Include Service Discovery Or mTLS In coakka-runtime-core?](#why-does-coakka-not-include-service-discovery-or-mtls-in-coakka-runtime-core)
 - [Why Is Demanding mTLS Inside Core A Layer Violation?](#why-is-demanding-mtls-inside-core-a-layer-violation)
 - [If A Team Needs Discovery Or mTLS, Where Should That Live?](#if-a-team-needs-discovery-or-mtls-where-should-that-live)
 
@@ -151,19 +151,21 @@ caller -> target -> envelope -> reply, timeout, or deadletter
 Transport/runtime code owns:
 
 ```text
-peer connection -> reuse/pool/multiplex/idle cleanup -> bounded delivery
+peer connection -> transport policy -> bounded delivery
 ```
 
 That means a CoAkka target, capability, or logical call should not be read as
-"one dedicated socket." A transport profile can reuse connections, open them
-only when needed, evict idle connections, cap peer connections, and multiplex
-multiple logical envelopes through the same physical connection when the
-transport supports it.
+"one dedicated socket." The current application contract is target and
+envelope delivery, not socket ownership. Exact connection reuse, pooling, idle
+eviction, connection caps, and multiplexing are transport-profile behavior and
+release-specific implementation details.
 
-Routing is also policy, not the socket contract. In the common Kubernetes
-Service DNS shape, CoAkka may see one endpoint and Kubernetes distributes to
-pods. If CoAkka is given expanded endpoints, advanced route policy can choose
-by pressure, locality, shard key, affinity, or another runtime policy.
+Routing is also policy, not the socket contract. In the current common
+Kubernetes Service DNS shape, CoAkka may see one endpoint and Kubernetes
+distributes to pods. If CoAkka is given expanded endpoints, route policy can
+select among those endpoints. Pressure-aware selection, locality, shard key,
+affinity, and similar policies should be treated as advanced or
+transport-dependent unless a specific release documents them as available.
 
 Overload is normal in real systems. The goal is not to pretend it will never
 happen, and it is also not to reject or deadletter immediately when the first
@@ -240,13 +242,14 @@ runtime participant directly.
 | What is balanced? | HTTP requests | Runtime envelopes |
 | What is selected? | An upstream server | A handler or peer endpoint for a target |
 | What is the stable caller vocabulary? | URL, method, headers, status shape | Target, payload identity, reply/deadletter shape |
-| What can influence selection? | Upstream health, weights, connection/request state | Service DNS by default; advanced route policy when CoAkka sees multiple endpoints |
+| What can influence selection? | Upstream health, weights, connection/request state | Service DNS by default; documented route policy when CoAkka sees multiple endpoints |
 | Where does evidence belong? | Access logs, upstream status, gateway metrics | Route snapshot, handler acceptance, pressure, reply/timeout/deadletter |
 
 Round-robin, weighted routing, pressure-aware routing, affinity, and shard-key
-routing are advanced expanded-endpoint concerns. If the route uses one
-Kubernetes Service DNS endpoint, prefer the boring path: CoAkka routes to that
-endpoint and Kubernetes distributes to pods.
+routing are expanded-endpoint concerns. Treat each one as current only when the
+active connector/runtime release documents and exposes that policy. If the
+route uses one Kubernetes Service DNS endpoint, prefer the boring path: CoAkka
+routes to that endpoint and Kubernetes distributes to pods.
 
 The contract is not:
 
@@ -277,8 +280,8 @@ The short answer:
 ```text
 Nginx balances HTTP requests at the edge.
 With Service DNS, CoAkka sees one endpoint and Kubernetes distributes to pods.
-With expanded endpoints, CoAkka can balance runtime envelopes at the target boundary.
-Round-robin and weighted routing are advanced policies for expanded endpoints.
+With expanded endpoints, CoAkka can select among runtime endpoints at the target boundary.
+Round-robin and weighted routing are advanced policies only when the active release exposes them.
 Bounded admission, pressure, and delivery evidence are the contract.
 ```
 
@@ -634,14 +637,14 @@ ownership or platform policy. Prefer CoAkka when the target is an application
 capability that should be named, routed, observed, and moved without turning it
 into another backend HTTP service.
 
-## Why L4 Rather Than L7?
+## Why A Transport-Backed Runtime Boundary Instead Of Another L7 Application API?
 
-CoAkka deliberately keeps the runtime delivery path closer to an L4/runtime
-transport boundary instead of becoming another L7 API framework. The point is
-to move application-owned work by target, route snapshot, bounded queues,
-delivery outcome, and reply matching, not to compete with HTTP/gRPC on
-endpoints, methods, status codes, interceptors, service docs, gateways, or API
-edge tooling.
+CoAkka deliberately keeps the delivery path below the application API layer
+instead of becoming another L7 API framework. The point is to move
+application-owned work by target, route snapshot, bounded queues, delivery
+outcome, and reply matching, not to compete with HTTP/gRPC on endpoints,
+methods, status codes, interceptors, service docs, gateways, or API edge
+tooling.
 
 HTTP and gRPC stay the right L7 choices for public or service API edges. CoAkka
 belongs behind or beside those edges when the work is better modeled as a
@@ -652,17 +655,18 @@ queue pressure, framing, reply matching, timeout, and deadletter behavior. Do
 not describe it as faster or slower than HTTP/gRPC unless the benchmark
 intentionally includes comparable L7 concerns.
 
-L4/runtime transport has a mechanical advantage for this class of work: fewer
-bytes to parse, no method/path/status mapping, no L7 interceptor chain, and
-bounded admission at the runtime intake. That can show up as lower overhead and
-more predictable behavior under queue pressure. Keep that as supporting
-evidence, not the main product claim.
+A transport-backed runtime boundary can have mechanical advantages for this
+class of work: fewer bytes to parse, no method/path/status mapping, no L7
+interceptor chain, and bounded admission at the runtime intake. That can show
+up as lower overhead and more predictable behavior under queue pressure. Keep
+that as supporting evidence, not the main product claim.
 
 A fair benchmark needs a same-class comparator. Bun vs Node is a reasonable
 kind of comparison because both are JavaScript runtimes competing for many of
 the same jobs. CoAkka vs HTTP/gRPC is not that shape: HTTP/gRPC is an L7 API
-boundary, while CoAkka Runtime is a capability-delivery boundary. If there is
-no comparable runtime system with target routing, bounded admission,
+boundary, while CoAkka Runtime is a transport-backed capability-delivery
+boundary. If there is no comparable runtime system with target routing,
+bounded admission,
 reply/deadletter matching, and route ownership, the honest comparison is
 against CoAkka's own releases and deployment profiles.
 
@@ -1128,7 +1132,7 @@ CoAkka runtime decides whether accepted work can be routed, admitted,
 delivered, replied to, timed out, or deadlettered.
 ```
 
-Do not make `coakka-core-runtime` the system's policy authority just because it
+Do not make `coakka-runtime-core` the system's policy authority just because it
 sees messages. That would mix application security rules with the delivery
 engine and make the core harder to reason about.
 
@@ -1526,11 +1530,11 @@ It does not remove reasons for Istio at real service boundaries:
 - multi-team independently deployed services
 - external-facing API estates
 
-## Why Does CoAkka Not Include Service Discovery Or mTLS In coakka-core-runtime?
+## Why Does CoAkka Not Include Service Discovery Or mTLS In coakka-runtime-core?
 
 It does not, and that is intentional.
 
-`coakka-core-runtime` is a delivery engine. It is not meant to become a
+`coakka-runtime-core` is a delivery engine. It is not meant to become a
 discovery server, certificate authority, mesh control plane, or cluster
 inventory system.
 
@@ -1548,7 +1552,7 @@ Those are not the same responsibility.
 | Ingress / `nginx` / API gateway | Public edge `TLS/mTLS`, request policy, external trust | Runtime target ownership |
 | App-host | Auth, tenant rules, validation, business admission | Certificate inventory and mesh control |
 | Connector addon / adapter | Optional `TLS/mTLS` for a real transport boundary | Core runtime delivery semantics |
-| `coakka-core-runtime` | Target routing, bounded queues, pressure, reply/deadletter | Discovery server, CA, service mesh policy |
+| `coakka-runtime-core` | Target routing, bounded queues, pressure, reply/deadletter | Discovery server, CA, service mesh policy |
 
 If CoAkka pulled discovery and `mTLS` into the core runtime, it would start
 mixing:
@@ -1583,7 +1587,7 @@ Short answer:
 
 ```text
 CoAkka does not omit discovery and mTLS by accident.
-It keeps them out of coakka-core-runtime on purpose, because they belong to
+It keeps them out of coakka-runtime-core on purpose, because they belong to
 the app-host, platform, or an adapter layer above runtime.
 ```
 
@@ -1604,7 +1608,7 @@ optional real network hop:
   -> connector addon or transport profile with TLS/mTLS
 ```
 
-Putting `mTLS` directly into `coakka-core-runtime` would force the delivery
+Putting `mTLS` directly into `coakka-runtime-core` would force the delivery
 engine to own certificate lifecycle, identity policy, and platform topology.
 That mixes four layers that should stay separate:
 
@@ -1622,7 +1626,7 @@ Short answer:
 ```text
 Use TLS/mTLS at ingress, nginx, API gateways, sidecars, connector addons, or
 real transport boundaries where identity policy is real. Do not put it in
-coakka-core-runtime by default; core runtime should execute the route and
+coakka-runtime-core by default; core runtime should execute the route and
 delivery contract it was given.
 ```
 
@@ -1646,7 +1650,7 @@ Examples:
   connector addon applies `TLS/mTLS` policy at the real network boundary
 
 That also means a future HTTP/TLS-oriented connector addon is not the same
-thing as moving `mTLS` into `coakka-core-runtime`.
+thing as moving `mTLS` into `coakka-runtime-core`.
 
 - the addon may terminate or initiate HTTPS at an HTTP boundary it owns
 - that still does not make the core runtime an identity-policy engine
@@ -1667,7 +1671,7 @@ shape is usually:
 - connector addon
 - deployment adapter
 
-not a larger `coakka-core-runtime`.
+not a larger `coakka-runtime-core`.
 
 In other words:
 

@@ -14,14 +14,38 @@ Sample lanes: [docs/sample-lanes.md](docs/sample-lanes.md)
 Spring Boot: [docs/coakka-spring-boot.md](docs/coakka-spring-boot.md)
 Quarkus: [docs/coakka-quarkus.md](docs/coakka-quarkus.md)
 
-CoAkka is a native-backed runtime and logger toolkit for application-owned
-work. It helps an app route work by target name, handle request/reply,
-deadletters, bounded queues, diagnostics, and native-backed logging without
-turning every internal boundary into another hand-written HTTP endpoint.
+CoAkka Runtime is a native-backed capability runtime for application-owned
+work across processes and languages. It helps an app route work by target
+name, handle request/reply, deadletters, bounded queues, and diagnostics
+without turning every internal boundary into another hand-written HTTP
+endpoint.
 
-If you are new, start with [New To CoAkka](docs/new-to-coakka.md), run one
-sample, then read [Runtime Field Guide](docs/runtime-field-guide.md) before
-advanced routing details.
+Application-owned work means capability code governed by the same product or
+application boundary, even when it runs in another process, language,
+container, or host.
+
+CoAkka Logger is a separate bounded logging surface in the same ecosystem.
+
+If you are new, start with [New To CoAkka](docs/new-to-coakka.md), run the
+container demo below, then read [Runtime Field Guide](docs/runtime-field-guide.md)
+before advanced routing details.
+
+## First Run
+
+Use this as the main front door when Docker is available:
+
+```sh
+git clone https://github.com/phuong-tran/coakka-samples.git
+cd coakka-samples
+bash run.sh containers node-python
+```
+
+It runs two real processes in two languages with browser-visible state and no
+backend HTTP fallback. If Docker is not available, use the local fallback:
+
+```sh
+bash run.sh runtime node basic
+```
 
 Public repository map:
 
@@ -85,23 +109,30 @@ checkout is absent.
 | What it is not | Not a replacement for public HTTP/gRPC edges, auth, service discovery, deployment policy, CQRS, or ordinary direct calls that are already enough. |
 | Where to download | Public artifacts live in [`coakka-publish`](https://github.com/phuong-tran/coakka-publish); this repo consumes those artifacts through runnable samples. |
 | Benchmark posture | Benchmarks are evidence and regression guardrails, not the main product claim; the harder shift is modeling app-owned work as runtime targets instead of another L7 API. |
-| Run this | `bash run.sh runtime-client` for the published runtime-client CLI, or [First npm Smoke](docs/first-npm-smoke.md) for the smallest Node.js runtime/logger package check. |
-| Observe this | The CLI reports runtime build diagnostics from the published client archive. App-host samples then show targets, process ownership, and runtime outcomes instead of hidden REST fallback behavior. |
+| Run this | `bash run.sh containers node-python` if Docker is available. Use `bash run.sh runtime node basic` as the no-Docker runtime fallback. |
+| Observe this | The container demo shows two real processes and two languages using runtime targets without a backend HTTP fallback. Local samples then show the smallest API shape. |
 
 Fast public path:
 
 ```sh
 git clone https://github.com/phuong-tran/coakka-samples.git
 cd coakka-samples
-bash run.sh runtime-client
 bash run.sh containers node-python
 ```
 
-The first sample verifies the published `coakka-client` archive from
-`coakka-publish`. The second sample pulls the published Docker Hub
-Node.js/Python images and runs a two-process runtime path. Use
+The container sample is the golden path for a first technical look: it pulls
+the published Docker Hub Node.js/Python images and runs a two-process runtime
+path. `runtime-client` is useful when you specifically want to verify the
+published CLI archive from `coakka-publish`. Use
 [`CoAkka Public Artifacts 1.3.2`](https://github.com/phuong-tran/coakka-publish/tree/main)
 for direct archive, package, checksum, manifest, or release-note downloads.
+
+No-Docker fallback:
+
+```sh
+bash run.sh runtime node basic
+bash run.sh logger node basic
+```
 
 Evidence and repo boundaries:
 [The CoAkka Story](docs/coakka-story.md),
@@ -436,6 +467,11 @@ bash run.sh quickstart
 bash run.sh doctor
 bash run.sh list
 ```
+
+These are repository utilities, not competing first-run paths. Use
+`containers node-python` for the main demo, `runtime node basic` when Docker is
+not available, and `runtime-client` when you specifically want the published
+CLI archive.
 
 For dependency snippets and the minimal host skeleton, read
 [runtime/README.md#copy-paste-starter-shapes](runtime/README.md#copy-paste-starter-shapes).
@@ -1386,10 +1422,11 @@ runtime path has practical advantages. The product argument is about changing
 the boundary model first; numbers are there to validate regressions and
 deployment profiles after that model is understood.
 
-Benchmark comparisons should stay at CoAkka's runtime/L4 boundary: route
-lookup, bounded admission, framing, delivery outcome, and reply matching. Do
-not frame these numbers as L7 HTTP/gRPC replacement benchmarks; HTTP and gRPC
-belong at service API edges with different middleware, semantics, and tooling.
+Benchmark comparisons should stay at CoAkka's transport-backed runtime
+boundary: route lookup, bounded admission, framing, delivery outcome, and
+reply matching. Do not frame these numbers as L7 HTTP/gRPC replacement
+benchmarks; HTTP and gRPC belong at service API edges with different
+middleware, semantics, and tooling.
 If no same-class runtime comparator exists, use benchmarks for CoAkka release
 regression and deployment-profile evidence instead of forcing an uneven
 protocol comparison.
