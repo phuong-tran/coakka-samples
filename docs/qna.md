@@ -3,6 +3,20 @@
 This note captures recurring questions about the CoAkka runtime story and is
 updated as users ask sharper questions.
 
+## Most Common Questions
+
+Start here before reading the full index:
+
+| Question | Short answer |
+| --- | --- |
+| [What Does CoAkka Add Compared With No Runtime Boundary?](#what-does-coakka-add-compared-with-no-runtime-boundary) | A shared target, route snapshot, bounded admission, reply/deadletter, and diagnostics vocabulary across process and language boundaries. |
+| [Is CoAkka Equivalent To gRPC?](#is-coakka-equivalent-to-grpc) | No. gRPC is right for real service APIs; CoAkka avoids promoting app-owned internal capabilities into L7 APIs too early. |
+| [Do Spring Users Still Need @FeignClient?](#do-spring-users-still-need-feignclient) | Yes for real HTTP services; no for app-owned runtime handoffs that only became HTTP to gain an address. |
+| [Is CoAkka The Same Thing As Erlang, Akka, Elixir, Or The Actor Model?](#is-coakka-the-same-thing-as-erlang-akka-elixir-or-the-actor-model) | No. It borrows messaging vocabulary but does not require actor identity, actor lifecycle, or actor-first app modeling. |
+| [Is CoAkka Equivalent To Kafka Or RabbitMQ?](#is-coakka-equivalent-to-kafka-or-rabbitmq) | No. Durable topics, replay, consumer groups, and broker-owned backpressure still belong to brokers. |
+| [Can CoAkka Replace A Service Mesh Such As Istio?](#can-coakka-replace-a-service-mesh-such-as-istio) | No. It can remove synthetic internal service hops; real mesh/network policy remains a platform concern. |
+| [When Is CoAkka Worth Adding?](#when-is-coakka-worth-adding) | When stable runtime targets and honest delivery evidence are worth the added boundary. |
+
 ## Table Of Contents
 
 Positioning:
@@ -499,7 +513,7 @@ across runtimes, processes, and deployment shapes.
 CoAkka's architectural response is not to replace HTTP, gRPC, or messaging
 systems. Those still belong at real service API, public edge, and broker
 boundaries. CoAkka is narrower: it treats selected application-owned work as
-a runtime capability boundary, with typed targets, explicit routing, route
+a runtime capability boundary, with stable targets, explicit routing, route
 ownership, delivery outcomes, and shared diagnostics.
 
 That is the distinct part. Application-owned work is not modeled as just another backend
@@ -688,8 +702,9 @@ service invocation, pub/sub, bindings, state stores, secrets, configuration,
 and workflow.
 
 `CoAkka` is much narrower. It is a runtime boundary for application-owned
-capabilities, with typed targets, route snapshots, bounded delivery, replies,
-deadletters, and runtime diagnostics.
+capabilities, with stable targets, identified or connector-typed payloads,
+route snapshots, bounded delivery, replies, deadletters, and runtime
+diagnostics.
 
 Short answer:
 
@@ -721,7 +736,7 @@ Use Dapr when the team wants a broader distributed application substrate:
 Use CoAkka when the problem is narrower:
 
 - one application-owned capability boundary
-- typed target instead of another internal URL surface
+- stable target instead of another internal URL surface
 - same-process today, peer runtime later
 - explicit route miss, rejection, reply, and deadletter outcomes
 - less interest in adopting a broader sidecar/component runtime

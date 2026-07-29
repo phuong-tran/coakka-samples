@@ -18,12 +18,12 @@ If you are evaluating CoAkka for the first time, read it in this order:
 | --- | --- | --- |
 | 1 | This page | Understand the problem and repository map. |
 | 2 | `bash run.sh containers node-python` | See two real processes, two languages, browser-visible state, and no backend HTTP fallback. |
-| 3 | [Runtime Field Guide](runtime-field-guide.md) | Connect the sample to Kubernetes, topology, queues, overload, Nginx, and mTLS boundaries. |
+| 3 | [Runtime Field Guide](runtime-field-guide.md) | Connect the sample to the normal Kubernetes Service DNS shape, queues, overload, Nginx, and mTLS boundaries. |
 | 4 | [How It Works](how-it-works.md) | Understand app-host, connector, runtime, route snapshot, and handler ownership. |
 | 5 | [Runtime Integration Guide](runtime-integration-guide.md) | Map an existing service into `RuntimeStartSpec`, routes, handlers, and shutdown. |
 | 6 | [Questions And Answers](qna.md) | Check the common objections: gRPC, Feign, Istio, sockets, load balancing, generations, and Saga. |
 
-## Two Public Repositories
+## Two Main Public Repositories
 
 | Repository | Use it for | Link |
 | --- | --- | --- |
@@ -32,6 +32,9 @@ If you are evaluating CoAkka for the first time, read it in this order:
 
 If you are new, start with `coakka-samples`. Use `coakka-publish` when you need
 exact released files, checksums, compatibility status, or release history.
+Language-specific public package repositories can exist separately. See
+[Current Packages](current-packages.md) for current package-manager entrypoints
+and repository links.
 
 ## What You Should Notice First
 
@@ -117,9 +120,11 @@ to the application architecture around CoAkka.
    https://github.com/phuong-tran/coakka-samples/blob/main/docs/first-npm-smoke.md
 
 4. Read [Runtime Field Guide](runtime-field-guide.md) before jumping into
-   advanced routing details. It explains the practical path from a local
-   runtime to Kubernetes Service DNS, stable targets, route snapshots, bounded
-   queues, overload signals, Nginx, mTLS placement, and logger evidence.
+   advanced routing details. Its first pass explains the practical path from a
+   local runtime to Kubernetes Service DNS, stable targets, route snapshots,
+   bounded queues, overload signals, Nginx, mTLS placement, and logger
+   evidence. You can leave expanded endpoints, custom policies, and generation
+   changes for later.
 
 5. Read sample docs for the lane you care about:
 
@@ -140,3 +145,4 @@ to the application architecture around CoAkka.
 | [Runtime Integration Guide](runtime-integration-guide.md) | You are wiring CoAkka into an existing service or framework. |
 | [Runtime Cluster Routing](runtime-cluster-routing.md) | You are past the simple Service DNS shape and need expanded endpoints, route policies, or generation discipline. |
 | [Questions And Answers](qna.md) | You want direct answers to architecture objections and boundary questions. |
+| [Current Packages](current-packages.md) | You need current package-manager entrypoints and version notes. |

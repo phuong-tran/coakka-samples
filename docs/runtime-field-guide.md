@@ -31,6 +31,25 @@ For the underlying vocabulary, read
 [Runtime Integration Guide](runtime-integration-guide.md), and
 [Runtime Cluster Routing](runtime-cluster-routing.md).
 
+## Minimum Reading Path
+
+First pass:
+
+- [Scenario](#scenario)
+- [Stage 1: Single Process Baseline](#stage-1-single-process-baseline)
+- [Stage 2: One App-Host, One Billing Runtime](#stage-2-one-app-host-one-billing-runtime)
+- [Stage 3: Start With The Familiar Kubernetes Shape](#stage-3-start-with-the-familiar-kubernetes-shape)
+- [Stage 5: Bounded Admission And Overload](#stage-5-bounded-admission-and-overload)
+- [A Complete Mental Model](#a-complete-mental-model)
+
+Read later:
+
+- route policies, round-robin, and weights
+- expanded endpoints and generation changes
+- overload tuning
+- logger evidence
+- detailed Nginx and mTLS placement
+
 ## Scenario
 
 Use a checkout system with one internal billing capability:

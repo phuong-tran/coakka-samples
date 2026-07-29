@@ -24,7 +24,7 @@ Then keep the first CoAkka step small:
 ```text
 pick one runtime boundary
   -> add one host-language connector
-  -> route one typed target through CoAkka
+  -> route one stable target through CoAkka
   -> inspect reply, timeout, stats, or deadletter evidence
   -> expand only if the boundary becomes clearer
 ```
