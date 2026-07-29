@@ -5,6 +5,17 @@ work. It helps an app route work by target name, handle request/reply,
 deadletters, bounded queues, diagnostics, and native-backed logging without
 turning every internal boundary into another hand-written HTTP endpoint.
 
+If you are evaluating CoAkka for the first time, read it in this order:
+
+| Step | Read or run | Why |
+| --- | --- | --- |
+| 1 | This page | Understand the problem and repository map. |
+| 2 | `coakka-samples` quick run | See a target, handler, reply, and logger output. |
+| 3 | [Runtime Field Guide](runtime-field-guide.md) | Connect the sample to Kubernetes, topology, queues, overload, Nginx, and mTLS boundaries. |
+| 4 | [How It Works](how-it-works.md) | Understand app-host, connector, runtime, route snapshot, and handler ownership. |
+| 5 | [Runtime Integration Guide](runtime-integration-guide.md) | Map an existing service into `RuntimeStartSpec`, routes, handlers, and shutdown. |
+| 6 | [Questions And Answers](qna.md) | Check the common objections: gRPC, Feign, Istio, sockets, load balancing, generations, and Saga. |
+
 ## Two Public Repositories
 
 | Repository | Use it for | Link |
@@ -73,7 +84,7 @@ APIs still belong to the application architecture around CoAkka.
 
 ## First Learning Path
 
-1. Clone and run samples:
+1. Clone and run the smallest samples:
 
    ```sh
    git clone https://github.com/phuong-tran/coakka-samples.git
@@ -87,11 +98,27 @@ APIs still belong to the application architecture around CoAkka.
 
    https://github.com/phuong-tran/coakka-samples/blob/main/docs/first-npm-smoke.md
 
-3. Read sample docs for the lane you care about:
+3. Read [Runtime Field Guide](runtime-field-guide.md) before jumping into
+   advanced routing details. It explains the practical path from a local
+   runtime to Kubernetes Service DNS, stable targets, route snapshots, bounded
+   queues, overload signals, Nginx, mTLS placement, and logger evidence.
+
+4. Read sample docs for the lane you care about:
 
    https://github.com/phuong-tran/coakka-samples/tree/main/docs
 
-4. Check released artifacts, checksums, and compatibility status:
+5. Check released artifacts, checksums, and compatibility status:
 
    https://github.com/phuong-tran/coakka-publish
    https://github.com/phuong-tran/coakka-publish/blob/main/docs/compatibility-matrix.md
+
+## How The Main Docs Fit Together
+
+| Doc | Use it when |
+| --- | --- |
+| [Runtime Field Guide](runtime-field-guide.md) | You understand the basic idea and want to know how a real topology should be shaped. |
+| [How It Works](how-it-works.md) | You want the runtime lifecycle and ownership model. |
+| [Runtime Message And Routing Model](runtime-message-and-routing-model.md) | You need the vocabulary: start spec, route snapshot, envelope, ask, reply, timeout, and deadletter. |
+| [Runtime Integration Guide](runtime-integration-guide.md) | You are wiring CoAkka into an existing service or framework. |
+| [Runtime Cluster Routing](runtime-cluster-routing.md) | You are past the simple Service DNS shape and need expanded endpoints, route policies, or generation discipline. |
+| [Questions And Answers](qna.md) | You want direct answers to architecture objections and boundary questions. |

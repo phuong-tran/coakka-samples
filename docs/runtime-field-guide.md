@@ -1,7 +1,18 @@
 # CoAkka Runtime Field Guide
 
-This guide shows one practical path from a small local CoAkka runtime to a
-production-shaped topology.
+This guide is the bridge between a small sample and a production-shaped
+deployment. Read it after [New To CoAkka](new-to-coakka.md) and one runnable
+sample, before jumping into advanced cluster routing details.
+
+The path is deliberately boring first:
+
+```text
+local target
+  -> one app-host and one billing runtime
+  -> Kubernetes Service DNS shape
+  -> bounded queues and visible overload
+  -> advanced expanded endpoints only when needed
+```
 
 It is not a benchmark, and it is not a replacement for connector reference
 docs. It is a boundary guide: how to choose targets, where to put topology,
@@ -51,12 +62,15 @@ app, and make runtime delivery explicit.
 - start one local runtime participant
 - register a target and return a reply
 - move from one handler to two runtime participants
-- call a stable target instead of a replica name
-- use route snapshots for topology
+- call a stable target such as `billing`, not replicas such as `billing-a`
+- start with the familiar Kubernetes Service DNS shape
+- keep route snapshots as topology input, not business code
 - use bounded queues and visible overload
 - compare Nginx load balancing with CoAkka target routing
 - decide when to tune queues versus adding capacity
 - attach logger evidence without hiding pressure
+- move round-robin, weights, endpoint expansion, and generation changes into
+  the advanced section instead of making them first-run concepts
 
 ## Suggested Local Environment
 
@@ -67,7 +81,7 @@ Use boring local defaults first:
 | Runtime endpoint port | `19301` for billing, `19302` for checkout | Stable and easy to inspect. |
 | Queue capacity | `128` | Small enough to reveal pressure, large enough for normal bursts. |
 | Strict no-drop | `true` | Integration should expose overload instead of hiding it. |
-| Route generation | `1` | Default for a stable Kubernetes Service DNS route snapshot. |
+| Route generation | `1` | Start here; in the common Service DNS shape this can stay stable for a long time. |
 | Ask timeout | `500ms` to `2s` | Short enough to catch broken routing during setup. |
 | Payload identity | Domain-specific text such as `billing.charge.v1` | Lets logs and deadletters identify the payload shape. |
 

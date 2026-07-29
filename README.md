@@ -6,9 +6,9 @@ Contribution guide: [CONTRIBUTING.md](CONTRIBUTING.md)
 Support: [SUPPORT.md](SUPPORT.md)
 Changelog: [CHANGELOG.md](CHANGELOG.md)
 New to CoAkka: [docs/new-to-coakka.md](docs/new-to-coakka.md)
-CoAkka story: [docs/coakka-story.md](docs/coakka-story.md)
-AI reviewer onboarding: [docs/ai-reviewer-onboarding.md](docs/ai-reviewer-onboarding.md)
-Architecture review guide: [docs/architecture-review-guide.md](docs/architecture-review-guide.md)
+Runtime field guide: [docs/runtime-field-guide.md](docs/runtime-field-guide.md)
+How it works: [docs/how-it-works.md](docs/how-it-works.md)
+Questions and answers: [docs/qna.md](docs/qna.md)
 First npm smoke: [docs/first-npm-smoke.md](docs/first-npm-smoke.md)
 Sample lanes: [docs/sample-lanes.md](docs/sample-lanes.md)
 Spring Boot: [docs/coakka-spring-boot.md](docs/coakka-spring-boot.md)
@@ -19,7 +19,9 @@ work. It helps an app route work by target name, handle request/reply,
 deadletters, bounded queues, diagnostics, and native-backed logging without
 turning every internal boundary into another hand-written HTTP endpoint.
 
-If you are new, start with [New To CoAkka](docs/new-to-coakka.md).
+If you are new, start with [New To CoAkka](docs/new-to-coakka.md), run one
+sample, then read [Runtime Field Guide](docs/runtime-field-guide.md) before
+advanced routing details.
 
 Public repository map:
 
@@ -109,6 +111,7 @@ Evidence and repo boundaries:
 [Repository Boundaries](docs/repository-boundaries.md),
 [CoAkka Ecosystem Naming](docs/coakka-ecosystem-naming.md),
 [Production Readiness](docs/production-readiness.md),
+[Runtime Field Guide](docs/runtime-field-guide.md),
 [How It Works](docs/how-it-works.md),
 [CoAkka Spring Boot](docs/coakka-spring-boot.md),
 [CoAkka Quarkus](docs/coakka-quarkus.md),
@@ -128,6 +131,7 @@ and
 - [Where Downloads Live](#where-downloads-live)
 - [Start Here](#start-here)
 - [New To CoAkka](docs/new-to-coakka.md)
+- [Runtime Field Guide](docs/runtime-field-guide.md)
 - [What Problem Does CoAkka Solve?](#what-problem-does-coakka-solve)
 - [CoAkka Naming](#coakka-naming)
 - [See It In 3 Minutes](#see-it-in-3-minutes)
