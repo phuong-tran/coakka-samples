@@ -209,6 +209,7 @@ Core runtime model:
 - [Runtime Glossary](docs/runtime-glossary.md)
 - [Runtime Cluster Routing](docs/runtime-cluster-routing.md)
 - [Containerized Runtime](docs/containerized-runtime.md)
+- [Edge, IoT, And Industrial Android](docs/edge-iot-android.md)
 
 Adoption and evidence:
 

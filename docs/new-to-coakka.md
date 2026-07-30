@@ -145,5 +145,6 @@ to the application architecture around CoAkka.
 | [Runtime Message And Routing Model](runtime-message-and-routing-model.md) | You need the vocabulary: start spec, route snapshot, envelope, ask, reply, timeout, and deadletter. |
 | [Runtime Integration Guide](runtime-integration-guide.md) | You are wiring CoAkka into an existing service or framework. |
 | [Runtime Cluster Routing](runtime-cluster-routing.md) | You are past the simple Service DNS shape and need expanded endpoints, route policies, or generation discipline. |
+| [Edge, IoT, And Industrial Android](edge-iot-android.md) | You want to understand edge Linux, Raspberry Pi, BeagleBone, and Android industrial tablet fit. |
 | [Questions And Answers](qna.md) | You want direct answers to architecture objections and boundary questions. |
 | [Current Packages](current-packages.md) | You need current package-manager entrypoints and version notes. |
