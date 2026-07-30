@@ -39,9 +39,6 @@ L7, mesh, and platform boundaries:
 - [Why A Transport-Backed Runtime Boundary Instead Of Another L7 Application API?](#why-a-transport-backed-runtime-boundary-instead-of-another-l7-application-api)
 - [Can CoAkka Replace A Service Mesh Such As Istio?](#can-coakka-replace-a-service-mesh-such-as-istio)
 - [Why Do Teams Reach For Istio In The First Place, And How Can CoAkka Change That?](#why-do-teams-reach-for-istio-in-the-first-place-and-how-can-coakka-change-that)
-- [Why Does CoAkka Not Include Service Discovery Or mTLS In coakka-runtime-core?](#why-does-coakka-not-include-service-discovery-or-mtls-in-coakka-runtime-core)
-- [Why Is Demanding mTLS Inside Core A Layer Violation?](#why-is-demanding-mtls-inside-core-a-layer-violation)
-- [If A Team Needs Discovery Or mTLS, Where Should That Live?](#if-a-team-needs-discovery-or-mtls-where-should-that-live)
 
 Runtime and application patterns:
 
@@ -49,7 +46,6 @@ Runtime and application patterns:
 - [If Many Services Call Each Other, Will CoAkka Maintain Too Many Sockets?](#if-many-services-call-each-other-will-coakka-maintain-too-many-sockets)
 - [How Does CoAkka Balance Load Across Handlers Or Service Instances?](#how-does-coakka-balance-load-across-handlers-or-service-instances)
 - [Does A CoAkka Spec Need To List Every Service Instance?](#does-a-coakka-spec-need-to-list-every-service-instance)
-- [What Happens If Runtime Participants See Different Route Generations?](#what-happens-if-runtime-participants-see-different-route-generations)
 - [Is CoAkka Equivalent To Dapr?](#is-coakka-equivalent-to-dapr)
 - [Is CoAkka The Same Thing As Erlang, Akka, Elixir, Or The Actor Model?](#is-coakka-the-same-thing-as-erlang-akka-elixir-or-the-actor-model)
 - [Is CoAkka Equivalent To CQRS?](#is-coakka-equivalent-to-cqrs)
@@ -61,6 +57,13 @@ Runtime and application patterns:
 - [How Does CoAkka Relate To The Outbox Pattern?](#how-does-coakka-relate-to-the-outbox-pattern)
 - [Can CoAkka Replace Saga?](#can-coakka-replace-saga)
 - [Why Do Teams Need Saga In The First Place, And How Can CoAkka Change That?](#why-do-teams-need-saga-in-the-first-place-and-how-can-coakka-change-that)
+
+Advanced topology and infra ownership:
+
+- [What Happens If Runtime Participants See Different Route Generations?](#what-happens-if-runtime-participants-see-different-route-generations)
+- [Does CoAkka Need Its Own Discovery Or mTLS In The Common Path?](#does-coakka-need-its-own-discovery-or-mtls-in-the-common-path)
+- [Why Keep mTLS Out Of coakka-runtime-core By Default?](#why-keep-mtls-out-of-coakka-runtime-core-by-default)
+- [If A Team Needs Discovery Or mTLS, Where Should That Live?](#if-a-team-needs-discovery-or-mtls-where-should-that-live)
 
 Logger and explanation:
 
@@ -96,7 +99,7 @@ Logger and explanation:
 | Service instances | App-facing specs declare process identity and capability ownership; route snapshots declare eligible endpoints. | The caller truly owns a fixed peer list and endpoint names are part of the business contract. |
 | Saga | CoAkka can reduce Saga pressure when the split was premature. | The flow truly crosses independent owners, stores, commits, or long-running compensation semantics. |
 | Istio/service mesh | CoAkka can remove synthetic internal service hops. | The system has real network-service boundaries needing zero-trust mTLS, traffic governance, or cross-cluster policy. |
-| Discovery/mTLS | Keep it above runtime: ingress/nginx, API gateway, app-host, connector addon, platform, or mesh. | The network boundary and identity policy are real platform concerns. |
+| Discovery/mTLS | Use Kubernetes Service DNS and normal platform config in the common path; keep custom discovery or mTLS above runtime when the topology truly needs it. | The network boundary and identity policy are real platform concerns. |
 | Logger | CoAkka logger gives bounded, cross-language operational evidence. | A normal framework logger is already honest under pressure and enough for the app. |
 
 ## Runtime Boundary Shape
@@ -140,10 +143,11 @@ Spring Boot or Quarkus edge
   -> reply or deadletter
 ```
 
-That lets teams remove fake backend HTTP endpoints from app-owned handoffs
-without giving up the framework that already hosts the application. A handler
-can start as same-process work and later move behind another runtime route while
-the caller keeps the same target vocabulary.
+That lets teams remove internal HTTP handoff endpoints that exist primarily to
+give app-owned capability code an address, without giving up the framework that
+already hosts the application. A handler can start as same-process work and
+later move behind another runtime route while the caller keeps the same target
+vocabulary.
 
 Read [CoAkka Spring Boot](coakka-spring-boot.md) and
 [CoAkka Quarkus](coakka-quarkus.md) for framework-specific onboarding.
@@ -641,7 +645,7 @@ Spring controller
   -> reply or deadletter
 ```
 
-The call-site no longer needs a fake backend HTTP API or a Feign client just to
+The call-site no longer needs an internal HTTP API or a Feign client just to
 reach application-owned work. CoAkka owns target routing, active route
 generation, bounded admission, timeout, reply matching, deadletters, and
 diagnostics. The Spring app still owns business validation, user policy,
@@ -1539,9 +1543,8 @@ That is a coherent response if the boundaries are real services.
 
 The weaker case is when a large share of those calls are "HTTP because we split
 the codebase that way," not "HTTP because this capability truly needs a stable
-network API boundary." That is the situation people often describe as "fake
-HTTP": the protocol is real, but the service boundary is thinner than the
-operational cost it creates.
+network API boundary." That is the situation where the protocol is real, but
+the service boundary is thinner than the operational cost it creates.
 
 CoAkka changes that tradeoff by letting application-owned capability boundaries
 stay as runtime targets first. The work can remain same-process today, move to
@@ -1577,9 +1580,39 @@ It does not remove reasons for Istio at real service boundaries:
 - multi-team independently deployed services
 - external-facing API estates
 
-## Why Does CoAkka Not Include Service Discovery Or mTLS In coakka-runtime-core?
+## Does CoAkka Need Its Own Discovery Or mTLS In The Common Path?
 
-It does not, and that is intentional.
+Usually no in the common Kubernetes-shaped path.
+
+Kubernetes already gives the deployment a familiar discovery layer:
+
+- Service DNS
+- readiness
+- pod churn handling
+- EndpointSlice membership
+- pod-level distribution
+
+In that shape, CoAkka does not need to discover every pod by itself. The
+application or connector can read normal platform configuration and materialize
+a route snapshot such as:
+
+```text
+target = billing.charge.create
+endpoint = billing.default.svc.cluster.local:19301
+generation = 1
+```
+
+The daily developer model stays familiar:
+
+```text
+declare HTTP route -> controller
+declare CoAkka target -> handler
+```
+
+Discovery becomes an advanced topology concern only when the team is not using
+a platform shape like Kubernetes Service DNS, or when CoAkka intentionally
+needs direct endpoint visibility for LAN nodes, on-prem servers, edge devices,
+custom fleets, affinity, locality, or pressure-aware route policy.
 
 `coakka-runtime-core` is a delivery engine. It is not meant to become a
 discovery server, certificate authority, mesh control plane, or cluster
@@ -1601,8 +1634,8 @@ Those are not the same responsibility.
 | Connector addon / adapter | Optional `TLS/mTLS` for a real transport boundary | Core runtime delivery semantics |
 | `coakka-runtime-core` | Target routing, bounded queues, pressure, reply/deadletter | Discovery server, CA, service mesh policy |
 
-If CoAkka pulled discovery and `mTLS` into the core runtime, it would start
-mixing:
+If CoAkka pulled discovery and `mTLS` into the core runtime by default, it
+would start mixing:
 
 - app-host lifecycle
 - platform topology
@@ -1611,7 +1644,7 @@ mixing:
 
 There is also a practical reason to keep `mTLS` out of the default internal
 story. CoAkka usually carries internal application-owned work, not an
-internet-facing product edge. In many deployments, demanding `mTLS`
+internet-facing product edge. In many deployments, requiring `mTLS`
 everywhere on that path is more ceremony than value unless the boundary is
 truly cross-team, zero-trust, cross-cluster, or compliance-driven.
 
@@ -1633,14 +1666,20 @@ engine into partial infrastructure.
 Short answer:
 
 ```text
-CoAkka does not omit discovery and mTLS by accident.
-It keeps them out of coakka-runtime-core on purpose, because they belong to
-the app-host, platform, or an adapter layer above runtime.
+In Kubernetes-shaped deployments, use the platform discovery the team already
+operates.
+
+CoAkka consumes configured or materialized routes and keeps runtime delivery
+explicit.
+
+Custom discovery and mTLS can live around the runtime when the topology or
+network boundary truly needs them.
 ```
 
-## Why Is Demanding mTLS Inside Core A Layer Violation?
+## Why Keep mTLS Out Of coakka-runtime-core By Default?
 
-Because it applies service-mesh thinking to the runtime delivery engine.
+Because the default runtime path is usually already behind the public edge and
+behind app-host policy.
 
 Inside a normal app-owned path, the runtime is already behind the public edge
 and behind app-host policy:
