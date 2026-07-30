@@ -105,6 +105,22 @@ the target, payload identity, route snapshot, reply/deadletter, and evidence.
 - Get bounded admission, timeout, rejection, and deadletter evidence instead of
   hidden retries and vague failures.
 
+A minimal Runtime call shape:
+
+```kotlin
+runtime.handler("customer.create") { request ->
+    customerStore.create(request)
+}
+
+val reply = runtime.ask(
+    target = "customer.create",
+    payload = request
+)
+```
+
+Exact APIs vary by connector, but the runtime idea is the same: register the
+owning handler, then ask the stable target.
+
 ## When To Use It
 
 CoAkka is useful when:
