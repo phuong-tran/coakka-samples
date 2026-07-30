@@ -2,6 +2,8 @@
 
 [![sample-smoke](https://github.com/phuong-tran/coakka-samples/actions/workflows/sample-smoke.yml/badge.svg)](https://github.com/phuong-tran/coakka-samples/actions/workflows/sample-smoke.yml)
 
+Route application-owned work without inventing another internal REST API.
+
 CoAkka Runtime is a native-backed capability runtime for application-owned
 work across processes and languages. It helps an app route work by stable
 target name, handle request/reply, report deadletters, enforce bounded
@@ -77,6 +79,16 @@ delivery diagnostics
 Callers submit an identified payload to a stable capability target. Connector
 APIs may add stronger typing in their host language, but the common contract is
 the target, payload identity, route snapshot, reply/deadletter, and evidence.
+
+## Why Teams Adopt CoAkka
+
+- Remove private REST handoffs that only exist to give app-owned work an
+  address.
+- Keep public HTTP and gRPC edges unchanged.
+- Move handlers across process, language, container, or host boundaries without
+  changing the caller vocabulary.
+- Get bounded admission, timeout, rejection, and deadletter evidence instead of
+  hidden retries and vague failures.
 
 ## When To Use It
 
