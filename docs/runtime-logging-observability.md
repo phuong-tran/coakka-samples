@@ -110,6 +110,13 @@ those records to the right sink.
 
 ## Where CoAkka Logger Fits
 
+A practical starting point is:
+
+- keep business logs in the app logger the team already uses;
+- keep runtime delivery evidence in CoAkka Runtime;
+- add CoAkka Logger only when log delivery itself needs a bounded,
+  cross-language, pressure-aware boundary.
+
 CoAkka Logger is useful when logging itself needs a bounded operational
 boundary:
 
@@ -125,6 +132,12 @@ It is not a mandatory replacement for every app logger, every sink, or every
 observability platform. Keep the host logger when it is already simple,
 bounded, and honest under pressure. Use CoAkka Logger when logging behavior is
 part of the runtime, performance, or polyglot operational contract.
+
+For teams that already use SLF4J, log4j, logback, Python logging, Go `slog` or
+`zap`, .NET `ILogger`, Android logging, or platform logging, CoAkka Logger can
+sit beside that stack as the bounded lane for runtime-shaped operational
+records: emitted, admitted, dropped, rejected, drained, pressure, deadletter
+correlation, request id, target, payload identity, and route generation.
 
 ## Observability Export
 
