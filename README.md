@@ -107,6 +107,12 @@ transport settings, or deployment topology.
 - Get bounded admission, timeout, rejection, and deadletter evidence instead of
   hidden retries and vague failures.
 
+Typical targets look like domain capabilities: `checkout.place-order`,
+`billing.charge`, `customer.create`, or `inventory.reserve`.
+
+The container sample demonstrates this with two real processes in two
+languages.
+
 A minimal Runtime call shape:
 
 ```kotlin
