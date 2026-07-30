@@ -56,6 +56,21 @@ a runtime target:
 controller -> CoAkka target -> owning handler -> reply or deadletter
 ```
 
+A tiny before/after shape:
+
+```text
+before:
+  public createCustomer(request)
+    -> customerClient.post("/internal/customers", request)
+    -> customerStore.create(request)
+
+after:
+  public createCustomer(request)
+    -> runtime.ask("customer.create", request)
+    -> handler "customer.create"
+    -> customerStore.create(request)
+```
+
 The useful shift is not "HTTP is bad." Public HTTP, gRPC, browser APIs,
 auth, API gateways, Nginx, TLS/mTLS, and deployment policy still belong at
 real external or platform boundaries. CoAkka focuses on application-owned work
