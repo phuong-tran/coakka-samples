@@ -94,6 +94,8 @@ delivery diagnostics
 Callers submit an identified payload to a stable capability target. Connector
 APIs may add stronger typing in their host language, but the common contract is
 the target, payload identity, route snapshot, reply/deadletter, and evidence.
+Stable targets name capabilities and should evolve more slowly than URLs,
+transport settings, or deployment topology.
 
 ## Why Teams Adopt CoAkka
 
@@ -129,7 +131,8 @@ CoAkka is useful when:
 - the handler may move across process, language, container, or host;
 - a stable target is clearer than another private URL and client wrapper;
 - bounded admission, timeout, rejection, and deadletter evidence matter;
-- multiple language connectors should share the same runtime vocabulary.
+- the same capability should be callable consistently across multiple
+  languages.
 
 Do not add CoAkka when:
 
@@ -239,7 +242,8 @@ public request
 ```
 
 Kubernetes can own pod membership, readiness, pod churn, and pod-level
-distribution. CoAkka does not need to discover individual pods in that common
+distribution. Business code does not need to see the Service DNS endpoint in
+this shape. CoAkka does not need to discover individual pods in that common
 shape. The app or connector maps normal platform configuration into a route
 snapshot, often with a stable generation such as `1`.
 
