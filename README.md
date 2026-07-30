@@ -4,9 +4,9 @@
 
 CoAkka Runtime is a native-backed capability runtime for application-owned
 work across processes and languages. It helps an app route work by stable
-target name, handle request/reply, report deadletters, apply bounded queues,
-and expose delivery diagnostics without turning every internal handoff into
-another hand-written HTTP endpoint.
+target name, handle request/reply, report deadletters, enforce bounded
+admission, and expose delivery diagnostics without turning every internal
+handoff into another hand-written HTTP endpoint.
 
 Application-owned work means capability code governed by the same product or
 application boundary, even when it runs in another process, language,
@@ -55,7 +55,7 @@ controller -> CoAkka target -> owning handler -> reply or deadletter
 ```
 
 The useful shift is not "HTTP is bad." Public HTTP, gRPC, browser APIs,
-auth, API gateways, nginx, TLS/mTLS, and deployment policy still belong at
+auth, API gateways, Nginx, TLS/mTLS, and deployment policy still belong at
 real external or platform boundaries. CoAkka focuses on application-owned work
 that needs a runtime boundary without becoming another L7 service API by
 default.

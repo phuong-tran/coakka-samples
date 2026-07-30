@@ -77,7 +77,8 @@ and callers ask that target instead of building another internal HTTP endpoint.
 
 CoAkka Logger is covered separately. First-time readers should continue with
 the Runtime learning path, then return to Logger when they want bounded,
-cross-language operational evidence with the same vocabulary.
+cross-language operational evidence and diagnostics that fit beside the
+Runtime vocabulary.
 
 ## What CoAkka Is Not
 
@@ -102,31 +103,35 @@ to the application architecture around CoAkka.
    participants in different languages. It is the best first proof that CoAkka
    is not just a local function-call wrapper.
 
-2. If Docker is not available, run the smallest local runtime and logger
-   package checks:
+2. If Docker is not available, run the smallest local Runtime package check:
 
    ```sh
    bash run.sh runtime node basic
+   ```
+
+3. Optionally run the smallest local Logger package check:
+
+   ```sh
    bash run.sh logger node basic
    ```
 
-3. Try the no-checkout npm smoke if you want to start from package-manager
+4. Try the no-checkout npm smoke if you want to start from package-manager
    install commands:
 
    https://github.com/phuong-tran/coakka-samples/blob/main/docs/first-npm-smoke.md
 
-4. Read [Runtime Field Guide](runtime-field-guide.md) before jumping into
+5. Read [Runtime Field Guide](runtime-field-guide.md) before jumping into
    advanced routing details. Its first pass explains the practical path from a
    local runtime to Kubernetes Service DNS, stable targets, route snapshots,
    bounded queues, overload signals, Nginx, mTLS placement, and logger
    evidence. You can leave expanded endpoints, custom policies, and generation
    changes for later.
 
-5. Read sample docs for the lane you care about:
+6. Read sample docs for the lane you care about:
 
    https://github.com/phuong-tran/coakka-samples/tree/main/docs
 
-6. Check released artifacts, checksums, and compatibility status:
+7. Check released artifacts, checksums, and compatibility status:
 
    https://github.com/phuong-tran/coakka-publish
    https://github.com/phuong-tran/coakka-publish/blob/main/docs/compatibility-matrix.md
