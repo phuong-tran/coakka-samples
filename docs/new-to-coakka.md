@@ -38,7 +38,8 @@ and repository links.
 
 ## What You Should Notice First
 
-CoAkka is easiest to understand from a fake backend HTTP handoff.
+CoAkka is easiest to understand from an internal HTTP handoff that exists
+primarily to give capability code an address.
 
 Before CoAkka, a team may keep the public API route and then add another
 private HTTP endpoint only to call work owned by the same app or team:
@@ -60,9 +61,9 @@ POST /api/customers
 ```
 
 The important change is not "HTTP is bad." Public HTTP, gRPC, browser APIs,
-auth, and deployment policy still belong to the app. CoAkka removes backend
-HTTP that only exists to give capability code owned by the same app or team an
-address.
+auth, and deployment policy still belong to the app. CoAkka removes the
+internal HTTP-shaped handoff when it only exists to give capability code owned
+by the same app or team an address.
 
 Runtime samples use a target name:
 
@@ -74,14 +75,9 @@ The target is a capability name such as `samples.runtime.node.echo` or
 `billing.invoice.create`. The app registers a handler for the target it owns,
 and callers ask that target instead of building another internal HTTP endpoint.
 
-Logger samples use a bounded logger:
-
-```text
-app code -> bounded native logger -> drain/counters
-```
-
-The sample output shows accepted records, drained records, dropped records, and
-native version diagnostics.
+CoAkka Logger is covered separately. First-time readers should continue with
+the Runtime learning path, then return to Logger when they want bounded,
+cross-language operational evidence with the same vocabulary.
 
 ## What CoAkka Is Not
 

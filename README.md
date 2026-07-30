@@ -182,7 +182,7 @@ Repository and package boundaries:
 - [Repository Boundaries](docs/repository-boundaries.md)
 - [CoAkka Ecosystem Naming](docs/coakka-ecosystem-naming.md)
 
-## Common Mental Model
+## Boring First Production Shape
 
 For a Kubernetes deployment, the boring first shape is:
 
@@ -223,4 +223,6 @@ output.
 ## License And Trademark
 
 See [TRADEMARKS.md](TRADEMARKS.md) for CoAkka naming and trademark guidance.
-License details live with each published artifact and release surface.
+Sample source licensing and published artifact licensing are documented
+separately. Use the license terms shipped with each release artifact for that
+artifact, and the repository license files for sample source and docs.
