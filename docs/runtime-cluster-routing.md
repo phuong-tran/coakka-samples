@@ -305,8 +305,8 @@ Terminal evidence:
 - remote handler may have started
 - reply timed out after ownership was accepted
 - business handler returned an application failure
-- remote deadletter means invalid envelope, route mismatch, or business
-  failure
+- remote deadletter means invalid envelope, route mismatch, admission failure,
+  or another terminal runtime delivery failure
 
 Terminal evidence does not trigger another runtime endpoint attempt by default.
 The app can still retry above the runtime if the operation is safe to run

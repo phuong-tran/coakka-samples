@@ -267,9 +267,11 @@ artifacts where possible:
 
 ```sh
 bash run.sh doctor
-bash run.sh containers node-python
+bash run.sh containers node-python smoke
 bash run.sh runtime node basic
-bash run.sh logger node basic
+bash run.sh logger csharp basic
+bash run.sh logger rust basic
+bash run.sh runtime-client
 ```
 
 Individual sample READMEs document lane-specific prerequisites and expected

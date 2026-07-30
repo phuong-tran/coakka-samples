@@ -94,13 +94,32 @@ run_sample_path() {
   bash "${sample_script}" "$@"
 }
 
+run_container_quickstart_smoke() {
+  local status
+  set +e
+  run_sample_path "containers/node-python" smoke
+  status="$?"
+  set -e
+  run_sample_path "containers/node-python" down >/dev/null 2>&1 || true
+  return "${status}"
+}
+
 run_quickstart() {
   echo "coakka-samples quickstart"
   echo
   bash "${script_dir}/scripts/doctor.sh"
   echo
-  echo "[quickstart] logger jvm basic"
-  run_sample_path "logger/jvm/basic"
+  if command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
+    echo "[quickstart] containers node-python smoke"
+    run_container_quickstart_smoke
+  elif command -v podman >/dev/null 2>&1 && podman info >/dev/null 2>&1; then
+    echo "[quickstart] containers node-python smoke"
+    run_container_quickstart_smoke
+  else
+    echo "[quickstart] Docker/Podman daemon not available; using local runtime fallback"
+    echo "[quickstart] runtime node basic"
+    run_sample_path "runtime/node/basic"
+  fi
 }
 
 run_scenario() {

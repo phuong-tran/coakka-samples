@@ -12,7 +12,7 @@ CoAkka is a good fit when an application needs one or more of these boundaries:
 
 - runtime request/reply or event delivery by stable target names
 - explicit payload identity across services or languages
-- route snapshots and route generations instead of hand-wired hand-wired clients
+- route snapshots and route generations instead of hand-wired clients
 - deadletters and timeout outcomes that are visible as runtime vocabulary
 - local and cross-process handlers that can move between JVM, Python, Node.js,
   Go, C#, Rust, Mojo and Zig source samples, and native C/C++ without
