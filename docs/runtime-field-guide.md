@@ -653,6 +653,10 @@ logging that keeps the same runtime vocabulary. Use the host logger for normal
 application events. Correlate them with the same target, request id, payload
 identity, and route generation.
 
+For the full split between runtime evidence, business logs, CoAkka Logger, and
+observability export, read
+[Runtime Logging And Observability](runtime-logging-observability.md).
+
 ## Stage 7: Put Nginx At The Edge
 
 For a normal product service, a practical deployment shape is:

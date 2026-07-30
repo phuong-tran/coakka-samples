@@ -64,6 +64,7 @@ Runtime and application patterns:
 
 Logger and explanation:
 
+- [Does CoAkka Replace Log4j, SLF4J, OpenTelemetry, Or Observability Tools?](#does-coakka-replace-log4j-slf4j-opentelemetry-or-observability-tools)
 - [Why Does CoAkka Also Have A Logger Surface?](#why-does-coakka-also-have-a-logger-surface)
 - [When Is The CoAkka Logger Useful?](#when-is-the-coakka-logger-useful)
 - [How Does The Logger Help With Trace, Debug, And Runtime Work?](#how-does-the-logger-help-with-trace-debug-and-runtime-work)
@@ -1422,6 +1423,37 @@ runtime outcome + bounded logger counters + correlated records
 
 That is more useful than a system where runtime behavior is explicit but
 logging becomes vague again under pressure.
+
+## Does CoAkka Replace Log4j, SLF4J, OpenTelemetry, Or Observability Tools?
+
+No.
+
+CoAkka Runtime reports runtime delivery evidence. It does not own business
+logs or fleet observability.
+
+Use existing app loggers such as SLF4J, log4j, logback, Python logging, Go
+`slog` or `zap`, .NET `ILogger`, Android logging, or the team's platform logger
+for business meaning, app lifecycle, audit context, and operator messages.
+
+Use CoAkka Logger when logging behavior itself needs a bounded, cross-language,
+pressure-aware contract. Use OpenTelemetry, Prometheus, dashboards, log
+shipping, and vendor APM where the team already exports and operates
+observability.
+
+The practical split is:
+
+```text
+runtime evidence -> delivery facts
+business log     -> domain meaning
+observability    -> export, dashboards, alerts, traces, retention
+```
+
+Logging is work. It can allocate, format, serialize, block, flush, and cross
+the network. CoAkka can report pressure honestly, but it cannot make unbounded
+synchronous logging free.
+
+Read [Runtime Logging And Observability](runtime-logging-observability.md) for
+the full boundary.
 
 ## Does The Logger Replace Existing Logging Frameworks?
 
