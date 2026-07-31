@@ -7,7 +7,7 @@ publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
 source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 
-runtime_artifact_rel="runtime/native/releases/1.3.2+caff6d6d/coakka-runtime-native-v2-1.3.2.tar.gz"
+runtime_artifact_rel="runtime/native/releases/1.3.4+dc6ec284/coakka-runtime-native-v2-1.3.4.tar.gz"
 evidence_release="1.3.2+caff6d6d"
 evidence_version="1.3.2"
 coakka_evidence_tmp_dir=""
@@ -64,11 +64,11 @@ run_from_source() {
   coakka_evidence_tmp_dir="${tmp_dir}"
 
   coakka_note "preparing native runtime evidence runner from source"
-  package_path="$(coakka_resolve_artifact "${publish_root}" "${runtime_artifact_rel}" "${tmp_dir}/artifacts/coakka-runtime-native-v2-1.3.2.tar.gz")"
+  package_path="$(coakka_resolve_artifact "${publish_root}" "${runtime_artifact_rel}" "${tmp_dir}/artifacts/coakka-runtime-native-v2-1.3.4.tar.gz")"
   mkdir -p "${tmp_dir}/package"
   tar -C "${tmp_dir}/package" -xzf "${package_path}"
 
-  package_root="${tmp_dir}/package/coakka-runtime-native-v2-1.3.2"
+  package_root="${tmp_dir}/package/coakka-runtime-native-v2-1.3.4"
   platform="$(coakka_native_platform)"
   build_dir="${tmp_dir}/build"
   cmake -S "${script_dir}" -B "${build_dir}" -DCMAKE_PREFIX_PATH="${package_root}" >/dev/null
