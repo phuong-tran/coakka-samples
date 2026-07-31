@@ -48,6 +48,7 @@ COAKKA_SAMPLE_ROWS=(
   "runtime|mojo|basic|Run one native runtime lifecycle, raw request/reply, and route-miss check from Mojo"
   "runtime|native|basic|Run one route snapshot and route-miss diagnostic from C and C++"
   "runtime|native|pressure|Show bounded runtime queue pressure and deadletter counters from C"
+  "runtime|evidence|native|Run native public-ABI request/reply and bounded-admission evidence as final JSON"
 )
 
 COAKKA_SCENARIO_ROWS=(

@@ -37,6 +37,10 @@ If Docker is not available, use the smallest local runtime fallback:
 bash run.sh runtime node basic
 ```
 
+For native public-ABI smoke, pressure, stress, and soak evidence with final
+JSON output, see [Native Runtime Evidence](runtime/evidence/native/README.md)
+or run `bash run.sh runtime/evidence/native smoke`.
+
 ## What To Notice
 
 Before CoAkka, internal application work often becomes another backend HTTP

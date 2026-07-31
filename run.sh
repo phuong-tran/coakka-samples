@@ -32,6 +32,7 @@ Usage:
   bash run.sh runtime/scenarios/<track>/<topology> <command>
   bash run.sh runtime-client [check|version|doctor|docker-bundle|docker-walkthrough|dockerhub-demo]
   bash run.sh runtime-inspect [check|published-smoke|local-smoke|serve|docker-smoke|docker-serve|dockerhub-smoke]
+  bash run.sh runtime/evidence/native [smoke|pressure|stress|soak]
 
 Examples:
   bash run.sh
@@ -78,6 +79,9 @@ Runtime languages:
   zig
   mojo
   native
+
+Runtime evidence:
+  runtime/evidence/native
 EOF
 }
 
