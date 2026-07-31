@@ -7,7 +7,7 @@ publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
 source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 
-COAKKA_RUNTIME_INSPECT_VERSION="1.3.2"
+COAKKA_RUNTIME_INSPECT_VERSION="1.3.4"
 COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE_DEFAULT="coakka-runtime-inspect-sample:1.3.2-local"
 COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE_DEFAULT="docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.2-caff6d6d-remote"
 
@@ -114,7 +114,7 @@ coakka_runtime_inspect_platform() {
 coakka_runtime_inspect_release_id_for_platform() {
   local platform="$1"
   case "${platform}" in
-    linux-aarch64|linux-x86_64|macos-aarch64|windows-aarch64|windows-x86_64) printf '%s\n' "1.3.2+caff6d6d" ;;
+    linux-aarch64|linux-x86_64|macos-aarch64|windows-aarch64|windows-x86_64) printf '%s\n' "1.3.4+dc6ec28" ;;
     *) return 1 ;;
   esac
 }

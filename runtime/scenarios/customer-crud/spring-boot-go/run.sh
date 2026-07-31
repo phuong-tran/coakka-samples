@@ -44,7 +44,7 @@ module coakka-runtime-spring-boot-go-store
 
 go 1.23.0
 
-require ${module_path} v1.3.10
+require ${module_path} v1.3.12
 EOF
 }
 

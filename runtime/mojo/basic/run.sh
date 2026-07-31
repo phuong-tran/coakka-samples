@@ -13,8 +13,8 @@ coakka_require_command tar "Install tar, then retry."
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
-artifact_rel="runtime/mojo/releases/1.3.1+0da8c2d9-8ff6f32/coakka-runtime-mojo-1.3.1-source.tar.gz"
-package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-runtime-mojo-1.3.1-source.tar.gz")"
+artifact_rel="runtime/mojo/releases/1.3.4+dc6ec284-f68ff5c/coakka-runtime-mojo-1.3.4-source.tar.gz"
+package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-runtime-mojo-1.3.4-source.tar.gz")"
 mkdir -p "${tmp_dir}/package"
 tar -C "${tmp_dir}/package" --strip-components 1 -xzf "${package_path}"
 

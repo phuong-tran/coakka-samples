@@ -4,7 +4,7 @@ set -euo pipefail
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../../.." && pwd)"
 publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
-artifact_rel="runtime/tauri/releases/1.3.2+caff6d6d-6d5ea58/coakka-runtime-tauri-intents-1.3.2-source.tar.gz"
+artifact_rel="runtime/tauri/releases/1.3.4+dc6ec284-f68ff5c/coakka-runtime-tauri-intents-1.3.4-source.tar.gz"
 source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 
@@ -14,7 +14,7 @@ coakka_require_command tar "Install tar, then retry."
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
 
-package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-runtime-tauri-intents-1.3.1-source.tar.gz")"
+package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-runtime-tauri-intents-1.3.4-source.tar.gz")"
 mkdir -p "${tmp_dir}/package"
 tar -C "${tmp_dir}/package" --strip-components 1 -xzf "${package_path}"
 

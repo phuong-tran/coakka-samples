@@ -1,7 +1,7 @@
 # Mojo Runtime Samples
 
 Mojo runtime samples use the pinned public source connector package
-`1.3.1+0da8c2d9-8ff6f32` for the bundled native runtime library. The basic
+`1.3.4+dc6ec284-f68ff5c` for the bundled native runtime library. The basic
 sample keeps its Mojo entrypoint and C shim in this repository and covers
 lifecycle/control, raw request/reply, and route-miss deadletter handling.
 

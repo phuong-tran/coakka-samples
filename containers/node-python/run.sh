@@ -8,8 +8,8 @@ source "${repo_root}/scripts/sample-utils.sh"
 compose_file="${script_dir}/compose.yaml"
 build_compose_file="${script_dir}/compose.build.yaml"
 runtime_base_dockerfile="${repo_root}/containers/runtime-base/Dockerfile"
-runtime_base_image="${COAKKA_RUNTIME_BASE_IMAGE:-coakka/runtime-base:1.3.2-caff6d6d-local}"
-artifact_manifest_sha256="${COAKKA_ARTIFACT_MANIFEST_SHA256:-490340838d8f79df7cb5fbebc92893a1afd13c71f780b1489054bde6da2158ca}"
+runtime_base_image="${COAKKA_RUNTIME_BASE_IMAGE:-coakka/runtime-base:1.3.4-dc6ec284-local}"
+artifact_manifest_sha256="${COAKKA_ARTIFACT_MANIFEST_SHA256:-918304c6c0944ff5ffadcf8e880cf4efa69c92b36bf70e049479514115f9f0dd}"
 
 print_usage() {
   cat <<'EOF'

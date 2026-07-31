@@ -7,9 +7,10 @@ publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
 source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 
-COAKKA_RUNTIME_CLIENT_RELEASE_ID="1.3.2+caff6d6d"
+COAKKA_RUNTIME_CLIENT_RELEASE_ID="1.3.4+dc6ec28"
 COAKKA_RUNTIME_CLIENT_DOCKER_BUNDLE_RELEASE_ID="1.3.2+caff6d6d"
-COAKKA_RUNTIME_CLIENT_VERSION="1.3.2"
+COAKKA_RUNTIME_CLIENT_VERSION="1.3.4"
+COAKKA_RUNTIME_CLIENT_DOCKER_BUNDLE_VERSION="1.3.2"
 COAKKA_RUNTIME_CLIENT_DEMO_IMAGE_DEFAULT="docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.2-caff6d6d-remote"
 coakka_runtime_client_tmp_dir=""
 coakka_runtime_client_compose_dir=""
@@ -128,14 +129,14 @@ coakka_runtime_client_resolve_docker_bundle() {
   local platform="$1"
   local tmp_dir="$2"
   local artifact_name artifact_rel package_path bundle_root
-  artifact_name="coakka-client-docker-demo-v2-${COAKKA_RUNTIME_CLIENT_VERSION}-${platform}.tar.gz"
+  artifact_name="coakka-client-docker-demo-v2-${COAKKA_RUNTIME_CLIENT_DOCKER_BUNDLE_VERSION}-${platform}.tar.gz"
   artifact_rel="coakka-tools/coakka-client/docker-demo/releases/${COAKKA_RUNTIME_CLIENT_DOCKER_BUNDLE_RELEASE_ID}/${artifact_name}"
 
   package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/${artifact_name}")"
   mkdir -p "${tmp_dir}/package"
   tar -C "${tmp_dir}/package" -xzf "${package_path}"
 
-  bundle_root="${tmp_dir}/package/coakka-client-docker-demo-v2-${COAKKA_RUNTIME_CLIENT_VERSION}-${platform}"
+  bundle_root="${tmp_dir}/package/coakka-client-docker-demo-v2-${COAKKA_RUNTIME_CLIENT_DOCKER_BUNDLE_VERSION}-${platform}"
   coakka_require_file "${bundle_root}/compose.yaml" "The published Docker verification archive is incomplete."
   printf '%s\n' "${bundle_root}"
 }
@@ -218,7 +219,7 @@ coakka_runtime_client_tail_compose_log() {
 coakka_runtime_client_docker_demo() {
   local platform artifact_name artifact_rel tmp_dir package_path bundle_root output
   platform="$(coakka_runtime_client_docker_platform)"
-  artifact_name="coakka-client-docker-demo-v2-${COAKKA_RUNTIME_CLIENT_VERSION}-${platform}.tar.gz"
+  artifact_name="coakka-client-docker-demo-v2-${COAKKA_RUNTIME_CLIENT_DOCKER_BUNDLE_VERSION}-${platform}.tar.gz"
   artifact_rel="coakka-tools/coakka-client/docker-demo/releases/${COAKKA_RUNTIME_CLIENT_DOCKER_BUNDLE_RELEASE_ID}/${artifact_name}"
 
   coakka_require_command docker "Install Docker with the Compose plugin, then retry."
@@ -234,7 +235,7 @@ coakka_runtime_client_docker_demo() {
   mkdir -p "${tmp_dir}/package"
   tar -C "${tmp_dir}/package" -xzf "${package_path}"
 
-  bundle_root="${tmp_dir}/package/coakka-client-docker-demo-v2-${COAKKA_RUNTIME_CLIENT_VERSION}-${platform}"
+  bundle_root="${tmp_dir}/package/coakka-client-docker-demo-v2-${COAKKA_RUNTIME_CLIENT_DOCKER_BUNDLE_VERSION}-${platform}"
   coakka_require_file "${bundle_root}/compose.yaml" "The published Docker verification archive is incomplete."
   coakka_runtime_client_compose_dir="${bundle_root}"
 

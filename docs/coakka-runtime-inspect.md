@@ -38,12 +38,12 @@ for application-owned work behind or beside the HTTP edge.
 
 ## Published Artifacts
 
-Current public generation: `1.3.2+caff6d6d`.
+Current public native generation: `1.3.4+dc6ec28`.
 
 Native UI archives live under:
 
 ```text
-coakka-tools/coakka-runtime-inspect/releases/1.3.2+caff6d6d/
+coakka-tools/coakka-runtime-inspect/releases/1.3.4+dc6ec28/
 ```
 
 Current public platforms:

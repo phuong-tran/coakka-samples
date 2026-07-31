@@ -16,7 +16,7 @@ Browser -> Spring Boot HTTP edge -> CoAkka runtime -> Go store -> CoAkka runtime
 The Go UI is observation-only. There is no Spring-to-Go REST fallback.
 
 The repo-local Spring Boot and Go sample sources track Spring starter
-`1.3.2-gcaff6d6d-6d5ea58` and Go runtime package `1.3.2+caff6d6d-6d5ea58`. The old
+`1.3.4-gdc6ec284-f68ff5c` and Go runtime module `v1.3.12`. The old
 Spring-Go container image line is intentionally not used by default anymore,
 because it was built from an earlier runtime generation.
 

@@ -38,11 +38,11 @@ development should not need a backend HTTP service just to feel comfortable.
 The sample consumes the public Spring Boot starter artifact:
 
 ```kotlin
-implementation("coakka.spring:coakka-spring-boot-starter:1.3.1-g0da8c2d9-8ff6f32")
+implementation("coakka.spring:coakka-spring-boot-starter:1.3.4-gdc6ec284-f68ff5c")
 ```
 
 That starter depends on the shared runtime JVM artifact
-`coakka.v2:coakka-jvm-native-runtime-v2:1.3.1-g0da8c2d9-8ff6f32`; it does not
+`coakka.v2:coakka-jvm-native-runtime-v2:1.3.4-gdc6ec284-f68ff5c`; it does not
 bundle or fork a Spring-specific native runtime.
 
 The sample resolves the Maven artifact from the public publish surface.
@@ -130,7 +130,7 @@ keeps business work as ordinary Spring beans:
 
 ```kotlin
 dependencies {
-    implementation("coakka.spring:coakka-spring-boot-starter:1.3.1-g0da8c2d9-8ff6f32")
+    implementation("coakka.spring:coakka-spring-boot-starter:1.3.4-gdc6ec284-f68ff5c")
     implementation("org.springframework.boot:spring-boot-starter-web")
 }
 ```
