@@ -1,19 +1,16 @@
 #include "evidence.h"
+#include "evidence_platform.h"
 
 #include "coakka/v2/client.h"
 #include "coakka/v2/control.h"
 #include "coakka/v2/transport.h"
 #include "coakka/v2/utils.h"
 
-#include <errno.h>
 #include <inttypes.h>
-#include <poll.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
-#include <unistd.h>
 
 enum {
   EVIDENCE_FRAME_OVERHEAD_RESERVE = 256 * 1024,
@@ -39,9 +36,7 @@ typedef struct evidence_handler_state_t {
 } evidence_handler_state_t;
 
 static uint64_t monotonic_ns(void) {
-  struct timespec ts;
-  clock_gettime(CLOCK_MONOTONIC, &ts);
-  return ((uint64_t)ts.tv_sec * 1000000000u) + (uint64_t)ts.tv_nsec;
+  return evidence_platform_monotonic_ns();
 }
 
 static uint64_t monotonic_ms(void) {
@@ -49,10 +44,7 @@ static uint64_t monotonic_ms(void) {
 }
 
 static void close_channel(int* channel) {
-  if (channel != NULL && *channel >= 0) {
-    close(*channel);
-    *channel = -1;
-  }
+  evidence_platform_close_channel(channel);
 }
 
 /*
@@ -338,20 +330,14 @@ static uint64_t in_flight_count(const evidence_result_t* result) {
 
 static int wait_for_channel_activity(const evidence_channels_t* channels,
                                      int timeout_ms) {
-  struct pollfd poll_channels[3];
-  int rc;
-
-  memset(poll_channels, 0, sizeof(poll_channels));
-  poll_channels[0].fd = channels->delivered_request;
-  poll_channels[0].events = POLLIN;
-  poll_channels[1].fd = channels->response;
-  poll_channels[1].events = POLLIN;
-  poll_channels[2].fd = channels->deadletter;
-  poll_channels[2].events = POLLIN;
-  do {
-    rc = poll(poll_channels, 3u, timeout_ms);
-  } while (rc < 0 && errno == EINTR);
-  return rc < 0 ? 1 : 0;
+  const int readable_channels[] = {
+      channels->delivered_request,
+      channels->response,
+      channels->deadletter,
+  };
+  return evidence_platform_wait_readable(readable_channels,
+                                         3u,
+                                         (unsigned int)timeout_ms);
 }
 
 static int wait_until_drained(coakka_v2_runtime_t* runtime,
@@ -485,7 +471,7 @@ int evidence_run(const evidence_config_t* config,
       .system_name = "runtime-v2-native-evidence",
       .node_id = "runtime-v2-native-evidence-node",
       .strict_no_drop = 1,
-      .queue_capacity = config->queue_capacity,
+      .queue_capacity = (int)config->queue_capacity,
   };
   runtime = coakka_v2_runtime_create(&runtime_config);
   if (runtime == NULL) {
@@ -499,7 +485,7 @@ int evidence_run(const evidence_config_t* config,
 
   const coakka_v2_endpoint_t endpoint = {
       .host = "127.0.0.1",
-      .port = (uint16_t)(9041u + ((unsigned int)getpid() % 1000u)),
+      .port = (uint16_t)(9041u + (evidence_platform_process_id() % 1000u)),
       .weight = 1,
       .flags = COAKKA_V2_ENDPOINT_FLAG_LOCAL,
   };

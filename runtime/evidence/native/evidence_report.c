@@ -1,13 +1,9 @@
 #include "evidence.h"
+#include "evidence_platform.h"
 
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-
-#if defined(__APPLE__)
-#include <sys/sysctl.h>
-#endif
 
 static const char* operating_system_name(void) {
 #if defined(__APPLE__)
@@ -55,20 +51,7 @@ static const char* execution_path_name(void) {
 }
 
 static long logical_cpu_count(void) {
-#if defined(__APPLE__)
-  int count = 0;
-  size_t count_size = sizeof(count);
-  if (sysctlbyname("hw.logicalcpu", &count, &count_size, NULL, 0) == 0 &&
-      count > 0) {
-    return (long)count;
-  }
-  return 0;
-#elif defined(_SC_NPROCESSORS_ONLN)
-  const long count = sysconf(_SC_NPROCESSORS_ONLN);
-  return count > 0 ? count : 0;
-#else
-  return 0;
-#endif
+  return evidence_platform_logical_cpu_count();
 }
 
 static void print_json_string(const char* text) {
@@ -244,7 +227,9 @@ void evidence_print_result_json(const evidence_config_t* config,
   printf("  \"notes\": [\n");
   printf("    \"This is a repeatable local scenario, not a cross-machine benchmark or production SLO.\",\n");
   printf("    \"Completed throughput includes request build, runtime delivery, echo reply build, terminal response routing, and final drain.\",\n");
-  printf("    \"The harness uses only the published native C ABI and emits no per-request output.\"\n");
+  printf("    \"The harness uses only the published native C ABI and emits no per-request output.\",\n");
+  printf("    \"Prefer a controlled Linux host that resembles the deployment worker for deployment-oriented measurements.\",\n");
+  printf("    \"Treat Docker, CI, UTM, and other VM throughput as portability evidence only.\"\n");
   printf("  ]\n");
   printf("}\n");
 }

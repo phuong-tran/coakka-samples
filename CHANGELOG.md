@@ -4,6 +4,13 @@ This changelog summarizes the public runnable sample surface. Artifact release
 details live in
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish).
 
+## 2026-07-31
+
+- Extended the native public-ABI evidence harness across Linux, macOS, and
+  Windows with platform-specific runners and the same JSON/invariant contract.
+- Made controlled Linux the preferred deployment-oriented measurement host;
+  Docker, CI, UTM, and other VM runs remain portability gates.
+
 ## 2026-07-25
 
 - Pointed native `coakka-client`, `coakka-runtime-inspect`, `coakka-client`

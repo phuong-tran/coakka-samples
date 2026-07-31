@@ -5,13 +5,23 @@ if(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
 endif()
 
+if(WIN32)
+  message(FATAL_ERROR "Use run.ps1 with the published Windows evidence runner")
+endif()
 find_package(CoAkkaRuntimeNativeV2 CONFIG REQUIRED)
+file(
+  WRITE
+  "${CMAKE_CURRENT_BINARY_DIR}/coakka-evidence-platform.txt"
+  "${CoAkkaRuntimeNativeV2_PLATFORM}\n"
+)
 
 add_executable(
   coakka_runtime_v2_native_evidence
   main.c
   evidence.h
   evidence_config.c
+  evidence_platform.c
+  evidence_platform.h
   evidence_runtime.c
   evidence_report.c
 )

@@ -117,3 +117,21 @@ jobs:
 
       - name: Run public runtime client smoke
         run: bash run.sh runtime-client
+
+  native-evidence-windows:
+    name: native evidence / windows-x86_64
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out samples
+        uses: actions/checkout@v6
+
+      - name: Run native evidence smoke
+        shell: pwsh
+        run: |
+          ./runtime/evidence/native/run.ps1 smoke --payload 64K --requests 128
+
+      - name: Run native evidence pressure
+        shell: pwsh
+        run: |
+          ./runtime/evidence/native/run.ps1 pressure --requests 512 --queue-capacity 2

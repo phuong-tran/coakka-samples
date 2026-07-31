@@ -8,8 +8,8 @@ source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 
 runtime_artifact_rel="runtime/native/releases/1.3.4+dc6ec284/coakka-runtime-native-v2-1.3.4.tar.gz"
-evidence_release="1.3.2+caff6d6d"
-evidence_version="1.3.2"
+evidence_release="1.3.4+dc6ec284"
+evidence_version="1.3.4"
 coakka_evidence_tmp_dir=""
 
 coakka_cleanup_evidence_tmp_dir() {

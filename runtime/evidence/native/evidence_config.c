@@ -2,6 +2,7 @@
 
 #include <ctype.h>
 #include <errno.h>
+#include <limits.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -209,8 +210,8 @@ static evidence_parse_status_t validate_config(const evidence_config_t* config,
         "pressure mode payload must be 16K or smaller; use smoke, stress, or soak for large-payload evidence";
     return EVIDENCE_PARSE_ERROR;
   }
-  if (config->queue_capacity == 0) {
-    *out_error = "queue capacity must be greater than zero";
+  if (config->queue_capacity == 0 || config->queue_capacity > (size_t)INT_MAX) {
+    *out_error = "queue capacity must be between 1 and INT_MAX";
     return EVIDENCE_PARSE_ERROR;
   }
   if (config->mode == EVIDENCE_MODE_SOAK &&

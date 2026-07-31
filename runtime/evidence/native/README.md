@@ -55,6 +55,19 @@ drain. It excludes:
 Those costs require separate scenarios or measurements in the target
 deployment.
 
+## Choose The Measurement Environment
+
+Prefer Linux when the result will inform deployment decisions. Use a Linux
+host that is close to the Kubernetes or container worker shape you actually
+operate: the same architecture, comparable CPU limits, and a compatible libc
+and kernel profile.
+
+macOS and Windows runs are still valuable. They prove that the public C ABI,
+runtime invariants, and packaging remain portable for local development and
+edge or desktop hosts. Treat Docker, CI, UTM, and other virtualized runs as
+correctness and portability evidence only. Their throughput values are not
+comparable with a controlled Linux host or with each other.
+
 ## Modes And Pass Invariants
 
 | Mode | Submission path | Stop condition | Required pass evidence |
@@ -89,6 +102,12 @@ From the `coakka-samples` repository root:
 
 ```sh
 bash run.sh runtime/evidence/native smoke
+```
+
+On Windows PowerShell:
+
+```powershell
+./runtime/evidence/native/run.ps1 smoke
 ```
 
 Common runs:
@@ -176,6 +195,7 @@ The public harness is intentionally split by ownership:
 | [`main.c`](main.c) | Process-level orchestration only. |
 | [`evidence.h`](evidence.h) | Internal contract shared by the harness modules. |
 | [`evidence_config.c`](evidence_config.c) | CLI parsing, mode defaults, and input limits. |
+| [`evidence_platform.c`](evidence_platform.c) | Monotonic clock, process metadata, channel wait, and OS adaptation. |
 | [`evidence_runtime.c`](evidence_runtime.c) | Public C ABI adapter, target path, runtime pumping, and pass invariants. |
 | [`evidence_report.c`](evidence_report.c) | Environment metadata and the final JSON document. |
 
@@ -188,17 +208,17 @@ returns `WOULD_BLOCK`, it yields to the common pump so response and deadletter
 channels can make progress before the next retry; it does not sleep or spin in
 the handler path.
 
-The current Clang/GCC build uses strict C11 without compiler language
-extensions and enables `-Wall -Wextra -Wpedantic`.
+The current Clang/GCC source build uses strict C11 without compiler language
+extensions and enables `-Wall -Wextra -Wpedantic`. Published Windows runners
+are built from the same source with Zig's C toolchain and the exported public
+C ABI surface.
 
 ## Source And Prebuilt Paths
 
-With `cc`, CMake, and `tar` available, the wrapper builds the public source
-modules in this directory in `Release` mode against the published native
-package.
-
-Without a native toolchain, it uses a matching prebuilt evidence runner when
-one is available:
+On Linux and macOS, the Bash wrapper builds the public source modules in this
+directory in `Release` mode when `cc`, CMake, and `tar` are available. Without
+that toolchain, it uses a matching prebuilt evidence runner when one is
+available:
 
 ```sh
 COAKKA_NATIVE_EVIDENCE_USE_PREBUILT=1 \
@@ -209,14 +229,20 @@ Both paths execute the same public sample source. The prebuilt archive bundles
 the matching published runtime shared library; it does not contain private core
 source.
 
+Windows uses the matching published prebuilt runner through `run.ps1`. This
+keeps the executable and runtime DLL on one tested C toolchain/ABI lane while
+preserving the same workload, invariants, and JSON contract.
+
 ## Reproducibility
 
 Before comparing runs:
 
+- prefer a controlled Linux host that resembles the deployment worker;
 - close noisy background workloads;
 - avoid low-power mode and thermal throttling;
 - record the complete JSON document;
 - use the same runtime release, payload, queue capacity, and in-flight limit;
 - run several repetitions and compare the distribution, not the best result;
+- do not compare Docker, CI, UTM, or other VM throughput with host results;
 - use deployment-owned tests for network, connector, framework, and production
   capacity conclusions.

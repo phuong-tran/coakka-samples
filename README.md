@@ -40,6 +40,8 @@ bash run.sh runtime node basic
 For native public-ABI smoke, pressure, stress, and soak evidence with final
 JSON output, see [Native Runtime Evidence](runtime/evidence/native/README.md)
 or run `bash run.sh runtime/evidence/native smoke`.
+Prefer Linux for deployment-oriented measurements; Windows and macOS runs are
+portable correctness gates, and VM throughput is not a comparison point.
 
 ## What To Notice
 

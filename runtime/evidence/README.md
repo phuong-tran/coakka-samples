@@ -13,6 +13,10 @@ bash run.sh runtime/evidence/native smoke
 It consumes the published native runtime package through the public C ABI. It
 does not include or reach into private core sources.
 
+Prefer a controlled Linux host when measurements will inform Kubernetes or
+container deployment decisions. macOS, Windows, Docker, CI, and VM runs remain
+useful portability gates, but virtualized throughput is not a comparison point.
+
 The measured local target path is:
 
 ```text

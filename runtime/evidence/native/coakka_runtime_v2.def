@@ -1,0 +1,19 @@
+LIBRARY libcoakka_runtime_v2.dll
+EXPORTS
+  coakka_v2_client_build_raw_reply
+  coakka_v2_client_build_raw_request
+  coakka_v2_client_bytes_release
+  coakka_v2_frame_read_try
+  coakka_v2_frame_reader_create
+  coakka_v2_frame_reader_destroy
+  coakka_v2_frame_release
+  coakka_v2_frame_write
+  coakka_v2_runtime_apply_control_snapshot
+  coakka_v2_runtime_create
+  coakka_v2_runtime_destroy
+  coakka_v2_runtime_get_host_handles
+  coakka_v2_runtime_get_info
+  coakka_v2_runtime_get_stats
+  coakka_v2_runtime_start
+  coakka_v2_runtime_stop
+  coakka_v2_runtime_submit_envelope
