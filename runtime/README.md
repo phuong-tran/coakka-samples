@@ -207,14 +207,10 @@ Go module:
 go get github.com/phuong-tran/coakka-runtime-go@v1.3.12
 ```
 
-C# NuGet package from a local feed directory:
+C# NuGet package:
 
 ```sh
-mkdir -p packages
-curl -L \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/csharp/releases/1.3.4+dc6ec284-f68ff5c/CoAkka.Runtime.1.3.5.nupkg" \
-  -o packages/CoAkka.Runtime.1.3.5.nupkg
-dotnet add package CoAkka.Runtime --version 1.3.4 --source ./packages
+dotnet add package CoAkka.Runtime --version 1.3.5
 ```
 
 Rust currently ships as a published archive package:

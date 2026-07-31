@@ -202,7 +202,7 @@ deadletter, native loading, lifecycle, and diagnostics baseline.
 
 ## What This Sample Proves
 
-- `dotnet` can install `CoAkka.Runtime` from the public artifact surface.
+- `dotnet` can install `CoAkka.Runtime==1.3.5` from nuget.org.
 - The package can load the native runtime on the bundled macOS/Linux platforms.
 - A .NET process can start one process-owned `RuntimeHost`.
 - A .NET process can register a process-owned target handler and call it with

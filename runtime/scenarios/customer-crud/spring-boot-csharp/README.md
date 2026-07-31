@@ -8,8 +8,8 @@ This scenario runs:
 | `customer-store-csharp` | C# / .NET | headless in-memory customer table | none | `samples.customer.store` | `127.0.0.1:19142` |
 
 The Spring Boot web service reuses the same customer UI/API from the
-Spring-to-Spring scenario. The C# store uses the published `CoAkka.Runtime`
-NuGet package and runs as a headless message handler.
+Spring-to-Spring scenario. The C# store uses the published
+`CoAkka.Runtime==1.3.5` NuGet package and runs as a headless message handler.
 
 ## Runtime Transport Note
 
