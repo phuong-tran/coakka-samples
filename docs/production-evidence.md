@@ -32,8 +32,9 @@ bash run.sh containers node-python smoke
 
 Screenshots:
 
-- [Node.js web UI](assets/container-node-python-create-web.png)
-- [Python store UI](assets/container-node-python-create-store.png)
+![Node.js web UI showing accepted runtime create command and counters](assets/container-node-python-create-web.png)
+
+![Python store UI showing customer state changed by runtime messages](assets/container-node-python-create-store.png)
 
 The web screenshot shows an accepted create command and runtime counters. The
 store screenshot shows the same customer state changed by runtime messages from

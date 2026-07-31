@@ -28,7 +28,8 @@ bash run.sh containers node-python
 
 This runs two real processes in two languages with browser-visible state and
 no backend HTTP fallback. It is the best first proof that CoAkka is not just a
-local function-call wrapper.
+local function-call wrapper. The committed screenshots live in
+[Production Evidence](docs/production-evidence.md#visual-evidence).
 
 If Docker is not available, use the smallest local runtime fallback:
 
