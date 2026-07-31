@@ -46,6 +46,7 @@ jobs:
           bash -n run.sh
           bash -n logger/run-all.sh
           bash -n runtime/run-all.sh
+          bash -n runtime/evidence/native/run.sh
           bash -n runtime-client/run.sh
           bash -n scripts/check-artifact-pins.sh
           bash -n scripts/doctor.sh
@@ -111,6 +112,8 @@ jobs:
           bash run.sh runtime node basic
           bash run.sh runtime native basic
           bash run.sh runtime native pressure
+          bash run.sh runtime/evidence/native smoke --payload 64K --requests 128
+          bash run.sh runtime/evidence/native pressure --requests 512 --queue-capacity 2
 
       - name: Run public runtime client smoke
         run: bash run.sh runtime-client

@@ -7,12 +7,20 @@ endif()
 
 find_package(CoAkkaRuntimeNativeV2 CONFIG REQUIRED)
 
-add_executable(coakka_runtime_v2_native_evidence main.c)
+add_executable(
+  coakka_runtime_v2_native_evidence
+  main.c
+  evidence.h
+  evidence_config.c
+  evidence_runtime.c
+  evidence_report.c
+)
 set_target_properties(
   coakka_runtime_v2_native_evidence
   PROPERTIES
     C_STANDARD 11
     C_STANDARD_REQUIRED YES
+    C_EXTENSIONS NO
 )
 target_compile_definitions(
   coakka_runtime_v2_native_evidence
@@ -20,6 +28,18 @@ target_compile_definitions(
     COAKKA_EVIDENCE_BUILD_PROFILE="$<CONFIG>"
     COAKKA_EVIDENCE_COMPILER="${CMAKE_C_COMPILER_ID} ${CMAKE_C_COMPILER_VERSION}"
 )
+if(UNIX)
+  target_compile_definitions(
+    coakka_runtime_v2_native_evidence
+    PRIVATE _POSIX_C_SOURCE=200809L
+  )
+endif()
+if(APPLE)
+  target_compile_definitions(
+    coakka_runtime_v2_native_evidence
+    PRIVATE _DARWIN_C_SOURCE
+  )
+endif()
 if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
   target_compile_options(
     coakka_runtime_v2_native_evidence

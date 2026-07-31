@@ -167,10 +167,35 @@ The result records:
 - monotonic timing windows and scoped throughput;
 - `status=pass|fail` plus an error when an invariant fails.
 
+## Source Layout
+
+The public harness is intentionally split by ownership:
+
+| File | Responsibility |
+| --- | --- |
+| [`main.c`](main.c) | Process-level orchestration only. |
+| [`evidence.h`](evidence.h) | Internal contract shared by the harness modules. |
+| [`evidence_config.c`](evidence_config.c) | CLI parsing, mode defaults, and input limits. |
+| [`evidence_runtime.c`](evidence_runtime.c) | Public C ABI adapter, target path, runtime pumping, and pass invariants. |
+| [`evidence_report.c`](evidence_report.c) | Environment metadata and the final JSON document. |
+
+Raw host-handle field names stay inside the public ABI adapter. The rest of the
+harness uses request, response, deadletter, and delivered-request channel
+vocabulary. The source contains no private core runtime implementation.
+
+The runtime driver owns at most one pending reply. When bounded admission
+returns `WOULD_BLOCK`, it yields to the common pump so response and deadletter
+channels can make progress before the next retry; it does not sleep or spin in
+the handler path.
+
+The current Clang/GCC build uses strict C11 without compiler language
+extensions and enables `-Wall -Wextra -Wpedantic`.
+
 ## Source And Prebuilt Paths
 
-With `cc`, CMake, and `tar` available, the wrapper builds
-[main.c](main.c) in `Release` mode against the published native package.
+With `cc`, CMake, and `tar` available, the wrapper builds the public source
+modules in this directory in `Release` mode against the published native
+package.
 
 Without a native toolchain, it uses a matching prebuilt evidence runner when
 one is available:
