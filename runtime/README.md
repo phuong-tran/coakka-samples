@@ -99,7 +99,7 @@ python -m pip install coakka-v2-connector==1.3.4
 Node.js package:
 
 ```sh
-npm install coakka-v2-connector-node@1.3.9
+npm install coakka-v2-connector-node@1.3.11
 ```
 
 Bun package:
