@@ -10,6 +10,15 @@ source "${repo_root}/scripts/sample-utils.sh"
 runtime_artifact_rel="runtime/native/releases/1.3.2+caff6d6d/coakka-runtime-native-v2-1.3.2.tar.gz"
 evidence_release="1.3.2+caff6d6d"
 evidence_version="1.3.2"
+coakka_evidence_tmp_dir=""
+
+coakka_cleanup_evidence_tmp_dir() {
+  if [[ -n "${coakka_evidence_tmp_dir}" && -d "${coakka_evidence_tmp_dir}" ]]; then
+    rm -rf -- "${coakka_evidence_tmp_dir}"
+  fi
+}
+
+trap coakka_cleanup_evidence_tmp_dir EXIT
 
 coakka_evidence_mode() {
   case "${1:-smoke}" in
@@ -51,7 +60,8 @@ coakka_can_build_from_source() {
 
 run_from_source() {
   local tmp_dir package_path package_root platform build_dir
-  tmp_dir="$(mktemp -d)"
+  tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/coakka-native-evidence.XXXXXX")"
+  coakka_evidence_tmp_dir="${tmp_dir}"
 
   coakka_note "preparing native runtime evidence runner from source"
   package_path="$(coakka_resolve_artifact "${publish_root}" "${runtime_artifact_rel}" "${tmp_dir}/artifacts/coakka-runtime-native-v2-1.3.2.tar.gz")"
@@ -83,7 +93,8 @@ run_from_prebuilt() {
   local tmp_dir platform artifact_name artifact_rel archive_path package_root native_path
   coakka_require_command tar "Install tar, then retry."
 
-  tmp_dir="$(mktemp -d)"
+  tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/coakka-native-evidence.XXXXXX")"
+  coakka_evidence_tmp_dir="${tmp_dir}"
 
   platform="$(coakka_native_platform)"
   coakka_note "preparing published native runtime evidence runner platform=${platform}"

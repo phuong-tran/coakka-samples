@@ -192,6 +192,7 @@ and
 | Smallest local Logger API | `bash run.sh logger node basic` |
 | Route miss and deadletter evidence | `bash run.sh runtime node deadletter` |
 | Route generation and hot reload | `bash run.sh runtime python hot-reload` |
+| Native public-ABI smoke, pressure, stress, or soak evidence | `bash run.sh runtime/evidence/native smoke` |
 | Framework handoff shape | `bash run.sh list` then choose a `runtime/scenarios/customer-crud/*` lane |
 | Published npm without cloning samples | [docs/first-npm-smoke.md](docs/first-npm-smoke.md) |
 
