@@ -18,9 +18,10 @@
 enum {
   EVIDENCE_FRAME_OVERHEAD_RESERVE = 256 * 1024,
   EVIDENCE_MIN_READER_FRAME_BYTES = 1024 * 1024,
-  EVIDENCE_INTERMEDIATE_PUMP_INTERVAL = 16,
+  EVIDENCE_NATIVE_SUBMIT_PUMP_INTERVAL = 16,
+  EVIDENCE_REQUEST_CHANNEL_PUMP_INTERVAL = 4,
   EVIDENCE_ACTIVITY_WAIT_MS = 10,
-  EVIDENCE_FINAL_DRAIN_TURNS = 500,
+  EVIDENCE_FINAL_DRAIN_TIMEOUT_MS = 5000,
 };
 
 typedef struct evidence_channels_t {
@@ -364,9 +365,10 @@ static int wait_until_drained(coakka_v2_runtime_t* runtime,
                               evidence_result_t* result,
                               const char** out_error) {
   coakka_v2_runtime_stats_t stats;
-  int turn;
+  const uint64_t deadline_ms =
+      monotonic_ms() + EVIDENCE_FINAL_DRAIN_TIMEOUT_MS;
 
-  for (turn = 0; turn < EVIDENCE_FINAL_DRAIN_TURNS; ++turn) {
+  while (monotonic_ms() < deadline_ms) {
     if (pump_runtime(runtime,
                      delivered_reader,
                      response_reader,
@@ -459,6 +461,7 @@ int evidence_run(const evidence_config_t* config,
   uint64_t end_ns;
   uint64_t last_drain_ms;
   size_t reader_max_frame_len;
+  uint64_t pump_interval;
   int use_request_channel;
   int status = 1;
 
@@ -547,6 +550,13 @@ int evidence_run(const evidence_config_t* config,
   start_ns = monotonic_ns();
   last_drain_ms = start_ns / 1000000u;
   use_request_channel = config->mode == EVIDENCE_MODE_PRESSURE;
+  /*
+   * The framed pressure path uses a small burst so host channels are drained
+   * before platform pipe capacity becomes an accidental workload limit.
+   */
+  pump_interval = use_request_channel
+                      ? EVIDENCE_REQUEST_CHANNEL_PUMP_INTERVAL
+                      : EVIDENCE_NATIVE_SUBMIT_PUMP_INTERVAL;
   while (should_continue(config,
                          start_ns / 1000000u,
                          result->attempted)) {
@@ -586,7 +596,7 @@ int evidence_run(const evidence_config_t* config,
     }
     ++result->submitted;
 
-    if ((result->submitted % EVIDENCE_INTERMEDIATE_PUMP_INTERVAL) == 0u ||
+    if ((result->submitted % pump_interval) == 0u ||
         monotonic_ms() - last_drain_ms >= EVIDENCE_ACTIVITY_WAIT_MS) {
       if (pump_runtime(runtime,
                        delivered_reader,
