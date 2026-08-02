@@ -32,7 +32,7 @@ Usage:
   bash run.sh runtime/scenarios/<track>/<topology> <command>
   bash run.sh runtime-client [check|version|doctor|docker-bundle|docker-walkthrough|dockerhub-demo]
   bash run.sh runtime-inspect [check|published-smoke|local-smoke|serve|docker-smoke|docker-serve|dockerhub-smoke]
-  bash run.sh runtime/evidence/native [smoke|pressure|stress|soak]
+  bash run.sh runtime-test [smoke|pressure|stress|soak]
 
 Examples:
   bash run.sh
@@ -80,8 +80,8 @@ Runtime languages:
   mojo
   native
 
-Runtime evidence:
-  runtime/evidence/native
+Runtime test:
+  runtime-test
 EOF
 }
 
@@ -259,6 +259,10 @@ case "$1" in
   runtime-inspect)
     shift
     bash "${script_dir}/runtime-inspect/run.sh" "$@"
+    ;;
+  runtime-test)
+    shift
+    bash "${script_dir}/runtime-test/run.sh" "$@"
     ;;
   scenario)
     shift

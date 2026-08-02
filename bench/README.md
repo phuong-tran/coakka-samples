@@ -3,6 +3,10 @@
 This directory is reserved for repeatable load and benchmark support. Treat the
 files here as reference evidence tied to their metadata and execution context.
 
+Start with [`runtime-test/`](../runtime-test/README.md) for auditable public-C-
+ABI correctness, connection-strategy, static-analysis, and sanitizer gates.
+Benchmarking is optional measurement support; it does not replace those tests.
+
 Run a local reference profile:
 
 ```sh

@@ -1,13 +1,14 @@
-# Runtime Evidence
+# Runtime Evidence Compatibility Index
 
-This directory contains repeatable, public-surface evidence scenarios for
-CoAkka Runtime. They verify runtime behavior and expose environment-local
-measurements; they are not cross-machine benchmarks or production SLO claims.
+The active public native harness now lives at the root-level
+[`runtime-test/`](../../runtime-test/README.md), where it is visible before any
+language- or framework-specific sample. This directory remains an index and a
+compatibility location for older commands.
 
 The first lane is the native public-ABI baseline:
 
 ```sh
-bash run.sh runtime/evidence/native smoke
+bash run.sh runtime-test smoke
 ```
 
 It consumes the published native runtime package through the public C ABI. It
@@ -43,15 +44,15 @@ The native lane covers four workload shapes:
 The same public source directory also contains a capability-aware connection
 strategy executable. It verifies all four connection modes, structured
 unsupported/not-entitled results, atomic invalid apply, startup lifecycle, and
-post-start immutability. See [native/README.md](native/README.md) for its build
-command and exact TLS/non-TLS scope.
+post-start immutability. See [Runtime Test](../../runtime-test/README.md) for
+its build command and exact TLS/non-TLS scope.
 
 Payload-oriented runs are opt-in:
 
 ```sh
-bash run.sh runtime/evidence/native smoke --payload 64K --requests 128
-bash run.sh runtime/evidence/native stress --payload 128K --requests 2000
-bash run.sh runtime/evidence/native soak --payload 64K --duration 30s --max-in-flight 64
+bash run.sh runtime-test smoke --payload 64K --requests 128
+bash run.sh runtime-test stress --payload 128K --requests 2000
+bash run.sh runtime-test soak --payload 64K --duration 30s --max-in-flight 64
 ```
 
 Finite runs are capped at 500,000 requests. Pressure remains small-payload
@@ -67,6 +68,6 @@ compiler, build profile, and power mode can all change the result. Run the same
 command several times under controlled conditions and compare complete JSON
 documents, not one isolated throughput value.
 
-See [native/README.md](native/README.md) for the exact measurement boundary,
-pass invariants, mode semantics, JSON fields, and source/prebuilt execution
-paths.
+See [Runtime Test](../../runtime-test/README.md) for the exact measurement
+boundary, pass invariants, mode semantics, JSON fields, and source/prebuilt
+execution paths.

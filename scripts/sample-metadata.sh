@@ -48,7 +48,6 @@ COAKKA_SAMPLE_ROWS=(
   "runtime|mojo|basic|Run one native runtime lifecycle, raw request/reply, and route-miss check from Mojo"
   "runtime|native|basic|Run one route snapshot and route-miss diagnostic from C and C++"
   "runtime|native|pressure|Show bounded runtime queue pressure and deadletter counters from C"
-  "runtime|evidence|native|Run native public-ABI request/reply and bounded-admission evidence as final JSON"
 )
 
 COAKKA_SCENARIO_ROWS=(
@@ -146,6 +145,9 @@ Runtime inspect sample:
   runtime-inspect/docker-smoke    Build a local Docker image from the published Linux inspect archive and smoke it
   runtime-inspect/docker-serve    Start the browser inspect UI from that local Docker image
   runtime-inspect/dockerhub-smoke Run the published Docker Hub inspect sample image
+
+Runtime test:
+  runtime-test                    Audit the native public ABI, connection strategies, and sanitizer-ready harness
 
 Scenario tracks:
 EOF

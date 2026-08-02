@@ -58,7 +58,7 @@ static long logical_cpu_count(void) {
 void evidence_print_help_json(void) {
   printf("{\n");
   printf("  \"schema\": \"coakka.runtime.native.evidence.help.v1\",\n");
-  printf("  \"usage\": \"bash run.sh runtime/evidence/native [smoke|pressure|stress|soak] [--payload 64K] [--requests 128] [--duration 10s] [--queue-capacity 1024] [--max-in-flight 64]\",\n");
+  printf("  \"usage\": \"bash run.sh runtime-test [smoke|pressure|stress|soak] [--payload 64K] [--requests 128] [--duration 10s] [--queue-capacity 1024] [--max-in-flight 64]\",\n");
   printf("  \"payloadPresets\": [\"64K\", \"128K\", \"256K\", \"512K\", \"1M\", \"2M\", \"3M\"],\n");
   printf("  \"pressurePayloadLimit\": \"16K\",\n");
   printf("  \"requestLimitMax\": 500000\n");

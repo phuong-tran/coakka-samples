@@ -24,6 +24,24 @@ metal, and architecture-matched edge deployments. Check the
 [Compatibility Matrix](https://github.com/phuong-tran/coakka-publish/blob/main/docs/compatibility-matrix.md)
 for exact package, OS, CPU, and release-channel evidence.
 
+## Runtime Test
+
+Start with the root-level [`runtime-test/`](runtime-test/README.md) when you
+want to audit the native runtime boundary before choosing a language connector.
+The C11 harness uses only the public C ABI and covers request/reply invariants,
+bounded admission, all four connection strategies, and structured rejection on
+Windows, macOS, and Linux. It also includes static analysis and consumer-side
+ASan/UBSan controls for supported Clang/GCC hosts.
+
+```sh
+bash run.sh runtime-test smoke
+bash run.sh runtime-test pressure --requests 512 --queue-capacity 2
+```
+
+The optional [`bench/`](bench/README.md) tooling adds environment-local load
+measurements. It does not replace the correctness and sanitizer gates in
+`runtime-test/`.
+
 Route application-owned work without inventing another internal REST API.
 
 CoAkka Runtime is a native-backed capability runtime for application-owned
@@ -60,8 +78,8 @@ bash run.sh runtime node basic
 ```
 
 For native public-ABI smoke, pressure, stress, and soak evidence with final
-JSON output, see [Native Runtime Evidence](runtime/evidence/native/README.md)
-or run `bash run.sh runtime/evidence/native smoke`.
+JSON output, see [Runtime Test](runtime-test/README.md) or run
+`bash run.sh runtime-test smoke`.
 Prefer Linux for deployment-oriented measurements; Windows and macOS runs are
 portable correctness gates, and VM throughput is not a comparison point.
 
@@ -216,7 +234,7 @@ and
 | Smallest local Logger API | `bash run.sh logger node basic` |
 | Route miss and deadletter evidence | `bash run.sh runtime node deadletter` |
 | Route generation and hot reload | `bash run.sh runtime python hot-reload` |
-| Native public-ABI smoke, pressure, stress, or soak evidence | `bash run.sh runtime/evidence/native smoke` |
+| Native public-ABI correctness and connection-strategy evidence | `bash run.sh runtime-test smoke` |
 | Framework handoff shape | `bash run.sh list` then choose a `runtime/scenarios/customer-crud/*` lane |
 | Published npm without cloning samples | [docs/first-npm-smoke.md](docs/first-npm-smoke.md) |
 

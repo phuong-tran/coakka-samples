@@ -6,6 +6,13 @@ details live in
 
 ## 2026-08-02
 
+- Promoted the auditable native public-ABI harness to root-level
+  `runtime-test/`, kept the historical path as a compatibility wrapper, and
+  made correctness and connection-strategy evidence visible before optional
+  benchmark tooling.
+- Added a Linux CI lane that runs Clang static analysis and the consumer
+  harness with ASan/UBSan while preserving Windows, macOS, and Linux
+  portability coverage.
 - Added the canonical CoAkka guardian logo and brand guide, with shared assets
   synchronized from the runtime documentation source.
 - Added canonical ecosystem, connection-strategy, TLS/mTLS, support, and
