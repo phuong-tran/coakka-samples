@@ -34,13 +34,22 @@ require_csharp_commands() {
   coakka_require_command dotnet "Install .NET SDK 10 or newer, then retry."
 }
 
+cleanup_temp_dir() {
+  local exit_code="$?"
+  local tmp_dir="$1"
+  trap - EXIT
+  rm -rf "${tmp_dir}"
+  exit "${exit_code}"
+}
+
 prepare_csharp_workspace() {
   local tmp_dir="$1"
 
   export NUGET_PACKAGES="${tmp_dir}/nuget-packages"
+  export NUGET_HTTP_CACHE_PATH="${tmp_dir}/http-cache"
   dotnet new console -o "${tmp_dir}/store" --framework net10.0 --force >/dev/null
   dotnet add "${tmp_dir}/store/store.csproj" package CoAkka.Runtime \
-    --version 1.3.5 \
+    --version 1.4.5 \
     --source "https://api.nuget.org/v3/index.json" >/dev/null
   cp "${script_dir}/Program.cs" "${tmp_dir}/store/Program.cs"
 }
@@ -103,7 +112,7 @@ run_store() {
 
   local tmp_dir
   tmp_dir="$(mktemp -d)"
-  trap "rm -rf '${tmp_dir}'" EXIT
+  trap "cleanup_temp_dir '${tmp_dir}'" EXIT
   prepare_csharp_workspace "${tmp_dir}"
   exec dotnet run --project "${tmp_dir}/store/store.csproj"
 }
@@ -114,7 +123,7 @@ check_scenario() {
 
   local tmp_dir
   tmp_dir="$(mktemp -d)"
-  trap "rm -rf '${tmp_dir}'" EXIT
+  trap "cleanup_temp_dir '${tmp_dir}'" EXIT
   prepare_csharp_workspace "${tmp_dir}"
 
   dotnet build "${tmp_dir}/store/store.csproj" --nologo >/dev/null

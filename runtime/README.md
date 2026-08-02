@@ -213,7 +213,7 @@ go get github.com/phuong-tran/coakka-runtime-go@v1.4.0
 C# NuGet package:
 
 ```sh
-dotnet add package CoAkka.Runtime --version 1.3.5
+dotnet add package CoAkka.Runtime --version 1.4.5
 ```
 
 Rust currently ships as a published archive package:

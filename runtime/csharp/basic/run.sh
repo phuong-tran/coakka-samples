@@ -8,12 +8,19 @@ source "${repo_root}/scripts/sample-utils.sh"
 coakka_require_command dotnet "Install .NET SDK 10 or newer, then retry."
 
 tmp_dir="$(mktemp -d)"
-trap 'rm -rf "${tmp_dir}"' EXIT
+cleanup() {
+  local exit_code="$?"
+  trap - EXIT
+  rm -rf "${tmp_dir}"
+  exit "${exit_code}"
+}
+trap cleanup EXIT
 export NUGET_PACKAGES="${tmp_dir}/nuget-packages"
+export NUGET_HTTP_CACHE_PATH="${tmp_dir}/http-cache"
 
 dotnet new console -o "${tmp_dir}/consumer" --framework net10.0 --force >/dev/null
 dotnet add "${tmp_dir}/consumer/consumer.csproj" package CoAkka.Runtime \
-  --version 1.3.5 \
+  --version 1.4.5 \
   --source "https://api.nuget.org/v3/index.json" >/dev/null
 cp "${script_dir}/Program.cs" "${tmp_dir}/consumer/Program.cs"
 
