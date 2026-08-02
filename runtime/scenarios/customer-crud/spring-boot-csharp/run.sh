@@ -49,7 +49,7 @@ prepare_csharp_workspace() {
   export NUGET_HTTP_CACHE_PATH="${tmp_dir}/http-cache"
   dotnet new console -o "${tmp_dir}/store" --framework net10.0 --force >/dev/null
   dotnet add "${tmp_dir}/store/store.csproj" package CoAkka.Runtime \
-    --version 1.4.5 \
+    --version 1.4.6 \
     --source "https://api.nuget.org/v3/index.json" >/dev/null
   cp "${script_dir}/Program.cs" "${tmp_dir}/store/Program.cs"
 }

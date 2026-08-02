@@ -7,7 +7,8 @@ details live in
 ## 2026-08-03
 
 - Advanced the C# runtime samples to registry-verified
-  `CoAkka.Runtime==1.4.5`, which bundles native runtime generation
+  `CoAkka.Runtime==1.4.6`, which fixes the NuGet gallery logo and public C#
+  transport documentation link while retaining native runtime generation
   `1.4.0+2cee86bf` for macOS ARM64, Linux ARM64, and Windows x86-64.
 - Advanced the Python runtime samples to registry-verified
   `coakka-v2-connector==1.4.5`, which embeds native runtime generation
