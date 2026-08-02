@@ -4,6 +4,13 @@ This changelog summarizes the public runnable sample surface. Artifact release
 details live in
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish).
 
+## 2026-08-03
+
+- Advanced the Python runtime samples to registry-verified
+  `coakka-v2-connector==1.4.5`, which embeds native runtime generation
+  `1.4.0+2cee86bf`. Basic, deadletter, hot-reload, and desktop-local samples
+  continue to install from PyPI in disposable environments.
+
 ## 2026-08-02
 
 - Aligned public artifact pins and runnable archive consumers with runtime

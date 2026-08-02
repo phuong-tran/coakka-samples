@@ -90,7 +90,7 @@ COAKKA_ARTIFACT_ROWS=(
   "logger Native package|logger/native/releases/1.2.1+f50756ebff0d/coakka-logger-native-1.2.1.tar.gz"
   "runtime Native package|${COAKKA_RUNTIME_NATIVE_ARTIFACT}"
   "runtime JVM jar|runtime/jvm/releases/1.4.0+2cee86bf-ec4902c/coakka-jvm-native-runtime-v2-1.4.0-g2cee86bf-ec4902c.jar"
-  "runtime Python wheel|runtime/python/releases/1.4.0+2cee86bf-ec4902c/coakka_v2_connector-1.4.0-py3-none-any.whl"
+  "runtime Python wheel|runtime/python/releases/1.4.0+2cee86bf-77c9db8/coakka_v2_connector-1.4.5-py3-none-any.whl"
   "runtime Node package|runtime/node/releases/1.4.0+2cee86bf-ec4902c/coakka-v2-connector-node-1.4.0.tgz"
   "runtime Bun package|runtime/bun/releases/1.4.0+2cee86bf-ec4902c/coakka-v2-connector-bun-1.4.0.tgz"
   "runtime Electron package|runtime/electron/releases/1.4.0+2cee86bf-ec4902c/coakka-v2-connector-electron-1.4.0.tgz"
