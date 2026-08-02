@@ -53,7 +53,68 @@ A rejected apply does not partially publish fields. The connector should
 serialize lifecycle/configuration ownership for one runtime rather than racing
 multiple configuration writers.
 
+## Use Your Language Connector
+
+Connection strategy is not a C-only feature. The C ABI below is the stable
+contract shared by the ecosystem; application developers normally select a
+strategy through their host-language connector. Every full runtime connector
+maps the same startup selection, effective-capability discovery, structured
+apply result, and effective-configuration snapshot.
+
+Current connector surfaces include native C/C++, JVM/Kotlin, Spring Boot,
+Quarkus, Node.js, Bun, Electron, Python, Go, C#, Rust, Swift, Zig, and Mojo.
+Availability of optional modes and tuning is determined by the effective
+capability bits of the exact native artifact being loaded, not by requiring an
+application to call C directly.
+
+## Kotlin/JVM Example
+
+This example selects bounded connection reuse and leaves numeric tuning absent
+so the runtime owns its published defaults:
+
+```kotlin
+import coakka.v2.connector.*
+
+val capabilities = RuntimeHandle.readRuntimeCapabilities()
+require(
+    capabilities.supports(CoakkaRuntimeCapabilities.TCP_BOUNDED_POOL),
+) { "This runtime artifact does not provide bounded-pool connections" }
+
+val strategy = RuntimeTcpConnectionStrategySpec(
+    mode = RuntimeTcpConnectionMode.BOUNDED_POOL,
+)
+
+ConnectorOrchestrator.start(
+    startSpec = RuntimeStartSpec(
+        systemName = "orders",
+        nodeId = "orders-a",
+        routes = loadRoutes(),
+        connectionStrategy = strategy,
+    ),
+).use { runtime ->
+    val startup = requireNotNull(runtime.startupConnectionResult())
+    check(startup.applied()) {
+        "Connection strategy rejected: ${startup.reasonName}; " +
+            "active mode=${startup.activeConfig.mode}"
+    }
+    check(runtime.tcpConnectionConfig().mode == strategy.mode)
+
+    // Register handlers and send requests through the normal connector API.
+}
+```
+
+`ConnectorOrchestrator.start(...)` applies the strategy while the runtime is
+still `CREATED` and throws `RuntimeTcpConnectionApplyException` if startup
+policy is rejected. Use `PER_EXCHANGE` without an optional capability check;
+check the matching capability before selecting any advanced mode. Add numeric
+pool tuning only when `TCP_POOL_TUNING` is effective and measurements justify
+overriding the runtime defaults.
+
 ## C Example
+
+This lower-level example is for native hosts and connector authors. It shows
+the common ABI contract; it is not a requirement for Kotlin or other language
+applications.
 
 ```c
 static coakka_v2_status_t select_connection_mode(
