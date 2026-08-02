@@ -10,6 +10,19 @@ Troubleshooting: [docs/troubleshooting.md](docs/troubleshooting.md)
 Contact: `gabrielgun1983@gmail.com`
 
 **CoAkka is a polyglot, multi-language, multi-platform runtime ecosystem.**
+
+CoAkka Runtime is a native-backed capability runtime for application-owned
+work across processes and languages. It helps an app route work by stable
+target name, handle request/reply, report deadletters, enforce bounded
+admission, and expose delivery diagnostics without turning every internal
+handoff into another hand-written HTTP endpoint.
+
+Application-owned work means capability code governed by the same product or
+application boundary, even when it runs in another process, language,
+container, or host.
+
+CoAkka Logger is a separate bounded logging surface in the same ecosystem.
+
 One native core and a stable public C ABI support native C/C++, JVM and
 framework adapters, JavaScript runtimes, Python, Go, C#, Rust, Swift, Zig,
 Mojo, and related host integrations according to each release's compatibility
@@ -52,18 +65,6 @@ measurements. It does not replace the correctness and sanitizer gates in
 `runtime-test/`.
 
 Route application-owned work without inventing another internal REST API.
-
-CoAkka Runtime is a native-backed capability runtime for application-owned
-work across processes and languages. It helps an app route work by stable
-target name, handle request/reply, report deadletters, enforce bounded
-admission, and expose delivery diagnostics without turning every internal
-handoff into another hand-written HTTP endpoint.
-
-Application-owned work means capability code governed by the same product or
-application boundary, even when it runs in another process, language,
-container, or host.
-
-CoAkka Logger is a separate bounded logging surface in the same ecosystem.
 
 ## First Run
 
