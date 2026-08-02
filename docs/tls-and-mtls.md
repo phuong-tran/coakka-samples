@@ -46,7 +46,71 @@ or reuse the strings after the call returns. The runtime-owned compatibility
 credential-ID pointer is valid until the next successful security apply or
 runtime destruction; new connectors should copy the inline identity block.
 
+## Use Your Language Connector
+
+TLS/mTLS is not a C-only feature. The C ABI below is the stable contract shared
+by the ecosystem; application developers normally use the types exposed by
+their host-language connector. Every full runtime connector maps the same
+startup security policy, capability discovery, structured apply result, and
+same-mode newer-generation credential reload semantics.
+
+Current connector surfaces include native C/C++, JVM/Kotlin, Spring Boot,
+Quarkus, Node.js, Bun, Electron, Python, Go, C#, Rust, Swift, Zig, and Mojo.
+Availability is determined by the effective capability bits and native platform
+matrix of the exact artifact being loaded, not by requiring an application to
+call C directly.
+
+## Kotlin/JVM Example
+
+```kotlin
+import coakka.v2.connector.*
+
+val security = RuntimeTcpSecuritySpec(
+    mode = RuntimeTcpSecurityMode.MUTUAL_TLS,
+    reloadMode = RuntimeTlsReloadMode.GRACEFUL,
+    credentialGeneration = 1,
+    credentialId = "factory-line-a-generation-1",
+    caCertificateFile = "/run/coakka/ca.pem",
+    identityCertificateFile = "/run/coakka/identity-chain.pem",
+    privateKeyFile = "/run/coakka/identity-key.pem",
+)
+
+RuntimeHandle.open(
+    startSpec = RuntimeStartSpec(
+        systemName = "factory-line-a",
+        nodeId = "gateway-1",
+        routes = loadRoutes(),
+        security = security,
+    ),
+).use { runtime ->
+    runtime.start()
+
+    val result = runtime.applyTcpSecurity(
+        security.copy(
+            credentialGeneration = 2,
+            credentialId = "factory-line-a-generation-2",
+            identityCertificateFile = "/run/coakka/next/identity-chain.pem",
+            privateKeyFile = "/run/coakka/next/identity-key.pem",
+        ),
+    )
+    check(result.applied()) {
+        "TLS reload rejected: ${result.reasonName}; " +
+            "active generation=${result.activeSecurity.credentialGeneration}"
+    }
+}
+```
+
+`RuntimeHandle.open(...)` applies the initial security policy while the runtime
+is still `CREATED`; `start()` begins runtime work after that policy succeeds.
+The reload call is synchronous and may perform file I/O and certificate
+validation, so invoke it from application control flow rather than a
+latency-sensitive request handler.
+
 ## C Example
+
+This lower-level example is for native hosts and connector authors. It shows
+the common ABI contract; it is not a requirement for Kotlin or other language
+applications.
 
 ```c
 coakka_v2_tcp_security_options_t security = {0};
@@ -112,7 +176,7 @@ if (!result.applied()) {
 
 The C++ connector copies all non-secret result metadata. The input path strings
 remain caller-owned and are borrowed only during synchronous apply. See
-[Native C++ Transport Configuration API](../connectors/native-cpp-transport-configuration.md)
+[Native C++ Transport Configuration API](https://github.com/phuong-tran/coakka-publish/blob/main/docs/native-cpp-transport-configuration.md)
 for per-function thread-safety, blocking, and error contracts.
 
 ## Rotation And Failure Semantics

@@ -6,6 +6,9 @@ details live in
 
 ## 2026-08-03
 
+- Clarified that TLS/mTLS is available through full host-language runtime
+  connectors, added a Kotlin/JVM startup and credential-reload example, and
+  replaced the broken projected native C++ API link with its public URL.
 - Advanced the C# runtime samples to registry-verified
   `CoAkka.Runtime==1.4.6`, which fixes the NuGet gallery logo and public C#
   transport documentation link while retaining native runtime generation

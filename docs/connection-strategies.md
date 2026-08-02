@@ -127,7 +127,7 @@ if (capabilities.supports(COAKKA_V2_CAPABILITY_TCP_MULTIPLEXING)) {
 These assignments demonstrate four independent selections. Construct one
 `ConnectorOrchestrator` only after choosing the desired mode. For complete
 ownership, lifecycle, error, and result semantics, see
-[Native C++ Transport Configuration API](../connectors/native-cpp-transport-configuration.md).
+[Native C++ Transport Configuration API](https://github.com/phuong-tran/coakka-publish/blob/main/docs/native-cpp-transport-configuration.md).
 
 ## Operational Selection
 
