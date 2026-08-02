@@ -108,8 +108,55 @@ For Linux load failures, check in this order:
 5. C/C++ runtime and OpenSSL compatibility recorded by the release.
 6. Organization-specific integrity enforcement.
 
+Do not treat every system-runtime dependency as a bundled CoAkka
+implementation dependency. Read the exact release evidence, then use the OS
+vendor's package channel:
+
+- On Linux, `ldd` or `objdump -p` shows the required SONAMEs. If the loader
+  reports `libz.so.1` or `libzstd.so.1` missing, install the architecture-
+  matched zlib or zstd runtime package from the distribution repository. Do
+  not create an unversioned compatibility symlink.
+- On Windows, missing `MSVCP140*.dll` or `VCRUNTIME140*.dll` requires the
+  official architecture-matched Microsoft Visual C++ 2015-2022
+  Redistributable. Do not download individual DLL files from third-party
+  sites.
+- On macOS, verify `otool -L` dependencies against system frameworks and
+  `/usr/lib` libraries recorded for that release. A missing non-system path is
+  a packaging defect and should be reported.
+
 For macOS Gatekeeper or Windows publisher warnings, verify the bytes and follow
 local policy. Do not disable system-wide security controls as a generic fix.
+
+### macOS sanitizer process does not reach `main`
+
+Some AppleClang and macOS combinations can stall while AddressSanitizer is
+initializing shadow memory, before any consumer or CoAkka code executes. A run
+that never reaches `main` is a toolchain failure, not a passing sanitizer gate
+and not by itself evidence of a runtime defect.
+
+Confirm the boundary with a zero-work ASan probe or a debugger breakpoint at
+`main`. If the probe also stalls before `main`, use a current Homebrew LLVM
+Clang while retaining Xcode's archive tools for Mach-O builds:
+
+```bash
+LLVM_PREFIX="$(brew --prefix llvm)"
+APPLE_AR="$(xcrun --find ar)"
+APPLE_RANLIB="$(xcrun --find ranlib)"
+
+cmake -S runtime-test -B build/native-evidence-sanitized \
+  -DCMAKE_C_COMPILER="$LLVM_PREFIX/bin/clang" \
+  -DCMAKE_AR="$APPLE_AR" \
+  -DCMAKE_RANLIB="$APPLE_RANLIB" \
+  -DCOAKKA_NATIVE_EVIDENCE_ENABLE_SANITIZERS=ON
+cmake --build build/native-evidence-sanitized
+```
+
+Run with `ASAN_OPTIONS=halt_on_error=1:abort_on_error=1:detect_leaks=1` and
+`UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1`. Record the compiler version,
+runtime generation, and whether the tested runtime library itself was
+sanitizer-instrumented. Instrumenting only `runtime-test` proves the public
+consumer harness; it does not convert an ordinary release library into a
+sanitized core build. Linux remains the leak-detection authority.
 
 If `codesign -d --verbose=4` reports `adhoc` or `linker-signed` with no Team ID,
 the Mach-O file has no Apple publisher identity. That output does not conflict

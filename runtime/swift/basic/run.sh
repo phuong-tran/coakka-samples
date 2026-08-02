@@ -22,7 +22,7 @@ let package = Package(
     name: "CoAkkaRuntimeSwiftBasicSample",
     platforms: [.macOS(.v13)],
     dependencies: [
-        .package(url: "https://github.com/phuong-tran/coakka-runtime-swift.git", exact: "1.3.4"),
+        .package(url: "https://github.com/phuong-tran/coakka-runtime-swift.git", exact: "1.4.0"),
     ],
     targets: [
         .executableTarget(
