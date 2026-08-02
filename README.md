@@ -1,9 +1,28 @@
 # coakka-samples
 
+<p align="center">
+  <img src="docs/assets/brand/coakka-logo.png" alt="CoAkka" width="480">
+</p>
+
 [![sample-smoke](https://github.com/phuong-tran/coakka-samples/actions/workflows/sample-smoke.yml/badge.svg)](https://github.com/phuong-tran/coakka-samples/actions/workflows/sample-smoke.yml)
 
 Troubleshooting: [docs/troubleshooting.md](docs/troubleshooting.md)
 Contact: `gabrielgun1983@gmail.com`
+
+**CoAkka is a polyglot, multi-language, multi-platform runtime ecosystem.**
+One native core and a stable public C ABI support native C/C++, JVM and
+framework adapters, JavaScript runtimes, Python, Go, C#, Rust, Swift, Zig,
+Mojo, and related host integrations according to each release's compatibility
+row.
+
+Kubernetes is a first-class deployment lane because topology, rollout, and
+scale require deep operational guidance. It is not a prerequisite. The same
+target, request/reply, bounded-admission, and deadletter contract also applies
+to standalone Linux services, macOS and Windows hosts, containers, VMs, bare
+metal, and architecture-matched edge deployments. Check the
+[Ecosystem Overview](docs/ecosystem-overview.md) and the
+[Compatibility Matrix](https://github.com/phuong-tran/coakka-publish/blob/main/docs/compatibility-matrix.md)
+for exact package, OS, CPU, and release-channel evidence.
 
 Route application-owned work without inventing another internal REST API.
 

@@ -49,8 +49,8 @@ podman compose up
 
 The sample design should not require Docker Desktop. It should work with Docker
 Engine plus `docker compose`, or with Podman plus `podman compose` or
-`podman-compose` where available. Enterprise users can choose the container
-runtime approved by their environment.
+`podman-compose` where available. Operators can choose the container runtime
+approved by their environment.
 
 ## Wave Plan
 

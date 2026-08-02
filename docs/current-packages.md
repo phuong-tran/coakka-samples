@@ -3,6 +3,12 @@
 This page lists the current public package-manager entrypoints for CoAkka
 Runtime and CoAkka Logger.
 
+Every runtime package below is a connector into the same polyglot,
+multi-language, multi-platform CoAkka Runtime ecosystem. A Python, Go, C#,
+Swift, or JavaScript package is not a separate language-specific CoAkka
+runtime; each projects the same native core and public runtime contract into
+its host language.
+
 Package versions are independent across the ecosystem. A NuGet package, npm
 package, PyPI package, Go module, and SwiftPM tag do not need to share the same
 version number. Each lane follows the release cadence of its connector,

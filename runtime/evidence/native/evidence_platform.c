@@ -7,6 +7,7 @@
 #endif
 #include <windows.h>
 
+#include <io.h>
 #include <process.h>
 
 uint64_t evidence_platform_monotonic_ns(void) {
@@ -30,12 +31,8 @@ unsigned int evidence_platform_process_id(void) {
 }
 
 void evidence_platform_close_channel(int* channel) {
-  if (channel != NULL) {
-    /*
-     * The descriptor was created by the runtime DLL's C runtime. Passing it
-     * into a different host CRT can fast-fail; this process-scoped harness
-     * leaves final descriptor reclamation to process teardown on Windows.
-     */
+  if (channel != NULL && *channel >= 0) {
+    (void)_close(*channel);
     *channel = -1;
   }
 }
@@ -43,13 +40,49 @@ void evidence_platform_close_channel(int* channel) {
 int evidence_platform_wait_readable(const int* channels,
                                     size_t channel_count,
                                     unsigned int timeout_ms) {
-  (void)channels;
-  (void)channel_count;
-  if (timeout_ms > 0) {
-    /* frame_read_try remains the readiness authority across the DLL boundary. */
-    Sleep(timeout_ms > 1u ? 1u : timeout_ms);
+  HANDLE handles[3];
+  size_t index;
+  const ULONGLONG deadline = GetTickCount64() + (ULONGLONG)timeout_ms;
+
+  if (channels == NULL ||
+      channel_count > sizeof(handles) / sizeof(handles[0])) {
+    return 1;
   }
-  return 0;
+  if (channel_count == 0u) {
+    return 0;
+  }
+  for (index = 0u; index < channel_count; ++index) {
+    const intptr_t os_handle = _get_osfhandle(channels[index]);
+    if (os_handle == -1) {
+      return 1;
+    }
+    handles[index] = (HANDLE)os_handle;
+  }
+  for (;;) {
+    for (index = 0u; index < channel_count; ++index) {
+      DWORD available = 0u;
+      if (PeekNamedPipe(handles[index], NULL, 0u, NULL, &available, NULL) != 0) {
+        if (available > 0u) {
+          return 0;
+        }
+        continue;
+      }
+      const DWORD error = GetLastError();
+      if (error == ERROR_BROKEN_PIPE || error == ERROR_PIPE_NOT_CONNECTED) {
+        return 0;
+      }
+      return 1;
+    }
+    if (GetTickCount64() >= deadline) {
+      return 0;
+    }
+    /* CRT anonymous pipes have no pollable readiness handle on Windows. */
+    Sleep(1u);
+  }
+}
+
+const char* evidence_platform_wait_backend(void) {
+  return "peek-named-pipe-bounded-poll";
 }
 
 long evidence_platform_logical_cpu_count(void) {
@@ -60,6 +93,7 @@ long evidence_platform_logical_cpu_count(void) {
 #else
 
 #include <errno.h>
+#include <limits.h>
 #include <poll.h>
 #include <time.h>
 #include <unistd.h>
@@ -94,8 +128,11 @@ int evidence_platform_wait_readable(const int* channels,
   struct pollfd poll_channels[3];
   size_t index;
   int result;
+  const int poll_timeout_ms =
+      timeout_ms > (unsigned int)INT_MAX ? INT_MAX : (int)timeout_ms;
 
-  if (channel_count > sizeof(poll_channels) / sizeof(poll_channels[0])) {
+  if (channels == NULL ||
+      channel_count > sizeof(poll_channels) / sizeof(poll_channels[0])) {
     return 1;
   }
   for (index = 0; index < channel_count; ++index) {
@@ -104,10 +141,12 @@ int evidence_platform_wait_readable(const int* channels,
     poll_channels[index].revents = 0;
   }
   do {
-    result = poll(poll_channels, channel_count, (int)timeout_ms);
+    result = poll(poll_channels, channel_count, poll_timeout_ms);
   } while (result < 0 && errno == EINTR);
   return result < 0 ? 1 : 0;
 }
+
+const char* evidence_platform_wait_backend(void) { return "poll"; }
 
 long evidence_platform_logical_cpu_count(void) {
 #if defined(__APPLE__)
@@ -127,3 +166,29 @@ long evidence_platform_logical_cpu_count(void) {
 }
 
 #endif
+
+void evidence_platform_close_channels(int* const channels[],
+                                      size_t channel_count) {
+  size_t index;
+
+  if (channels == NULL) {
+    return;
+  }
+  for (index = 0u; index < channel_count; ++index) {
+    size_t duplicate_index;
+    int channel;
+
+    if (channels[index] == NULL || *channels[index] < 0) {
+      continue;
+    }
+    channel = *channels[index];
+    for (duplicate_index = index + 1u; duplicate_index < channel_count;
+         ++duplicate_index) {
+      if (channels[duplicate_index] != NULL &&
+          *channels[duplicate_index] == channel) {
+        *channels[duplicate_index] = -1;
+      }
+    }
+    evidence_platform_close_channel(channels[index]);
+  }
+}

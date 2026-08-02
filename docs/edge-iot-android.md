@@ -111,9 +111,9 @@ A proper Android lane should include:
 - emulator or device smoke tests;
 - an industrial-tablet sample app.
 
-So the short answer is: yes, CoAkka can fit Android industrial tablets, but the
-release roadmap should validate edge Linux devices first, then publish Android
-as a dedicated packaging and lifecycle lane.
+So the short answer is: yes, CoAkka can fit Android industrial tablets.
+Compatibility evidence should identify the exact host, ABI, lifecycle path,
+connector version, and device or emulator that were exercised.
 
 ## Failure Model
 

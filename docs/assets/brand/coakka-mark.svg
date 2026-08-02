@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 360" role="img" aria-labelledby="title">
+  <title id="title">CoAkka guardian mark</title>
+  <g transform="translate(40 10)">
+    <path fill="#C96B23" d="M35 112 68 70C53 49 57 23 78 7c-9 30 6 50 30 59l32-46 32 46c24-9 39-29 30-59 21 16 25 42 10 63l33 42h-46l-59-63-59 63Z"/>
+    <path fill="#C96B23" d="m140 72 12 17-12 17-12-17Z"/>
+    <path d="M75 145a88 88 0 0 0 30 142" fill="none" stroke="#C96B23" stroke-width="18" stroke-linecap="butt"/>
+    <path d="M205 145a88 88 0 0 1-30 142" fill="none" stroke="#006B75" stroke-width="18" stroke-linecap="butt"/>
+    <circle cx="68" cy="210" r="11" fill="#FFF8E8" stroke="#C96B23" stroke-width="9"/>
+    <circle cx="212" cy="210" r="11" fill="#FFF8E8" stroke="#006B75" stroke-width="9"/>
+    <path d="M181 166a58 58 0 1 0 0 88" fill="none" stroke="#101416" stroke-width="28" stroke-linecap="butt"/>
+    <path fill="#006B75" d="m140 187 7 16 16 7-16 7-7 16-7-16-16-7 16-7Z"/>
+    <path fill="#101416" d="m126 289 28 0-4 24-10 14-10-14Z"/>
+  </g>
+</svg>

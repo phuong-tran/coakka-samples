@@ -1,10 +1,16 @@
 # CoAkka Ecosystem Overview
 
-CoAkka is a native-backed runtime ecosystem for routing application-owned work
-by stable target name across process, language, container, and host boundaries.
-The core owns bounded execution, request/reply, deadletters, delivery evidence,
-and transport mechanics. Connectors adapt host-language objects and lifecycle
-to the stable public C ABI without redefining core semantics.
+CoAkka is a polyglot, multi-language, multi-platform native-backed runtime
+ecosystem for routing application-owned work by stable target name across
+process, language, container, and host boundaries. The core owns bounded
+execution, request/reply, deadletters, delivery evidence, and transport
+mechanics. Connectors adapt host-language objects and lifecycle to the stable
+public C ABI without redefining core semantics.
+
+Kubernetes is a first-class deployment lane because its topology, rollout,
+policy, and scale deserve detailed operational treatment. It is not a runtime
+prerequisite. The same contract applies to standalone services, containers,
+VMs, bare-metal hosts, and architecture-matched edge deployments.
 
 ## Repository Boundaries
 
@@ -54,16 +60,13 @@ devices are common reasons to use runtime-owned TLS/mTLS instead of depending on
 a Kubernetes ingress or service mesh. Their networks are controlled networks,
 not automatically secure networks.
 
-## Release Truth
+## Package Truth
 
-Edition, release channel, and lifecycle are separate:
-
-- Community and Enterprise use the same public ABI shape.
-- Enterprise Preview is the Enterprise edition on a `preview` channel, not a
-  stable or long-term-support promise.
-- `candidate`, `promoted`, and `revoked` describe release lifecycle.
-- A package or platform is available only when its exact release metadata says
-  so.
+- All connectors use the same public ABI shape and discover effective runtime
+  capabilities instead of inferring behavior from a package name.
+- Package versions are independent across language ecosystems.
+- A package or platform is available only when its exact release metadata and
+  compatibility evidence say so.
 
 Start operational work with [Troubleshooting](troubleshooting.md). For private
 or sensitive issues, use [Contact And Support](contact-and-support.md).

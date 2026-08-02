@@ -40,6 +40,12 @@ The native lane covers four workload shapes:
 | `stress` | Run a larger finite local request/reply workload with an explicit payload. |
 | `soak` | Submit for a bounded duration with an explicit in-flight guard, then drain. |
 
+The same public source directory also contains a capability-aware connection
+strategy executable. It verifies all four connection modes, structured
+unsupported/not-entitled results, atomic invalid apply, startup lifecycle, and
+post-start immutability. See [native/README.md](native/README.md) for its build
+command and exact TLS/non-TLS scope.
+
 Payload-oriented runs are opt-in:
 
 ```sh

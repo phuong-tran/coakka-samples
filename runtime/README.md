@@ -121,7 +121,7 @@ Electron intent bridge:
 npm install coakka-v2-connector-electron@1.3.9
 ```
 
-Bun, Tauri, and Electron release gate:
+Bun, Tauri, and Electron validation commands:
 
 ```sh
 bash scripts/verify-runtime-release-lanes.sh

@@ -12,6 +12,8 @@ terminal or script:
 
 - print version and build diagnostics
 - run `doctor` checks against the packaged runtime client
+- read a bounded capability, connection-strategy, and non-secret security
+  snapshot from a connected runtime
 - send one request to a runtime target
 - use `call` or `ask` for request/reply verification
 - carry payload metadata such as content type, message type, schema version,
@@ -21,6 +23,32 @@ terminal or script:
 It is not a dashboard, topology authority, inspect product, service discovery
 layer, business schema registry, or replacement for HTTP/gRPC at real API
 edges.
+
+## Local And Connected Truth
+
+`version` and `doctor` report the local `coakka-client` binary and its packaged
+runtime dependencies. They do not infer the configuration of a remote process.
+
+Use `runtime-info` when the runtime at the selected address must answer for
+itself and its host exposes the snapshot target:
+
+```sh
+coakka-client runtime-info --connect runtime.example.internal:19301
+```
+
+The command sends one bounded request to the host-exposed, runtime-owned
+`coakka.runtime.inspect.snapshot` route. The JSON response includes runtime
+identity, effective capability masks, connection mode and tuning provenance,
+plus non-secret TLS state such as mode, credential generation, certificate
+bounds, and fingerprint when available. It never returns private keys,
+certificate contents, or credential file paths.
+
+Use `--timeout-ms <milliseconds>` to bound the request, and `--route <target>`
+only when an integration intentionally publishes the snapshot under another
+target. Connection, timeout, deadletter, invalid snapshot, and runtime error
+outcomes are returned as structured JSON with a nonzero process exit status.
+The command prints the runtime-provided snapshot unchanged after validating
+that the response is a JSON object.
 
 ## Naming
 
@@ -93,6 +121,9 @@ without building the native runtime locally.
 
 `coakka-client` is script-first terminal tooling.
 `coakka-runtime-inspect` is read-first browser exploration.
+
+`runtime-info` is the bounded scriptable snapshot path. It does not turn the
+CLI into a long-running dashboard or topology authority.
 
 They should teach the same runtime vocabulary: target, payload identity, route
 snapshot, reply, timeout, deadletter, stats, and diagnostics.

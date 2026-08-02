@@ -96,6 +96,42 @@ harness retries and reports as `replySubmitBackpressure`.
 that bounded admission can never reject work; pressure mode exists specifically
 to prove that rejection is explicit.
 
+## Connection Strategy Contract
+
+The second executable in this source directory exercises connection strategy
+configuration through the same published C ABI. It does not reach into private
+headers or infer support from an edition name. For each mode it reads the
+runtime capability snapshot, then proves the supported apply or the structured
+capability rejection:
+
+- `PER_EXCHANGE`
+- `BOUNDED_POOL`
+- `PERSISTENT_SINGLE_FLIGHT`
+- `MULTIPLEXING`
+
+Every case also applies an invalid mode and verifies that effective state is
+unchanged. It then exports host handles, applies an empty generation-1 control
+snapshot, starts the runtime, and verifies that a valid reconfiguration attempt
+returns `BAD_STATE` without mutation. The JSON records whether each stage ran;
+an unexecuted stage is never serialized as a successful status.
+
+The bounded-pool case checks explicit tuning only when the runtime advertises
+the tuning capability. Otherwise it requires the matching structured rejection
+and unchanged state. The lane does not load certificates and does not claim a
+TLS/mTLS handshake; TLS behavior remains covered by the runtime's dedicated
+security matrix and the public TLS/mTLS guide.
+
+Build this executable against a runtime package that exposes
+`coakka/v2/runtime_transport_config.h`:
+
+```sh
+cmake -S runtime/evidence/native -B build/native-connection-evidence \
+  -DCMAKE_PREFIX_PATH=/path/to/coakka-runtime-native-v2 \
+  -DCOAKKA_NATIVE_EVIDENCE_REQUIRE_CONNECTION_STRATEGY=ON
+cmake --build build/native-connection-evidence --config Release
+./build/native-connection-evidence/coakka_runtime_v2_connection_strategy_evidence
+```
+
 ## Run
 
 From the `coakka-samples` repository root:
@@ -198,6 +234,9 @@ The public harness is intentionally split by ownership:
 | [`evidence_platform.c`](evidence_platform.c) | Monotonic clock, process metadata, channel wait, and OS adaptation. |
 | [`evidence_runtime.c`](evidence_runtime.c) | Public C ABI adapter, target path, runtime pumping, and pass invariants. |
 | [`evidence_report.c`](evidence_report.c) | Environment metadata and the final JSON document. |
+| [`connection_strategy_contract.c`](connection_strategy_contract.c) | Capability-aware validation, atomic apply, lifecycle, and immutability checks. |
+| [`connection_strategy_report.c`](connection_strategy_report.c) | Machine-readable connection-strategy evidence without ambiguous default statuses. |
+| [`evidence_json.c`](evidence_json.c) | Shared JSON string writer used by both evidence executables. |
 
 Raw host-handle field names stay inside the public ABI adapter. The rest of the
 harness uses request, response, deadletter, and delivered-request channel
@@ -208,10 +247,35 @@ returns `WOULD_BLOCK`, it yields to the common pump so response and deadletter
 channels can make progress before the next retry; it does not sleep or spin in
 the handler path.
 
-The current Clang/GCC source build uses strict C11 without compiler language
-extensions and enables `-Wall -Wextra -Wpedantic`. Published Windows runners
-are built from the same source with Zig's C toolchain and the exported public
-C ABI surface.
+The Clang/GCC source build uses strict C11 without compiler language extensions
+and enables `-Wall -Wextra -Wpedantic -Werror` by default. MSVC uses `/W4 /WX`.
+Published Windows runners are built from the same source with the exported
+public C ABI surface. Windows readiness uses a bounded `PeekNamedPipe` fallback
+because CRT anonymous pipes are not socket-pollable; Linux and macOS use
+`poll`. The selected backend is recorded in `environment.readinessWaitBackend`.
+
+Run Clang static analysis over every available public translation unit:
+
+```sh
+CLANG=clang bash runtime/evidence/native/analyze.sh \
+  /path/to/coakka-runtime-native-v2/include
+```
+
+For consumer-harness ASan/UBSan instrumentation, configure with:
+
+```sh
+cmake -S runtime/evidence/native -B build/native-evidence-sanitized \
+  -DCMAKE_PREFIX_PATH=/path/to/coakka-runtime-native-v2 \
+  -DCOAKKA_NATIVE_EVIDENCE_ENABLE_SANITIZERS=ON
+cmake --build build/native-evidence-sanitized
+```
+
+That option instruments this public harness. It proves the public consumer code
+only when the selected runtime library is an ordinary published binary. To make
+a sanitizer claim about core, link the harness to an ASan/UBSan-instrumented
+runtime built from the same source and record both build identities. Linux is
+the leak-detection authority; macOS is an ASan/UBSan correctness lane, and no
+Windows sanitizer result is implied.
 
 ## Source And Prebuilt Paths
 

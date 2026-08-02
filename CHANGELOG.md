@@ -6,15 +6,22 @@ details live in
 
 ## 2026-08-02
 
-- Staged the canonical ecosystem, connection-strategy, TLS/mTLS, support, and
-  troubleshooting guides for the runtime-v2 connector train.
+- Added the canonical CoAkka guardian logo and brand guide, with shared assets
+  synchronized from the runtime documentation source.
+- Added canonical ecosystem, connection-strategy, TLS/mTLS, support, and
+  troubleshooting guides.
 - Made the multi-language and multi-platform ecosystem, verified compatibility
   boundary, and contact paths visible from the root README.
-- Kept examples free of unverified benchmark claims and made no sample package
-  or registry release claim.
-- Clarified in common troubleshooting that Windows, macOS, and Linux remain
-  distribution targets when one connector checkpoint has narrower execution
-  evidence; the missing evidence remains a release gate.
+- Kept examples free of unverified benchmark claims.
+- Clarified that Windows, macOS, and Linux remain distribution targets while
+  bundled bytes, source compilation, and end-to-end execution are reported as
+  separate evidence.
+- Added strict public C11 connection-strategy evidence for all four modes,
+  atomic rejection/rollback, complete runtime lifecycle, and post-start
+  immutability, plus Clang static-analysis and consumer ASan/UBSan entrypoints.
+- Documented connected `coakka-client runtime-info` snapshots and inspect
+  transport diagnostics, including capability truth, connection-policy
+  provenance, and non-secret TLS/mTLS state.
 
 ## 2026-07-31
 

@@ -83,15 +83,16 @@ where peer identity, encryption, certificate rotation, and authorization live.
 ## Artifact Integrity And Platform Warnings
 
 First compare the archive SHA-256 and, after extraction, the inner runtime
-library SHA-256 with release metadata. A candidate is not a promoted release
-merely because its archive can be downloaded.
+library SHA-256 with release metadata. Also confirm the release channel,
+edition/profile, OS, and CPU architecture before loading the library.
 
 The ecosystem distribution keeps target-specific runtime artifacts for
-Windows, macOS, and Linux. Connector execution evidence for one checkpoint may
-cover fewer OS/architecture lanes than the distribution matrix; that evidence
-gap is a release gate, not a reason to silently remove another operating system
-from the package. Always select the archive matching both OS and CPU, then read
-the exact release compatibility/evidence row before diagnosing the loader.
+Windows, macOS, and Linux. A connector validation run may cover fewer
+OS/architecture lanes than the distribution matrix; bundled bytes, source
+compilation, and end-to-end execution are reported as separate evidence. Do not
+silently remove another operating system from the package. Always select the
+archive matching both OS and CPU, then read the exact compatibility/evidence
+row before diagnosing the loader.
 
 Do not confuse signed release receipts with Apple code signing/notarization or
 Windows Authenticode. CoAkka's current native-signing status and verification

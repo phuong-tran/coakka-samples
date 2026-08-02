@@ -1,4 +1,5 @@
 #include "evidence.h"
+#include "evidence_json.h"
 #include "evidence_platform.h"
 
 #include <inttypes.h>
@@ -54,29 +55,6 @@ static long logical_cpu_count(void) {
   return evidence_platform_logical_cpu_count();
 }
 
-static void print_json_string(const char* text) {
-  const unsigned char* cursor = (const unsigned char*)text;
-  putchar('"');
-  while (*cursor != '\0') {
-    if (*cursor == '"' || *cursor == '\\') {
-      putchar('\\');
-      putchar((int)*cursor);
-    } else if (*cursor == '\n') {
-      fputs("\\n", stdout);
-    } else if (*cursor == '\r') {
-      fputs("\\r", stdout);
-    } else if (*cursor == '\t') {
-      fputs("\\t", stdout);
-    } else if (*cursor < 0x20u) {
-      printf("\\u%04x", (unsigned int)*cursor);
-    } else {
-      putchar((int)*cursor);
-    }
-    ++cursor;
-  }
-  putchar('"');
-}
-
 void evidence_print_help_json(void) {
   printf("{\n");
   printf("  \"schema\": \"coakka.runtime.native.evidence.help.v1\",\n");
@@ -124,46 +102,49 @@ void evidence_print_result_json(const evidence_config_t* config,
   printf("{\n");
   printf("  \"schema\": \"coakka.runtime.native.evidence.v1\",\n");
   printf("  \"status\": ");
-  print_json_string(status);
+  evidence_json_write_string(stdout, status);
   printf(",\n");
   printf("  \"mode\": ");
-  print_json_string(evidence_mode_name(config->mode));
+  evidence_json_write_string(stdout, evidence_mode_name(config->mode));
   printf(",\n");
   if (error != NULL) {
     printf("  \"error\": ");
-    print_json_string(error);
+    evidence_json_write_string(stdout, error);
     printf(",\n");
   }
   printf("  \"runtime\": {\n");
   printf("    \"abi\": %u,\n", info->abi_version);
   printf("    \"version\": ");
-  print_json_string(info->runtime_version != NULL ? info->runtime_version : "");
+  evidence_json_write_string(stdout, info->runtime_version);
   printf(",\n");
   printf("    \"git\": ");
-  print_json_string(info->git_commit != NULL ? info->git_commit : "");
+  evidence_json_write_string(stdout, info->git_commit);
   printf("\n");
   printf("  },\n");
   printf("  \"environment\": {\n");
   printf("    \"os\": ");
-  print_json_string(operating_system_name());
+  evidence_json_write_string(stdout, operating_system_name());
   printf(",\n");
   printf("    \"arch\": ");
-  print_json_string(architecture_name());
+  evidence_json_write_string(stdout, architecture_name());
   printf(",\n");
   printf("    \"logicalCpus\": %ld,\n", logical_cpu_count());
   printf("    \"buildProfile\": ");
-  print_json_string(build_profile_name());
+  evidence_json_write_string(stdout, build_profile_name());
   printf(",\n");
   printf("    \"compiler\": ");
-  print_json_string(compiler_name());
+  evidence_json_write_string(stdout, compiler_name());
   printf(",\n");
   printf("    \"executionPath\": ");
-  print_json_string(execution_path_name());
+  evidence_json_write_string(stdout, execution_path_name());
+  printf(",\n");
+  printf("    \"readinessWaitBackend\": ");
+  evidence_json_write_string(stdout, evidence_platform_wait_backend());
   printf("\n");
   printf("  },\n");
   printf("  \"config\": {\n");
   printf("    \"submissionPath\": ");
-  print_json_string(evidence_submission_path_name(config->mode));
+  evidence_json_write_string(stdout, evidence_submission_path_name(config->mode));
   printf(",\n");
   printf("    \"payloadBytes\": %zu,\n", config->payload_bytes);
   printf("    \"requestLimit\": %" PRIu64 ",\n", config->request_limit);

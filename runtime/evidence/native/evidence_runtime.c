@@ -43,10 +43,6 @@ static uint64_t monotonic_ms(void) {
   return monotonic_ns() / 1000000u;
 }
 
-static void close_channel(int* channel) {
-  evidence_platform_close_channel(channel);
-}
-
 /*
  * Raw fd names belong to the published host-handle ABI. Keep them inside this
  * adapter so the workload and report use channel vocabulary and do not expose
@@ -64,15 +60,19 @@ static void init_host_handles(coakka_v2_host_handles_t* handles) {
 }
 
 static void close_host_handles(coakka_v2_host_handles_t* handles) {
+  int* channels[6];
+
   if (handles == NULL) {
     return;
   }
-  close_channel(&handles->request_write_fd);
-  close_channel(&handles->response_read_fd);
-  close_channel(&handles->deadletter_read_fd);
-  close_channel(&handles->control_write_fd);
-  close_channel(&handles->monitor_read_fd);
-  close_channel(&handles->delivered_request_read_fd);
+  channels[0] = &handles->request_write_fd;
+  channels[1] = &handles->response_read_fd;
+  channels[2] = &handles->deadletter_read_fd;
+  channels[3] = &handles->control_write_fd;
+  channels[4] = &handles->monitor_read_fd;
+  channels[5] = &handles->delivered_request_read_fd;
+  evidence_platform_close_channels(
+      channels, sizeof(channels) / sizeof(channels[0]));
 }
 
 static void init_channels(evidence_channels_t* channels) {
@@ -85,15 +85,19 @@ static void init_channels(evidence_channels_t* channels) {
 }
 
 static void close_channels(evidence_channels_t* channels) {
+  int* owned_channels[6];
+
   if (channels == NULL) {
     return;
   }
-  close_channel(&channels->request);
-  close_channel(&channels->response);
-  close_channel(&channels->deadletter);
-  close_channel(&channels->control);
-  close_channel(&channels->monitor);
-  close_channel(&channels->delivered_request);
+  owned_channels[0] = &channels->request;
+  owned_channels[1] = &channels->response;
+  owned_channels[2] = &channels->deadletter;
+  owned_channels[3] = &channels->control;
+  owned_channels[4] = &channels->monitor;
+  owned_channels[5] = &channels->delivered_request;
+  evidence_platform_close_channels(
+      owned_channels, sizeof(owned_channels) / sizeof(owned_channels[0]));
 }
 
 static int open_runtime_channels(coakka_v2_runtime_t* runtime,

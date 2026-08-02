@@ -12,6 +12,8 @@ Use inspect when a user needs to see runtime facts in a browser:
 - runtime identity
 - route catalog
 - endpoint topology
+- effective connection strategy, defaults revision, and tuning provenance
+- effective capability masks and non-secret TLS/mTLS state
 - health and pressure state
 - recent runtime events
 - a route-try form for request/reply experiments
@@ -20,6 +22,11 @@ Use inspect when a user needs to see runtime facts in a browser:
 It is not an admin dashboard, observability platform, schema registry, service
 discovery server, mTLS control plane, or topology authority. Runtime core
 remains the source of truth; inspect reads and renders runtime facts.
+
+The transport section reports what the connected runtime says is active. TLS
+credential contents, private keys, and credential file paths are never exposed.
+When certificate identity metadata is available, inspect shows only non-secret
+fields such as credential ID and generation, validity bounds, and fingerprint.
 
 ## How It Differs From Swagger
 
@@ -89,5 +96,8 @@ docker run --rm -p 18080:18080 docker.io/gabrielgun1983/coakka-runtime-inspect-s
 
 Both should preserve the same request metadata shape and explicit terminal
 outcomes: reply, timeout, deadletter, and configuration error.
+
+`coakka-client runtime-info` reads the same bounded runtime snapshot for
+scripts; inspect renders that runtime-owned truth for interactive diagnosis.
 
 For the terminal tool, read [CoAkka Runtime Client](coakka-runtime-client.md).

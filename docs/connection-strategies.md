@@ -7,12 +7,12 @@ capability.
 
 ## Modes
 
-| Mode | Connection behavior | Concurrency on one connection | Availability |
+| Mode | Connection behavior | Concurrency on one connection | Required effective capability |
 | --- | --- | ---: | --- |
-| `PER_EXCHANGE` | Connect, send one request, receive one terminal result, close | 1 | Community and Enterprise |
-| `BOUNDED_POOL` | Borrow and reuse one of a bounded set of retained connections | 1 | Community and Enterprise |
-| `PERSISTENT_SINGLE_FLIGHT` | Retain at most one connection per exact endpoint and serialize exchanges | 1 | Enterprise |
-| `MULTIPLEXED` | Retain an endpoint connection and correlate bounded streams | Bounded, currently 16 | Enterprise |
+| `PER_EXCHANGE` | Connect, send one request, receive one terminal result, close | 1 | Baseline TCP remote transport |
+| `BOUNDED_POOL` | Borrow and reuse one of a bounded set of retained connections | 1 | `TCP_CONNECTION_BOUNDED_POOL` |
+| `PERSISTENT_SINGLE_FLIGHT` | Retain at most one connection per exact endpoint and serialize exchanges | 1 | `TCP_PERSISTENT_SINGLE_FLIGHT` |
+| `MULTIPLEXED` | Retain an endpoint connection and correlate bounded streams | Bounded, currently 16 | `TCP_MULTIPLEXING` |
 
 The default is `PER_EXCHANGE + PLAINTEXT`. Nothing silently enables pooling,
 persistence, multiplexing, TLS, or mTLS.
@@ -27,10 +27,11 @@ Bounded-pool defaults revision 1 uses:
 | Maximum requests before connection retirement | 1024 |
 | Idle timeout | 30000 ms |
 
-Community accepts `BOUNDED_POOL` with those fixed defaults and rejects numeric
-tuning with `COAKKA_V2_ERR_FEATURE_UNAVAILABLE`. Enterprise capability metadata
-is the authority for whether tuning is available. The initial advanced-mode
-limits are profile-owned defaults, not public tuning fields.
+`BOUNDED_POOL` uses those fixed defaults when its effective capability is
+present and rejects unavailable numeric tuning with
+`COAKKA_V2_ERR_FEATURE_UNAVAILABLE`. Runtime capability metadata is the
+authority for whether tuning is available. The initial advanced-mode limits
+are runtime-owned defaults, not public tuning fields.
 
 ## Lifecycle And Atomicity
 
@@ -80,11 +81,11 @@ select_connection_mode(runtime, COAKKA_V2_TCP_CONNECTION_PER_EXCHANGE,
 select_connection_mode(runtime, COAKKA_V2_TCP_CONNECTION_BOUNDED_POOL,
                        &result);
 
-/* Enterprise capability. */
+/* Requires TCP_PERSISTENT_SINGLE_FLIGHT. */
 select_connection_mode(
     runtime, COAKKA_V2_TCP_CONNECTION_PERSISTENT_SINGLE_FLIGHT, &result);
 
-/* Enterprise capability with bounded correlated streams. */
+/* Requires TCP_MULTIPLEXING with bounded correlated streams. */
 select_connection_mode(runtime, COAKKA_V2_TCP_CONNECTION_MULTIPLEXED,
                        &result);
 ```
