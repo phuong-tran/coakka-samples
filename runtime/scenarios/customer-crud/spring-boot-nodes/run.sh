@@ -44,7 +44,7 @@ prepare_node_workspace() {
   (
     cd "${tmp_dir}"
     npm init -y >/dev/null
-    npm install --prefer-online coakka-v2-connector-node@1.3.11 >/dev/null
+    npm install --prefer-online coakka-v2-connector-node@1.4.5 >/dev/null
   )
 }
 

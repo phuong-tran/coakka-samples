@@ -102,13 +102,13 @@ python -m pip install coakka-v2-connector==1.4.5
 Node.js package:
 
 ```sh
-npm install coakka-v2-connector-node@1.3.11
+npm install coakka-v2-connector-node@1.4.5
 ```
 
 Bun package:
 
 ```sh
-bun add coakka-v2-connector-bun@1.3.9
+bun add coakka-v2-connector-bun@1.4.5
 ```
 
 Tauri intent bridge:
@@ -121,7 +121,7 @@ bash run.sh runtime tauri desktop-intent
 Electron intent bridge:
 
 ```sh
-npm install coakka-v2-connector-electron@1.3.9
+npm install coakka-v2-connector-electron@1.4.5
 ```
 
 Bun, Tauri, and Electron validation commands:
