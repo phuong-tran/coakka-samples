@@ -89,6 +89,16 @@ when the work is still application-owned:
 - app policy keeps ownership of retry, idempotency, auth, and business meaning;
 - existing protocol adapters can remain the device-facing boundary.
 
+## Securing Edge Connections
+
+When traffic crosses a device, gateway, LAN, or another network boundary that
+requires confidentiality or peer identity, configure runtime TLS or mTLS
+through the host-language connector if the exact artifact reports the required
+capability. The device host still owns trustworthy clock readiness, certificate
+provisioning and renewal, and private-key access. See
+[Runtime TLS And mTLS](tls-and-mtls.md) for the connector-first configuration
+and edge-specific security boundary.
+
 ## Android And Industrial Tablets
 
 CoAkka can integrate with Android industrial tablets. The architecture does not

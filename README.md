@@ -24,6 +24,15 @@ metal, and architecture-matched edge deployments. Check the
 [Compatibility Matrix](https://github.com/phuong-tran/coakka-publish/blob/main/docs/compatibility-matrix.md)
 for exact package, OS, CPU, and release-channel evidence.
 
+## Runtime Transport
+
+Runtime transport configuration is available through the full host-language
+connectors. Use the canonical guides for the supported modes, effective
+capabilities, lifecycle rules, and connector examples:
+
+- [TLS and mTLS](docs/tls-and-mtls.md)
+- [Connection strategies](docs/connection-strategies.md)
+
 ## Runtime Test
 
 Start with the root-level [`runtime-test/`](runtime-test/README.md) when you
@@ -252,6 +261,8 @@ Start here:
 
 Core runtime model:
 
+- [Runtime TLS And mTLS](docs/tls-and-mtls.md)
+- [Runtime Connection Strategies](docs/connection-strategies.md)
 - [Runtime Message And Routing Model](docs/runtime-message-and-routing-model.md)
 - [Runtime Integration Guide](docs/runtime-integration-guide.md)
 - [Runtime Glossary](docs/runtime-glossary.md)

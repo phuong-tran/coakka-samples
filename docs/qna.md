@@ -15,6 +15,7 @@ Start here before reading the full index:
 | [Is CoAkka The Same Thing As Erlang, Akka, Elixir, Or The Actor Model?](#is-coakka-the-same-thing-as-erlang-akka-elixir-or-the-actor-model) | No. It borrows messaging vocabulary but does not require actor identity, actor lifecycle, or actor-first app modeling. |
 | [Is CoAkka Equivalent To Kafka Or RabbitMQ?](#is-coakka-equivalent-to-kafka-or-rabbitmq) | No. Durable topics, replay, consumer groups, and broker-owned backpressure still belong to brokers. |
 | [Can CoAkka Replace A Service Mesh Such As Istio?](#can-coakka-replace-a-service-mesh-such-as-istio) | No. It can remove synthetic internal service hops; real mesh/network policy remains a platform concern. |
+| [Does CoAkka Support TLS, mTLS, And Multiple Connection Strategies?](#does-coakka-support-tls-mtls-and-multiple-connection-strategies) | Yes. Full runtime connectors expose capability-gated transport security and connection-strategy configuration. |
 | [When Is CoAkka Worth Adding?](#when-is-coakka-worth-adding) | When stable runtime targets and honest delivery evidence are worth the added boundary. |
 
 ## Table Of Contents
@@ -62,8 +63,7 @@ Advanced topology and infra ownership:
 
 - [What Happens If Runtime Participants See Different Route Generations?](#what-happens-if-runtime-participants-see-different-route-generations)
 - [Where Does The Runtime Endpoint Come From?](#where-does-the-runtime-endpoint-come-from)
-- [Why Keep mTLS Out Of coakka-runtime-core By Default?](#why-keep-mtls-out-of-coakka-runtime-core-by-default)
-- [Where Should Custom Topology Or mTLS Live?](#where-should-custom-topology-or-mtls-live)
+- [Does CoAkka Support TLS, mTLS, And Multiple Connection Strategies?](#does-coakka-support-tls-mtls-and-multiple-connection-strategies)
 
 Logger and explanation:
 
@@ -115,7 +115,8 @@ external client
   -> target handler
 
 optional real network hop:
-  connector addon or transport profile with TLS/mTLS where that boundary is real
+  built-in runtime TLS/mTLS or a platform-owned secure boundary, selected by
+  deployment policy
 ```
 
 The app-host owns request parsing, authentication, authorization, validation,
@@ -1647,98 +1648,12 @@ CoAkka consumes that route and keeps runtime delivery explicit.
 Do not make business code inspect replicas just to call a capability.
 ```
 
-## Why Keep mTLS Out Of coakka-runtime-core By Default?
+## Does CoAkka Support TLS, mTLS, And Multiple Connection Strategies?
 
-Because the default runtime path is usually already behind the public edge and
-behind app-host policy.
-
-Inside a normal app-owned path, the runtime is already behind the public edge
-and behind app-host policy:
-
-```text
-public edge: nginx / gateway + TLS or mTLS
-  -> app-host: auth, CQRS, tenant policy, validation
-    -> CoAkka runtime: target, route generation, queue pressure, reply/deadletter
-      -> target handler
-
-optional real network hop:
-  -> connector addon or transport profile with TLS/mTLS
-```
-
-Putting `mTLS` directly into `coakka-runtime-core` would force the delivery
-engine to own certificate lifecycle, identity policy, and platform topology.
-That mixes four layers that should stay separate:
-
-- app-host lifecycle
-- platform topology
-- certificate and identity policy
-- runtime delivery semantics
-
-That does not improve the common same-deployment, same-team, app-owned handoff.
-It makes the core larger, harder to test, harder to embed, and closer to a
-partial service mesh.
-
-Short answer:
-
-```text
-Use TLS/mTLS at ingress, nginx, API gateways, sidecars, connector addons, or
-real transport boundaries where identity policy is real. Do not put it in
-coakka-runtime-core by default; core runtime should execute the route and
-delivery contract it was given.
-```
-
-## Where Should Custom Topology Or mTLS Live?
-
-Above runtime, not inside the core delivery engine.
-
-Typical ownership shapes are:
-
-- app-host wiring
-- connector configuration
-- platform/infra policy
-- connector addons or adapter layers
-
-Examples:
-
-- Kubernetes, DNS, Consul, or operator data chooses which endpoints should
-  appear in a route snapshot
-- app-host or connector code maps that topology into runtime config
-- ingress, `nginx`, API gateway, host TLS stack, sidecar when truly needed, or
-  connector addon applies `TLS/mTLS` policy at the real network boundary
-
-That also means a future HTTP/TLS-oriented connector addon is not the same
-thing as moving `mTLS` into `coakka-runtime-core`.
-
-- the addon may terminate or initiate HTTPS at an HTTP boundary it owns
-- that still does not make the core runtime an identity-policy engine
-- it also does not replace the separate runtime-to-runtime transport question
-  such as the current private transport lane
-
-That is the intended design:
-
-```text
-topology and identity policy stay above runtime
-runtime executes the route and delivery contract it was given
-```
-
-If a future team wants custom topology or `mTLS` support around CoAkka, the
-right shape is usually:
-
-- app-host integration
-- connector addon
-- deployment adapter
-
-not a larger `coakka-runtime-core`.
-
-In other words:
-
-```text
-Use mTLS where the network boundary is real and the policy is real.
-For ordinary internal app-owned delivery, prefer ingress/nginx/API-gateway TLS
-and app-host policy first. Avoid making per-service mTLS and sidecars the
-default for every capability handoff just because the system already knows
-Istio.
-```
+Yes. Use [Runtime TLS And mTLS](tls-and-mtls.md) and
+[Runtime Connection Strategies](connection-strategies.md) as the canonical
+guides for connector configuration, effective capabilities, lifecycle rules,
+and examples.
 
 ## Can CoAkka Replace Saga?
 

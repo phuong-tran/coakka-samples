@@ -9,6 +9,8 @@ details live in
 - Clarified that TLS/mTLS and connection strategies are available through full
   host-language runtime connectors, added Kotlin/JVM startup examples, and
   kept C/C++ snippets explicitly scoped to native and connector-level use.
+  Root README and Q&A entrypoints now link directly to those canonical guides,
+  and the edge/IoT guide identifies TLS/mTLS for secured network boundaries.
 - Advanced the C# runtime samples to registry-verified
   `CoAkka.Runtime==1.4.6`, which fixes the NuGet gallery logo and public C#
   transport documentation link while retaining native runtime generation
