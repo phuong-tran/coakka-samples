@@ -12,6 +12,9 @@ details live in
   boundary, and contact paths visible from the root README.
 - Kept examples free of unverified benchmark claims and made no sample package
   or registry release claim.
+- Clarified in common troubleshooting that Windows, macOS, and Linux remain
+  distribution targets when one connector checkpoint has narrower execution
+  evidence; the missing evidence remains a release gate.
 
 ## 2026-07-31
 

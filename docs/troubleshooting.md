@@ -86,6 +86,13 @@ First compare the archive SHA-256 and, after extraction, the inner runtime
 library SHA-256 with release metadata. A candidate is not a promoted release
 merely because its archive can be downloaded.
 
+The ecosystem distribution keeps target-specific runtime artifacts for
+Windows, macOS, and Linux. Connector execution evidence for one checkpoint may
+cover fewer OS/architecture lanes than the distribution matrix; that evidence
+gap is a release gate, not a reason to silently remove another operating system
+from the package. Always select the archive matching both OS and CPU, then read
+the exact release compatibility/evidence row before diagnosing the loader.
+
 Do not confuse signed release receipts with Apple code signing/notarization or
 Windows Authenticode. CoAkka's current native-signing status and verification
 flow are documented in
