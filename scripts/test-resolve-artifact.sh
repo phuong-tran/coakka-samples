@@ -48,4 +48,28 @@ fi
 grep -Fq "local public artifact manifest does not list" "${tmp_dir}/stderr" ||
   fail "unlisted local artifact did not explain the failure"
 
+compat_rel="runtime/native/releases/compat/coakka-runtime-native-compat.tar.gz"
+compat_path="${publish_root}/${compat_rel}"
+mkdir -p "$(dirname "${compat_path}")"
+printf 'compatibility artifact\n' >"${compat_path}"
+compat_sha="$(coakka_artifact_sha256 "${compat_path}")"
+resolved_path="$(coakka_resolve_pinned_artifact \
+  "${publish_root}" \
+  "${compat_rel}" \
+  "${tmp_dir}/downloads/coakka-runtime-native-compat.tar.gz" \
+  "${compat_sha}")"
+[[ "${resolved_path}" == "${compat_path}" ]] ||
+  fail "expected local compatibility artifact path, got ${resolved_path}"
+
+if coakka_resolve_pinned_artifact \
+  "${publish_root}" \
+  "${compat_rel}" \
+  "${tmp_dir}/downloads/coakka-runtime-native-compat.tar.gz" \
+  "0000000000000000000000000000000000000000000000000000000000000000" \
+  >"${tmp_dir}/stdout" 2>"${tmp_dir}/stderr"; then
+  fail "expected compatibility checksum mismatch to fail"
+fi
+grep -Fq "artifact checksum mismatch" "${tmp_dir}/stderr" ||
+  fail "compatibility checksum mismatch did not explain the failure"
+
 printf '[resolve-artifact-test] ok\n'

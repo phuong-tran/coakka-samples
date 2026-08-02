@@ -6,6 +6,7 @@ repo_root="$(cd "${script_dir}/../../.." && pwd)"
 publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
 source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
+source "${repo_root}/scripts/sample-metadata.sh"
 
 coakka_require_command cmake "Install CMake, then retry."
 coakka_require_command cc "Install a C compiler, then retry."
@@ -25,14 +26,26 @@ coakka_native_platform() {
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
-runtime_version="1.3.4"
-artifact_rel="runtime/native/releases/1.3.4+dc6ec284/coakka-runtime-native-v2-${runtime_version}.tar.gz"
-package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-runtime-native-v2-${runtime_version}.tar.gz")"
+platform="$(coakka_native_platform)"
+IFS='|' read -r runtime_version artifact_rel expected_sha <<<"$(
+  coakka_runtime_native_package_fields "${platform}"
+)"
+if [[ -n "${expected_sha}" ]]; then
+  package_path="$(coakka_resolve_pinned_artifact \
+    "${publish_root}" \
+    "${artifact_rel}" \
+    "${tmp_dir}/artifacts/coakka-runtime-native-v2-${runtime_version}.tar.gz" \
+    "${expected_sha}")"
+else
+  package_path="$(coakka_resolve_artifact \
+    "${publish_root}" \
+    "${artifact_rel}" \
+    "${tmp_dir}/artifacts/coakka-runtime-native-v2-${runtime_version}.tar.gz")"
+fi
 mkdir -p "${tmp_dir}/package"
 tar -C "${tmp_dir}/package" -xzf "${package_path}"
 
 package_root="${tmp_dir}/package/coakka-runtime-native-v2-${runtime_version}"
-platform="$(coakka_native_platform)"
 build_dir="${tmp_dir}/build"
 cmake -S "${script_dir}" -B "${build_dir}" -DCMAKE_PREFIX_PATH="${package_root}" >/dev/null
 cmake --build "${build_dir}" >/dev/null

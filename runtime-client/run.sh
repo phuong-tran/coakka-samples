@@ -7,9 +7,7 @@ publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
 source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 
-COAKKA_RUNTIME_CLIENT_RELEASE_ID="1.3.4+dc6ec28"
 COAKKA_RUNTIME_CLIENT_DOCKER_BUNDLE_RELEASE_ID="1.3.2+caff6d6d"
-COAKKA_RUNTIME_CLIENT_VERSION="1.3.4"
 COAKKA_RUNTIME_CLIENT_DOCKER_BUNDLE_VERSION="1.3.2"
 COAKKA_RUNTIME_CLIENT_DEMO_IMAGE_DEFAULT="docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.2-caff6d6d-remote"
 coakka_runtime_client_tmp_dir=""
@@ -86,15 +84,28 @@ coakka_runtime_client_docker_platform() {
   esac
 }
 
+coakka_runtime_client_release_fields() {
+  case "$1" in
+    macos-aarch64) printf '%s|%s\n' "1.4.0" "1.4.0+2cee86bf" ;;
+    linux-aarch64|linux-x86_64|windows-aarch64|windows-x86_64)
+      printf '%s|%s\n' "1.3.4" "1.3.4+dc6ec28"
+      ;;
+    *) return 1 ;;
+  esac
+}
+
 coakka_runtime_client_run() {
   if [[ "$#" -lt 1 ]]; then
     coakka_die "usage: coakka_runtime_client_run <command> [args...]"
   fi
 
-  local platform artifact_name artifact_rel tmp_dir package_path package_root cli_path
+  local platform version release_id artifact_name artifact_rel tmp_dir package_path package_root cli_path
   platform="$(coakka_runtime_client_platform)"
-  artifact_name="coakka-client-v2-${COAKKA_RUNTIME_CLIENT_VERSION}-${platform}.tar.gz"
-  artifact_rel="coakka-tools/coakka-client/releases/${COAKKA_RUNTIME_CLIENT_RELEASE_ID}/${artifact_name}"
+  IFS='|' read -r version release_id <<<"$(
+    coakka_runtime_client_release_fields "${platform}"
+  )"
+  artifact_name="coakka-client-v2-${version}-${platform}.tar.gz"
+  artifact_rel="coakka-tools/coakka-client/releases/${release_id}/${artifact_name}"
 
   coakka_require_command tar "Install tar, then retry."
 
@@ -106,7 +117,7 @@ coakka_runtime_client_run() {
   mkdir -p "${tmp_dir}/package"
   tar -C "${tmp_dir}/package" -xzf "${package_path}"
 
-  package_root="${tmp_dir}/package/coakka-client-v2-${COAKKA_RUNTIME_CLIENT_VERSION}-${platform}"
+  package_root="${tmp_dir}/package/coakka-client-v2-${version}-${platform}"
   cli_path="${package_root}/bin/coakka-client"
   coakka_require_executable_file "${cli_path}" "The published CLI archive is incomplete."
 

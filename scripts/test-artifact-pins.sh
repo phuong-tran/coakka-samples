@@ -69,7 +69,9 @@ EOF
 
 run_pin_check() {
   local publish_root="$1"
-  COAKKA_PUBLISH_ROOT="${publish_root}" bash "${repo_root}/scripts/check-artifact-pins.sh"
+  COAKKA_PIN_CHECK_COMPATIBILITY_LOCAL=0 \
+    COAKKA_PUBLISH_ROOT="${publish_root}" \
+    bash "${repo_root}/scripts/check-artifact-pins.sh"
 }
 
 good_publish_root="$(make_publish_root good)"
@@ -84,7 +86,7 @@ grep -Fq "unsafe path" "${test_output}" ||
   fail "missing unsafe path manifest error"
 
 duplicate_path_root="$(make_publish_root duplicate-path)"
-runtime_artifact="runtime/native/releases/1.3.4+dc6ec284/coakka-runtime-native-v2-1.3.4.tar.gz"
+runtime_artifact="${COAKKA_RUNTIME_NATIVE_ARTIFACT}"
 runtime_sha="$(sha256_file "${duplicate_path_root}/${runtime_artifact}")"
 cat >>"${duplicate_path_root}/artifacts/public-artifacts.tsv" <<EOF
 public	runtime Native package duplicate	${runtime_artifact}	${runtime_sha}

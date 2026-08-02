@@ -7,7 +7,6 @@ publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
 source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 
-COAKKA_RUNTIME_INSPECT_VERSION="1.3.4"
 COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE_DEFAULT="coakka-runtime-inspect-sample:1.3.2-local"
 COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE_DEFAULT="docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.2-caff6d6d-remote"
 
@@ -114,7 +113,16 @@ coakka_runtime_inspect_platform() {
 coakka_runtime_inspect_release_id_for_platform() {
   local platform="$1"
   case "${platform}" in
-    linux-aarch64|linux-x86_64|macos-aarch64|windows-aarch64|windows-x86_64) printf '%s\n' "1.3.4+dc6ec28" ;;
+    macos-aarch64) printf '%s\n' "1.4.0+2cee86bf" ;;
+    linux-aarch64|linux-x86_64|windows-aarch64|windows-x86_64) printf '%s\n' "1.3.4+dc6ec28" ;;
+    *) return 1 ;;
+  esac
+}
+
+coakka_runtime_inspect_version_for_platform() {
+  case "$1" in
+    macos-aarch64) printf '%s\n' "1.4.0" ;;
+    linux-aarch64|linux-x86_64|windows-aarch64|windows-x86_64) printf '%s\n' "1.3.4" ;;
     *) return 1 ;;
   esac
 }
@@ -138,9 +146,10 @@ coakka_runtime_inspect_docker_platform_arg() {
 
 resolve_published_archive() {
   local platform="$1"
-  local artifact_name artifact_rel release_id
+  local artifact_name artifact_rel release_id version
   release_id="$(coakka_runtime_inspect_release_id_for_platform "${platform}")"
-  artifact_name="coakka-runtime-inspect-v2-${COAKKA_RUNTIME_INSPECT_VERSION}-${platform}.tar.gz"
+  version="$(coakka_runtime_inspect_version_for_platform "${platform}")"
+  artifact_name="coakka-runtime-inspect-v2-${version}-${platform}.tar.gz"
   artifact_rel="coakka-tools/coakka-runtime-inspect/releases/${release_id}/${artifact_name}"
 
   mkdir -p "${tmp_dir}/artifacts"
@@ -231,14 +240,15 @@ smoke_inspect_binary() {
 
 prepare_docker_context() {
   local platform="$1"
-  local archive_path package_root
+  local archive_path package_root version
 
   coakka_require_command tar "Install tar, then retry."
   tmp_dir="$(mktemp -d)"
   archive_path="$(resolve_published_archive "${platform}")"
+  version="$(coakka_runtime_inspect_version_for_platform "${platform}")"
   mkdir -p "${tmp_dir}/package"
   tar -C "${tmp_dir}/package" -xzf "${archive_path}"
-  package_root="${tmp_dir}/package/coakka-runtime-inspect-v2-${COAKKA_RUNTIME_INSPECT_VERSION}-${platform}"
+  package_root="${tmp_dir}/package/coakka-runtime-inspect-v2-${version}-${platform}"
   coakka_require_executable_file "${package_root}/bin/coakka-runtime-inspect" \
     "The published Linux inspect archive is incomplete."
   require_linux_archive_self_contained "${platform}" "${package_root}"
@@ -255,16 +265,17 @@ prepare_docker_context() {
 }
 
 run_published_smoke() {
-  local platform archive_path package_root published_bin
+  local platform archive_path package_root published_bin version
   platform="$(coakka_runtime_inspect_platform)" ||
     coakka_die "Published runtime-inspect archive is currently available for macOS ARM64, Linux x86_64/ARM64, and Windows x86_64/ARM64 only."
 
   coakka_require_command tar "Install tar, then retry."
   tmp_dir="$(mktemp -d)"
   archive_path="$(resolve_published_archive "${platform}")"
+  version="$(coakka_runtime_inspect_version_for_platform "${platform}")"
   mkdir -p "${tmp_dir}/package"
   tar -C "${tmp_dir}/package" -xzf "${archive_path}"
-  package_root="${tmp_dir}/package/coakka-runtime-inspect-v2-${COAKKA_RUNTIME_INSPECT_VERSION}-${platform}"
+  package_root="${tmp_dir}/package/coakka-runtime-inspect-v2-${version}-${platform}"
   case "${platform}" in
     windows-*) published_bin="${package_root}/bin/coakka-runtime-inspect.exe" ;;
     *) published_bin="${package_root}/bin/coakka-runtime-inspect" ;;

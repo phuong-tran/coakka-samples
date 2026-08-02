@@ -30,10 +30,11 @@ That is intentional until a dedicated remote read/observe adapter exists.
 
 ## Published Archive Status
 
-The current public inspect archive generation is `1.3.4+dc6ec28` for macOS
-ARM64, Linux x86_64/ARM64, and Windows x86_64/ARM64. The sample runner verifies
-those archives through the same manifest/checksum
-resolver used by the runtime-client lane.
+The current public inspect archive generation is `1.4.0+2cee86bf` for macOS
+ARM64. Linux x86_64/ARM64 and Windows x86_64/ARM64 retain the compatible
+`1.3.4+dc6ec28` line. The sample runner selects by platform and verifies every
+archive through the same manifest/checksum resolver used by the runtime-client
+lane.
 
 The browser walkthrough GIF and MP4 were recorded on macOS from the published
 macOS ARM64 inspect archive. The recording used two local native runtime

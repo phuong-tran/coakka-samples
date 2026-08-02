@@ -3,10 +3,10 @@
 FROM debian:stable-slim
 
 ARG TARGETARCH
-ARG COAKKA_RUNTIME_VERSION=1.3.4
-ARG COAKKA_RUNTIME_REVISION=dc6ec284
-ARG COAKKA_RUNTIME_GENERATION=1.3.4-dc6ec284-local
-ARG COAKKA_NATIVE_ARTIFACT=runtime/native/releases/1.3.4+dc6ec284/coakka-runtime-native-v2-1.3.4.tar.gz
+ARG COAKKA_RUNTIME_VERSION=1.4.0
+ARG COAKKA_RUNTIME_REVISION=2cee86bf
+ARG COAKKA_RUNTIME_GENERATION=1.4.0-2cee86bf-local
+ARG COAKKA_NATIVE_ARTIFACT=runtime/native/releases/1.4.0+2cee86bf/coakka-runtime-native-v2-1.4.0.tar.gz
 ARG COAKKA_ARTIFACT_MANIFEST_SHA256=resolved-at-build
 ARG COAKKA_PUBLISH_RAW_BASE=https://raw.githubusercontent.com/phuong-tran/coakka-publish/main
 
@@ -28,8 +28,8 @@ COPY scripts/resolve-artifact.sh /opt/coakka/scripts/resolve-artifact.sh
 
 RUN bash -lc 'set -eu; \
   case "${TARGETARCH}" in \
-    amd64) coakka_platform=linux-x86_64 ;; \
     arm64) coakka_platform=linux-aarch64 ;; \
+    amd64) echo "runtime 1.4.0 does not include linux-x86_64; build this image for linux/arm64" >&2; exit 1 ;; \
     *) echo "unsupported TARGETARCH=${TARGETARCH}" >&2; exit 1 ;; \
   esac; \
   export COAKKA_PUBLISH_RAW_BASE; \
@@ -39,9 +39,9 @@ RUN bash -lc 'set -eu; \
   fi; \
   mkdir -p /tmp/coakka-artifacts /tmp/coakka-native runtime; \
   source /opt/coakka/scripts/resolve-artifact.sh; \
-  package_path="$(coakka_resolve_artifact /not-present "${COAKKA_NATIVE_ARTIFACT}" /tmp/coakka-artifacts/coakka-runtime-native-v2-1.3.4.tar.gz)"; \
+  package_path="$(coakka_resolve_artifact /not-present "${COAKKA_NATIVE_ARTIFACT}" /tmp/coakka-artifacts/coakka-runtime-native-v2-1.4.0.tar.gz)"; \
   tar -xzf "${package_path}" -C /tmp/coakka-native; \
-  install -m 0755 "/tmp/coakka-native/coakka-runtime-native-v2-1.3.4/native/${coakka_platform}/libcoakka_runtime_v2.so" /opt/coakka/runtime/libcoakka_runtime_v2.so; \
+  install -m 0755 "/tmp/coakka-native/coakka-runtime-native-v2-1.4.0/native/${coakka_platform}/libcoakka_runtime_v2.so" /opt/coakka/runtime/libcoakka_runtime_v2.so; \
   printf "COAKKA_RUNTIME_VERSION=%s\nCOAKKA_RUNTIME_REVISION=%s\nCOAKKA_RUNTIME_GENERATION=%s\nCOAKKA_NATIVE_ARTIFACT=%s\nCOAKKA_PLATFORM=%s\n" \
     "${COAKKA_RUNTIME_VERSION}" \
     "${COAKKA_RUNTIME_REVISION}" \

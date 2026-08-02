@@ -5,10 +5,6 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/.." && pwd)"
 source "${script_dir}/sample-metadata.sh"
 
-expected_logger_native="1.2.1+f50756ebff0d"
-expected_runtime_client_native="1.3.4+dc6ec28"
-expected_runtime_client_docker="1.3.2+caff6d6d"
-expected_runtime_inspect_native="1.3.4+dc6ec28"
 public_manifest_path="artifacts/public-artifacts.tsv"
 tmp_files=()
 
@@ -19,46 +15,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-required_rows=(
-  "logger JVM jar|logger/jvm/releases/${expected_logger_native}/coakka-jvm-native-logger-1.2.1-gf50756ebff0d.jar"
-  "logger Python wheel|logger/python/releases/${expected_logger_native}/coakka_logger-1.2.2-py3-none-any.whl"
-  "logger Node package|logger/node/releases/${expected_logger_native}/coakka-logger-node-1.2.1.tgz"
-  "logger Bun package|logger/bun/releases/${expected_logger_native}-6fdcc69/coakka-logger-bun-1.2.1.tgz"
-  "logger Electron package|logger/electron/releases/${expected_logger_native}-3e8a6ae/coakka-logger-electron-1.2.1.tgz"
-  "logger Go package|logger/go/releases/${expected_logger_native}/coakka-logger-go-1.2.1.tar.gz"
-  "logger C# package|logger/csharp/releases/${expected_logger_native}/CoAkka.Logger.1.2.1.nupkg"
-  "logger Rust package|logger/rust/releases/${expected_logger_native}/coakka-logger-rs-1.2.1.tar.gz"
-  "logger Tauri source package|logger/tauri/releases/${expected_logger_native}-3e8a6ae/coakka-logger-tauri-intents-1.2.1-source.tar.gz"
-  "logger Mojo source package|logger/mojo/releases/${expected_logger_native}-8264bba/coakka-logger-mojo-1.2.1-source.tar.gz"
-  "logger Zig source package|logger/zig/releases/${expected_logger_native}-8264bba/coakka-logger-zig-1.2.1-source.tar.gz"
-  "logger Native package|logger/native/releases/${expected_logger_native}/coakka-logger-native-1.2.1.tar.gz"
-  "runtime Native package|runtime/native/releases/1.3.4+dc6ec284/coakka-runtime-native-v2-1.3.4.tar.gz"
-  "runtime JVM jar|runtime/jvm/releases/1.3.4+dc6ec284-f68ff5c/coakka-jvm-native-runtime-v2-1.3.4-gdc6ec284-f68ff5c.jar"
-  "runtime Python wheel|runtime/python/releases/1.3.4+dc6ec284-f68ff5c/coakka_v2_connector-1.3.6-py3-none-any.whl"
-  "runtime Node package|runtime/node/releases/1.3.4+dc6ec284-f68ff5c/coakka-v2-connector-node-1.3.11.tgz"
-  "runtime Bun package|runtime/bun/releases/1.3.4+dc6ec284-f68ff5c/coakka-v2-connector-bun-1.3.11.tgz"
-  "runtime Electron package|runtime/electron/releases/1.3.4+dc6ec284-f68ff5c/coakka-v2-connector-electron-1.3.11.tgz"
-  "runtime Go package|runtime/go/releases/1.3.4+dc6ec284-f68ff5c/coakka-v2-connector-go-1.3.12.tar.gz"
-  "runtime C# package|runtime/csharp/releases/1.3.4+dc6ec284-f68ff5c/CoAkka.Runtime.1.3.5.nupkg"
-  "runtime Rust package|runtime/rust/releases/1.3.4+dc6ec284-f68ff5c/coakka-runtime-rs-1.3.4-spike.tar.gz"
-  "runtime Mojo source package|runtime/mojo/releases/1.3.4+dc6ec284-f68ff5c/coakka-runtime-mojo-1.3.4-source.tar.gz"
-  "runtime Zig source package|runtime/zig/releases/1.3.4+dc6ec284-f68ff5c/coakka-runtime-zig-1.3.4-source.tar.gz"
-  "runtime Tauri source package|runtime/tauri/releases/1.3.4+dc6ec284-f68ff5c/coakka-runtime-tauri-intents-1.3.4-source.tar.gz"
-  "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/1.3.4-gdc6ec284-f68ff5c/coakka-spring-boot-starter-1.3.4-gdc6ec284-f68ff5c.jar"
-  "Quarkus extension Maven jar|maven/coakka/quarkus/coakka-quarkus-extension/1.3.4-gdc6ec284-f68ff5c/coakka-quarkus-extension-1.3.4-gdc6ec284-f68ff5c.jar"
-  "coakka-client linux-x86_64|coakka-tools/coakka-client/releases/${expected_runtime_client_native}/coakka-client-v2-1.3.4-linux-x86_64.tar.gz"
-  "coakka-client linux-aarch64|coakka-tools/coakka-client/releases/${expected_runtime_client_native}/coakka-client-v2-1.3.4-linux-aarch64.tar.gz"
-  "coakka-client macos-aarch64|coakka-tools/coakka-client/releases/${expected_runtime_client_native}/coakka-client-v2-1.3.4-macos-aarch64.tar.gz"
-  "coakka-client windows-x86_64|coakka-tools/coakka-client/releases/${expected_runtime_client_native}/coakka-client-v2-1.3.4-windows-x86_64.tar.gz"
-  "coakka-client windows-aarch64|coakka-tools/coakka-client/releases/${expected_runtime_client_native}/coakka-client-v2-1.3.4-windows-aarch64.tar.gz"
-  "coakka-client docker-demo linux-x86_64|coakka-tools/coakka-client/docker-demo/releases/${expected_runtime_client_docker}/coakka-client-docker-demo-v2-1.3.2-linux-x86_64.tar.gz"
-  "coakka-client docker-demo linux-aarch64|coakka-tools/coakka-client/docker-demo/releases/${expected_runtime_client_docker}/coakka-client-docker-demo-v2-1.3.2-linux-aarch64.tar.gz"
-  "coakka-runtime-inspect linux-aarch64|coakka-tools/coakka-runtime-inspect/releases/${expected_runtime_inspect_native}/coakka-runtime-inspect-v2-1.3.4-linux-aarch64.tar.gz"
-  "coakka-runtime-inspect linux-x86_64|coakka-tools/coakka-runtime-inspect/releases/${expected_runtime_inspect_native}/coakka-runtime-inspect-v2-1.3.4-linux-x86_64.tar.gz"
-  "coakka-runtime-inspect macos-aarch64|coakka-tools/coakka-runtime-inspect/releases/${expected_runtime_inspect_native}/coakka-runtime-inspect-v2-1.3.4-macos-aarch64.tar.gz"
-  "coakka-runtime-inspect windows-x86_64|coakka-tools/coakka-runtime-inspect/releases/${expected_runtime_inspect_native}/coakka-runtime-inspect-v2-1.3.4-windows-x86_64.tar.gz"
-  "coakka-runtime-inspect windows-aarch64|coakka-tools/coakka-runtime-inspect/releases/${expected_runtime_inspect_native}/coakka-runtime-inspect-v2-1.3.4-windows-aarch64.tar.gz"
-)
+required_rows=("${COAKKA_ARTIFACT_ROWS[@]}")
 
 stale_patterns=(
   "0.1.0+5e25""dda67597"
@@ -83,17 +40,6 @@ stale_patterns=(
 fail() {
   printf '[fail] %s\n' "$*" >&2
   exit 1
-}
-
-artifact_row_exists() {
-  local needle="$1"
-  local row
-  for row in "${COAKKA_ARTIFACT_ROWS[@]}"; do
-    if [[ "${row}" == "${needle}" ]]; then
-      return 0
-    fi
-  done
-  return 1
 }
 
 validate_manifest_rows() {
@@ -178,10 +124,20 @@ tracked_source_files() {
     ':!:.idea/**'
 }
 
-check_required_rows() {
-  local row
+check_metadata_rows() {
+  local row compatibility_row label relative_path expected_sha extra
   for row in "${required_rows[@]}"; do
-    artifact_row_exists "${row}" || fail "sample-metadata.sh is missing pinned artifact row: ${row}"
+    IFS='|' read -r label relative_path extra <<<"${row}"
+    [[ -n "${label}" && -n "${relative_path}" && -z "${extra:-}" ]] ||
+      fail "sample-metadata.sh has an invalid public artifact row: ${row}"
+  done
+
+  for compatibility_row in "${COAKKA_COMPATIBILITY_ARTIFACT_ROWS[@]}"; do
+    IFS='|' read -r label relative_path expected_sha extra <<<"${compatibility_row}"
+    [[ -n "${label}" && -n "${relative_path}" && -n "${expected_sha}" && -z "${extra:-}" ]] ||
+      fail "sample-metadata.sh has an invalid compatibility artifact row"
+    [[ "${#expected_sha}" -eq 64 && "${expected_sha}" != *[!0-9a-f]* ]] ||
+      fail "sample-metadata.sh has an invalid compatibility sha256: ${label}"
   done
 }
 
@@ -200,7 +156,7 @@ check_stale_patterns() {
 }
 
 check_local_artifacts() {
-  local publish_root manifest row label relative_path
+  local publish_root manifest row label relative_path expected_sha actual_sha
   publish_root="$(coakka_default_publish_root "${repo_root}")"
   if [[ ! -d "${publish_root}" ]]; then
     printf '[skip] local public publish checkout not found at %s\n' "${publish_root}"
@@ -216,6 +172,26 @@ check_local_artifacts() {
     IFS='|' read -r label relative_path <<<"${row}"
     [[ -f "${publish_root}/${relative_path}" ]] ||
       fail "local public publish checkout is missing ${label}: ${relative_path}"
+  done
+
+  if [[ "${COAKKA_PIN_CHECK_COMPATIBILITY_LOCAL:-1}" != "1" ]]; then
+    printf '[skip] local compatibility artifact verification disabled\n'
+    return 0
+  fi
+
+  for row in "${COAKKA_COMPATIBILITY_ARTIFACT_ROWS[@]}"; do
+    IFS='|' read -r label relative_path expected_sha <<<"${row}"
+    [[ -f "${publish_root}/${relative_path}" ]] ||
+      fail "local public publish checkout is missing ${label}: ${relative_path}"
+    actual_sha="$(
+      if command -v shasum >/dev/null 2>&1; then
+        shasum -a 256 "${publish_root}/${relative_path}" | awk '{print $1}'
+      else
+        sha256sum "${publish_root}/${relative_path}" | awk '{print $1}'
+      fi
+    )"
+    [[ "${actual_sha}" == "${expected_sha}" ]] ||
+      fail "local compatibility artifact checksum mismatch for ${relative_path}"
   done
 }
 
@@ -237,7 +213,7 @@ check_local_publish_gate() {
 }
 
 check_public_artifacts() {
-  local raw_base manifest_tmp row label relative_path
+  local raw_base manifest_tmp row label relative_path expected_sha artifact_tmp actual_sha
   if [[ "${COAKKA_PIN_CHECK_NETWORK:-0}" != "1" ]]; then
     printf '[skip] public artifact URL checks disabled; set COAKKA_PIN_CHECK_NETWORK=1 to enable\n'
     return 0
@@ -258,9 +234,25 @@ check_public_artifacts() {
       "${raw_base%/}/${relative_path}" >/dev/null ||
       fail "public artifact URL missing ${label}: ${relative_path}"
   done
+
+  for row in "${COAKKA_COMPATIBILITY_ARTIFACT_ROWS[@]}"; do
+    IFS='|' read -r label relative_path expected_sha <<<"${row}"
+    artifact_tmp="$(mktemp "${TMPDIR:-/tmp}/coakka-compat-artifact.XXXXXX")"
+    tmp_files+=("${artifact_tmp}")
+    curl -fsSL --retry 5 --retry-all-errors --retry-delay 2 --max-time 60 \
+      "${raw_base%/}/${relative_path}" -o "${artifact_tmp}" ||
+      fail "public compatibility artifact URL missing ${label}: ${relative_path}"
+    if command -v shasum >/dev/null 2>&1; then
+      actual_sha="$(shasum -a 256 "${artifact_tmp}" | awk '{print $1}')"
+    else
+      actual_sha="$(sha256sum "${artifact_tmp}" | awk '{print $1}')"
+    fi
+    [[ "${actual_sha}" == "${expected_sha}" ]] ||
+      fail "public compatibility artifact checksum mismatch for ${relative_path}"
+  done
 }
 
-check_required_rows
+check_metadata_rows
 check_stale_patterns
 check_local_artifacts
 check_local_publish_gate

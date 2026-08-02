@@ -23,6 +23,11 @@ function Write-EvidenceStatus([string]$Message) {
 try {
   $Architecture = [Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString().ToLowerInvariant()
   $Platform = if ($Architecture -eq "arm64") { "windows-aarch64" } else { "windows-x86_64" }
+  $ExpectedSha256 = if ($Platform -eq "windows-aarch64") {
+    "3521ca0e83f86d140e19998452c2e4326b45bb03929e097c87acbb3cecbd5d89"
+  } else {
+    "03c91235ccaab00d77ba0c192fb893dd14eac056efdb8ee17fbcdc4cfadd701e"
+  }
   $ArtifactName = "coakka-runtime-native-evidence-v2-$EvidenceVersion-$Platform.zip"
   $ArtifactRelativePath = "runtime/evidence/native/releases/$EvidenceRelease/$ArtifactName"
   $ArchivePath = Join-Path $TemporaryRoot "artifacts\$ArtifactName"
@@ -42,6 +47,11 @@ try {
     $ArtifactUrl = "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/$ArtifactRelativePath"
     Write-EvidenceStatus "downloading published native evidence runner platform=$Platform"
     Invoke-WebRequest -Uri $ArtifactUrl -OutFile $ArchivePath
+  }
+
+  $ActualSha256 = (Get-FileHash -Algorithm SHA256 -Path $ArchivePath).Hash.ToLowerInvariant()
+  if ($ActualSha256 -ne $ExpectedSha256) {
+    throw "published native evidence checksum mismatch for $ArtifactRelativePath"
   }
 
   Expand-Archive -Path $ArchivePath -DestinationPath $ExtractDirectory

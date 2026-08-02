@@ -3,11 +3,17 @@
 These samples consume the published runtime v2 native C/C++ archive from
 `coakka-publish`.
 
-The native package is not a Maven artifact. The sample runner resolves:
+The native package is not a Maven artifact. On macOS ARM64 and Linux ARM64,
+the sample runner resolves:
 
 ```text
-runtime/native/releases/1.3.4+dc6ec284/coakka-runtime-native-v2-1.3.4.tar.gz
+runtime/native/releases/1.4.0+2cee86bf/coakka-runtime-native-v2-1.4.0.tar.gz
 ```
+
+Linux x86-64 is outside the `1.4.0` native artifact matrix, so that host uses
+the checksum-pinned `1.3.4+dc6ec284` compatibility package. The runner reports
+the loaded runtime identity; it never labels the compatibility execution as
+`1.4.0` evidence.
 
 It then builds against the archive with CMake target:
 

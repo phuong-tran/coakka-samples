@@ -11,19 +11,20 @@ archive prefix is `coakka-client`.
 The archive intentionally ships `coakka-client` as the command name. A
 `coakka-runtime-client` executable is not part of this release surface.
 
-Current release line:
+Current release lines:
 
 ```text
 coakka-runtime-client product lane
 coakka-client command and archive prefix
-1.3.4+dc6ec28 release id
+1.4.0+2cee86bf release id on macOS ARM64
+1.3.4+dc6ec28 compatibility release id on the other listed platforms
 ```
 
 Published CLI archives:
 
 | Platform | Archive |
 | --- | --- |
-| macOS ARM64 | [coakka-client-v2-1.3.4-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/1.3.4+dc6ec28/coakka-client-v2-1.3.4-macos-aarch64.tar.gz) |
+| macOS ARM64 | [coakka-client-v2-1.4.0-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/1.4.0+2cee86bf/coakka-client-v2-1.4.0-macos-aarch64.tar.gz) |
 | Linux x86_64 | [coakka-client-v2-1.3.4-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/1.3.4+dc6ec28/coakka-client-v2-1.3.4-linux-x86_64.tar.gz) |
 | Linux ARM64 | [coakka-client-v2-1.3.4-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/1.3.4+dc6ec28/coakka-client-v2-1.3.4-linux-aarch64.tar.gz) |
 | Windows x86_64 | [coakka-client-v2-1.3.4-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/1.3.4+dc6ec28/coakka-client-v2-1.3.4-windows-x86_64.tar.gz) |
@@ -33,14 +34,15 @@ Full release page and manifest:
 [CoAkka Public Artifacts](https://github.com/phuong-tran/coakka-publish/tree/main),
 [public-artifacts.tsv](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/artifacts/public-artifacts.tsv)
 
-Per-lane checksums:
-[SHA256SUMS](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/1.3.4+dc6ec28/SHA256SUMS)
+Per-lane checksums are stored beside each release directory in
+`coakka-publish`.
 
 Artifact layout:
 
 ```text
+coakka-tools/coakka-client/releases/1.4.0+2cee86bf/
+  coakka-client-v2-1.4.0-macos-aarch64.tar.gz
 coakka-tools/coakka-client/releases/1.3.4+dc6ec28/
-  coakka-client-v2-1.3.4-macos-aarch64.tar.gz
   coakka-client-v2-1.3.4-linux-x86_64.tar.gz
   coakka-client-v2-1.3.4-linux-aarch64.tar.gz
   coakka-client-v2-1.3.4-windows-x86_64.tar.gz

@@ -156,7 +156,19 @@ bash run.sh runtime-test smoke --payload 64K --requests 128
 bash run.sh runtime-test pressure --requests 512 --queue-capacity 2
 bash run.sh runtime-test stress --payload 128K --requests 2000
 bash run.sh runtime-test soak --payload 64K --duration 30s --max-in-flight 64
+bash run.sh runtime-test connection-strategies
 ```
+
+macOS ARM64 and Linux ARM64 use native generation `1.4.0+2cee86bf`. Linux
+x86-64 can still run the workload modes through the checksum-pinned
+`1.3.4+dc6ec284` compatibility package, but that package predates the public
+connection-strategy ABI. Run `connection-strategies` on a platform included in
+the `1.4.0` artifact matrix.
+
+The Windows PowerShell entrypoint currently executes the checksum-verified
+`1.3.4+dc6ec284` compatibility evidence runner. The `1.4.0` distribution still
+includes Windows x86-64 native bytes; see the compatibility matrix for the
+separate package and platform gates.
 
 Documented payload presets are:
 

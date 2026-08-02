@@ -6,6 +6,14 @@ fn cstr(value: ?[*:0]const u8) []const u8 {
     return "";
 }
 
+fn takeStarted(result: runtime.StartHostResult) !runtime.RuntimeHost {
+    return switch (result) {
+        .started => |host| host,
+        .connection_rejected => error.ConnectionConfigurationRejected,
+        .security_rejected => error.SecurityConfigurationRejected,
+    };
+}
+
 pub fn main(init: std.process.Init) !void {
     const lib_path = init.environ_map.get("COAKKA_RUNTIME_LIB") orelse {
         std.debug.print("set COAKKA_RUNTIME_LIB=/path/to/libcoakka_runtime_v2\n", .{});
@@ -17,7 +25,7 @@ pub fn main(init: std.process.Init) !void {
 
     const info = try native.readInfo();
     const spec = sampleSpec();
-    var host = try native.startHost(spec);
+    var host = try takeStarted(try native.startHost(spec));
     defer host.deinit();
 
     const stats = try host.stats();

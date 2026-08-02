@@ -13,7 +13,7 @@ permissions:
 jobs:
   surface:
     name: public sample surface
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     timeout-minutes: 15
     steps:
       - name: Check out samples
@@ -137,10 +137,24 @@ jobs:
         run: |
           ./runtime-test/run.ps1 pressure --requests 512 --queue-capacity 2
 
+  native-evidence-macos:
+    name: native evidence / macos-aarch64
+    runs-on: macos-14
+    timeout-minutes: 15
+    steps:
+      - name: Check out samples
+        uses: actions/checkout@v6
+
+      - name: Run current native evidence
+        run: |
+          bash run.sh runtime-test smoke --payload 64K --requests 128
+          bash run.sh runtime-test pressure --requests 512 --queue-capacity 2
+          bash run.sh runtime-test connection-strategies
+
   native-evidence-sanitizers:
-    name: native evidence / linux ASan+UBSan
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+    name: native evidence / linux-aarch64 ASan+UBSan
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 15
     steps:
       - name: Check out samples
         uses: actions/checkout@v6
@@ -151,4 +165,7 @@ jobs:
           UBSAN_OPTIONS: halt_on_error=1:print_stacktrace=1
           COAKKA_NATIVE_EVIDENCE_STATIC_ANALYSIS: "1"
           COAKKA_NATIVE_EVIDENCE_ENABLE_SANITIZERS: "1"
-        run: bash run.sh runtime-test smoke --requests 32
+        run: |
+          bash run.sh runtime-test smoke --requests 32
+          COAKKA_NATIVE_EVIDENCE_STATIC_ANALYSIS=0 \
+            bash run.sh runtime-test connection-strategies

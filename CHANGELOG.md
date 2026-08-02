@@ -6,6 +6,17 @@ details live in
 
 ## 2026-08-02
 
+- Aligned public artifact pins and runnable archive consumers with runtime
+  `1.4.0+2cee86bf`; macOS ARM64 tools select their 1.4.0 bundles while other
+  tool platforms retain explicitly reported compatible generations.
+- Moved the primary Linux public-surface and sanitizer evidence to Linux ARM64,
+  the Linux platform included in the exact 1.4.0 native matrix. The sanitizer
+  lane now executes both workload and four-mode connection-strategy contracts.
+- Added immutable SHA-256 verification for the Linux x86-64 native compatibility
+  package and Windows compatibility evidence runner.
+- Refreshed Rust, Tauri, Mojo, and Zig archive samples to the 1.4.0 connector
+  generation, including Zig's structured startup result and platform loader
+  bridge.
 - Promoted the auditable native public-ABI harness to root-level
   `runtime-test/`, kept the historical path as a compatibility wrapper, and
   made correctness and connection-strategy evidence visible before optional

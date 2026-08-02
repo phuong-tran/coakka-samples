@@ -12,8 +12,8 @@ coakka_require_command tar "Install tar, then retry."
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
-artifact_rel="runtime/zig/releases/1.3.4+dc6ec284-f68ff5c/coakka-runtime-zig-1.3.4-source.tar.gz"
-package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-runtime-zig-1.3.4-source.tar.gz")"
+artifact_rel="runtime/zig/releases/1.4.0+2cee86bf-ec4902c/coakka-runtime-zig-1.4.0-source.tar.gz"
+package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-runtime-zig-1.4.0-source.tar.gz")"
 mkdir -p "${tmp_dir}/package"
 tar -C "${tmp_dir}/package" --strip-components 1 -xzf "${package_path}"
 
@@ -21,6 +21,7 @@ package_root="${tmp_dir}/package"
 sample_src="${tmp_dir}/sample-src"
 mkdir -p "${sample_src}"
 cp "${package_root}/src/runtime.zig" "${sample_src}/runtime.zig"
+cp "${package_root}/src/transport.zig" "${sample_src}/transport.zig"
 cp "${script_dir}/main.zig" "${sample_src}/main.zig"
 
 runtime_lib="${COAKKA_RUNTIME_LIB:-}"
@@ -39,7 +40,12 @@ if [[ -z "${runtime_lib}" ]]; then
 fi
 
 binary="${tmp_dir}/coakka-runtime-zig-basic"
-zig build-exe "${sample_src}/main.zig" -lc -femit-bin="${binary}" >/dev/null
+zig build-exe \
+  "${sample_src}/main.zig" \
+  "${package_root}/src/platform_bridge.c" \
+  -I "${package_root}/src" \
+  -lc \
+  -femit-bin="${binary}" >/dev/null
 
 case "$(uname -s)" in
   Darwin) COAKKA_RUNTIME_LIB="${runtime_lib}" DYLD_LIBRARY_PATH="$(dirname "${runtime_lib}")" "${binary}" ;;

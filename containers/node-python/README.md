@@ -78,9 +78,9 @@ public artifact manifest before install, then load the native runtime from the
 pinned runtime-base image. Use `coakka-publish` when the user needs direct
 package/archive downloads or checksums outside the container sample.
 
-The local rebuild path uses native `1.3.4+dc6ec284`, Node.js connector artifact
-`1.3.11`, and Python connector artifact `1.3.6`. The default zero-build path
-continues to use the separately published Docker Hub image tags listed above.
+The Linux ARM64 local rebuild path uses native `1.4.0+2cee86bf` and the Node.js
+and Python `1.4.0` connector artifacts. The default zero-build path continues
+to use the separately published multi-arch Docker Hub image tags listed above.
 
 If the selected runtime artifact cannot complete cross-process delivery, the
 Node web UI shows the runtime error. The sample intentionally has no REST
@@ -95,26 +95,24 @@ bash run.sh containers node-python build
 The published remote image line is the fastest first run. The local image line
 is the repo-side rebuild path for this pinned connector generation.
 
-Maintainer multi-arch publish commands:
+Current Linux ARM64 source-build commands:
 
 ```sh
 docker buildx build \
-  --platform linux/amd64,linux/arm64 \
+  --platform linux/arm64 \
   -f containers/node-python/Dockerfile.python \
-  --build-arg COAKKA_RUNTIME_BASE_IMAGE=docker.io/gabrielgun1983/runtime-base:1.3.2-caff6d6d-remote \
-  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=918304c6c0944ff5ffadcf8e880cf4efa69c92b36bf70e049479514115f9f0dd \
-  --build-arg COAKKA_RUNTIME_GENERATION=1.3.2-caff6d6d-6d5ea58-remote \
-  -t docker.io/gabrielgun1983/sample-python-store:1.3.2-caff6d6d-6d5ea58-remote \
-  --push \
+  --build-arg COAKKA_RUNTIME_BASE_IMAGE=coakka/runtime-base:1.4.0-2cee86bf-local \
+  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=d8a35276cf9f014bb57c535cc5651d61c84aaaa731266f0bb4ad3aedb548f8cb \
+  -t coakka/sample-python-store:1.4.0-2cee86bf-ec4902c-local \
+  --load \
   .
 
 docker buildx build \
-  --platform linux/amd64,linux/arm64 \
+  --platform linux/arm64 \
   -f containers/node-python/Dockerfile.node \
-  --build-arg COAKKA_RUNTIME_BASE_IMAGE=docker.io/gabrielgun1983/runtime-base:1.3.2-caff6d6d-remote \
-  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=918304c6c0944ff5ffadcf8e880cf4efa69c92b36bf70e049479514115f9f0dd \
-  --build-arg COAKKA_RUNTIME_GENERATION=1.3.2-caff6d6d-b46f705-remote \
-  -t docker.io/gabrielgun1983/sample-node-web:1.3.2-caff6d6d-b46f705-remote \
-  --push \
+  --build-arg COAKKA_RUNTIME_BASE_IMAGE=coakka/runtime-base:1.4.0-2cee86bf-local \
+  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=d8a35276cf9f014bb57c535cc5651d61c84aaaa731266f0bb4ad3aedb548f8cb \
+  -t coakka/sample-node-web:1.4.0-2cee86bf-ec4902c-local \
+  --load \
   .
 ```

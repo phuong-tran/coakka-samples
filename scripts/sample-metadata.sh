@@ -2,6 +2,14 @@
 
 COAKKA_PUBLISH_RAW_BASE_DEFAULT="https://raw.githubusercontent.com/phuong-tran/coakka-publish/main"
 
+COAKKA_RUNTIME_NATIVE_VERSION="1.4.0"
+COAKKA_RUNTIME_NATIVE_RELEASE="1.4.0+2cee86bf"
+COAKKA_RUNTIME_NATIVE_ARTIFACT="runtime/native/releases/${COAKKA_RUNTIME_NATIVE_RELEASE}/coakka-runtime-native-v2-${COAKKA_RUNTIME_NATIVE_VERSION}.tar.gz"
+COAKKA_RUNTIME_NATIVE_LINUX_X86_64_COMPAT_VERSION="1.3.4"
+COAKKA_RUNTIME_NATIVE_LINUX_X86_64_COMPAT_RELEASE="1.3.4+dc6ec284"
+COAKKA_RUNTIME_NATIVE_LINUX_X86_64_COMPAT_ARTIFACT="runtime/native/releases/${COAKKA_RUNTIME_NATIVE_LINUX_X86_64_COMPAT_RELEASE}/coakka-runtime-native-v2-${COAKKA_RUNTIME_NATIVE_LINUX_X86_64_COMPAT_VERSION}.tar.gz"
+COAKKA_RUNTIME_NATIVE_LINUX_X86_64_COMPAT_SHA256="34cbcc710f7ed37525821f8352c4c698422c8e0ba046ea6696d3b9d474f28ad9"
+
 COAKKA_SAMPLE_ROWS=(
   "logger|jvm|basic|Run one bounded logger record on JVM"
   "logger|jvm|java-basic|Run one bounded logger record from Java"
@@ -80,33 +88,66 @@ COAKKA_ARTIFACT_ROWS=(
   "logger Mojo source package|logger/mojo/releases/1.2.1+f50756ebff0d-8264bba/coakka-logger-mojo-1.2.1-source.tar.gz"
   "logger Zig source package|logger/zig/releases/1.2.1+f50756ebff0d-8264bba/coakka-logger-zig-1.2.1-source.tar.gz"
   "logger Native package|logger/native/releases/1.2.1+f50756ebff0d/coakka-logger-native-1.2.1.tar.gz"
-  "runtime Native package|runtime/native/releases/1.3.4+dc6ec284/coakka-runtime-native-v2-1.3.4.tar.gz"
-  "runtime JVM jar|runtime/jvm/releases/1.3.4+dc6ec284-f68ff5c/coakka-jvm-native-runtime-v2-1.3.4-gdc6ec284-f68ff5c.jar"
-  "runtime Python wheel|runtime/python/releases/1.3.4+dc6ec284-f68ff5c/coakka_v2_connector-1.3.6-py3-none-any.whl"
-  "runtime Node package|runtime/node/releases/1.3.4+dc6ec284-f68ff5c/coakka-v2-connector-node-1.3.11.tgz"
-  "runtime Bun package|runtime/bun/releases/1.3.4+dc6ec284-f68ff5c/coakka-v2-connector-bun-1.3.11.tgz"
-  "runtime Electron package|runtime/electron/releases/1.3.4+dc6ec284-f68ff5c/coakka-v2-connector-electron-1.3.11.tgz"
-  "runtime Go package|runtime/go/releases/1.3.4+dc6ec284-f68ff5c/coakka-v2-connector-go-1.3.12.tar.gz"
-  "runtime C# package|runtime/csharp/releases/1.3.4+dc6ec284-f68ff5c/CoAkka.Runtime.1.3.5.nupkg"
-  "runtime Rust package|runtime/rust/releases/1.3.4+dc6ec284-f68ff5c/coakka-runtime-rs-1.3.4-spike.tar.gz"
-  "runtime Mojo source package|runtime/mojo/releases/1.3.4+dc6ec284-f68ff5c/coakka-runtime-mojo-1.3.4-source.tar.gz"
-  "runtime Zig source package|runtime/zig/releases/1.3.4+dc6ec284-f68ff5c/coakka-runtime-zig-1.3.4-source.tar.gz"
-  "runtime Tauri source package|runtime/tauri/releases/1.3.4+dc6ec284-f68ff5c/coakka-runtime-tauri-intents-1.3.4-source.tar.gz"
-  "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/1.3.4-gdc6ec284-f68ff5c/coakka-spring-boot-starter-1.3.4-gdc6ec284-f68ff5c.jar"
-  "Quarkus extension Maven jar|maven/coakka/quarkus/coakka-quarkus-extension/1.3.4-gdc6ec284-f68ff5c/coakka-quarkus-extension-1.3.4-gdc6ec284-f68ff5c.jar"
+  "runtime Native package|${COAKKA_RUNTIME_NATIVE_ARTIFACT}"
+  "runtime JVM jar|runtime/jvm/releases/1.4.0+2cee86bf-ec4902c/coakka-jvm-native-runtime-v2-1.4.0-g2cee86bf-ec4902c.jar"
+  "runtime Python wheel|runtime/python/releases/1.4.0+2cee86bf-ec4902c/coakka_v2_connector-1.4.0-py3-none-any.whl"
+  "runtime Node package|runtime/node/releases/1.4.0+2cee86bf-ec4902c/coakka-v2-connector-node-1.4.0.tgz"
+  "runtime Bun package|runtime/bun/releases/1.4.0+2cee86bf-ec4902c/coakka-v2-connector-bun-1.4.0.tgz"
+  "runtime Electron package|runtime/electron/releases/1.4.0+2cee86bf-ec4902c/coakka-v2-connector-electron-1.4.0.tgz"
+  "runtime Go package|runtime/go/releases/1.4.0+2cee86bf-ec4902c/coakka-v2-connector-go-1.4.0.tar.gz"
+  "runtime C# package|runtime/csharp/releases/1.4.0+2cee86bf-ec4902c/CoAkka.Runtime.1.4.0.nupkg"
+  "runtime Rust package|runtime/rust/releases/1.4.0+2cee86bf-ec4902c/coakka-runtime-rs-1.4.0.tar.gz"
+  "runtime Swift package|runtime/swift/releases/1.4.0+2cee86bf-ec4902c/coakka-runtime-swift-1.4.0.tar.gz"
+  "runtime Mojo source package|runtime/mojo/releases/1.4.0+2cee86bf-ec4902c/coakka-runtime-mojo-1.4.0-source.tar.gz"
+  "runtime Zig source package|runtime/zig/releases/1.4.0+2cee86bf-ec4902c/coakka-runtime-zig-1.4.0-source.tar.gz"
+  "runtime Tauri source package|runtime/tauri/releases/1.4.0+2cee86bf-ec4902c/coakka-runtime-tauri-intents-1.4.0-source.tar.gz"
+  "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/1.4.0-g2cee86bf-ec4902c/coakka-spring-boot-starter-1.4.0-g2cee86bf-ec4902c.jar"
+  "Quarkus extension Maven jar|maven/coakka/quarkus/coakka-quarkus-extension/1.4.0-g2cee86bf-ec4902c/coakka-quarkus-extension-1.4.0-g2cee86bf-ec4902c.jar"
   "coakka-client linux-x86_64|coakka-tools/coakka-client/releases/1.3.4+dc6ec28/coakka-client-v2-1.3.4-linux-x86_64.tar.gz"
   "coakka-client linux-aarch64|coakka-tools/coakka-client/releases/1.3.4+dc6ec28/coakka-client-v2-1.3.4-linux-aarch64.tar.gz"
-  "coakka-client macos-aarch64|coakka-tools/coakka-client/releases/1.3.4+dc6ec28/coakka-client-v2-1.3.4-macos-aarch64.tar.gz"
+  "coakka-client macos-aarch64|coakka-tools/coakka-client/releases/1.4.0+2cee86bf/coakka-client-v2-1.4.0-macos-aarch64.tar.gz"
   "coakka-client windows-x86_64|coakka-tools/coakka-client/releases/1.3.4+dc6ec28/coakka-client-v2-1.3.4-windows-x86_64.tar.gz"
   "coakka-client windows-aarch64|coakka-tools/coakka-client/releases/1.3.4+dc6ec28/coakka-client-v2-1.3.4-windows-aarch64.tar.gz"
   "coakka-client docker-demo linux-x86_64|coakka-tools/coakka-client/docker-demo/releases/1.3.2+caff6d6d/coakka-client-docker-demo-v2-1.3.2-linux-x86_64.tar.gz"
   "coakka-client docker-demo linux-aarch64|coakka-tools/coakka-client/docker-demo/releases/1.3.2+caff6d6d/coakka-client-docker-demo-v2-1.3.2-linux-aarch64.tar.gz"
   "coakka-runtime-inspect linux-aarch64|coakka-tools/coakka-runtime-inspect/releases/1.3.4+dc6ec28/coakka-runtime-inspect-v2-1.3.4-linux-aarch64.tar.gz"
   "coakka-runtime-inspect linux-x86_64|coakka-tools/coakka-runtime-inspect/releases/1.3.4+dc6ec28/coakka-runtime-inspect-v2-1.3.4-linux-x86_64.tar.gz"
-  "coakka-runtime-inspect macos-aarch64|coakka-tools/coakka-runtime-inspect/releases/1.3.4+dc6ec28/coakka-runtime-inspect-v2-1.3.4-macos-aarch64.tar.gz"
+  "coakka-runtime-inspect macos-aarch64|coakka-tools/coakka-runtime-inspect/releases/1.4.0+2cee86bf/coakka-runtime-inspect-v2-1.4.0-macos-aarch64.tar.gz"
   "coakka-runtime-inspect windows-x86_64|coakka-tools/coakka-runtime-inspect/releases/1.3.4+dc6ec28/coakka-runtime-inspect-v2-1.3.4-windows-x86_64.tar.gz"
   "coakka-runtime-inspect windows-aarch64|coakka-tools/coakka-runtime-inspect/releases/1.3.4+dc6ec28/coakka-runtime-inspect-v2-1.3.4-windows-aarch64.tar.gz"
 )
+
+# Linux x86-64 is not part of the 1.4.0 native artifact matrix. Native sample
+# runners retain this immutable compatibility package instead of claiming that
+# the current release contains an x86-64 Linux binary.
+COAKKA_COMPATIBILITY_ARTIFACT_ROWS=(
+  "runtime Native package linux-x86_64 compatibility|${COAKKA_RUNTIME_NATIVE_LINUX_X86_64_COMPAT_ARTIFACT}|${COAKKA_RUNTIME_NATIVE_LINUX_X86_64_COMPAT_SHA256}"
+)
+
+coakka_runtime_native_package_fields() {
+  if [[ "$#" -ne 1 ]]; then
+    printf 'usage: coakka_runtime_native_package_fields <platform>\n' >&2
+    return 2
+  fi
+
+  case "$1" in
+    macos-aarch64|linux-aarch64)
+      printf '%s|%s|\n' \
+        "${COAKKA_RUNTIME_NATIVE_VERSION}" \
+        "${COAKKA_RUNTIME_NATIVE_ARTIFACT}"
+      ;;
+    linux-x86_64)
+      printf '%s|%s|%s\n' \
+        "${COAKKA_RUNTIME_NATIVE_LINUX_X86_64_COMPAT_VERSION}" \
+        "${COAKKA_RUNTIME_NATIVE_LINUX_X86_64_COMPAT_ARTIFACT}" \
+        "${COAKKA_RUNTIME_NATIVE_LINUX_X86_64_COMPAT_SHA256}"
+      ;;
+    *)
+      printf 'unsupported native runtime package platform: %s\n' "$1" >&2
+      return 1
+      ;;
+  esac
+}
 
 coakka_default_publish_root() {
   local repo_root="$1"

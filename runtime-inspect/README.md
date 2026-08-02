@@ -79,11 +79,11 @@ are explicitly labelled `local-linked-runtime`.
 
 ## Published Release
 
-The current published inspect release is:
+The current published inspect release is platform-specific:
 
 ```text
 coakka-runtime-inspect native UI
-1.3.4+dc6ec28 release id for macOS ARM64
+1.4.0+2cee86bf release id for macOS ARM64
 1.3.4+dc6ec28 release id for Linux x86_64
 1.3.4+dc6ec28 release id for Linux ARM64
 1.3.4+dc6ec28 release id for Windows x86_64
@@ -96,7 +96,7 @@ Direct download:
 
 [coakka-runtime-inspect-v2-1.3.4-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-runtime-inspect/releases/1.3.4+dc6ec28/coakka-runtime-inspect-v2-1.3.4-linux-x86_64.tar.gz)
 
-[coakka-runtime-inspect-v2-1.3.4-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-runtime-inspect/releases/1.3.4+dc6ec28/coakka-runtime-inspect-v2-1.3.4-macos-aarch64.tar.gz)
+[coakka-runtime-inspect-v2-1.4.0-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-runtime-inspect/releases/1.4.0+2cee86bf/coakka-runtime-inspect-v2-1.4.0-macos-aarch64.tar.gz)
 
 [coakka-runtime-inspect-v2-1.3.4-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-runtime-inspect/releases/1.3.4+dc6ec28/coakka-runtime-inspect-v2-1.3.4-windows-x86_64.tar.gz)
 

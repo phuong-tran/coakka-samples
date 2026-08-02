@@ -61,6 +61,59 @@ coakka_verify_artifact_sha256() {
   fi
 }
 
+coakka_validate_sha256() {
+  if [[ "$#" -ne 1 ]]; then
+    echo "usage: coakka_validate_sha256 <sha256>" >&2
+    return 2
+  fi
+
+  local sha256="$1"
+  if [[ "${#sha256}" -ne 64 || "${sha256}" == *[!0-9a-f]* ]]; then
+    echo "[coakka-samples] invalid expected sha256: ${sha256}" >&2
+    return 1
+  fi
+}
+
+coakka_resolve_pinned_artifact() {
+  if [[ "$#" -ne 4 ]]; then
+    echo "usage: coakka_resolve_pinned_artifact <publish-root> <relative-path> <download-target> <expected-sha256>" >&2
+    return 2
+  fi
+
+  local publish_root="$1"
+  local relative_path="$2"
+  local download_target="$3"
+  local expected_sha="$4"
+  local local_path="${publish_root}/${relative_path}"
+  local raw_base url
+
+  coakka_validate_sha256 "${expected_sha}" || return 1
+  if [[ "${relative_path}" == /* || "${relative_path}" == *".."* ]]; then
+    echo "[coakka-samples] unsafe pinned artifact path: ${relative_path}" >&2
+    return 1
+  fi
+
+  if [[ -f "${local_path}" ]]; then
+    coakka_verify_artifact_sha256 "${local_path}" "${relative_path}" "${expected_sha}" || return 1
+    echo "[coakka-samples] using local compatibility artifact: ${local_path}" >&2
+    printf '%s\n' "${local_path}"
+    return 0
+  fi
+
+  raw_base="${COAKKA_PUBLISH_RAW_BASE:-https://raw.githubusercontent.com/phuong-tran/coakka-publish/main}"
+  url="${raw_base%/}/${relative_path}"
+  mkdir -p "$(dirname "${download_target}")"
+  if ! command -v curl >/dev/null 2>&1; then
+    echo "[coakka-samples] curl is required to download ${url}" >&2
+    return 1
+  fi
+
+  echo "[coakka-samples] downloading pinned compatibility artifact: ${url}" >&2
+  curl -fsSL --retry 5 --retry-all-errors --retry-delay 2 "${url}" -o "${download_target}"
+  coakka_verify_artifact_sha256 "${download_target}" "${relative_path}" "${expected_sha}" || return 1
+  printf '%s\n' "${download_target}"
+}
+
 coakka_resolve_artifact() {
   if [[ "$#" -ne 3 ]]; then
     echo "usage: coakka_resolve_artifact <publish-root> <relative-path> <download-target>" >&2
