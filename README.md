@@ -2,6 +2,9 @@
 
 [![sample-smoke](https://github.com/phuong-tran/coakka-samples/actions/workflows/sample-smoke.yml/badge.svg)](https://github.com/phuong-tran/coakka-samples/actions/workflows/sample-smoke.yml)
 
+Troubleshooting: [docs/troubleshooting.md](docs/troubleshooting.md)
+Contact: `gabrielgun1983@gmail.com`
+
 Route application-owned work without inventing another internal REST API.
 
 CoAkka Runtime is a native-backed capability runtime for application-owned

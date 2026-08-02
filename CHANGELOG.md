@@ -4,6 +4,15 @@ This changelog summarizes the public runnable sample surface. Artifact release
 details live in
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish).
 
+## 2026-08-02
+
+- Staged the canonical ecosystem, connection-strategy, TLS/mTLS, support, and
+  troubleshooting guides for the runtime-v2 connector train.
+- Made the multi-language and multi-platform ecosystem, verified compatibility
+  boundary, and contact paths visible from the root README.
+- Kept examples free of unverified benchmark claims and made no sample package
+  or registry release claim.
+
 ## 2026-07-31
 
 - Extended the native public-ABI evidence harness across Linux, macOS, and
