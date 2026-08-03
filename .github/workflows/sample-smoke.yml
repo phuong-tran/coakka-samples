@@ -115,6 +115,7 @@ jobs:
           bash run.sh runtime native pressure
           bash run.sh runtime-test smoke --payload 64K --requests 128
           bash run.sh runtime-test pressure --requests 512 --queue-capacity 2
+          bash run.sh runtime-test hot-reload --threads 2 --requests 64 --generations 8 --queue-capacity 64
 
       - name: Run public runtime client smoke
         run: bash run.sh runtime-client
@@ -137,6 +138,11 @@ jobs:
         run: |
           ./runtime-test/run.ps1 pressure --requests 512 --queue-capacity 2
 
+      - name: Run current native concurrency evidence
+        shell: pwsh
+        run: |
+          ./runtime-test/run.ps1 race --threads 2 --requests 32 --lifecycle-iterations 2 --queue-capacity 64
+
   native-evidence-macos:
     name: native evidence / macos-aarch64
     runs-on: macos-14
@@ -150,6 +156,7 @@ jobs:
           bash run.sh runtime-test smoke --payload 64K --requests 128
           bash run.sh runtime-test pressure --requests 512 --queue-capacity 2
           bash run.sh runtime-test connection-strategies
+          bash run.sh runtime-test hot-reload --threads 2 --requests 64 --generations 8 --queue-capacity 64
 
   native-evidence-sanitizers:
     name: native evidence / linux-aarch64 ASan+UBSan
@@ -169,3 +176,5 @@ jobs:
           bash run.sh runtime-test smoke --requests 32
           COAKKA_NATIVE_EVIDENCE_STATIC_ANALYSIS=0 \
             bash run.sh runtime-test connection-strategies
+          COAKKA_NATIVE_EVIDENCE_STATIC_ANALYSIS=0 \
+            bash run.sh runtime-test race --threads 2 --requests 16 --lifecycle-iterations 1 --queue-capacity 32

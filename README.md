@@ -52,12 +52,16 @@ Start with the root-level [`runtime-test/`](runtime-test/README.md) when you
 want to audit the native runtime boundary before choosing a language connector.
 The C11 harness uses only the public C ABI and covers request/reply invariants,
 bounded admission, all four connection strategies, and structured rejection on
-Windows, macOS, and Linux. It also includes static analysis and consumer-side
-ASan/UBSan controls for supported Clang/GCC hosts.
+Windows, macOS, and Linux. It also covers multi-producer race behavior,
+submit-versus-stop convergence, independent lifecycle contention, and atomic
+route-snapshot hot reload. Static analysis, consumer-side ASan/UBSan, and
+separate ThreadSanitizer controls are included for supported Clang/GCC hosts.
 
 ```sh
 bash run.sh runtime-test smoke
 bash run.sh runtime-test pressure --requests 512 --queue-capacity 2
+bash run.sh runtime-test race --threads 4 --requests 256
+bash run.sh runtime-test hot-reload --threads 4 --requests 256 --generations 64
 ```
 
 The optional [`bench/`](bench/README.md) tooling adds environment-local load

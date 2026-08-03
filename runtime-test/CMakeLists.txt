@@ -5,14 +5,37 @@ option(COAKKA_NATIVE_EVIDENCE_WARNINGS_AS_ERRORS
        "Treat public native evidence compiler warnings as errors" ON)
 option(COAKKA_NATIVE_EVIDENCE_ENABLE_SANITIZERS
        "Instrument the public consumer harness with ASan and UBSan" OFF)
+option(COAKKA_NATIVE_EVIDENCE_ENABLE_TSAN
+       "Instrument the public consumer concurrency harness with ThreadSanitizer" OFF)
 option(COAKKA_NATIVE_EVIDENCE_REQUIRE_CONNECTION_STRATEGY
        "Fail configure when the runtime artifact lacks the connection-strategy ABI" OFF)
+set(COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR "" CACHE PATH
+    "Optional CoAkka v2 source directory for an instrumented core evidence build")
+
+if(COAKKA_NATIVE_EVIDENCE_ENABLE_SANITIZERS AND
+   COAKKA_NATIVE_EVIDENCE_ENABLE_TSAN)
+  message(FATAL_ERROR "ASan/UBSan and ThreadSanitizer require separate builds")
+endif()
 
 if(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
 endif()
 
-find_package(CoAkkaRuntimeNativeV2 CONFIG REQUIRED)
+if(COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR)
+  add_subdirectory(
+    "${COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR}"
+    "${CMAKE_CURRENT_BINARY_DIR}/coakka-runtime-core"
+    EXCLUDE_FROM_ALL
+  )
+  if(NOT TARGET coakka_runtime_v2)
+    message(FATAL_ERROR "CoAkka v2 source did not define coakka_runtime_v2")
+  endif()
+  add_library(CoAkkaRuntimeNativeV2::runtime_v2 ALIAS coakka_runtime_v2)
+  set(CoAkkaRuntimeNativeV2_PLATFORM "source-instrumented")
+else()
+  find_package(CoAkkaRuntimeNativeV2 CONFIG REQUIRED)
+endif()
+find_package(Threads REQUIRED)
 file(
   WRITE
   "${CMAKE_CURRENT_BINARY_DIR}/coakka-evidence-platform.txt"
@@ -71,6 +94,21 @@ function(coakka_configure_native_evidence_target target)
       message(FATAL_ERROR
               "Public native evidence ASan/UBSan requires Clang or GCC")
     endif()
+  elseif(COAKKA_NATIVE_EVIDENCE_ENABLE_TSAN)
+    if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU" AND NOT WIN32)
+      target_compile_options(
+        ${target}
+        PRIVATE
+          -fno-omit-frame-pointer
+          -fno-sanitize-recover=all
+          -fsanitize=thread
+      )
+      target_link_options(${target} PRIVATE -fsanitize=thread)
+      target_compile_definitions(${target} PRIVATE COAKKA_EVIDENCE_TSAN_ENABLED=1)
+    else()
+      message(FATAL_ERROR
+              "Public native evidence ThreadSanitizer requires Clang or GCC on a non-Windows host")
+    endif()
   endif()
 endfunction()
 
@@ -82,6 +120,34 @@ target_compile_definitions(
     COAKKA_EVIDENCE_COMPILER="${CMAKE_C_COMPILER_ID} ${CMAKE_C_COMPILER_VERSION}"
 )
 target_link_libraries(coakka_runtime_v2_native_evidence PRIVATE CoAkkaRuntimeNativeV2::runtime_v2)
+
+add_executable(
+  coakka_runtime_v2_concurrency_evidence
+  concurrency_main.c
+  concurrency_config.c
+  concurrency_evidence.h
+  concurrency_runtime.c
+  concurrency_report.c
+  evidence_json.c
+  evidence_json.h
+  evidence_platform.c
+  evidence_platform.h
+)
+coakka_configure_native_evidence_target(
+  coakka_runtime_v2_concurrency_evidence
+)
+target_compile_definitions(
+  coakka_runtime_v2_concurrency_evidence
+  PRIVATE
+    COAKKA_EVIDENCE_BUILD_PROFILE="$<CONFIG>"
+    COAKKA_EVIDENCE_COMPILER="${CMAKE_C_COMPILER_ID} ${CMAKE_C_COMPILER_VERSION}"
+)
+target_link_libraries(
+  coakka_runtime_v2_concurrency_evidence
+  PRIVATE
+    CoAkkaRuntimeNativeV2::runtime_v2
+    Threads::Threads
+)
 
 get_target_property(
   _coakka_native_include_dirs

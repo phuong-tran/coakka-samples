@@ -22,7 +22,7 @@ trap coakka_cleanup_evidence_tmp_dir EXIT
 
 coakka_evidence_mode() {
   case "${1:-smoke}" in
-    smoke|pressure|stress|soak|connection-strategies) printf '%s\n' "$1" ;;
+    smoke|pressure|stress|soak|connection-strategies|race|hot-reload) printf '%s\n' "$1" ;;
     -h|--help) printf '%s\n' "help" ;;
     *) printf '%s\n' "smoke" ;;
   esac
@@ -32,10 +32,11 @@ coakka_print_evidence_help() {
   cat <<'EOF'
 {
   "schema": "coakka.runtime.native.evidence.help.v1",
-  "usage": "bash run.sh runtime-test [smoke|pressure|stress|soak|connection-strategies] [--payload 64K] [--requests 128] [--duration 10s] [--queue-capacity 1024] [--max-in-flight 64]",
+  "usage": "bash run.sh runtime-test [smoke|pressure|stress|soak|connection-strategies|race|hot-reload]",
   "payloadPresets": ["64K", "128K", "256K", "512K", "1M", "2M", "3M"],
   "pressurePayloadLimit": "16K",
-  "requestLimitMax": 500000
+  "requestLimitMax": 500000,
+  "concurrencyUsage": "bash run.sh runtime-test [race|hot-reload] [--threads 4] [--requests 128] [--generations 16] [--lifecycle-iterations 8] [--queue-capacity 1024] [--timeout 30s]"
 }
 EOF
 }
@@ -100,6 +101,9 @@ run_from_source() {
   if [[ "${COAKKA_NATIVE_EVIDENCE_ENABLE_SANITIZERS:-0}" == "1" ]]; then
     cmake_args+=( -DCOAKKA_NATIVE_EVIDENCE_ENABLE_SANITIZERS=ON )
   fi
+  if [[ "${COAKKA_NATIVE_EVIDENCE_ENABLE_TSAN:-0}" == "1" ]]; then
+    cmake_args+=( -DCOAKKA_NATIVE_EVIDENCE_ENABLE_TSAN=ON )
+  fi
   mode="$(coakka_evidence_mode "${1:-}")"
   if [[ "${mode}" == "connection-strategies" ]]; then
     cmake_args+=( -DCOAKKA_NATIVE_EVIDENCE_REQUIRE_CONNECTION_STRATEGY=ON )
@@ -109,6 +113,8 @@ run_from_source() {
   if [[ "${mode}" == "connection-strategies" ]]; then
     executable="${build_dir}/coakka_runtime_v2_connection_strategy_evidence"
     set --
+  elif [[ "${mode}" == "race" || "${mode}" == "hot-reload" ]]; then
+    executable="${build_dir}/coakka_runtime_v2_concurrency_evidence"
   else
     executable="${build_dir}/coakka_runtime_v2_native_evidence"
   fi
@@ -136,8 +142,10 @@ run_from_prebuilt() {
   coakka_evidence_tmp_dir="${tmp_dir}"
 
   platform="$(coakka_native_platform)"
-  if [[ "$(coakka_evidence_mode "${1:-}")" == "connection-strategies" ]]; then
-    coakka_die "Connection-strategy evidence requires the current source-build runtime package."
+  if [[ "$(coakka_evidence_mode "${1:-}")" == "connection-strategies" ||
+        "$(coakka_evidence_mode "${1:-}")" == "race" ||
+        "$(coakka_evidence_mode "${1:-}")" == "hot-reload" ]]; then
+    coakka_die "Connection-strategy and concurrency evidence require the current source-build harness."
   fi
   coakka_note "preparing published native runtime evidence runner platform=${platform}"
   artifact_name="coakka-runtime-native-evidence-v2-${evidence_version}-${platform}.tar.gz"

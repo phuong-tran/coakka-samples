@@ -32,7 +32,7 @@ Usage:
   bash run.sh runtime/scenarios/<track>/<topology> <command>
   bash run.sh runtime-client [check|version|doctor|docker-bundle|docker-walkthrough|dockerhub-demo]
   bash run.sh runtime-inspect [check|published-smoke|local-smoke|serve|docker-smoke|docker-serve|dockerhub-smoke]
-  bash run.sh runtime-test [smoke|pressure|stress|soak]
+  bash run.sh runtime-test [smoke|pressure|stress|soak|connection-strategies|race|hot-reload]
 
 Examples:
   bash run.sh

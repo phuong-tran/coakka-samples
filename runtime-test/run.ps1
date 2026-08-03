@@ -23,6 +23,65 @@ function Write-EvidenceStatus([string]$Message) {
 try {
   $Architecture = [Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString().ToLowerInvariant()
   $Platform = if ($Architecture -eq "arm64") { "windows-aarch64" } else { "windows-x86_64" }
+  if ($Mode -in @("race", "hot-reload")) {
+    if ($Platform -ne "windows-x86_64") {
+      throw "runtime 1.4.0 concurrency evidence is not published for $Platform"
+    }
+    $RuntimeVersion = "1.4.0"
+    $RuntimeRelease = "1.4.0+2cee86bf"
+    $RuntimeSha256 = "0bc2c9e8f4b0c7cc5135a2e45ad53da5f55b78189e3a8b33131eff86d10de26b"
+    $RuntimeArtifact = "coakka-runtime-native-v2-$RuntimeVersion.tar.gz"
+    $RuntimeRelativePath = "runtime/native/releases/$RuntimeRelease/$RuntimeArtifact"
+    $RuntimeArchive = Join-Path $TemporaryRoot "artifacts\$RuntimeArtifact"
+    $RuntimeExtractDirectory = Join-Path $TemporaryRoot "runtime"
+    $BuildDirectory = Join-Path $TemporaryRoot "build"
+    New-Item -ItemType Directory -Force -Path (Split-Path $RuntimeArchive) | Out-Null
+    New-Item -ItemType Directory -Force -Path $RuntimeExtractDirectory | Out-Null
+
+    $PublishRoot = if ($env:COAKKA_PUBLISH_ROOT) {
+      $env:COAKKA_PUBLISH_ROOT
+    } else {
+      Join-Path $RepositoryRoot "..\coakka-publish"
+    }
+    $LocalRuntimeArchive = Join-Path $PublishRoot $RuntimeRelativePath
+    if (Test-Path $LocalRuntimeArchive) {
+      Copy-Item $LocalRuntimeArchive $RuntimeArchive
+    } else {
+      $RuntimeUrl = "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/$RuntimeRelativePath"
+      Write-EvidenceStatus "downloading runtime package generation=$RuntimeRelease platform=$Platform"
+      Invoke-WebRequest -Uri $RuntimeUrl -OutFile $RuntimeArchive
+    }
+    $ActualRuntimeSha256 = (Get-FileHash -Algorithm SHA256 -Path $RuntimeArchive).Hash.ToLowerInvariant()
+    if ($ActualRuntimeSha256 -ne $RuntimeSha256) {
+      throw "published runtime checksum mismatch for $RuntimeRelativePath"
+    }
+    tar -C $RuntimeExtractDirectory -xzf $RuntimeArchive
+    if ($LASTEXITCODE -ne 0) {
+      throw "failed to extract published runtime package"
+    }
+    $RuntimePackageRoot = Join-Path $RuntimeExtractDirectory "coakka-runtime-native-v2-$RuntimeVersion"
+    cmake -S $ScriptDirectory -B $BuildDirectory "-DCMAKE_PREFIX_PATH=$RuntimePackageRoot"
+    if ($LASTEXITCODE -ne 0) {
+      throw "failed to configure concurrency evidence"
+    }
+    cmake --build $BuildDirectory --config Release --target coakka_runtime_v2_concurrency_evidence
+    if ($LASTEXITCODE -ne 0) {
+      throw "failed to build concurrency evidence"
+    }
+    $Executable = Join-Path $BuildDirectory "Release\coakka_runtime_v2_concurrency_evidence.exe"
+    if (-not (Test-Path $Executable)) {
+      $Executable = Join-Path $BuildDirectory "coakka_runtime_v2_concurrency_evidence.exe"
+    }
+    if (-not (Test-Path $Executable)) {
+      throw "built concurrency evidence executable is missing"
+    }
+    $NativePath = Join-Path $RuntimePackageRoot "native\$Platform"
+    $env:PATH = "$NativePath;$env:PATH"
+    $env:COAKKA_EVIDENCE_EXECUTION_PATH = "source"
+    Write-EvidenceStatus "starting native runtime evidence mode=$Mode path=source platform=$Platform runtime=$RuntimeVersion"
+    & $Executable $Mode @EvidenceArguments
+    exit $LASTEXITCODE
+  }
   $ExpectedSha256 = if ($Platform -eq "windows-aarch64") {
     "3521ca0e83f86d140e19998452c2e4326b45bb03929e097c87acbb3cecbd5d89"
   } else {

@@ -158,6 +158,15 @@ sanitizer-instrumented. Instrumenting only `runtime-test` proves the public
 consumer harness; it does not convert an ordinary release library into a
 sanitized core build. Linux remains the leak-detection authority.
 
+The same boundary applies to ThreadSanitizer. Some AppleClang/macOS
+combinations fail in the TSan `dyld` shared-cache initializer before `main`,
+even when a minimal threaded program succeeds. Confirm with a debugger stack:
+if every frame belongs to the sanitizer runtime, `dyld`, or loader
+initialization and no CoAkka frame was entered, record the host toolchain
+failure and run the source-instrumented gate on Linux. Do not report that run as
+a passing TSan result, and do not attribute it to the runtime without a frame or
+race report involving runtime code.
+
 If `codesign -d --verbose=4` reports `adhoc` or `linker-signed` with no Team ID,
 the Mach-O file has no Apple publisher identity. That output does not conflict
 with release metadata that says publisher signing is absent. On Windows, check

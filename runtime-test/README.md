@@ -2,7 +2,8 @@
 
 This harness exercises the published CoAkka Runtime native package through its
 public C ABI. It provides a reproducible local request/reply scenario and
-bounded-admission evidence without reaching into private runtime sources.
+bounded-admission, concurrency, lifecycle, and live route-snapshot evidence
+without reaching into private runtime sources.
 
 It is a native public-ABI baseline, not a claim about the absolute runtime
 ceiling, cross-machine performance, connector performance, or production
@@ -79,8 +80,10 @@ comparable with a controlled Linux host or with each other.
 | `pressure` | Framed request channel | Finite burst | At least one bounded queue rejection becomes a deadletter; every admitted request still completes a reply. |
 | `stress` | Direct native submit API | Finite request count | Every request completes a reply with no rejection, deadletter, or route miss. |
 | `soak` | Direct native submit API | Submission duration or request limit | Every submitted request reaches one terminal outcome; the default expects replies without rejection. |
+| `race` | Concurrent direct native submit API | Finite requests plus bounded stop/lifecycle phases | Multi-producer requests reach exactly one reply or explicit queue-pressure deadletter, submit-versus-stop converges on `CLOSED`, and independent runtime lifecycles complete without shared-state failures. |
+| `hot-reload` | Concurrent direct native submit API plus full snapshot apply | Finite requests and generations | New generations replace the full route table atomically while producers remain active; stale and invalid applies preserve the active generation. |
 
-All passing modes require:
+The `smoke`, `pressure`, `stress`, and `soak` modes require:
 
 ```text
 submitted == attempted
@@ -98,6 +101,46 @@ harness retries and reports as `replySubmitBackpressure`.
 `strictNoDrop=true` means work is never discarded silently. It does not mean
 that bounded admission can never reject work; pressure mode exists specifically
 to prove that rejection is explicit.
+
+## Concurrency And Snapshot Hot Reload
+
+`race` uses a start gate to release multiple C11 producer threads against one
+runtime. The main thread owns the host-lane readers and handler pump. A pass
+requires every admitted request to produce exactly one terminal reply or
+explicit queue-pressure deadletter, with no route miss, delivery failure, or
+unaccounted terminal result. With the default queue capacity, the normal
+expectation is all replies. Smaller queues intentionally retain bounded
+pressure semantics instead of pretending concurrency makes queues unbounded.
+It then runs two separate bounded phases:
+
+- submitters contend with `runtime_stop()` and every submitter must eventually
+  observe `COAKKA_V2_ERR_CLOSED`;
+- each thread repeatedly owns a complete create, handle export, initial
+  snapshot, start, stop, and destroy lifecycle for an independent runtime.
+
+The harness never races `runtime_destroy()` with an active caller. Caller
+threads join before their runtime is destroyed, matching the public ownership
+contract instead of manufacturing use-after-free behavior.
+
+`hot-reload` means route-snapshot hot reload. It does not mean TLS credential or
+connection-strategy reload. While concurrent producers alternate two targets,
+the control thread applies monotonically newer full snapshots that alternate
+the one active local target. Per-thread quotas prevent producers from finishing
+before the final generation. After every accepted apply, the harness reads the
+runtime stats and requires that exact generation, one route, and `STARTED`
+state to be observable before releasing the next traffic slice. A pass
+requires:
+
+- every admitted request reaches exactly one reply or route-miss deadletter;
+- the final active target replies and the replaced target deadletters;
+- a stale generation returns `COAKKA_V2_ERR_STALE_GENERATION`;
+- an invalid newer snapshot returns `COAKKA_V2_ERR_INVALID_ARG`;
+- both rejected applies leave the final generation, route count, and started
+  lifecycle state unchanged.
+
+Deadletters during this mode are expected evidence that a request resolved
+against a complete active snapshot. They are not silent drops. TLS/mTLS test
+credentials and live certificate rotation remain a separate future scenario.
 
 ## Connection Strategy Contract
 
@@ -157,6 +200,8 @@ bash run.sh runtime-test pressure --requests 512 --queue-capacity 2
 bash run.sh runtime-test stress --payload 128K --requests 2000
 bash run.sh runtime-test soak --payload 64K --duration 30s --max-in-flight 64
 bash run.sh runtime-test connection-strategies
+bash run.sh runtime-test race --threads 4 --requests 256
+bash run.sh runtime-test hot-reload --threads 4 --requests 256 --generations 64
 ```
 
 macOS ARM64 and Linux ARM64 use native generation `1.4.0+2cee86bf`. Linux
@@ -165,10 +210,11 @@ x86-64 can still run the workload modes through the checksum-pinned
 connection-strategy ABI. Run `connection-strategies` on a platform included in
 the `1.4.0` artifact matrix.
 
-The Windows PowerShell entrypoint currently executes the checksum-verified
-`1.3.4+dc6ec284` compatibility evidence runner. The `1.4.0` distribution still
-includes Windows x86-64 native bytes; see the compatibility matrix for the
-separate package and platform gates.
+For the original workload modes, the Windows PowerShell entrypoint executes the
+checksum-verified `1.3.4+dc6ec284` compatibility evidence runner. For `race`
+and `hot-reload`, it builds this public C11 source against the checksum-verified
+Windows x86-64 `1.4.0+2cee86bf` package. Windows ARM64 is not implied because
+that native generation was not published for that platform.
 
 Documented payload presets are:
 
@@ -237,6 +283,13 @@ The result records:
 - monotonic timing windows and scoped throughput;
 - `status=pass|fail` plus an error when an invariant fails.
 
+The concurrency executable uses the separate schema
+`coakka.runtime.native.concurrency-evidence.v1`. It additionally records the
+thread and generation configuration, stop-race convergence, independent
+lifecycle totals, runtime queue/deadletter accounting, accepted-versus-observed
+snapshot counts, final snapshot state, and whether ThreadSanitizer covered only
+the consumer harness or an explicitly source-instrumented runtime.
+
 ## Source Layout
 
 The public harness is intentionally split by ownership:
@@ -251,6 +304,9 @@ The public harness is intentionally split by ownership:
 | [`evidence_report.c`](evidence_report.c) | Environment metadata and the final JSON document. |
 | [`connection_strategy_contract.c`](connection_strategy_contract.c) | Capability-aware validation, atomic apply, lifecycle, and immutability checks. |
 | [`connection_strategy_report.c`](connection_strategy_report.c) | Machine-readable connection-strategy evidence without ambiguous default statuses. |
+| [`concurrency_config.c`](concurrency_config.c) | Bounded race and hot-reload CLI parsing. |
+| [`concurrency_runtime.c`](concurrency_runtime.c) | Multi-producer, submit-versus-stop, independent lifecycle, and atomic snapshot-replacement contracts. |
+| [`concurrency_report.c`](concurrency_report.c) | Machine-readable concurrency and hot-reload evidence. |
 | [`evidence_json.c`](evidence_json.c) | Shared JSON string writer used by both evidence executables. |
 
 Raw host-handle field names stay inside the public ABI adapter. The rest of the
@@ -292,9 +348,28 @@ runtime built from the same source and record both build identities. Linux is
 the leak-detection authority; macOS is an ASan/UBSan correctness lane, and no
 Windows sanitizer result is implied.
 
-The `sample-surface` workflow runs Clang static analysis and the combined
-ASan/UBSan consumer harness on Linux. This instruments the public test harness;
-it does not turn an ordinary prebuilt runtime binary into an instrumented core.
+ThreadSanitizer is intentionally separate from ASan/UBSan:
+
+```sh
+cmake -S runtime-test -B build/native-evidence-tsan \
+  -DCMAKE_PREFIX_PATH=/path/to/coakka-runtime-native-v2 \
+  -DCOAKKA_NATIVE_EVIDENCE_ENABLE_TSAN=ON
+cmake --build build/native-evidence-tsan
+./build/native-evidence-tsan/coakka_runtime_v2_concurrency_evidence race
+./build/native-evidence-tsan/coakka_runtime_v2_concurrency_evidence hot-reload
+```
+
+That command instruments the public consumer harness only. A core race claim
+requires the runtime and its linked C++ implementation to be compiled with
+ThreadSanitizer in the same build graph. The Core repository provides the
+release-source gate for that deeper run. Its script first verifies the runtime
+implementation paths against the recorded source generation; it does not infer
+that an ordinary production binary was sanitizer-instrumented.
+
+The regular `sample-surface` workflow keeps small race and hot-reload profiles
+alongside static analysis and the ASan/UBSan consumer harness. The deeper Core
+ThreadSanitizer workflow is separate so its source build does not make every
+sample push expensive.
 
 ## Source And Prebuilt Paths
 
@@ -312,9 +387,9 @@ Both paths execute the same public sample source. The prebuilt archive bundles
 the matching published runtime shared library; it does not contain private core
 source.
 
-Windows uses the matching published prebuilt runner through `run.ps1`. This
-keeps the executable and runtime DLL on one tested C toolchain/ABI lane while
-preserving the same workload, invariants, and JSON contract.
+Windows uses the matching published prebuilt runner for the original workload
+modes. The concurrency modes build the auditable C11 source against the current
+published runtime DLL through `run.ps1`.
 
 ## Reproducibility
 

@@ -1,5 +1,7 @@
 #include "evidence_platform.h"
 
+#include <stdlib.h>
+
 #if defined(_WIN32)
 
 #ifndef NOMINMAX
@@ -9,6 +11,20 @@
 
 #include <io.h>
 #include <process.h>
+
+typedef struct evidence_platform_thread_impl_t {
+  HANDLE handle;
+  evidence_platform_thread_fn function;
+  void* context;
+  int result;
+} evidence_platform_thread_impl_t;
+
+static DWORD WINAPI evidence_platform_thread_entry(LPVOID raw) {
+  evidence_platform_thread_impl_t* implementation =
+      (evidence_platform_thread_impl_t*)raw;
+  implementation->result = implementation->function(implementation->context);
+  return 0u;
+}
 
 uint64_t evidence_platform_monotonic_ns(void) {
   LARGE_INTEGER counter;
@@ -90,17 +106,90 @@ long evidence_platform_logical_cpu_count(void) {
   return count == 0 ? 0 : (long)count;
 }
 
+int evidence_platform_thread_start(evidence_platform_thread_t* thread,
+                                   evidence_platform_thread_fn function,
+                                   void* context) {
+  evidence_platform_thread_impl_t* implementation;
+
+  if (thread == NULL || function == NULL || thread->implementation != NULL) {
+    return 1;
+  }
+  implementation = (evidence_platform_thread_impl_t*)calloc(
+      1u, sizeof(*implementation));
+  if (implementation == NULL) {
+    return 1;
+  }
+  implementation->function = function;
+  implementation->context = context;
+  implementation->handle = CreateThread(NULL,
+                                        0u,
+                                        evidence_platform_thread_entry,
+                                        implementation,
+                                        0u,
+                                        NULL);
+  if (implementation->handle == NULL) {
+    free(implementation);
+    return 1;
+  }
+  thread->implementation = implementation;
+  return 0;
+}
+
+int evidence_platform_thread_join(evidence_platform_thread_t* thread,
+                                  int* out_result) {
+  evidence_platform_thread_impl_t* implementation;
+  int failed;
+
+  if (thread == NULL || thread->implementation == NULL) {
+    return 1;
+  }
+  implementation =
+      (evidence_platform_thread_impl_t*)thread->implementation;
+  if (WaitForSingleObject(implementation->handle, INFINITE) != WAIT_OBJECT_0) {
+    return 1;
+  }
+  failed = !CloseHandle(implementation->handle);
+  if (out_result != NULL) {
+    *out_result = implementation->result;
+  }
+  free(implementation);
+  thread->implementation = NULL;
+  return failed;
+}
+
+void evidence_platform_thread_yield(void) {
+  if (!SwitchToThread()) {
+    Sleep(0u);
+  }
+}
+
 #else
 
 #include <errno.h>
 #include <limits.h>
 #include <poll.h>
+#include <pthread.h>
+#include <sched.h>
 #include <time.h>
 #include <unistd.h>
 
 #if defined(__APPLE__)
 #include <sys/sysctl.h>
 #endif
+
+typedef struct evidence_platform_thread_impl_t {
+  pthread_t handle;
+  evidence_platform_thread_fn function;
+  void* context;
+  int result;
+} evidence_platform_thread_impl_t;
+
+static void* evidence_platform_thread_entry(void* raw) {
+  evidence_platform_thread_impl_t* implementation =
+      (evidence_platform_thread_impl_t*)raw;
+  implementation->result = implementation->function(implementation->context);
+  return NULL;
+}
 
 uint64_t evidence_platform_monotonic_ns(void) {
   struct timespec timestamp;
@@ -164,6 +253,56 @@ long evidence_platform_logical_cpu_count(void) {
   return 0;
 #endif
 }
+
+int evidence_platform_thread_start(evidence_platform_thread_t* thread,
+                                   evidence_platform_thread_fn function,
+                                   void* context) {
+  evidence_platform_thread_impl_t* implementation;
+
+  if (thread == NULL || function == NULL || thread->implementation != NULL) {
+    return 1;
+  }
+  implementation = (evidence_platform_thread_impl_t*)calloc(
+      1u, sizeof(*implementation));
+  if (implementation == NULL) {
+    return 1;
+  }
+  implementation->function = function;
+  implementation->context = context;
+  if (pthread_create(&implementation->handle,
+                     NULL,
+                     evidence_platform_thread_entry,
+                     implementation) != 0) {
+    free(implementation);
+    return 1;
+  }
+  thread->implementation = implementation;
+  return 0;
+}
+
+int evidence_platform_thread_join(evidence_platform_thread_t* thread,
+                                  int* out_result) {
+  evidence_platform_thread_impl_t* implementation;
+  int failed;
+
+  if (thread == NULL || thread->implementation == NULL) {
+    return 1;
+  }
+  implementation =
+      (evidence_platform_thread_impl_t*)thread->implementation;
+  if (pthread_join(implementation->handle, NULL) != 0) {
+    return 1;
+  }
+  failed = 0;
+  if (out_result != NULL) {
+    *out_result = implementation->result;
+  }
+  free(implementation);
+  thread->implementation = NULL;
+  return failed;
+}
+
+void evidence_platform_thread_yield(void) { (void)sched_yield(); }
 
 #endif
 

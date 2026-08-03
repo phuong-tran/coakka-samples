@@ -6,6 +6,11 @@ details live in
 
 ## 2026-08-03
 
+- Added configurable public C11 `race` and route-snapshot `hot-reload` modes.
+  They cover multi-producer terminal accounting, submit-versus-stop
+  convergence, independent runtime lifecycle contention, per-generation
+  snapshot observation, and explicit sanitizer scope. Regular CI uses small
+  profiles; the same harness remains scalable for external runtime evaluation.
 - Clarified that TLS/mTLS and connection strategies are available through full
   host-language runtime connectors, added Kotlin/JVM startup examples, and
   kept C/C++ snippets explicitly scoped to native and connector-level use.

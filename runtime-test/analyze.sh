@@ -19,6 +19,10 @@ if ! command -v "${clang_bin}" >/dev/null 2>&1; then
 fi
 
 sources=(
+  concurrency_config.c
+  concurrency_main.c
+  concurrency_report.c
+  concurrency_runtime.c
   evidence_config.c
   evidence_json.c
   evidence_platform.c
