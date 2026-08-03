@@ -11,6 +11,8 @@ details live in
   convergence, independent runtime lifecycle contention, per-generation
   snapshot observation, and explicit sanitizer scope. Regular CI uses small
   profiles; the same harness remains scalable for external runtime evaluation.
+  Windows source builds derive the consumer import library from the checked-in
+  public export definition without changing the published runtime DLL.
 - Clarified that TLS/mTLS and connection strategies are available through full
   host-language runtime connectors, added Kotlin/JVM startup examples, and
   kept C/C++ snippets explicitly scoped to native and connector-level use.

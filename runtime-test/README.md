@@ -214,7 +214,10 @@ For the original workload modes, the Windows PowerShell entrypoint executes the
 checksum-verified `1.3.4+dc6ec284` compatibility evidence runner. For `race`
 and `hot-reload`, it builds this public C11 source against the checksum-verified
 Windows x86-64 `1.4.0+2cee86bf` package. Windows ARM64 is not implied because
-that native generation was not published for that platform.
+that native generation was not published for that platform. The 1.4.0 archive
+contains the runtime DLL but no MSVC import library, so the harness generates a
+consumer-only `.lib` from its checked-in public export definition during CMake
+configure. It does not alter or relink the published DLL.
 
 Documented payload presets are:
 

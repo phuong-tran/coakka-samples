@@ -35,6 +35,48 @@ if(COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR)
 else()
   find_package(CoAkkaRuntimeNativeV2 CONFIG REQUIRED)
 endif()
+
+if(WIN32 AND MSVC AND NOT COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR)
+  get_target_property(
+    _coakka_native_evidence_import_library
+    CoAkkaRuntimeNativeV2::runtime_v2
+    IMPORTED_IMPLIB
+  )
+  if(NOT _coakka_native_evidence_import_library)
+    if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(aarch64|arm64|ARM64)$")
+      set(_coakka_native_evidence_machine ARM64)
+    else()
+      set(_coakka_native_evidence_machine X64)
+    endif()
+    set(
+      _coakka_native_evidence_import_library
+      "${CMAKE_CURRENT_BINARY_DIR}/coakka_runtime_v2.lib"
+    )
+    execute_process(
+      COMMAND
+        "${CMAKE_AR}"
+        /nologo
+        "/machine:${_coakka_native_evidence_machine}"
+        "/def:${CMAKE_CURRENT_SOURCE_DIR}/coakka_runtime_v2.def"
+        "/out:${_coakka_native_evidence_import_library}"
+      RESULT_VARIABLE _coakka_native_evidence_import_library_status
+      OUTPUT_VARIABLE _coakka_native_evidence_import_library_stdout
+      ERROR_VARIABLE _coakka_native_evidence_import_library_stderr
+    )
+    if(NOT _coakka_native_evidence_import_library_status EQUAL 0)
+      message(FATAL_ERROR
+        "Failed to create the Windows consumer import library from the public export definition:\n"
+        "${_coakka_native_evidence_import_library_stdout}"
+        "${_coakka_native_evidence_import_library_stderr}"
+      )
+    endif()
+    set_target_properties(
+      CoAkkaRuntimeNativeV2::runtime_v2
+      PROPERTIES IMPORTED_IMPLIB "${_coakka_native_evidence_import_library}"
+    )
+  endif()
+endif()
+
 find_package(Threads REQUIRED)
 file(
   WRITE
