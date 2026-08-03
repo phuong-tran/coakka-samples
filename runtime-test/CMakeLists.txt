@@ -178,6 +178,12 @@ add_executable(
 coakka_configure_native_evidence_target(
   coakka_runtime_v2_concurrency_evidence
 )
+if(MSVC)
+  target_compile_options(
+    coakka_runtime_v2_concurrency_evidence
+    PRIVATE /experimental:c11atomics
+  )
+endif()
 target_compile_definitions(
   coakka_runtime_v2_concurrency_evidence
   PRIVATE
