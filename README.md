@@ -65,8 +65,8 @@ bash run.sh runtime-test hot-reload --threads 4 --requests 256 --generations 64
 ```
 
 The optional [`bench/`](bench/README.md) tooling adds environment-local load
-measurements. It does not replace the correctness and sanitizer gates in
-`runtime-test/`.
+measurements. It does not replace the correctness checks and opt-in sanitizer
+runs in `runtime-test/`.
 
 Route application-owned work without inventing another internal REST API.
 

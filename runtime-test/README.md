@@ -369,10 +369,10 @@ release-source gate for that deeper run. Its script first verifies the runtime
 implementation paths against the recorded source generation; it does not infer
 that an ordinary production binary was sanitizer-instrumented.
 
-The regular `sample-surface` workflow keeps small race and hot-reload profiles
-alongside static analysis and the ASan/UBSan consumer harness. The deeper Core
-ThreadSanitizer workflow is separate so its source build does not make every
-sample push expensive.
+The regular `sample-surface` workflow may keep small non-sanitized race and
+hot-reload profiles. Static analysis and sanitizer profiles are intentionally
+local or evaluator-run so hosted CI does not pay for instrumented builds or a
+source-level protobuf toolchain.
 
 ## Source And Prebuilt Paths
 

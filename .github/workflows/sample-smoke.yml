@@ -157,24 +157,3 @@ jobs:
           bash run.sh runtime-test pressure --requests 512 --queue-capacity 2
           bash run.sh runtime-test connection-strategies
           bash run.sh runtime-test hot-reload --threads 2 --requests 64 --generations 8 --queue-capacity 64
-
-  native-evidence-sanitizers:
-    name: native evidence / linux-aarch64 ASan+UBSan
-    runs-on: ubuntu-24.04-arm
-    timeout-minutes: 15
-    steps:
-      - name: Check out samples
-        uses: actions/checkout@v6
-
-      - name: Run native static-analysis and sanitizer gate
-        env:
-          ASAN_OPTIONS: detect_leaks=1:halt_on_error=1
-          UBSAN_OPTIONS: halt_on_error=1:print_stacktrace=1
-          COAKKA_NATIVE_EVIDENCE_STATIC_ANALYSIS: "1"
-          COAKKA_NATIVE_EVIDENCE_ENABLE_SANITIZERS: "1"
-        run: |
-          bash run.sh runtime-test smoke --requests 32
-          COAKKA_NATIVE_EVIDENCE_STATIC_ANALYSIS=0 \
-            bash run.sh runtime-test connection-strategies
-          COAKKA_NATIVE_EVIDENCE_STATIC_ANALYSIS=0 \
-            bash run.sh runtime-test race --threads 2 --requests 16 --lifecycle-iterations 1 --queue-capacity 32

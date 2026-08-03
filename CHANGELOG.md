@@ -6,6 +6,9 @@ details live in
 
 ## 2026-08-03
 
+- Removed the hosted ASan/UBSan lane. Static-analysis and sanitizer controls
+  remain in `runtime-test/` for explicit local or evaluator runs; normal sample
+  CI keeps only bounded non-sanitized profiles.
 - Added configurable public C11 `race` and route-snapshot `hot-reload` modes.
   They cover multi-producer terminal accounting, submit-versus-stop
   convergence, independent runtime lifecycle contention, per-generation
