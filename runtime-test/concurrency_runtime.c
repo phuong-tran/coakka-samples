@@ -22,6 +22,7 @@ enum {
 };
 
 typedef struct concurrency_fixture_t {
+  /* The control thread exclusively owns the exported readers and reply state. */
   coakka_v2_runtime_t* runtime;
   coakka_v2_host_handles_t handles;
   coakka_v2_frame_reader_t* delivered_reader;
@@ -39,7 +40,9 @@ typedef struct producer_shared_t {
   atomic_size_t ready;
   atomic_size_t done;
   atomic_int go;
+  /* Synchronizes each traffic quota with an observed snapshot generation. */
   atomic_uint_fast64_t allowed_requests_per_thread;
+  /* Measurement-only counters; they do not publish non-atomic state. */
   atomic_uint_fast64_t attempted;
   atomic_uint_fast64_t admitted;
   atomic_uint_fast64_t backpressure;
@@ -297,6 +300,7 @@ static int handle_requests(concurrency_fixture_t* fixture,
 
 static int pump_once(concurrency_fixture_t* fixture,
                      concurrency_evidence_result_t* result) {
+  /* Producer threads submit only; this control thread owns all three lanes. */
   return handle_requests(fixture, result) ||
          drain_reader(fixture->response_reader, &result->response_count) ||
          drain_reader(fixture->deadletter_reader, &result->deadletter_count);
@@ -352,6 +356,7 @@ static int producer_thread(void* raw) {
   producer_shared_t* shared = context->shared;
   uint64_t request_index;
 
+  /* The release/acquire gate starts every producer from the same phase. */
   atomic_fetch_add_explicit(&shared->ready, 1u, memory_order_release);
   while (!atomic_load_explicit(&shared->go, memory_order_acquire)) {
     if (deadline_expired(shared->deadline_ns)) {
@@ -370,6 +375,8 @@ static int producer_thread(void* raw) {
     int submit_failed = 0;
     const char* target = CONCURRENCY_TARGET_A;
     if (shared->config->mode == CONCURRENCY_EVIDENCE_MODE_HOT_RELOAD) {
+      /* The control thread raises this quota only after observing the new
+       * generation through the public stats ABI. */
       while (request_index >= atomic_load_explicit(
                                   &shared->allowed_requests_per_thread,
                                   memory_order_acquire)) {
@@ -441,6 +448,8 @@ static int start_producers(const concurrency_evidence_config_t* config,
   atomic_init(&shared->ready, 0u);
   atomic_init(&shared->done, 0u);
   atomic_init(&shared->go, 0);
+  /* Keep the first traffic slice bounded so producers cannot run past the
+   * first snapshot transition before the control thread observes it. */
   atomic_init(
       &shared->allowed_requests_per_thread,
       config->mode == CONCURRENCY_EVIDENCE_MODE_HOT_RELOAD
@@ -642,6 +651,9 @@ static int run_main_workload(const concurrency_evidence_config_t* config,
   atomic_store_explicit(&shared.go, 1, memory_order_release);
 
   if (config->mode == CONCURRENCY_EVIDENCE_MODE_HOT_RELOAD) {
+    /* attempted is sampled before submit, so each apply overlaps requests at
+     * the old/new snapshot boundary without assuming which complete snapshot
+     * an in-flight request will resolve against. */
     for (generation = 2u; generation <= config->generation_count;
          ++generation) {
       const uint64_t requests_per_thread_before_apply =
@@ -693,11 +705,14 @@ static int run_main_workload(const concurrency_evidence_config_t* config,
   result->workload_elapsed_ns = monotonic_ns() - start_ns;
 
 join_cleanup:
+  /* On every failure path, stop first to release submitters, then join before
+   * fixture_close destroys the runtime and the contexts they reference. */
   atomic_store_explicit(&shared.go, 1, memory_order_release);
   if (result->failure_stage != NULL && fixture.started) {
     (void)coakka_v2_runtime_stop(fixture.runtime);
     fixture.started = 0;
   }
+  /* The runtime handle remains valid until every concurrent submit returns. */
   if (join_threads(threads, config->thread_count)) {
     *out_error = "producer join failed";
     result->failure_stage = "workload.producer-join";
@@ -969,6 +984,8 @@ join_cleanup:
       fixture.started = 0;
     }
   }
+  /* Destruction is sequenced after every submitter has returned from the
+   * public ABI; the success invariant below additionally requires CLOSED. */
   if (join_threads(threads, config->thread_count)) {
     *out_error = "stop-race producer join failed";
     result->failure_stage = "race.stop.producer-join";
@@ -1017,6 +1034,8 @@ static int lifecycle_thread(void* raw) {
   for (iteration = 0u;
        iteration < shared->config->lifecycle_iterations_per_thread;
        ++iteration) {
+    /* Each thread owns a distinct runtime and every exported channel for the
+     * full create/start/stop/destroy lifecycle. No handle crosses threads. */
     coakka_v2_runtime_t* runtime = NULL;
     coakka_v2_host_handles_t handles;
     coakka_v2_runtime_config_t runtime_config;

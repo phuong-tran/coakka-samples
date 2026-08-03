@@ -37,6 +37,9 @@ else()
 endif()
 
 if(WIN32 AND MSVC AND NOT COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR)
+  # The published DLL is sufficient for dynamic loaders. Native MSVC consumers
+  # additionally need an import library, which this harness derives without
+  # modifying or relinking the runtime under test.
   get_target_property(
     _coakka_native_evidence_import_library
     CoAkkaRuntimeNativeV2::runtime_v2

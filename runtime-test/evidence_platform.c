@@ -146,7 +146,9 @@ int evidence_platform_thread_join(evidence_platform_thread_t* thread,
   implementation =
       (evidence_platform_thread_impl_t*)thread->implementation;
   if (WaitForSingleObject(implementation->handle, INFINITE) != WAIT_OBJECT_0) {
-    return 1;
+    /* Cleanup owns the thread context and runtime. Continuing without a
+     * confirmed join would make their lifetime unknowable. */
+    abort();
   }
   failed = !CloseHandle(implementation->handle);
   if (out_result != NULL) {
@@ -291,7 +293,9 @@ int evidence_platform_thread_join(evidence_platform_thread_t* thread,
   implementation =
       (evidence_platform_thread_impl_t*)thread->implementation;
   if (pthread_join(implementation->handle, NULL) != 0) {
-    return 1;
+    /* Cleanup owns the thread context and runtime. Continuing without a
+     * confirmed join would make their lifetime unknowable. */
+    abort();
   }
   failed = 0;
   if (out_result != NULL) {

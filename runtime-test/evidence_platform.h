@@ -6,6 +6,7 @@
 
 typedef int (*evidence_platform_thread_fn)(void* context);
 
+/* Opaque harness thread token; this is not part of the CoAkka public ABI. */
 typedef struct evidence_platform_thread_t {
   void* implementation;
 } evidence_platform_thread_t;
