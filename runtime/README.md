@@ -3,6 +3,12 @@
 Runtime samples show CoAkka runtime v2 as a shared native runtime
 contract consumed through host-language connectors.
 
+For large immutable files, use the `2.1.0` file lane instead of placing bytes
+inside an `Envelope`. See [Runtime File Transfer](../docs/runtime-file-transfer.md)
+for use cases, the receiver-first workflow, and connector guidance. The
+current public sample pins remain on the last verified generation until the
+complete `2.1.0` artifact train is promoted.
+
 For day-to-day development and connector validation, treat macOS and Windows as
 valid host environments. For deployment claims, operational drills, and the
 usual production rollout path, keep Linux as the primary target.

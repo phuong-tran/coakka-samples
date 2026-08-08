@@ -14,6 +14,13 @@ package, PyPI package, Go module, and SwiftPM tag do not need to share the same
 version number. Each lane follows the release cadence of its connector,
 packaging surface, and native payload.
 
+The file-transfer lane begins with native source generation `2.1.0`. The
+package coordinates below remain the current public generation and do not
+contain that ABI yet. Use the [Runtime File Transfer guide](runtime-file-transfer.md)
+to review the feature, but wait for the compatibility matrix to identify an
+exact `2.1.0+<core-commit>` artifact before enabling it in a packaged
+application.
+
 ## Package Manager Entrypoints
 
 | Channel | Runtime package | Logger package | Sample command |

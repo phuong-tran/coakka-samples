@@ -45,6 +45,13 @@ capabilities, lifecycle rules, and connector examples:
 
 - [TLS and mTLS](docs/tls-and-mtls.md)
 - [Connection strategies](docs/connection-strategies.md)
+- [Runtime file transfer](docs/runtime-file-transfer.md)
+
+Runtime `2.1.0` adds a bounded, verified file-transfer lane for large
+point-to-point files. Keep commands and authorization in the application's
+control plane; keep file bytes out of runtime message payloads. The current
+sample pins remain unchanged until the complete `2.1.0` artifact train is
+verified and promoted.
 
 ## Runtime Test
 
