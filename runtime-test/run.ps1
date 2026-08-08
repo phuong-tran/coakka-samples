@@ -29,7 +29,7 @@ try {
     }
     $RuntimeVersion = "1.4.1"
     $RuntimeRelease = "1.4.1+9e02a51d"
-    $RuntimeSha256 = "0bc2c9e8f4b0c7cc5135a2e45ad53da5f55b78189e3a8b33131eff86d10de26b"
+    $RuntimeSha256 = "ef31cd8bc709bd71d62dab0497f2513990f9023bda5e128631842ece5360394f"
     $RuntimeArtifact = "coakka-runtime-native-v2-$RuntimeVersion.tar.gz"
     $RuntimeRelativePath = "runtime/native/releases/$RuntimeRelease/$RuntimeArtifact"
     $RuntimeArchive = Join-Path $TemporaryRoot "artifacts\$RuntimeArtifact"
