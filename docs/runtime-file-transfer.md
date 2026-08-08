@@ -62,60 +62,207 @@ destination. A successful sender result does not replace the receiver result:
 the receiving application must observe its own `COMPLETED + OK` state before
 using the file.
 
-## Example
+## Service A To Service B Example
 
-The API names below use Kotlin, but every supported connector follows the same
-lifecycle.
+The Kotlin names below represent the `JVM/JNA/JNI` connector category. The
+current JVM connector calls the public C ABI through JNA. `JNI` is included in
+the label so JVM developers recognize the native-bridge boundary; it does not
+claim a second JNI implementation.
+
+The two code blocks run in different JVM processes, usually on different
+hosts. The application API carries only a small grant:
+
+```text
+Service A (sender)                         Service B (receiver)
+hash source file
+POST prepare metadata ------------------> authorize + choose destination
+                                           prepareReceive
+                    <-------------------- TransferGrant(id, token, host, port)
+submitSend ------------------------------> file bytes use the file lane
+wait for SEND                              wait for RECEIVE
+COMPLETED + OK                             COMPLETED + OK -> publish file
+```
+
+These are the control-plane values exchanged between the services. The token
+is a secret, single-use capability and must not be logged.
 
 ```kotlin
-val digest = FileLane.sha256(source)
-val transferId = UUID.randomUUID().toString()
-val token = secureOneUseToken()
+data class PrepareFileRequest(
+    val objectKey: String,
+    val size: Long,
+    val sha256Base64: String,
+)
 
-FileLane.open(FileLaneConfig(flags = FileLaneFlags.RECEIVER)).use { receiver ->
-    receiver.prepareReceive(
-        FileReceiveSpec(transferId, token, destination, digest.size, digest.sha256)
+data class TransferGrant(
+    val transferId: String,
+    val authorizationToken: String,
+    val receiverHost: String,
+    val receiverPort: Int,
+    val expectedSize: Long,
+    val expectedSha256Base64: String,
+)
+```
+
+### Service B: Authorize And Receive
+
+Service B owns one long-lived receiver lane. Its authenticated API handler
+authorizes the business operation, chooses a server-side destination, prepares
+the receive, and returns the grant. A bounded worker then waits for receiver
+completion outside the request thread.
+
+```kotlin
+class FileReceiverService(
+    private val advertisedHost: String,
+    private val destinationFor: (objectKey: String) -> Path,
+    private val onFileReady: (objectKey: String, path: Path) -> Unit,
+) : AutoCloseable {
+    private data class PendingFile(val objectKey: String, val destination: Path)
+
+    private val secureRandom = SecureRandom()
+    private val pending = ConcurrentHashMap<String, PendingFile>()
+    private val lane = FileLane.open(
+        FileLaneConfig(
+            flags = FileLaneFlags.RECEIVER,
+            bindHost = "0.0.0.0",
+        )
     )
 
-    FileLane.open(FileLaneConfig(flags = FileLaneFlags.SENDER)).use { sender ->
-        sender.submitSend(
+    // Called by Service B's authenticated control API.
+    fun prepareUpload(caller: ServiceIdentity, request: PrepareFileRequest): TransferGrant {
+        require(caller.mayUpload(request.objectKey)) { "upload is not authorized" }
+        require(request.size >= 0)
+
+        val digest = Base64.getDecoder().decode(request.sha256Base64)
+        require(digest.size == 32) { "SHA-256 must contain 32 bytes" }
+
+        val transferId = UUID.randomUUID().toString()
+        val tokenBytes = ByteArray(32).also { secureRandom.nextBytes(it) }
+        val token = Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes)
+        val destination = destinationFor(request.objectKey) // Never accept a raw client path.
+
+        lane.prepareReceive(
+            FileReceiveSpec(transferId, token, destination, request.size, digest)
+        )
+        pending[transferId] = PendingFile(request.objectKey, destination)
+
+        return TransferGrant(
+            transferId,
+            token,
+            advertisedHost,
+            lane.boundPort,
+            request.size,
+            request.sha256Base64,
+        )
+    }
+
+    // Called by a bounded Service B worker after prepareUpload returns.
+    fun awaitUpload(transferId: String) {
+        val prepared = checkNotNull(pending[transferId]) { "unknown transfer" }
+        val received = waitUntilTerminal(lane, transferId, FileTransferDirection.RECEIVE)
+        try {
+            check(received.completed) {
+                "receive ended as ${received.state}/${received.result}: ${received.detail}"
+            }
+            onFileReady(prepared.objectKey, prepared.destination)
+        } finally {
+            lane.forget(transferId, FileTransferDirection.RECEIVE)
+            pending.remove(transferId)
+        }
+    }
+
+    override fun close() = lane.close()
+}
+
+// Service B's authenticated endpoint. receiveWaiters is a bounded Executor.
+fun prepareUploadEndpoint(
+    caller: ServiceIdentity,
+    request: PrepareFileRequest,
+): TransferGrant {
+    val grant = fileReceiverService.prepareUpload(caller, request)
+    receiveWaiters.execute {
+        fileReceiverService.awaitUpload(grant.transferId)
+    }
+    return grant
+}
+```
+
+### Service A: Request A Grant And Send
+
+Service A hashes the exact source, asks Service B to prepare that identity, and
+uses the returned endpoint and one-use token. It observes its own sender result;
+this does not replace Service B's receiver result.
+
+```kotlin
+fun sendFile(
+    source: Path,
+    objectKey: String,
+    receiverApi: ReceiverControlApi,
+) {
+    val digest = FileLane.sha256(source)
+    val digestBase64 = Base64.getEncoder().encodeToString(digest.sha256)
+    val grant = receiverApi.prepareUpload(
+        PrepareFileRequest(objectKey, digest.size, digestBase64)
+    )
+
+    check(grant.expectedSize == digest.size)
+    check(grant.expectedSha256Base64 == digestBase64)
+
+    FileLane.open(FileLaneConfig(flags = FileLaneFlags.SENDER)).use { lane ->
+        lane.submitSend(
             FileSendSpec(
-                transferId,
-                token,
-                "receiver.internal",
-                receiver.boundPort,
+                grant.transferId,
+                grant.authorizationToken,
+                grant.receiverHost,
+                grant.receiverPort,
                 source,
-                digest.size,
+                grant.expectedSize,
                 digest.sha256,
             )
         )
 
-        var sent = sender.waitTransfer(transferId, FileTransferDirection.SEND)
-        while (!sent.terminal) {
-            sent = sender.waitTransfer(
-                transferId,
-                FileTransferDirection.SEND,
-                sent.updateSequence,
-            )
+        val sent = waitUntilTerminal(
+            lane,
+            grant.transferId,
+            FileTransferDirection.SEND,
+        )
+        try {
+            check(sent.completed) {
+                "send ended as ${sent.state}/${sent.result}: ${sent.detail}"
+            }
+        } finally {
+            lane.forget(grant.transferId, FileTransferDirection.SEND)
         }
-
-        var received = receiver.waitTransfer(transferId, FileTransferDirection.RECEIVE)
-        while (!received.terminal) {
-            received = receiver.waitTransfer(
-                transferId,
-                FileTransferDirection.RECEIVE,
-                received.updateSequence,
-            )
-        }
-        check(sent.completed && received.completed)
     }
 }
 ```
 
-In a real two-host deployment, the application sends only the transfer
-metadata to the other host through its authenticated control plane. It does
-not send a `FileLane` object or expose the token to a browser, renderer, or
-WebView.
+Both services use the same blocking helper. Passing the last observed sequence
+prevents busy-polling and waits only for a newer state change:
+
+```kotlin
+fun waitUntilTerminal(
+    lane: FileLane,
+    transferId: String,
+    direction: FileTransferDirection,
+): FileTransferSnapshot {
+    var afterSequence = 0L
+    while (true) {
+        val snapshot = lane.waitTransfer(
+            transferId,
+            direction,
+            afterUpdateSequence = afterSequence,
+            timeoutMs = 30_000,
+        )
+        if (snapshot.terminal) return snapshot
+        afterSequence = snapshot.updateSequence
+    }
+}
+```
+
+`ReceiverControlApi` and `ServiceIdentity` stand for the application's existing
+authenticated service API and identity model. The application sends the
+request and grant over that control plane. It does not send a `FileLane` object
+or expose the token to a browser, renderer, or WebView.
 
 ## Security Profiles
 

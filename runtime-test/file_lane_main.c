@@ -194,6 +194,8 @@ static void remove_workspace(const char *workspace) {
 
 int main(void) {
   static const char *transfer_id = "public-file-lane-roundtrip";
+  /* Deterministic evidence only. Service B must generate a cryptographically
+   * strong, single-use token in production and must never log it. */
   static const char *token = "public-file-lane-token";
   const char *failure = "";
   char workspace[FILE_LANE_EVIDENCE_PATH_BYTES] = {0};
@@ -252,6 +254,8 @@ int main(void) {
           source_size == k_file_bytes,
           "source-digest");
 
+  /* Service B: keep a receiver lane alive, authorize the destination, and
+   * prepare the exact size and digest before sharing a transfer grant. */
   receiver_config.struct_size = sizeof(receiver_config);
   receiver_config.flags = COAKKA_V2_FILE_LANE_ENABLE_RECEIVER;
   receiver_config.bind_host = "127.0.0.1";
@@ -281,6 +285,12 @@ int main(void) {
               receiver_port != 0u,
           "receiver-port");
 
+  /* The production control API now returns transfer_id, token, size, digest,
+   * host, and receiver_port to Service A. This loopback evidence passes those
+   * values directly because both independent lanes live in this test process. */
+
+  /* Service A: open its own sender lane and submit the source using the grant
+   * that Service B created above. */
   sender_config.struct_size = sizeof(sender_config);
   sender_config.flags = COAKKA_V2_FILE_LANE_ENABLE_SENDER;
   sender_config.queue_capacity = 4u;
@@ -303,6 +313,9 @@ int main(void) {
   memcpy(send_spec.expected_sha256, source_digest, sizeof(source_digest));
   REQUIRE(coakka_v2_file_lane_submit_send(sender, &send_spec) == COAKKA_V2_OK,
           "sender-submit");
+
+  /* Each service owns and checks its own terminal result. Sender completion
+   * never substitutes for receiver completion. */
   REQUIRE(wait_terminal(sender, transfer_id,
                         COAKKA_V2_FILE_TRANSFER_DIRECTION_SEND, &sent) == 0,
           "sender-wait");
