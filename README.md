@@ -60,6 +60,7 @@ separate ThreadSanitizer controls are included for supported Clang/GCC hosts.
 ```sh
 bash run.sh runtime-test smoke
 bash run.sh runtime-test pressure --requests 512 --queue-capacity 2
+bash run.sh runtime-test file-lane
 bash run.sh runtime-test race --threads 4 --requests 256
 bash run.sh runtime-test hot-reload --threads 4 --requests 256 --generations 64
 ```

@@ -23,6 +23,38 @@ function Write-EvidenceStatus([string]$Message) {
 try {
   $Architecture = [Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString().ToLowerInvariant()
   $Platform = if ($Architecture -eq "arm64") { "windows-aarch64" } else { "windows-x86_64" }
+  if ($Mode -eq "file-lane") {
+    if (-not $env:COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR) {
+      throw "file-lane evidence requires COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR until a file-lane runtime artifact is published"
+    }
+    $BuildDirectory = Join-Path $TemporaryRoot "build"
+    cmake -S $ScriptDirectory -B $BuildDirectory `
+      "-DCOAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR=$env:COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR" `
+      "-DCOAKKA_NATIVE_EVIDENCE_REQUIRE_FILE_LANE=ON"
+    if ($LASTEXITCODE -ne 0) {
+      throw "failed to configure file-lane evidence"
+    }
+    cmake --build $BuildDirectory --config Release --target coakka_runtime_v2_file_lane_evidence
+    if ($LASTEXITCODE -ne 0) {
+      throw "failed to build file-lane evidence"
+    }
+    $Executable = Join-Path $BuildDirectory "Release\coakka_runtime_v2_file_lane_evidence.exe"
+    if (-not (Test-Path $Executable)) {
+      $Executable = Join-Path $BuildDirectory "coakka_runtime_v2_file_lane_evidence.exe"
+    }
+    if (-not (Test-Path $Executable)) {
+      throw "built file-lane evidence executable is missing"
+    }
+    $RuntimeDll = Get-ChildItem -Path $BuildDirectory -Filter "coakka_runtime_v2.dll" -Recurse | Select-Object -First 1
+    if (-not $RuntimeDll) {
+      throw "built file-lane runtime DLL is missing"
+    }
+    $env:PATH = "$($RuntimeDll.DirectoryName);$env:PATH"
+    $env:COAKKA_EVIDENCE_EXECUTION_PATH = "core-source"
+    Write-EvidenceStatus "starting native runtime evidence mode=file-lane path=core-source platform=$Platform"
+    & $Executable
+    exit $LASTEXITCODE
+  }
   if ($Mode -in @("race", "hot-reload")) {
     if ($Platform -ne "windows-x86_64") {
       throw "runtime 1.4.1 concurrency evidence is not published for $Platform"
