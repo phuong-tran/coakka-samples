@@ -69,8 +69,7 @@ EOF
 
 run_pin_check() {
   local publish_root="$1"
-  COAKKA_PIN_CHECK_COMPATIBILITY_LOCAL=0 \
-    COAKKA_PUBLISH_ROOT="${publish_root}" \
+  COAKKA_PUBLISH_ROOT="${publish_root}" \
     bash "${repo_root}/scripts/check-artifact-pins.sh"
 }
 

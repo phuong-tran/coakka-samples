@@ -1,8 +1,8 @@
 # Rust Runtime Samples
 
 Rust runtime samples document the published `coakka-runtime-rs` archive shape.
-This runtime lane consumes the public Rust package built against native runtime
-`1.3.4+dc6ec284` with connector generation `1.3.4+dc6ec284-f68ff5c`.
+This runtime lane consumes source version `1.4.1`, built against native runtime
+generation `1.4.1+9e02a51d` from connector generation `4e7cda4`.
 
 ## Run
 

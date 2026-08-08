@@ -1,9 +1,9 @@
 # JVM Runtime Samples
 
 JVM runtime samples document the `coakka-jvm-native-runtime-v2` jar shape. This
-runtime lane consumes the public JVM runtime jar rebundled against native
-runtime `1.3.4+dc6ec284` with connector generation
-`1.3.4-gdc6ec284-f68ff5c`.
+runtime lane consumes the public JVM runtime jar built against native runtime
+`1.4.1+9e02a51d` with connector generation
+`1.4.1-g9e02a51d-4e7cda4`.
 
 ## Run
 
@@ -120,7 +120,7 @@ repositories {
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:1.3.4-gdc6ec284-f68ff5c")
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:1.4.1-g9e02a51d-4e7cda4")
 }
 ```
 

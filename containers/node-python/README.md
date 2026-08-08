@@ -78,8 +78,8 @@ public artifact manifest before install, then load the native runtime from the
 pinned runtime-base image. Use `coakka-publish` when the user needs direct
 package/archive downloads or checksums outside the container sample.
 
-The Linux ARM64 local rebuild path uses native `1.4.0+2cee86bf` and the Node.js
-and Python `1.4.0` connector artifacts. The default zero-build path continues
+The Linux ARM64 local rebuild path uses native `1.4.1+9e02a51d` and the Node.js
+and Python `1.4.1` connector artifacts. The default zero-build path continues
 to use the separately published multi-arch Docker Hub image tags listed above.
 
 If the selected runtime artifact cannot complete cross-process delivery, the
@@ -101,18 +101,18 @@ Current Linux ARM64 source-build commands:
 docker buildx build \
   --platform linux/arm64 \
   -f containers/node-python/Dockerfile.python \
-  --build-arg COAKKA_RUNTIME_BASE_IMAGE=coakka/runtime-base:1.4.0-2cee86bf-local \
+  --build-arg COAKKA_RUNTIME_BASE_IMAGE=coakka/runtime-base:1.4.1-2cee86bf-local \
   --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=d8a35276cf9f014bb57c535cc5651d61c84aaaa731266f0bb4ad3aedb548f8cb \
-  -t coakka/sample-python-store:1.4.0-2cee86bf-ec4902c-local \
+  -t coakka/sample-python-store:1.4.1-2cee86bf-ec4902c-local \
   --load \
   .
 
 docker buildx build \
   --platform linux/arm64 \
   -f containers/node-python/Dockerfile.node \
-  --build-arg COAKKA_RUNTIME_BASE_IMAGE=coakka/runtime-base:1.4.0-2cee86bf-local \
+  --build-arg COAKKA_RUNTIME_BASE_IMAGE=coakka/runtime-base:1.4.1-2cee86bf-local \
   --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=d8a35276cf9f014bb57c535cc5651d61c84aaaa731266f0bb4ad3aedb548f8cb \
-  -t coakka/sample-node-web:1.4.0-2cee86bf-ec4902c-local \
+  -t coakka/sample-node-web:1.4.1-2cee86bf-ec4902c-local \
   --load \
   .
 ```

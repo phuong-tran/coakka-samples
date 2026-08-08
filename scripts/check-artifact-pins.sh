@@ -35,6 +35,16 @@ stale_patterns=(
   "runtime/jvm/releases/0.2.0+94a5729-5ab812f/coakka-jvm-native-runtime-v2-0.2.0-g94a5729-5ab""812f.jar"
   "maven/coakka/spring/coakka-spring-boot-starter/0.2.0-g5ab""812f/coakka-spring-boot-starter-0.2.0-g5ab812f.jar"
   "maven/coakka/quarkus/coakka-quarkus-extension/0.2.0-g5ab""812f/coakka-quarkus-extension-0.2.0-g5ab812f.jar"
+  "1.4.0+2cee""86bf"
+  "1.4.0-g2cee""86bf"
+  "coakka-v2-connector-node@1.4.""5"
+  "coakka-v2-connector-bun@1.4.""5"
+  "coakka-v2-connector-electron@1.4.""5"
+  "coakka-v2-connector==1.4.""5"
+  "CoAkka.Runtime==1.4.""6"
+  "--version 1.4.""6"
+  "coakka-runtime-go@v1.4.""0"
+  "coakka-runtime-swift@v1.4.""0"
 )
 
 fail() {
@@ -118,6 +128,7 @@ check_manifest_required_rows() {
 tracked_source_files() {
   git -C "${repo_root}" ls-files \
     ':!:*.lock' \
+    ':!:CHANGELOG.md' \
     ':!:.gradle/**' \
     ':!:build/**' \
     ':!:**/build/**' \
@@ -125,19 +136,11 @@ tracked_source_files() {
 }
 
 check_metadata_rows() {
-  local row compatibility_row label relative_path expected_sha extra
+  local row label relative_path extra
   for row in "${required_rows[@]}"; do
     IFS='|' read -r label relative_path extra <<<"${row}"
     [[ -n "${label}" && -n "${relative_path}" && -z "${extra:-}" ]] ||
       fail "sample-metadata.sh has an invalid public artifact row: ${row}"
-  done
-
-  for compatibility_row in "${COAKKA_COMPATIBILITY_ARTIFACT_ROWS[@]}"; do
-    IFS='|' read -r label relative_path expected_sha extra <<<"${compatibility_row}"
-    [[ -n "${label}" && -n "${relative_path}" && -n "${expected_sha}" && -z "${extra:-}" ]] ||
-      fail "sample-metadata.sh has an invalid compatibility artifact row"
-    [[ "${#expected_sha}" -eq 64 && "${expected_sha}" != *[!0-9a-f]* ]] ||
-      fail "sample-metadata.sh has an invalid compatibility sha256: ${label}"
   done
 }
 
@@ -156,7 +159,7 @@ check_stale_patterns() {
 }
 
 check_local_artifacts() {
-  local publish_root manifest row label relative_path expected_sha actual_sha
+  local publish_root manifest row label relative_path
   publish_root="$(coakka_default_publish_root "${repo_root}")"
   if [[ ! -d "${publish_root}" ]]; then
     printf '[skip] local public publish checkout not found at %s\n' "${publish_root}"
@@ -172,26 +175,6 @@ check_local_artifacts() {
     IFS='|' read -r label relative_path <<<"${row}"
     [[ -f "${publish_root}/${relative_path}" ]] ||
       fail "local public publish checkout is missing ${label}: ${relative_path}"
-  done
-
-  if [[ "${COAKKA_PIN_CHECK_COMPATIBILITY_LOCAL:-1}" != "1" ]]; then
-    printf '[skip] local compatibility artifact verification disabled\n'
-    return 0
-  fi
-
-  for row in "${COAKKA_COMPATIBILITY_ARTIFACT_ROWS[@]}"; do
-    IFS='|' read -r label relative_path expected_sha <<<"${row}"
-    [[ -f "${publish_root}/${relative_path}" ]] ||
-      fail "local public publish checkout is missing ${label}: ${relative_path}"
-    actual_sha="$(
-      if command -v shasum >/dev/null 2>&1; then
-        shasum -a 256 "${publish_root}/${relative_path}" | awk '{print $1}'
-      else
-        sha256sum "${publish_root}/${relative_path}" | awk '{print $1}'
-      fi
-    )"
-    [[ "${actual_sha}" == "${expected_sha}" ]] ||
-      fail "local compatibility artifact checksum mismatch for ${relative_path}"
   done
 }
 

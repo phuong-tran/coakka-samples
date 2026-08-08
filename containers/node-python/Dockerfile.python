@@ -1,16 +1,16 @@
 # syntax=docker/dockerfile:1
 
-ARG COAKKA_RUNTIME_BASE_IMAGE=coakka/runtime-base:1.4.0-2cee86bf-local
+ARG COAKKA_RUNTIME_BASE_IMAGE=coakka/runtime-base:1.4.1-2cee86bf-local
 FROM ${COAKKA_RUNTIME_BASE_IMAGE} AS coakka-runtime
 
 FROM python:3.12-slim
 
-ARG COAKKA_RUNTIME_VERSION=1.4.0
+ARG COAKKA_RUNTIME_VERSION=1.4.1
 ARG COAKKA_RUNTIME_REVISION=2cee86bf
-ARG COAKKA_RUNTIME_GENERATION=1.4.0-2cee86bf-ec4902c-local
+ARG COAKKA_RUNTIME_GENERATION=1.4.1-2cee86bf-ec4902c-local
 ARG COAKKA_ARTIFACT_MANIFEST_SHA256=resolved-at-build
 ARG COAKKA_PUBLISH_RAW_BASE=https://raw.githubusercontent.com/phuong-tran/coakka-publish/main
-ARG COAKKA_PYTHON_ARTIFACT=runtime/python/releases/1.4.0+2cee86bf-ec4902c/coakka_v2_connector-1.4.0-py3-none-any.whl
+ARG COAKKA_PYTHON_ARTIFACT=runtime/python/releases/1.4.1+9e02a51d-4e7cda4/coakka_v2_connector-1.4.1-py3-none-any.whl
 
 LABEL org.opencontainers.image.title="CoAkka Python store sample"
 LABEL org.opencontainers.image.description="Python store and read-only UI for the CoAkka runtime Node -> Python container sample"
@@ -32,7 +32,7 @@ RUN bash -lc 'set -eu; \
   export COAKKA_PUBLISH_RAW_BASE; \
   mkdir -p /tmp/coakka-artifacts; \
   source /sample/scripts/resolve-artifact.sh; \
-  wheel_path="$(coakka_resolve_artifact /not-present "${COAKKA_PYTHON_ARTIFACT}" /tmp/coakka-artifacts/coakka_v2_connector-1.4.0-py3-none-any.whl)"; \
+  wheel_path="$(coakka_resolve_artifact /not-present "${COAKKA_PYTHON_ARTIFACT}" /tmp/coakka-artifacts/coakka_v2_connector-1.4.1-py3-none-any.whl)"; \
   PIP_DISABLE_PIP_VERSION_CHECK=1 pip install --no-cache-dir "${wheel_path}" >/dev/null; \
   rm -rf /tmp/coakka-artifacts'
 

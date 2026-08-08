@@ -12,7 +12,7 @@ runtime C ABI package, runtime JVM/language connector packages, and the Spring
 Boot and Quarkus adapters. These samples consume those public artifacts.
 
 This `runtime/` directory is the app-host connector sample lane. The current
-artifact train is native generation `1.4.0+2cee86bf`. A sample running on an
+artifact train is native generation `1.4.1+9e02a51d`. A sample running on an
 OS/CPU pair outside that train, including Linux x86-64, keeps the last
 compatible pinned generation instead of pretending that a missing native is
 available. Package-manager samples use the current version published on their
@@ -21,8 +21,8 @@ registry; those versions advance independently from the artifact mirror. The sep
 [`../runtime-client`](../runtime-client/README.md).
 
 Swift runtime is published at
-`github.com/phuong-tran/coakka-runtime-swift@1.4.0` with native runtime
-generation `1.4.0+2cee86bf`; current Swift execution evidence covers macOS
+`github.com/phuong-tran/coakka-runtime-swift@1.4.1` with native runtime
+generation `1.4.1+9e02a51d`; current Swift execution evidence covers macOS
 ARM64.
 
 The runtime lane is not introduced as a generic framework. It starts from
@@ -71,7 +71,7 @@ repositories {
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:1.4.0-g2cee86bf-ec4902c")
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:1.4.1-g9e02a51d-4e7cda4")
 }
 ```
 
@@ -79,7 +79,7 @@ Spring Boot same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("coakka.spring:coakka-spring-boot-starter:1.4.0-g2cee86bf-ec4902c")
+    implementation("coakka.spring:coakka-spring-boot-starter:1.4.1-g9e02a51d-4e7cda4")
     implementation("org.springframework.boot:spring-boot-starter-web")
 }
 ```
@@ -88,7 +88,7 @@ Quarkus same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("coakka.quarkus:coakka-quarkus-extension:1.4.0-g2cee86bf-ec4902c")
+    implementation("coakka.quarkus:coakka-quarkus-extension:1.4.1-g9e02a51d-4e7cda4")
     implementation("io.quarkus:quarkus-rest-jackson")
 }
 ```
@@ -96,19 +96,19 @@ dependencies {
 Python wheel:
 
 ```sh
-python -m pip install coakka-v2-connector==1.4.5
+python -m pip install coakka-v2-connector==1.4.6
 ```
 
 Node.js package:
 
 ```sh
-npm install coakka-v2-connector-node@1.4.5
+npm install coakka-v2-connector-node@1.4.6
 ```
 
 Bun package:
 
 ```sh
-bun add coakka-v2-connector-bun@1.4.5
+bun add coakka-v2-connector-bun@1.4.6
 ```
 
 Tauri intent bridge:
@@ -121,7 +121,7 @@ bash run.sh runtime tauri desktop-intent
 Electron intent bridge:
 
 ```sh
-npm install coakka-v2-connector-electron@1.4.5
+npm install coakka-v2-connector-electron@1.4.6
 ```
 
 Bun, Tauri, and Electron validation commands:
@@ -207,21 +207,21 @@ Full recording: [coakka-runtime-native.mp4](../docs/assets/coakka-runtime-native
 Go module:
 
 ```sh
-go get github.com/phuong-tran/coakka-runtime-go@v1.4.0
+go get github.com/phuong-tran/coakka-runtime-go@v1.4.1
 ```
 
 C# NuGet package:
 
 ```sh
-dotnet add package CoAkka.Runtime --version 1.4.6
+dotnet add package CoAkka.Runtime --version 1.4.7
 ```
 
 Rust currently ships as a published archive package:
 
 ```sh
 curl -L \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/rust/releases/1.4.0+2cee86bf-ec4902c/coakka-runtime-rs-1.4.0.tar.gz" \
-  -o /tmp/coakka-runtime-rs-1.4.0.tar.gz
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/rust/releases/1.4.1+9e02a51d-4e7cda4/coakka-runtime-rs-1.4.1.tar.gz" \
+  -o /tmp/coakka-runtime-rs-1.4.1.tar.gz
 ```
 
 After dependency setup, every host follows the same shape:

@@ -72,7 +72,7 @@ run_from_source() {
   artifact_name="coakka-runtime-native-v2-${package_version}.tar.gz"
   coakka_note "preparing native runtime evidence runner from source"
   if [[ -n "${expected_sha}" ]]; then
-    coakka_note "using compatibility runtime generation ${package_version} for ${platform}; connection-strategy evidence requires 1.4.0"
+    coakka_note "using compatibility runtime generation ${package_version} for ${platform}; connection-strategy evidence requires 1.4.1"
     package_path="$(coakka_resolve_pinned_artifact \
       "${publish_root}" \
       "${artifact_rel}" \

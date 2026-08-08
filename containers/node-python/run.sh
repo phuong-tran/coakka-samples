@@ -8,7 +8,7 @@ source "${repo_root}/scripts/sample-utils.sh"
 compose_file="${script_dir}/compose.yaml"
 build_compose_file="${script_dir}/compose.build.yaml"
 runtime_base_dockerfile="${repo_root}/containers/runtime-base/Dockerfile"
-runtime_base_image="${COAKKA_RUNTIME_BASE_IMAGE:-coakka/runtime-base:1.4.0-2cee86bf-local}"
+runtime_base_image="${COAKKA_RUNTIME_BASE_IMAGE:-coakka/runtime-base:1.4.1-2cee86bf-local}"
 artifact_manifest_sha256="${COAKKA_ARTIFACT_MANIFEST_SHA256:-d8a35276cf9f014bb57c535cc5651d61c84aaaa731266f0bb4ad3aedb548f8cb}"
 
 print_usage() {
@@ -88,7 +88,7 @@ detect_platform() {
       printf 'linux/arm64\n'
       ;;
     x86_64|amd64)
-      coakka_die "The 1.4.0 local container rebuild requires Linux ARM64. Use the published zero-build images, or set COAKKA_CONTAINER_PLATFORM=linux/arm64 on a host configured for ARM64 emulation."
+      coakka_die "The 1.4.1 local container rebuild requires Linux ARM64. Use the published zero-build images, or set COAKKA_CONTAINER_PLATFORM=linux/arm64 on a host configured for ARM64 emulation."
       ;;
     *)
       coakka_die "Unsupported host architecture '$(uname -m)'. Set COAKKA_CONTAINER_PLATFORM explicitly."

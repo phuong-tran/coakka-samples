@@ -204,18 +204,17 @@ bash run.sh runtime-test race --threads 4 --requests 256
 bash run.sh runtime-test hot-reload --threads 4 --requests 256 --generations 64
 ```
 
-macOS ARM64 and Linux ARM64 use native generation `1.4.0+2cee86bf`. Linux
-x86-64 can still run the workload modes through the checksum-pinned
-`1.3.4+dc6ec284` compatibility package, but that package predates the public
-connection-strategy ABI. Run `connection-strategies` on a platform included in
-the `1.4.0` artifact matrix.
+macOS ARM64 and Linux ARM64/x86-64 source-built modes use native generation
+`1.4.1+9e02a51d`. The prebuilt `1.3.4+dc6ec284` evidence runner remains a
+separate compatibility path for workload modes that do not require the newer
+connection-strategy ABI.
 
 For the original workload modes, the Windows PowerShell entrypoint executes the
 checksum-verified `1.3.4+dc6ec284` compatibility evidence runner. For `race`
 and `hot-reload`, it builds this public C11 source against the checksum-verified
-Windows x86-64 `1.4.0+2cee86bf` package. Windows ARM64 is not implied because
-that native generation was not published for that platform. The 1.4.0 archive
-contains the runtime DLL but no MSVC import library, so the harness generates a
+Windows x86-64 `1.4.1+9e02a51d` package. The release also includes Windows
+ARM64, while this concurrency harness remains x86-64-only. The 1.4.1 archive
+contains runtime DLLs but no MSVC import library, so the harness generates a
 consumer-only `.lib` from its checked-in public export definition during CMake
 configure. It does not alter or relink the published DLL.
 

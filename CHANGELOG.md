@@ -4,6 +4,17 @@ This changelog summarizes the public runnable sample surface. Artifact release
 details live in
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish).
 
+## 2026-08-08
+
+- Advanced all current runtime samples to the corrective five-platform train:
+  native/JVM/source artifacts `1.4.1+9e02a51d`, npm and PyPI `1.4.6`, NuGet
+  `1.4.7`, and Go/Swift `v1.4.1`. Native, JVM, Node, Bun, Python, Go, Swift,
+  C#, Rust, Tauri, Zig, and Mojo consumer smokes load runtime `1.4.1` on macOS
+  ARM64; immutable evidence-runner and Docker-demo lanes retain their own
+  independently released versions.
+- Added stale-pin checks for the superseded runtime coordinates so sample CI
+  rejects future current-version drift.
+
 ## 2026-08-03
 
 - Removed the hosted ASan/UBSan lane. Static-analysis and sanitizer controls

@@ -25,10 +25,10 @@ try {
   $Platform = if ($Architecture -eq "arm64") { "windows-aarch64" } else { "windows-x86_64" }
   if ($Mode -in @("race", "hot-reload")) {
     if ($Platform -ne "windows-x86_64") {
-      throw "runtime 1.4.0 concurrency evidence is not published for $Platform"
+      throw "runtime 1.4.1 concurrency evidence is not published for $Platform"
     }
-    $RuntimeVersion = "1.4.0"
-    $RuntimeRelease = "1.4.0+2cee86bf"
+    $RuntimeVersion = "1.4.1"
+    $RuntimeRelease = "1.4.1+9e02a51d"
     $RuntimeSha256 = "0bc2c9e8f4b0c7cc5135a2e45ad53da5f55b78189e3a8b33131eff86d10de26b"
     $RuntimeArtifact = "coakka-runtime-native-v2-$RuntimeVersion.tar.gz"
     $RuntimeRelativePath = "runtime/native/releases/$RuntimeRelease/$RuntimeArtifact"

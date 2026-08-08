@@ -127,8 +127,7 @@ The published CLI runtime-client release is platform-specific:
 ```text
 coakka-runtime-client product lane
 coakka-client command and archive prefix
-1.4.0+2cee86bf release id on macOS ARM64
-1.3.4+dc6ec28 compatibility release id on the other listed platforms
+1.4.1+9e02a51d release id on all five listed platforms
 ```
 
 The executable inside each archive is `bin/coakka-client` on macOS/Linux and
@@ -139,11 +138,11 @@ Direct downloads:
 
 | Platform | Archive |
 | --- | --- |
-| macOS ARM64 | [coakka-client-v2-1.4.0-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/1.4.0+2cee86bf/coakka-client-v2-1.4.0-macos-aarch64.tar.gz) |
-| Linux x86_64 | [coakka-client-v2-1.3.4-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/1.3.4+dc6ec28/coakka-client-v2-1.3.4-linux-x86_64.tar.gz) |
-| Linux ARM64 | [coakka-client-v2-1.3.4-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/1.3.4+dc6ec28/coakka-client-v2-1.3.4-linux-aarch64.tar.gz) |
-| Windows x86_64 | [coakka-client-v2-1.3.4-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/1.3.4+dc6ec28/coakka-client-v2-1.3.4-windows-x86_64.tar.gz) |
-| Windows ARM64 | [coakka-client-v2-1.3.4-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/1.3.4+dc6ec28/coakka-client-v2-1.3.4-windows-aarch64.tar.gz) |
+| macOS ARM64 | [coakka-client-v2-1.4.1-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/1.4.1+9e02a51d/coakka-client-v2-1.4.1-macos-aarch64.tar.gz) |
+| Linux x86_64 | [coakka-client-v2-1.4.1-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/1.4.1+9e02a51d/coakka-client-v2-1.4.1-linux-x86_64.tar.gz) |
+| Linux ARM64 | [coakka-client-v2-1.4.1-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/1.4.1+9e02a51d/coakka-client-v2-1.4.1-linux-aarch64.tar.gz) |
+| Windows x86_64 | [coakka-client-v2-1.4.1-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/1.4.1+9e02a51d/coakka-client-v2-1.4.1-windows-x86_64.tar.gz) |
+| Windows ARM64 | [coakka-client-v2-1.4.1-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/1.4.1+9e02a51d/coakka-client-v2-1.4.1-windows-aarch64.tar.gz) |
 
 Full release page and manifest:
 [CoAkka Public Artifacts](https://github.com/phuong-tran/coakka-publish/tree/main),
@@ -155,13 +154,12 @@ Per-lane checksums are stored beside each release directory in
 The same published artifacts are resolved from `coakka-publish`:
 
 ```text
-coakka-tools/coakka-client/releases/1.4.0+2cee86bf/
-  coakka-client-v2-1.4.0-macos-aarch64.tar.gz
-coakka-tools/coakka-client/releases/1.3.4+dc6ec28/
-  coakka-client-v2-1.3.4-linux-x86_64.tar.gz
-  coakka-client-v2-1.3.4-linux-aarch64.tar.gz
-  coakka-client-v2-1.3.4-windows-x86_64.tar.gz
-  coakka-client-v2-1.3.4-windows-aarch64.tar.gz
+coakka-tools/coakka-client/releases/1.4.1+9e02a51d/
+  coakka-client-v2-1.4.1-macos-aarch64.tar.gz
+  coakka-client-v2-1.4.1-linux-x86_64.tar.gz
+  coakka-client-v2-1.4.1-linux-aarch64.tar.gz
+  coakka-client-v2-1.4.1-windows-x86_64.tar.gz
+  coakka-client-v2-1.4.1-windows-aarch64.tar.gz
 ```
 
 The matching Docker verification release is:

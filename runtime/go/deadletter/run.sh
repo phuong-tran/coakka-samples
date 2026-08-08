@@ -17,7 +17,7 @@ module coakka-runtime-go-deadletter-sample
 
 go 1.23.0
 
-require ${module_path} v1.4.0
+require ${module_path} v1.4.1
 EOF
 
 (

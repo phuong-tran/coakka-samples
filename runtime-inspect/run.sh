@@ -113,16 +113,16 @@ coakka_runtime_inspect_platform() {
 coakka_runtime_inspect_release_id_for_platform() {
   local platform="$1"
   case "${platform}" in
-    macos-aarch64) printf '%s\n' "1.4.0+2cee86bf" ;;
-    linux-aarch64|linux-x86_64|windows-aarch64|windows-x86_64) printf '%s\n' "1.3.4+dc6ec28" ;;
+    macos-aarch64|linux-aarch64|linux-x86_64|windows-aarch64|windows-x86_64)
+      printf '%s\n' "1.4.1+9e02a51d" ;;
     *) return 1 ;;
   esac
 }
 
 coakka_runtime_inspect_version_for_platform() {
   case "$1" in
-    macos-aarch64) printf '%s\n' "1.4.0" ;;
-    linux-aarch64|linux-x86_64|windows-aarch64|windows-x86_64) printf '%s\n' "1.3.4" ;;
+    macos-aarch64|linux-aarch64|linux-x86_64|windows-aarch64|windows-x86_64)
+      printf '%s\n' "1.4.1" ;;
     *) return 1 ;;
   esac
 }
