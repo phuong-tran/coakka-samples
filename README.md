@@ -277,6 +277,7 @@ Core runtime model:
 - [Runtime TLS And mTLS](docs/tls-and-mtls.md)
 - [Runtime Connection Strategies](docs/connection-strategies.md)
 - [Runtime Message And Routing Model](docs/runtime-message-and-routing-model.md)
+- [Envelope And Deadletter Map](docs/envelope-deadletter-map.md)
 - [Runtime Integration Guide](docs/runtime-integration-guide.md)
 - [Runtime Glossary](docs/runtime-glossary.md)
 - [Runtime Cluster Routing](docs/runtime-cluster-routing.md)

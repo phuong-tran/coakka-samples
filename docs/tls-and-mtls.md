@@ -199,6 +199,54 @@ submit a higher generation, inspect the structured result, and remove old
 secret material only after its deployment policy says the old generation is no
 longer needed. No runtime reload thread polls files or renews certificates.
 
+## Delivery Failure And Deadletter Semantics
+
+TLS/mTLS configuration and TLS/mTLS traffic failures do not share one output
+channel. The boundary depends on whether an envelope exists and whether runtime
+has admitted it.
+
+| Failure boundary | Runtime result |
+| --- | --- |
+| Initial apply or credential reload is invalid | The synchronous apply call/result rejects the candidate and preserves the previous active immutable security context. No envelope is involved, so no deadletter is created. |
+| Outbound handshake fails for an admitted envelope | Runtime emits `Deadletter(reason=REMOTE_TRANSPORT_SECURITY_FAILED)` with bounded `transport-failure/1` metadata. TLS negotiation happens before business bytes, so certainty is `NOT_DELIVERED`. |
+| Inbound handshake fails before a request frame is decoded | Runtime has no `message_id` or original envelope from which to build a deadletter. It records an ingress event of kind `REMOTE_TRANSPORT_FAILED` with typed security facts instead. |
+
+Current security failure codes are stable diagnostic categories:
+
+| Code | Operator interpretation |
+| --- | --- |
+| `TLS_CONFIG_INVALID` | Local files or credential material cannot build a valid secure context. |
+| `TLS_HANDSHAKE_FAILED` | Negotiation failed without a narrower certificate category. |
+| `PEER_CERT_UNTRUSTED` | Peer chain is not trusted by configured roots. |
+| `PEER_CERT_EXPIRED` | Peer certificate is outside its validity window; check certificate rotation and the host wall clock. |
+| `PEER_IDENTITY_MISMATCH` | Certificate identity does not match the endpoint host being verified. |
+| `CLIENT_CERT_REQUIRED` | mTLS peer did not present an acceptable client identity. |
+
+The versioned metadata shape is:
+
+```text
+schema=transport-failure/1
+domain=SECURITY
+phase=HANDSHAKE
+code=<stable security code>
+certainty=NOT_DELIVERED
+scope=LOCAL_PROFILE|ENDPOINT|CONNECTION
+```
+
+Only a failure with `certainty=NOT_DELIVERED` and `scope=ENDPOINT` permits core
+endpoint failover. `LOCAL_PROFILE` means the local TLS configuration is broken;
+trying another peer does not repair it. `CONNECTION` describes one established
+connection/session boundary.
+
+Connector code should branch on the stable deadletter reason and structured
+metadata values, never on the human-readable `detail` string. Raw OpenSSL
+diagnostics, certificate contents, credential paths, and private-key material
+are intentionally excluded from public failure surfaces.
+
+Read the public
+[Envelope And Deadletter Map](https://github.com/phuong-tran/coakka-publish/blob/main/docs/envelope-deadletter-map.md)
+for admission, one-way, timeout, and the complete deadletter reason vocabulary.
+
 ## Secret Handling
 
 - Mount or provision key files with the narrowest OS identity and permissions.
