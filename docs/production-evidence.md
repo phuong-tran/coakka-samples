@@ -22,6 +22,7 @@ runtime path will operate.
 | Sanitizers | Consumer-only ASan/UBSan and TSan controls are available from the public harness. A Core sanitizer claim requires the exact recorded runtime source generation and harness to be instrumented in one build; ordinary production binaries are never described as implicitly instrumented. Hosted CI does not run these expensive profiles. | See `runtime-test/README.md`; run sanitizer profiles explicitly on a controlled local or evaluator host. |
 | Logger pressure | JVM, Java, Python, Node.js, Go, C#, Rust, and native logger pressure samples verify bounded logging rejection and dropped counters. | `bash run.sh logger <language> pressure` |
 | Artifact pins | Public samples resolve pinned public artifacts and validate SHA256 rows. | `bash scripts/check-artifact-pins.sh` |
+| Package-manager execution | Exact PyPI `1.4.6`, Go `v1.4.1`, and NuGet `1.4.7` request/reply samples execute on Linux ARM64/x86-64; NuGet `1.4.7` also executes request/reply plus route-miss deadletter on Windows 11 ARM64. Known package-specific gaps are recorded without inference. | [Runtime Package And Platform Evidence](runtime-package-platform-evidence.md) |
 | CI smoke | GitHub Actions checks entrypoints, artifact pins, quickstart, selected logger samples, and selected runtime samples. | `.github/workflows/sample-smoke.yml` |
 | Manual smoke-load | Workflow-dispatched benchmark smoke emits validated JSON for selected profiles. | `.github/workflows/bench-smoke.yml` |
 

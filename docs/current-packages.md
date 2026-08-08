@@ -16,10 +16,13 @@ packaging surface, and native payload.
 
 The file-transfer lane begins with native source generation `2.1.0`. The
 package coordinates below remain the current public generation and do not
-contain that ABI yet. Use the [Runtime File Transfer guide](runtime-file-transfer.md)
-to review the feature, but wait for the compatibility matrix to identify an
-exact `2.1.0+<core-commit>` artifact before enabling it in a packaged
-application.
+contain that ABI. Do not generate or enable file-lane calls against these
+packages. Use the [Runtime File Transfer guide](runtime-file-transfer.md) for
+the `2.1.0` contract and enable it only when the compatibility matrix names an
+exact promoted `2.1.0+<core-commit>` artifact.
+
+For exact package contents, matching-host execution, and known platform gaps,
+use [Runtime Package And Platform Evidence](runtime-package-platform-evidence.md).
 
 ## Package Manager Entrypoints
 
@@ -41,7 +44,7 @@ application.
 | [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) | Released packages, native archives, manifests, checksums, compatibility matrix, and release notes. |
 | [`coakka-runtime-go`](https://github.com/phuong-tran/coakka-runtime-go) | Public Go module for CoAkka Runtime. |
 | [`coakka-logger-go`](https://github.com/phuong-tran/coakka-logger-go) | Public Go module for CoAkka Logger. |
-| [`coakka-runtime-swift`](https://github.com/phuong-tran/coakka-runtime-swift) | Public SwiftPM runtime package for macOS ARM64. |
+| [`coakka-runtime-swift`](https://github.com/phuong-tran/coakka-runtime-swift) | Public SwiftPM runtime package with five verified native payloads and macOS ARM64 Swift execution. |
 | [`coakka-logger-swift`](https://github.com/phuong-tran/coakka-logger-swift) | Public SwiftPM logger package for macOS ARM64. |
 
 For direct archive downloads, checksums, compatibility status, and release

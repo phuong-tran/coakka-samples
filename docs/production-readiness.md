@@ -77,6 +77,10 @@ Use the samples as the supported public integration surface, then attach
 deployment-specific measurements to the environment being standardized. For the
 public evidence ledger and target-environment checklist, see
 [Production Evidence](production-evidence.md).
+Use [Runtime Package And Platform Evidence](runtime-package-platform-evidence.md)
+for exact registry coordinates, payload matrices, matching-host runs, and known
+connector gaps. That ledger separates a packaged binary from an executed
+connector path.
 
 ## Config Ownership
 

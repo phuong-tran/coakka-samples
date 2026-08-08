@@ -49,6 +49,7 @@ and architecture-matched edge deployments.
 - [Troubleshooting](troubleshooting.md)
 - [Production readiness](production-readiness.md)
 - [Production evidence](production-evidence.md)
+- [Runtime package and platform evidence](runtime-package-platform-evidence.md)
 - [Signing and platform trust](runtime-release-signing-and-platform-trust.md)
 
 ## Reference And Support

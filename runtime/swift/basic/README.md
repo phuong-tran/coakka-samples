@@ -7,11 +7,16 @@ the CoAkka runtime v2 connector.
 This sample covers:
 
 - public SwiftPM package resolution from `github.com/phuong-tran/coakka-runtime-swift`
-- embedded macOS ARM64 native runtime loading
+- automatic selection from the five embedded native runtime payloads
 - runtime version/git diagnostics
 - one process-owned route and handler
 - one request/reply round trip
 - basic client counters
+
+The exact package contains macOS ARM64, Linux ARM64 and x86-64, and Windows
+ARM64 and x86-64 payloads. This sample's Swift execution evidence is macOS
+ARM64; the other payloads have format, digest, and bridge-boundary verification
+without a matching Swift toolchain execution claim.
 
 Run from this directory:
 
