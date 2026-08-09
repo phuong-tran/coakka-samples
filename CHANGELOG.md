@@ -14,9 +14,10 @@ details live in
   The exact `9 MiB + 731 byte` archive-driven transfer passes with matching
   SHA-256 and durable receiver completion on macOS ARM64, Linux ARM64/x86-64,
   and Windows x86-64 under Windows 11 ARM64 emulation.
-- Kept npm `1.4.6`, PyPI `1.4.6`, and NuGet `1.4.7` samples pinned to their
-  actually published registry coordinates until authenticated 2.1.0 uploads
-  and clean-install receipts exist.
+- Advanced npm Node.js, Bun, and Electron samples to registry-published
+  `2.1.0`; clean Node.js and Bun installs complete native request/reply and
+  Electron resolves its exact Node connector dependency. PyPI `1.4.6` and
+  NuGet `1.4.7` remain pinned until their 2.1.0 publication receipts exist.
 
 ## 2026-08-08
 
