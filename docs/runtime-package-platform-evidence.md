@@ -68,17 +68,17 @@ generation, and artifact name.
 
 ## Registry Coordinates
 
-npm, PyPI, and NuGet are independent publication channels. npm `2.1.0` is
+npm, PyPI, and NuGet are independent publication channels. npm `2.1.1` is
 published and clean-install verified. PyPI and NuGet keep their current
 coordinates until their 2.1.0 uploads and clean-registry installs complete:
 
 | Registry | Current verified coordinate | Bundled native generation |
 | --- | --- | --- |
-| npm | `coakka-v2-connector-{node,bun,electron}@2.1.0` | `2.1.0+60ddf70d` |
+| npm | `coakka-v2-connector-{node,bun,electron}@2.1.1` | `2.1.0+60ddf70d` |
 | PyPI | `coakka-v2-connector==1.4.6` | `1.4.1+9e02a51d` |
 | NuGet | `CoAkka.Runtime==1.4.7` | `1.4.1+9e02a51d` |
 
-The npm 2.1.0 packages expose file-lane. Do not generate file-lane calls
+The npm 2.1.1 packages expose file-lane. Do not generate file-lane calls
 against PyPI or NuGet 1.4.x packages. Use an exact coordinate whose release
 receipt records native `2.1.0+60ddf70d` or a compatible successor.
 

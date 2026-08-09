@@ -6,6 +6,8 @@ details live in
 
 ## 2026-08-09
 
+- Advanced Node.js, Bun, and Electron samples to npm runtime patch `2.1.1`,
+  whose README links to the canonical public file-lane contract.
 - Advanced the native, JVM/Maven, connector-archive, Go, Swift, coakka-client,
   and coakka-runtime-inspect samples to runtime `2.1.0+60ddf70d`. The Go module
   tag is `v1.5.0` because its established module path has no `/v2` suffix;

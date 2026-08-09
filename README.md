@@ -52,7 +52,7 @@ point-to-point files. Keep commands and authorization in the application's
 control plane; keep file bytes out of runtime message payloads. The native,
 JVM/Maven, connector-archive, Go `v1.5.0`, Swift `v2.1.0`, coakka-client, and
 coakka-runtime-inspect sample pins resolve the promoted `2.1.0+60ddf70d`
-generation. npm samples use the published and clean-install verified `2.1.0`
+generation. npm samples use the published and clean-install verified `2.1.1`
 packages. PyPI and NuGet retain their older verified registry coordinates
 until authenticated 2.1.0 uploads complete.
 

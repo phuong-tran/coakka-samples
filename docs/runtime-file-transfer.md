@@ -323,5 +323,7 @@ artifacts, manifests, hashes, connector packages, and platform evidence listed
 by the public compatibility matrix. Source-level evidence is not a published
 artifact claim.
 
-For connector-specific entry points and blocking behavior, see the
-[connector file-lane contract](https://github.com/phuong-tran/coakkaJVMConnector/blob/main/FILE_LANE.md).
+The canonical public file-lane contract is maintained in
+[`coakka-publish`](https://github.com/phuong-tran/coakka-publish/blob/main/docs/runtime-file-transfer.md).
+Connector READMEs link there for connector-specific entry points and blocking
+behavior.
