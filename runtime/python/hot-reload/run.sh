@@ -5,4 +5,4 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../../.." && pwd)"
 source "${repo_root}/scripts/sample-utils.sh"
 
-coakka_with_python_package_env "coakka-v2-connector==1.4.6" "${script_dir}/main.py"
+coakka_with_python_package_env "coakka-v2-connector==2.1.0" "${script_dir}/main.py"

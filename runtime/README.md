@@ -7,8 +7,8 @@ For large immutable files, use the `2.1.0` file lane instead of placing bytes
 inside an `Envelope`. See [Runtime File Transfer](../docs/runtime-file-transfer.md)
 for use cases, the receiver-first workflow, and connector guidance. The
 artifact-backed samples pin the complete `2.1.0+60ddf70d` train. Registry-backed
-npm, PyPI, and NuGet samples retain their separately published versions until
-those registries carry and verify `2.1.0`.
+npm `2.1.1`, PyPI `2.1.0`, and NuGet `2.1.0` samples consume published,
+clean-install verified packages.
 
 For day-to-day development and connector validation, treat macOS and Windows as
 valid host environments. For deployment claims, operational drills, and the
@@ -102,7 +102,7 @@ dependencies {
 Python wheel:
 
 ```sh
-python -m pip install coakka-v2-connector==1.4.6
+python -m pip install coakka-v2-connector==2.1.0
 ```
 
 Node.js package:

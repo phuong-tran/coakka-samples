@@ -6,6 +6,9 @@ details live in
 
 ## 2026-08-09
 
+- Advanced Python samples to registry-published
+  `coakka-v2-connector==2.1.0`; the clean consumer loads native
+  `2.1.0+60ddf70d` and completes request/reply.
 - Advanced Node.js, Bun, and Electron samples to npm runtime patch `2.1.1`,
   whose README links to the canonical public file-lane contract.
 - Advanced C# samples to registry-published `CoAkka.Runtime==2.1.0`; the clean
@@ -20,8 +23,7 @@ details live in
   and Windows x86-64 under Windows 11 ARM64 emulation.
 - Advanced npm Node.js, Bun, and Electron samples to registry-published
   `2.1.0`; clean Node.js and Bun installs complete native request/reply and
-  Electron resolves its exact Node connector dependency. PyPI `1.4.6` remains
-  pinned until its 2.1.0 publication receipt exists.
+  Electron resolves its exact Node connector dependency.
 
 ## 2026-08-08
 
