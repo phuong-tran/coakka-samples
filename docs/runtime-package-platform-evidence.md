@@ -1,80 +1,106 @@
 # Runtime Package And Platform Evidence
 
-This page states exactly what the current public runtime packages contain and
-where their connector paths have executed. It is written for application
-developers and AI code generators that need a direct answer without inferring
-support from archive contents.
+This page records the current CoAkka Runtime artifact train and the separately
+versioned package-manager registries. It is the source of truth for developers
+and AI code generators selecting an OS/CPU payload or generating file-lane
+code.
 
-Current package-manager coordinates use native runtime generation
-`1.4.1+9e02a51d`. The native source generation and the connector/package
-version are separate identities.
+Current artifact generation:
+
+```text
+native runtime:   2.1.0+60ddf70d
+connector source: 4782dcd
+JVM/Maven:        2.1.0-g60ddf70d-4782dcd
+source artifacts: 2.1.0+60ddf70d-4782dcd
+```
 
 ## Evidence Terms
 
 | Term | Exact meaning |
 | --- | --- |
-| Published | The named immutable version is available from its registry, module tag, or public artifact path. |
-| Contains | The package contains a native payload for that OS and CPU. |
-| Verified | Format, architecture, exports, dependency policy, and digest gates pass for that payload. |
-| Executed | The named package was installed or unpacked on a matching host and completed the stated connector workload. |
-| Source-fixed | The connector source contains a tested correction that is newer than the named public package. The public package does not inherit that result. |
+| Published artifact | The immutable file is in `coakka-publish`, checksum-pinned by `artifacts/public-artifacts.tsv`. |
+| Registry-published | The exact coordinate is available from npm, PyPI, NuGet, Maven, or a Git tag. |
+| Contains | The package includes a native payload for the named OS and CPU. |
+| Verified | Binary format, architecture, exports, dependency policy, and digest gates pass. |
+| Executed | The exact binary or package completed the named workload on the stated host. |
 
-`Contains` and `Verified` never imply `Executed`. An AI-generated integration
-must preserve that distinction when selecting a package for a deployment.
+`Contains` and `Verified` do not imply `Executed`. Windows x86-64 execution on
+the Windows 11 ARM64 test VM uses Microsoft x64 emulation and is identified as
+such; it is not presented as x86-64 hardware evidence.
 
-## Current Runtime Package Matrix
+## Native 2.1.0 Matrix
 
-| Surface | Published coordinate | Native payloads | Matching-host execution evidence |
+| Platform | Library | SHA-256 | Release evidence |
 | --- | --- | --- | --- |
-| Native C ABI | `1.4.1+9e02a51d` archive | Linux ARM64/x86-64, macOS ARM64, Windows ARM64/x86-64 | Native runtime execution passes on Linux ARM64/x86-64, macOS ARM64, and Windows 11 ARM64. Windows x86-64 has format, architecture, export, and dependency verification. |
-| JVM/JNA/JNI | `coakka.v2:coakka-jvm-native-runtime-v2:1.4.1-g9e02a51d-4e7cda4` | All five targets | Request/reply executes on macOS ARM64 and Linux ARM64. Windows 11 ARM64 request/deadletter execution is recorded for the exact runtime train. The Linux x86-64 guest crashes inside OpenJDK 21/25 before the sample reaches CoAkka, so this ledger makes no JVM connector execution claim there. The implementation uses JNA over the public C ABI; JNI names the JVM native-bridge category. |
-| Python/PyPI | `coakka-v2-connector==1.4.6` | All five targets | Registry wheel request/reply executes on macOS ARM64 and Linux ARM64/x86-64. On Windows 11 ARM64 the wheel loads the exact runtime, but its published Python reader uses `select()` on CRT pipes and request/reply times out. The connector source has a Windows pipe-waiter fix that passes the same request/reply sample; that fix requires the next Python package release. Windows x86-64 connector execution is not claimed. |
-| Go module | `github.com/phuong-tran/coakka-runtime-go@v1.4.1` | All five targets | Module request/reply executes on macOS ARM64 and Linux ARM64/x86-64. Windows payloads are verified package contents; this module version has no Windows Go execution record. |
-| C#/NuGet | `CoAkka.Runtime==1.4.7` | `linux-arm64`, `linux-x64`, `osx-arm64`, `win-arm64`, `win-x64` | Registry package request/reply and route-miss deadletter execute on macOS ARM64, Linux ARM64/x86-64, and Windows 11 ARM64. Windows x86-64 has verified package/RID evidence without a matching-host connector run. |
-| SwiftPM | `coakka-runtime-swift` exact `1.4.1` | All five targets | Swift request/reply, transport, TLS reload, and consumer tests execute on macOS ARM64. Linux payloads pass ELF, architecture, digest, and C-bridge compile gates; the Linux guests do not contain a Swift toolchain. Windows payloads pass PE, architecture, and digest gates. |
-| Node.js/npm | `coakka-v2-connector-node@1.4.6` | All five targets | Registry package request/reply executes on macOS ARM64 and Linux ARM64/x86-64. Windows native payloads are verified; this package version has no Windows Node.js connector run. |
-| Rust archive | `coakka-runtime-rs` `1.4.1` | All five targets | macOS ARM64 execution passes. The public `1.4.1` archive fails native loading on Linux because that release encoded the macOS `RTLD_LOCAL` value for Linux. Current connector source corrects the Linux constant and passes native Linux execution; use the next corrected package for Linux consumers. |
+| Linux ARM64 | `libcoakka_runtime_v2.so` | `3c0cc47250e3c4ebb71633af85d205adb7bf2606d58abba0bf893a770dfde48c` | Native build, exports, dependencies, TLS/mTLS gates, file-lane runtime test, and public sample pass on the ARM64 UTM host. |
+| Linux x86-64 | `libcoakka_runtime_v2.so` | `7d8781b8eae6948eee968e422dd2097dfee43d788c4cb4a3fb3e8936bd214815` | Native build, exports, dependencies, TLS/mTLS gates, file-lane runtime test, and public sample pass on the x86-64 UTM host. |
+| macOS ARM64 | `libcoakka_runtime_v2.dylib` | `e95cda46cd8e5d31633d005bb8af9093b2a93c9c2d0cefc90148e188f31da6d7` | Native build, dependency gate, file-lane runtime test, and connector package smokes pass. |
+| Windows ARM64 | `libcoakka_runtime_v2.dll` | `e932f870f6dd15fd36612f0ce404e4906faff47766f6ed40c328d4e12a69ebf0` | MSVC build, 115-export gate, dependencies, TLS/mTLS tests, and file-lane tests pass on Windows 11 ARM64. |
+| Windows x86-64 | `libcoakka_runtime_v2.dll` | `dc9d352144fefb2d6789bc3ea49dd6fe1b3bb627be4f1277944bc51d49e2f3f9` | MSVC build, 115-export gate, dependencies, TLS/mTLS tests, and file-lane tests pass under Windows 11 ARM64 x64 emulation. |
 
-The public package matrix is intentionally direct about known failures. A
-payload can remain useful for build, inspection, or a later corrected
-connector without being presented as a working application path today.
+The native archive is
+`runtime/native/releases/2.1.0+60ddf70d/coakka-runtime-native-v2-2.1.0.tar.gz`
+with SHA-256
+`01fb5a0cb09c648391bc90171bfd49940d88febc3020770acca57352c82ae5a6`.
+It contains all five libraries, the public headers including
+`coakka/v2/file_lane.h`, CMake metadata, manifest, and per-file checksums.
 
-## Reproducing The Linux Package Runs
+## Connector Artifact Matrix
 
-On an architecture-matched Linux host with the required language toolchain:
+| Surface | Exact artifact coordinate | Native payloads | Current exact-artifact evidence |
+| --- | --- | --- | --- |
+| JVM/JNA/JNI | `coakka.v2:coakka-jvm-native-runtime-v2:2.1.0-g60ddf70d-4782dcd` | All five | JVM checks, embedded-native verification, packaged runtime smoke, Spring Boot tests, and Quarkus tests pass. The implementation uses JNA over the C ABI; JNI names the JVM native-bridge category. |
+| Node.js | `runtime/node/releases/2.1.0+60ddf70d-4782dcd/` | All five | Build, unit tests, package-surface verification, and packaged request/reply pass on macOS ARM64. |
+| Bun | `runtime/bun/releases/2.1.0+60ddf70d-4782dcd/` | All five | Runtime request/reply, file-lane FFI test, package-surface verification, and packaged request/reply pass on macOS ARM64. |
+| Electron | `runtime/electron/releases/2.1.0+60ddf70d-4782dcd/` | Via exact Node package | Packaged Electron main/preload intent smoke passes. |
+| Python | `runtime/python/releases/2.1.0+60ddf70d-4782dcd/` | All five | 29 tests plus four subtests pass; the packaged wheel loads runtime 2.1.0 and completes request/reply on macOS ARM64. |
+| Go | `runtime/go/releases/2.1.0+60ddf70d-4782dcd/` | All five | Packaged request/reply and `go test ./...` pass. |
+| C# | `runtime/csharp/releases/2.1.0+60ddf70d-4782dcd/` | Five RID assets | NuGet readiness and packaged request/reply/deadletter pass on macOS ARM64. |
+| Rust | `runtime/rust/releases/2.1.0+60ddf70d-4782dcd/` | All five | Package readiness and packaged request/reply/deadletter pass on macOS ARM64. The historical Linux loader constant defect is corrected. |
+| Swift | `runtime/swift/releases/2.1.0+60ddf70d-4782dcd/` | All five | Swift build, tests, runtime request/reply, transport, and packaged-consumer smokes pass on macOS ARM64. |
+| Mojo | `runtime/mojo/releases/2.1.0+60ddf70d-4782dcd/` | All five | Strict source/platform gates and native lifecycle, request/reply, deadletter smoke pass. |
+| Zig | `runtime/zig/releases/2.1.0+60ddf70d-4782dcd/` | All five | Linux ARM64 and Windows x86-64 compile/link gates plus native lifecycle, request/reply, and deadletter smoke pass. |
+| Tauri | `runtime/tauri/releases/2.1.0+60ddf70d-4782dcd/` | All five through Rust | Source package generation and dependency lock complete; Electron and Tauri keep UI code outside the native runtime owner. |
 
-```sh
-git clone https://github.com/phuong-tran/coakka-samples.git
-cd coakka-samples
+Every release directory has a manifest and `SHA256SUMS`. The manifest records
+the five-platform matrix, native source generation, connector source
+generation, and artifact name.
 
-bash run.sh runtime python basic
-bash run.sh runtime go basic
-bash run.sh runtime csharp basic
-bash run.sh runtime node basic
-```
+## Registry Coordinates
 
-The Python sample installs PyPI `1.4.6`, the Go sample resolves module
-`v1.4.1`, the C# sample installs NuGet `1.4.7`, and the Node.js sample installs
-npm `1.4.6`. Each prints runtime version `1.4.1` and native source commit
-`9e02a51d7f0e4a231e2f71fe6d19ce02724277c9` before reporting its result.
+npm, PyPI, and NuGet are independent publication channels. Until their 2.1.0
+uploads and clean-registry installs complete, their current registry
+coordinates remain:
 
-Run the JVM command on Linux ARM64. The current Linux x86-64 guest is excluded
-from JVM execution evidence because both installed OpenJDK versions crash
-inside generated JVM code before the sample enters CoAkka.
+| Registry | Current verified coordinate | Bundled native generation |
+| --- | --- | --- |
+| npm | `coakka-v2-connector-{node,bun,electron}@1.4.6` | `1.4.1+9e02a51d` |
+| PyPI | `coakka-v2-connector==1.4.6` | `1.4.1+9e02a51d` |
+| NuGet | `CoAkka.Runtime==1.4.7` | `1.4.1+9e02a51d` |
 
-## Code Generation Rule
+Do not generate file-lane calls against those 1.4.x registry packages. Use the
+2.1.0 artifact mirror or a later registry coordinate whose release receipt
+explicitly records native `2.1.0+60ddf70d` or a compatible successor.
 
-When generating integration code from CoAkka docs:
+## File-Lane Generation Rule
 
-1. Name the exact package coordinate and native generation.
-2. Select only a payload matching the deployment OS and CPU.
-3. Distinguish package presence from matching-host execution.
-4. Preserve the lifecycle shown by the connector README and sample.
-5. Keep target, payload identity, timeout, deadletter, close, and ownership
-   semantics visible in generated code.
-6. Do not generate file-lane calls against the public `1.4.1` packages; the
-   file-lane ABI starts with native source generation `2.1.0`.
+Generated integrations must preserve the complete workflow:
 
-For release coordinates, use [Current Packages](current-packages.md). For the
-full feature/platform view, use the public compatibility matrix. For runtime
-behavior, use the connector source documentation and runnable samples.
+1. Service B authorizes the operation, chooses the destination, and prepares
+   the receiver.
+2. Service A receives a one-use transfer grant, hashes the source, and submits
+   the sender job.
+3. Both sides wait through the notification API instead of busy-polling.
+4. Service B uses the file only after receiver `COMPLETED + OK` and digest
+   verification.
+5. Both sides handle timeout, cancellation, queue-full, storage, integrity,
+   TLS/mTLS, and source-change failures.
+6. Terminal records are forgotten after the application records the result.
+
+Direct mode may use Linux/macOS `sendfile` or Windows `TransmitFile`. TLS and
+mTLS use encrypted streaming. The file lane does not claim end-to-end zero
+copy because the receiver persists data to storage.
+
+For code and ownership details, read [Runtime File Transfer](runtime-file-transfer.md),
+[Envelope And Deadletter Map](envelope-deadletter-map.md), and
+[TLS And mTLS](tls-and-mtls.md).

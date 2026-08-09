@@ -92,7 +92,7 @@ static int write_pattern(const char *path, uint64_t bytes) {
   uint8_t block[FILE_LANE_EVIDENCE_BLOCK_BYTES];
   uint64_t written = 0u;
   size_t index;
-  FILE *file;
+  FILE *file = NULL;
 
   for (index = 0u; index < sizeof(block); ++index) {
     block[index] = (uint8_t)((index * 31u + 17u) & 0xffu);
@@ -105,7 +105,9 @@ static int write_pattern(const char *path, uint64_t bytes) {
                                   sizeof(wide_path[0]))) <= 0) {
       return 1;
     }
-    file = _wfopen(wide_path, L"wb");
+    if (_wfopen_s(&file, wide_path, L"wb") != 0) {
+      file = NULL;
+    }
   }
 #else
   file = fopen(path, "wb");
@@ -354,6 +356,17 @@ int main(void) {
   passed = 1;
 
 cleanup:
+  if (sender != 0 && sent.struct_size == 0u) {
+    sent.struct_size = sizeof(sent);
+    (void)coakka_v2_file_lane_get_transfer(
+        sender, transfer_id, COAKKA_V2_FILE_TRANSFER_DIRECTION_SEND, &sent);
+  }
+  if (receiver != 0 && received.struct_size == 0u) {
+    received.struct_size = sizeof(received);
+    (void)coakka_v2_file_lane_get_transfer(
+        receiver, transfer_id, COAKKA_V2_FILE_TRANSFER_DIRECTION_RECEIVE,
+        &received);
+  }
   if (sender_started) {
     (void)coakka_v2_file_lane_stop(sender);
   }
@@ -367,6 +380,10 @@ cleanup:
   remove_path(destination_path);
   remove_path(source_path);
   remove_workspace(workspace);
+  if (!passed) {
+    fprintf(stderr, "file-lane detail sender=%s receiver=%s\n", sent.detail,
+            received.detail);
+  }
   printf("{\"schema\":\"coakka.runtime.file-lane.evidence.v1\","
          "\"passed\":%s,\"failure\":\"%s\",\"fileBytes\":%" PRIu64 ","
          "\"senderState\":%u,\"senderResult\":%u,"

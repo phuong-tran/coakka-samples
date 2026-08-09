@@ -7,7 +7,7 @@ The native package is not a Maven artifact. On macOS ARM64 and Linux
 ARM64/x86-64, the sample runner resolves:
 
 ```text
-runtime/native/releases/1.4.1+9e02a51d/coakka-runtime-native-v2-1.4.1.tar.gz
+runtime/native/releases/2.1.0+60ddf70d/coakka-runtime-native-v2-2.1.0.tar.gz
 ```
 
 The same archive contains the exact five-platform matrix; the sample runner

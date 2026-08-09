@@ -6,8 +6,9 @@ contract consumed through host-language connectors.
 For large immutable files, use the `2.1.0` file lane instead of placing bytes
 inside an `Envelope`. See [Runtime File Transfer](../docs/runtime-file-transfer.md)
 for use cases, the receiver-first workflow, and connector guidance. The
-current public sample pins remain on the last verified generation until the
-complete `2.1.0` artifact train is promoted.
+artifact-backed samples pin the complete `2.1.0+60ddf70d` train. Registry-backed
+npm, PyPI, and NuGet samples retain their separately published versions until
+those registries carry and verify `2.1.0`.
 
 For day-to-day development and connector validation, treat macOS and Windows as
 valid host environments. For deployment claims, operational drills, and the
@@ -18,17 +19,16 @@ runtime C ABI package, runtime JVM/language connector packages, and the Spring
 Boot and Quarkus adapters. These samples consume those public artifacts.
 
 This `runtime/` directory is the app-host connector sample lane. The current
-artifact train is native generation `1.4.1+9e02a51d`. A sample running on an
-OS/CPU pair outside that train, including Linux x86-64, keeps the last
-compatible pinned generation instead of pretending that a missing native is
-available. Package-manager samples use the current version published on their
-registry; those versions advance independently from the artifact mirror. The separate
+artifact train is native generation `2.1.0+60ddf70d` with Linux ARM64/x86-64,
+macOS ARM64, and Windows ARM64/x86-64 payloads. Package-manager samples use the
+current version published on their registry; those versions advance
+independently from the artifact mirror. The separate
 `coakka-runtime-client` CLI sample lane lives under
 [`../runtime-client`](../runtime-client/README.md).
 
 Swift runtime is published at
-`github.com/phuong-tran/coakka-runtime-swift@1.4.1` with native runtime
-generation `1.4.1+9e02a51d`; current Swift execution evidence covers macOS
+`github.com/phuong-tran/coakka-runtime-swift@2.1.0` with native runtime
+generation `2.1.0+60ddf70d`; current Swift execution evidence covers macOS
 ARM64.
 
 The runtime lane is not introduced as a generic framework. It starts from
@@ -77,7 +77,7 @@ repositories {
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:1.4.1-g9e02a51d-4e7cda4")
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:2.1.0-g60ddf70d-4782dcd")
 }
 ```
 
@@ -85,7 +85,7 @@ Spring Boot same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("coakka.spring:coakka-spring-boot-starter:1.4.1-g9e02a51d-4e7cda4")
+    implementation("coakka.spring:coakka-spring-boot-starter:2.1.0-g60ddf70d-4782dcd")
     implementation("org.springframework.boot:spring-boot-starter-web")
 }
 ```
@@ -94,7 +94,7 @@ Quarkus same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("coakka.quarkus:coakka-quarkus-extension:1.4.1-g9e02a51d-4e7cda4")
+    implementation("coakka.quarkus:coakka-quarkus-extension:2.1.0-g60ddf70d-4782dcd")
     implementation("io.quarkus:quarkus-rest-jackson")
 }
 ```
@@ -213,7 +213,7 @@ Full recording: [coakka-runtime-native.mp4](../docs/assets/coakka-runtime-native
 Go module:
 
 ```sh
-go get github.com/phuong-tran/coakka-runtime-go@v1.4.1
+go get github.com/phuong-tran/coakka-runtime-go@v1.5.0
 ```
 
 C# NuGet package:
@@ -226,8 +226,8 @@ Rust currently ships as a published archive package:
 
 ```sh
 curl -L \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/rust/releases/1.4.1+9e02a51d-4e7cda4/coakka-runtime-rs-1.4.1.tar.gz" \
-  -o /tmp/coakka-runtime-rs-1.4.1.tar.gz
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/rust/releases/2.1.0+60ddf70d-4782dcd/coakka-runtime-rs-2.1.0.tar.gz" \
+  -o /tmp/coakka-runtime-rs-2.1.0.tar.gz
 ```
 
 After dependency setup, every host follows the same shape:

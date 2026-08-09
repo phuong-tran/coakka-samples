@@ -1,6 +1,6 @@
 # Swift Runtime Basic
 
-This public runtime sample installs `coakka-runtime-swift@1.4.1` from the
+This public runtime sample installs `coakka-runtime-swift@2.1.0` from the
 public SwiftPM GitHub tag and runs one same-process request/reply echo through
 the CoAkka runtime v2 connector.
 
@@ -33,7 +33,7 @@ bash run.sh runtime swift basic
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=1.4.1 git=2cee86bf
+coakka_runtime_info abi=1 version=2.1.0 git=60ddf70d
 coakka_runtime_response payload=echo-hello-runtime-swift
 coakka_runtime_stats delivered=1 matchedResponses=1
 ```

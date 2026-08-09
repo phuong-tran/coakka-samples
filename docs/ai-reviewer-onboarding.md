@@ -43,7 +43,9 @@ contract. Before generating an integration:
    tuning option.
 6. Do not infer target support from a binary being present in a package. Use
    the `Executed` evidence for matching-host claims.
-7. Do not generate a `2.1.0` file-lane API against a `1.4.1` package.
+7. Do not generate a `2.1.0` file-lane API against an npm, PyPI, or NuGet
+   `1.4.x` registry package; select an exact 2.1.0 artifact or later compatible
+   registry release.
 
 Treat API comments and KDoc as part of the contract. When a code declaration,
 connector README, runnable sample, and release matrix disagree, report the
