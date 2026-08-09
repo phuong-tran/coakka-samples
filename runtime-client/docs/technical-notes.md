@@ -29,7 +29,7 @@ Published CLI archives:
 | Windows x86_64 | [coakka-client-v2-2.1.0-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/2.1.0+60ddf70d/coakka-client-v2-2.1.0-windows-x86_64.tar.gz) |
 | Windows ARM64 | [coakka-client-v2-2.1.0-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/2.1.0+60ddf70d/coakka-client-v2-2.1.0-windows-aarch64.tar.gz) |
 
-Full release page and manifest:
+Artifact catalog and manifest:
 [CoAkka Public Artifacts](https://github.com/phuong-tran/coakka-publish/tree/main),
 [public-artifacts.tsv](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/artifacts/public-artifacts.tsv)
 

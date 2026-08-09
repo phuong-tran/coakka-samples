@@ -102,7 +102,7 @@ Direct download:
 
 [coakka-runtime-inspect-v2-2.1.0-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-runtime-inspect/releases/2.1.0+60ddf70d/coakka-runtime-inspect-v2-2.1.0-windows-aarch64.tar.gz)
 
-Full release page and manifest:
+Artifact catalog and manifest:
 [CoAkka Public Artifacts](https://github.com/phuong-tran/coakka-publish/tree/main),
 [public-artifacts.tsv](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/artifacts/public-artifacts.tsv)
 

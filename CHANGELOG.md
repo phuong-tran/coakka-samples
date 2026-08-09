@@ -1,8 +1,9 @@
 # Changelog
 
-This changelog summarizes the public runnable sample surface. Artifact release
-details live in
-[`coakka-publish`](https://github.com/phuong-tran/coakka-publish).
+This rolling changelog summarizes changes to the public runnable sample
+surface. It is not a repository release ledger. Artifact versions, manifests,
+and checksums live in the versioned
+[`coakka-publish`](https://github.com/phuong-tran/coakka-publish) warehouse.
 
 ## 2026-08-09
 

@@ -1,14 +1,14 @@
 # Repository Boundaries
 
-CoAkka keeps runnable examples and released artifacts in separate public
-repositories. Neither repository tries to be every CoAkka workspace at once.
+CoAkka keeps runnable examples and versioned artifacts in separate public
+repositories. Neither repository is a single release unit for the ecosystem.
 
 ## Repositories
 
 | Repository | Role | What to look for |
 | --- | --- | --- |
-| `coakka-samples` | Runnable public examples that consume published artifacts. | Sample code, container flows, framework scenarios, docs, and smoke workflows. |
-| [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) | Public artifact distribution surface. | Pinned packages, native archives, source packages, release notes, manifests, and checksums. |
+| `coakka-samples` | Rolling public examples that consume exact published coordinates. | Sample code, container flows, framework scenarios, docs, pins, and smoke workflows. |
+| [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) | Versioned artifact warehouse and catalog. | Immutable package lanes, native archives, source packages, release notes, manifests, provenance, and checksums. |
 | Runtime and connector implementation workspaces | Artifact producers consumed through `coakka-publish`. | Source used to build the public artifacts. Public samples should not depend on a local implementation checkout. |
 
 The normal public reader starts in `coakka-samples`. The samples resolve
@@ -17,7 +17,18 @@ public raw artifact URL when a local checkout is absent.
 
 Use `coakka-samples` to run examples. Use
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) to download
-released binaries, package archives, release notes, manifests, and checksums.
+versioned binaries, package archives, release notes, manifests, and checksums.
+
+`coakka-samples` has no repository version and creates no GitHub Releases. Git
+tags may mark useful checkpoints, while CI and exact dependency pins state what
+the rolling samples currently exercise.
+
+`coakka-publish` also has no aggregate repository version and creates no
+GitHub Releases. Each artifact lane owns its version, immutable directory,
+manifest, checksum, and optional receipt tag. npm, NuGet, PyPI, and Maven use
+their native distribution channels. Official Go and Swift source-package
+repositories may keep GitHub Releases because their semantic tags are
+package-manager coordinates outside the samples repository.
 
 ## Product Naming Boundary
 
@@ -52,6 +63,15 @@ For the full wording rule, read
 - deployment control plane
 - production capacity claims
 - private operator runbooks for a specific deployment
+- product releases or an aggregate ecosystem version
+
+## Documentation Ownership
+
+Public Markdown in both repositories is projected from
+`coakkaCoreNativeDev/public-docs/`. The rendered copies accept issues and
+review, but wording changes are authored in the documentation authority and
+synchronized outward. This prevents common guides, package READMEs, and sample
+instructions from becoming independent versions of the same contract.
 
 ## Artifact Boundary
 

@@ -9,6 +9,11 @@
 Troubleshooting: [docs/troubleshooting.md](docs/troubleshooting.md)
 Contact: `gabrielgun1983@gmail.com`
 
+This is a rolling sample repository, not a release product. It does not publish
+GitHub Releases. Git tags may preserve useful checkpoints; the current branch,
+exact dependency pins, and passing CI define the sample surface users should
+run.
+
 **CoAkka is a polyglot, multi-language, multi-platform runtime ecosystem.**
 
 CoAkka Runtime is a native-backed capability runtime for application-owned
