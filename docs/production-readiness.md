@@ -60,10 +60,27 @@ For each deployment profile, collect evidence for:
 - artifact and native-library loading on the target OS and CPU architecture
 - rollout behavior when route snapshots or payload schemas change
 
+When the deployment uses [Runtime File Transfer](runtime-file-transfer.md),
+also collect:
+
+- sender and receiver `COMPLETED + OK` evidence for the same transfer identity;
+- queue-full, cancellation, timeout, restart/resume, disk-full, and integrity
+  failure behavior;
+- TLS or mutual-TLS certificate and peer-identity failure evidence for the
+  actual network boundary;
+- destination filesystem capacity, temporary-file cleanup, checkpoint
+  durability, and terminal-record retention behavior;
+- throughput, CPU, memory, and worker-count measurements for representative
+  file sizes without assuming development-host capacity.
+
 Use the samples as the supported public integration surface, then attach
 deployment-specific measurements to the environment being standardized. For the
 public evidence ledger and target-environment checklist, see
 [Production Evidence](production-evidence.md).
+Use [Runtime Package And Platform Evidence](runtime-package-platform-evidence.md)
+for exact registry coordinates, payload matrices, matching-host runs, and known
+connector gaps. That ledger separates a packaged binary from an executed
+connector path.
 
 ## Config Ownership
 
@@ -95,6 +112,8 @@ service should integrate those signals into its normal observability path:
 - timeout counts by operation or target
 - active route generation
 - runtime identity: `systemName`, `nodeId`, endpoint host/port
+- file-lane queue depth, active transfers, retained records, completed bytes,
+  failures by result, cancellation, and progress age when file transfer is used
 
 Retries should stay a business policy above the runtime. The runtime can return
 reply, deadletter, and timeout outcomes; the application decides whether the

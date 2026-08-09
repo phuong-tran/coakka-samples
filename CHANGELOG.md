@@ -4,6 +4,21 @@ This changelog summarizes the public runnable sample surface. Artifact release
 details live in
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish).
 
+## 2026-08-09
+
+- Advanced the native, JVM/Maven, connector-archive, Go, Swift, coakka-client,
+  and coakka-runtime-inspect samples to runtime `2.1.0+60ddf70d`. The Go module
+  tag is `v1.5.0` because its established module path has no `/v2` suffix;
+  SwiftPM uses `v2.1.0`.
+- Added the public C11 file-lane runtime test and detailed file-transfer guide.
+  The exact `9 MiB + 731 byte` archive-driven transfer passes with matching
+  SHA-256 and durable receiver completion on macOS ARM64, Linux ARM64/x86-64,
+  and Windows x86-64 under Windows 11 ARM64 emulation.
+- Advanced npm Node.js, Bun, and Electron samples to registry-published
+  `2.1.0`; clean Node.js and Bun installs complete native request/reply and
+  Electron resolves its exact Node connector dependency. PyPI `1.4.6` and
+  NuGet `1.4.7` remain pinned until their 2.1.0 publication receipts exist.
+
 ## 2026-08-08
 
 - Advanced all current runtime samples to the corrective five-platform train:

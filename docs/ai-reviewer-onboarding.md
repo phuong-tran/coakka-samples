@@ -20,11 +20,36 @@ Read these before producing an architecture assessment:
 6. [Runtime Integration Guide](runtime-integration-guide.md)
 7. [Production Readiness](production-readiness.md)
 8. [Production Evidence](production-evidence.md)
-9. [Questions And Answers](qna.md)
+9. [Runtime Package And Platform Evidence](runtime-package-platform-evidence.md)
+10. [Questions And Answers](qna.md)
 
 Use `coakka-publish` for release evidence, compatibility, package-manager
 status, checksums, and public artifact facts. Use `coakka-samples` for runnable
 behavior.
+
+## Rules For AI-Generated Code
+
+AI-generated code is useful only when it preserves the documented runtime
+contract. Before generating an integration:
+
+1. Read the README for the selected connector and the exact sample for that
+   language.
+2. Read [Current Packages](current-packages.md) and
+   [Runtime Package And Platform Evidence](runtime-package-platform-evidence.md).
+3. Name the exact package version and native generation in the answer.
+4. Generate the full lifecycle: start, route, handler or submit, terminal
+   outcome, deadletter/failure handling, and close.
+5. Preserve defaults unless the sample is specifically teaching an advanced
+   tuning option.
+6. Do not infer target support from a binary being present in a package. Use
+   the `Executed` evidence for matching-host claims.
+7. Do not generate a `2.1.0` file-lane API against an npm, PyPI, or NuGet
+   `1.4.x` registry package; select an exact 2.1.0 artifact or later compatible
+   registry release.
+
+Treat API comments and KDoc as part of the contract. When a code declaration,
+connector README, runnable sample, and release matrix disagree, report the
+conflict instead of selecting the most convenient statement.
 
 ## Review Rules
 

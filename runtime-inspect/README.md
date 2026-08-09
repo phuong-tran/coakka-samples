@@ -83,24 +83,24 @@ The current published inspect release is platform-specific:
 
 ```text
 coakka-runtime-inspect native UI
-1.4.1+9e02a51d release id for macOS ARM64
-1.4.1+9e02a51d release id for Linux x86_64
-1.4.1+9e02a51d release id for Linux ARM64
-1.4.1+9e02a51d release id for Windows x86_64
-1.4.1+9e02a51d release id for Windows ARM64
+2.1.0+60ddf70d release id for macOS ARM64
+2.1.0+60ddf70d release id for Linux x86_64
+2.1.0+60ddf70d release id for Linux ARM64
+2.1.0+60ddf70d release id for Windows x86_64
+2.1.0+60ddf70d release id for Windows ARM64
 ```
 
 Direct download:
 
-[coakka-runtime-inspect-v2-1.4.1-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-runtime-inspect/releases/1.4.1+9e02a51d/coakka-runtime-inspect-v2-1.4.1-linux-aarch64.tar.gz)
+[coakka-runtime-inspect-v2-2.1.0-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-runtime-inspect/releases/2.1.0+60ddf70d/coakka-runtime-inspect-v2-2.1.0-linux-aarch64.tar.gz)
 
-[coakka-runtime-inspect-v2-1.4.1-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-runtime-inspect/releases/1.4.1+9e02a51d/coakka-runtime-inspect-v2-1.4.1-linux-x86_64.tar.gz)
+[coakka-runtime-inspect-v2-2.1.0-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-runtime-inspect/releases/2.1.0+60ddf70d/coakka-runtime-inspect-v2-2.1.0-linux-x86_64.tar.gz)
 
-[coakka-runtime-inspect-v2-1.4.1-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-runtime-inspect/releases/1.4.1+9e02a51d/coakka-runtime-inspect-v2-1.4.1-macos-aarch64.tar.gz)
+[coakka-runtime-inspect-v2-2.1.0-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-runtime-inspect/releases/2.1.0+60ddf70d/coakka-runtime-inspect-v2-2.1.0-macos-aarch64.tar.gz)
 
-[coakka-runtime-inspect-v2-1.4.1-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-runtime-inspect/releases/1.4.1+9e02a51d/coakka-runtime-inspect-v2-1.4.1-windows-x86_64.tar.gz)
+[coakka-runtime-inspect-v2-2.1.0-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-runtime-inspect/releases/2.1.0+60ddf70d/coakka-runtime-inspect-v2-2.1.0-windows-x86_64.tar.gz)
 
-[coakka-runtime-inspect-v2-1.4.1-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-runtime-inspect/releases/1.4.1+9e02a51d/coakka-runtime-inspect-v2-1.4.1-windows-aarch64.tar.gz)
+[coakka-runtime-inspect-v2-2.1.0-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-runtime-inspect/releases/2.1.0+60ddf70d/coakka-runtime-inspect-v2-2.1.0-windows-aarch64.tar.gz)
 
 Full release page and manifest:
 [CoAkka Public Artifacts](https://github.com/phuong-tran/coakka-publish/tree/main),

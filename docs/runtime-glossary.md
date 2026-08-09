@@ -52,12 +52,16 @@ Node.js, Go, C#, Rust, Mojo and Zig source samples, and native C/C++.
 | `target` | Business target to route to. |
 | `replyTo` | Where a reply should go. |
 | `kind` | Request, response, or event. |
-| `oneWay` | Event-style send with no reply expected. |
-| `timeoutMs` | Request deadline used by the runtime path. |
+| `oneWay` | Delivery expectation saying no business response is expected; admission and later delivery failures remain observable. |
+| `timeoutMs` | Runtime delivery/wait budget hint, not automatic retry policy. |
 | `payload` | Raw bytes carried by the envelope. |
 | `messageType` | Stable payload contract name. |
 | `payloadSchemaVersion` | Schema version for that payload contract. |
 | `payloadFormat` | JSON, typed binary, text, binary, and so on. |
+
+Read [Envelope And Deadletter Map](envelope-deadletter-map.md) for all fields,
+valid `REQUEST`/`RESPONSE`/`EVENT` combinations, delivery hints, and stable
+deadletter reasons.
 
 ## Timeout And Retry
 

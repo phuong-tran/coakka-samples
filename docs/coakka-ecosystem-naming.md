@@ -24,7 +24,7 @@ specific product name is available.
 | `coakka-publish` | Public artifact mirror, release notes, compatibility matrix, package-manager status, checksums, and tool downloads. |
 | `coakka-runtime-go` | Go module for CoAkka Runtime. |
 | `coakka-logger-go` | Go module for CoAkka Logger. |
-| `coakka-runtime-swift` | SwiftPM package for CoAkka Runtime on macOS ARM64. |
+| `coakka-runtime-swift` | SwiftPM package for CoAkka Runtime with Linux ARM64/x86-64, macOS ARM64, and Windows ARM64/x86-64 native payloads. |
 | `coakka-logger-swift` | SwiftPM package for CoAkka Logger on macOS ARM64. |
 
 Package repos should keep root READMEs short and link deeper concept docs from

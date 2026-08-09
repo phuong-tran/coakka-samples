@@ -27,7 +27,7 @@ bash run.sh runtime node basic
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=1.3.1 git=<git>
+coakka_runtime_info abi=1 version=2.1.0 git=60ddf70d
 coakka_runtime_response payload={"echo":"hello-runtime-node"}
 coakka_runtime_stats generation=1 routes=1 delivered=1 matchedResponses=1
 ```

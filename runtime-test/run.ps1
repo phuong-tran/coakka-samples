@@ -13,6 +13,7 @@ $EvidenceRelease = "1.3.4+dc6ec284"
 $EvidenceVersion = "1.3.4"
 $ScriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RepositoryRoot = (Resolve-Path (Join-Path $ScriptDirectory "..")).Path
+$SystemTar = Join-Path $env:WINDIR "System32\tar.exe"
 $TemporaryRoot = Join-Path ([IO.Path]::GetTempPath()) (
   "coakka-native-evidence-{0}-{1}" -f $PID, [Guid]::NewGuid().ToString("N"))
 
@@ -23,13 +24,42 @@ function Write-EvidenceStatus([string]$Message) {
 try {
   $Architecture = [Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString().ToLowerInvariant()
   $Platform = if ($Architecture -eq "arm64") { "windows-aarch64" } else { "windows-x86_64" }
-  if ($Mode -in @("race", "hot-reload")) {
-    if ($Platform -ne "windows-x86_64") {
-      throw "runtime 1.4.1 concurrency evidence is not published for $Platform"
+  if ($Mode -eq "file-lane" -and $env:COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR) {
+    $BuildDirectory = Join-Path $TemporaryRoot "build"
+    cmake -S $ScriptDirectory -B $BuildDirectory `
+      "-DCOAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR=$env:COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR" `
+      "-DCOAKKA_NATIVE_EVIDENCE_REQUIRE_FILE_LANE=ON"
+    if ($LASTEXITCODE -ne 0) {
+      throw "failed to configure file-lane evidence"
     }
-    $RuntimeVersion = "1.4.1"
-    $RuntimeRelease = "1.4.1+9e02a51d"
-    $RuntimeSha256 = "ef31cd8bc709bd71d62dab0497f2513990f9023bda5e128631842ece5360394f"
+    cmake --build $BuildDirectory --config Release --target coakka_runtime_v2_file_lane_evidence
+    if ($LASTEXITCODE -ne 0) {
+      throw "failed to build file-lane evidence"
+    }
+    $Executable = Join-Path $BuildDirectory "Release\coakka_runtime_v2_file_lane_evidence.exe"
+    if (-not (Test-Path $Executable)) {
+      $Executable = Join-Path $BuildDirectory "coakka_runtime_v2_file_lane_evidence.exe"
+    }
+    if (-not (Test-Path $Executable)) {
+      throw "built file-lane evidence executable is missing"
+    }
+    $RuntimeDll = Get-ChildItem -Path $BuildDirectory -Filter "coakka_runtime_v2.dll" -Recurse | Select-Object -First 1
+    if (-not $RuntimeDll) {
+      throw "built file-lane runtime DLL is missing"
+    }
+    $env:PATH = "$($RuntimeDll.DirectoryName);$env:PATH"
+    $env:COAKKA_EVIDENCE_EXECUTION_PATH = "core-source"
+    Write-EvidenceStatus "starting native runtime evidence mode=file-lane path=core-source platform=$Platform"
+    & $Executable
+    exit $LASTEXITCODE
+  }
+  if ($Mode -in @("file-lane", "race", "hot-reload")) {
+    if ($Mode -ne "file-lane" -and $Platform -ne "windows-x86_64") {
+      throw "runtime 2.1.0 concurrency evidence is not published for $Platform"
+    }
+    $RuntimeVersion = "2.1.0"
+    $RuntimeRelease = "2.1.0+60ddf70d"
+    $RuntimeSha256 = "01fb5a0cb09c648391bc90171bfd49940d88febc3020770acca57352c82ae5a6"
     $RuntimeArtifact = "coakka-runtime-native-v2-$RuntimeVersion.tar.gz"
     $RuntimeRelativePath = "runtime/native/releases/$RuntimeRelease/$RuntimeArtifact"
     $RuntimeArchive = Join-Path $TemporaryRoot "artifacts\$RuntimeArtifact"
@@ -55,22 +85,36 @@ try {
     if ($ActualRuntimeSha256 -ne $RuntimeSha256) {
       throw "published runtime checksum mismatch for $RuntimeRelativePath"
     }
-    tar -C $RuntimeExtractDirectory -xzf $RuntimeArchive
+    & $SystemTar -C $RuntimeExtractDirectory -xzf $RuntimeArchive
     if ($LASTEXITCODE -ne 0) {
       throw "failed to extract published runtime package"
     }
     $RuntimePackageRoot = Join-Path $RuntimeExtractDirectory "coakka-runtime-native-v2-$RuntimeVersion"
-    cmake -S $ScriptDirectory -B $BuildDirectory "-DCMAKE_PREFIX_PATH=$RuntimePackageRoot"
+    $ConfigureArguments = @(
+      "-S", $ScriptDirectory,
+      "-B", $BuildDirectory,
+      "-A", $(if ($Platform -eq "windows-aarch64") { "ARM64" } else { "x64" }),
+      "-DCMAKE_PREFIX_PATH=$RuntimePackageRoot"
+    )
+    if ($Mode -eq "file-lane") {
+      $ConfigureArguments += "-DCOAKKA_NATIVE_EVIDENCE_REQUIRE_FILE_LANE=ON"
+    }
+    cmake @ConfigureArguments
     if ($LASTEXITCODE -ne 0) {
       throw "failed to configure concurrency evidence"
     }
-    cmake --build $BuildDirectory --config Release --target coakka_runtime_v2_concurrency_evidence
-    if ($LASTEXITCODE -ne 0) {
-      throw "failed to build concurrency evidence"
+    $EvidenceTarget = if ($Mode -eq "file-lane") {
+      "coakka_runtime_v2_file_lane_evidence"
+    } else {
+      "coakka_runtime_v2_concurrency_evidence"
     }
-    $Executable = Join-Path $BuildDirectory "Release\coakka_runtime_v2_concurrency_evidence.exe"
+    cmake --build $BuildDirectory --config Release --target $EvidenceTarget
+    if ($LASTEXITCODE -ne 0) {
+      throw "failed to build $Mode evidence"
+    }
+    $Executable = Join-Path $BuildDirectory "Release\$EvidenceTarget.exe"
     if (-not (Test-Path $Executable)) {
-      $Executable = Join-Path $BuildDirectory "coakka_runtime_v2_concurrency_evidence.exe"
+      $Executable = Join-Path $BuildDirectory "$EvidenceTarget.exe"
     }
     if (-not (Test-Path $Executable)) {
       throw "built concurrency evidence executable is missing"

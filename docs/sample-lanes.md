@@ -27,8 +27,8 @@ expected output details.
 | Tauri | public source sample | `bash run.sh runtime tauri intent-command` | WebView JavaScript sends intent; Rust owns runtime execution. |
 | Go | public | `bash run.sh runtime go basic` | Includes basic and deadletter samples. |
 | C# | public | `bash run.sh runtime csharp basic` | Uses the public .NET package. |
-| Rust | public | `bash run.sh runtime rust basic` | Uses the public Rust package shape. |
-| Swift | public | `bash run.sh runtime swift basic` | Uses the public SwiftPM tag for macOS ARM64. |
+| Rust | public artifact | `bash run.sh runtime rust basic` | The `2.1.0` package corrects the historical Linux loader constant and passes package readiness plus packaged runtime smoke. |
+| Swift | public | `bash run.sh runtime swift basic` | The SwiftPM tag contains all five native payloads; Swift execution is verified on macOS ARM64. |
 | Mojo | source sample | `bash run.sh runtime mojo basic` | Source connector package over the public native runtime. |
 | Zig | source sample | `bash run.sh runtime zig basic` | Source connector package over the public native runtime. |
 | Native C/C++ | public | `bash run.sh runtime native basic` | Uses the public C ABI archive. |
@@ -86,11 +86,12 @@ installs it.
 The npm package-manager lane is current for Node.js, Bun, and Electron
 runtime/logger packages, so those JavaScript samples install registry
 coordinates. The Go module lane is also current for runtime/logger samples:
-`github.com/phuong-tran/coakka-runtime-go@v1.4.1` and
+`github.com/phuong-tran/coakka-runtime-go@v1.5.0` and
 `github.com/phuong-tran/coakka-logger-go@v1.2.5`. SwiftPM is current for
-macOS ARM64 runtime/logger samples:
-`github.com/phuong-tran/coakka-runtime-swift@1.4.1` and
-`github.com/phuong-tran/coakka-logger-swift@1.2.1`. crates.io and apt/deb
+`github.com/phuong-tran/coakka-runtime-swift@2.1.0`, which carries all five
+runtime native payloads and has Swift execution evidence on macOS ARM64. The
+logger package `github.com/phuong-tran/coakka-logger-swift@1.2.1` remains a
+macOS ARM64 package. crates.io and apt/deb
 remain planned in `coakka-publish`; samples should not present those lanes as
 current until the matching package-manager artifact and verification path
 exists.

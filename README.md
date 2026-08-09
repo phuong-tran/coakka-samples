@@ -45,6 +45,16 @@ capabilities, lifecycle rules, and connector examples:
 
 - [TLS and mTLS](docs/tls-and-mtls.md)
 - [Connection strategies](docs/connection-strategies.md)
+- [Runtime file transfer](docs/runtime-file-transfer.md)
+
+Runtime `2.1.0` adds a bounded, verified file-transfer lane for large
+point-to-point files. Keep commands and authorization in the application's
+control plane; keep file bytes out of runtime message payloads. The native,
+JVM/Maven, connector-archive, Go `v1.5.0`, Swift `v2.1.0`, coakka-client, and
+coakka-runtime-inspect sample pins resolve the promoted `2.1.0+60ddf70d`
+generation. npm samples use the published and clean-install verified `2.1.0`
+packages. PyPI and NuGet retain their older verified registry coordinates
+until authenticated 2.1.0 uploads complete.
 
 ## Runtime Test
 
@@ -60,6 +70,7 @@ separate ThreadSanitizer controls are included for supported Clang/GCC hosts.
 ```sh
 bash run.sh runtime-test smoke
 bash run.sh runtime-test pressure --requests 512 --queue-capacity 2
+bash run.sh runtime-test file-lane
 bash run.sh runtime-test race --threads 4 --requests 256
 bash run.sh runtime-test hot-reload --threads 4 --requests 256 --generations 64
 ```
@@ -219,7 +230,7 @@ Do not add CoAkka when:
 | [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) | Released packages, native archives, manifests, checksums, compatibility matrix, and release notes. |
 | [`coakka-runtime-go`](https://github.com/phuong-tran/coakka-runtime-go) | Public Go module for CoAkka Runtime. |
 | [`coakka-logger-go`](https://github.com/phuong-tran/coakka-logger-go) | Public Go module for CoAkka Logger. |
-| [`coakka-runtime-swift`](https://github.com/phuong-tran/coakka-runtime-swift) | Public SwiftPM runtime package for macOS ARM64. |
+| [`coakka-runtime-swift`](https://github.com/phuong-tran/coakka-runtime-swift) | Public SwiftPM runtime package with all five native payloads; Swift execution is verified on macOS ARM64. |
 | [`coakka-logger-swift`](https://github.com/phuong-tran/coakka-logger-swift) | Public SwiftPM logger package for macOS ARM64. |
 
 Use `coakka-samples` when you want to run examples. Use `coakka-publish` when
@@ -269,6 +280,7 @@ Core runtime model:
 - [Runtime TLS And mTLS](docs/tls-and-mtls.md)
 - [Runtime Connection Strategies](docs/connection-strategies.md)
 - [Runtime Message And Routing Model](docs/runtime-message-and-routing-model.md)
+- [Envelope And Deadletter Map](docs/envelope-deadletter-map.md)
 - [Runtime Integration Guide](docs/runtime-integration-guide.md)
 - [Runtime Glossary](docs/runtime-glossary.md)
 - [Runtime Cluster Routing](docs/runtime-cluster-routing.md)

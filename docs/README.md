@@ -22,6 +22,7 @@ and architecture-matched edge deployments.
 ## Build And Integrate
 
 - [Runtime integration guide](runtime-integration-guide.md)
+- [Runtime file transfer](runtime-file-transfer.md)
 - [Current packages](current-packages.md)
 - [Sample lanes](sample-lanes.md)
 - [First npm smoke](first-npm-smoke.md)
@@ -48,6 +49,7 @@ and architecture-matched edge deployments.
 - [Troubleshooting](troubleshooting.md)
 - [Production readiness](production-readiness.md)
 - [Production evidence](production-evidence.md)
+- [Runtime package and platform evidence](runtime-package-platform-evidence.md)
 - [Signing and platform trust](runtime-release-signing-and-platform-trust.md)
 
 ## Reference And Support

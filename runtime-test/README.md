@@ -82,6 +82,7 @@ comparable with a controlled Linux host or with each other.
 | `soak` | Direct native submit API | Submission duration or request limit | Every submitted request reaches one terminal outcome; the default expects replies without rejection. |
 | `race` | Concurrent direct native submit API | Finite requests plus bounded stop/lifecycle phases | Multi-producer requests reach exactly one reply or explicit queue-pressure deadletter, submit-versus-stop converges on `CLOSED`, and independent runtime lifecycles complete without shared-state failures. |
 | `hot-reload` | Concurrent direct native submit API plus full snapshot apply | Finite requests and generations | New generations replace the full route table atomically while producers remain active; stale and invalid applies preserve the active generation. |
+| `file-lane` | Public file-lane C ABI over loopback | One 9 MiB direct-profile transfer | The multi-quantum kernel sender path completes with matching SHA-256, durable receiver receipt, progress, and lane counters. |
 
 The `smoke`, `pressure`, `stress`, and `soak` modes require:
 
@@ -200,23 +201,38 @@ bash run.sh runtime-test pressure --requests 512 --queue-capacity 2
 bash run.sh runtime-test stress --payload 128K --requests 2000
 bash run.sh runtime-test soak --payload 64K --duration 30s --max-in-flight 64
 bash run.sh runtime-test connection-strategies
+bash run.sh runtime-test file-lane
 bash run.sh runtime-test race --threads 4 --requests 256
 bash run.sh runtime-test hot-reload --threads 4 --requests 256 --generations 64
 ```
 
-macOS ARM64 and Linux ARM64/x86-64 source-built modes use native generation
-`1.4.1+9e02a51d`. The prebuilt `1.3.4+dc6ec284` evidence runner remains a
+The `2.1.0+60ddf70d` native package contains `coakka/v2/file_lane.h`, so the
+normal command resolves the checksum-pinned public artifact directly. For
+development against a local Core change, override the package with an exact
+source tree:
+
+```sh
+COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR=../coakkaCoreNativeDev/v2 \
+  bash run.sh runtime-test file-lane
+```
+
+The CMake target is conditional for compatibility with older packages. Setting
+`COAKKA_NATIVE_EVIDENCE_REQUIRE_FILE_LANE=ON` makes absence of the ABI a
+configure error.
+
+macOS ARM64 and Linux ARM64/x86-64 package-built modes use native generation
+`2.1.0+60ddf70d`. The prebuilt `1.3.4+dc6ec284` evidence runner remains a
 separate compatibility path for workload modes that do not require the newer
 connection-strategy ABI.
 
 For the original workload modes, the Windows PowerShell entrypoint executes the
-checksum-verified `1.3.4+dc6ec284` compatibility evidence runner. For `race`
-and `hot-reload`, it builds this public C11 source against the checksum-verified
-Windows x86-64 `1.4.1+9e02a51d` package. The release also includes Windows
-ARM64, while this concurrency harness remains x86-64-only. The 1.4.1 archive
-contains runtime DLLs but no MSVC import library, so the harness generates a
-consumer-only `.lib` from its checked-in public export definition during CMake
-configure. It does not alter or relink the published DLL.
+checksum-verified `1.3.4+dc6ec284` compatibility evidence runner. For
+`file-lane`, `race`, and `hot-reload`, it builds this public C11 source against
+the checksum-verified `2.1.0+60ddf70d` package. File lane selects Windows ARM64
+or x86-64 to match the host; the concurrency harness remains x86-64-only. The
+archive contains runtime DLLs but no MSVC import library, so the harness
+generates a consumer-only `.lib` from its checked-in public export definition
+during CMake configure. It does not alter or relink the published DLL.
 
 Documented payload presets are:
 

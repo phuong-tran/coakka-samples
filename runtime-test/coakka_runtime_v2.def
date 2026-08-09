@@ -1,5 +1,19 @@
 LIBRARY libcoakka_runtime_v2.dll
 EXPORTS
+    coakka_v2_file_lane_create
+    coakka_v2_file_lane_create_ex
+    coakka_v2_file_lane_destroy
+    coakka_v2_file_lane_start
+    coakka_v2_file_lane_stop
+    coakka_v2_file_lane_get_bound_port
+    coakka_v2_file_lane_prepare_receive
+    coakka_v2_file_lane_submit_send
+    coakka_v2_file_lane_get_transfer
+    coakka_v2_file_lane_wait_transfer
+    coakka_v2_file_lane_cancel_transfer
+    coakka_v2_file_lane_forget_transfer
+    coakka_v2_file_lane_get_stats
+    coakka_v2_file_sha256_path
   coakka_v2_client_build_raw_reply
   coakka_v2_client_build_raw_request
   coakka_v2_client_bytes_release

@@ -22,7 +22,7 @@ trap coakka_cleanup_evidence_tmp_dir EXIT
 
 coakka_evidence_mode() {
   case "${1:-smoke}" in
-    smoke|pressure|stress|soak|connection-strategies|race|hot-reload) printf '%s\n' "$1" ;;
+    smoke|pressure|stress|soak|connection-strategies|file-lane|race|hot-reload) printf '%s\n' "$1" ;;
     -h|--help) printf '%s\n' "help" ;;
     *) printf '%s\n' "smoke" ;;
   esac
@@ -32,7 +32,7 @@ coakka_print_evidence_help() {
   cat <<'EOF'
 {
   "schema": "coakka.runtime.native.evidence.help.v1",
-  "usage": "bash run.sh runtime-test [smoke|pressure|stress|soak|connection-strategies|race|hot-reload]",
+  "usage": "bash run.sh runtime-test [smoke|pressure|stress|soak|connection-strategies|file-lane|race|hot-reload]",
   "payloadPresets": ["64K", "128K", "256K", "512K", "1M", "2M", "3M"],
   "pressurePayloadLimit": "16K",
   "requestLimitMax": 500000,
@@ -64,6 +64,24 @@ run_from_source() {
   local package_version artifact_rel expected_sha artifact_name mode executable
   tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/coakka-native-evidence.XXXXXX")"
   coakka_evidence_tmp_dir="${tmp_dir}"
+  mode="$(coakka_evidence_mode "${1:-}")"
+
+  if [[ "${mode}" == "file-lane" &&
+        -n "${COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR:-}" ]]; then
+    build_dir="${tmp_dir}/build"
+    cmake \
+      -S "${script_dir}" \
+      -B "${build_dir}" \
+      -DCOAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR="${COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR}" \
+      -DCOAKKA_NATIVE_EVIDENCE_REQUIRE_FILE_LANE=ON \
+      >/dev/null
+    cmake --build "${build_dir}" --config Release \
+      --target coakka_runtime_v2_file_lane_evidence >/dev/null
+    executable="${build_dir}/coakka_runtime_v2_file_lane_evidence"
+    coakka_note "starting native runtime evidence mode=file-lane path=core-source"
+    "${executable}"
+    return
+  fi
 
   platform="$(coakka_native_platform)"
   IFS='|' read -r package_version artifact_rel expected_sha <<<"$(
@@ -104,14 +122,18 @@ run_from_source() {
   if [[ "${COAKKA_NATIVE_EVIDENCE_ENABLE_TSAN:-0}" == "1" ]]; then
     cmake_args+=( -DCOAKKA_NATIVE_EVIDENCE_ENABLE_TSAN=ON )
   fi
-  mode="$(coakka_evidence_mode "${1:-}")"
   if [[ "${mode}" == "connection-strategies" ]]; then
     cmake_args+=( -DCOAKKA_NATIVE_EVIDENCE_REQUIRE_CONNECTION_STRATEGY=ON )
+  elif [[ "${mode}" == "file-lane" ]]; then
+    cmake_args+=( -DCOAKKA_NATIVE_EVIDENCE_REQUIRE_FILE_LANE=ON )
   fi
   cmake "${cmake_args[@]}" >/dev/null
   cmake --build "${build_dir}" --config Release >/dev/null
   if [[ "${mode}" == "connection-strategies" ]]; then
     executable="${build_dir}/coakka_runtime_v2_connection_strategy_evidence"
+    set --
+  elif [[ "${mode}" == "file-lane" ]]; then
+    executable="${build_dir}/coakka_runtime_v2_file_lane_evidence"
     set --
   elif [[ "${mode}" == "race" || "${mode}" == "hot-reload" ]]; then
     executable="${build_dir}/coakka_runtime_v2_concurrency_evidence"
@@ -143,9 +165,10 @@ run_from_prebuilt() {
 
   platform="$(coakka_native_platform)"
   if [[ "$(coakka_evidence_mode "${1:-}")" == "connection-strategies" ||
+        "$(coakka_evidence_mode "${1:-}")" == "file-lane" ||
         "$(coakka_evidence_mode "${1:-}")" == "race" ||
         "$(coakka_evidence_mode "${1:-}")" == "hot-reload" ]]; then
-    coakka_die "Connection-strategy and concurrency evidence require the current source-build harness."
+    coakka_die "Connection-strategy, file-lane, and concurrency evidence require the current source-build harness."
   fi
   coakka_note "preparing published native runtime evidence runner platform=${platform}"
   artifact_name="coakka-runtime-native-evidence-v2-${evidence_version}-${platform}.tar.gz"

@@ -12,7 +12,7 @@ bash run.sh runtime native pressure
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=1.3.1 git=<git> language=c
+coakka_runtime_info abi=1 version=1.4.1 git=<git> language=c
 coakka_runtime_pressure attempts=64 delivered=<n> rejected=<n> capacity=2 highWatermark=<n> language=c
 coakka_runtime_stats generation=1 routes=1 queueRejected=<n> deadletters=<n> language=c
 ```

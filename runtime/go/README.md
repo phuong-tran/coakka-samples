@@ -1,7 +1,7 @@
 # Go Runtime Samples
 
-Go runtime samples consume `github.com/phuong-tran/coakka-runtime-go@v1.4.1`.
-The package embeds native runtime generation `1.4.1+9e02a51d` for Linux
+Go runtime samples consume `github.com/phuong-tran/coakka-runtime-go@v1.5.0`.
+The package embeds native runtime generation `2.1.0+60ddf70d` for Linux
 ARM64/x86-64, macOS ARM64, and Windows ARM64/x86-64. Package presence and
 execution evidence remain separate in the compatibility matrix.
 
@@ -39,7 +39,7 @@ Go runtime v2 samples expect Go 1.23 or newer.
 Install the package through normal Go module resolution:
 
 ```sh
-go get github.com/phuong-tran/coakka-runtime-go@v1.4.1
+go get github.com/phuong-tran/coakka-runtime-go@v1.5.0
 ```
 
 The samples create a disposable Go module, require that public coordinate, run

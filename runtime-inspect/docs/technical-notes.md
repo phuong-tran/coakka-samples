@@ -30,7 +30,7 @@ That is intentional until a dedicated remote read/observe adapter exists.
 
 ## Published Archive Status
 
-The current public inspect archive generation is `1.4.1+9e02a51d` for all five
+The current public inspect archive generation is `2.1.0+60ddf70d` for all five
 platforms. The sample runner selects by platform and verifies every
 archive through the same manifest/checksum resolver used by the runtime-client
 lane.

@@ -420,14 +420,17 @@ the runtime wrapper around it.
 
 | Envelope part | Meaning | Put this here |
 | --- | --- | --- |
+| `kind` / `one_way` | Delivery shape and whether a response is expected. | reply-capable `REQUEST`; one-way `REQUEST` or `EVENT`; non-one-way `RESPONSE` |
+| `message_id` / `correlation_id` | Per-message identity and request/reply matching identity. | Connector-generated or caller-supplied stable IDs. |
 | `target` | Capability address to route to. | `samples.customer.store` |
 | `source` | Sender or responder identity for diagnostics. | `customer-web` |
+| `reply_to` / `delivery_hint` | Reply path and local/remote route preference. | Reply-capable requests only; `REQUIRE_LOCAL`, `REQUIRE_REMOTE`, or router default. |
 | payload identity | Message type, schema version, payload format. | `samples.customer.create.request.v1`, version `1`, JSON |
 | `payload` | Business body bytes. | `{ "id": "cust-001", "name": "Ada" }` |
 | headers / metadata / extra params | Small request context. | tenant, request id, trace id, idempotency key |
 | operation | Human-readable operation label. | `create_customer` |
 | timeout | Ask wait budget enforced by runtime/connector matching. | `timeoutMs = 5000` |
-| correlation id | Matching identity for reply/deadletter diagnostics. | Usually connector/runtime generated or preserved. |
+| `status` / business error fields | Domain outcome on a response. | `OK`, or `ERROR` with stable business code/message. |
 
 Use this split:
 
@@ -442,6 +445,10 @@ Do not use headers as a second payload schema. If a value changes the business
 meaning of a command or query, put it in the payload and version it through
 payload identity. Use headers for context that should travel next to the
 envelope: tenant, request id, trace id, idempotency key, or diagnostics tags.
+
+Read [Envelope And Deadletter Map](envelope-deadletter-map.md) for all 17 wire
+fields, valid combinations, delivery hints, and the complete stable deadletter
+reason table.
 
 ## Ask, Reply, And Event
 
@@ -471,17 +478,21 @@ sequenceDiagram
 | --- | --- | --- |
 | ask | Runtime/connector matches reply, matched deadletter, or timeout back to the pending caller. | Caller waits up to timeout. |
 | reply | Handler sends a response envelope with payload identity and payload. | Completes the ask when matched. |
-| event | One-way delivery attempt. | No reply wait; failures should still be visible through diagnostics when surfaced. |
+| one-way request | `kind=REQUEST`, `one_way=true`; no pending ask or business response. | Handle synchronous admission failure and observe later deadletters/stats separately. |
+| event | Normally `kind=EVENT`, `one_way=true`. | No reply wait; delivery failures remain observable through deadletter/diagnostic surfaces. |
 
 Timeout belongs to asks because runtime/connector code is tracking a pending
-reply/deadletter match for that caller. One-way events should use explicit
-diagnostics and deadletter/stats handling rather than pretending there is a
-reply path.
+reply/deadletter match for that caller. `one_way` means no response is expected;
+it does not mean silent failure or guaranteed delivery. One-way traffic should
+use explicit deadletter/stats handling rather than pretending there is a reply
+path.
 
 ## Deadletter
 
-A deadletter is not a vague timeout. It is runtime evidence that delivery failed
-or was rejected.
+A deadletter is not a vague timeout. It is terminal runtime evidence for an
+envelope that was admitted but later failed delivery or result completion.
+Pre-admission failure is reported synchronously and does not create an automatic
+deadletter. A handler's business error is a response, not a deadletter.
 
 | Case | Typical evidence | Usual response |
 | --- | --- | --- |
@@ -490,11 +501,16 @@ or was rejected.
 | queue pressure | queue-rejected deadletter and counters | back off, shed load, or tune capacity after measurement |
 | stale route update | stale generation rejected | publish a newer generation |
 | invalid route update | invalid snapshot rejected | fix route snapshot |
-| handler/application failure | connector/app-specific failure evidence | fix payload, handler validation, or app logic |
+| remote TLS/mTLS failure | `REMOTE_TRANSPORT_SECURITY_FAILED` plus redacted `transport-failure/1` facts | fix trust, identity, certificate validity, host clock, or local profile |
+| handler/application failure | response envelope with business error fields | fix payload, handler validation, or app logic |
 
 Deadletters are terminal for the submitted envelope. A caller may choose to
 submit a new envelope later, but that is retry policy, not automatic runtime
 behavior.
+
+Read [Envelope And Deadletter Map](envelope-deadletter-map.md) for the complete
+reason vocabulary, `one_way` rules, transport metadata, and the special inbound
+TLS handshake case where no envelope identity exists yet.
 
 ## Business Timeout And Retry Shape
 
