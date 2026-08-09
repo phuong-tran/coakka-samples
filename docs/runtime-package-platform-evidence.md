@@ -55,7 +55,7 @@ It contains all five libraries, the public headers including
 | Electron | `runtime/electron/releases/2.1.0+60ddf70d-4782dcd/` | Via exact Node package | Packaged Electron main/preload intent smoke passes. |
 | Python | `runtime/python/releases/2.1.0+60ddf70d-4782dcd/` | All five | 29 tests plus four subtests pass; the packaged wheel loads runtime 2.1.0 and completes request/reply on macOS ARM64. |
 | Go | `runtime/go/releases/2.1.0+60ddf70d-4782dcd/` | All five | Packaged request/reply and `go test ./...` pass. |
-| C# | `runtime/csharp/releases/2.1.0+60ddf70d-4782dcd/` | Five RID assets | NuGet readiness and packaged request/reply/deadletter pass on macOS ARM64. |
+| C# | `runtime/csharp/releases/2.1.0+60ddf70d-99bb16c/` | Five RID assets | NuGet readiness, repository-signature verification, and packaged request/reply/deadletter pass on macOS ARM64. |
 | Rust | `runtime/rust/releases/2.1.0+60ddf70d-4782dcd/` | All five | Package readiness and packaged request/reply/deadletter pass on macOS ARM64. The historical Linux loader constant defect is corrected. |
 | Swift | `runtime/swift/releases/2.1.0+60ddf70d-4782dcd/` | All five | Swift build, tests, runtime request/reply, transport, and packaged-consumer smokes pass on macOS ARM64. |
 | Mojo | `runtime/mojo/releases/2.1.0+60ddf70d-4782dcd/` | All five | Strict source/platform gates and native lifecycle, request/reply, deadletter smoke pass. |
@@ -68,18 +68,18 @@ generation, and artifact name.
 
 ## Registry Coordinates
 
-npm, PyPI, and NuGet are independent publication channels. npm `2.1.1` is
-published and clean-install verified. PyPI and NuGet keep their current
-coordinates until their 2.1.0 uploads and clean-registry installs complete:
+npm, PyPI, and NuGet are independent publication channels. npm `2.1.1` and
+NuGet `2.1.0` are published and clean-install verified. PyPI keeps its current
+coordinate until its 2.1.0 upload and clean-registry install complete:
 
 | Registry | Current verified coordinate | Bundled native generation |
 | --- | --- | --- |
 | npm | `coakka-v2-connector-{node,bun,electron}@2.1.1` | `2.1.0+60ddf70d` |
 | PyPI | `coakka-v2-connector==1.4.6` | `1.4.1+9e02a51d` |
-| NuGet | `CoAkka.Runtime==1.4.7` | `1.4.1+9e02a51d` |
+| NuGet | `CoAkka.Runtime==2.1.0` | `2.1.0+60ddf70d` |
 
-The npm 2.1.1 packages expose file-lane. Do not generate file-lane calls
-against PyPI or NuGet 1.4.x packages. Use an exact coordinate whose release
+The npm 2.1.1 and NuGet 2.1.0 packages expose file-lane. Do not generate
+file-lane calls against the PyPI 1.4.x package. Use an exact coordinate whose release
 receipt records native `2.1.0+60ddf70d` or a compatible successor.
 
 ## File-Lane Generation Rule

@@ -15,10 +15,10 @@ version number. Each lane follows the release cadence of its connector,
 packaging surface, and native payload.
 
 The file-transfer lane is public in native generation `2.1.0+60ddf70d` and the
-matching connector artifact train `2.1.0+60ddf70d-4782dcd`. npm, PyPI, and
-NuGet and PyPI registry coordinates remain on their separately verified 1.4.x
-releases until their 2.1.0 uploads complete. npm `2.1.1` is published and
-file-lane capable. Do not generate file-lane calls against a 1.4.x package.
+matching connector artifact train. npm `2.1.1` and NuGet `2.1.0` are published
+and file-lane capable. PyPI remains on its separately verified 1.4.x release
+until its 2.1.0 upload completes. Do not generate file-lane calls against that
+older package.
 
 For exact package contents, matching-host execution, and known platform gaps,
 use [Runtime Package And Platform Evidence](runtime-package-platform-evidence.md).
@@ -27,7 +27,7 @@ use [Runtime Package And Platform Evidence](runtime-package-platform-evidence.md
 
 | Channel | Runtime package | Logger package | Sample command |
 | --- | --- | --- | --- |
-| NuGet | [`CoAkka.Runtime` 1.4.7](https://www.nuget.org/packages/CoAkka.Runtime/1.4.7) | [`CoAkka.Logger` 1.2.2](https://www.nuget.org/packages/CoAkka.Logger/1.2.2) | `bash run.sh runtime csharp basic` |
+| NuGet | [`CoAkka.Runtime` 2.1.0](https://www.nuget.org/packages/CoAkka.Runtime/2.1.0) | [`CoAkka.Logger` 1.2.2](https://www.nuget.org/packages/CoAkka.Logger/1.2.2) | `bash run.sh runtime csharp basic` |
 | npm | [`coakka-v2-connector-node` 2.1.1](https://www.npmjs.com/package/coakka-v2-connector-node/v/2.1.1) | [`coakka-logger-node` 1.2.6](https://www.npmjs.com/package/coakka-logger-node/v/1.2.6) | `bash run.sh runtime node basic` |
 | npm (Bun) | [`coakka-v2-connector-bun` 2.1.1](https://www.npmjs.com/package/coakka-v2-connector-bun/v/2.1.1) | [`coakka-logger-bun` 1.2.6](https://www.npmjs.com/package/coakka-logger-bun/v/1.2.6) | `bash run.sh runtime bun basic` |
 | npm (Electron) | [`coakka-v2-connector-electron` 2.1.1](https://www.npmjs.com/package/coakka-v2-connector-electron/v/2.1.1) | [`coakka-logger-electron` 1.2.6](https://www.npmjs.com/package/coakka-logger-electron/v/1.2.6) | `bash run.sh runtime electron basic` |
@@ -43,7 +43,8 @@ use [Runtime Package And Platform Evidence](runtime-package-platform-evidence.md
 | JVM | `coakka.v2:coakka-jvm-native-runtime-v2:2.1.0-g60ddf70d-4782dcd` |
 | Spring Boot | `coakka.spring:coakka-spring-boot-starter:2.1.0-g60ddf70d-4782dcd` |
 | Quarkus | `coakka.quarkus:coakka-quarkus-extension:2.1.0-g60ddf70d-4782dcd` |
-| Node, Bun, Electron, Python, Go, C#, Rust, Swift, Mojo, Zig, Tauri | `runtime/<lane>/releases/2.1.0+60ddf70d-4782dcd/` |
+| Node, Bun, Electron, Python, Go, Rust, Swift, Mojo, Zig, Tauri | `runtime/<lane>/releases/2.1.0+60ddf70d-4782dcd/` |
+| C# | `runtime/csharp/releases/2.1.0+60ddf70d-99bb16c/` |
 | coakka-client | `coakka-tools/coakka-client/releases/2.1.0+60ddf70d/` |
 | coakka-runtime-inspect | `coakka-tools/coakka-runtime-inspect/releases/2.1.0+60ddf70d/` |
 

@@ -91,7 +91,7 @@ COAKKA_ARTIFACT_ROWS=(
   "runtime Bun package|runtime/bun/releases/2.1.0+60ddf70d-4782dcd/coakka-v2-connector-bun-2.1.0.tgz"
   "runtime Electron package|runtime/electron/releases/2.1.0+60ddf70d-4782dcd/coakka-v2-connector-electron-2.1.0.tgz"
   "runtime Go package|runtime/go/releases/2.1.0+60ddf70d-4782dcd/coakka-v2-connector-go-2.1.0.tar.gz"
-  "runtime C# package|runtime/csharp/releases/2.1.0+60ddf70d-4782dcd/CoAkka.Runtime.2.1.0.nupkg"
+  "runtime C# package|runtime/csharp/releases/2.1.0+60ddf70d-99bb16c/CoAkka.Runtime.2.1.0.nupkg"
   "runtime Rust package|runtime/rust/releases/2.1.0+60ddf70d-4782dcd/coakka-runtime-rs-2.1.0.tar.gz"
   "runtime Swift package|runtime/swift/releases/2.1.0+60ddf70d-4782dcd/coakka-runtime-swift-2.1.0.tar.gz"
   "runtime Mojo source package|runtime/mojo/releases/2.1.0+60ddf70d-4782dcd/coakka-runtime-mojo-2.1.0-source.tar.gz"

@@ -53,8 +53,8 @@ control plane; keep file bytes out of runtime message payloads. The native,
 JVM/Maven, connector-archive, Go `v1.5.0`, Swift `v2.1.0`, coakka-client, and
 coakka-runtime-inspect sample pins resolve the promoted `2.1.0+60ddf70d`
 generation. npm samples use the published and clean-install verified `2.1.1`
-packages. PyPI and NuGet retain their older verified registry coordinates
-until authenticated 2.1.0 uploads complete.
+packages, and C# uses NuGet `CoAkka.Runtime==2.1.0`. PyPI retains its older
+verified registry coordinate until its authenticated 2.1.0 upload completes.
 
 ## Runtime Test
 

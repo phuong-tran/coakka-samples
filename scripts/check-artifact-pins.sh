@@ -16,6 +16,7 @@ cleanup() {
 trap cleanup EXIT
 
 required_rows=("${COAKKA_ARTIFACT_ROWS[@]}")
+compatibility_rows=("${COAKKA_COMPATIBILITY_ARTIFACT_ROWS[@]-}")
 
 stale_patterns=(
   "0.1.0+5e25""dda67597"
@@ -218,7 +219,8 @@ check_public_artifacts() {
       fail "public artifact URL missing ${label}: ${relative_path}"
   done
 
-  for row in "${COAKKA_COMPATIBILITY_ARTIFACT_ROWS[@]}"; do
+  for row in "${compatibility_rows[@]}"; do
+    [[ -n "${row}" ]] || continue
     IFS='|' read -r label relative_path expected_sha <<<"${row}"
     artifact_tmp="$(mktemp "${TMPDIR:-/tmp}/coakka-compat-artifact.XXXXXX")"
     tmp_files+=("${artifact_tmp}")

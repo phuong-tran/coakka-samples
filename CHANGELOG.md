@@ -8,6 +8,8 @@ details live in
 
 - Advanced Node.js, Bun, and Electron samples to npm runtime patch `2.1.1`,
   whose README links to the canonical public file-lane contract.
+- Advanced C# samples to registry-published `CoAkka.Runtime==2.1.0`; the clean
+  consumer loads native `2.1.0+60ddf70d` and passes request/reply/deadletter.
 - Advanced the native, JVM/Maven, connector-archive, Go, Swift, coakka-client,
   and coakka-runtime-inspect samples to runtime `2.1.0+60ddf70d`. The Go module
   tag is `v1.5.0` because its established module path has no `/v2` suffix;
@@ -18,8 +20,8 @@ details live in
   and Windows x86-64 under Windows 11 ARM64 emulation.
 - Advanced npm Node.js, Bun, and Electron samples to registry-published
   `2.1.0`; clean Node.js and Bun installs complete native request/reply and
-  Electron resolves its exact Node connector dependency. PyPI `1.4.6` and
-  NuGet `1.4.7` remain pinned until their 2.1.0 publication receipts exist.
+  Electron resolves its exact Node connector dependency. PyPI `1.4.6` remains
+  pinned until its 2.1.0 publication receipt exists.
 
 ## 2026-08-08
 
