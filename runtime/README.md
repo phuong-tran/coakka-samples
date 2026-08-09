@@ -27,7 +27,7 @@ independently from the artifact mirror. The separate
 [`../runtime-client`](../runtime-client/README.md).
 
 Swift runtime is published at
-`github.com/phuong-tran/coakka-runtime-swift@2.1.0` with native runtime
+`github.com/phuong-tran/coakka-runtime-swift@2.1.1` with native runtime
 generation `2.1.0+60ddf70d`; current Swift execution evidence covers macOS
 ARM64.
 
@@ -213,7 +213,7 @@ Full recording: [coakka-runtime-native.mp4](../docs/assets/coakka-runtime-native
 Go module:
 
 ```sh
-go get github.com/phuong-tran/coakka-runtime-go@v1.5.0
+go get github.com/phuong-tran/coakka-runtime-go@v1.5.1
 ```
 
 C# NuGet package:

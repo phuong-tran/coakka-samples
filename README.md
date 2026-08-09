@@ -50,7 +50,7 @@ capabilities, lifecycle rules, and connector examples:
 Runtime `2.1.0` adds a bounded, verified file-transfer lane for large
 point-to-point files. Keep commands and authorization in the application's
 control plane; keep file bytes out of runtime message payloads. The native,
-JVM/Maven, connector-archive, Go `v1.5.0`, Swift `v2.1.0`, coakka-client, and
+JVM/Maven, connector-archive, Go `v1.5.1`, Swift `v2.1.1`, coakka-client, and
 coakka-runtime-inspect sample pins resolve the promoted `2.1.0+60ddf70d`
 generation. npm samples use the published and clean-install verified `2.1.1`
 packages, C# uses NuGet `CoAkka.Runtime==2.1.0`, and Python uses PyPI

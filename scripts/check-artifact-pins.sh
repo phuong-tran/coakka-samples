@@ -46,6 +46,10 @@ stale_patterns=(
   "--version 1.4.""6"
   "coakka-runtime-go@v1.4.""0"
   "coakka-runtime-swift@v1.4.""0"
+  "coakka-runtime-go@v1.5.""0"
+  "require \${module_path} v1.5.""0"
+  "coakka-runtime-swift@2.1.""0"
+  "exact: \"2.1.""0\""
 )
 
 fail() {

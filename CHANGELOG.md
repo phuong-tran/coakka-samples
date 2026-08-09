@@ -6,6 +6,9 @@ details live in
 
 ## 2026-08-09
 
+- Advanced Go and Swift samples to documentation-integrity patches `v1.5.1`
+  and `v2.1.1`. Both keep native generation `2.1.0+60ddf70d`, use the
+  canonical public file-lane contract, and pass clean consumer request/reply.
 - Advanced Python samples to registry-published
   `coakka-v2-connector==2.1.0`; the clean consumer loads native
   `2.1.0+60ddf70d` and completes request/reply.
@@ -15,8 +18,8 @@ details live in
   consumer loads native `2.1.0+60ddf70d` and passes request/reply/deadletter.
 - Advanced the native, JVM/Maven, connector-archive, Go, Swift, coakka-client,
   and coakka-runtime-inspect samples to runtime `2.1.0+60ddf70d`. The Go module
-  tag is `v1.5.0` because its established module path has no `/v2` suffix;
-  SwiftPM uses `v2.1.0`.
+  tag is `v1.5.1` because its established module path has no `/v2` suffix;
+  SwiftPM uses `v2.1.1`.
 - Added the public C11 file-lane runtime test and detailed file-transfer guide.
   The exact `9 MiB + 731 byte` archive-driven transfer passes with matching
   SHA-256 and durable receiver completion on macOS ARM64, Linux ARM64/x86-64,
