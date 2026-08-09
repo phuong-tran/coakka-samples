@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-COAKKA_PUBLISH_RAW_BASE_DEFAULT="https://raw.githubusercontent.com/phuong-tran/coakka-publish/main"
+COAKKA_PUBLISH_RAW_BASE_DEFAULT="https://raw.githubusercontent.com/phuong-tran/coakka-publish/5266d0fa2368143a29133734f59adf13b471209d"
 
 COAKKA_RUNTIME_NATIVE_VERSION="2.1.0"
 COAKKA_RUNTIME_NATIVE_RELEASE="2.1.0+60ddf70d"
