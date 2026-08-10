@@ -549,10 +549,10 @@ this into the host framework lifecycle:
 
 Start from the language closest to your service:
 
-- [JVM runtime samples](../runtime/jvm/README.md)
-- [Python runtime samples](../runtime/python/README.md)
-- [Node.js runtime samples](../runtime/node/README.md)
-- [Go runtime samples](../runtime/go/README.md)
+- [JVM runtime samples](https://github.com/phuong-tran/coakka-samples/tree/main/runtime/jvm)
+- [Python runtime samples](https://github.com/phuong-tran/coakka-samples/tree/main/runtime/python)
+- [Node.js runtime samples](https://github.com/phuong-tran/coakka-samples/tree/main/runtime/node)
+- [Go runtime samples](https://github.com/phuong-tran/coakka-samples/tree/main/runtime/go)
 
 Then inspect the customer scenarios for cross-process wiring:
 
