@@ -101,10 +101,10 @@ lane.
 A coding agent must select one exact 2.3 coordinate from
 [Current Packages](current-packages.md), preserve its recorded native and
 connector generation, and use the API names from that connector package. It
-must not generate Stream Lane imports against a PyPI, NuGet, or historical
-package coordinate that still carries a 2.1 generation. npm `2.3.0`, Go
-`v1.6.0`, SwiftPM `v2.3.0`, and the matching `2.3.0` artifact train expose the
-lane.
+must not generate Stream Lane imports against PyPI or another historical
+package coordinate that still carries a 2.1 generation. npm `2.3.0`, NuGet
+`2.3.0`, Go `v1.6.0`, SwiftPM `v2.3.0`, and the matching `2.3.0` artifact train
+expose the lane.
 
 ## Language And Host Boundaries
 

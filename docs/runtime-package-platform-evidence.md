@@ -56,7 +56,7 @@ manifest, and per-file checksums.
 | Electron | `runtime/electron/releases/2.3.0+a83ab412-3a84c7b/` | All five | Packaged Electron main/preload intent smoke passes. |
 | Python | `runtime/python/releases/2.3.0+a83ab412-3a84c7b/` | All five | Source tests, package-surface verification, and packaged request/reply pass; PyPI remains separately current at `2.1.0`. |
 | Go | `runtime/go/releases/2.3.0+a83ab412-3a84c7b/` | All five | Packaged request/reply, Stream Lane tests, `go test ./...`, and public module `v1.6.0` pass. |
-| C# | `runtime/csharp/releases/2.3.0+a83ab412-3a84c7b/` | Five RID assets | Package readiness and packaged request/reply/deadletter pass; NuGet remains separately current at `2.1.0`. |
+| C# | `runtime/csharp/releases/2.3.0+a83ab412-3a84c7b/` | Five RID assets | Package readiness, packaged request/reply/deadletter, File/Stream Lane smokes, and NuGet `2.3.0` clean-install execution pass on macOS ARM64. |
 | Rust | `runtime/rust/releases/2.3.0+a83ab412-3a84c7b/` | All five | Package readiness, packaged request/reply/deadletter, and Stream Lane tests pass on macOS ARM64. |
 | Swift | `runtime/swift/releases/2.3.0+a83ab412-3a84c7b/` | All five | Swift build, native-payload verification, runtime and package smokes, Stream Lane tests, and SwiftPM `v2.3.0` pass. |
 | Mojo | `runtime/mojo/releases/2.3.0+a83ab412-3a84c7b/` | All five | Strict source/platform gates and native lifecycle, request/reply, and lane checks pass. |
@@ -69,20 +69,20 @@ generation, and artifact name.
 
 ## Registry Coordinates
 
-npm, PyPI, and NuGet are independent publication channels. npm `2.3.0` is
-published and clean-install verified. NuGet and PyPI `2.1.0` are also published
-and clean-install verified:
+npm, PyPI, and NuGet are independent publication channels. npm and NuGet
+`2.3.0` are published and clean-install verified. PyPI `2.1.0` is also
+published and clean-install verified:
 
 | Registry | Current verified coordinate | Bundled native generation |
 | --- | --- | --- |
 | npm | `coakka-v2-connector-{node,bun,electron}@2.3.0` | `2.3.0+a83ab412` |
 | PyPI | `coakka-v2-connector==2.1.0` | `2.1.0+60ddf70d` |
-| NuGet | `CoAkka.Runtime==2.1.0` | `2.1.0+60ddf70d` |
+| NuGet | `CoAkka.Runtime==2.3.0` | `2.3.0+a83ab412` |
 | Go modules | `github.com/phuong-tran/coakka-runtime-go@v1.6.0` | `2.3.0+a83ab412` |
 | SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v2.3.0` | `2.3.0+a83ab412` |
 
-npm `2.3.0`, Go `v1.6.0`, and Swift `v2.3.0` expose File Lane and Stream Lane.
-PyPI `2.1.0` and NuGet `2.1.0` expose File Lane but not Stream Lane. Select an
+npm `2.3.0`, NuGet `2.3.0`, Go `v1.6.0`, and Swift `v2.3.0` expose File Lane
+and Stream Lane. PyPI `2.1.0` exposes File Lane but not Stream Lane. Select an
 exact coordinate whose release receipt records the required native generation.
 
 ## File-Lane Generation Rule

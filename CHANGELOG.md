@@ -7,6 +7,10 @@ and checksums live in the versioned
 
 ## 2026-08-10
 
+- Advanced the C# sample to registry-published `CoAkka.Runtime==2.3.0` over
+  native generation `2.3.0+a83ab412`. The repository-signed package preserves
+  every staged entry, clean request/reply/deadletter passes, and the package
+  exposes File Lane and Stream Lane.
 - Advanced Node.js, Bun, and Electron samples to registry-published npm runtime
   `2.3.0` over native generation `2.3.0+a83ab412`. Clean package-manager
   smokes cover Node.js and Bun request/reply, Node.js deadletter, and Electron

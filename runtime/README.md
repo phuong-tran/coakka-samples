@@ -13,9 +13,9 @@ For large immutable files, use the `2.1.0` file lane instead of placing bytes
 inside an `Envelope`. See [Runtime File Transfer](../docs/runtime-file-transfer.md)
 for use cases, the receiver-first workflow, and connector guidance. The
 artifact-backed samples pin the complete `2.3.0+a83ab412` train. Registry-backed
-npm `2.3.0`, PyPI `2.1.0`, and NuGet `2.1.0` samples consume published,
-clean-install verified packages. The npm packages expose File Lane and Stream
-Lane; the current PyPI and NuGet packages expose File Lane only.
+npm `2.3.0`, NuGet `2.3.0`, and PyPI `2.1.0` samples consume published,
+clean-install verified packages. The npm and NuGet packages expose File Lane
+and Stream Lane; the current PyPI package exposes File Lane only.
 
 For day-to-day development and connector validation, treat macOS and Windows as
 valid host environments. For deployment claims, operational drills, and the
@@ -226,7 +226,7 @@ go get github.com/phuong-tran/coakka-runtime-go@v1.6.0
 C# NuGet package:
 
 ```sh
-dotnet add package CoAkka.Runtime --version 2.1.0
+dotnet add package CoAkka.Runtime --version 2.3.0
 ```
 
 Rust currently ships as a published archive package:
