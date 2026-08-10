@@ -24,37 +24,47 @@ function Write-EvidenceStatus([string]$Message) {
 try {
   $Architecture = [Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString().ToLowerInvariant()
   $Platform = if ($Architecture -eq "arm64") { "windows-aarch64" } else { "windows-x86_64" }
-  if ($Mode -eq "file-lane" -and $env:COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR) {
+  if ($Mode -in @("file-lane", "stream-lane") -and $env:COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR) {
+    $RequireOption = if ($Mode -eq "stream-lane") {
+      "COAKKA_NATIVE_EVIDENCE_REQUIRE_STREAM_LANE"
+    } else {
+      "COAKKA_NATIVE_EVIDENCE_REQUIRE_FILE_LANE"
+    }
+    $EvidenceTarget = if ($Mode -eq "stream-lane") {
+      "coakka_runtime_v2_stream_lane_evidence"
+    } else {
+      "coakka_runtime_v2_file_lane_evidence"
+    }
     $BuildDirectory = Join-Path $TemporaryRoot "build"
     cmake -S $ScriptDirectory -B $BuildDirectory `
       "-DCOAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR=$env:COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR" `
-      "-DCOAKKA_NATIVE_EVIDENCE_REQUIRE_FILE_LANE=ON"
+      "-D$RequireOption=ON"
     if ($LASTEXITCODE -ne 0) {
-      throw "failed to configure file-lane evidence"
+      throw "failed to configure $Mode evidence"
     }
-    cmake --build $BuildDirectory --config Release --target coakka_runtime_v2_file_lane_evidence
+    cmake --build $BuildDirectory --config Release --target $EvidenceTarget
     if ($LASTEXITCODE -ne 0) {
-      throw "failed to build file-lane evidence"
+      throw "failed to build $Mode evidence"
     }
-    $Executable = Join-Path $BuildDirectory "Release\coakka_runtime_v2_file_lane_evidence.exe"
+    $Executable = Join-Path $BuildDirectory "Release\$EvidenceTarget.exe"
     if (-not (Test-Path $Executable)) {
-      $Executable = Join-Path $BuildDirectory "coakka_runtime_v2_file_lane_evidence.exe"
+      $Executable = Join-Path $BuildDirectory "$EvidenceTarget.exe"
     }
     if (-not (Test-Path $Executable)) {
-      throw "built file-lane evidence executable is missing"
+      throw "built $Mode evidence executable is missing"
     }
     $RuntimeDll = Get-ChildItem -Path $BuildDirectory -Filter "coakka_runtime_v2.dll" -Recurse | Select-Object -First 1
     if (-not $RuntimeDll) {
-      throw "built file-lane runtime DLL is missing"
+      throw "built $Mode runtime DLL is missing"
     }
     $env:PATH = "$($RuntimeDll.DirectoryName);$env:PATH"
     $env:COAKKA_EVIDENCE_EXECUTION_PATH = "core-source"
-    Write-EvidenceStatus "starting native runtime evidence mode=file-lane path=core-source platform=$Platform"
+    Write-EvidenceStatus "starting native runtime evidence mode=$Mode path=core-source platform=$Platform"
     & $Executable
     exit $LASTEXITCODE
   }
-  if ($Mode -in @("file-lane", "race", "hot-reload")) {
-    if ($Mode -ne "file-lane" -and $Platform -ne "windows-x86_64") {
+  if ($Mode -in @("file-lane", "stream-lane", "race", "hot-reload")) {
+    if ($Mode -notin @("file-lane", "stream-lane") -and $Platform -ne "windows-x86_64") {
       throw "runtime 2.1.0 concurrency evidence is not published for $Platform"
     }
     $RuntimeVersion = "2.1.0"
@@ -98,6 +108,8 @@ try {
     )
     if ($Mode -eq "file-lane") {
       $ConfigureArguments += "-DCOAKKA_NATIVE_EVIDENCE_REQUIRE_FILE_LANE=ON"
+    } elseif ($Mode -eq "stream-lane") {
+      $ConfigureArguments += "-DCOAKKA_NATIVE_EVIDENCE_REQUIRE_STREAM_LANE=ON"
     }
     cmake @ConfigureArguments
     if ($LASTEXITCODE -ne 0) {
@@ -105,6 +117,8 @@ try {
     }
     $EvidenceTarget = if ($Mode -eq "file-lane") {
       "coakka_runtime_v2_file_lane_evidence"
+    } elseif ($Mode -eq "stream-lane") {
+      "coakka_runtime_v2_stream_lane_evidence"
     } else {
       "coakka_runtime_v2_concurrency_evidence"
     }

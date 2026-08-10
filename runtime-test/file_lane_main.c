@@ -139,28 +139,93 @@ static int terminal_state(uint32_t state) {
          state == COAKKA_V2_FILE_TRANSFER_STATE_CANCELED;
 }
 
-static int wait_terminal(coakka_v2_file_lane_t *lane, const char *transfer_id,
-                         uint32_t direction,
-                         coakka_v2_file_transfer_snapshot_t *out) {
-  const uint64_t deadline = monotonic_ns() + UINT64_C(30000000000);
+typedef struct transfer_observation_t {
+  uint64_t initial_sequence;
+  uint64_t last_sequence;
+  uint64_t updates;
+  int saw_intermediate_progress;
+} transfer_observation_t;
+
+static int initialize_observation(
+    coakka_v2_file_lane_t *lane, const char *transfer_id, uint32_t direction,
+    coakka_v2_file_transfer_snapshot_t *out,
+    transfer_observation_t *observation) {
   coakka_v2_status_t status;
-  unsigned int waits = 0u;
 
   memset(out, 0, sizeof(*out));
+  memset(observation, 0, sizeof(*observation));
   out->struct_size = sizeof(*out);
   status = coakka_v2_file_lane_get_transfer(lane, transfer_id, direction, out);
-  while (status == COAKKA_V2_OK && !terminal_state(out->state) &&
-         waits < 512u && monotonic_ns() < deadline) {
-    const uint64_t sequence = out->update_sequence;
-    out->struct_size = sizeof(*out);
-    status = coakka_v2_file_lane_wait_transfer(
-        lane, transfer_id, direction, sequence, 250u, out);
-    if (status == COAKKA_V2_ERR_WOULD_BLOCK) {
-      status = COAKKA_V2_OK;
-    }
-    ++waits;
+  if (status != COAKKA_V2_OK) {
+    return 1;
   }
-  return status != COAKKA_V2_OK || !terminal_state(out->state);
+  observation->initial_sequence = out->update_sequence;
+  observation->last_sequence = out->update_sequence;
+  observation->saw_intermediate_progress =
+      out->progress_milli > 0u &&
+      out->progress_milli < COAKKA_V2_FILE_LANE_PROGRESS_COMPLETE;
+  return 0;
+}
+
+static int wait_one_update(coakka_v2_file_lane_t *lane,
+                           const char *transfer_id, uint32_t direction,
+                           coakka_v2_file_transfer_snapshot_t *out,
+                           transfer_observation_t *observation) {
+  const uint64_t previous_sequence = out->update_sequence;
+  coakka_v2_status_t status;
+
+  if (terminal_state(out->state)) {
+    return 0;
+  }
+  out->struct_size = sizeof(*out);
+  status = coakka_v2_file_lane_wait_transfer(
+      lane, transfer_id, direction, previous_sequence, 25u, out);
+  if (status == COAKKA_V2_ERR_WOULD_BLOCK) {
+    return 0;
+  }
+  if (status != COAKKA_V2_OK || out->update_sequence <= previous_sequence ||
+      out->update_sequence <= observation->last_sequence) {
+    return 1;
+  }
+  observation->last_sequence = out->update_sequence;
+  observation->updates += 1u;
+  if (out->progress_milli > 0u &&
+      out->progress_milli < COAKKA_V2_FILE_LANE_PROGRESS_COMPLETE) {
+    observation->saw_intermediate_progress = 1;
+  }
+  return 0;
+}
+
+static int wait_terminal_pair(
+    coakka_v2_file_lane_t *sender, coakka_v2_file_lane_t *receiver,
+    const char *transfer_id, coakka_v2_file_transfer_snapshot_t *sent,
+    coakka_v2_file_transfer_snapshot_t *received,
+    transfer_observation_t *sender_observation,
+    transfer_observation_t *receiver_observation) {
+  const uint64_t deadline = monotonic_ns() + UINT64_C(30000000000);
+  unsigned int turns = 0u;
+
+  if (initialize_observation(sender, transfer_id,
+                             COAKKA_V2_FILE_TRANSFER_DIRECTION_SEND, sent,
+                             sender_observation) != 0 ||
+      initialize_observation(receiver, transfer_id,
+                             COAKKA_V2_FILE_TRANSFER_DIRECTION_RECEIVE,
+                             received, receiver_observation) != 0) {
+    return 1;
+  }
+  while ((!terminal_state(sent->state) || !terminal_state(received->state)) &&
+         turns < 2048u && monotonic_ns() < deadline) {
+    if (wait_one_update(sender, transfer_id,
+                        COAKKA_V2_FILE_TRANSFER_DIRECTION_SEND, sent,
+                        sender_observation) != 0 ||
+        wait_one_update(receiver, transfer_id,
+                        COAKKA_V2_FILE_TRANSFER_DIRECTION_RECEIVE, received,
+                        receiver_observation) != 0) {
+      return 1;
+    }
+    ++turns;
+  }
+  return !terminal_state(sent->state) || !terminal_state(received->state);
 }
 
 static void remove_path(const char *path) {
@@ -220,6 +285,8 @@ int main(void) {
   coakka_v2_file_transfer_snapshot_t received = {0};
   coakka_v2_file_lane_stats_t sender_stats = {0};
   coakka_v2_file_lane_stats_t receiver_stats = {0};
+  transfer_observation_t sender_observation = {0};
+  transfer_observation_t receiver_observation = {0};
   int receiver_started = 0;
   int sender_started = 0;
   int passed = 0;
@@ -316,25 +383,27 @@ int main(void) {
   REQUIRE(coakka_v2_file_lane_submit_send(sender, &send_spec) == COAKKA_V2_OK,
           "sender-submit");
 
-  /* Each service owns and checks its own terminal result. Sender completion
-   * never substitutes for receiver completion. */
-  REQUIRE(wait_terminal(sender, transfer_id,
-                        COAKKA_V2_FILE_TRANSFER_DIRECTION_SEND, &sent) == 0,
-          "sender-wait");
-  REQUIRE(wait_terminal(receiver, transfer_id,
-                        COAKKA_V2_FILE_TRANSFER_DIRECTION_RECEIVE,
-                        &received) == 0,
-          "receiver-wait");
+  /* Each service owns and checks its own terminal result. Alternate bounded
+   * waits so one fast peer cannot starve observation of the other. */
+  REQUIRE(wait_terminal_pair(sender, receiver, transfer_id, &sent, &received,
+                             &sender_observation, &receiver_observation) == 0,
+          "peer-wait");
   REQUIRE(sent.state == COAKKA_V2_FILE_TRANSFER_STATE_COMPLETED &&
               sent.result == COAKKA_V2_FILE_TRANSFER_RESULT_OK &&
               sent.transferred_bytes == source_size &&
               sent.committed_offset == source_size &&
-              sent.progress_milli == COAKKA_V2_FILE_LANE_PROGRESS_COMPLETE,
+              sent.progress_milli == COAKKA_V2_FILE_LANE_PROGRESS_COMPLETE &&
+              sent.update_sequence >= sender_observation.initial_sequence &&
+              sent.update_sequence == sender_observation.last_sequence,
           "sender-terminal");
   REQUIRE(received.state == COAKKA_V2_FILE_TRANSFER_STATE_COMPLETED &&
               received.result == COAKKA_V2_FILE_TRANSFER_RESULT_OK &&
               received.transferred_bytes == source_size &&
-              received.committed_offset == source_size,
+              received.committed_offset == source_size &&
+              received.progress_milli ==
+                  COAKKA_V2_FILE_LANE_PROGRESS_COMPLETE &&
+              received.update_sequence >= receiver_observation.initial_sequence &&
+              received.update_sequence == receiver_observation.last_sequence,
           "receiver-terminal");
   REQUIRE(coakka_v2_file_sha256_path(destination_path, destination_digest,
                                      &destination_size) == COAKKA_V2_OK &&
@@ -381,17 +450,32 @@ cleanup:
   remove_path(source_path);
   remove_workspace(workspace);
   if (!passed) {
-    fprintf(stderr, "file-lane detail sender=%s receiver=%s\n", sent.detail,
-            received.detail);
+    fprintf(stderr,
+            "file-lane detail failure=%s sender=%s state=%u result=%u "
+            "sequence=%" PRIu64 " receiver=%s state=%u result=%u sequence=%" PRIu64
+            "\n",
+            failure, sent.detail, sent.state, sent.result, sent.update_sequence,
+            received.detail, received.state, received.result,
+            received.update_sequence);
   }
   printf("{\"schema\":\"coakka.runtime.file-lane.evidence.v1\","
          "\"passed\":%s,\"failure\":\"%s\",\"fileBytes\":%" PRIu64 ","
          "\"senderState\":%u,\"senderResult\":%u,"
          "\"receiverState\":%u,\"receiverResult\":%u,"
+         "\"senderUpdateSequence\":%" PRIu64 ","
+         "\"receiverUpdateSequence\":%" PRIu64 ","
+         "\"senderObservedUpdates\":%" PRIu64 ","
+         "\"receiverObservedUpdates\":%" PRIu64 ","
+         "\"senderSawIntermediateProgress\":%s,"
+         "\"receiverSawIntermediateProgress\":%s,"
          "\"senderCompletedBytes\":%" PRIu64 ","
          "\"receiverCompletedBytes\":%" PRIu64 "}\n",
          passed ? "true" : "false", failure, source_size, sent.state,
-         sent.result, received.state, received.result,
+         sent.result, received.state, received.result, sent.update_sequence,
+         received.update_sequence, sender_observation.updates,
+         receiver_observation.updates,
+         sender_observation.saw_intermediate_progress ? "true" : "false",
+         receiver_observation.saw_intermediate_progress ? "true" : "false",
          sender_stats.completed_send_bytes,
          receiver_stats.completed_receive_bytes);
   return passed ? 0 : 1;

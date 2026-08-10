@@ -82,7 +82,8 @@ comparable with a controlled Linux host or with each other.
 | `soak` | Direct native submit API | Submission duration or request limit | Every submitted request reaches one terminal outcome; the default expects replies without rejection. |
 | `race` | Concurrent direct native submit API | Finite requests plus bounded stop/lifecycle phases | Multi-producer requests reach exactly one reply or explicit queue-pressure deadletter, submit-versus-stop converges on `CLOSED`, and independent runtime lifecycles complete without shared-state failures. |
 | `hot-reload` | Concurrent direct native submit API plus full snapshot apply | Finite requests and generations | New generations replace the full route table atomically while producers remain active; stale and invalid applies preserve the active generation. |
-| `file-lane` | Public file-lane C ABI over loopback | One 9 MiB direct-profile transfer | The multi-quantum kernel sender path completes with matching SHA-256, durable receiver receipt, progress, and lane counters. |
+| `file-lane` | Public File Lane contract over loopback | One 9 MiB direct-profile transfer | Both peers complete with matching SHA-256, final progress, monotonic observed update cursors, durable receiver receipt, and consistent lane counters. |
+| `stream-lane` | Public Stream Lane contract over loopback | 97 deterministic variable-size frames | Ordered bytes, capture metadata, source-reported drops, terminal state, neutral pressure, non-blocking wait behavior, counters, and forget lifecycle all agree across independent lanes. |
 
 The `smoke`, `pressure`, `stress`, and `soak` modes require:
 
@@ -202,6 +203,8 @@ bash run.sh runtime-test stress --payload 128K --requests 2000
 bash run.sh runtime-test soak --payload 64K --duration 30s --max-in-flight 64
 bash run.sh runtime-test connection-strategies
 bash run.sh runtime-test file-lane
+COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR=../coakkaCoreNativeDev/v2 \
+  bash run.sh runtime-test stream-lane
 bash run.sh runtime-test race --threads 4 --requests 256
 bash run.sh runtime-test hot-reload --threads 4 --requests 256 --generations 64
 ```
@@ -220,6 +223,12 @@ The CMake target is conditional for compatibility with older packages. Setting
 `COAKKA_NATIVE_EVIDENCE_REQUIRE_FILE_LANE=ON` makes absence of the ABI a
 configure error.
 
+Stream Lane is not present in the currently pinned native artifact, so its
+evidence command uses the exact matching core source tree shown above. The
+target remains conditional for older packages;
+`COAKKA_NATIVE_EVIDENCE_REQUIRE_STREAM_LANE=ON` converts a missing contract
+into a configure failure.
+
 macOS ARM64 and Linux ARM64/x86-64 package-built modes use native generation
 `2.1.0+60ddf70d`. The prebuilt `1.3.4+dc6ec284` evidence runner remains a
 separate compatibility path for workload modes that do not require the newer
@@ -227,7 +236,7 @@ connection-strategy ABI.
 
 For the original workload modes, the Windows PowerShell entrypoint executes the
 checksum-verified `1.3.4+dc6ec284` compatibility evidence runner. For
-`file-lane`, `race`, and `hot-reload`, it builds this public C11 source against
+`file-lane`, `stream-lane`, `race`, and `hot-reload`, it builds this public C11 source against
 the checksum-verified `2.1.0+60ddf70d` package. File lane selects Windows ARM64
 or x86-64 to match the host; the concurrency harness remains x86-64-only. The
 archive contains runtime DLLs but no MSVC import library, so the harness
