@@ -7,6 +7,10 @@ and checksums live in the versioned
 
 ## 2026-08-10
 
+- Advanced Python samples to registry-published
+  `coakka-v2-connector==2.3.0` over native generation `2.3.0+a83ab412`.
+  Clean request/reply, matched deadletter, hot reload, and local desktop CRUD
+  pass; the package exposes File Lane and Stream Lane.
 - Advanced the C# sample to registry-published `CoAkka.Runtime==2.3.0` over
   native generation `2.3.0+a83ab412`. The repository-signed package preserves
   every staged entry, clean request/reply/deadletter passes, and the package

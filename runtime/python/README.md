@@ -1,8 +1,8 @@
 # Python Runtime Samples
 
 Python runtime samples document the `coakka_v2_connector` package shape. This
-runtime lane consumes `coakka-v2-connector==2.1.0` from PyPI, built against
-native runtime generation `2.1.0+60ddf70d`.
+runtime lane consumes `coakka-v2-connector==2.3.0` from PyPI, built against
+native runtime generation `2.3.0+a83ab412`.
 
 ## Run
 
@@ -27,7 +27,7 @@ venv on exit so the user's global Python installation is not modified.
 Install the package through your normal packaging path:
 
 ```sh
-python -m pip install coakka-v2-connector==2.1.0
+python -m pip install coakka-v2-connector==2.3.0
 ```
 
 The samples install that PyPI package into a disposable venv and remove the
@@ -214,6 +214,6 @@ Stream Lane code, follow [AI-Assisted Integration](../../docs/ai-assisted-integr
 It links the canonical feature guides, exact package catalog, and platform
 evidence, and it defines when only workflow pseudocode is justified.
 
-The current public package train includes File Lane. Stream Lane remains an
-exact-source integration until a matching public artifact is promoted; do not
-attach Stream Lane imports to this lane's current package coordinate.
+The current public package train includes File Lane and Stream Lane. Preserve
+the complete receiver/publisher workflow, bounded configuration, terminal
+outcomes, and app-owned adaptation policy described by the canonical guides.
