@@ -23,6 +23,7 @@ and architecture-matched edge deployments.
 
 - [Runtime integration guide](runtime-integration-guide.md)
 - [Runtime file transfer](runtime-file-transfer.md)
+- [Runtime streaming](runtime-streaming.md)
 - [Current packages](current-packages.md)
 - [Sample lanes](sample-lanes.md)
 - [First npm smoke](first-npm-smoke.md)

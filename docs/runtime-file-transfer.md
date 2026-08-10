@@ -8,15 +8,21 @@ may use operating-system facilities such as Linux/macOS `sendfile` or Windows
 
 The file lane is separate from runtime messages:
 
-```text
-authenticated application control plane
-  transfer ID + one-use token + size + SHA-256 + endpoint
-                            |
-                            v
-receiver prepare ---- CoAkka file lane ---- sender submit
-                            |
-                            v
-                  verified destination file
+```mermaid
+flowchart LR
+    A["Service A<br/>file sender"]
+    B["Service B<br/>destination owner"]
+    C["Authenticated application<br/>control plane"]
+    L["CoAkka File Lane<br/>bounded point-to-point bytes"]
+    D["Verified destination file"]
+
+    A -->|"size, SHA-256,<br/>business identity"| C
+    C -->|"authorize and choose destination"| B
+    B -->|"prepareReceive"| L
+    B -->|"transfer ID, one-use token,<br/>endpoint"| C
+    C -->|"transfer grant"| A
+    A ==>|"submitSend"| L
+    L ==>|"verify and atomically publish"| D
 ```
 
 Keep business commands, authorization decisions, and transfer metadata in the
@@ -72,15 +78,25 @@ claim a second JNI implementation.
 The two code blocks run in different JVM processes, usually on different
 hosts. The application API carries only a small grant:
 
-```text
-Service A (sender)                         Service B (receiver)
-hash source file
-POST prepare metadata ------------------> authorize + choose destination
-                                           prepareReceive
-                    <-------------------- TransferGrant(id, token, host, port)
-submitSend ------------------------------> file bytes use the file lane
-wait for SEND                              wait for RECEIVE
-COMPLETED + OK                             COMPLETED + OK -> publish file
+```mermaid
+sequenceDiagram
+    participant A as Service A (sender)
+    participant API as Authenticated control API
+    participant B as Service B (receiver)
+    participant L as CoAkka File Lane
+
+    A->>A: Hash the exact source file
+    A->>API: Prepare metadata (identity, size, SHA-256)
+    API->>B: Authorize and choose destination
+    B->>L: prepareReceive(id, token, destination, size, digest)
+    B-->>API: Transfer grant and bound endpoint
+    API-->>A: ID, one-use token, endpoint, expected identity
+    A->>L: submitSend(grant, source)
+    L->>B: Resume from receiver committed offset
+    L->>B: Bounded file bytes
+    B->>B: Verify SHA-256 and atomically publish
+    L-->>A: SEND reaches COMPLETED + OK
+    L-->>B: RECEIVE reaches COMPLETED + OK
 ```
 
 These are the control-plane values exchanged between the services. The token

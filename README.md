@@ -51,6 +51,7 @@ capabilities, lifecycle rules, and connector examples:
 - [TLS and mTLS](docs/tls-and-mtls.md)
 - [Connection strategies](docs/connection-strategies.md)
 - [Runtime file transfer](docs/runtime-file-transfer.md)
+- [Runtime streaming](docs/runtime-streaming.md)
 
 Runtime `2.1.0` adds a bounded, verified file-transfer lane for large
 point-to-point files. Keep commands and authorization in the application's
@@ -60,6 +61,13 @@ coakka-runtime-inspect sample pins resolve the promoted `2.1.0+60ddf70d`
 generation. npm samples use the published and clean-install verified `2.1.1`
 packages, C# uses NuGet `CoAkka.Runtime==2.1.0`, and Python uses PyPI
 `coakka-v2-connector==2.1.0`.
+
+The runtime `2.2.0` source candidate promotes stream lane to an official native
+contract. The currently published `2.1.0` sample pins do not contain it; use a
+matching native source generation for stream integration until an exact
+artifact train is promoted. The additive `2.3.0` source candidate exposes
+neutral publisher/subscriber pressure snapshots and waits while keeping
+adaptation policy in the app-host.
 
 ## Runtime Test
 
