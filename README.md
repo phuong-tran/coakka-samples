@@ -54,21 +54,18 @@ capabilities, lifecycle rules, and connector examples:
 - [Runtime streaming](docs/runtime-streaming.md)
 - [AI-assisted integration](docs/ai-assisted-integration.md)
 
-Runtime `2.1.0` adds a bounded, verified file-transfer lane for large
-point-to-point files. Keep commands and authorization in the application's
-control plane; keep file bytes out of runtime message payloads. The native,
-JVM/Maven, connector-archive, Go `v1.5.1`, Swift `v2.1.1`, coakka-client, and
-coakka-runtime-inspect sample pins resolve the promoted `2.1.0+60ddf70d`
-generation. npm samples use the published and clean-install verified `2.1.1`
-packages, C# uses NuGet `CoAkka.Runtime==2.1.0`, and Python uses PyPI
-`coakka-v2-connector==2.1.0`.
+Runtime `2.1.0` introduced the bounded File Lane. Runtime `2.3.0` adds the
+official Stream Lane artifact train and neutral publisher/subscriber pressure
+signals while keeping adaptation policy in the app-host. Keep commands and
+authorization in the application's control plane; keep file and stream bytes
+out of ordinary runtime message payloads.
 
-The runtime `2.2.0` source candidate promotes stream lane to an official native
-contract. The currently published `2.1.0` sample pins do not contain it; use a
-matching native source generation for stream integration until an exact
-artifact train is promoted. The additive `2.3.0` source candidate exposes
-neutral publisher/subscriber pressure snapshots and waits while keeping
-adaptation policy in the app-host.
+Native, JVM/Maven, connector-archive, coakka-client, and
+coakka-runtime-inspect sample pins resolve exact generation
+`2.3.0+a83ab412`. Registry-backed npm, PyPI, and NuGet samples remain on their
+already published 2.1 coordinates until those registries carry the matching
+2.3 packages; do not generate Stream Lane imports against a 2.1 registry
+package.
 
 ## Runtime Test
 

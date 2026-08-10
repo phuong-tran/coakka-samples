@@ -65,11 +65,11 @@ try {
   }
   if ($Mode -in @("file-lane", "stream-lane", "race", "hot-reload")) {
     if ($Mode -notin @("file-lane", "stream-lane") -and $Platform -ne "windows-x86_64") {
-      throw "runtime 2.1.0 concurrency evidence is not published for $Platform"
+      throw "runtime 2.3.0 concurrency evidence is not published for $Platform"
     }
-    $RuntimeVersion = "2.1.0"
-    $RuntimeRelease = "2.1.0+60ddf70d"
-    $RuntimeSha256 = "01fb5a0cb09c648391bc90171bfd49940d88febc3020770acca57352c82ae5a6"
+    $RuntimeVersion = "2.3.0"
+    $RuntimeRelease = "2.3.0+a83ab412"
+    $RuntimeSha256 = "7d1c58a17c0b24b547fe6339886387d4deb3f778c987970db2f85b0d9921e1ab"
     $RuntimeArtifact = "coakka-runtime-native-v2-$RuntimeVersion.tar.gz"
     $RuntimeRelativePath = "runtime/native/releases/$RuntimeRelease/$RuntimeArtifact"
     $RuntimeArchive = Join-Path $TemporaryRoot "artifacts\$RuntimeArtifact"
@@ -87,7 +87,7 @@ try {
     if (Test-Path $LocalRuntimeArchive) {
       Copy-Item $LocalRuntimeArchive $RuntimeArchive
     } else {
-      $RuntimeUrl = "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/$RuntimeRelativePath"
+      $RuntimeUrl = "https://raw.githubusercontent.com/phuong-tran/coakka-publish/621f36edcb489c5151348986e76b7ef42893f5e7/$RuntimeRelativePath"
       Write-EvidenceStatus "downloading runtime package generation=$RuntimeRelease platform=$Platform"
       Invoke-WebRequest -Uri $RuntimeUrl -OutFile $RuntimeArchive
     }

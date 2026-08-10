@@ -208,8 +208,9 @@ bash run.sh runtime-test race --threads 4 --requests 256
 bash run.sh runtime-test hot-reload --threads 4 --requests 256 --generations 64
 ```
 
-The `2.1.0+60ddf70d` native package contains `coakka/v2/file_lane.h`, so the
-normal command resolves the checksum-pinned public artifact directly. For
+The `2.3.0+a83ab412` native package contains both `coakka/v2/file_lane.h` and
+`coakka/v2/stream_lane.h`, so the normal commands resolve the checksum-pinned
+public artifact directly. For
 development against a local Core change, override the package with an exact
 source tree:
 
@@ -222,33 +223,30 @@ The CMake target is conditional for compatibility with older packages. Setting
 `COAKKA_NATIVE_EVIDENCE_REQUIRE_FILE_LANE=ON` makes absence of the ABI a
 configure error.
 
-Stream Lane is not present in the published `2.1.0` package train. Run its
-public C11 evidence only against an exact matching source candidate:
+Run Stream Lane evidence against the exact 2.3 artifact with:
 
 ```sh
-COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR=../coakkaCoreNativeDev/v2 \
-  bash run.sh runtime-test stream-lane
+bash run.sh runtime-test stream-lane
 ```
 
-The command builds the runtime and evidence consumer from that selected source,
+The command builds the evidence consumer against the packaged public boundary,
 then verifies ordered variable-size frames, metadata, source-reported drops,
 terminal state, pressure snapshots, nonblocking pressure wait behavior, stats,
 forget, and stop. Setting
-`COAKKA_NATIVE_EVIDENCE_REQUIRE_STREAM_LANE=ON` makes absence of the source
-contract a configure error. Do not present this command as execution against a
-published `2.1.0` package.
+`COAKKA_NATIVE_EVIDENCE_REQUIRE_STREAM_LANE=ON` makes absence of the packaged
+contract a configure error.
 
 macOS ARM64 and Linux ARM64/x86-64 package-built modes use native generation
-`2.1.0+60ddf70d`. The prebuilt `1.3.4+dc6ec284` evidence runner remains a
+`2.3.0+a83ab412`. The prebuilt `1.3.4+dc6ec284` evidence runner remains a
 separate compatibility path for workload modes that do not require the newer
 connection-strategy ABI.
 
 For the original workload modes, the Windows PowerShell entrypoint executes the
 checksum-verified `1.3.4+dc6ec284` compatibility evidence runner. For
-`file-lane`, `race`, and `hot-reload`, it builds this public C11 source against
-the checksum-verified `2.1.0+60ddf70d` package. `stream-lane` instead requires
-the exact matching source candidate described above. File Lane selects Windows
-ARM64 or x86-64 to match the host; the concurrency harness remains x86-64-only.
+`file-lane`, `stream-lane`, `race`, and `hot-reload`, it builds this public C11
+source against the checksum-verified `2.3.0+a83ab412` package. File Lane and
+Stream Lane select Windows ARM64 or x86-64 to match the host; the concurrency
+harness remains x86-64-only.
 The archive contains runtime DLLs but no MSVC import library, so the harness
 generates a consumer-only `.lib` from its checked-in public export definition
 during CMake configure. It does not alter or relink the published DLL.
@@ -342,7 +340,7 @@ The public harness is intentionally split by ownership:
 | [`connection_strategy_contract.c`](connection_strategy_contract.c) | Capability-aware validation, atomic apply, lifecycle, and immutability checks. |
 | [`connection_strategy_report.c`](connection_strategy_report.c) | Machine-readable connection-strategy evidence without ambiguous default statuses. |
 | [`file_lane_main.c`](file_lane_main.c) | Receiver-first File Lane transfer, progress, digest, terminal, and stats evidence. |
-| [`stream_lane_main.c`](stream_lane_main.c) | Ordered frame, pressure, terminal, lifecycle, and stats evidence for an exact Stream Lane source candidate. |
+| [`stream_lane_main.c`](stream_lane_main.c) | Ordered frame, pressure, terminal, lifecycle, and stats evidence for the selected Stream Lane package. |
 | [`concurrency_config.c`](concurrency_config.c) | Bounded race and hot-reload CLI parsing. |
 | [`concurrency_runtime.c`](concurrency_runtime.c) | Multi-producer, submit-versus-stop, independent lifecycle, and atomic snapshot-replacement contracts. |
 | [`concurrency_report.c`](concurrency_report.c) | Machine-readable concurrency and hot-reload evidence. |

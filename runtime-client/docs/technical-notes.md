@@ -16,22 +16,22 @@ Current release lines:
 ```text
 coakka-runtime-client product lane
 coakka-client command and archive prefix
-2.1.0+60ddf70d release id on all five listed platforms
+2.3.0+a83ab412 release id on all five listed platforms
 ```
 
 Published CLI archives:
 
 | Platform | Archive |
 | --- | --- |
-| macOS ARM64 | [coakka-client-v2-2.1.0-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/2.1.0+60ddf70d/coakka-client-v2-2.1.0-macos-aarch64.tar.gz) |
-| Linux x86_64 | [coakka-client-v2-2.1.0-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/2.1.0+60ddf70d/coakka-client-v2-2.1.0-linux-x86_64.tar.gz) |
-| Linux ARM64 | [coakka-client-v2-2.1.0-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/2.1.0+60ddf70d/coakka-client-v2-2.1.0-linux-aarch64.tar.gz) |
-| Windows x86_64 | [coakka-client-v2-2.1.0-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/2.1.0+60ddf70d/coakka-client-v2-2.1.0-windows-x86_64.tar.gz) |
-| Windows ARM64 | [coakka-client-v2-2.1.0-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/coakka-tools/coakka-client/releases/2.1.0+60ddf70d/coakka-client-v2-2.1.0-windows-aarch64.tar.gz) |
+| macOS ARM64 | [coakka-client-v2-2.3.0-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/621f36edcb489c5151348986e76b7ef42893f5e7/coakka-tools/coakka-client/releases/2.3.0+a83ab412/coakka-client-v2-2.3.0-macos-aarch64.tar.gz) |
+| Linux x86_64 | [coakka-client-v2-2.3.0-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/621f36edcb489c5151348986e76b7ef42893f5e7/coakka-tools/coakka-client/releases/2.3.0+a83ab412/coakka-client-v2-2.3.0-linux-x86_64.tar.gz) |
+| Linux ARM64 | [coakka-client-v2-2.3.0-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/621f36edcb489c5151348986e76b7ef42893f5e7/coakka-tools/coakka-client/releases/2.3.0+a83ab412/coakka-client-v2-2.3.0-linux-aarch64.tar.gz) |
+| Windows x86_64 | [coakka-client-v2-2.3.0-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/621f36edcb489c5151348986e76b7ef42893f5e7/coakka-tools/coakka-client/releases/2.3.0+a83ab412/coakka-client-v2-2.3.0-windows-x86_64.tar.gz) |
+| Windows ARM64 | [coakka-client-v2-2.3.0-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/621f36edcb489c5151348986e76b7ef42893f5e7/coakka-tools/coakka-client/releases/2.3.0+a83ab412/coakka-client-v2-2.3.0-windows-aarch64.tar.gz) |
 
 Artifact catalog and manifest:
-[CoAkka Public Artifacts](https://github.com/phuong-tran/coakka-publish/tree/main),
-[public-artifacts.tsv](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/artifacts/public-artifacts.tsv)
+[CoAkka Public Artifacts](https://github.com/phuong-tran/coakka-publish/tree/621f36edcb489c5151348986e76b7ef42893f5e7),
+[public-artifacts.tsv](https://raw.githubusercontent.com/phuong-tran/coakka-publish/621f36edcb489c5151348986e76b7ef42893f5e7/artifacts/public-artifacts.tsv)
 
 Per-lane checksums are stored beside each release directory in
 `coakka-publish`.
@@ -39,12 +39,12 @@ Per-lane checksums are stored beside each release directory in
 Artifact layout:
 
 ```text
-coakka-tools/coakka-client/releases/2.1.0+60ddf70d/
-  coakka-client-v2-2.1.0-macos-aarch64.tar.gz
-  coakka-client-v2-2.1.0-linux-x86_64.tar.gz
-  coakka-client-v2-2.1.0-linux-aarch64.tar.gz
-  coakka-client-v2-2.1.0-windows-x86_64.tar.gz
-  coakka-client-v2-2.1.0-windows-aarch64.tar.gz
+coakka-tools/coakka-client/releases/2.3.0+a83ab412/
+  coakka-client-v2-2.3.0-macos-aarch64.tar.gz
+  coakka-client-v2-2.3.0-linux-x86_64.tar.gz
+  coakka-client-v2-2.3.0-linux-aarch64.tar.gz
+  coakka-client-v2-2.3.0-windows-x86_64.tar.gz
+  coakka-client-v2-2.3.0-windows-aarch64.tar.gz
 ```
 
 The matching Docker verification bundle lives under:

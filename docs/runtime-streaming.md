@@ -113,11 +113,12 @@ blocking pressure waits. This is an additive host-observation contract; it
 does not change stream wire version 1 or move source, codec, relay, and sink
 policy into CoAkka.
 
-The currently published `2.1.0` artifacts predate this contract and do not
-contain the symbols. Until an exact `2.3.0` artifact generation is promoted,
-pressure consumers must build from the matching source candidate rather than
-assuming that a published `2.1.0` package has the lane. Dynamic connectors
-must continue to feature-detect before resolving optional symbols.
+Exact artifact generation `2.3.0+a83ab412` contains the public Stream Lane
+header, symbols, pressure snapshots, and pressure waits. Connector archives
+must pair that native generation with their recorded connector source
+checkpoint. Registry packages still carrying a 2.1 coordinate predate the
+lane; dynamic connectors must continue to feature-detect before resolving
+optional symbols.
 
 Direct TCP, TLS, and mutual TLS use the same security profiles as the file
 lane. The release gate includes a standalone C11 roundtrip built only against

@@ -93,21 +93,17 @@ Generated File Lane code must include:
 
 ### Stream Lane
 
-Stream Lane is an official source contract beginning with runtime `2.2.0`.
-Neutral pressure snapshots and waits belong to the additive `2.3.0` source
-line. The currently published `2.1.0` package train does not contain Stream
-Lane.
+Stream Lane is an official runtime contract beginning with the 2.2 source
+line. Exact artifact generation `2.3.0+a83ab412` adds neutral pressure
+snapshots and waits and is the first complete public artifact train for the
+lane.
 
-Until a matching artifact train is promoted, a coding agent must do one of the
-following:
-
-- generate source-candidate integration only when the requested build pins the
-  exact matching runtime and connector source generation; or
-- provide the application boundary and workflow without claiming installable
-  package code.
-
-It must not generate `StreamLane` imports against npm, PyPI, NuGet, Maven, Go,
-SwiftPM, Rust, Zig, Mojo, Electron, or Tauri `2.1.0`-generation packages.
+A coding agent must select one exact 2.3 coordinate from
+[Current Packages](current-packages.md), preserve its recorded native and
+connector generation, and use the API names from that connector package. It
+must not generate Stream Lane imports against an npm, PyPI, NuGet, Maven, Go,
+SwiftPM, Rust, Zig, Mojo, Electron, or Tauri package that still carries a 2.1
+generation.
 
 ## Language And Host Boundaries
 
