@@ -8,10 +8,10 @@ code.
 Current artifact generation:
 
 ```text
-native runtime:   2.1.0+60ddf70d
-connector source: 4782dcd
-JVM/Maven:        2.1.0-g60ddf70d-4782dcd
-source artifacts: 2.1.0+60ddf70d-4782dcd
+native runtime:   2.3.0+a83ab412
+connector source: 3a84c7b
+JVM/Maven:        2.3.0-ga83ab412-3a84c7b
+source artifacts: 2.3.0+a83ab412-3a84c7b
 ```
 
 ## Evidence Terms
@@ -28,39 +28,40 @@ source artifacts: 2.1.0+60ddf70d-4782dcd
 the Windows 11 ARM64 test VM uses Microsoft x64 emulation and is identified as
 such; it is not presented as x86-64 hardware evidence.
 
-## Native 2.1.0 Matrix
+## Native 2.3.0 Matrix
 
 | Platform | Library | SHA-256 | Release evidence |
 | --- | --- | --- | --- |
-| Linux ARM64 | `libcoakka_runtime_v2.so` | `3c0cc47250e3c4ebb71633af85d205adb7bf2606d58abba0bf893a770dfde48c` | Native build, exports, dependencies, TLS/mTLS gates, file-lane runtime test, and public sample pass on the ARM64 UTM host. |
-| Linux x86-64 | `libcoakka_runtime_v2.so` | `7d8781b8eae6948eee968e422dd2097dfee43d788c4cb4a3fb3e8936bd214815` | Native build, exports, dependencies, TLS/mTLS gates, file-lane runtime test, and public sample pass on the x86-64 UTM host. |
-| macOS ARM64 | `libcoakka_runtime_v2.dylib` | `e95cda46cd8e5d31633d005bb8af9093b2a93c9c2d0cefc90148e188f31da6d7` | Native build, dependency gate, file-lane runtime test, and connector package smokes pass. |
-| Windows ARM64 | `libcoakka_runtime_v2.dll` | `e932f870f6dd15fd36612f0ce404e4906faff47766f6ed40c328d4e12a69ebf0` | MSVC build, 115-export gate, dependencies, TLS/mTLS tests, and file-lane tests pass on Windows 11 ARM64. |
-| Windows x86-64 | `libcoakka_runtime_v2.dll` | `dc9d352144fefb2d6789bc3ea49dd6fe1b3bb627be4f1277944bc51d49e2f3f9` | MSVC build, 115-export gate, dependencies, TLS/mTLS tests, and file-lane tests pass under Windows 11 ARM64 x64 emulation. |
+| Linux ARM64 | `libcoakka_runtime_v2.so` | `7e450b4a76ca612cf181083443d35f8c50b851d294973eb1ed34fd7868876b5e` | Native build, exact 130-export and dependency gates, File/Stream Lane tests, sanitizer checks, and public package verification pass on the ARM64 UTM host. |
+| Linux x86-64 | `libcoakka_runtime_v2.so` | `2a0750f96410a035d27b9b83cfdcca574afc3c8d071af837bbf7db73e8b446a3` | Native build, exact 130-export and dependency gates, File/Stream Lane tests, sanitizer checks, and public package verification pass on the x86-64 UTM host. |
+| macOS ARM64 | `libcoakka_runtime_v2.dylib` | `ce141677ebd913537dce13805ce184d71a543a1b4cfd56a24df36c51378acb8b` | Native build, export and dependency gates, File/Stream Lane public consumers, and connector package smokes pass. |
+| Windows ARM64 | `libcoakka_runtime_v2.dll` | `fd2cd782acaabb70467df6c34d7f812d87415c7dee9a9898a1c335a6a16ebe97` | MSVC build, exact 130-export and dependency gates, and focused runtime tests pass on Windows 11 ARM64. |
+| Windows x86-64 | `libcoakka_runtime_v2.dll` | `1f4019b285ddbd2745b52fac223dc1b7526c86a1e6e0a2a4b9a50fbf5b256403` | MSVC build, exact 130-export and dependency gates, and focused runtime tests pass under Windows 11 ARM64 x64 compatibility. |
 
 The native archive is
-`runtime/native/releases/2.1.0+60ddf70d/coakka-runtime-native-v2-2.1.0.tar.gz`
+`runtime/native/releases/2.3.0+a83ab412/coakka-runtime-native-v2-2.3.0.tar.gz`
 with SHA-256
-`01fb5a0cb09c648391bc90171bfd49940d88febc3020770acca57352c82ae5a6`.
+`7d1c58a17c0b24b547fe6339886387d4deb3f778c987970db2f85b0d9921e1ab`.
 It contains all five libraries, the public headers including
-`coakka/v2/file_lane.h`, CMake metadata, manifest, and per-file checksums.
+`coakka/v2/file_lane.h` and `coakka/v2/stream_lane.h`, CMake metadata,
+manifest, and per-file checksums.
 
 ## Connector Artifact Matrix
 
 | Surface | Exact artifact coordinate | Native payloads | Current exact-artifact evidence |
 | --- | --- | --- | --- |
-| JVM/JNA/JNI | `coakka.v2:coakka-jvm-native-runtime-v2:2.1.0-g60ddf70d-4782dcd` | All five | JVM checks, embedded-native verification, packaged runtime smoke, Spring Boot tests, and Quarkus tests pass. The implementation uses JNA over the C ABI; JNI names the JVM native-bridge category. |
-| Node.js | `runtime/node/releases/2.1.0+60ddf70d-4782dcd/` | All five | Build, unit tests, package-surface verification, and packaged request/reply pass on macOS ARM64. |
-| Bun | `runtime/bun/releases/2.1.0+60ddf70d-4782dcd/` | All five | Runtime request/reply, file-lane native-call test, package-surface verification, and packaged request/reply pass on macOS ARM64. |
-| Electron | `runtime/electron/releases/2.1.0+60ddf70d-4782dcd/` | Via exact Node package | Packaged Electron main/preload intent smoke passes. |
-| Python | `runtime/python/releases/2.1.0+60ddf70d-34d15e7/` | All five | 29 tests plus four subtests pass. The PyPI JSON SHA-256 matches the staged wheel, and the registry-downloaded package loads runtime 2.1.0 and completes request/reply on macOS ARM64. |
-| Go | `runtime/go/releases/2.1.0+60ddf70d-4782dcd/` | All five | Packaged request/reply and `go test ./...` pass. Public module patch `v1.5.1` uses the canonical file-lane contract. |
-| C# | `runtime/csharp/releases/2.1.0+60ddf70d-99bb16c/` | Five RID assets | NuGet readiness, repository-signature verification, and packaged request/reply/deadletter pass on macOS ARM64. |
-| Rust | `runtime/rust/releases/2.1.0+60ddf70d-4782dcd/` | All five | Package readiness and packaged request/reply/deadletter pass on macOS ARM64. The historical Linux loader constant defect is corrected. |
-| Swift | `runtime/swift/releases/2.1.0+60ddf70d-4782dcd/` | All five | Swift build, tests, runtime request/reply, transport, and packaged-consumer smokes pass on macOS ARM64. SwiftPM patch `v2.1.1` uses the canonical file-lane contract. |
-| Mojo | `runtime/mojo/releases/2.1.0+60ddf70d-4782dcd/` | All five | Strict source/platform gates and native lifecycle, request/reply, deadletter smoke pass. |
-| Zig | `runtime/zig/releases/2.1.0+60ddf70d-4782dcd/` | All five | Linux ARM64 and Windows x86-64 compile/link gates plus native lifecycle, request/reply, and deadletter smoke pass. |
-| Tauri | `runtime/tauri/releases/2.1.0+60ddf70d-4782dcd/` | All five through Rust | Source package generation and dependency lock complete; Electron and Tauri keep UI code outside the native runtime owner. |
+| JVM | `coakka.v2:coakka-jvm-native-runtime-v2:2.3.0-ga83ab412-3a84c7b` | All five | JVM checks, embedded-native verification, packaged runtime smoke, Spring Boot tests, and Quarkus tests pass. |
+| Node.js | `runtime/node/releases/2.3.0+a83ab412-3a84c7b/` | All five | Build, unit tests, package-surface verification, and packaged request/reply pass on macOS ARM64. |
+| Bun | `runtime/bun/releases/2.3.0+a83ab412-3a84c7b/` | All five | Runtime request/reply, lane native-call tests, package-surface verification, and packaged request/reply pass on macOS ARM64. |
+| Electron | `runtime/electron/releases/2.3.0+a83ab412-3a84c7b/` | All five | Packaged Electron main/preload intent smoke passes. |
+| Python | `runtime/python/releases/2.3.0+a83ab412-3a84c7b/` | All five | Source tests, package-surface verification, and packaged request/reply pass; PyPI remains separately current at `2.1.0`. |
+| Go | `runtime/go/releases/2.3.0+a83ab412-3a84c7b/` | All five | Packaged request/reply, Stream Lane tests, `go test ./...`, and public module `v1.6.0` pass. |
+| C# | `runtime/csharp/releases/2.3.0+a83ab412-3a84c7b/` | Five RID assets | Package readiness and packaged request/reply/deadletter pass; NuGet remains separately current at `2.1.0`. |
+| Rust | `runtime/rust/releases/2.3.0+a83ab412-3a84c7b/` | All five | Package readiness, packaged request/reply/deadletter, and Stream Lane tests pass on macOS ARM64. |
+| Swift | `runtime/swift/releases/2.3.0+a83ab412-3a84c7b/` | All five | Swift build, native-payload verification, runtime and package smokes, Stream Lane tests, and SwiftPM `v2.3.0` pass. |
+| Mojo | `runtime/mojo/releases/2.3.0+a83ab412-3a84c7b/` | All five | Strict source/platform gates and native lifecycle, request/reply, and lane checks pass. |
+| Zig | `runtime/zig/releases/2.3.0+a83ab412-3a84c7b/` | All five | Cross-platform compile/link gates plus native lifecycle, request/reply, and lane checks pass. |
+| Tauri | `runtime/tauri/releases/2.3.0+a83ab412-3a84c7b/` | All five through Rust | Source-package, intent-command, desktop tests, and dependency-lock gates pass. |
 
 Every release directory has a manifest and `SHA256SUMS`. The manifest records
 the five-platform matrix, native source generation, connector source
@@ -77,10 +78,12 @@ and clean-install verified:
 | npm | `coakka-v2-connector-{node,bun,electron}@2.1.1` | `2.1.0+60ddf70d` |
 | PyPI | `coakka-v2-connector==2.1.0` | `2.1.0+60ddf70d` |
 | NuGet | `CoAkka.Runtime==2.1.0` | `2.1.0+60ddf70d` |
+| Go modules | `github.com/phuong-tran/coakka-runtime-go@v1.6.0` | `2.3.0+a83ab412` |
+| SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v2.3.0` | `2.3.0+a83ab412` |
 
-The npm 2.1.1, PyPI 2.1.0, and NuGet 2.1.0 packages expose file-lane. Use an
-exact coordinate whose release receipt records native `2.1.0+60ddf70d` or a
-compatible successor.
+The npm 2.1.1, PyPI 2.1.0, and NuGet 2.1.0 packages expose File Lane but not
+Stream Lane. Go `v1.6.0` and Swift `v2.3.0` expose both lanes. Select an exact
+coordinate whose release receipt records the required native generation.
 
 ## File-Lane Generation Rule
 
