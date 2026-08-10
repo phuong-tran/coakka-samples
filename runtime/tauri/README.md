@@ -64,3 +64,14 @@ The frontend boundary is intentionally narrow:
 - Rust decides whether the work is local, runtime-routed, or later delegated to
   another executor.
 - JavaScript receives only the projected result.
+
+## Continue Integrating
+
+Use this lane's runnable sample as the source for the WebView-to-Rust boundary.
+Before generating connection strategy, TLS/mTLS, File Lane, or Stream Lane
+code, follow [AI-Assisted Integration](../../docs/ai-assisted-integration.md).
+
+The Tauri intent package does not make WebView JavaScript a runtime or lane
+owner. A custom integration belongs in the Rust app host and must use an exact
+Rust connector source or package contract. Stream Lane remains source-only
+until a matching public artifact is promoted.

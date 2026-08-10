@@ -1,11 +1,9 @@
 # Rust Runtime Basic
 
-This runtime sample unpacks the public Rust `1.4.1` archive and runs its
-packaged smoke binary. The published archive executes on macOS ARM64. On Linux,
-that immutable archive passes payload checks but cannot load because its Unix
-loader encoded the macOS `RTLD_LOCAL` value for every Unix target. The current
-connector source uses the correct target-specific value and passes native
-request/reply on Linux ARM64 and x86-64; a later package must carry that fix.
+This runtime sample unpacks the public Rust `2.1.0` archive and runs its
+packaged smoke binary. The package contains digest-verified native payloads for
+macOS ARM64, Linux ARM64/x86-64, and Windows ARM64/x86-64. Matching-host Rust
+execution is recorded separately from package contents.
 
 This sample covers:
 
@@ -32,10 +30,11 @@ Expected output shape:
 
 ```text
 CoAkka Rust runtime smoke ok
-runtime=1.4.1 git=<git> lib=<packaged-native-library>
+runtime=2.1.0 git=60ddf70d lib=<packaged-native-library>
 response={"echo":{"message":"hello-rust-runtime"}} delivered=1 matched=1 deadletters=1
 ```
 
 This is the pinned published archive line; crates.io packaging is a separate
-distribution step. Do not use Linux payload presence as evidence that the
-published `1.4.1` Rust loader executed there.
+distribution step. Version `2.1.0` has matching Rust request/reply and File Lane
+execution evidence on Linux ARM64 and x86-64. Windows payload verification is
+not a matching Rust-on-Windows execution claim.

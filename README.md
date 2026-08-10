@@ -52,6 +52,7 @@ capabilities, lifecycle rules, and connector examples:
 - [Connection strategies](docs/connection-strategies.md)
 - [Runtime file transfer](docs/runtime-file-transfer.md)
 - [Runtime streaming](docs/runtime-streaming.md)
+- [AI-assisted integration](docs/ai-assisted-integration.md)
 
 Runtime `2.1.0` adds a bounded, verified file-transfer lane for large
 point-to-point files. Keep commands and authorization in the application's
@@ -84,6 +85,7 @@ separate ThreadSanitizer controls are included for supported Clang/GCC hosts.
 bash run.sh runtime-test smoke
 bash run.sh runtime-test pressure --requests 512 --queue-capacity 2
 bash run.sh runtime-test file-lane
+bash run.sh runtime-test stream-lane
 bash run.sh runtime-test race --threads 4 --requests 256
 bash run.sh runtime-test hot-reload --threads 4 --requests 256 --generations 64
 ```

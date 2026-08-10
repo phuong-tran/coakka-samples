@@ -95,3 +95,14 @@ boundary: renderer intent in, main-process runtime execution out.
 - The Electron main process starts and closes the runtime host.
 - The main process registers the handler and projects the result.
 - Runtime envelopes stay out of renderer code.
+
+## Continue Integrating
+
+Use this lane's runnable sample as the source for package imports and the
+renderer-to-main boundary. Before generating connection strategy, TLS/mTLS,
+File Lane, or Stream Lane code, follow
+[AI-Assisted Integration](../../docs/ai-assisted-integration.md).
+
+Connection policy and native lanes belong to Electron main, never the renderer.
+The current public package train includes File Lane. Stream Lane remains an
+exact-source integration until a matching public artifact is promoted.

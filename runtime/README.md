@@ -3,6 +3,12 @@
 Runtime samples show CoAkka runtime v2 as a shared native runtime
 contract consumed through host-language connectors.
 
+Choose a language below, run its basic sample, and then use
+[AI-Assisted Integration](../docs/ai-assisted-integration.md) to select the
+canonical connection, TLS/mTLS, File Lane, or Stream Lane contract. That guide
+also defines when a coding agent has enough evidence to generate compilable
+code and when it must stop at workflow pseudocode.
+
 For large immutable files, use the `2.1.0` file lane instead of placing bytes
 inside an `Envelope`. See [Runtime File Transfer](../docs/runtime-file-transfer.md)
 for use cases, the receiver-first workflow, and connector guidance. The

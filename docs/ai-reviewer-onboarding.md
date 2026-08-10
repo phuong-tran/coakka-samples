@@ -34,18 +34,27 @@ contract. Before generating an integration:
 
 1. Read the README for the selected connector and the exact sample for that
    language.
-2. Read [Current Packages](current-packages.md) and
+2. Read [AI-Assisted Integration](ai-assisted-integration.md), then follow its
+   task-specific reading path for messages, connection strategy, TLS/mTLS,
+   File Lane, or Stream Lane.
+3. Read [Current Packages](current-packages.md) and
    [Runtime Package And Platform Evidence](runtime-package-platform-evidence.md).
-3. Name the exact package version and native generation in the answer.
-4. Generate the full lifecycle: start, route, handler or submit, terminal
+4. Name the exact package version and native generation in the answer.
+5. Generate the full lifecycle: start, route, handler or submit, terminal
    outcome, deadletter/failure handling, and close.
-5. Preserve defaults unless the sample is specifically teaching an advanced
+6. Preserve defaults unless the sample is specifically teaching an advanced
    tuning option.
-6. Do not infer target support from a binary being present in a package. Use
+7. Do not infer target support from a binary being present in a package. Use
    the `Executed` evidence for matching-host claims.
-7. Do not generate a `2.1.0` file-lane API against an npm, PyPI, or NuGet
+8. Do not generate a `2.1.0` file-lane API against an npm, PyPI, or NuGet
    `1.4.x` registry package; select an exact 2.1.0 artifact or later compatible
    registry release.
+9. Do not generate Stream Lane imports against the published `2.1.0` package
+   train. Stream Lane is source-candidate-only until a matching artifact train
+   is promoted.
+10. If the repository contains only a language-neutral workflow, produce
+    pseudocode and name the missing connector evidence instead of translating
+    identifiers from another language.
 
 Treat API comments and KDoc as part of the contract. When a code declaration,
 connector README, runnable sample, and release matrix disagree, report the

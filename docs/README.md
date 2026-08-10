@@ -22,6 +22,7 @@ and architecture-matched edge deployments.
 ## Build And Integrate
 
 - [Runtime integration guide](runtime-integration-guide.md)
+- [AI-assisted integration](ai-assisted-integration.md)
 - [Runtime file transfer](runtime-file-transfer.md)
 - [Runtime streaming](runtime-streaming.md)
 - [Current packages](current-packages.md)

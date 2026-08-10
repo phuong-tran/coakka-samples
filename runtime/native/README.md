@@ -51,3 +51,15 @@ This is the current source of runtime intake-pressure evidence in the public
 sample set. Language connector samples should not copy this result by wrapping
 the C sample; they need connector-owned pressure hooks so the result proves the
 connector boundary as well as the native runtime boundary.
+
+## Continue Integrating
+
+Use this lane's runnable sample as the source for package imports and basic
+lifecycle names. Before generating connection strategy, TLS/mTLS, File Lane, or
+Stream Lane code, follow [AI-Assisted Integration](../../docs/ai-assisted-integration.md).
+It links the canonical feature guides, exact package catalog, and platform
+evidence, and it defines when only workflow pseudocode is justified.
+
+The current public package train includes File Lane. Stream Lane remains an
+exact-source integration until a matching public artifact is promoted; do not
+attach Stream Lane imports to this lane's current package coordinate.

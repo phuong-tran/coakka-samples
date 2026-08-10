@@ -1,8 +1,8 @@
 # Rust Runtime Samples
 
 Rust runtime samples document the published `coakka-runtime-rs` archive shape.
-This runtime lane consumes source version `1.4.1`, built against native runtime
-generation `1.4.1+9e02a51d` from connector generation `4e7cda4`.
+This runtime lane consumes source version `2.1.0`, built against native runtime
+generation `2.1.0+60ddf70d` from connector generation `4782dcd`.
 
 ## Run
 
@@ -116,10 +116,23 @@ stay as a runtime target with request/reply and deadletter semantics.
 
 ## Production Notes
 
-- Treat this package as the pinned published Rust archive line.
+- Treat `coakka-runtime-rs-2.1.0.tar.gz` as the pinned published Rust archive
+  line for this sample.
 - Keep one active `RuntimeHost` per process.
 - Keep queue sizes bounded.
 - Treat matched deadletters as route/delivery results.
-- Treat Windows as a supported development/validation host today, while this
-  published archive still bundles the pinned macOS/Linux native set.
+- Treat packaged Windows payloads separately from matching-host Rust execution
+  evidence.
 - Use Linux validation before presenting this lane as a deployment path.
+
+## Continue Integrating
+
+Use this lane's runnable sample as the source for package imports and basic
+lifecycle names. Before generating connection strategy, TLS/mTLS, File Lane, or
+Stream Lane code, follow [AI-Assisted Integration](../../docs/ai-assisted-integration.md).
+It links the canonical feature guides, exact package catalog, and platform
+evidence, and it defines when only workflow pseudocode is justified.
+
+The current public package train includes File Lane. Stream Lane remains an
+exact-source integration until a matching public artifact is promoted; do not
+attach Stream Lane imports to this lane's current package coordinate.

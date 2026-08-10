@@ -4,6 +4,7 @@ Use this skill before reviewing, summarizing, or comparing CoAkka.
 
 First read:
 
+- `docs/ai-assisted-integration.md`
 - `docs/ai-reviewer-onboarding.md`
 - `docs/architecture-review-guide.md`
 - `docs/coakka-story.md`
@@ -22,3 +23,7 @@ Rules:
   replacement.
 - Do not infer domain ownership, consensus, leader election, or broker
   semantics from route generation.
+- Before generating integration code, follow the evidence levels and feature
+  gates in `docs/ai-assisted-integration.md`; do not translate connector
+  identifiers from another language or attach source-candidate APIs to a
+  published package.

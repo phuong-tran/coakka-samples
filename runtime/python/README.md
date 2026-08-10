@@ -205,3 +205,15 @@ samples use `RuntimeHost.start(...)`.
 - Rejecting stale or invalid route snapshots should remain visible through
   control rejection counters and unchanged active generation.
 - Customer scenarios keep inter-service business traffic runtime-only and avoid a store REST fallback.
+
+## Continue Integrating
+
+Use this lane's runnable sample as the source for package imports and basic
+lifecycle names. Before generating connection strategy, TLS/mTLS, File Lane, or
+Stream Lane code, follow [AI-Assisted Integration](../../docs/ai-assisted-integration.md).
+It links the canonical feature guides, exact package catalog, and platform
+evidence, and it defines when only workflow pseudocode is justified.
+
+The current public package train includes File Lane. Stream Lane remains an
+exact-source integration until a matching public artifact is promoted; do not
+attach Stream Lane imports to this lane's current package coordinate.

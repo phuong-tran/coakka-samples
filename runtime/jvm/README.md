@@ -1,9 +1,9 @@
 # JVM Runtime Samples
 
 JVM runtime samples document the `coakka-jvm-native-runtime-v2` jar shape. This
-runtime lane consumes the public JVM runtime jar built against native runtime
-`1.4.1+9e02a51d` with connector generation
-`1.4.1-g9e02a51d-4e7cda4`.
+runtime lane consumes
+`coakka.v2:coakka-jvm-native-runtime-v2:2.1.0-g60ddf70d-4782dcd`, built against
+native runtime generation `2.1.0+60ddf70d`.
 
 ## Run
 
@@ -120,7 +120,7 @@ repositories {
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:1.4.1-g9e02a51d-4e7cda4")
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:2.1.0-g60ddf70d-4782dcd")
 }
 ```
 
@@ -273,3 +273,15 @@ semantics.
 - Prefer `strictNoDrop=true` while integrating so overload becomes visible.
 - Handle `DeadletterException`; do not treat deadletters as generic failures.
 - Customer scenarios keep inter-service business traffic runtime-only and avoid a store REST fallback.
+
+## Continue Integrating
+
+Use this lane's runnable sample as the source for package imports and basic
+lifecycle names. Before generating connection strategy, TLS/mTLS, File Lane, or
+Stream Lane code, follow [AI-Assisted Integration](../../docs/ai-assisted-integration.md).
+It links the canonical feature guides, exact package catalog, and platform
+evidence, and it defines when only workflow pseudocode is justified.
+
+The current public package train includes File Lane. Stream Lane remains an
+exact-source integration until a matching public artifact is promoted; do not
+attach Stream Lane imports to this lane's current package coordinate.
