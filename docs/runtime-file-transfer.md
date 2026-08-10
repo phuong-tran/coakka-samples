@@ -2,9 +2,9 @@
 
 CoAkka Runtime 2.1.0 introduces a bounded file-transfer path for moving large,
 immutable files directly between trusted application hosts. The public API is
-called the **file lane**. On supported direct connections, the native runtime
-may use operating-system facilities such as Linux/macOS `sendfile` or Windows
-`TransmitFile`; applications do not depend on a particular kernel mechanism.
+called the **file lane**. The runtime selects an appropriate bounded transfer
+path for the configured security profile. Applications use the same connector
+contract and do not depend on the internal transfer mechanism.
 
 The file lane is separate from runtime messages:
 
@@ -68,14 +68,15 @@ destination. A successful sender result does not replace the receiver result:
 the receiving application must observe its own `COMPLETED + OK` state before
 using the file.
 
-## Service A To Service B Example
+## Service A To Service B Connector Example
 
-The Kotlin names below represent the `JVM/JNA/JNI` connector category. The
-current JVM connector calls the public C ABI through JNA. `JNI` is included in
-the label so JVM developers recognize the native-bridge boundary; it does not
-claim a second JNI implementation.
+The example uses Kotlin syntax only to make the service workflow concrete.
+File Lane is a core runtime capability exposed through the official
+connectors; applications use the equivalent lane, transfer specification,
+snapshot, wait, cancel, and forget operations provided by their connector.
+The workflow is not Kotlin-specific.
 
-The two code blocks run in different JVM processes, usually on different
+The two code blocks run in different service processes, usually on different
 hosts. The application API carries only a small grant:
 
 ```mermaid
@@ -284,7 +285,7 @@ or expose the token to a browser, renderer, or WebView.
 
 | Mode | Intended boundary |
 | --- | --- |
-| Direct | Loopback or an already protected private network. This mode may use the operating system's direct file-transfer path. |
+| Direct | Loopback or an already protected private network. The runtime selects the transfer path. |
 | TLS | Server-authenticated encrypted transport. Configure a CA bundle and receiver certificate/private key. |
 | Mutual TLS | Encrypted transport with certificates for both peers. Use this for service identities across less trusted networks. |
 
@@ -296,17 +297,15 @@ user session or a long-lived bearer credential.
 
 ## Bounded Operation
 
-The lane has bounded queues and a small bounded worker pool. Zero-valued tuning
-fields select conservative runtime defaults. Start with those defaults, then
-measure before changing queue capacity, file-size limit, checkpoint interval,
-progress thresholds, I/O timeout, or worker count. Worker counts are capped at
-four per direction.
+The lane bounds queued work and concurrent transfers. Zero-valued tuning fields
+select conservative runtime defaults. Start with those defaults, then measure
+before changing queue capacity, file-size limit, checkpoint interval, progress
+thresholds, I/O timeout, or concurrency.
 
 `QUEUE_FULL`, `SIZE_LIMIT`, timeouts, source changes, integrity failures,
 storage failures, and certificate failures are explicit outcomes. The runtime
-does not silently create more workers or retain unbounded work. Snapshot time
-fields use monotonic nanoseconds and must not be interpreted as wall-clock
-timestamps.
+does not silently retain unbounded work. Snapshot timing is monotonic and must
+not be interpreted as wall-clock time.
 
 Receiver checkpoints allow an interrupted transfer to resume from a durable,
 verified offset. The transfer ID, size, digest, destination, and authorization
@@ -317,27 +316,26 @@ were the original file.
 
 - The application owns file meaning, authorization, destination selection, and
   all post-transfer behavior.
-- `FileLane` owns native lane lifecycle. Close it only after concurrent calls
-  have returned; connector `close`/`Close`/`Drop` implementations stop and
-  drain the lane.
+- Each connector owns its lane lifecycle. Close a lane only after concurrent
+  calls have returned; connector shutdown stops and drains the lane.
 - Blocking waits belong on a worker, coroutine dispatcher, or dedicated
   process when the host has a UI or event loop.
 - Electron and Tauri renderer/WebView code must not receive raw paths, tokens,
-  native handles, or unrestricted file-lane methods. Expose narrow validated
-  application intents from trusted host code instead.
+  or unrestricted File Lane access. Expose narrow validated application
+  intents from trusted host code instead.
 
 ## Availability And Evidence
 
-The file-lane ABI first belongs to the native `2.1.0` generation. A connector
-must fail explicitly when loaded with an older native runtime; it must not
-silently emulate the transfer through message payloads.
+The File Lane capability first belongs to runtime generation `2.1.0`. A
+connector must fail explicitly when paired with an older core runtime; it must
+not silently emulate the transfer through message payloads.
 
-The repository-level evidence harness exercises a multi-quantum transfer
-through only the public C ABI and verifies SHA-256, durable receiver completion,
-progress, and counters. Release promotion still requires the exact native
-artifacts, manifests, hashes, connector packages, and platform evidence listed
-by the public compatibility matrix. Source-level evidence is not a published
-artifact claim.
+Repository-level tests exercise large transfers through the public runtime
+contract and verify SHA-256, durable receiver completion, progress, and
+counters. Release promotion still requires exact runtime packages, manifests,
+hashes, connector packages, and supported-environment evidence listed by the
+public compatibility matrix. Source-level evidence is not a published artifact
+claim.
 
 This document is projected identically from the CoAkka documentation authority.
 Connector READMEs link to its public `coakka-publish` copy for connector-specific
