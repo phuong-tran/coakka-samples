@@ -104,5 +104,5 @@ File Lane, or Stream Lane code, follow
 [AI-Assisted Integration](../../docs/ai-assisted-integration.md).
 
 Connection policy and native lanes belong to Electron main, never the renderer.
-The current public package train includes File Lane. Stream Lane remains an
-exact-source integration until a matching public artifact is promoted.
+The current `2.3.0` package train includes File Lane and Stream Lane; keep both
+lane lifecycles in the main process.

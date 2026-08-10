@@ -1,8 +1,8 @@
 # Node.js Runtime Samples
 
 Node.js runtime samples document the `coakka-v2-connector-node` package shape.
-This runtime lane consumes `coakka-v2-connector-node@2.1.1` from npm, built
-against native runtime generation `2.1.0+60ddf70d`.
+This runtime lane consumes `coakka-v2-connector-node@2.3.0` from npm, built
+against native runtime generation `2.3.0+a83ab412`.
 
 ## Run
 
@@ -198,6 +198,6 @@ Stream Lane code, follow [AI-Assisted Integration](../../docs/ai-assisted-integr
 It links the canonical feature guides, exact package catalog, and platform
 evidence, and it defines when only workflow pseudocode is justified.
 
-The current public package train includes File Lane. Stream Lane remains an
-exact-source integration until a matching public artifact is promoted; do not
-attach Stream Lane imports to this lane's current package coordinate.
+The current public package train includes File Lane and Stream Lane. Use the
+exact connector names and lifecycle rules shipped by `2.3.0` when integrating
+either lane.

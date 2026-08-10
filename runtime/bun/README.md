@@ -2,8 +2,8 @@
 
 These samples exercise the Bun-facing CoAkka runtime connector lane.
 
-The current Bun lane consumes `coakka-v2-connector-bun@2.1.1` from npm and
-loads native runtime generation `2.1.0+60ddf70d`.
+The current Bun lane consumes `coakka-v2-connector-bun@2.3.0` from npm and
+loads native runtime generation `2.3.0+a83ab412`.
 
 The package carries the native runtime resources. A sample user installs the
 published Bun package and runs `RuntimeHost`; there is no separate native
@@ -46,6 +46,6 @@ Stream Lane code, follow [AI-Assisted Integration](../../docs/ai-assisted-integr
 It links the canonical feature guides, exact package catalog, and platform
 evidence, and it defines when only workflow pseudocode is justified.
 
-The current public package train includes File Lane. Stream Lane remains an
-exact-source integration until a matching public artifact is promoted; do not
-attach Stream Lane imports to this lane's current package coordinate.
+The current public package train includes File Lane and Stream Lane. Use the
+exact connector names and lifecycle rules shipped by `2.3.0` when integrating
+either lane.

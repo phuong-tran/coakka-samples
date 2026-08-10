@@ -12,9 +12,10 @@ code and when it must stop at workflow pseudocode.
 For large immutable files, use the `2.1.0` file lane instead of placing bytes
 inside an `Envelope`. See [Runtime File Transfer](../docs/runtime-file-transfer.md)
 for use cases, the receiver-first workflow, and connector guidance. The
-artifact-backed samples pin the complete `2.1.0+60ddf70d` train. Registry-backed
-npm `2.1.1`, PyPI `2.1.0`, and NuGet `2.1.0` samples consume published,
-clean-install verified packages.
+artifact-backed samples pin the complete `2.3.0+a83ab412` train. Registry-backed
+npm `2.3.0`, PyPI `2.1.0`, and NuGet `2.1.0` samples consume published,
+clean-install verified packages. The npm packages expose File Lane and Stream
+Lane; the current PyPI and NuGet packages expose File Lane only.
 
 For day-to-day development and connector validation, treat macOS and Windows as
 valid host environments. For deployment claims, operational drills, and the
@@ -25,7 +26,7 @@ runtime C ABI package, runtime JVM/language connector packages, and the Spring
 Boot and Quarkus adapters. These samples consume those public artifacts.
 
 This `runtime/` directory is the app-host connector sample lane. The current
-artifact train is native generation `2.1.0+60ddf70d` with Linux ARM64/x86-64,
+artifact train is native generation `2.3.0+a83ab412` with Linux ARM64/x86-64,
 macOS ARM64, and Windows ARM64/x86-64 payloads. Package-manager samples use the
 current version published on their registry; those versions advance
 independently from the artifact mirror. The separate
@@ -33,8 +34,8 @@ independently from the artifact mirror. The separate
 [`../runtime-client`](../runtime-client/README.md).
 
 Swift runtime is published at
-`github.com/phuong-tran/coakka-runtime-swift@2.1.1` with native runtime
-generation `2.1.0+60ddf70d`; current Swift execution evidence covers macOS
+`github.com/phuong-tran/coakka-runtime-swift@2.3.0` with native runtime
+generation `2.3.0+a83ab412`; current Swift execution evidence covers macOS
 ARM64.
 
 The runtime lane is not introduced as a generic framework. It starts from
@@ -83,7 +84,7 @@ repositories {
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:2.1.0-g60ddf70d-4782dcd")
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:2.3.0-ga83ab412-3a84c7b")
 }
 ```
 
@@ -91,7 +92,7 @@ Spring Boot same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("coakka.spring:coakka-spring-boot-starter:2.1.0-g60ddf70d-4782dcd")
+    implementation("coakka.spring:coakka-spring-boot-starter:2.3.0-ga83ab412-3a84c7b")
     implementation("org.springframework.boot:spring-boot-starter-web")
 }
 ```
@@ -100,7 +101,7 @@ Quarkus same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("coakka.quarkus:coakka-quarkus-extension:2.1.0-g60ddf70d-4782dcd")
+    implementation("coakka.quarkus:coakka-quarkus-extension:2.3.0-ga83ab412-3a84c7b")
     implementation("io.quarkus:quarkus-rest-jackson")
 }
 ```
@@ -114,13 +115,13 @@ python -m pip install coakka-v2-connector==2.1.0
 Node.js package:
 
 ```sh
-npm install coakka-v2-connector-node@2.1.1
+npm install coakka-v2-connector-node@2.3.0
 ```
 
 Bun package:
 
 ```sh
-bun add coakka-v2-connector-bun@2.1.1
+bun add coakka-v2-connector-bun@2.3.0
 ```
 
 Tauri intent bridge:
@@ -133,7 +134,7 @@ bash run.sh runtime tauri desktop-intent
 Electron intent bridge:
 
 ```sh
-npm install coakka-v2-connector-electron@2.1.1
+npm install coakka-v2-connector-electron@2.3.0
 ```
 
 Bun, Tauri, and Electron validation commands:
@@ -219,7 +220,7 @@ Full recording: [coakka-runtime-native.mp4](../docs/assets/coakka-runtime-native
 Go module:
 
 ```sh
-go get github.com/phuong-tran/coakka-runtime-go@v1.5.1
+go get github.com/phuong-tran/coakka-runtime-go@v1.6.0
 ```
 
 C# NuGet package:
@@ -232,8 +233,8 @@ Rust currently ships as a published archive package:
 
 ```sh
 curl -L \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/rust/releases/2.1.0+60ddf70d-4782dcd/coakka-runtime-rs-2.1.0.tar.gz" \
-  -o /tmp/coakka-runtime-rs-2.1.0.tar.gz
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/rust/releases/2.3.0+a83ab412-3a84c7b/coakka-runtime-rs-2.3.0.tar.gz" \
+  -o /tmp/coakka-runtime-rs-2.3.0.tar.gz
 ```
 
 After dependency setup, every host follows the same shape:

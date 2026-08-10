@@ -1,7 +1,7 @@
 # Mojo Runtime Samples
 
 Mojo runtime samples use the pinned public source connector package
-`2.1.0-source` over native runtime generation `2.1.0+60ddf70d`. The basic
+`2.3.0-source` over native runtime generation `2.3.0+a83ab412`. The basic
 sample keeps its Mojo entrypoint and C shim in this repository and covers
 lifecycle/control, raw request/reply, and route-miss deadletter handling.
 
@@ -25,6 +25,6 @@ Stream Lane code, follow [AI-Assisted Integration](../../docs/ai-assisted-integr
 It links the canonical feature guides, exact package catalog, and platform
 evidence, and it defines when only workflow pseudocode is justified.
 
-The current public package train includes File Lane. Stream Lane remains an
-exact-source integration until a matching public artifact is promoted; do not
-attach Stream Lane imports to this lane's current package coordinate.
+The current public package train includes File Lane and Stream Lane. Use the
+exact connector names and lifecycle rules shipped by the `2.3.0-source`
+package when integrating either lane.

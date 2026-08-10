@@ -1,8 +1,8 @@
 # Rust Runtime Samples
 
 Rust runtime samples document the published `coakka-runtime-rs` archive shape.
-This runtime lane consumes source version `2.1.0`, built against native runtime
-generation `2.1.0+60ddf70d` from connector generation `4782dcd`.
+This runtime lane consumes source version `2.3.0`, built against native runtime
+generation `2.3.0+a83ab412` from connector generation `3a84c7b`.
 
 ## Run
 
@@ -133,6 +133,6 @@ Stream Lane code, follow [AI-Assisted Integration](../../docs/ai-assisted-integr
 It links the canonical feature guides, exact package catalog, and platform
 evidence, and it defines when only workflow pseudocode is justified.
 
-The current public package train includes File Lane. Stream Lane remains an
-exact-source integration until a matching public artifact is promoted; do not
-attach Stream Lane imports to this lane's current package coordinate.
+The current public package train includes File Lane and Stream Lane. Use the
+exact connector names and lifecycle rules shipped by the `2.3.0` archive when
+integrating either lane.

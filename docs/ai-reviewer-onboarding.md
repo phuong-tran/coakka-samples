@@ -49,9 +49,10 @@ contract. Before generating an integration:
 8. Do not generate a `2.1.0` file-lane API against an npm, PyPI, or NuGet
    `1.4.x` registry package; select an exact 2.1.0 artifact or later compatible
    registry release.
-9. Do not generate Stream Lane imports against the published `2.1.0` package
-   train. Stream Lane is source-candidate-only until a matching artifact train
-   is promoted.
+9. Generate Stream Lane imports only for an exact `2.3.0` package or artifact
+   coordinate that records the lane. npm `2.3.0`, Go `v1.6.0`, SwiftPM
+   `v2.3.0`, and the matching artifact train qualify; PyPI and NuGet `2.1.0`
+   do not.
 10. If the repository contains only a language-neutral workflow, produce
     pseudocode and name the missing connector evidence instead of translating
     identifiers from another language.

@@ -62,10 +62,9 @@ out of ordinary runtime message payloads.
 
 Native, JVM/Maven, connector-archive, coakka-client, and
 coakka-runtime-inspect sample pins resolve exact generation
-`2.3.0+a83ab412`. Registry-backed npm, PyPI, and NuGet samples remain on their
-already published 2.1 coordinates until those registries carry the matching
-2.3 packages; do not generate Stream Lane imports against a 2.1 registry
-package.
+`2.3.0+a83ab412`. Registry-backed npm samples now use `2.3.0` and expose both
+File Lane and Stream Lane. PyPI and NuGet samples remain on their published
+2.1 coordinates; do not generate Stream Lane imports against those packages.
 
 ## Runtime Test
 

@@ -69,21 +69,21 @@ generation, and artifact name.
 
 ## Registry Coordinates
 
-npm, PyPI, and NuGet are independent publication channels. npm 2.1.1 is
+npm, PyPI, and NuGet are independent publication channels. npm `2.3.0` is
 published and clean-install verified. NuGet and PyPI `2.1.0` are also published
 and clean-install verified:
 
 | Registry | Current verified coordinate | Bundled native generation |
 | --- | --- | --- |
-| npm | `coakka-v2-connector-{node,bun,electron}@2.1.1` | `2.1.0+60ddf70d` |
+| npm | `coakka-v2-connector-{node,bun,electron}@2.3.0` | `2.3.0+a83ab412` |
 | PyPI | `coakka-v2-connector==2.1.0` | `2.1.0+60ddf70d` |
 | NuGet | `CoAkka.Runtime==2.1.0` | `2.1.0+60ddf70d` |
 | Go modules | `github.com/phuong-tran/coakka-runtime-go@v1.6.0` | `2.3.0+a83ab412` |
 | SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v2.3.0` | `2.3.0+a83ab412` |
 
-The npm 2.1.1, PyPI 2.1.0, and NuGet 2.1.0 packages expose File Lane but not
-Stream Lane. Go `v1.6.0` and Swift `v2.3.0` expose both lanes. Select an exact
-coordinate whose release receipt records the required native generation.
+npm `2.3.0`, Go `v1.6.0`, and Swift `v2.3.0` expose File Lane and Stream Lane.
+PyPI `2.1.0` and NuGet `2.1.0` expose File Lane but not Stream Lane. Select an
+exact coordinate whose release receipt records the required native generation.
 
 ## File-Lane Generation Rule
 

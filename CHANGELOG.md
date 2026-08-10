@@ -5,6 +5,13 @@ surface. It is not a repository release ledger. Artifact versions, manifests,
 and checksums live in the versioned
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) warehouse.
 
+## 2026-08-10
+
+- Advanced Node.js, Bun, and Electron samples to registry-published npm runtime
+  `2.3.0` over native generation `2.3.0+a83ab412`. Clean package-manager
+  smokes cover Node.js and Bun request/reply, Node.js deadletter, and Electron
+  main-process intent. The npm connectors now expose File Lane and Stream Lane.
+
 ## 2026-08-09
 
 - Advanced Go and Swift samples to documentation-integrity patches `v1.5.1`
