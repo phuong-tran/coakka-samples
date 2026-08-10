@@ -13,6 +13,8 @@ Use inspect when a user needs to see runtime facts in a browser:
 - route catalog
 - endpoint topology
 - effective connection strategy, defaults revision, and tuning provenance
+- runtime feature availability, including independent File Lane and Stream Lane
+  support when reported
 - effective capability masks and non-secret TLS/mTLS state
 - health and pressure state
 - recent runtime events
@@ -27,6 +29,10 @@ The transport section reports what the connected runtime says is active. TLS
 credential contents, private keys, and credential file paths are never exposed.
 When certificate identity metadata is available, inspect shows only non-secret
 fields such as credential ID and generation, validity bounds, and fingerprint.
+
+Inspect reports lane availability only. Active File Lane and Stream Lane
+sessions remain application-owned; the UI does not invent active-session facts
+that the runtime snapshot does not expose.
 
 ## How It Differs From Swagger
 

@@ -14,6 +14,8 @@ terminal or script:
 - run `doctor` checks against the packaged runtime client
 - read a bounded capability, connection-strategy, and non-secret security
   snapshot from a connected runtime
+- report independent runtime features such as File Lane and Stream Lane from
+  local metadata or a connected runtime snapshot
 - send one request to a runtime target
 - use `call` or `ask` for request/reply verification
 - carry payload metadata such as content type, message type, schema version,
@@ -49,6 +51,11 @@ target. Connection, timeout, deadletter, invalid snapshot, and runtime error
 outcomes are returned as structured JSON with a nonzero process exit status.
 The command prints the runtime-provided snapshot unchanged after validating
 that the response is a JSON object.
+
+Feature reporting does not make `coakka-client` a file or stream source/sink.
+Applications continue to own lane data, lifecycle, and adaptation through
+their connector; the client reports available metadata for scripts and release
+checks.
 
 ## Naming
 
