@@ -8,8 +8,9 @@ import (
 	"time"
 
 	connector "github.com/phuong-tran/coakka-runtime-go"
-	coakkav2 "github.com/phuong-tran/coakka-runtime-go/coakka/v2"
 )
+
+const deadletterReasonRouteMiss int32 = 2
 
 func main() {
 	liveTarget := "samples.runtime.go.deadletter.live"
@@ -59,7 +60,7 @@ func main() {
 	stats := runtimeHost.Stats()
 	clientStats := runtimeHost.ClientStats()
 
-	if deadletter.GetReason() != coakkav2.DeadletterReason_DEADLETTER_REASON_ROUTE_MISS {
+	if int32(deadletter.GetReason()) != deadletterReasonRouteMiss {
 		fail("expected route miss reason, got %s", deadletter.GetReason().String())
 	}
 	if deadletter.GetOriginalEnvelope().GetTarget() != missingTarget {

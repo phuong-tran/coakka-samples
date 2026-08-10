@@ -119,7 +119,7 @@ original correlation ID as observation metadata.
 
 ## Deadletter Reasons
 
-The numeric values are stable across protobuf and the public C ABI.
+The numeric values are stable across connectors and the core runtime.
 
 | Value | Reason | Meaning and usual response |
 | ---: | --- | --- |
