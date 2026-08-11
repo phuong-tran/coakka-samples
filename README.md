@@ -51,11 +51,12 @@ core or every runtime package. The current SFTP artifact-publisher lane shows
 how Service A can acquire and verify a file, then distribute it through File
 Lane.
 
-SFTP artifact publisher `0.1.0+40810b79` is available for `macos-aarch64` in
-the isolated [`runtime-addons/`](runtime-addons/README.md) tree. Its native
-sample consumes the immutable addon archive and Runtime `2.3.0`. The addon is
-still not added to the root main lane because its release cadence and platform
-surface are independent from Runtime and Logger.
+SFTP artifact publisher `0.2.0+c5656cc8` is available for Linux ARM64/x86-64,
+macOS ARM64, and Windows 11 ARM64/x86-64 in the isolated
+[`runtime-addons/`](runtime-addons/README.md) tree. Its native sample consumes
+the immutable addon archive and Runtime `2.3.0`. The addon is still not added to
+the root main lane because its release cadence is independent from Runtime and
+Logger.
 
 ## Runtime Transport
 

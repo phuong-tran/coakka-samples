@@ -4,7 +4,7 @@ project(CoAkkaSftpArtifactPublisherSample LANGUAGES C)
 find_package(CoAkkaRuntimeNativeV2 CONFIG REQUIRED)
 find_package(CoAkkaRuntimeAddonArtifactPublisherSftp CONFIG REQUIRED)
 
-add_library(coakka_sftp_sample_common STATIC sample_common.c sample_common.h)
+add_library(coakka_sftp_sample_common OBJECT sample_common.c sample_common.h)
 target_compile_features(coakka_sftp_sample_common PUBLIC c_std_11)
 target_include_directories(coakka_sftp_sample_common PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR})
