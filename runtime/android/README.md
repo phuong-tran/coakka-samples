@@ -29,7 +29,7 @@ From the Android project root on macOS or Linux:
 ```sh
 mkdir -p app/libs
 curl -fL \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/android/releases/1.1.0+345e97b2/coakka-runtime-android-1.1.0.aar" \
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/maven/android/releases/1.1.0+345e97b2/coakka-runtime-android-1.1.0.aar" \
   -o app/libs/coakka-runtime-android-1.1.0.aar
 
 printf '%s  %s\n' \
@@ -43,7 +43,7 @@ PowerShell:
 ```powershell
 New-Item -ItemType Directory -Force app/libs | Out-Null
 Invoke-WebRequest `
-  -Uri "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/android/releases/1.1.0+345e97b2/coakka-runtime-android-1.1.0.aar" `
+  -Uri "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/maven/android/releases/1.1.0+345e97b2/coakka-runtime-android-1.1.0.aar" `
   -OutFile "app/libs/coakka-runtime-android-1.1.0.aar"
 
 (Get-FileHash "app/libs/coakka-runtime-android-1.1.0.aar" -Algorithm SHA256).Hash
@@ -276,4 +276,4 @@ unreachable peer after a successful bind usually means `advertiseHost`, device
 firewall, Wi-Fi isolation, VPN, or route configuration is wrong.
 
 For release identity and remaining evidence gaps, read the Android candidate's
-[`RELEASE.md`](https://github.com/phuong-tran/coakka-publish/blob/main/runtime/android/releases/1.1.0+345e97b2/RELEASE.md).
+[`RELEASE.md`](https://github.com/phuong-tran/coakka-publish/blob/main/maven/android/releases/1.1.0+345e97b2/RELEASE.md).
