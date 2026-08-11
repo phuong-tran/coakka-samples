@@ -26,9 +26,11 @@ Watch the C# runtime walkthrough:
 Full recording: [coakka-runtime-csharp.mp4](../../docs/assets/coakka-runtime-csharp.mp4)
 
 The C# sample expects .NET SDK 10 or newer.
-`RuntimeHost.StartLocal(...)` now auto-selects one free IPv4 loopback port for
-the local route metadata when the sample does not set `diagnosticPort`
-explicitly.
+This sample pins `CoAkka.Runtime 2.3.0`, which predates explicit runtime network
+modes and retains the legacy auto-selected loopback diagnostic port. Do not
+copy that port behavior into a new connector generation: explicit `EMBEDDED`
+mode uses local endpoint port `0` and opens no listener. See
+[Runtime Network Modes](../../docs/runtime-network-modes.md).
 
 The first-run API is local-first:
 

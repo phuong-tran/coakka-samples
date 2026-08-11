@@ -714,11 +714,15 @@ env:
     valueFrom:
       fieldRef:
         fieldPath: metadata.name
-  - name: COAKKA_LOCAL_HOST
+  - name: COAKKA_BIND_HOST
+    value: "0.0.0.0"
+  - name: COAKKA_BIND_PORT
+    value: "19301"
+  - name: COAKKA_ADVERTISE_HOST
     valueFrom:
       fieldRef:
         fieldPath: status.podIP
-  - name: COAKKA_LOCAL_PORT
+  - name: COAKKA_ADVERTISE_PORT
     value: "19301"
 ```
 
@@ -732,11 +736,20 @@ val startSpec = RuntimeStartSpec(
     strictNoDrop = true,
     generation = envLong("COAKKA_ROUTE_GENERATION", 1),
     routes = routeSnapshotFromConfig(),
+    network = RuntimeNetworkConfig.networkNode(
+        bindHost = env("COAKKA_BIND_HOST", "0.0.0.0"),
+        bindPort = envInt("COAKKA_BIND_PORT", 19301),
+        advertiseHost = requireNotNull(System.getenv("COAKKA_ADVERTISE_HOST")) {
+            "COAKKA_ADVERTISE_HOST is required for NETWORK_NODE"
+        },
+        advertisePort = envInt("COAKKA_ADVERTISE_PORT", 19301),
+    ),
 )
 ```
 
-The app-host or connector maps platform config into `RuntimeStartSpec` and the
-route snapshot.
+The app-host or connector maps platform config into `RuntimeStartSpec`. Local
+route endpoints remain port `0`; remote route endpoints use the advertised
+addresses of their destination nodes.
 
 For more deployment detail, read
 [Containerized Runtime Notes](containerized-runtime.md).

@@ -8,8 +8,9 @@ The short rule:
 ```text
 systemName is planned by humans.
 nodeId is assigned at runtime by the platform.
-host/port are advertised endpoint config read at startup from the environment
-or control plane.
+network mode and bind/advertise addresses are startup policy.
+remote route host/port values come from service discovery or the control plane.
+local route endpoints use port 0 and do not own a listener.
 ```
 
 Do not bake a different `nodeId` into each image.
@@ -22,6 +23,9 @@ values, ConfigMaps, Service DNS, or pod metadata at startup. The connector then
 maps those values into `RuntimeStartSpec` and the initial route snapshot.
 Operators should not have to manually maintain per-pod hostnames in application
 code.
+
+Read [Runtime Network Modes](runtime-network-modes.md) first for the
+`EMBEDDED`, `OUTBOUND_ONLY`, and `NETWORK_NODE` ownership contract.
 
 ## Build Time Versus Runtime
 
@@ -58,13 +62,13 @@ The connector reads that value and passes it into `RuntimeStartSpec`.
 This mapping belongs to the app host or connector layer. The runtime does not
 silently read Kubernetes metadata or environment variables by itself. That
 keeps tests and non-container hosts deterministic, but production integrations
-must explicitly map platform config into the start spec and route snapshot.
+must explicitly map platform config into the network policy and route snapshot.
 
-The same rule applies to endpoint `host` and `port`. Local samples often use
-`127.0.0.1`, but production connectors should read advertised endpoint
-addresses from environment variables, Kubernetes metadata, service discovery,
-or a control-plane route snapshot when the process starts. In ordinary
-Kubernetes deployments, hostname does not need to be recomputed continuously;
+Do not overload local route metadata with listener ownership. A local endpoint
+uses port `0`. A reachable process selects `NETWORK_NODE` and maps its bind and
+advertised addresses from environment variables or pod metadata. Remote route
+endpoints come from service discovery or a control-plane snapshot. In ordinary
+Kubernetes deployments, these values do not need to be recomputed continuously;
 Service DNS and pod metadata are stable enough for the pod lifecycle.
 
 ## Kubernetes
@@ -81,11 +85,15 @@ env:
     valueFrom:
       fieldRef:
         fieldPath: metadata.name
-  - name: COAKKA_LOCAL_HOST
+  - name: COAKKA_BIND_HOST
+    value: "0.0.0.0"
+  - name: COAKKA_BIND_PORT
+    value: "19301"
+  - name: COAKKA_ADVERTISE_HOST
     valueFrom:
       fieldRef:
         fieldPath: status.podIP
-  - name: COAKKA_LOCAL_PORT
+  - name: COAKKA_ADVERTISE_PORT
     value: "19301"
 ```
 
@@ -108,10 +116,12 @@ In application code:
 val systemName = System.getenv("COAKKA_SYSTEM_NAME") ?: "billing"
 val nodeId = System.getenv("COAKKA_NODE_ID")
     ?: InetAddress.getLocalHost().hostName
-val localHost = System.getenv("COAKKA_LOCAL_HOST")
+val bindHost = System.getenv("COAKKA_BIND_HOST") ?: "0.0.0.0"
+val bindPort = System.getenv("COAKKA_BIND_PORT")?.toInt() ?: 19301
+val advertiseHost = System.getenv("COAKKA_ADVERTISE_HOST")
     ?: InetAddress.getLocalHost().hostAddress
-val localPort = System.getenv("COAKKA_LOCAL_PORT")?.toInt()
-    ?: 19301
+val advertisePort = System.getenv("COAKKA_ADVERTISE_PORT")?.toInt()
+    ?: bindPort
 
 val startSpec = RuntimeStartSpec(
     systemName = systemName,
@@ -120,20 +130,32 @@ val startSpec = RuntimeStartSpec(
     strictNoDrop = true,
     generation = generation,
     routes = routes,
+    network = RuntimeNetworkConfig.networkNode(
+        bindHost = bindHost,
+        bindPort = bindPort,
+        advertiseHost = advertiseHost,
+        advertisePort = advertisePort,
+    ),
 )
 ```
 
-## Endpoint Host And Port
+`routes` contains local endpoints with port `0` and remote endpoints that point
+at the advertised addresses of their destination nodes.
 
-`host` and `port` answer this question:
+## Network And Route Addresses
 
-```text
-What address should other runtime participants use for this endpoint?
-```
+Bind, advertise, and route addresses answer different questions:
+
+| Address | Question |
+| --- | --- |
+| Network bind | Which local interface and port does this process listen on? |
+| Network advertise | Which concrete address should peers use for this process? |
+| Remote route endpoint | Which advertised destination should this target use? |
+| Local route endpoint | Is this target delivered in process? Use port `0`; no socket is involved. |
 
 They are not meant to be manually edited in application source for every
-deployment. The connector should map environment or control-plane data into the
-route snapshot.
+deployment. The connector maps environment config into the startup network
+policy and maps discovery/control-plane data into remote route endpoints.
 
 Common sources:
 
@@ -147,23 +169,28 @@ Common sources:
 Examples:
 
 ```text
-local dev:
+same-process local route:
   host = 127.0.0.1
-  port = 19301
+  port = 0
+  flags = LOCAL
 
-Kubernetes pod endpoint:
-  host = ${COAKKA_LOCAL_HOST}        # status.podIP
-  port = ${COAKKA_LOCAL_PORT}
+local development network node:
+  bind = 127.0.0.1:19301
+  advertise = 127.0.0.1:19301
 
-Kubernetes service endpoint:
+Kubernetes pod network node:
+  bind = ${COAKKA_BIND_HOST}:${COAKKA_BIND_PORT}
+  advertise = ${COAKKA_ADVERTISE_HOST}:${COAKKA_ADVERTISE_PORT}
+
+remote route through Kubernetes Service DNS:
   host = customer-store.default.svc.cluster.local
   port = 19301
 
-StatefulSet endpoint:
+remote route through StatefulSet DNS:
   host = customer-store-0.customer-store.default.svc.cluster.local
   port = 19301
 
-Docker Compose:
+remote route through Docker Compose DNS:
   host = python-store
   port = 19301
 ```
@@ -214,8 +241,10 @@ services:
     environment:
       COAKKA_SYSTEM_NAME: billing
       COAKKA_NODE_ID: ${HOSTNAME}
-      COAKKA_LOCAL_HOST: billing
-      COAKKA_LOCAL_PORT: "19301"
+      COAKKA_BIND_HOST: 0.0.0.0
+      COAKKA_BIND_PORT: "19301"
+      COAKKA_ADVERTISE_HOST: billing
+      COAKKA_ADVERTISE_PORT: "19301"
 ```
 
 Exact Compose interpolation behavior varies by runtime and shell. When in
