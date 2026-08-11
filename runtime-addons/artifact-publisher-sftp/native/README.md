@@ -41,7 +41,7 @@ bash run.sh check
 bash run.sh source-candidate
 ```
 
-`published` is the default and consumes addon `0.2.1+c5656cc8` plus Runtime
+`published` is the default and consumes addon `1.1.0+42841ae2` plus Runtime
 `2.3.0`. The full fixture runs on supported macOS and Linux hosts. `check`
 compiles against sibling Core source headers. `source-candidate` builds the
 next addon candidate from a sibling Core checkout. Override workspace discovery
@@ -55,7 +55,7 @@ pkg-config, and static libssh2 `1.11.1` plus its crypto closure.
 ## Windows Build
 
 On Windows 11 ARM64 or x86-64, extract the matching Runtime `2.3.0` archive and
-the SFTP addon `0.2.1` archive. The current package carries GNU-compatible
+the SFTP addon `1.1.0` archive. The current package carries GNU-compatible
 import libraries and is verified with Zig's `windows-gnu` target. Configure the
 same two C applications from PowerShell with the included toolchain file:
 

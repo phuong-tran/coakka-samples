@@ -32,7 +32,7 @@ The sample uses two native C11 processes and the public C contracts only:
   with a separate source-candidate mode for contributors.
 
 This sample is deliberately not wired into the root sample runner. It consumes
-the immutable `0.2.1+c5656cc8` five-target addon archive while preserving the
+the immutable `1.1.0+42841ae2` five-target addon archive while preserving the
 addon's independent package and release boundary.
 
 See the [native walkthrough](native/README.md) for commands and production

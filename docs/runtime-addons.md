@@ -5,7 +5,7 @@ with CoAkka Runtime without becoming part of runtime core or the default runtime
 package. Each addon owns one focused external workflow or protocol family and
 uses stable runtime features such as File Lane when distribution is needed.
 
-> **Current status:** SFTP artifact publisher `0.2.1+c5656cc8` is public for
+> **Current status:** SFTP artifact publisher `1.1.0+42841ae2` is public for
 > Linux ARM64/x86-64, macOS ARM64, and Windows 11 ARM64/x86-64. It requires
 > Runtime native `2.3.0` or newer and remains separate from the default Runtime
 > package and connector lanes.
@@ -79,7 +79,7 @@ with its manifest and `SHA256SUMS`.
 
 | Addon | Workflow | Public status |
 | --- | --- | --- |
-| [SFTP artifact publisher](https://github.com/phuong-tran/coakka-publish/tree/main/runtime-addons/artifact-publisher-sftp) | Service A fetches from a pinned SFTP source, verifies size and SHA-256, stages without replacement, and distributes through sender File Lane to one or more services. | Public native `0.2.1+c5656cc8` archive for five targets; [two-process C11 sample](https://github.com/phuong-tran/coakka-samples/tree/main/runtime-addons/artifact-publisher-sftp/native). |
+| [SFTP artifact publisher](https://github.com/phuong-tran/coakka-publish/tree/main/runtime-addons/artifact-publisher-sftp) | Service A fetches from a pinned SFTP source, verifies size and SHA-256, stages without replacement, and distributes through sender File Lane to one or more services. | Public native `1.1.0+42841ae2` archive for five targets; [two-process C11 sample](https://github.com/phuong-tran/coakka-samples/tree/main/runtime-addons/artifact-publisher-sftp/native). |
 
 The SFTP workflow composes existing boundaries:
 
@@ -108,8 +108,8 @@ from promoted public coordinates.
 The current immutable coordinate is:
 
 ```text
-runtime-addons/artifact-publisher-sftp/native/releases/0.2.1+c5656cc8/
-  coakka-runtime-addon-artifact-publisher-sftp-native-0.2.1.tar.gz
+runtime-addons/artifact-publisher-sftp/native/releases/1.1.0+42841ae2/
+  coakka-runtime-addon-artifact-publisher-sftp-native-1.1.0.tar.gz
 ```
 
 Its matching-host evidence covers all five packaged modules, reviewed exports,
