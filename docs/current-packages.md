@@ -29,9 +29,10 @@ default runtime package. Addons carry their own versions, compatibility
 manifests, native dependency closure, and matching-host evidence.
 
 No runtime addon is currently published. The SFTP artifact publisher is a
-source candidate with a release contract and package template, not an
-installable coordinate. Do not generate consumer imports or sample commands
-until an addon archive appears in `artifacts/public-artifacts.tsv`.
+source candidate with a release contract, package template, and isolated native
+source-candidate sample, not an installable coordinate. Do not generate package
+manager imports or add it to the root main sample lane until an addon archive
+appears in `artifacts/public-artifacts.tsv`.
 
 ## Package Manager Entrypoints
 

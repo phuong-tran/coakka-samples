@@ -120,7 +120,14 @@ every runtime package.
 
 Check `artifacts/public-artifacts.tsv` before writing imports or install
 commands. The current SFTP artifact publisher is a release contract and package
-template only, so there is no public sample command yet.
+template with a separate native source-candidate sample. The sample builds from
+the sibling Core checkout and is not a public install command or part of the
+root main lane. Use it for pre-release evaluation only:
+
+```sh
+cd runtime-addons/artifact-publisher-sftp/native
+bash run.sh source-candidate
+```
 
 ## Step 8: Read Production-Facing Notes
 

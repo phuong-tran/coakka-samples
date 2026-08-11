@@ -1151,6 +1151,7 @@ Current status:
 ```text
 runtime-addons release family: defined
 SFTP artifact publisher: source candidate and package template
+native SFTP-to-File-Lane sample: source-candidate command only
 public addon archive/install coordinate: none
 ```
 

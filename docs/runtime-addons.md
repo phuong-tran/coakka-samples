@@ -8,7 +8,9 @@ uses stable runtime features such as File Lane when distribution is needed.
 > **Current status:** the public `runtime-addons/` release family and SFTP
 > artifact-publisher package contract are defined, but no runtime addon archive
 > is currently listed in `artifacts/public-artifacts.tsv`. There is no public
-> addon install coordinate yet.
+> addon install coordinate yet. A separate native source-candidate sample now
+> proves the SFTP-to-File-Lane workflow without presenting it as a promoted
+> package.
 
 ## Where Addons Fit
 
@@ -79,7 +81,7 @@ with its manifest and `SHA256SUMS`.
 
 | Addon | Workflow | Public status |
 | --- | --- | --- |
-| [SFTP artifact publisher](https://github.com/phuong-tran/coakka-publish/tree/main/runtime-addons/artifact-publisher-sftp) | Service A fetches from a pinned SFTP source, verifies size and SHA-256, stages without replacement, and distributes through sender File Lane to one or more services. | Release contract and package template only; no public archive or install coordinate. |
+| [SFTP artifact publisher](https://github.com/phuong-tran/coakka-publish/tree/main/runtime-addons/artifact-publisher-sftp) | Service A fetches from a pinned SFTP source, verifies size and SHA-256, stages without replacement, and distributes through sender File Lane to one or more services. | Release contract, package template, and [native source-candidate sample](https://github.com/phuong-tran/coakka-samples/tree/main/runtime-addons/artifact-publisher-sftp/native); no public archive or install coordinate. |
 
 The SFTP workflow composes existing boundaries:
 

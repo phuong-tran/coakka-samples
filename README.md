@@ -52,8 +52,10 @@ how Service A can acquire and verify a file, then distribute it through File
 Lane.
 
 No runtime addon is publicly installable yet, so this repository does not
-present an addon sample command. A sample appears only after the exact addon
-archive is listed in `coakka-publish/artifacts/public-artifacts.tsv`.
+add an addon command to the root main lane. The isolated
+[`runtime-addons/`](runtime-addons/README.md) tree contains a native SFTP
+source-candidate sample for release evaluation; it builds the addon from a
+sibling Core checkout rather than implying a public install coordinate.
 
 ## Runtime Transport
 
