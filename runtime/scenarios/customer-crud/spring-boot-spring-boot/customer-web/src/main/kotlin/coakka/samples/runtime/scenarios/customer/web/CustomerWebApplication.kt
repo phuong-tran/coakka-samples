@@ -15,6 +15,7 @@ import coakka.v2.connector.ConnectorOrchestrator
 import coakka.v2.connector.DeadletterException
 import coakka.v2.connector.RuntimeEndpointFlags
 import coakka.v2.connector.RuntimeEndpointSpec
+import coakka.v2.connector.RuntimeNetworkConfig
 import coakka.v2.connector.RuntimeRouteSpec
 import coakka.v2.connector.RuntimeStartSpec
 import coakka.v2.connector.protocol.ConnectorDeliveryHint
@@ -139,6 +140,11 @@ class CustomerWebConnectorConfiguration {
                 queueCapacity = 128,
                 strictNoDrop = true,
                 generation = properties.generation,
+                network = RuntimeNetworkConfig.networkNode(
+                    bindHost = properties.localHost,
+                    bindPort = properties.localPort,
+                    advertiseHost = properties.localHost,
+                ),
                 routes = listOf(
                     RuntimeRouteSpec(
                         target = properties.localTarget,

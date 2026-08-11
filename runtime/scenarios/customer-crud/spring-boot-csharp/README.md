@@ -9,14 +9,14 @@ This scenario runs:
 
 The Spring Boot web service reuses the same customer UI/API from the
 Spring-to-Spring scenario. The C# store uses the published
-`CoAkka.Runtime==2.3.0` NuGet package and runs as a headless message handler.
+`CoAkka.Runtime==2.4.0` NuGet package and runs as a headless message handler.
 
 ## Runtime Transport Note
 
-This scenario expects a runtime with cross-process delivery enabled v2 artifact. The web service
-sends business requests only through the runtime route. There is no C# store
-REST fallback, so delivery failures are returned explicitly instead of being
-hidden by HTTP fallback behavior.
+This scenario enables `NETWORK_NODE` explicitly on both runtime participants.
+The web service sends business requests only through the runtime route. There
+is no C# store REST fallback, so delivery failures are returned explicitly
+instead of being hidden by HTTP fallback behavior.
 
 The web UI is shared with the Spring-to-Spring scenario. Store state is visible
 only through the web service list action, which is also a runtime message.

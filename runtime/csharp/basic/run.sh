@@ -20,7 +20,7 @@ export NUGET_HTTP_CACHE_PATH="${tmp_dir}/http-cache"
 
 dotnet new console -o "${tmp_dir}/consumer" --framework net10.0 --force >/dev/null
 dotnet add "${tmp_dir}/consumer/consumer.csproj" package CoAkka.Runtime \
-  --version 2.3.0 \
+  --version 2.4.0 \
   --source "https://api.nuget.org/v3/index.json" >/dev/null
 cp "${script_dir}/Program.cs" "${tmp_dir}/consumer/Program.cs"
 

@@ -17,11 +17,13 @@ a store REST API; it stays alive only to serve the runtime handler.
 
 ## Runtime Transport Note
 
-This scenario expects a runtime with cross-process delivery enabled v2 artifact. The web service
-sends customer business requests only through the runtime route; there is no
-store REST fallback. If the runtime cannot deliver to `customer-store`, the web
-API returns an explicit runtime delivery failure so the issue is visible in the
-UI and smoke output.
+Both processes use explicit `NETWORK_NODE` participation. Each process binds
+and advertises its configured local host/port; route endpoints remain routing
+metadata and do not implicitly create listeners. The web service sends customer
+business requests only through the runtime route; there is no store REST
+fallback. If the runtime cannot deliver to `customer-store`, the web API returns
+an explicit runtime delivery failure so the issue is visible in the UI and
+smoke output.
 
 The route table is configured in `customer-web/src/main/resources/application.yml`:
 

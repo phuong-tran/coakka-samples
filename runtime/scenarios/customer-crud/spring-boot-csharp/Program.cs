@@ -27,7 +27,12 @@ var spec = new ConnectorStartSpec(
                     Flags: RuntimeEndpointFlags.None),
             ]),
     ],
-    EnableMonitor: true);
+    EnableMonitor: true,
+    Network: RuntimeNetworkConfig.NetworkNode(
+        bindHost: "127.0.0.1",
+        bindPort: 19142,
+        advertiseHost: "127.0.0.1",
+        advertisePort: 19142));
 
 using var runtime = RuntimeHost.Start(spec);
 runtime.RegisterHandler(

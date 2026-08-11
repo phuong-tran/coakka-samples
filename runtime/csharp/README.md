@@ -1,8 +1,8 @@
 # C# Runtime Samples
 
 C# runtime samples document the `CoAkka.Runtime` NuGet package shape. This
-runtime lane consumes package version `2.3.0` from NuGet, built against native
-runtime `2.3.0+a83ab412` from connector source `3a84c7b`.
+runtime lane consumes package version `2.4.0` from NuGet, built against native
+runtime `2.4.0+c2f53117` from connector source `0afb5e9`.
 
 For a CRUD developer, the point is not to replace ASP.NET Core. Keep HTTP at
 the browser/API edge. Use CoAkka for work that is owned by the application
@@ -25,11 +25,11 @@ Watch the C# runtime walkthrough:
 
 Full recording: [coakka-runtime-csharp.mp4](../../docs/assets/coakka-runtime-csharp.mp4)
 
-The C# sample expects .NET SDK 10 or newer.
-This sample pins `CoAkka.Runtime 2.3.0`, which predates explicit runtime network
-modes and retains the legacy auto-selected loopback diagnostic port. Do not
-copy that port behavior into a new connector generation: explicit `EMBEDDED`
-mode uses local endpoint port `0` and opens no listener. See
+The C# sample expects .NET SDK 10 or newer. It uses the `EMBEDDED` default,
+keeps local endpoint metadata at port `0`, and opens no TCP listener. Choose
+`RuntimeNetworkConfig.OutboundOnly()` for a client-only remote participant or
+`RuntimeNetworkConfig.NetworkNode(...)` with explicit bind and advertise
+endpoints for an inbound network node. See
 [Runtime Network Modes](../../docs/runtime-network-modes.md).
 
 The first-run API is local-first:
@@ -203,7 +203,7 @@ deadletter, native loading, lifecycle, and diagnostics baseline.
 
 ## What This Sample Proves
 
-- `dotnet` can install `CoAkka.Runtime==2.3.0` from nuget.org.
+- `dotnet` can install `CoAkka.Runtime==2.4.0` from nuget.org.
 - The package can load the native runtime from the bundled macOS, Linux, and
   Windows RID assets.
 - A .NET process can start one process-owned `RuntimeHost`.
@@ -233,4 +233,4 @@ evidence, and it defines when only workflow pseudocode is justified.
 
 The current public package train includes File Lane and Stream Lane. Use the
 exact C# types, callbacks, ownership, and disposal rules shipped by NuGet
-`2.3.0` when integrating either lane.
+`2.4.0` when integrating either lane.

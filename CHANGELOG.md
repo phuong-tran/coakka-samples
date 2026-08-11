@@ -5,6 +5,15 @@ surface. It is not a repository release ledger. Artifact versions, manifests,
 and checksums live in the versioned
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) warehouse.
 
+## 2026-08-12
+
+- Advanced C# samples to registry-published `CoAkka.Runtime==2.4.0` over
+  native generation `2.4.0+c2f53117`. A clean NuGet restore loads the package
+  and passes request/reply plus matched deadletter; the Spring Boot-to-C#
+  scenario completes live CRUD with explicit network-node listeners.
+- Advanced Node.js, Bun, and Electron samples to registry-published npm runtime
+  `2.4.0` over native generation `2.4.0+c2f53117`.
+
 ## 2026-08-10
 
 - Advanced Python samples to registry-published

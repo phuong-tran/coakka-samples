@@ -16,9 +16,9 @@ packaging surface, and native payload.
 
 The promoted repository artifact generation is `2.4.0+c2f53117`. Its native,
 JVM, Spring Boot, Quarkus, and connector archives expose File Lane, Stream
-Lane, and explicit runtime network participation modes. npm has been promoted
-to `2.4.0`; PyPI, NuGet, Go modules, and SwiftPM remain on the separately
-listed coordinates until their next publication steps.
+Lane, and explicit runtime network participation modes. npm and NuGet have
+been promoted to `2.4.0`; PyPI, Go modules, and SwiftPM remain on the
+separately listed coordinates until their next publication steps.
 
 For exact package contents, matching-host execution, and known platform gaps,
 use [Runtime Package And Platform Evidence](runtime-package-platform-evidence.md).
@@ -48,7 +48,7 @@ main sample lane remains reserved for Runtime and Logger packages.
 
 | Channel | Runtime package | Logger package | Sample command |
 | --- | --- | --- | --- |
-| NuGet | [`CoAkka.Runtime` 2.3.0](https://www.nuget.org/packages/CoAkka.Runtime/2.3.0) | [`CoAkka.Logger` 1.2.2](https://www.nuget.org/packages/CoAkka.Logger/1.2.2) | `bash run.sh runtime csharp basic` |
+| NuGet | [`CoAkka.Runtime` 2.4.0](https://www.nuget.org/packages/CoAkka.Runtime/2.4.0) | [`CoAkka.Logger` 1.2.2](https://www.nuget.org/packages/CoAkka.Logger/1.2.2) | `bash run.sh runtime csharp basic` |
 | npm | [`coakka-v2-connector-node` 2.4.0](https://www.npmjs.com/package/coakka-v2-connector-node/v/2.4.0) | [`coakka-logger-node` 1.2.6](https://www.npmjs.com/package/coakka-logger-node/v/1.2.6) | `bash run.sh runtime node basic` |
 | npm (Bun) | [`coakka-v2-connector-bun` 2.4.0](https://www.npmjs.com/package/coakka-v2-connector-bun/v/2.4.0) | [`coakka-logger-bun` 1.2.6](https://www.npmjs.com/package/coakka-logger-bun/v/1.2.6) | `bash run.sh runtime bun basic` |
 | npm (Electron) | [`coakka-v2-connector-electron` 2.4.0](https://www.npmjs.com/package/coakka-v2-connector-electron/v/2.4.0) | [`coakka-logger-electron` 1.2.6](https://www.npmjs.com/package/coakka-logger-electron/v/1.2.6) | `bash run.sh runtime electron basic` |
@@ -73,7 +73,7 @@ suffix.
 | Connector archives | `runtime/<lane>/releases/2.4.0+c2f53117-0afb5e9/` |
 | npm | `coakka-v2-connector-{node,bun,electron}@2.4.0` |
 | PyPI | `coakka-v2-connector`, exact `2.3.0` |
-| NuGet | `CoAkka.Runtime`, exact `2.3.0` |
+| NuGet | `CoAkka.Runtime`, exact `2.4.0` |
 | Go module | `github.com/phuong-tran/coakka-runtime-go@v1.6.0` |
 | SwiftPM | `https://github.com/phuong-tran/coakka-runtime-swift.git`, exact `2.3.0` |
 | coakka-client | `coakka-tools/coakka-client/releases/2.3.0+a83ab412/` |
