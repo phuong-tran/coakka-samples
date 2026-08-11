@@ -12,10 +12,10 @@ Use these identities together:
 | Identity | Value |
 | --- | --- |
 | Android connector | `1.1.0` |
-| Native runtime package | `2.3.0+6516990e` |
+| Native runtime package | `2.3.0+345e97b2` |
 | Android ABIs | `arm64-v8a`, `x86_64` |
 | Minimum Android API | `24` |
-| AAR SHA-256 | `feec69784bc499875a0332770f85c113b0801baf312cfd9969ecc321649c9ae3` |
+| AAR SHA-256 | `3ce799885322c9ac92664bf028591bc77432960e7b2d85ecbd3c4e73362bf3cb` |
 
 This AAR is a packaged candidate on the
 `coakka-publish/feature/android-runtime-aar` branch. It is not in the current
@@ -30,11 +30,11 @@ From the Android project root on macOS or Linux:
 ```sh
 mkdir -p app/libs
 curl -fL \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/feature/android-runtime-aar/runtime/android/releases/1.1.0+6516990e/coakka-runtime-android-1.1.0.aar" \
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/feature/android-runtime-aar/runtime/android/releases/1.1.0+345e97b2/coakka-runtime-android-1.1.0.aar" \
   -o app/libs/coakka-runtime-android-1.1.0.aar
 
 printf '%s  %s\n' \
-  'feec69784bc499875a0332770f85c113b0801baf312cfd9969ecc321649c9ae3' \
+  '3ce799885322c9ac92664bf028591bc77432960e7b2d85ecbd3c4e73362bf3cb' \
   'app/libs/coakka-runtime-android-1.1.0.aar' \
   | shasum -a 256 -c -
 ```
@@ -44,7 +44,7 @@ PowerShell:
 ```powershell
 New-Item -ItemType Directory -Force app/libs | Out-Null
 Invoke-WebRequest `
-  -Uri "https://raw.githubusercontent.com/phuong-tran/coakka-publish/feature/android-runtime-aar/runtime/android/releases/1.1.0+6516990e/coakka-runtime-android-1.1.0.aar" `
+  -Uri "https://raw.githubusercontent.com/phuong-tran/coakka-publish/feature/android-runtime-aar/runtime/android/releases/1.1.0+345e97b2/coakka-runtime-android-1.1.0.aar" `
   -OutFile "app/libs/coakka-runtime-android-1.1.0.aar"
 
 (Get-FileHash "app/libs/coakka-runtime-android-1.1.0.aar" -Algorithm SHA256).Hash
@@ -226,7 +226,12 @@ Use one blocking reader per output lane that the app consumes:
 - `readDeliveredRequest()`;
 - `readResponse()`;
 - `readDeadletter()`;
-- `consumeMonitorDoorbell()`, followed by `readHealth()`.
+- `waitForMonitorDoorbell()`, followed by `readHealth()`.
+
+`waitForMonitorDoorbell()` sleeps in `poll(2)` without a periodic timeout and
+returns `null` when `close()` cancels the lane. `consumeMonitorDoorbell()`
+remains an immediate nonblocking drain for callers that already own a readiness
+signal.
 
 Do not read one lane from multiple workers. On shutdown:
 
@@ -272,4 +277,4 @@ unreachable peer after a successful bind usually means `advertiseHost`, device
 firewall, Wi-Fi isolation, VPN, or route configuration is wrong.
 
 For release identity and remaining evidence gaps, read the Android candidate's
-[`RELEASE.md`](https://github.com/phuong-tran/coakka-publish/blob/feature/android-runtime-aar/runtime/android/releases/1.1.0+6516990e/RELEASE.md).
+[`RELEASE.md`](https://github.com/phuong-tran/coakka-publish/blob/feature/android-runtime-aar/runtime/android/releases/1.1.0+345e97b2/RELEASE.md).
