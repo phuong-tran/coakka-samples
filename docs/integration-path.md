@@ -111,7 +111,18 @@ bash run.sh scenario customer-crud spring-boot-go dev
 The web process still owns browser/API HTTP. The store process owns the
 customer target. The business call between them stays runtime-only.
 
-## Step 7: Read Production-Facing Notes
+## Step 7: Add An Optional Runtime Capability Only When Published
+
+After the base runtime path is clear, read [Runtime Addons](runtime-addons.md)
+when the app host needs a reusable external protocol or integration workflow.
+An addon composes with Runtime; it does not become a new core lane or arrive in
+every runtime package.
+
+Check `artifacts/public-artifacts.tsv` before writing imports or install
+commands. The current SFTP artifact publisher is a release contract and package
+template only, so there is no public sample command yet.
+
+## Step 8: Read Production-Facing Notes
 
 After the samples make sense, read:
 

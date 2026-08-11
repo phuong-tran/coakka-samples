@@ -7,6 +7,7 @@
 [![sample-smoke](https://github.com/phuong-tran/coakka-samples/actions/workflows/sample-smoke.yml/badge.svg)](https://github.com/phuong-tran/coakka-samples/actions/workflows/sample-smoke.yml)
 
 Troubleshooting: [docs/troubleshooting.md](docs/troubleshooting.md)
+Runtime addons: [docs/runtime-addons.md](docs/runtime-addons.md)
 Contact: `gabrielgun1983@gmail.com`
 
 This is a rolling sample repository, not a release product. It does not publish
@@ -41,6 +42,18 @@ metal, and architecture-matched edge deployments. Check the
 [Ecosystem Overview](docs/ecosystem-overview.md) and the
 [Compatibility Matrix](https://github.com/phuong-tran/coakka-publish/blob/main/docs/compatibility-matrix.md)
 for exact package, OS, CPU, and release-channel evidence.
+
+## Runtime Addons
+
+[Runtime addons](docs/runtime-addons.md) are optional, independently released
+capabilities that compose with public Runtime features without entering runtime
+core or every runtime package. The current SFTP artifact-publisher lane shows
+how Service A can acquire and verify a file, then distribute it through File
+Lane.
+
+No runtime addon is publicly installable yet, so this repository does not
+present an addon sample command. A sample appears only after the exact addon
+archive is listed in `coakka-publish/artifacts/public-artifacts.tsv`.
 
 ## Runtime Transport
 

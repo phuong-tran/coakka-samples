@@ -16,6 +16,7 @@ Start here before reading the full index:
 | [Is CoAkka Equivalent To Kafka Or RabbitMQ?](#is-coakka-equivalent-to-kafka-or-rabbitmq) | No. Durable topics, replay, consumer groups, and broker-owned backpressure still belong to brokers. |
 | [Can CoAkka Replace A Service Mesh Such As Istio?](#can-coakka-replace-a-service-mesh-such-as-istio) | No. It can remove synthetic internal service hops; real mesh/network policy remains a platform concern. |
 | [Does CoAkka Support TLS, mTLS, And Multiple Connection Strategies?](#does-coakka-support-tls-mtls-and-multiple-connection-strategies) | Yes. Full runtime connectors expose capability-gated transport security and connection-strategy configuration. |
+| [What Are Runtime Addons?](#what-are-runtime-addons) | Optional, independently released capabilities that compose with Runtime without entering core or the default package. |
 | [When Is CoAkka Worth Adding?](#when-is-coakka-worth-adding) | When stable runtime targets and honest delivery evidence are worth the added boundary. |
 
 ## Table Of Contents
@@ -30,6 +31,7 @@ Positioning:
 - [Does CoAkka Have A Dashboard?](#does-coakka-have-a-dashboard)
 - [How Do Users Test Runtime Targets Compared With curl Or Swagger?](#how-do-users-test-runtime-targets-compared-with-curl-or-swagger)
 - [Does CoAkka Handle Auth Or Authorization?](#does-coakka-handle-auth-or-authorization)
+- [What Are Runtime Addons?](#what-are-runtime-addons)
 - [How Does Observability And Trace Context Work?](#how-does-observability-and-trace-context-work)
 
 L7, mesh, and platform boundaries:
@@ -91,6 +93,7 @@ Logger and explanation:
 | Kafka/RabbitMQ | CoAkka can reduce broker use for app-owned request/reply handoffs. | The system needs durable topics, consumer groups, replay, fanout, or broker-owned backpressure semantics. |
 | Outbox | CoAkka can route dispatcher or projection work after the app commits. | The question is transactional durability between a database commit and asynchronous publication. |
 | Auth/authz | CoAkka carries already-submitted runtime work and reports delivery outcomes. | The question is identity proof, tenant policy, permission checks, or business authorization. |
+| Runtime addons | Add one focused optional capability without growing runtime core or the default package. | The workflow is application-specific or no verified public addon coordinate exists. |
 | Dashboard | `coakka-runtime-inspect` is a runtime explorer, not an admin dashboard or observability platform. | The team needs fleet dashboards, alerting, long-term metrics, tracing, or tenant operations. |
 | curl/Swagger | Use `coakka-client` or inspect route-try for runtime targets. | The boundary is an HTTP API with paths, methods, status codes, and OpenAPI docs. |
 | Observability/OTel | CoAkka exposes runtime delivery facts that app-hosts can correlate. | The question is trace collection, span export, dashboards, sampling, or organization-wide telemetry policy. |
@@ -1124,6 +1127,35 @@ CQRS and app policy decide what is valid and allowed.
 CoAkka runtime delivers already-submitted work by target and reports delivery
 outcomes.
 ```
+
+## What Are Runtime Addons?
+
+Runtime addons are optional, independently released capabilities that compose
+with CoAkka Runtime through stable public contracts. They keep external
+protocol mechanics, dependencies, credentials, and workflow policy out of
+runtime core and out of the default runtime package.
+
+One addon should own one coherent capability or protocol family. For example,
+the SFTP artifact publisher acquires and verifies an artifact, then uses the
+existing File Lane to distribute it. SFTP does not become part of File Lane,
+and unrelated FTP, FTPS, or object-storage protocols do not belong in the same
+addon merely because they also move files.
+
+Addon versions are independent from Runtime versions. Compatibility comes from
+the addon manifest: runtime ABI major, minimum native runtime version, required
+features, platform evidence, exports, and checksums. A source directory or
+package template is not an installable release.
+
+Current status:
+
+```text
+runtime-addons release family: defined
+SFTP artifact publisher: source candidate and package template
+public addon archive/install coordinate: none
+```
+
+Read [Runtime Addons](runtime-addons.md) before selecting or generating addon
+integration code.
 
 ## Does CoAkka Handle Auth Or Authorization?
 

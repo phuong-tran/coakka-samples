@@ -21,7 +21,8 @@ If you are evaluating CoAkka for the first time, read it in this order:
 | 3 | [Runtime Field Guide](runtime-field-guide.md) | Connect the sample to the normal Kubernetes Service DNS shape, queues, overload, Nginx, and mTLS boundaries. |
 | 4 | [How It Works](how-it-works.md) | Understand app-host, connector, runtime, route snapshot, and handler ownership. |
 | 5 | [Runtime Integration Guide](runtime-integration-guide.md) | Map an existing service into `RuntimeStartSpec`, routes, handlers, and shutdown. |
-| 6 | [Questions And Answers](qna.md) | Check the common objections: gRPC, Feign, Istio, sockets, load balancing, generations, and Saga. |
+| 6 | [Runtime Addons](runtime-addons.md) | See how optional protocol or integration capabilities compose with Runtime without entering core. |
+| 7 | [Questions And Answers](qna.md) | Check the common objections: gRPC, Feign, Istio, sockets, load balancing, generations, and Saga. |
 
 ## Two Main Public Repositories
 
@@ -144,6 +145,7 @@ to the application architecture around CoAkka.
 | [How It Works](how-it-works.md) | You want the runtime lifecycle and ownership model. |
 | [Runtime Message And Routing Model](runtime-message-and-routing-model.md) | You need the vocabulary: start spec, route snapshot, envelope, ask, reply, timeout, and deadletter. |
 | [Runtime Integration Guide](runtime-integration-guide.md) | You are wiring CoAkka into an existing service or framework. |
+| [Runtime Addons](runtime-addons.md) | You need an optional external protocol or integration capability and want the package, ownership, and evidence boundaries. |
 | [Runtime Logging And Observability](runtime-logging-observability.md) | You need to separate runtime evidence, business logs, CoAkka Logger, and observability export. |
 | [Runtime Cluster Routing](runtime-cluster-routing.md) | You are past the simple Service DNS shape and need expanded endpoints, route policies, or generation discipline. |
 | [Edge, IoT, And Industrial Android](edge-iot-android.md) | You want to understand edge Linux, Raspberry Pi, BeagleBone, and Android industrial tablet fit. |

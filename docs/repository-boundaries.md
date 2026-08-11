@@ -8,7 +8,7 @@ repositories. Neither repository is a single release unit for the ecosystem.
 | Repository | Role | What to look for |
 | --- | --- | --- |
 | `coakka-samples` | Rolling public examples that consume exact published coordinates. | Sample code, container flows, framework scenarios, docs, pins, and smoke workflows. |
-| [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) | Versioned artifact warehouse and catalog. | Immutable package lanes, native archives, source packages, release notes, manifests, provenance, and checksums. |
+| [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) | Versioned artifact warehouse and catalog. | Immutable package lanes, optional `runtime-addons/`, native archives, source packages, release notes, manifests, provenance, and checksums. |
 | Runtime and connector implementation workspaces | Artifact producers consumed through `coakka-publish`. | Source used to build the public artifacts. Public samples should not depend on a local implementation checkout. |
 
 The normal public reader starts in `coakka-samples`. The samples resolve
@@ -41,6 +41,7 @@ specific product surface when the distinction matters:
 | `coakka-runtime-core` | Native runtime engine and C ABI surface. |
 | `coakka-runtime-connector` | Host-language and framework connector packages. |
 | `coakka-runtime-client` | CLI runtime client. The published command and archive names use `coakka-client`. |
+| `CoAkka Runtime Addon` | Independently released optional capability that composes with public Runtime features without entering runtime core or the default package. |
 | `coakka-logger` | Bounded logger product surface. |
 
 For the full wording rule, read
@@ -103,6 +104,22 @@ surface. Sample call-sites should stay boring:
 ```text
 ask target -> reply, timeout, or deadletter
 ```
+
+## Runtime Addon Boundary
+
+Optional runtime addons are implemented and audited in their source-owner
+workspace, then released independently under `coakka-publish/runtime-addons/`.
+The default runtime package does not absorb their protocol libraries, workers,
+credentials, or product policy.
+
+An addon archive contains the addon module and its public C ABI, not another
+copy of CoAkka Runtime. Its manifest pins runtime ABI compatibility, required
+runtime features, native platforms, owned dependencies, exports, checksums, and
+matching-host evidence. A package template is not a release; samples may consume
+an addon only after its archive is listed in `artifacts/public-artifacts.tsv`.
+
+See [Runtime Addons](runtime-addons.md) for the current lane status and the SFTP
+artifact-publisher composition with File Lane.
 
 ## Public Wording Rule
 
