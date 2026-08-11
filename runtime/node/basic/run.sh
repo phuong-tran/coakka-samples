@@ -15,6 +15,6 @@ cp "${script_dir}/main.mjs" "${tmp_dir}/main.mjs"
 (
   cd "${tmp_dir}"
   npm init -y >/dev/null
-  npm install --prefer-online coakka-v2-connector-node@2.3.0 >/dev/null
+  npm install --prefer-online coakka-v2-connector-node@2.4.0 >/dev/null
   node main.mjs
 )

@@ -1,8 +1,8 @@
 # Node.js Runtime Samples
 
 Node.js runtime samples document the `coakka-v2-connector-node` package shape.
-This runtime lane consumes `coakka-v2-connector-node@2.3.0` from npm, built
-against native runtime generation `2.3.0+a83ab412`.
+This runtime lane consumes `coakka-v2-connector-node@2.4.0` from npm, built
+against native runtime generation `2.4.0+c2f53117`.
 
 ## Run
 
@@ -199,5 +199,5 @@ It links the canonical feature guides, exact package catalog, and platform
 evidence, and it defines when only workflow pseudocode is justified.
 
 The current public package train includes File Lane and Stream Lane. Use the
-exact connector names and lifecycle rules shipped by `2.3.0` when integrating
+exact connector names and lifecycle rules shipped by `2.4.0` when integrating
 either lane.
