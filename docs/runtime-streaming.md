@@ -113,7 +113,7 @@ blocking pressure waits. This is an additive host-observation contract; it
 does not change stream wire version 1 or move source, codec, relay, and sink
 policy into CoAkka.
 
-Exact artifact generation `2.3.0+a83ab412` contains the public Stream Lane
+Exact artifact generation `2.4.0+c2f53117` contains the public Stream Lane
 header, symbols, pressure snapshots, and pressure waits. Connector archives
 must pair that native generation with their recorded connector source
 checkpoint. Registry packages still carrying a 2.1 coordinate predate the

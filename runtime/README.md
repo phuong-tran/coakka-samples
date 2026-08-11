@@ -12,7 +12,7 @@ code and when it must stop at workflow pseudocode.
 For large immutable files, use the `2.1.0` file lane instead of placing bytes
 inside an `Envelope`. See [Runtime File Transfer](../docs/runtime-file-transfer.md)
 for use cases, the receiver-first workflow, and connector guidance. The
-artifact-backed samples pin the complete `2.3.0+a83ab412` train. Registry-backed
+artifact-backed samples pin the complete `2.4.0+c2f53117` train. Registry-backed
 npm, PyPI, and NuGet `2.3.0` samples consume published, clean-install verified
 packages that expose File Lane and Stream Lane.
 
@@ -31,7 +31,7 @@ network-mode, and device-evaluation guidance without inferring desktop evidence
 as Android execution.
 
 This `runtime/` directory is the app-host connector sample lane. The current
-artifact train is native generation `2.3.0+a83ab412` with Linux ARM64/x86-64,
+artifact train is native generation `2.4.0+c2f53117` with Linux ARM64/x86-64,
 macOS ARM64, and Windows ARM64/x86-64 payloads. Package-manager samples use the
 current version published on their registry; those versions advance
 independently from the artifact mirror. The separate
@@ -89,7 +89,7 @@ repositories {
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:2.3.0-ga83ab412-3a84c7b")
+    implementation("coakka.v2:coakka-jvm-native-runtime-v2:2.4.0-gc2f53117-0afb5e9")
 }
 ```
 
@@ -97,7 +97,7 @@ Spring Boot same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("coakka.spring:coakka-spring-boot-starter:2.3.0-ga83ab412-3a84c7b")
+    implementation("coakka.spring:coakka-spring-boot-starter:2.4.0-gc2f53117-0afb5e9")
     implementation("org.springframework.boot:spring-boot-starter-web")
 }
 ```
@@ -106,7 +106,7 @@ Quarkus same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("coakka.quarkus:coakka-quarkus-extension:2.3.0-ga83ab412-3a84c7b")
+    implementation("coakka.quarkus:coakka-quarkus-extension:2.4.0-gc2f53117-0afb5e9")
     implementation("io.quarkus:quarkus-rest-jackson")
 }
 ```
@@ -238,8 +238,8 @@ Rust currently ships as a published archive package:
 
 ```sh
 curl -L \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/rust/releases/2.3.0+a83ab412-3a84c7b/coakka-runtime-rs-2.3.0.tar.gz" \
-  -o /tmp/coakka-runtime-rs-2.3.0.tar.gz
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/rust/releases/2.4.0+c2f53117-0afb5e9/coakka-runtime-rs-2.4.0.tar.gz" \
+  -o /tmp/coakka-runtime-rs-2.4.0.tar.gz
 ```
 
 After dependency setup, every host follows the same shape:

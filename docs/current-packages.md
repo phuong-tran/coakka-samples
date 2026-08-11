@@ -14,9 +14,11 @@ package, PyPI package, Go module, and SwiftPM tag do not need to share the same
 version number. Each lane follows the release cadence of its connector,
 packaging surface, and native payload.
 
-The promoted artifact generation is `2.3.0+a83ab412`. Its native, JVM,
-Spring Boot, Quarkus, connector-archive, npm, PyPI, NuGet, Go, and Swift
-entrypoints expose both File Lane and Stream Lane.
+The promoted repository artifact generation is `2.4.0+c2f53117`. Its native,
+JVM, Spring Boot, Quarkus, and connector archives expose File Lane, Stream
+Lane, and explicit runtime network participation modes. Package-manager
+registries remain on the separately listed 2.3.0 coordinates until their next
+publication step.
 
 For exact package contents, matching-host execution, and known platform gaps,
 use [Runtime Package And Platform Evidence](runtime-package-platform-evidence.md).
@@ -60,15 +62,15 @@ The `2.3.0` source coordinates are
 major `v1` because its established module path does not carry a `/v2`
 suffix.
 
-## Runtime 2.3.0 Artifact Entrypoints
+## Runtime 2.4.0 Artifact Entrypoints
 
 | Surface | Exact coordinate |
 | --- | --- |
-| Native C ABI | `runtime/native/releases/2.3.0+a83ab412/coakka-runtime-native-v2-2.3.0.tar.gz` |
-| JVM | `coakka.v2:coakka-jvm-native-runtime-v2:2.3.0-ga83ab412-3a84c7b` |
-| Spring Boot | `coakka.spring:coakka-spring-boot-starter:2.3.0-ga83ab412-3a84c7b` |
-| Quarkus | `coakka.quarkus:coakka-quarkus-extension:2.3.0-ga83ab412-3a84c7b` |
-| Connector archives | `runtime/<lane>/releases/2.3.0+a83ab412-3a84c7b/` |
+| Native C ABI | `runtime/native/releases/2.4.0+c2f53117/coakka-runtime-native-v2-2.4.0.tar.gz` |
+| JVM | `coakka.v2:coakka-jvm-native-runtime-v2:2.4.0-gc2f53117-0afb5e9` |
+| Spring Boot | `coakka.spring:coakka-spring-boot-starter:2.4.0-gc2f53117-0afb5e9` |
+| Quarkus | `coakka.quarkus:coakka-quarkus-extension:2.4.0-gc2f53117-0afb5e9` |
+| Connector archives | `runtime/<lane>/releases/2.4.0+c2f53117-0afb5e9/` |
 | npm | `coakka-v2-connector-{node,bun,electron}@2.3.0` |
 | PyPI | `coakka-v2-connector`, exact `2.3.0` |
 | NuGet | `CoAkka.Runtime`, exact `2.3.0` |

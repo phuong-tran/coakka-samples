@@ -12,8 +12,8 @@ coakka_require_command tar "Install tar, then retry."
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
-artifact_rel="runtime/zig/releases/2.3.0+a83ab412-3a84c7b/coakka-runtime-zig-2.3.0-source.tar.gz"
-package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-runtime-zig-2.3.0-source.tar.gz")"
+artifact_rel="runtime/zig/releases/2.4.0+c2f53117-0afb5e9/coakka-runtime-zig-2.4.0-source.tar.gz"
+package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-runtime-zig-2.4.0-source.tar.gz")"
 mkdir -p "${tmp_dir}/package"
 tar -C "${tmp_dir}/package" --strip-components 1 -xzf "${package_path}"
 
@@ -22,6 +22,7 @@ sample_src="${tmp_dir}/sample-src"
 mkdir -p "${sample_src}"
 cp "${package_root}/src/runtime.zig" "${sample_src}/runtime.zig"
 cp "${package_root}/src/transport.zig" "${sample_src}/transport.zig"
+cp "${package_root}/src/stream_lane.zig" "${sample_src}/stream_lane.zig"
 cp "${script_dir}/main.zig" "${sample_src}/main.zig"
 
 runtime_lib="${COAKKA_RUNTIME_LIB:-}"

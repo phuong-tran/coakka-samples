@@ -94,7 +94,7 @@ Generated File Lane code must include:
 ### Stream Lane
 
 Stream Lane is an official runtime contract beginning with the 2.2 source
-line. Exact artifact generation `2.3.0+a83ab412` adds neutral pressure
+line. Exact artifact generation `2.4.0+c2f53117` adds neutral pressure
 snapshots and waits and is the first complete public artifact train for the
 lane.
 
