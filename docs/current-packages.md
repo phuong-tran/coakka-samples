@@ -54,13 +54,12 @@ main sample lane remains reserved for Runtime and Logger packages.
 | npm (Electron) | [`coakka-v2-connector-electron` 2.4.0](https://www.npmjs.com/package/coakka-v2-connector-electron/v/2.4.0) | [`coakka-logger-electron` 1.2.6](https://www.npmjs.com/package/coakka-logger-electron/v/1.2.6) | `bash run.sh runtime electron basic` |
 | PyPI | [`coakka-v2-connector` 2.4.0](https://pypi.org/project/coakka-v2-connector/2.4.0/) | [`coakka-logger` 1.2.2](https://pypi.org/project/coakka-logger/1.2.2/) | `bash run.sh runtime python basic` |
 | Go modules | [`coakka-runtime-go` v1.6.0](https://github.com/phuong-tran/coakka-runtime-go/releases/tag/v1.6.0) | [`coakka-logger-go` v1.2.5](https://pkg.go.dev/github.com/phuong-tran/coakka-logger-go@v1.2.5) | `bash run.sh runtime go basic` |
-| SwiftPM | [`coakka-runtime-swift` v2.3.0](https://github.com/phuong-tran/coakka-runtime-swift/releases/tag/v2.3.0) | [`coakka-logger-swift` v1.2.1](https://github.com/phuong-tran/coakka-logger-swift/releases/tag/v1.2.1) | `bash run.sh runtime swift basic` |
+| SwiftPM | [`coakka-runtime-swift` v2.4.0](https://github.com/phuong-tran/coakka-runtime-swift/tree/v2.4.0) | [`coakka-logger-swift` v1.2.1](https://github.com/phuong-tran/coakka-logger-swift/releases/tag/v1.2.1) | `bash run.sh runtime swift basic` |
 
-The `2.3.0` source coordinates are
+The current source coordinates are
 `github.com/phuong-tran/coakka-runtime-go@v1.6.0` and
-`github.com/phuong-tran/coakka-runtime-swift@v2.3.0`. Go remains on semantic
-major `v1` because its established module path does not carry a `/v2`
-suffix.
+`github.com/phuong-tran/coakka-runtime-swift@v2.4.0`. Go remains on semantic
+major `v1` because its established module path does not carry a `/v2` suffix.
 
 ## Runtime 2.4.0 Artifact Entrypoints
 
@@ -75,7 +74,7 @@ suffix.
 | PyPI | `coakka-v2-connector`, exact `2.4.0` |
 | NuGet | `CoAkka.Runtime`, exact `2.4.0` |
 | Go module | `github.com/phuong-tran/coakka-runtime-go@v1.6.0` |
-| SwiftPM | `https://github.com/phuong-tran/coakka-runtime-swift.git`, exact `2.3.0` |
+| SwiftPM | `https://github.com/phuong-tran/coakka-runtime-swift.git`, exact `2.4.0` |
 | coakka-client | `coakka-tools/coakka-client/releases/2.4.0+c2f53117/` |
 | coakka-runtime-inspect | `coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/` |
 

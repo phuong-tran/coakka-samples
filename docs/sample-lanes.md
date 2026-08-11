@@ -88,7 +88,7 @@ runtime/logger packages, so those JavaScript samples install registry
 coordinates. The Go module lane is also current for runtime/logger samples:
 `github.com/phuong-tran/coakka-runtime-go@v1.6.0` and
 `github.com/phuong-tran/coakka-logger-go@v1.2.5`. SwiftPM is current for
-`github.com/phuong-tran/coakka-runtime-swift@2.3.0`, which carries all five
+`github.com/phuong-tran/coakka-runtime-swift@2.4.0`, which carries all five
 runtime native payloads and has Swift execution evidence on macOS ARM64. The
 logger package `github.com/phuong-tran/coakka-logger-swift@1.2.1` remains a
 macOS ARM64 package. crates.io and apt/deb

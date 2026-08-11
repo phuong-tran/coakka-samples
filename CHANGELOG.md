@@ -7,6 +7,9 @@ and checksums live in the versioned
 
 ## 2026-08-12
 
+- Advanced the Swift runtime sample to the exact `v2.4.0` tag over native
+  generation `2.4.0+c2f53117`; package readiness and a clean remote-tag
+  request/reply consumer pass on macOS ARM64.
 - Advanced `coakka-client` and `coakka-runtime-inspect` sample pins to the
   immutable five-platform `2.4.0+c2f53117` archives in `coakka-publish`.
 - Advanced Python samples to registry-published

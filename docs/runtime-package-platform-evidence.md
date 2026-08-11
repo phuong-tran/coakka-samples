@@ -107,9 +107,9 @@ published and clean-install verified at `2.4.0`:
 | PyPI | `coakka-v2-connector==2.4.0` | `2.4.0+c2f53117` |
 | NuGet | `CoAkka.Runtime==2.4.0` | `2.4.0+c2f53117` |
 | Go modules | `github.com/phuong-tran/coakka-runtime-go@v1.6.0` | `2.3.0+a83ab412` |
-| SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v2.3.0` | `2.3.0+a83ab412` |
+| SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v2.4.0` | `2.4.0+c2f53117` |
 
-npm `2.4.0`, PyPI `2.4.0`, NuGet `2.4.0`, Go `v1.6.0`, and Swift `v2.3.0`
+npm `2.4.0`, PyPI `2.4.0`, NuGet `2.4.0`, Go `v1.6.0`, and Swift `v2.4.0`
 expose File Lane and Stream Lane. Select an exact coordinate whose release
 receipt records the required native generation.
 
