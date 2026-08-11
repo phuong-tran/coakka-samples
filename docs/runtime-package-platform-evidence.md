@@ -67,6 +67,20 @@ Every release directory has a manifest and `SHA256SUMS`. The manifest records
 the five-platform matrix, native source generation, connector source
 generation, and artifact name.
 
+## Android Candidate Evidence
+
+Android connector `1.1.0` is staged at
+`runtime/android/releases/1.1.0+345e97b2/`. Its AAR embeds native package
+generation `2.3.0+345e97b2` and matching runtime/JNI libraries for
+`arm64-v8a` and `x86_64`. The exact file passes build, unit-test, lint, intake,
+checksum, and recursive package-surface gates.
+
+This entry is packaged-file evidence only. No Android device or emulator
+execution is recorded, so the AAR is absent from `artifacts/public-artifacts.tsv`
+and is not a current package coordinate. Promotion requires the exact AAR
+digest to complete open, route application, start, one terminal request
+outcome, and close on a named Android image and ABI.
+
 ## Registry Coordinates
 
 npm, PyPI, and NuGet are independent publication channels. All three runtime

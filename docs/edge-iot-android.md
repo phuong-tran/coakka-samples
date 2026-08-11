@@ -107,9 +107,10 @@ framework. An Android app or Android background service can host a connector,
 load a native runtime through the Android NDK, register handlers, and call
 stable targets.
 
-Android support is feasible, but it is not the first packaging lane. The
-practical priority is edge Linux first: Raspberry Pi, BeagleBone, industrial
-Linux gateways, and similar devices. Android remains a planned lane after that.
+Android support is feasible. Connector `1.1.0` now has an intake-gated AAR
+candidate with `arm64-v8a` and `x86_64` payloads, a thin JNI layer, and Android
+lifecycle guidance. It is not yet a current public package because matching
+device or emulator lifecycle execution has not been recorded.
 
 A proper Android lane should include:
 
@@ -145,6 +146,8 @@ Treat this as the support boundary:
 - current public package lanes are the released artifact surface;
 - edge Linux is the first practical expansion target for device and gateway
   validation;
-- Android industrial tablet support is planned and feasible, but should be
-  declared official only when Android NDK/AAR artifacts, lifecycle guidance,
-  and smoke tests are published.
+- Android connector `1.1.0` is a packaged candidate, not a supported public
+  coordinate;
+- Android industrial tablet support should be declared official only after the
+  exact AAR passes lifecycle and runtime smoke tests on a named device or
+  emulator image and is promoted into the public artifact manifest.
