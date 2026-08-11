@@ -24,6 +24,12 @@ The public publish surface exposes logger packages, the public native
 runtime C ABI package, runtime JVM/language connector packages, and the Spring
 Boot and Quarkus adapters. These samples consume those public artifacts.
 
+Android connector `1.1.0` is currently an intake-gated AAR candidate rather
+than a runnable or current public sample. Use the exact
+[Android integration recipe](android/README.md) for Gradle, ABI, lifecycle,
+network-mode, and device-evaluation guidance without inferring desktop evidence
+as Android execution.
+
 This `runtime/` directory is the app-host connector sample lane. The current
 artifact train is native generation `2.3.0+a83ab412` with Linux ARM64/x86-64,
 macOS ARM64, and Windows ARM64/x86-64 payloads. Package-manager samples use the
