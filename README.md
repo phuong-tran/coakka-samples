@@ -15,6 +15,17 @@ GitHub Releases. Git tags may preserve useful checkpoints; the current branch,
 exact dependency pins, and passing CI define the sample surface users should
 run.
 
+## Featured Native Samples
+
+`coakka-samples` contains reviewable source and consumer projects only. Its
+sample binaries are versioned files in `coakka-publish/main`, never GitHub
+Release attachments.
+
+| Sample | Source and run guide | Published binaries |
+| --- | --- | --- |
+| Raspberry Pi camera livestream | [`runtime/native/rpi-camera/`](runtime/native/rpi-camera/README.md) | [`coakka-publish/samples/runtime/native/rpi-camera/releases/1.1.0/`](https://github.com/phuong-tran/coakka-publish/tree/main/samples/runtime/native/rpi-camera/releases/1.1.0) |
+| SFTP artifact publisher | [`runtime-addons/artifact-publisher-sftp/`](runtime-addons/artifact-publisher-sftp/README.md) | [`coakka-publish/runtime-addons/artifact-publisher-sftp/native/releases/1.1.0+42841ae2/`](https://github.com/phuong-tran/coakka-publish/tree/main/runtime-addons/artifact-publisher-sftp/native/releases/1.1.0+42841ae2) |
+
 **CoAkka is a polyglot, multi-language, multi-platform runtime ecosystem.**
 
 CoAkka Runtime is a native-backed capability runtime for application-owned

@@ -80,7 +80,7 @@ validate_manifest_rows() {
       fail "${source_name} manifest has unsafe path on row ${line_no}: ${relative_path}"
     fi
     case "${relative_path}" in
-      logger/*/releases/*|runtime/*/releases/*|runtime-addons/*/native/releases/*|runtime-inspect/native/releases/*|maven/coakka/*/*/*/*.jar|cli/releases/*|demo/coakka-client/releases/*|coakka-tools/*/releases/*|coakka-tools/*/*/releases/*)
+      logger/*/releases/*|runtime/*/releases/*|runtime-addons/*/native/releases/*|samples/runtime/native/*/releases/*/*|runtime-inspect/native/releases/*|maven/coakka/*/*/*/*.jar|cli/releases/*|demo/coakka-client/releases/*|coakka-tools/*/releases/*|coakka-tools/*/*/releases/*)
         ;;
       *)
         fail "${source_name} manifest has path outside the published artifact surface on row ${line_no}: ${relative_path}"
