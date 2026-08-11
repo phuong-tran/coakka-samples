@@ -114,7 +114,7 @@ coakka_runtime_inspect_release_id_for_platform() {
   local platform="$1"
   case "${platform}" in
     macos-aarch64|linux-aarch64|linux-x86_64|windows-aarch64|windows-x86_64)
-      printf '%s\n' "2.3.0+a83ab412" ;;
+      printf '%s\n' "2.4.0+c2f53117" ;;
     *) return 1 ;;
   esac
 }
@@ -122,7 +122,7 @@ coakka_runtime_inspect_release_id_for_platform() {
 coakka_runtime_inspect_version_for_platform() {
   case "$1" in
     macos-aarch64|linux-aarch64|linux-x86_64|windows-aarch64|windows-x86_64)
-      printf '%s\n' "2.3.0" ;;
+      printf '%s\n' "2.4.0" ;;
     *) return 1 ;;
   esac
 }

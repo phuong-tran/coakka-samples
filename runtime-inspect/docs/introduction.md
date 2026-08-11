@@ -24,7 +24,7 @@ targets, routes, pressure, and outcomes directly.
 ## Current Sample Status
 
 The inspect binary is implemented in the native v2 runtime repository. The
-current public inspect archive generation is `2.3.0+a83ab412` on macOS ARM64,
+current public inspect archive generation is `2.4.0+c2f53117` on macOS ARM64,
 Linux x86_64/ARM64, and Windows x86_64/ARM64.
 
 Use `check` for public sample wiring and archive metadata verification. Use

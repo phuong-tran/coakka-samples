@@ -46,6 +46,21 @@ It contains all five libraries, the public headers including
 `coakka/v2/file_lane.h` and `coakka/v2/stream_lane.h`, CMake metadata,
 manifest, and per-file checksums.
 
+## Runtime Tool 2.4.0 Matrix
+
+`coakka-client` and `coakka-runtime-inspect` are published for the same five
+platforms under native generation `2.4.0+c2f53117`. Each archive is immutable
+and checksum-pinned in `artifacts/public-artifacts.tsv`.
+
+| Tool | Matching-host execution | Additional verified payloads |
+| --- | --- | --- |
+| `coakka-client` | macOS ARM64 command and dependency gates pass. | Linux ARM64/x86-64 pass matching-architecture Docker build plus dependency, archive, and checksum gates. Windows ARM64/x86-64 pass cross-build, PE architecture, dependency, archive, and checksum gates. |
+| `coakka-runtime-inspect` | macOS ARM64 and Linux ARM64/x86-64 command plus `serve` smokes pass. | Windows ARM64/x86-64 pass cross-build, PE architecture, dependency, archive, and checksum gates. |
+
+Matching-host Linux or Windows command execution is not recorded for the
+`coakka-client` archives. Matching-host Windows execution is not recorded for
+the inspect archives.
+
 ## Connector Artifact Matrix
 
 | Surface | Exact artifact coordinate | Native payloads | Current exact-artifact evidence |

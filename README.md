@@ -93,9 +93,9 @@ signals while keeping adaptation policy in the app-host. Keep commands and
 authorization in the application's control plane; keep file and stream bytes
 out of ordinary runtime message payloads.
 
-Native, JVM/Maven, and connector-archive sample pins resolve exact generation
-`2.4.0+c2f53117`; `coakka-client` and `coakka-runtime-inspect` remain on
-`2.3.0+a83ab412`. Registry-backed npm, NuGet, and PyPI samples use `2.4.0`.
+Native, JVM/Maven, connector-archive, `coakka-client`, and
+`coakka-runtime-inspect` sample pins resolve exact generation
+`2.4.0+c2f53117`. Registry-backed npm, NuGet, and PyPI samples use `2.4.0`.
 All expose File Lane and Stream Lane.
 
 ## Runtime Test

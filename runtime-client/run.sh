@@ -87,7 +87,7 @@ coakka_runtime_client_docker_platform() {
 coakka_runtime_client_release_fields() {
   case "$1" in
     macos-aarch64|linux-aarch64|linux-x86_64|windows-aarch64|windows-x86_64)
-      printf '%s|%s\n' "2.3.0" "2.3.0+a83ab412" ;;
+      printf '%s|%s\n' "2.4.0" "2.4.0+c2f53117" ;;
     *) return 1 ;;
   esac
 }

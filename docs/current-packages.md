@@ -76,8 +76,8 @@ suffix.
 | NuGet | `CoAkka.Runtime`, exact `2.4.0` |
 | Go module | `github.com/phuong-tran/coakka-runtime-go@v1.6.0` |
 | SwiftPM | `https://github.com/phuong-tran/coakka-runtime-swift.git`, exact `2.3.0` |
-| coakka-client | `coakka-tools/coakka-client/releases/2.3.0+a83ab412/` |
-| coakka-runtime-inspect | `coakka-tools/coakka-runtime-inspect/releases/2.3.0+a83ab412/` |
+| coakka-client | `coakka-tools/coakka-client/releases/2.4.0+c2f53117/` |
+| coakka-runtime-inspect | `coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/` |
 
 ## Main Public Repositories
 

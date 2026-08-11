@@ -91,12 +91,12 @@ runtime target.
 
 ## Published Artifacts
 
-Current public native CLI generation: `2.3.0+a83ab412`.
+Current public native CLI generation: `2.4.0+c2f53117`.
 
 Native CLI archives live under:
 
 ```text
-coakka-tools/coakka-client/releases/2.3.0+a83ab412/
+coakka-tools/coakka-client/releases/2.4.0+c2f53117/
 ```
 
 The Docker Linux verification bundle remains on its separately released
@@ -108,6 +108,12 @@ coakka-tools/coakka-client/docker-demo/releases/1.3.2+caff6d6d/
 
 Use `coakka-publish/artifacts/public-artifacts.tsv` for exact paths and
 checksums.
+
+The macOS ARM64 archive completed command smoke. Linux ARM64/x86-64 passed
+matching-architecture Docker build, dependency, archive, and checksum gates.
+Windows ARM64/x86-64 passed cross-build, PE architecture, dependency, archive,
+and checksum gates. Matching-host Linux or Windows command execution is not
+claimed for this generation.
 
 ## Sample Entry Points
 

@@ -30,10 +30,15 @@ That is intentional until a dedicated remote read/observe adapter exists.
 
 ## Published Archive Status
 
-The current public inspect archive generation is `2.3.0+a83ab412` for all five
+The current public inspect archive generation is `2.4.0+c2f53117` for all five
 platforms. The sample runner selects by platform and verifies every
 archive through the same manifest/checksum resolver used by the runtime-client
 lane.
+
+The macOS ARM64 and Linux ARM64/x86-64 archives completed matching-host command
+and `serve` smoke. The Windows ARM64/x86-64 archives passed cross-build, PE
+architecture, dependency, archive, and checksum gates; matching-host Windows
+execution is not recorded for this generation.
 
 The browser walkthrough GIF and MP4 were recorded on macOS from the published
 macOS ARM64 inspect archive. The recording used two local native runtime

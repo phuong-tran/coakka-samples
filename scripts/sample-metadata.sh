@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-COAKKA_PUBLISH_RAW_BASE_DEFAULT="https://raw.githubusercontent.com/phuong-tran/coakka-publish/9a32207030820e57ba82348cfd7392d72161931d"
+COAKKA_PUBLISH_RAW_BASE_DEFAULT="https://raw.githubusercontent.com/phuong-tran/coakka-publish/da4a5e9c3f1f846970fb84c8f18bca893051c487"
 
 COAKKA_RUNTIME_NATIVE_VERSION="2.4.0"
 COAKKA_RUNTIME_NATIVE_RELEASE="2.4.0+c2f53117"
@@ -99,18 +99,18 @@ COAKKA_ARTIFACT_ROWS=(
   "runtime Tauri source package|runtime/tauri/releases/2.4.0+c2f53117-0afb5e9/coakka-runtime-tauri-intents-2.4.0-source.tar.gz"
   "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/2.4.0-gc2f53117-0afb5e9/coakka-spring-boot-starter-2.4.0-gc2f53117-0afb5e9.jar"
   "Quarkus extension Maven jar|maven/coakka/quarkus/coakka-quarkus-extension/2.4.0-gc2f53117-0afb5e9/coakka-quarkus-extension-2.4.0-gc2f53117-0afb5e9.jar"
-  "coakka-client linux-x86_64|coakka-tools/coakka-client/releases/2.3.0+a83ab412/coakka-client-v2-2.3.0-linux-x86_64.tar.gz"
-  "coakka-client linux-aarch64|coakka-tools/coakka-client/releases/2.3.0+a83ab412/coakka-client-v2-2.3.0-linux-aarch64.tar.gz"
-  "coakka-client macos-aarch64|coakka-tools/coakka-client/releases/2.3.0+a83ab412/coakka-client-v2-2.3.0-macos-aarch64.tar.gz"
-  "coakka-client windows-x86_64|coakka-tools/coakka-client/releases/2.3.0+a83ab412/coakka-client-v2-2.3.0-windows-x86_64.tar.gz"
-  "coakka-client windows-aarch64|coakka-tools/coakka-client/releases/2.3.0+a83ab412/coakka-client-v2-2.3.0-windows-aarch64.tar.gz"
+  "coakka-client linux-x86_64|coakka-tools/coakka-client/releases/2.4.0+c2f53117/coakka-client-v2-2.4.0-linux-x86_64.tar.gz"
+  "coakka-client linux-aarch64|coakka-tools/coakka-client/releases/2.4.0+c2f53117/coakka-client-v2-2.4.0-linux-aarch64.tar.gz"
+  "coakka-client macos-aarch64|coakka-tools/coakka-client/releases/2.4.0+c2f53117/coakka-client-v2-2.4.0-macos-aarch64.tar.gz"
+  "coakka-client windows-x86_64|coakka-tools/coakka-client/releases/2.4.0+c2f53117/coakka-client-v2-2.4.0-windows-x86_64.tar.gz"
+  "coakka-client windows-aarch64|coakka-tools/coakka-client/releases/2.4.0+c2f53117/coakka-client-v2-2.4.0-windows-aarch64.tar.gz"
   "coakka-client docker-demo linux-x86_64|coakka-tools/coakka-client/docker-demo/releases/1.3.2+caff6d6d/coakka-client-docker-demo-v2-1.3.2-linux-x86_64.tar.gz"
   "coakka-client docker-demo linux-aarch64|coakka-tools/coakka-client/docker-demo/releases/1.3.2+caff6d6d/coakka-client-docker-demo-v2-1.3.2-linux-aarch64.tar.gz"
-  "coakka-runtime-inspect linux-aarch64|coakka-tools/coakka-runtime-inspect/releases/2.3.0+a83ab412/coakka-runtime-inspect-v2-2.3.0-linux-aarch64.tar.gz"
-  "coakka-runtime-inspect linux-x86_64|coakka-tools/coakka-runtime-inspect/releases/2.3.0+a83ab412/coakka-runtime-inspect-v2-2.3.0-linux-x86_64.tar.gz"
-  "coakka-runtime-inspect macos-aarch64|coakka-tools/coakka-runtime-inspect/releases/2.3.0+a83ab412/coakka-runtime-inspect-v2-2.3.0-macos-aarch64.tar.gz"
-  "coakka-runtime-inspect windows-x86_64|coakka-tools/coakka-runtime-inspect/releases/2.3.0+a83ab412/coakka-runtime-inspect-v2-2.3.0-windows-x86_64.tar.gz"
-  "coakka-runtime-inspect windows-aarch64|coakka-tools/coakka-runtime-inspect/releases/2.3.0+a83ab412/coakka-runtime-inspect-v2-2.3.0-windows-aarch64.tar.gz"
+  "coakka-runtime-inspect linux-aarch64|coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/coakka-runtime-inspect-v2-2.4.0-linux-aarch64.tar.gz"
+  "coakka-runtime-inspect linux-x86_64|coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/coakka-runtime-inspect-v2-2.4.0-linux-x86_64.tar.gz"
+  "coakka-runtime-inspect macos-aarch64|coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/coakka-runtime-inspect-v2-2.4.0-macos-aarch64.tar.gz"
+  "coakka-runtime-inspect windows-x86_64|coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/coakka-runtime-inspect-v2-2.4.0-windows-x86_64.tar.gz"
+  "coakka-runtime-inspect windows-aarch64|coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/coakka-runtime-inspect-v2-2.4.0-windows-aarch64.tar.gz"
 )
 
 coakka_runtime_native_package_fields() {

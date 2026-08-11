@@ -51,12 +51,12 @@ for application-owned work behind or beside the HTTP edge.
 
 ## Published Artifacts
 
-Current public native generation: `2.3.0+a83ab412`.
+Current public native generation: `2.4.0+c2f53117`.
 
 Native UI archives live under:
 
 ```text
-coakka-tools/coakka-runtime-inspect/releases/2.3.0+a83ab412/
+coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/
 ```
 
 Current public platforms:
@@ -69,6 +69,11 @@ Current public platforms:
 
 Use `coakka-publish/artifacts/public-artifacts.tsv` for exact paths and
 checksums.
+
+The macOS ARM64 and both Linux archives completed command and `serve` smoke on
+matching hosts. The Windows archives passed Zig cross-build, PE architecture,
+native dependency, archive, and checksum gates; matching-host Windows execution
+is not claimed for this generation.
 
 ## Sample Entry Points
 

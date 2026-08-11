@@ -7,6 +7,8 @@ and checksums live in the versioned
 
 ## 2026-08-12
 
+- Advanced `coakka-client` and `coakka-runtime-inspect` sample pins to the
+  immutable five-platform `2.4.0+c2f53117` archives in `coakka-publish`.
 - Advanced Python samples to registry-published
   `coakka-v2-connector==2.4.0` over native generation `2.4.0+c2f53117`.
   Disposable installs pass request/reply, matched deadletter, route hot reload,
