@@ -92,7 +92,9 @@ struct Server {
       return false;
     }
     std::unique_lock<std::mutex> lock(ready_mutex);
-    ready_condition.wait(lock, [this] { return ready; });
+    ready_condition.wait(lock, [this] {
+      return ready.load(std::memory_order_acquire);
+    });
     if (start_result != 0) {
       *error = uv_strerror(start_result);
       return false;
@@ -105,7 +107,7 @@ struct Server {
       return;
     }
     stopping.store(true, std::memory_order_release);
-    if (ready && start_result == 0) {
+    if (ready.load(std::memory_order_acquire) && start_result == 0) {
       (void)uv_async_send(&async);
     }
     if (worker.joinable()) {
@@ -279,9 +281,11 @@ struct Server {
   }
 
   void publish_ready(int result) {
-    std::lock_guard<std::mutex> lock(ready_mutex);
-    start_result = result;
-    ready = true;
+    {
+      std::lock_guard<std::mutex> lock(ready_mutex);
+      start_result = result;
+      ready.store(true, std::memory_order_release);
+    }
     ready_condition.notify_one();
   }
 
@@ -345,7 +349,7 @@ struct Server {
   std::condition_variable ready_condition;
   std::atomic<bool> stopping{false};
   std::atomic<bool> stopped{false};
-  bool ready = false;
+  std::atomic<bool> ready{false};
   int start_result = UV_EINVAL;
   uint16_t port = 0u;
 };

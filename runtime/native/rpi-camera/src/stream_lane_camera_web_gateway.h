@@ -53,8 +53,12 @@ public:
   operator=(const coakka_v2_camera_web_gateway_t &) = delete;
 
   bool start(std::string *error);
+  // Idempotent. The owning app normally quiesces Stream Lane callbacks first;
+  // concurrent final callbacks remain bounded and cannot outlive libuv handles.
   void stop();
 
+  // Called by Stream Lane workers. Frame bytes are copied into fixed-capacity
+  // queues before return and are never retained by reference.
   coakka_v2_status_t consume(const uint8_t *data,
                              const coakka_v2_stream_frame_t *frame) noexcept;
   coakka_v2_status_t

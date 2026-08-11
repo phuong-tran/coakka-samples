@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(CoAkkaRpiCameraSample LANGUAGES C CXX)
+project(CoAkkaRpiCameraSample VERSION 1.1.0 LANGUAGES C CXX)
 
 include(CTest)
 
@@ -114,6 +114,22 @@ if(COAKKA_CAMERA_BUILD_HOST)
   add_test(NAME coakka_camera_host_cli_help
     COMMAND coakka_camera_host --help)
   set_tests_properties(coakka_camera_host_cli_help PROPERTIES TIMEOUT 10)
+
+  add_executable(coakka_camera_gateway_lifecycle_tests
+    src/stream_lane_camera_gateway_lifecycle_tests.cc
+    src/stream_lane_camera_recorder.cc
+    src/stream_lane_camera_web_gateway.cc
+    src/stream_lane_camera_web_ui.cc
+    src/runtime_addon_web_wire.cc)
+  coakka_camera_target_defaults(coakka_camera_gateway_lifecycle_tests)
+  if(WIN32)
+    target_link_libraries(coakka_camera_gateway_lifecycle_tests
+      PRIVATE dbghelp ws2_32)
+  endif()
+  add_test(NAME coakka_camera_gateway_lifecycle_tests
+    COMMAND coakka_camera_gateway_lifecycle_tests)
+  set_tests_properties(coakka_camera_gateway_lifecycle_tests PROPERTIES
+    LABELS "camera;concurrency;lifecycle" TIMEOUT 15)
 endif()
 
 if(COAKKA_CAMERA_BUILD_PI)
