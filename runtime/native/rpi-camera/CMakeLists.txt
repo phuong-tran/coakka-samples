@@ -88,9 +88,17 @@ function(coakka_camera_target_defaults target)
     target_compile_options(${target} PRIVATE -Wall -Wextra -Wpedantic -Werror)
   endif()
   if(APPLE)
-    set_target_properties(${target} PROPERTIES BUILD_RPATH "@loader_path")
+    set(camera_runtime_rpath "@loader_path")
   elseif(UNIX)
-    set_target_properties(${target} PROPERTIES BUILD_RPATH "\$ORIGIN")
+    set(camera_runtime_rpath "\$ORIGIN")
+  endif()
+  if(DEFINED camera_runtime_rpath)
+    set_target_properties(${target} PROPERTIES
+      BUILD_RPATH "${camera_runtime_rpath}"
+      INSTALL_RPATH "${camera_runtime_rpath}"
+      BUILD_WITH_INSTALL_RPATH TRUE
+      INSTALL_RPATH_USE_LINK_PATH FALSE)
+    unset(camera_runtime_rpath)
   endif()
   add_custom_command(TARGET ${target} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
