@@ -42,16 +42,9 @@ Run the native pressure sample:
 bash run.sh runtime native pressure
 ```
 
-The two-process Raspberry Pi camera sample is under
-[`rpi-camera/`](rpi-camera/README.md). It provides a Pi publisher and a
-macOS/Linux/Windows host gateway with named CLI options for camera identity,
-V4L2 device selection, Stream/control ports, browser port, resolution, and
-recording with optional audio.
-
-Prebuilt `1.1.0` evaluation archives live only in
-`coakka-publish/samples/runtime/native/rpi-camera/releases/1.1.0/`. This sample
-directory contains source and build instructions; it does not duplicate the
-binaries.
+The complete Raspberry Pi camera workflow now lives in the top-level
+[`runtime-streaming-demo/rpi-camera/`](../../runtime-streaming-demo/rpi-camera/README.md)
+lane. `runtime/native/` remains focused on small Native C/C++ package examples.
 
 The pressure sample uses the public C ABI from C with `queueCapacity=2` and
 `strictNoDrop=true`. It submits a burst through the runtime request pipe and
