@@ -18,22 +18,21 @@ memory, device, shutdown, and evidence boundaries are in
 
 ## Distribution Boundary
 
-The public source and release attachments belong in
-[`coakka-samples`](https://github.com/phuong-tran/coakka-samples). The private
-`coakkaCoreNativeDev` repository is an implementation workspace, not a download
-location. Never publish a full Core repository snapshot as a camera sample.
+The focused public source belongs in
+[`coakka-samples`](https://github.com/phuong-tran/coakka-samples/tree/main/runtime/native/rpi-camera).
+Prebuilt evaluation binaries belong in the versioned
+[`coakka-publish`](https://github.com/phuong-tran/coakka-publish/tree/main/samples/runtime/native/rpi-camera/releases/1.1.0)
+lane. Neither repository uses GitHub Releases for this sample; merging reviewed
+content to `main` is the publication event.
 
-The public release provides both focused sample source and prebuilt binaries:
-
-- Treat the tagged `coakka-samples` source as the authority for review, rebuilds, driver
-  adaptation, and license compliance.
-- Publish binaries as release attachments for quick evaluation, one archive
-  per exact OS and CPU architecture.
-- Put `SHA256SUMS`, a machine-readable artifact manifest, the source commit,
-  compiler version, dependency versions, and verification level beside every
-  archive.
-- Do not commit generated executables to the Git repository and do not ship
-  tokens, device paths, IP addresses, recordings, or signing secrets.
+- Treat the source commit recorded in the Publish manifest as the authority for
+  review, rebuilds, driver adaptation, and license compliance.
+- Consume one architecture-specific binary archive directly from the Publish
+  lane; do not use GitHub Release attachments.
+- Verify `SHA256SUMS` before extraction. The manifest records the source commit,
+  platform, verification level, and Windows signing state.
+- Do not put binaries in `coakka-samples`, publish a Core repository snapshot,
+  or ship tokens, device paths, IP addresses, recordings, or signing secrets.
 
 Binary-only delivery is a poor fit for Raspberry Pi camera work because V4L2,
 ALSA device names, distributions, and system library versions vary. Source-only
@@ -292,17 +291,22 @@ Runtime DLL in the native package. The prebuilt Windows archive is the normal
 evaluation path. It remains unsigned and must not be represented as natively
 verified until the release matrix says so.
 
-## Verify A Release Download
+## Download And Verify Published Binaries
 
-Download `SHA256SUMS` beside the desired archive. On macOS or Linux:
+Download `SHA256SUMS` and the archive for the target machine directly from the
+Publish repository. For example, on macOS ARM64:
 
 ```sh
+base='https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/samples/runtime/native/rpi-camera/releases/1.1.0'
+curl -fLO "$base/SHA256SUMS"
+curl -fLO "$base/coakka-camera-host-macos-arm64.tar.gz"
 shasum -a 256 -c SHA256SUMS --ignore-missing
 ```
 
-The command must report `OK` for every downloaded archive. GitHub's generated
-source archive comes from the public `coakka-samples` tag and contains the
-focused sample project. No private Core snapshot is attached.
+The command must report `OK` for every downloaded archive. Source review and
+source builds use the `coakka-samples/runtime/native/rpi-camera/` directory;
+there is no generated GitHub Release source archive and no private Core
+snapshot in the public binary lane.
 
 The public implementation files are under this directory's `src/` folder:
 
