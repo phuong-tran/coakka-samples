@@ -12,7 +12,8 @@ separate startup decision and must not be inferred from route metadata.
 | `OUTBOUND_ONLY` | no | allowed | A client, edge device, or worker that calls remote runtime nodes but accepts no inbound runtime traffic. |
 | `NETWORK_NODE` | explicit | allowed | A supervised service or industrial device that peers must reach directly. |
 
-New connector generations default to `EMBEDDED`. Existing binaries that do not
+Connector generation `2.4.0` and newer defaults to `EMBEDDED`. Existing
+binaries that do not
 apply a network policy retain the legacy route-derived behavior for ABI
 compatibility. Do not use that compatibility path in new integrations.
 
