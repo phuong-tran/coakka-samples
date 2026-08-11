@@ -15,60 +15,64 @@ Use these identities together:
 | Native runtime package | `2.3.0+345e97b2` |
 | Android ABIs | `arm64-v8a`, `x86_64` |
 | Minimum Android API | `24` |
+| Compile SDK | Android API `36.1` or newer |
 | AAR SHA-256 | `3ce799885322c9ac92664bf028591bc77432960e7b2d85ecbd3c4e73362bf3cb` |
 
-This AAR is a packaged candidate in `coakka-publish`, but it is not in the
-current public artifact manifest because matching Android device or emulator
-execution has not been recorded. Treat the instructions below as
-source-candidate integration guidance, not as a supported public package claim.
+This AAR is a Maven-resolvable candidate in `coakka-publish`, but it is not in
+the current public artifact manifest because matching Android device or
+emulator execution has not been recorded. Treat the instructions below as
+candidate integration guidance, not as a supported public package claim.
 
-## Download And Verify
+## Gradle And Maven
 
-From the Android project root on macOS or Linux:
+Add the checked-in CoAkka Maven repository to the existing
+`dependencyResolutionManagement.repositories` block in `settings.gradle.kts`:
 
-```sh
-mkdir -p app/libs
-curl -fL \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/maven/android/releases/1.1.0+345e97b2/coakka-runtime-android-1.1.0.aar" \
-  -o app/libs/coakka-runtime-android-1.1.0.aar
-
-printf '%s  %s\n' \
-  '3ce799885322c9ac92664bf028591bc77432960e7b2d85ecbd3c4e73362bf3cb' \
-  'app/libs/coakka-runtime-android-1.1.0.aar' \
-  | shasum -a 256 -c -
+```kotlin
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            name = "CoAkkaCandidates"
+            url = uri("https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/maven")
+            content {
+                includeModule("coakka.v2", "coakka-runtime-android")
+            }
+        }
+    }
+}
 ```
 
-PowerShell:
-
-```powershell
-New-Item -ItemType Directory -Force app/libs | Out-Null
-Invoke-WebRequest `
-  -Uri "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/maven/android/releases/1.1.0+345e97b2/coakka-runtime-android-1.1.0.aar" `
-  -OutFile "app/libs/coakka-runtime-android-1.1.0.aar"
-
-(Get-FileHash "app/libs/coakka-runtime-android-1.1.0.aar" -Algorithm SHA256).Hash
-```
-
-The PowerShell digest must equal the SHA-256 value in the table above.
-
-## Gradle
-
-Add the AAR and its exact language dependencies to
-`app/build.gradle.kts`:
+Then add the exact candidate coordinate to `app/build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation(files("libs/coakka-runtime-android-1.1.0.aar"))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.2.10")
-    implementation("com.google.protobuf:protobuf-javalite:4.31.1")
+    implementation("coakka.v2:coakka-runtime-android:1.1.0")
 }
 ```
+
+Gradle resolves the AAR, sources, and the pinned Kotlin and protobuf
+dependencies from its POM and module metadata. Do not also place the AAR in
+`app/libs`; mixing the Maven coordinate with a local copy can package the same
+classes and native libraries twice.
+
+The immutable candidate bundle, manifest, and `SHA256SUMS` remain under
+[`maven/android/releases/1.1.0+345e97b2`](https://github.com/phuong-tran/coakka-publish/tree/main/maven/android/releases/1.1.0%2B345e97b2).
+The AAR digest Gradle resolves must match the SHA-256 value in the identity
+table above.
 
 Keep the ABI that matches the evaluation target. Keeping both is useful while
 testing physical ARM64 devices and x86-64 emulators:
 
 ```kotlin
 android {
+    compileSdk {
+        version = release(36) {
+            minorApiLevel = 1
+        }
+    }
+
     defaultConfig {
         minSdk = 24
         ndk {
