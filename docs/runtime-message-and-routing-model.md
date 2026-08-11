@@ -233,6 +233,7 @@ and what route table should it start with?"
 | `queueCapacity` | How much runtime work can this process buffer? | Start bounded and conservative; tune from pressure counters. |
 | `strictNoDrop` | Should overload become visible? | Prefer `true` while integrating so rejection is observable. |
 | `separateDeliveredRequestLane` | Should runtime keep delivered requests on their own runtime lane? | Prefer `true` for request/reply hosts. |
+| `network` | Does this process own an inbound runtime listener? | Use `EMBEDDED` for local-only, `OUTBOUND_ONLY` for client-only, or explicit `NETWORK_NODE` bind/advertise settings. |
 | `generation` | Which route snapshot version is active at startup? | Start at `1`; keep it stable for a stable Service DNS route, and increment only when the CoAkka route snapshot changes. |
 | `routes` | Which targets can this process route? | Map target names to local or peer endpoints. |
 
@@ -245,14 +246,15 @@ RuntimeStartSpec
   queueCapacity = 128
   strictNoDrop = true
   separateDeliveredRequestLane = true
+  network = EMBEDDED
   generation = 1
   routes:
     target = samples.customer.store
-      endpoint host=127.0.0.1 port=19301 flags=LOCAL
+      endpoint host=127.0.0.1 port=0 flags=LOCAL
 ```
 
-The sample values are illustrative, not capacity guidance. They are visible
-defaults that make the boundary easy to read. In a common Kubernetes deployment,
+Port `0` is deliberate: the endpoint is local metadata and no TCP listener is
+created. The sample values are illustrative, not capacity guidance. In a common Kubernetes deployment,
 the peer endpoint can be a stable Service DNS name and `generation = 1` can
 remain valid while Kubernetes changes the pod list underneath. Use deployment
 config or platform metadata when the CoAkka route snapshot itself must change.

@@ -80,6 +80,7 @@ Runtime transport configuration is available through the full host-language
 connectors. Use the canonical guides for the supported modes, effective
 capabilities, lifecycle rules, and connector examples:
 
+- [Runtime network modes](docs/runtime-network-modes.md)
 - [TLS and mTLS](docs/tls-and-mtls.md)
 - [Connection strategies](docs/connection-strategies.md)
 - [Runtime file transfer](docs/runtime-file-transfer.md)

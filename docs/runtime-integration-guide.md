@@ -55,6 +55,7 @@ RuntimeStartSpec
 | `queueCapacity` | How much work can runtime buffer before applying pressure? | Bounded queue size. Start conservative, measure pressure, then tune. |
 | `strictNoDrop` | Should overload be visible instead of silently dropping work? | Prefer `true` while integrating so overload becomes visible. |
 | delivered-request lane | Should runtime keep delivered requests on their own runtime lane? | Enabled by default in current connectors; keep the default for request/reply services so inbound handler work does not delay reply/deadletter matching. |
+| `network` | Does this runtime accept inbound network traffic? | Choose `EMBEDDED`, `OUTBOUND_ONLY`, or explicit `NETWORK_NODE`; do not infer it from route metadata. |
 | `generation` | Which version of the route table is this? | Start with `1`; keep it stable for a stable Service DNS route, and increment only when the CoAkka route snapshot changes. |
 | `routes` | What targets does this runtime know how to route? | Target-to-endpoint map. Local targets are owned here; peer targets point elsewhere. |
 
@@ -78,14 +79,17 @@ Example shape:
 RuntimeStartSpec
   systemName = customer-store
   nodeId = customer-store-pod-7
+  network = NETWORK_NODE
+    bind = 0.0.0.0:19301
+    advertise = 10.20.1.45:19301
   generation = 1
   routes:
     RuntimeRouteSpec
       target = samples.customer.store
       endpoints:
         RuntimeEndpointSpec
-          host = 10.20.1.45
-          port = 19301
+          host = customer-store-pod-7
+          port = 0
           flags = LOCAL
 ```
 
@@ -96,6 +100,10 @@ This process is one customer-store runtime participant. Its current route-table
 generation is 1. It owns the samples.customer.store target locally, so this
 process must register the handler for that target.
 ```
+
+The local endpoint's port remains `0`; the separately declared network policy
+owns the listener and advertised address. A peer route uses
+`10.20.1.45:19301` without the `LOCAL` flag.
 
 If the endpoint has no `LOCAL` flag, this process does not own that handler.
 The route points at a peer runtime endpoint instead.
@@ -239,8 +247,8 @@ an IoT deployment registry value. Use the native service address for the
 environment first; expand endpoints only when CoAkka itself should choose among
 them.
 
-`host` and `port` identify the runtime endpoint. For a local sample this may be
-`127.0.0.1` plus a sample port. In a real deployment it usually comes from the
+For a local endpoint, `host` is diagnostic identity and `port` should be `0`.
+For a peer endpoint, `host` and `port` identify the reachable runtime node and usually come from the
 connector's startup config source, such as Kubernetes, Consul, a config service,
 or framework config.
 

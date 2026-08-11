@@ -150,6 +150,7 @@ The checkout process owns the public app boundary:
 val checkoutStartSpec = RuntimeStartSpec(
     systemName = "checkout-api",
     nodeId = "checkout-api-local-1",
+    network = RuntimeNetworkConfig.outboundOnly(),
     queueCapacity = 128,
     strictNoDrop = true,
     generation = 1,
@@ -175,6 +176,12 @@ The billing process owns the handler:
 val billingStartSpec = RuntimeStartSpec(
     systemName = "billing",
     nodeId = "billing-local-1",
+    network = RuntimeNetworkConfig.networkNode(
+        bindHost = "127.0.0.1",
+        bindPort = 19301,
+        advertiseHost = "127.0.0.1",
+        advertisePort = 19301,
+    ),
     queueCapacity = 128,
     strictNoDrop = true,
     generation = 1,
@@ -184,7 +191,7 @@ val billingStartSpec = RuntimeStartSpec(
             endpoints = listOf(
                 RuntimeEndpointSpec(
                     host = "127.0.0.1",
-                    port = 19301,
+                    port = 0,
                     flags = RuntimeEndpointFlags.LOCAL,
                 ),
             ),
@@ -202,6 +209,10 @@ billing owns the handler.
 the route snapshot knows the endpoint.
 transport owns connection mechanics.
 ```
+
+The local route's port is `0` because local delivery does not use TCP. The
+billing process's listener is declared once by `networkNode(...)`; the checkout
+process points its remote route at that advertised endpoint.
 
 The caller should not call `billing-local-1`. It should call the billing
 capability target.
