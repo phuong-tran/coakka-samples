@@ -42,6 +42,12 @@ Run the native pressure sample:
 bash run.sh runtime native pressure
 ```
 
+The two-process Raspberry Pi camera sample is under
+[`rpi-camera/`](rpi-camera/README.md). It provides a Pi publisher and a
+macOS/Linux/Windows host gateway with named CLI options for camera identity,
+V4L2 device selection, Stream/control ports, browser port, resolution, and
+recording with optional audio.
+
 The pressure sample uses the public C ABI from C with `queueCapacity=2` and
 `strictNoDrop=true`. It submits a burst through the runtime request pipe and
 verifies that bounded queue pressure becomes queue-rejected deadletters and
