@@ -119,7 +119,7 @@ An addon composes with Runtime; it does not become a new core lane or arrive in
 every runtime package.
 
 Check `artifacts/public-artifacts.tsv` before writing imports or install
-commands. SFTP artifact publisher `0.2.0+c5656cc8` is published for Linux
+commands. SFTP artifact publisher `0.2.1+c5656cc8` is published for Linux
 ARM64/x86-64, macOS ARM64, and Windows 11 ARM64/x86-64. It remains outside the
 root main lane and connector packages:
 
