@@ -2,12 +2,11 @@
 
 The native sample proves the complete package and runtime boundary:
 
-1. resolve the exact promoted native Runtime archive;
-2. build the SFTP addon from the sibling Core source candidate;
-3. stage the addon using its proposed standalone package layout;
-4. build Service A and Service B through `find_package` imported targets;
-5. acquire a deterministic file from a loopback OpenSSH SFTP server;
-6. distribute it through File Lane and compare the receiver bytes.
+1. resolve the exact promoted native Runtime and SFTP addon archives;
+2. verify both archives against `artifacts/public-artifacts.tsv`;
+3. build Service A and Service B through `find_package` imported targets;
+4. acquire a deterministic file from a loopback OpenSSH SFTP server;
+5. distribute it through File Lane and compare the receiver bytes.
 
 ```mermaid
 sequenceDiagram
@@ -37,20 +36,21 @@ sequenceDiagram
 From this directory:
 
 ```sh
+bash run.sh published
 bash run.sh check
 bash run.sh source-candidate
 ```
 
-`check` performs strict C11 syntax checks and runs ShellCheck when it is
-installed. `source-candidate` requires sibling `coakkaCoreNativeDev` and
-`coakka-publish` checkouts by default. Override them with `COAKKA_CORE_ROOT`
-and `COAKKA_PUBLISH_ROOT` when the workspace differs.
+`published` is the default and consumes addon `0.1.0+40810b79` plus Runtime
+`2.3.0`. It currently runs on `macos-aarch64`. `check` compiles against sibling
+Core source headers. `source-candidate` builds the next addon candidate from a
+sibling Core checkout. Override workspace discovery with `COAKKA_CORE_ROOT`
+and `COAKKA_PUBLISH_ROOT` when needed.
 
-The source build requires CMake 3.20+, C/C++ compilers, pkg-config, OpenSSH,
-OpenSSL command-line tools, and a static libssh2 1.11.1+ dependency closure.
-Those are contributor requirements for this pre-release command. A promoted
-addon archive must absorb libssh2 and its permitted crypto/compression closure;
-an addon consumer must not install them separately.
+The published path requires CMake 3.20+, a C11 compiler, OpenSSH, OpenSSL
+command-line tools, and `xxd`; it does not require a libssh2 development
+package. The source-candidate path additionally requires a C++ compiler,
+pkg-config, and static libssh2 `1.11.1` plus its crypto closure.
 
 ## Consumer Targets
 

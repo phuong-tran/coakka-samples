@@ -28,11 +28,19 @@ optional native capabilities that compose with Runtime without entering the
 default runtime package. Addons carry their own versions, compatibility
 manifests, native dependency closure, and matching-host evidence.
 
-No runtime addon is currently published. The SFTP artifact publisher is a
-source candidate with a release contract, package template, and isolated native
-source-candidate sample, not an installable coordinate. Do not generate package
-manager imports or add it to the root main sample lane until an addon archive
-appears in `artifacts/public-artifacts.tsv`.
+SFTP artifact publisher `0.1.0+40810b79` is published as an independent native
+archive for `macos-aarch64`. It requires Runtime native `2.3.0` or newer and the
+`file_lane` feature. It is not part of the Runtime archive and does not change
+any npm, PyPI, NuGet, Go, Swift, or other connector coordinate.
+
+```text
+runtime-addons/artifact-publisher-sftp/native/releases/0.1.0+40810b79/
+  coakka-runtime-addon-artifact-publisher-sftp-native-0.1.0.tar.gz
+```
+
+Use the isolated native sample with
+`bash runtime-addons/artifact-publisher-sftp/native/run.sh published`. The root
+main sample lane remains reserved for Runtime and Logger packages.
 
 ## Package Manager Entrypoints
 

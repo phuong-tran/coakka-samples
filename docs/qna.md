@@ -1150,9 +1150,10 @@ Current status:
 
 ```text
 runtime-addons release family: defined
-SFTP artifact publisher: source candidate and package template
-native SFTP-to-File-Lane sample: source-candidate command only
-public addon archive/install coordinate: none
+SFTP artifact publisher: public native 0.1.0+40810b79
+published platform: macos-aarch64
+native SFTP-to-File-Lane sample: immutable archive consumer
+connector package changes: none
 ```
 
 Read [Runtime Addons](runtime-addons.md) before selecting or generating addon

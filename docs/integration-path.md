@@ -119,15 +119,16 @@ An addon composes with Runtime; it does not become a new core lane or arrive in
 every runtime package.
 
 Check `artifacts/public-artifacts.tsv` before writing imports or install
-commands. The current SFTP artifact publisher is a release contract and package
-template with a separate native source-candidate sample. The sample builds from
-the sibling Core checkout and is not a public install command or part of the
-root main lane. Use it for pre-release evaluation only:
+commands. SFTP artifact publisher `0.1.0+40810b79` is currently published for
+`macos-aarch64`. It remains outside the root main lane and connector packages:
 
 ```sh
 cd runtime-addons/artifact-publisher-sftp/native
-bash run.sh source-candidate
+bash run.sh published
 ```
+
+Contributors can still run `bash run.sh source-candidate` to build the current
+Core source and test the next package candidate.
 
 ## Step 8: Read Production-Facing Notes
 

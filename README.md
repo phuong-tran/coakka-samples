@@ -51,11 +51,11 @@ core or every runtime package. The current SFTP artifact-publisher lane shows
 how Service A can acquire and verify a file, then distribute it through File
 Lane.
 
-No runtime addon is publicly installable yet, so this repository does not
-add an addon command to the root main lane. The isolated
-[`runtime-addons/`](runtime-addons/README.md) tree contains a native SFTP
-source-candidate sample for release evaluation; it builds the addon from a
-sibling Core checkout rather than implying a public install coordinate.
+SFTP artifact publisher `0.1.0+40810b79` is available for `macos-aarch64` in
+the isolated [`runtime-addons/`](runtime-addons/README.md) tree. Its native
+sample consumes the immutable addon archive and Runtime `2.3.0`. The addon is
+still not added to the root main lane because its release cadence and platform
+surface are independent from Runtime and Logger.
 
 ## Runtime Transport
 

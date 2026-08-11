@@ -5,6 +5,9 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../../.." && pwd)"
 core_root="${COAKKA_CORE_ROOT:-${repo_root}/../coakkaCoreNativeDev}"
 publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
+addon_version="0.1.0"
+addon_release="0.1.0+40810b79"
+addon_artifact="runtime-addons/artifact-publisher-sftp/native/releases/${addon_release}/coakka-runtime-addon-artifact-publisher-sftp-native-${addon_version}.tar.gz"
 
 # shellcheck disable=SC1091
 source "${repo_root}/scripts/resolve-artifact.sh"
@@ -18,16 +21,17 @@ usage() {
 CoAkka SFTP artifact publisher sample
 
 Usage:
+  bash run.sh published
   bash run.sh check
   bash run.sh source-candidate
 
 Commands:
-  check             Compile-check the public C consumer sources.
+  published         Consume the immutable addon archive and run end to end.
+  check             Compile-check against the sibling Core source headers.
   source-candidate  Build the addon from the sibling Core checkout, stage its
                     package contract, and run SFTP -> File Lane end to end.
 
-The source-candidate command is intentionally separate from the root sample
-lane until a versioned addon archive has passed release promotion.
+The addon sample remains separate from the root Runtime and Logger lanes.
 EOF
 }
 
@@ -53,18 +57,14 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
 PY
 }
 
-run_check() {
-  coakka_require_command cc "Install a C11 compiler, then retry."
-  coakka_require_file \
-    "${core_root}/v2/include/coakka/v2/file_lane.h" \
-    "Set COAKKA_CORE_ROOT to the coakkaCoreNativeDev checkout."
-  coakka_require_file \
-    "${core_root}/v2/addons/artifact-source-sftp/include/coakka/addons/artifact_publisher_sftp.h" \
-    "The source-candidate addon header is required."
+run_c_checks() {
+  local runtime_include="$1"
+  local addon_include="$2"
 
+  coakka_require_command cc "Install a C11 compiler, then retry."
   cc -std=c11 -Wall -Wextra -Wpedantic -Werror \
-    -I"${core_root}/v2/include" \
-    -I"${core_root}/v2/addons/artifact-source-sftp/include" \
+    -I"${runtime_include}" \
+    -I"${addon_include}" \
     -fsyntax-only \
     "${script_dir}/sample_common.c" \
     "${script_dir}/service_a.c" \
@@ -76,6 +76,18 @@ run_check() {
     coakka_note "shellcheck is not installed; C11 compile checks passed"
   fi
   coakka_note "SFTP addon sample source checks passed"
+}
+
+run_check() {
+  coakka_require_file \
+    "${core_root}/v2/include/coakka/v2/file_lane.h" \
+    "Set COAKKA_CORE_ROOT to the coakkaCoreNativeDev checkout."
+  coakka_require_file \
+    "${core_root}/v2/addons/artifact-source-sftp/include/coakka/addons/artifact_publisher_sftp.h" \
+    "The source-candidate addon header is required."
+  run_c_checks \
+    "${core_root}/v2/include" \
+    "${core_root}/v2/addons/artifact-source-sftp/include"
 }
 
 stage_addon_package() {
@@ -127,8 +139,10 @@ run_with_native_libraries() {
   esac
 }
 
-run_source_candidate() {
+run_candidate() {
+  local mode="$1"
   local platform runtime_version artifact_rel expected_sha runtime_archive
+  local addon_archive
   local workspace runtime_package_root addon_package_root core_build consumer_build
   local runtime_native addon_native sshd_bin username sftp_port receiver_port
   local host_key client_key authorized_keys payload sshd_config sshd_log pid_file
@@ -136,17 +150,24 @@ run_source_candidate() {
   local destination staging_root sshd_pid="" receiver_pid="" sshd_ready=0
   local attempt
 
-  run_check
   coakka_require_command cmake "Install CMake 3.20 or newer, then retry."
-  coakka_require_command c++ "Install a C++ compiler, then retry."
   coakka_require_command openssl "Install OpenSSL command-line tools, then retry."
   coakka_require_command python3 "Install Python 3, then retry."
   coakka_require_command ssh-keygen "Install OpenSSH client tools, then retry."
   coakka_require_command tar "Install tar, then retry."
   coakka_require_command xxd "Install xxd, then retry."
-  coakka_require_file \
-    "${publish_root}/runtime-addons/artifact-publisher-sftp/native/package-template/cmake/CoAkkaRuntimeAddonArtifactPublisherSftpConfig.cmake" \
-    "Set COAKKA_PUBLISH_ROOT to the coakka-publish checkout."
+  if [[ "${mode}" == source-candidate ]]; then
+    coakka_require_command c++ "Install a C++ compiler, then retry."
+    coakka_require_file \
+      "${core_root}/v2/include/coakka/v2/file_lane.h" \
+      "Set COAKKA_CORE_ROOT to the coakkaCoreNativeDev checkout."
+    coakka_require_file \
+      "${core_root}/v2/addons/artifact-source-sftp/include/coakka/addons/artifact_publisher_sftp.h" \
+      "The source-candidate addon header is required."
+    coakka_require_file \
+      "${publish_root}/runtime-addons/artifact-publisher-sftp/native/package-template/cmake/CoAkkaRuntimeAddonArtifactPublisherSftpConfig.cmake" \
+      "Set COAKKA_PUBLISH_ROOT to the coakka-publish checkout."
+  fi
 
   if [[ -x /usr/sbin/sshd ]]; then
     sshd_bin=/usr/sbin/sshd
@@ -157,6 +178,9 @@ run_source_candidate() {
   fi
 
   platform="$(native_platform)"
+  if [[ "${mode}" == published && "${platform}" != macos-aarch64 ]]; then
+    coakka_die "SFTP addon ${addon_version} is published only for macos-aarch64."
+  fi
   workspace="$(mktemp -d "${TMPDIR:-/tmp}/coakka-sftp-sample.XXXXXX")"
   core_build="${COAKKA_SFTP_CORE_BUILD:-${script_dir}/build/core}"
   consumer_build="${script_dir}/build/consumer"
@@ -188,14 +212,25 @@ run_source_candidate() {
   tar -C "${workspace}/runtime-package" -xzf "${runtime_archive}"
   runtime_package_root="${workspace}/runtime-package/coakka-runtime-native-v2-${runtime_version}"
 
-  coakka_note "building the source-candidate SFTP addon"
-  cmake -S "${core_root}/v2" -B "${core_build}" \
-    -DCOAKKA_V2_BUILD_SFTP_ARTIFACT_PUBLISHER=ON
-  cmake --build "${core_build}" \
-    --target coakka_addon_artifact_publisher_sftp
+  if [[ "${mode}" == source-candidate ]]; then
+    coakka_note "building the source-candidate SFTP addon"
+    cmake -S "${core_root}/v2" -B "${core_build}" \
+      -DCOAKKA_V2_BUILD_SFTP_ARTIFACT_PUBLISHER=ON
+    cmake --build "${core_build}" \
+      --target coakka_addon_artifact_publisher_sftp
+    addon_package_root="${workspace}/coakka-runtime-addon-artifact-publisher-sftp-native-source"
+    stage_addon_package "${platform}" "${core_build}" "${addon_package_root}"
+  else
+    addon_archive="$(coakka_resolve_artifact \
+      "${publish_root}" "${addon_artifact}" "${workspace}/addon.tar.gz")"
+    mkdir -p "${workspace}/addon-package"
+    tar -C "${workspace}/addon-package" -xzf "${addon_archive}"
+    addon_package_root="${workspace}/addon-package/coakka-runtime-addon-artifact-publisher-sftp-native-${addon_version}"
+  fi
 
-  addon_package_root="${workspace}/coakka-runtime-addon-artifact-publisher-sftp-native-source"
-  stage_addon_package "${platform}" "${core_build}" "${addon_package_root}"
+  run_c_checks \
+    "${runtime_package_root}/include" \
+    "${addon_package_root}/include"
 
   rm -rf "${consumer_build}"
   cmake -S "${script_dir}" -B "${consumer_build}" \
@@ -349,12 +384,15 @@ PY
   cleanup_sftp_sample
 }
 
-case "${1:-help}" in
+case "${1:-published}" in
+  published)
+    run_candidate published
+    ;;
   check)
     run_check
     ;;
   source-candidate)
-    run_source_candidate
+    run_candidate source-candidate
     ;;
   help|-h|--help)
     usage

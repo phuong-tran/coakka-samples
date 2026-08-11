@@ -5,12 +5,10 @@ with CoAkka Runtime without becoming part of runtime core or the default runtime
 package. Each addon owns one focused external workflow or protocol family and
 uses stable runtime features such as File Lane when distribution is needed.
 
-> **Current status:** the public `runtime-addons/` release family and SFTP
-> artifact-publisher package contract are defined, but no runtime addon archive
-> is currently listed in `artifacts/public-artifacts.tsv`. There is no public
-> addon install coordinate yet. A separate native source-candidate sample now
-> proves the SFTP-to-File-Lane workflow without presenting it as a promoted
-> package.
+> **Current status:** SFTP artifact publisher `0.1.0+40810b79` is the first
+> public runtime addon archive. It is available for `macos-aarch64`, requires
+> Runtime native `2.3.0` or newer, and remains separate from the default Runtime
+> package and connector lanes.
 
 ## Where Addons Fit
 
@@ -81,7 +79,7 @@ with its manifest and `SHA256SUMS`.
 
 | Addon | Workflow | Public status |
 | --- | --- | --- |
-| [SFTP artifact publisher](https://github.com/phuong-tran/coakka-publish/tree/main/runtime-addons/artifact-publisher-sftp) | Service A fetches from a pinned SFTP source, verifies size and SHA-256, stages without replacement, and distributes through sender File Lane to one or more services. | Release contract, package template, and [native source-candidate sample](https://github.com/phuong-tran/coakka-samples/tree/main/runtime-addons/artifact-publisher-sftp/native); no public archive or install coordinate. |
+| [SFTP artifact publisher](https://github.com/phuong-tran/coakka-publish/tree/main/runtime-addons/artifact-publisher-sftp) | Service A fetches from a pinned SFTP source, verifies size and SHA-256, stages without replacement, and distributes through sender File Lane to one or more services. | Public native `0.1.0+40810b79` archive for `macos-aarch64`; [two-process C11 sample](https://github.com/phuong-tran/coakka-samples/tree/main/runtime-addons/artifact-publisher-sftp/native). |
 
 The SFTP workflow composes existing boundaries:
 
@@ -106,6 +104,19 @@ dependency inspection. Cross-compilation proves that an artifact can be built;
 it does not prove that it loads, transfers data, cancels, or shuts down on that
 platform. Package templates and source candidates must stay visibly distinct
 from promoted public coordinates.
+
+The current immutable coordinate is:
+
+```text
+runtime-addons/artifact-publisher-sftp/native/releases/0.1.0+40810b79/
+  coakka-runtime-addon-artifact-publisher-sftp-native-0.1.0.tar.gz
+```
+
+Its matching-host macOS ARM64 evidence covers the packaged module, reviewed
+exports, dynamic dependencies, pinned-host SFTP failures, cancellation and
+shutdown paths, exact archive consumption, and cross-process File Lane
+delivery. Linux is not advertised until matching-host package evidence is
+recorded. Windows remains blocked by the staging safety gate.
 
 For exact current coordinates, read [Current Packages](current-packages.md).
 For ownership across repositories, read

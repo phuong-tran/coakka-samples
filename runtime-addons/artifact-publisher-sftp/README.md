@@ -28,12 +28,12 @@ The sample uses two native C11 processes and the public C contracts only:
 
 - [`native/service_a.c`](native/service_a.c) is the publishing service;
 - [`native/service_b.c`](native/service_b.c) is the receiving service;
-- [`native/run.sh`](native/run.sh) builds a source candidate and supplies a
-  local OpenSSH fixture.
+- [`native/run.sh`](native/run.sh) consumes the published archive by default,
+  with a separate source-candidate mode for contributors.
 
-This sample is deliberately not wired into the root sample runner. Promote it
-to the normal consumer path only after an immutable addon archive, manifest,
-checksums, and matching-host evidence appear in `coakka-publish`.
+This sample is deliberately not wired into the root sample runner. It consumes
+the immutable `0.1.0+40810b79` macOS ARM64 addon archive while preserving the
+addon's independent package and release boundary.
 
 See the [native walkthrough](native/README.md) for commands and production
 hardening notes.
