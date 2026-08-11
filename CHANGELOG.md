@@ -7,6 +7,11 @@ and checksums live in the versioned
 
 ## 2026-08-12
 
+- Advanced Python samples to registry-published
+  `coakka-v2-connector==2.4.0` over native generation `2.4.0+c2f53117`.
+  Disposable installs pass request/reply, matched deadletter, route hot reload,
+  and local desktop CRUD; local routes use embedded delivery without a TCP
+  listener.
 - Advanced C# samples to registry-published `CoAkka.Runtime==2.4.0` over
   native generation `2.4.0+c2f53117`. A clean NuGet restore loads the package
   and passes request/reply plus matched deadletter; the Spring Boot-to-C#

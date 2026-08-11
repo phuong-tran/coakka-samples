@@ -27,14 +27,14 @@ def main() -> None:
     # strict_no_drop=True makes overload visible instead of silently dropping messages.
     # The delivered-request lane is enabled by default for request/reply hosts.
     # generation=1 is the first route-table version; increment it for new route snapshots.
-    # local_route(...) hides host/port placeholders for same-process targets.
+    # local_route(...) uses embedded delivery and does not open a TCP listener.
     start_spec = ConnectorStartSpec(
         system_name="python-runtime-sample",
         node_id="python-runtime-sample-node",
         queue_capacity=128,
         strict_no_drop=True,
         generation=1,
-        routes=[local_route(target, 19311)],
+        routes=[local_route(target)],
     )
 
     with RuntimeHost.start(start_spec=start_spec) as runtime:

@@ -1,8 +1,8 @@
 # Python Runtime Samples
 
 Python runtime samples document the `coakka_v2_connector` package shape. This
-runtime lane consumes `coakka-v2-connector==2.3.0` from PyPI, built against
-native runtime generation `2.3.0+a83ab412`.
+runtime lane consumes `coakka-v2-connector==2.4.0` from PyPI, built against
+native runtime generation `2.4.0+c2f53117` from connector source `0afb5e9`.
 
 ## Run
 
@@ -27,7 +27,7 @@ venv on exit so the user's global Python installation is not modified.
 Install the package through your normal packaging path:
 
 ```sh
-python -m pip install coakka-v2-connector==2.3.0
+python -m pip install coakka-v2-connector==2.4.0
 ```
 
 The samples install that PyPI package into a disposable venv and remove the
@@ -42,7 +42,7 @@ start_spec = ConnectorStartSpec(
     queue_capacity=128,
     strict_no_drop=True,
     generation=1,
-    routes=[local_route("samples.customer.store", 19102)],
+    routes=[local_route("samples.customer.store")],
 )
 
 with RuntimeHost.start(start_spec=start_spec) as runtime:
@@ -59,6 +59,10 @@ Name roles in this snippet:
 
 `target` is not `system_name` and not `node_id`. A process can own multiple
 targets; the route table maps those target names to endpoints.
+
+`local_route(...)` selects embedded same-process delivery. It does not open a
+TCP listener and its effective port is `0`. Use an explicit network-node mode
+and port only when another process or machine must connect.
 
 `samples.customer.store` is the sample's capability target name. In your app,
 choose your own target name, then use the same value in the route table, the
