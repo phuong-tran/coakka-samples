@@ -46,6 +46,7 @@ make_publish_root() {
   local name="$1"
   local publish_root="${tmp_root}/${name}"
   local row label relative_path artifact_path artifact_sha
+  local camera_artifact camera_path camera_sha
   rm -rf "${publish_root}"
   mkdir -p "${publish_root}/artifacts"
 
@@ -63,6 +64,16 @@ EOF
     printf 'public\t%s\t%s\t%s\n' "${label}" "${relative_path}" "${artifact_sha}" \
       >>"${publish_root}/artifacts/public-artifacts.tsv"
   done
+
+  camera_artifact="samples/runtime/native/rpi-camera/releases/1.1.0/coakka-camera-host-linux-x86_64.tar.gz"
+  camera_path="${publish_root}/${camera_artifact}"
+  mkdir -p "$(dirname "${camera_path}")"
+  printf 'native camera sample fixture\n' >"${camera_path}"
+  camera_sha="$(sha256_file "${camera_path}")"
+  printf 'public\t%s\t%s\t%s\n' \
+    "sample Raspberry Pi camera host linux-x86_64" \
+    "${camera_artifact}" \
+    "${camera_sha}" >>"${publish_root}/artifacts/public-artifacts.tsv"
 
   printf '%s\n' "${publish_root}"
 }
