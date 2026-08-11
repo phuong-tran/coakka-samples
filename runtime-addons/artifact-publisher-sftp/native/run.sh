@@ -5,8 +5,8 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../../.." && pwd)"
 core_root="${COAKKA_CORE_ROOT:-${repo_root}/../coakkaCoreNativeDev}"
 publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
-addon_version="0.1.0"
-addon_release="0.1.0+40810b79"
+addon_version="1.1.0"
+addon_release="1.1.0+42841ae2"
 addon_artifact="runtime-addons/artifact-publisher-sftp/native/releases/${addon_release}/coakka-runtime-addon-artifact-publisher-sftp-native-${addon_version}.tar.gz"
 
 # shellcheck disable=SC1091
@@ -178,9 +178,6 @@ run_candidate() {
   fi
 
   platform="$(native_platform)"
-  if [[ "${mode}" == published && "${platform}" != macos-aarch64 ]]; then
-    coakka_die "SFTP addon ${addon_version} is published only for macos-aarch64."
-  fi
   workspace="$(mktemp -d "${TMPDIR:-/tmp}/coakka-sftp-sample.XXXXXX")"
   core_build="${COAKKA_SFTP_CORE_BUILD:-${script_dir}/build/core}"
   consumer_build="${script_dir}/build/consumer"

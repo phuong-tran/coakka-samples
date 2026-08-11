@@ -1,44 +1,40 @@
-# CoAkka Raspberry Pi Camera Sample v0.2.0
+# CoAkka Raspberry Pi Camera Sample v1.1.0
 
-Release `v0.2.0` replaces the withdrawn `v0.1.0` prerelease.
+Release `v1.1.0` promotes the focused public camera sample after a systems
+audit. It supersedes the `v0.2.0` prerelease without changing the Stream Lane
+wire contract.
 
-## Boundary Correction
+## Runtime Corrections
 
-- The release is published from the public `coakka-samples` repository.
-- Public source contains only the focused camera sample project.
-- No archive contains a snapshot of the private Core repository.
-- Prebuilt applications remain separate archives for Raspberry Pi ARM64,
-  macOS ARM64, Linux x86-64, and Windows x86-64.
+- The host display queue now uses its mutex as the lifetime fence around
+  cross-thread `uv_async_send`, so a final Stream Lane callback cannot race a
+  closing libuv handle.
+- The host gateway and Pi control server publish their startup result with an
+  explicit release/acquire handshake before stop may wake the loop.
+- Both applications retain bounded queues, one libuv owner thread per server,
+  monotonic deadlines, and idempotent joined shutdown.
 
-## CLI Contract
+## Operator Contract
 
-- Both applications require a matching logical `--camera-id`.
-- The Pi selects hardware with either `--video-device PATH` or
-  `--video-index N`.
-- The Pi Stream endpoint uses `--port`; its control endpoint uses `port + 1`.
-- The host receives `--publisher-host`, `--publisher-port`, and `--web-port`.
-- Audio is independently selectable with `--audio-device PATH|off` on the Pi
-  and `--audio on|off` on the host.
-- Both applications read the bearer token from `CAMERA_TOKEN` by default, or
-  from the variable selected by `--token-env`. Tokens are not accepted as CLI
-  values and therefore are not exposed in the process argument list.
-- Both applications provide `--help`, reject duplicate and unknown options,
-  validate port ranges, and reject malformed camera IDs.
+- Pi device selection remains explicit through `--video-device PATH` or
+  `--video-index N`; `--camera-id` is the shared logical identity.
+- `--port` selects the Stream endpoint and reserves `port + 1` for profile
+  control. The host independently selects `--publisher-port` and `--web-port`.
+- Audio remains optional at capture (`--audio-device PATH|off`), subscription
+  (`--audio on|off`), and recording time (Audio checkbox).
+- Resolution profiles are 640x480, 800x600, 1280x720, and 1920x1080 at a
+  requested 30 FPS, subject to the actual V4L2 device.
+- Tokens are read only from the environment named by `--token-env`.
 
 ## Evidence Boundary
 
-- Raspberry Pi 5 ARM64 captured the USB webcam at 1280x720 and 640x480, and
-  captured its ALSA microphone at 48 kHz mono.
-- macOS ARM64 completed live display, profile switching, video-only recording,
-  and MJPEG plus AAC recording against that Pi.
-- Linux x86-64 completed a strict native build and CLI smoke; its live-camera
-  workflow remains pending.
-- Windows 11 x86-64 completed native CLI validation, connected to the live Pi,
-  and served its loopback UI. Windows-side WebSocket control and recording
-  remain pending.
-- The Windows executable is unsigned. SmartScreen, Windows Firewall, or
-  managed application-control policy can require operator action or an
-  organization signature.
+- Raspberry Pi 5 ARM64: strict build plus live V4L2/ALSA capture and profile
+  switching.
+- macOS ARM64: strict build plus live display, control, video-only recording,
+  and MJPEG/AAC recording.
+- Linux x86-64: strict native build and CLI smoke; live camera workflow pending.
+- Windows 11 x86-64: native CLI, live Pi connection, and loopback UI smoke;
+  WebSocket control and recording pending. The executable is unsigned.
 
-The browser listener remains restricted to `127.0.0.1`. The Pi control token
-does not provide TLS; use the sample only on a trusted private network.
+See [`SYSTEMS-AUDIT.md`](SYSTEMS-AUDIT.md) for ownership, memory, shutdown, and
+residual-risk details.

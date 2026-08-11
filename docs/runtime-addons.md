@@ -5,9 +5,9 @@ with CoAkka Runtime without becoming part of runtime core or the default runtime
 package. Each addon owns one focused external workflow or protocol family and
 uses stable runtime features such as File Lane when distribution is needed.
 
-> **Current status:** SFTP artifact publisher `0.1.0+40810b79` is the first
-> public runtime addon archive. It is available for `macos-aarch64`, requires
-> Runtime native `2.3.0` or newer, and remains separate from the default Runtime
+> **Current status:** SFTP artifact publisher `1.1.0+42841ae2` is public for
+> Linux ARM64/x86-64, macOS ARM64, and Windows 11 ARM64/x86-64. It requires
+> Runtime native `2.3.0` or newer and remains separate from the default Runtime
 > package and connector lanes.
 
 ## Where Addons Fit
@@ -79,7 +79,7 @@ with its manifest and `SHA256SUMS`.
 
 | Addon | Workflow | Public status |
 | --- | --- | --- |
-| [SFTP artifact publisher](https://github.com/phuong-tran/coakka-publish/tree/main/runtime-addons/artifact-publisher-sftp) | Service A fetches from a pinned SFTP source, verifies size and SHA-256, stages without replacement, and distributes through sender File Lane to one or more services. | Public native `0.1.0+40810b79` archive for `macos-aarch64`; [two-process C11 sample](https://github.com/phuong-tran/coakka-samples/tree/main/runtime-addons/artifact-publisher-sftp/native). |
+| [SFTP artifact publisher](https://github.com/phuong-tran/coakka-publish/tree/main/runtime-addons/artifact-publisher-sftp) | Service A fetches from a pinned SFTP source, verifies size and SHA-256, stages without replacement, and distributes through sender File Lane to one or more services. | Public native `1.1.0+42841ae2` archive for five targets; [two-process C11 sample](https://github.com/phuong-tran/coakka-samples/tree/main/runtime-addons/artifact-publisher-sftp/native). |
 
 The SFTP workflow composes existing boundaries:
 
@@ -108,15 +108,15 @@ from promoted public coordinates.
 The current immutable coordinate is:
 
 ```text
-runtime-addons/artifact-publisher-sftp/native/releases/0.1.0+40810b79/
-  coakka-runtime-addon-artifact-publisher-sftp-native-0.1.0.tar.gz
+runtime-addons/artifact-publisher-sftp/native/releases/1.1.0+42841ae2/
+  coakka-runtime-addon-artifact-publisher-sftp-native-1.1.0.tar.gz
 ```
 
-Its matching-host macOS ARM64 evidence covers the packaged module, reviewed
-exports, dynamic dependencies, pinned-host SFTP failures, cancellation and
-shutdown paths, exact archive consumption, and cross-process File Lane
-delivery. Linux is not advertised until matching-host package evidence is
-recorded. Windows remains blocked by the staging safety gate.
+Its matching-host evidence covers all five packaged modules, reviewed exports,
+dynamic dependencies, pinned-host SFTP failures, cancellation and shutdown
+paths, and File Lane delivery. Windows staging is directory-handle-relative and
+rejects reparse roots. Linux sanitizer evidence covers ASan plus UBSan and TSan
+on both architectures.
 
 For exact current coordinates, read [Current Packages](current-packages.md).
 For ownership across repositories, read

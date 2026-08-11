@@ -32,6 +32,7 @@ public:
   operator=(const coakka_v2_camera_control_server_t &) = delete;
 
   bool start(std::string *error);
+  // Idempotent; wakes the loop and joins its single owning thread.
   void stop();
   uint16_t bound_port() const noexcept;
 

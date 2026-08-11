@@ -116,30 +116,26 @@ public:
 
   coakka_v2_status_t push(const uint8_t *data,
                           const coakka_v2_stream_frame_t *frame) noexcept {
-    uv_async_t *async = nullptr;
-    {
-      std::lock_guard<std::mutex> lock(mutex_);
-      if (!valid_frame(data, frame) ||
-          (expected_sequence_ != 0u && frame->sequence != expected_sequence_)) {
-        return COAKKA_V2_ERR_IO;
-      }
-      expected_sequence_ = frame->sequence + 1u;
-      source_drops_ += frame->dropped_before;
-      if (count_ == slots_.size()) {
-        head_ = (head_ + 1u) % slots_.size();
-        --count_;
-        ++queue_drops_;
-      }
-      FrameSlot &slot = slots_[(head_ + count_) % slots_.size()];
-      copy_frame(slot, data, frame);
-      ++count_;
-      ++received_frames_;
-      received_bytes_ += frame->size;
-      async = async_;
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (!valid_frame(data, frame) ||
+        (expected_sequence_ != 0u && frame->sequence != expected_sequence_)) {
+      return COAKKA_V2_ERR_IO;
     }
-    if (async != nullptr) {
-      (void)uv_async_send(async);
+    expected_sequence_ = frame->sequence + 1u;
+    source_drops_ += frame->dropped_before;
+    if (count_ == slots_.size()) {
+      head_ = (head_ + 1u) % slots_.size();
+      --count_;
+      ++queue_drops_;
     }
+    FrameSlot &slot = slots_[(head_ + count_) % slots_.size()];
+    copy_frame(slot, data, frame);
+    ++count_;
+    ++received_frames_;
+    received_bytes_ += frame->size;
+    // The mutex is also the lifetime fence between producer threads and the
+    // loop thread detaching and closing this libuv handle.
+    if (async_ != nullptr) (void)uv_async_send(async_);
     return COAKKA_V2_OK;
   }
 
@@ -260,7 +256,9 @@ struct Gateway {
       return false;
     }
     std::unique_lock<std::mutex> lock(ready_mutex);
-    ready_condition.wait(lock, [this] { return ready; });
+    ready_condition.wait(lock, [this] {
+      return ready.load(std::memory_order_acquire);
+    });
     if (start_result != 0) {
       *error = uv_strerror(start_result);
       recorder.shutdown();
@@ -275,7 +273,7 @@ struct Gateway {
     }
     recorder.shutdown();
     stopping.store(true, std::memory_order_release);
-    if (ready && start_result == 0) {
+    if (ready.load(std::memory_order_acquire) && start_result == 0) {
       (void)uv_async_send(&async);
     }
     if (worker.joinable()) {
@@ -910,9 +908,11 @@ struct Gateway {
   }
 
   void publish_ready(int result) {
-    std::lock_guard<std::mutex> lock(ready_mutex);
-    start_result = result;
-    ready = true;
+    {
+      std::lock_guard<std::mutex> lock(ready_mutex);
+      start_result = result;
+      ready.store(true, std::memory_order_release);
+    }
     ready_condition.notify_one();
   }
 
@@ -1015,7 +1015,7 @@ struct Gateway {
   std::thread worker;
   std::mutex ready_mutex;
   std::condition_variable ready_condition;
-  bool ready = false;
+  std::atomic<bool> ready{false};
   int start_result = UV_EINVAL;
 };
 

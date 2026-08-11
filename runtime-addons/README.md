@@ -10,7 +10,7 @@ Runtime package.
 
 | Addon | Workflow | Status |
 | --- | --- | --- |
-| [SFTP artifact publisher](artifact-publisher-sftp/README.md) | Acquire and verify an artifact in Service A, then distribute it to Service B through File Lane. | Native `0.1.0+40810b79` for `macos-aarch64`; Runtime `2.3.0+`. |
+| [SFTP artifact publisher](artifact-publisher-sftp/README.md) | Acquire and verify an artifact in Service A, then distribute it to Service B through File Lane. | Native `1.1.0+42841ae2` for Linux ARM64/x86-64, macOS ARM64, and Windows 11 ARM64/x86-64; Runtime `2.3.0+`. |
 
 Run an addon from its own directory. The root `run.sh` remains the front door
 for Runtime and Logger samples and intentionally does not merge independently

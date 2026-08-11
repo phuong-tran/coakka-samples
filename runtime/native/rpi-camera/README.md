@@ -12,6 +12,10 @@ The web listener is intentionally restricted to `127.0.0.1`. The Pi listener
 uses a bearer token and is intended for a trusted private network. This sample
 does not provide TLS, Internet exposure, or multi-user browser authentication.
 
+Release `v1.1.0` is the first audited stable sample line. Its detailed thread,
+memory, device, shutdown, and evidence boundaries are in
+[`SYSTEMS-AUDIT.md`](SYSTEMS-AUDIT.md).
+
 ## Distribution Boundary
 
 The public source and release attachments belong in
@@ -58,7 +62,8 @@ network access on first use. Managed corporate devices can reject unsigned
 applications entirely according to local policy.
 
 The release manifest states the exact Windows verification level. Release
-`v0.2.0` was executed on Windows 11: CLI validation passed, the host connected
+`v1.1.0` carries forward the Windows 11 native smoke: CLI validation passed,
+the host connected
 to a live Pi publisher, and the loopback UI was fetched locally. Windows-side
 WebSocket control and recording remain pending and are not implied by that
 smoke. Verify `SHA256SUMS` before running the archive.
@@ -128,7 +133,7 @@ export CAMERA_TOKEN="$(openssl rand -hex 32)"
   --width 1280 --height 720 --fps 30
 ```
 
-To run without a microphone or audio lane, pass `off` as the second argument:
+To run without a microphone or audio lane, pass `off` to `--audio-device`:
 
 ```sh
 ./coakka_camera_pi \
@@ -299,7 +304,7 @@ The command must report `OK` for every downloaded archive. GitHub's generated
 source archive comes from the public `coakka-samples` tag and contains the
 focused sample project. No private Core snapshot is attached.
 
-The implementation files are under this directory's `src/` folder:
+The public implementation files are under this directory's `src/` folder:
 
 - `stream_lane_camera_web_demo.cc`: role-specific CLI and Stream Lane wiring;
 - `v4l2_mjpeg_camera_source.c`: bounded V4L2 MMAP source;
