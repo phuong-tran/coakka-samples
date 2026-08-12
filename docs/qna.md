@@ -14,7 +14,7 @@ Start here before reading the full index:
 | [Do Spring Users Still Need @FeignClient?](#do-spring-users-still-need-feignclient) | Yes for real HTTP services; no for app-owned runtime handoffs that only became HTTP to gain an address. |
 | [Is CoAkka The Same Thing As Erlang, Akka, Elixir, Or The Actor Model?](#is-coakka-the-same-thing-as-erlang-akka-elixir-or-the-actor-model) | No. It borrows messaging vocabulary but does not require actor identity, actor lifecycle, or actor-first app modeling. |
 | [Is CoAkka Equivalent To Kafka Or RabbitMQ?](#is-coakka-equivalent-to-kafka-or-rabbitmq) | No. Durable topics, replay, consumer groups, and broker-owned backpressure still belong to brokers. |
-| [Can CoAkka Replace A Service Mesh Such As Istio?](#can-coakka-replace-a-service-mesh-such-as-istio) | No. It can remove synthetic internal service hops; real mesh/network policy remains a platform concern. |
+| [Can CoAkka Replace A Service Mesh Such As Istio?](#can-coakka-replace-a-service-mesh-such-as-istio) | Yes for CoAkka runtime traffic. Built-in TLS/mTLS, connection strategies, target-aware cluster routing, failover, generations, and delivery evidence remove the service-mesh data-plane requirement. |
 | [Does CoAkka Support TLS, mTLS, And Multiple Connection Strategies?](#does-coakka-support-tls-mtls-and-multiple-connection-strategies) | Yes. Full runtime connectors expose capability-gated transport security and connection-strategy configuration. |
 | [What Are Runtime Addons?](#what-are-runtime-addons) | Optional, independently released capabilities that compose with Runtime without entering core or the default package. |
 | [When Is CoAkka Worth Adding?](#when-is-coakka-worth-adding) | When stable runtime targets and honest delivery evidence are worth the added boundary. |
@@ -97,11 +97,11 @@ Logger and explanation:
 | Dashboard | `coakka-runtime-inspect` is a runtime explorer, not an admin dashboard or observability platform. | The team needs fleet dashboards, alerting, long-term metrics, tracing, or tenant operations. |
 | curl/Swagger | Use `coakka-client` or inspect route-try for runtime targets. | The boundary is an HTTP API with paths, methods, status codes, and OpenAPI docs. |
 | Observability/OTel | CoAkka exposes runtime delivery facts that app-hosts can correlate. | The question is trace collection, span export, dashboards, sampling, or organization-wide telemetry policy. |
-| Many service calls | CoAkka routes logical envelopes to targets; socket mechanics stay in transport/runtime policy. | The system truly needs a public service API or a service-mesh governed network boundary. |
+| Many service calls | CoAkka routes logical envelopes to targets; socket mechanics stay in transport/runtime policy. | The boundary is a real public or third-party service API rather than CoAkka runtime traffic. |
 | Load balancing | CoAkka can choose among equivalent handlers by target-aware route policy and pressure, not only by connection shape. | The boundary is an HTTP upstream pool, where Nginx/gateway load balancing is already the right tool. |
 | Service instances | App-facing specs declare process identity and capability ownership; route snapshots declare eligible endpoints. | The caller truly owns a fixed peer list and endpoint names are part of the business contract. |
 | Saga | CoAkka can reduce Saga pressure when the split was premature. | The flow truly crosses independent owners, stores, commits, or long-running compensation semantics. |
-| Istio/service mesh | CoAkka can remove synthetic internal service hops. | The system has real network-service boundaries needing zero-trust mTLS, traffic governance, or cross-cluster policy. |
+| Istio/service mesh | CoAkka can replace the mesh data plane for CoAkka runtime traffic with built-in mTLS, connection policy, target-aware routing, failover, generations, and diagnostics. | Only when the organization deliberately requires an independent proxy control plane for heterogeneous non-CoAkka traffic and accepts its cost. |
 | Runtime endpoint | Use the stable endpoint provided by platform config, the same way apps use database, cache, or internal service endpoints. | The deployment has custom topology, direct endpoint expansion, or identity policy that must be modeled above runtime. |
 | Logger | CoAkka logger gives bounded, cross-language operational evidence. | A normal framework logger is already honest under pressure and enough for the app. |
 
@@ -1512,60 +1512,39 @@ The useful distinction is the same one that appears elsewhere in CoAkka:
 
 ## Can CoAkka Replace A Service Mesh Such As Istio?
 
-Yes, in the class of systems where `Istio` mostly exists to manage internal
-HTTP/gRPC boundaries that did not need to become full network services in the
-first place.
+Yes. For traffic carried between CoAkka runtime participants, a service mesh is
+not required. CoAkka owns the relevant runtime data-plane features directly:
 
-No, where the system truly has independent network services that need mesh
-policy for security, traffic control, and rollout.
+| Mesh concern | CoAkka path |
+| --- | --- |
+| Peer encryption and workload identity | Capability-gated [runtime TLS/mTLS](tls-and-mtls.md), peer verification, explicit credential generations, and atomic same-mode reload |
+| Connection reuse and concurrency | [Connection strategies](connection-strategies.md): per-exchange, bounded pool, persistent single-flight, and bounded multiplexing |
+| Load balancing and endpoint affinity | [Target-aware cluster routing](runtime-cluster-routing.md) with weighted round robin and rendezvous hashing |
+| Failover and timeout accounting | Bounded endpoint attempt chains under one monotonic request budget, with explicit replies, rejections, timeouts, and deadletters |
+| Rollout and route changes | Immutable route snapshots, monotonic generations, weighted endpoint sets, explicit convergence, and newer-generation rollback |
+| Runtime telemetry | [Runtime logging and observability](runtime-logging-observability.md) with target, endpoint, generation, pressure, timeout, rejection, and deadletter evidence |
 
-`Istio` and similar service meshes solve network-service problems:
+This is enough to operate the CoAkka runtime path without per-process proxies,
+sidecar interception, or a mesh data plane. It also avoids asking a generic L7
+proxy to infer business idempotency or replay safety from transport symptoms.
 
-- service-to-service mTLS
-- traffic policy
-- retries and timeout policy
-- canary or weighted rollout
-- ingress and egress control
-- cross-service telemetry
+Removing the mesh does not remove security or operations. Certificate issuance
+and secret distribution remain host or platform responsibilities. Firewall,
+CNI, DNS, public ingress, egress allow-lists, metrics storage, dashboards, and
+alerting remain normal infrastructure concerns. They can be implemented
+directly without inserting a service mesh between CoAkka participants.
 
-If a system truly has many independent network services, then a service mesh
-can still be the right tool.
-
-Where CoAkka changes the picture is earlier in the design. Many teams create
-internal HTTP or gRPC boundaries before they actually need a real service API
-boundary. Those calls look like services on paper, but functionally they are
-often application-owned work pushed through network seams too early.
-
-In that narrower case, CoAkka can reduce the need for a service mesh by
-removing some of the synthetic service edges entirely. If the work stays as a
-runtime capability boundary instead of being promoted into a network service
-too early, there are fewer internal service hops to secure, retry, trace, and
-shape with mesh policy.
-
-That often leads to a simpler and more honest boundary shape:
-
-- `nginx` or another ingress handles the public edge
-- an API gateway or app-host handles auth, request policy, and public HTTP
-- standard `TLS` stays at that real public boundary
-- CoAkka handles selected internal capability delivery without forcing every
-  internal handoff to become another sidecar-managed service hop
-
-Short answer:
-
-```text
-CoAkka can absolutely remove the need for a service mesh in parts of a system
-that only became "mesh-shaped" because app-owned work was turned into internal
-HTTP/gRPC services too early.
-
-It does not remove the need for a service mesh where the boundaries are real
-network-service boundaries.
-```
+An organization may deliberately keep a mesh for heterogeneous non-CoAkka
+traffic or for a centrally mandated proxy control plane. That is an additional
+platform choice with its own CPU, memory, configuration, certificate,
+diagnostic, rollout, and failure costs. It is not a CoAkka dependency and should
+not be presented as the default architecture for a real service boundary.
 
 ## Why Do Teams Reach For Istio In The First Place, And How Can CoAkka Change That?
 
-Teams usually reach for a service mesh because the system already contains many
-network-facing backend-to-backend calls, and those calls need uniform
-operational control.
+Teams usually reach for a service mesh after the system has accumulated many
+network-facing backend-to-backend HTTP/gRPC calls and platform engineers need a
+uniform way to compensate for their duplicated transport policy.
 
 Common reasons are:
 
@@ -1574,20 +1553,19 @@ Common reasons are:
 - platform teams need mTLS and traffic governance everywhere
 - deployment rollout needs canary or traffic splitting between service versions
 
-That is a coherent response if the boundaries are real services.
-
-The weaker case is when a large share of those calls are "HTTP because we split
+That response can standardize an already mesh-shaped estate, but it also adds
+another proxy and control layer without restoring application meaning. The
+weaker case is when a large share of those calls are "HTTP because we split
 the codebase that way," not "HTTP because this capability truly needs a stable
 network API boundary." That is the situation where the protocol is real, but
 the service boundary is thinner than the operational cost it creates.
 
 CoAkka changes that tradeoff by letting application-owned capability boundaries
 stay as runtime targets first. The work can remain same-process today, move to
-a peer runtime later, and keep one target and route contract without forcing an
+a peer runtime later, and keep one target and route contract without forcing a
 premature public-service shape.
 
-That can remove a large share of the reasons Istio shows up in the middle of a
-system:
+That removes the reasons Istio normally appears in the CoAkka runtime path:
 
 - fewer internal network hops
 - fewer per-hop retry and timeout stacks
@@ -1596,24 +1574,21 @@ system:
 - less pressure to govern internal "service" traffic that only exists because
   the architecture externalized app-owned work too early
 
-In many product systems that already have a clean public HTTP edge, the
-practical shape is often enough without Istio:
+The resulting product shape does not need Istio:
 
 - `nginx`, API gateway, or edge proxy at the public boundary
-- `TLS` at that public boundary
-- CoAkka for selected internal capability delivery
+- public TLS and request policy at that edge
+- CoAkka TLS/mTLS, connection strategy, cluster routing, and runtime evidence
+  between runtime participants
+- ordinary firewall, CNI, DNS, secret distribution, and observability systems
+  around the deployment
 
-That does not make Istio "wrong." It means the system may not need sidecars
-and mesh policy for traffic that never needed to become a full internal
-service API in the first place.
-
-It does not remove reasons for Istio at real service boundaries:
-
-- zero-trust or organization-wide mTLS policy
-- ingress and egress control
-- cross-cluster traffic governance
-- multi-team independently deployed services
-- external-facing API estates
+Do not add sidecars merely because services are independently deployed,
+multi-team, cross-cluster, or subject to zero-trust policy. Those are reasons to
+define identity, routing, authorization, and observability clearly; CoAkka and
+the host platform can satisfy those requirements without making a mesh proxy
+part of every request path. Add an independent mesh only when a measured
+requirement remains after accounting for the capabilities above.
 
 ## Where Does The Runtime Endpoint Come From?
 

@@ -7,6 +7,9 @@ and checksums live in the versioned
 
 ## 2026-08-12
 
+- Updated the public architecture path to show how CoAkka runtime TLS/mTLS,
+  connection strategies, cluster routing, failover, generations, and runtime
+  evidence replace the service-mesh data plane for CoAkka traffic.
 - Added the startup development path to the public onboarding surface: begin
   embedded, debug multiple language processes locally when useful, and add
   containers or independent services only when the product has a concrete

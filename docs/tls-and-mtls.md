@@ -7,11 +7,23 @@ connections. TLS 1.2 is the minimum and TLS 1.3 may be negotiated.
 
 ## Choose The Security Boundary
 
-For Kubernetes, ingress TLS or a service mesh is often the best place to own
-workload identity, certificate automation, and policy when all traffic stays
-inside that managed boundary. Runtime TLS/mTLS remains appropriate when traffic
-crosses the mesh boundary, when end-to-end runtime identity is required, or
-when no mesh exists.
+CoAkka runtime traffic does not require a service mesh for encryption or peer
+identity. Use runtime TLS/mTLS when CoAkka participants cross a trust boundary
+and the exact runtime profile provides the capability. The runtime verifies
+peers directly, owns the secure transport context, reports structured security
+failures, and reloads strictly newer credentials without adding sidecar proxies
+to the request path.
+
+In Kubernetes, certificate issuance and secret distribution can remain with
+the cluster's certificate and secret tooling while CoAkka terminates TLS/mTLS
+end to end. Public ingress TLS remains at the public edge. Firewall, CNI, DNS,
+and authorization policy remain explicit platform or application concerns;
+none requires a service-mesh data plane.
+
+An organization may deliberately impose an independent mesh for heterogeneous
+non-CoAkka traffic or centralized proxy policy. Treat that as an additional
+platform layer with measurable cost, not as the default security boundary or a
+CoAkka prerequisite.
 
 For LAN services, edge gateways, Raspberry Pi, BeagleBone, bare metal Linux,
 and industrial Android deployments, runtime TLS/mTLS is a first-class option

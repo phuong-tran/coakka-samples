@@ -5,6 +5,10 @@ independent from transport security: every compiled strategy can use plaintext,
 TLS, or mTLS when the selected runtime profile provides that security
 capability.
 
+The runtime owns connection setup, reuse, retirement, concurrency bounds, and
+security directly. CoAkka participants do not need a sidecar or service-mesh
+proxy to supply those mechanics.
+
 ## Modes
 
 | Mode | Connection behavior | Concurrency on one connection | Required effective capability |

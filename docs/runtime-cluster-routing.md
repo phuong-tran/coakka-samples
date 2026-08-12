@@ -17,8 +17,9 @@ needs to see individual runtime endpoints.
 
 ## What Cluster Means Here
 
-In CoAkka, a cluster is not a membership system, a service mesh, or a business
-workflow coordinator.
+In CoAkka, a cluster is not a membership system, sidecar mesh, or business
+workflow coordinator. It is the target-aware routing and failover layer that
+lets CoAkka traffic operate without a service-mesh data plane.
 
 The cluster-style shape starts when CoAkka should see multiple endpoints for
 one target:

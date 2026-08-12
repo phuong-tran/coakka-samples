@@ -689,10 +689,11 @@ That keeps responsibility clear:
 | CoAkka runtime | Envelope delivery, route generation, bounded admission | Public API status vocabulary |
 | Handler | Business capability | Transport retries and peer topology policy |
 
-mTLS belongs where the network boundary and identity policy are real. That may
-be ingress, API gateway, sidecar, connector addon, or a true cross-service
-transport boundary. It should not become a default requirement inside
-`coakka-runtime-core` for every app-owned capability handoff.
+mTLS belongs where the network boundary and identity policy are real. Public
+ingress or API-gateway TLS stays at the public edge. Between CoAkka runtime
+participants, built-in runtime TLS/mTLS provides direct peer identity and
+encryption without a sidecar. It should not become a requirement for embedded
+local handoffs that never cross a network trust boundary.
 
 ## Stage 8: Move To Containers
 

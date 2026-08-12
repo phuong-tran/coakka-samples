@@ -151,6 +151,13 @@ Observability export belongs above or beside the runtime:
 - fleet-level sampling policy;
 - tenant or compliance reporting.
 
+CoAkka does not need a service-mesh proxy to manufacture runtime telemetry.
+Target, endpoint, route generation, admission, pressure, reply, timeout,
+rejection, and deadletter facts originate where the runtime makes those
+decisions. Export them directly through the connector, logger, inspect, or an
+observability adapter instead of reconstructing application delivery from
+sidecar traffic.
+
 CoAkka should contribute runtime facts that those systems can correlate. The
 exporter, retention policy, dashboard, and alert ownership remain with the
 app-host, connector, framework adapter, platform team, or observability addon.

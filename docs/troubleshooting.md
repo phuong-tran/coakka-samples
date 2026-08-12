@@ -72,10 +72,12 @@ A private address, LAN, VLAN, Kubernetes cluster network, or device subnet is a
 controlled network, not an automatically secure network. Decide explicitly
 where peer identity, encryption, certificate rotation, and authorization live.
 
-- In Kubernetes, prefer ingress or service-mesh TLS when that platform already
-  owns identity and policy for the complete path.
-- Use runtime TLS/mTLS for end-to-end runtime identity, traffic outside the
-  mesh, or deployments without that infrastructure.
+- For traffic between CoAkka participants, use runtime TLS/mTLS for direct
+  end-to-end peer identity and encryption; a service-mesh data plane is not
+  required.
+- In Kubernetes, keep certificate issuance and secret distribution in the
+  platform when appropriate, but let CoAkka terminate its own runtime TLS/mTLS.
+  Keep public ingress TLS at the public edge.
 - On Raspberry Pi, BeagleBone, bare metal, edge Linux, and industrial Android,
   verify architecture, clock readiness, CA provisioning, key permissions, and
   release evidence separately.

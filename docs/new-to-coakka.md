@@ -84,9 +84,12 @@ Runtime vocabulary.
 
 ## What CoAkka Is Not
 
-CoAkka is not a Kafka clone, a hosted broker, a service mesh, a web framework,
-or a replacement for public HTTP/gRPC APIs. It is an embedded runtime surface
-used by an application host through language packages.
+CoAkka is not a Kafka clone, hosted broker, sidecar mesh, web framework, or
+replacement for public HTTP/gRPC APIs. It is an embedded runtime surface used
+by an application host through language packages. For traffic it owns, its
+built-in TLS/mTLS, connection strategies, cluster routing, failover,
+generations, and delivery evidence remove the need for a service-mesh data
+plane.
 
 Public edges, authentication, deployment policy, and product APIs still belong
 to the application architecture around CoAkka.

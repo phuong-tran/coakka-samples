@@ -55,10 +55,10 @@ Bindings must preserve the same core rules:
 | Edge and device Linux | Supported only when the release matrix includes the device architecture and the deployment satisfies the same dependency, clock, storage, and network requirements |
 | Industrial Android | An integration target that requires release-specific native ABI, packaging, clock, certificate, and lifecycle evidence; it is not inferred from desktop Linux |
 
-Raspberry Pi, BeagleBone, bare metal Linux hosts, LAN services, and industrial
-devices are common reasons to use runtime-owned TLS/mTLS instead of depending on
-a Kubernetes ingress or service mesh. Their networks are controlled networks,
-not automatically secure networks.
+Raspberry Pi, BeagleBone, bare metal Linux hosts, LAN services, Kubernetes
+workloads, and industrial devices can use runtime-owned TLS/mTLS directly.
+None requires a service-mesh data plane for CoAkka traffic. Their networks are
+controlled networks, not automatically secure networks.
 
 ## Package Truth
 

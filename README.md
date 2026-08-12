@@ -262,8 +262,9 @@ Do not add CoAkka when:
 - HTTP/gRPC/OpenAPI semantics are the product contract;
 - the system needs durable broker topics, replay, consumer groups, or workflow
   history;
-- the problem is auth, authorization, deployment policy, service-mesh policy,
-  or business transaction design.
+- the problem is auth, authorization, public-edge policy, heterogeneous
+  non-CoAkka traffic governance, or business transaction design. CoAkka runtime
+  traffic does not require a service-mesh data plane.
 
 ## Repository Map
 

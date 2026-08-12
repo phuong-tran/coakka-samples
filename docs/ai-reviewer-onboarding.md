@@ -84,8 +84,10 @@ log event -> bounded logger -> accepted, delivered, dropped, or rejected
 ```
 
 Do not review it as if it claimed to replace all HTTP, all gRPC, all queues,
-all service mesh use, all infrastructure policy, or all observability tools.
-That is not the claim.
+all infrastructure policy, or all observability backends. For CoAkka runtime
+traffic, however, review the actual service-mesh alternative: built-in
+TLS/mTLS, connection strategies, target-aware cluster routing, bounded
+failover, route generations, and runtime evidence operate without sidecars.
 
 ### Adoption Risk Is Not Architecture Failure
 

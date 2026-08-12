@@ -208,6 +208,31 @@ Do not split only because a future architecture diagram looks cleaner. Every
 new service adds packaging, configuration, credentials, rollout, monitoring,
 failure, and on-call work.
 
+## CoAkka Can Eliminate The Service Mesh
+
+Separating a CoAkka target into another process does not create a service-mesh
+requirement. CoAkka already owns the runtime data-plane concerns that commonly
+cause teams to add a mesh around internal HTTP services:
+
+| Concern | CoAkka-owned path |
+| --- | --- |
+| Peer encryption and identity | Built-in capability-gated [TLS/mTLS](tls-and-mtls.md), including atomic same-mode credential reload |
+| Connection lifetime and reuse | Startup-selected [Connection Strategies](connection-strategies.md): per-exchange, bounded pool, persistent single-flight, or multiplexed |
+| Endpoint selection and failover | Target-aware [Runtime Cluster Routing](runtime-cluster-routing.md), weighted or rendezvous selection, bounded failover, route generations, replies, and deadletters |
+| Delivery diagnostics | [Runtime Logging And Observability](runtime-logging-observability.md): attributable runtime evidence, queue pressure, route generation, endpoint selection, timeout, rejection, and deadletter facts |
+
+These features let a team run CoAkka runtime traffic without sidecars or a
+service-mesh data plane. Certificate issuance and secret distribution can stay
+with the host or deployment platform. Firewall, CNI, and public ingress policy
+can stay at the real network edge. None of those responsibilities requires
+putting a proxy beside every application process.
+
+A team may still choose an independent mesh control plane for organization-wide
+policy that it deliberately wants outside CoAkka. That is an additional
+platform decision, not a CoAkka prerequisite and not the default answer to
+internal runtime communication. Require a measured need before accepting the
+extra proxies, configuration, resource use, failure modes, and debugging path.
+
 ## What CoAkka Does Not Decide For You
 
 Moving a handler does not automatically solve distributed data or operations.
@@ -238,6 +263,10 @@ is stronger than the operational cost of another service
 
 For the mechanics behind these shapes, continue with:
 
+- [Runtime TLS And mTLS](tls-and-mtls.md)
+- [Runtime Connection Strategies](connection-strategies.md)
+- [Runtime Logging And Observability](runtime-logging-observability.md)
+- [Runtime Cluster Routing](runtime-cluster-routing.md)
 - [Runtime Network Modes](runtime-network-modes.md)
 - [How It Works](how-it-works.md)
 - [Runtime Integration Guide](runtime-integration-guide.md)

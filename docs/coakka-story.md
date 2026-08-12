@@ -95,8 +95,11 @@ places where the real trust boundary may already be better expressed at
 ingress, gateway, identity, or deployment policy. Automatic retries appear in
 layers that cannot know whether the operation is business-safe to replay.
 
-Istio is not the enemy. mTLS is not the enemy. Feign is not the enemy. They are
-useful tools when they sit at the right layer.
+The issue is not whether Istio, mTLS, or Feign can be made to work. The issue is
+paying for a generic proxy and HTTP-client layer after application-owned work
+was placed at the wrong boundary. CoAkka provides mTLS and runtime delivery
+policy directly; it does not need Istio sidecars to make its internal path
+operable.
 
 The uncomfortable feeling comes from placement. A platform layer can see
 packets, connections, certificates, response codes, and timing. It usually
@@ -263,9 +266,13 @@ the runtime contract should have made obvious.
 
 ## Chapter 8: CoAkka's Position
 
-CoAkka is not a replacement for public APIs. It is not a way to avoid security.
-It is not a claim that service mesh, mTLS, Feign, ingress, API gateways, or
-distributed tracing have no place.
+CoAkka is not a replacement for public APIs and it is not a way to avoid
+security. It is a service-mesh alternative for CoAkka runtime traffic: built-in
+TLS/mTLS, connection strategies, target-aware routing, bounded failover, route
+generations, and delivery evidence remove the need for a sidecar data plane.
+Ingress, API gateways, public APIs, certificate issuance, firewalls, and
+observability backends remain at their real boundaries without requiring a
+proxy beside every application process.
 
 CoAkka is a claim about placement:
 

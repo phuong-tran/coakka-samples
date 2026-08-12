@@ -2,8 +2,9 @@
 
 This guide exists because CoAkka is easy to misread from a README alone.
 
-CoAkka is not mainly a faster transport, a message broker clone, an anti-HTTP
-argument, or a service-mesh replacement. It is a boundary-placement project:
+CoAkka is not mainly a faster transport, a message broker clone, or an
+anti-HTTP argument. It is a boundary-placement project and, for runtime traffic
+it owns, a direct alternative to a service-mesh data plane:
 application-owned capabilities should not have to pretend to be public HTTP
 APIs just to call work owned by the same application, team, or runtime
 boundary.
@@ -96,7 +97,7 @@ compatibility matrix or release notes exist.
 | "Deadletters are business errors." | Deadletters are runtime delivery evidence. Domain errors still belong to application handlers and reply payloads. |
 | "Route snapshots are domain ownership." | Route snapshots describe current delivery ownership and route generation. Domain ownership remains an application concern. |
 | "Logger is a separate add-on." | CoAkka Logger is the companion observability surface: bounded, explicit about pressure, and aligned with the runtime vocabulary across host languages. |
-| "Service mesh, mTLS, or Feign are wrong." | They are useful at the right layer. The concern is letting a layer without business context guess application semantics. |
+| "CoAkka still needs a service mesh for real services." | No. Runtime TLS/mTLS, connection strategies, target-aware cluster routing, bounded failover, route generations, and runtime evidence let CoAkka traffic operate without sidecars. A separate mesh is an optional platform choice, not a prerequisite. |
 | "Multi-language support is accidental scope." | The vocabulary is meant to survive host-language boundaries: target, envelope, reply, deadletter, pressure, diagnostics. |
 
 ## What To Evaluate
@@ -114,9 +115,11 @@ Evaluate CoAkka on these questions:
 - Do samples and release notes prove the claimed language/package/platform
   surface for the version being reviewed?
 
-Do not evaluate CoAkka as if it promised to replace every public API, every
-transport, every queue, every service mesh, or every observability tool. That
-is not the claim.
+Do not evaluate CoAkka as if it promised to replace every public API, transport,
+queue, or observability backend. Do evaluate its explicit service-mesh
+alternative: traffic between CoAkka runtime participants can use built-in
+TLS/mTLS, connection policy, routing, failover, generations, and delivery
+evidence without a sidecar data plane.
 
 ## What Counts As A Real Weakness
 
