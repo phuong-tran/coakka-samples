@@ -17,12 +17,13 @@ If you are evaluating CoAkka for the first time, read it in this order:
 | Step | Read or run | Why |
 | --- | --- | --- |
 | 1 | This page | Understand the problem and repository map. |
-| 2 | `bash run.sh containers node-python` | See two real processes, two languages, browser-visible state, and no backend HTTP fallback. |
-| 3 | [Runtime Field Guide](runtime-field-guide.md) | Connect the sample to the normal Kubernetes Service DNS shape, queues, overload, Nginx, and mTLS boundaries. |
-| 4 | [How It Works](how-it-works.md) | Understand app-host, connector, runtime, route snapshot, and handler ownership. |
-| 5 | [Runtime Integration Guide](runtime-integration-guide.md) | Map an existing service into `RuntimeStartSpec`, routes, handlers, and shutdown. |
-| 6 | [Runtime Addons](runtime-addons.md) | See how optional protocol or integration capabilities compose with Runtime without entering core. |
-| 7 | [Questions And Answers](qna.md) | Check the common objections: gRPC, Feign, Istio, sockets, load balancing, generations, and Saga. |
+| 2 | [Build The Product Before The Infrastructure](startup-development-path.md) | Start with a modular monolith or locally debugged polyglot processes, then split only when evidence justifies it. |
+| 3 | `bash run.sh containers node-python` | See two real processes, two languages, browser-visible state, and no backend HTTP fallback. |
+| 4 | [Runtime Field Guide](runtime-field-guide.md) | Connect the sample to the normal Kubernetes Service DNS shape, queues, overload, Nginx, and mTLS boundaries. |
+| 5 | [How It Works](how-it-works.md) | Understand app-host, connector, runtime, route snapshot, and handler ownership. |
+| 6 | [Runtime Integration Guide](runtime-integration-guide.md) | Map an existing service into `RuntimeStartSpec`, routes, handlers, and shutdown. |
+| 7 | [Runtime Addons](runtime-addons.md) | See how optional protocol or integration capabilities compose with Runtime without entering core. |
+| 8 | [Questions And Answers](qna.md) | Check the common objections: gRPC, Feign, Istio, sockets, load balancing, generations, and Saga. |
 
 ## Two Main Public Repositories
 
@@ -141,6 +142,7 @@ to the application architecture around CoAkka.
 
 | Doc | Use it when |
 | --- | --- |
+| [Build The Product Before The Infrastructure](startup-development-path.md) | You need to ship before choosing a final service, container, or scaling topology. |
 | [Runtime Field Guide](runtime-field-guide.md) | You understand the basic idea and want to know how a real topology should be shaped. |
 | [How It Works](how-it-works.md) | You want the runtime lifecycle and ownership model. |
 | [Runtime Message And Routing Model](runtime-message-and-routing-model.md) | You need the vocabulary: start spec, route snapshot, envelope, ask, reply, timeout, and deadletter. |

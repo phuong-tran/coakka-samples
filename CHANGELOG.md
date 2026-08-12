@@ -7,6 +7,10 @@ and checksums live in the versioned
 
 ## 2026-08-12
 
+- Added the startup development path to the public onboarding surface: begin
+  embedded, debug multiple language processes locally when useful, and add
+  containers or independent services only when the product has a concrete
+  reason.
 - Advanced the Swift runtime sample to the exact `v2.4.0` tag over native
   generation `2.4.0+c2f53117`; package readiness and a clean remote-tag
   request/reply consumer pass on macOS ARM64.

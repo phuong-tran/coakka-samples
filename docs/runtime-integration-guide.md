@@ -9,6 +9,9 @@ fit and operational ownership, read
 evidence checklist, read [Production Evidence](production-evidence.md). For
 repository ownership boundaries, read
 [Repository Boundaries](repository-boundaries.md).
+For a startup-oriented path from monolith to local polyglot processes and then
+independent deployment, read
+[Build The Product Before The Infrastructure](startup-development-path.md).
 
 1. add the language connector artifact
 2. start one runtime participant per process

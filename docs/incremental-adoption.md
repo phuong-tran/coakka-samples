@@ -4,6 +4,11 @@ CoAkka is flexible because it does not require a rewrite-first migration. A
 team can keep working systems in place, pick one painful runtime boundary, and
 test whether target-based delivery makes that boundary clearer.
 
+For the startup path that begins with an embedded modular monolith, adds local
+polyglot processes, and delays containers or service separation until there is
+a measured reason, read
+[Build The Product Before The Infrastructure](startup-development-path.md).
+
 The goal is not to replace every public API, standardize every service on one
 framework, or migrate the whole architecture at once. Public HTTP and gRPC
 edges can stay public. Direct in-process calls can stay direct. Legacy services

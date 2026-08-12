@@ -314,6 +314,7 @@ to see available lanes.
 Start here:
 
 - [New To CoAkka](docs/new-to-coakka.md)
+- [Build The Product Before The Infrastructure](docs/startup-development-path.md)
 - [Runtime Field Guide](docs/runtime-field-guide.md)
 - [How It Works](docs/how-it-works.md)
 - [Questions And Answers](docs/qna.md)
