@@ -67,7 +67,10 @@ core or every runtime package. The
 [`runtime-addons/`](runtime-addons/README.md) tree contains runnable native C11
 samples for all 12 released artifact publishers. The root runner exposes them
 through a distinct `runtime-addons` command while their release cadence remains
-independent from Runtime and Logger.
+independent from Runtime and Logger. Artifact addons are native-first: their C
+ABI and C11 samples are the current supported integration boundary. Dedicated
+language connectors may be considered when real usage justifies the additional
+platform, packaging, test, and maintenance surface; none is currently claimed.
 
 ## Runtime Transport
 

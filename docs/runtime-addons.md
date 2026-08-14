@@ -10,6 +10,19 @@ uses stable runtime features such as File Lane when distribution is needed.
 > `1.2.0+88b9a047`. They remain separate from the default Runtime package and
 > expose native C ABIs only; no high-level language addon connector is claimed.
 
+## Native-First Support Policy
+
+Artifact-source addons are supported as native C ABI products first. The native
+implementation, package evidence, and C11 consumer sample are the maintained
+integration boundary for each released addon.
+
+Addon-specific connectors for JVM, Python, Node.js, Go, .NET, Swift, or other
+hosts may be added later when real adoption justifies their implementation,
+platform matrix, packaging, tests, and ongoing maintenance. They are not part
+of the current addon releases and are not a committed cross-language roadmap.
+Until such a connector is explicitly released, applications should integrate
+through the documented native C ABI and native sample.
+
 ## Where Addons Fit
 
 ```mermaid

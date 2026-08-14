@@ -1153,7 +1153,9 @@ runtime-addons release family: defined
 artifact-source wave: public native 1.1.0+d1032f6d
 SFTP artifact publisher: replacement native 1.2.0+88b9a047
 native addon samples: exact immutable archive consumers
-connector package changes: none
+addon integration priority: native C ABI and C11 samples first
+addon-specific language connectors: demand-driven, not currently committed
+existing Runtime connector package changes: none
 ```
 
 Read [Runtime Addons](runtime-addons.md) before selecting or generating addon

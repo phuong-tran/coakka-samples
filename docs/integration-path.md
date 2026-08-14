@@ -122,7 +122,9 @@ Check `artifacts/public-artifacts.tsv` before writing imports or install
 commands. Eleven artifact-source addons are published at native
 `1.1.0+d1032f6d`, and SFTP is published at replacement native
 `1.2.0+88b9a047`. They remain outside connector packages and currently expose
-native C ABIs only:
+native C ABIs only. Addon-specific language connectors may follow when
+demonstrated demand justifies their platform, packaging, testing, and
+maintenance cost; they are not part of the current release contract:
 
 ```sh
 bash run.sh runtime-addons https

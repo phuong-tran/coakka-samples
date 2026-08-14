@@ -33,7 +33,10 @@ bash run.sh runtime-addons all published
 
 The deterministic fixtures prove the native sample lifecycle against exact
 published packages. They do not claim live cloud-provider certification or a
-high-level language connector.
+high-level language connector. These addons are intentionally native-first.
+Addon-specific language connectors may be added when demonstrated demand
+justifies their platform, packaging, testing, and maintenance cost, but they
+are not part of the current release contract or a committed roadmap.
 
 See [Runtime Addons](../docs/runtime-addons.md) for package ownership,
 compatibility, and release rules.
