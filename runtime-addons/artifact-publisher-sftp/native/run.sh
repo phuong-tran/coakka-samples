@@ -5,8 +5,8 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../../.." && pwd)"
 core_root="${COAKKA_CORE_ROOT:-${repo_root}/../coakkaCoreNativeDev}"
 publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
-addon_version="1.1.0"
-addon_release="1.1.0+42841ae2"
+addon_version="1.2.0"
+addon_release="1.2.0+88b9a047"
 addon_artifact="runtime-addons/artifact-publisher-sftp/native/releases/${addon_release}/coakka-runtime-addon-artifact-publisher-sftp-native-${addon_version}.tar.gz"
 
 # shellcheck disable=SC1091

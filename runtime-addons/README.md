@@ -10,11 +10,30 @@ Runtime package.
 
 | Addon | Workflow | Status |
 | --- | --- | --- |
-| [SFTP artifact publisher](artifact-publisher-sftp/README.md) | Acquire and verify an artifact in Service A, then distribute it to Service B through File Lane. | Native `1.1.0+42841ae2` for Linux ARM64/x86-64, macOS ARM64, and Windows 11 ARM64/x86-64; Runtime `2.3.0+`. |
+| [HTTPS](artifact-publisher-https/README.md) | Verified immutable HTTPS object. | Native `1.1.0+d1032f6d`; Runtime `2.4.0+`. |
+| [S3/MinIO](artifact-publisher-s3/README.md) | Version-pinned S3-compatible GetObject. | Native `1.1.0+d1032f6d`; Runtime `2.4.0+`. |
+| [Local Drop](artifact-publisher-local-drop/README.md) | Stable file below an anchored POSIX drop root. | Native `1.1.0+d1032f6d`; Runtime `2.4.0+`. |
+| [Azure Blob](artifact-publisher-azure-blob/README.md) | Version-pinned read-only service SAS URL. | Native `1.1.0+d1032f6d`; Runtime `2.4.0+`. |
+| [GCS](artifact-publisher-gcs/README.md) | Generation-pinned V4 signed object URL. | Native `1.1.0+d1032f6d`; Runtime `2.4.0+`. |
+| [WebDAV](artifact-publisher-webdav/README.md) | Strong-ETag HTTPS resource. | Native `1.1.0+d1032f6d`; Runtime `2.4.0+`. |
+| [OCI Registry](artifact-publisher-oci-registry/README.md) | SHA-256 content-addressed registry blob. | Native `1.1.0+d1032f6d`; Runtime `2.4.0+`. |
+| [Hugging Face Hub](artifact-publisher-huggingface-hub/README.md) | Commit-pinned Hub file. | Native `1.1.0+d1032f6d`; Runtime `2.4.0+`. |
+| [GitHub Release](artifact-publisher-github-release/README.md) | Numeric-ID release asset. | Native `1.1.0+d1032f6d`; Runtime `2.4.0+`. |
+| [Google Drive](artifact-publisher-google-drive/README.md) | Retained blob revision media. | Native `1.1.0+d1032f6d`; Runtime `2.4.0+`. |
+| [Dropbox](artifact-publisher-dropbox/README.md) | Exact Dropbox `rev:` content. | Native `1.1.0+d1032f6d`; Runtime `2.4.0+`. |
+| [SFTP](artifact-publisher-sftp/README.md) | Host-key-pinned SFTP file. | Native `1.2.0+88b9a047`; Runtime `2.3.0+`. |
 
-Run an addon from its own directory. The root `run.sh` remains the front door
-for Runtime and Logger samples and intentionally does not merge independently
-released addon commands into the main lane.
+Run one addon or the full native matrix from the repository root:
+
+```sh
+bash run.sh runtime-addons https
+bash run.sh runtime-addons all check
+bash run.sh runtime-addons all published
+```
+
+The deterministic fixtures prove the native sample lifecycle against exact
+published packages. They do not claim live cloud-provider certification or a
+high-level language connector.
 
 See [Runtime Addons](../docs/runtime-addons.md) for package ownership,
 compatibility, and release rules.

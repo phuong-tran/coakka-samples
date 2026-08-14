@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-COAKKA_PUBLISH_RAW_BASE_DEFAULT="https://raw.githubusercontent.com/phuong-tran/coakka-publish/da4a5e9c3f1f846970fb84c8f18bca893051c487"
+COAKKA_PUBLISH_RAW_BASE_DEFAULT="https://raw.githubusercontent.com/phuong-tran/coakka-publish/26cc1a8037d168a74d1d8a56c4d710b25d687156"
 
 COAKKA_RUNTIME_NATIVE_VERSION="2.4.0"
 COAKKA_RUNTIME_NATIVE_RELEASE="2.4.0+c2f53117"
@@ -71,6 +71,21 @@ COAKKA_CONTAINER_ROWS=(
   "node-python|Node.js web container to Python store container"
 )
 
+COAKKA_ADDON_ROWS=(
+  "https|HTTPS object"
+  "s3|S3 or MinIO GetObject"
+  "local-drop|Anchored POSIX local drop"
+  "azure-blob|Version-pinned Azure Blob SAS object"
+  "gcs|Generation-pinned GCS signed object"
+  "webdav|Strong-ETag WebDAV resource"
+  "oci-registry|Content-addressed OCI registry blob"
+  "huggingface-hub|Commit-pinned Hugging Face Hub file"
+  "github-release|Identity-pinned GitHub release asset"
+  "google-drive|Retained Google Drive blob revision"
+  "dropbox|Immutable Dropbox file revision"
+  "sftp|Host-key-pinned SFTP file"
+)
+
 COAKKA_ARTIFACT_ROWS=(
   "logger JVM jar|logger/jvm/releases/1.2.1+f50756ebff0d/coakka-jvm-native-logger-1.2.1-gf50756ebff0d.jar"
   "logger Python wheel|logger/python/releases/1.2.1+f50756ebff0d/coakka_logger-1.2.2-py3-none-any.whl"
@@ -85,6 +100,18 @@ COAKKA_ARTIFACT_ROWS=(
   "logger Zig source package|logger/zig/releases/1.2.1+f50756ebff0d-8264bba/coakka-logger-zig-1.2.1-source.tar.gz"
   "logger Native package|logger/native/releases/1.2.1+f50756ebff0d/coakka-logger-native-1.2.1.tar.gz"
   "runtime Native package|${COAKKA_RUNTIME_NATIVE_ARTIFACT}"
+  "runtime addon HTTPS native|runtime-addons/artifact-publisher-https/native/releases/1.1.0+d1032f6d/coakka-runtime-addon-artifact-publisher-https-native-1.1.0.tar.gz"
+  "runtime addon S3 native|runtime-addons/artifact-publisher-s3/native/releases/1.1.0+d1032f6d/coakka-runtime-addon-artifact-publisher-s3-native-1.1.0.tar.gz"
+  "runtime addon Local Drop native|runtime-addons/artifact-publisher-local-drop/native/releases/1.1.0+d1032f6d/coakka-runtime-addon-artifact-publisher-local-drop-native-1.1.0.tar.gz"
+  "runtime addon Azure Blob native|runtime-addons/artifact-publisher-azure-blob/native/releases/1.1.0+d1032f6d/coakka-runtime-addon-artifact-publisher-azure-blob-native-1.1.0.tar.gz"
+  "runtime addon GCS native|runtime-addons/artifact-publisher-gcs/native/releases/1.1.0+d1032f6d/coakka-runtime-addon-artifact-publisher-gcs-native-1.1.0.tar.gz"
+  "runtime addon WebDAV native|runtime-addons/artifact-publisher-webdav/native/releases/1.1.0+d1032f6d/coakka-runtime-addon-artifact-publisher-webdav-native-1.1.0.tar.gz"
+  "runtime addon OCI Distribution native|runtime-addons/artifact-publisher-oci-registry/native/releases/1.1.0+d1032f6d/coakka-runtime-addon-artifact-publisher-oci-registry-native-1.1.0.tar.gz"
+  "runtime addon Hugging Face Hub native|runtime-addons/artifact-publisher-huggingface-hub/native/releases/1.1.0+d1032f6d/coakka-runtime-addon-artifact-publisher-huggingface-hub-native-1.1.0.tar.gz"
+  "runtime addon GitHub Release native|runtime-addons/artifact-publisher-github-release/native/releases/1.1.0+d1032f6d/coakka-runtime-addon-artifact-publisher-github-release-native-1.1.0.tar.gz"
+  "runtime addon Google Drive native|runtime-addons/artifact-publisher-google-drive/native/releases/1.1.0+d1032f6d/coakka-runtime-addon-artifact-publisher-google-drive-native-1.1.0.tar.gz"
+  "runtime addon Dropbox native|runtime-addons/artifact-publisher-dropbox/native/releases/1.1.0+d1032f6d/coakka-runtime-addon-artifact-publisher-dropbox-native-1.1.0.tar.gz"
+  "runtime addon SFTP native|runtime-addons/artifact-publisher-sftp/native/releases/1.2.0+88b9a047/coakka-runtime-addon-artifact-publisher-sftp-native-1.2.0.tar.gz"
   "runtime JVM jar|runtime/jvm/releases/2.4.0+c2f53117-0afb5e9/coakka-jvm-native-runtime-v2-2.4.0-gc2f53117-0afb5e9.jar"
   "runtime Python wheel|runtime/python/releases/2.4.0+c2f53117-0afb5e9/coakka_v2_connector-2.4.0-py3-none-any.whl"
   "runtime Node package|runtime/node/releases/2.4.0+c2f53117-0afb5e9/coakka-v2-connector-node-2.4.0.tgz"
@@ -172,6 +199,10 @@ Runtime inspect sample:
 
 Runtime test:
   runtime-test                    Audit the native public ABI, connection strategies, and sanitizer-ready harness
+
+Runtime addon samples:
+  runtime-addons/<addon>          Run one native addon through File Lane
+  runtime-addons/all              Run all native addon samples
 
 Scenario tracks:
 EOF
