@@ -30,19 +30,21 @@ optional native capabilities that compose with Runtime without entering the
 default runtime package. Addons carry their own versions, compatibility
 manifests, native dependency closure, and matching-host evidence.
 
-SFTP artifact publisher `1.1.0+42841ae2` is published as an independent native
-archive for Linux ARM64/x86-64, macOS ARM64, and Windows 11 ARM64/x86-64. It
-requires Runtime native `2.3.0` or newer and the `file_lane` feature. It is not
-part of the Runtime archive and does not change any connector coordinate.
+The 11-addon artifact-source wave is published at native
+`1.1.0+d1032f6d`. HTTPS, S3/MinIO, Azure Blob, GCS, WebDAV, OCI Distribution,
+Hugging Face Hub, GitHub release assets, Google Drive, and Dropbox carry five
+native targets and require Runtime `2.4.0+`. Local Drop carries the three POSIX
+targets. SFTP is independently published at replacement native
+`1.2.0+88b9a047` and requires Runtime `2.3.0+`.
 
 ```text
-runtime-addons/artifact-publisher-sftp/native/releases/1.1.0+42841ae2/
-  coakka-runtime-addon-artifact-publisher-sftp-native-1.1.0.tar.gz
+runtime-addons/artifact-publisher-<source>/native/releases/1.1.0+d1032f6d/
+runtime-addons/artifact-publisher-sftp/native/releases/1.2.0+88b9a047/
+  coakka-runtime-addon-artifact-publisher-sftp-native-1.2.0.tar.gz
 ```
 
-Use the isolated native sample with
-`bash runtime-addons/artifact-publisher-sftp/native/run.sh published`. The root
-main sample lane remains reserved for Runtime and Logger packages.
+Run one exact native consumer with `bash run.sh runtime-addons <addon>` or the
+complete matrix with `bash run.sh runtime-addons all published`.
 
 ## Package Manager Entrypoints
 

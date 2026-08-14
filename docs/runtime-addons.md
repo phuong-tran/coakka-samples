@@ -5,10 +5,23 @@ with CoAkka Runtime without becoming part of runtime core or the default runtime
 package. Each addon owns one focused external workflow or protocol family and
 uses stable runtime features such as File Lane when distribution is needed.
 
-> **Current status:** SFTP artifact publisher `1.1.0+42841ae2` is public for
-> Linux ARM64/x86-64, macOS ARM64, and Windows 11 ARM64/x86-64. It requires
-> Runtime native `2.3.0` or newer and remains separate from the default Runtime
-> package and connector lanes.
+> **Current status:** eleven artifact-source addons are public at native
+> `1.1.0+d1032f6d`; SFTP is public at replacement native
+> `1.2.0+88b9a047`. They remain separate from the default Runtime package and
+> expose native C ABIs only; no high-level language addon connector is claimed.
+
+## Native-First Support Policy
+
+Artifact-source addons are supported as native C ABI products first. The native
+implementation, package evidence, and C11 consumer sample are the maintained
+integration boundary for each released addon.
+
+Addon-specific connectors for JVM, Python, Node.js, Go, .NET, Swift, or other
+hosts may be added later when real adoption justifies their implementation,
+platform matrix, packaging, tests, and ongoing maintenance. They are not part
+of the current addon releases and are not a committed cross-language roadmap.
+Until such a connector is explicitly released, applications should integrate
+through the documented native C ABI and native sample.
 
 ## Where Addons Fit
 
@@ -79,7 +92,9 @@ with its manifest and `SHA256SUMS`.
 
 | Addon | Workflow | Public status |
 | --- | --- | --- |
-| [SFTP artifact publisher](https://github.com/phuong-tran/coakka-publish/tree/main/runtime-addons/artifact-publisher-sftp) | Service A fetches from a pinned SFTP source, verifies size and SHA-256, stages without replacement, and distributes through sender File Lane to one or more services. | Public native `1.1.0+42841ae2` archive for five targets; [two-process C11 sample](https://github.com/phuong-tran/coakka-samples/tree/main/runtime-addons/artifact-publisher-sftp/native). |
+| HTTPS, S3/MinIO, Azure Blob, GCS, WebDAV, OCI Distribution, Hugging Face Hub, GitHub Release, Google Drive, Dropbox | Acquire one immutable remote identity, verify size/SHA-256, stage without replacement, and distribute through File Lane. | Public native `1.1.0+d1032f6d`; [native C11 samples](https://github.com/phuong-tran/coakka-samples/tree/main/runtime-addons). |
+| Local Drop | Acquire one stable file below an anchored POSIX drop root and distribute through File Lane. | Public native `1.1.0+d1032f6d` for Linux ARM64/x86-64 and macOS ARM64; native C11 sample. |
+| [SFTP artifact publisher](https://github.com/phuong-tran/coakka-publish/tree/main/runtime-addons/artifact-publisher-sftp) | Acquire one host-key-pinned SFTP file and distribute through File Lane. | Replacement native `1.2.0+88b9a047` for five targets; [native C11 sample](https://github.com/phuong-tran/coakka-samples/tree/main/runtime-addons/artifact-publisher-sftp/native). |
 
 The SFTP workflow composes existing boundaries:
 
@@ -108,8 +123,8 @@ from promoted public coordinates.
 The current immutable coordinate is:
 
 ```text
-runtime-addons/artifact-publisher-sftp/native/releases/1.1.0+42841ae2/
-  coakka-runtime-addon-artifact-publisher-sftp-native-1.1.0.tar.gz
+runtime-addons/artifact-publisher-sftp/native/releases/1.2.0+88b9a047/
+  coakka-runtime-addon-artifact-publisher-sftp-native-1.2.0.tar.gz
 ```
 
 Its matching-host evidence covers all five packaged modules, reviewed exports,

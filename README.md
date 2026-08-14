@@ -24,7 +24,7 @@ Release attachments.
 | Sample | Source and run guide | Published binaries |
 | --- | --- | --- |
 | Raspberry Pi camera livestream | [`runtime-streaming-demo/rpi-camera/`](runtime-streaming-demo/rpi-camera/README.md) | [`coakka-publish/samples/runtime/native/rpi-camera/releases/1.1.0/`](https://github.com/phuong-tran/coakka-publish/tree/main/samples/runtime/native/rpi-camera/releases/1.1.0) |
-| SFTP artifact publisher | [`runtime-addons/artifact-publisher-sftp/`](runtime-addons/artifact-publisher-sftp/README.md) | [`coakka-publish/runtime-addons/artifact-publisher-sftp/native/releases/1.1.0+42841ae2/`](https://github.com/phuong-tran/coakka-publish/tree/main/runtime-addons/artifact-publisher-sftp/native/releases/1.1.0+42841ae2) |
+| Native artifact publishers | [`runtime-addons/`](runtime-addons/README.md) | Eleven addons at `1.1.0+d1032f6d`; SFTP at `1.2.0+88b9a047`. |
 
 [`runtime-streaming-demo/`](runtime-streaming-demo/README.md) is the top-level
 lane for complete Stream Lane workflows. It is a sibling of
@@ -63,16 +63,14 @@ for exact package, OS, CPU, and release-channel evidence.
 
 [Runtime addons](docs/runtime-addons.md) are optional, independently released
 capabilities that compose with public Runtime features without entering runtime
-core or every runtime package. The current SFTP artifact-publisher lane shows
-how Service A can acquire and verify a file, then distribute it through File
-Lane.
-
-SFTP artifact publisher `1.1.0+42841ae2` is available for Linux ARM64/x86-64,
-macOS ARM64, and Windows 11 ARM64/x86-64 in the isolated
-[`runtime-addons/`](runtime-addons/README.md) tree. Its native sample consumes
-the immutable addon archive and Runtime `2.3.0`. The addon is still not added to
-the root main lane because its release cadence is independent from Runtime and
-Logger.
+core or every runtime package. The
+[`runtime-addons/`](runtime-addons/README.md) tree contains runnable native C11
+samples for all 12 released artifact publishers. The root runner exposes them
+through a distinct `runtime-addons` command while their release cadence remains
+independent from Runtime and Logger. Artifact addons are native-first: their C
+ABI and C11 samples are the current supported integration boundary. Dedicated
+language connectors may be considered when real usage justifies the additional
+platform, packaging, test, and maintenance surface; none is currently claimed.
 
 ## Runtime Transport
 

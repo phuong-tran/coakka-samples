@@ -19,6 +19,7 @@ Usage:
   bash run.sh runtime
   bash run.sh runtime-client
   bash run.sh runtime-inspect
+  bash run.sh runtime-addons
   bash run.sh containers
   bash run.sh scenarios
   bash run.sh scenarios check
@@ -33,6 +34,7 @@ Usage:
   bash run.sh runtime-client [check|version|doctor|docker-bundle|docker-walkthrough|dockerhub-demo]
   bash run.sh runtime-inspect [check|published-smoke|local-smoke|serve|docker-smoke|docker-serve|dockerhub-smoke]
   bash run.sh runtime-test [smoke|pressure|stress|soak|connection-strategies|file-lane|stream-lane|race|hot-reload]
+  bash run.sh runtime-addons [all|<addon>] [published|check]
 
 Examples:
   bash run.sh
@@ -48,6 +50,7 @@ Lanes:
   runtime
   runtime-client
   runtime-inspect
+  runtime-addons
   containers
 
 Logger languages:
@@ -180,6 +183,32 @@ run_all_containers() {
   done
 }
 
+run_runtime_addon() {
+  local addon="$1"
+  local command="${2:-published}"
+  local sample_script="${script_dir}/runtime-addons/artifact-publisher-${addon}/native/run.sh"
+  coakka_require_file "${sample_script}" "Use 'bash run.sh runtime-addons' to list addons."
+  bash "${sample_script}" "${command}"
+}
+
+print_runtime_addons() {
+  local row addon summary
+  for row in "${COAKKA_ADDON_ROWS[@]}"; do
+    IFS='|' read -r addon summary <<<"${row}"
+    printf '  %-31s %s\n' "runtime-addons/${addon}" "${summary}"
+  done
+}
+
+run_all_runtime_addons() {
+  local command="$1"
+  local row addon summary
+  for row in "${COAKKA_ADDON_ROWS[@]}"; do
+    IFS='|' read -r addon summary <<<"${row}"
+    coakka_note "running runtime-addons/${addon} ${command}"
+    run_runtime_addon "${addon}" "${command}"
+  done
+}
+
 if [[ "$#" -eq 0 ]]; then
   run_quickstart
   exit 0
@@ -264,11 +293,21 @@ case "$1" in
     shift
     bash "${script_dir}/runtime-test/run.sh" "$@"
     ;;
+  runtime-addons)
+    if [[ "$#" -eq 1 ]]; then
+      echo "Available runtime addon samples:"
+      print_runtime_addons
+    elif [[ "${2}" == all ]]; then
+      run_all_runtime_addons "${3:-published}"
+    else
+      run_runtime_addon "${2}" "${3:-published}"
+    fi
+    ;;
   scenario)
     shift
     run_scenario "$@"
     ;;
-  logger/*|runtime/*|runtime-client|runtime-client/*|runtime-inspect|runtime-inspect/*|containers/*)
+  logger/*|runtime/*|runtime-addons/*|runtime-client|runtime-client/*|runtime-inspect|runtime-inspect/*|containers/*)
     sample_path="$1"
     shift
     if [[ "${sample_path}" == runtime-client ]]; then
@@ -285,6 +324,10 @@ case "$1" in
     fi
     if [[ "${sample_path}" == runtime-inspect/* ]]; then
       bash "${script_dir}/runtime-inspect/run.sh" "${sample_path#runtime-inspect/}" "$@"
+      exit 0
+    fi
+    if [[ "${sample_path}" == runtime-addons/* ]]; then
+      run_runtime_addon "${sample_path#runtime-addons/}" "${1:-published}"
       exit 0
     fi
     run_sample_path "${sample_path}" "$@"

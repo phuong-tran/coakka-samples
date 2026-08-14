@@ -41,7 +41,7 @@ bash run.sh check
 bash run.sh source-candidate
 ```
 
-`published` is the default and consumes addon `1.1.0+42841ae2` plus Runtime
+`published` is the default and consumes addon `1.2.0+88b9a047` plus Runtime
 `2.3.0`. The full fixture runs on supported macOS and Linux hosts. `check`
 compiles against sibling Core source headers. `source-candidate` builds the
 next addon candidate from a sibling Core checkout. Override workspace discovery
@@ -54,20 +54,19 @@ pkg-config, and static libssh2 `1.11.1` plus its crypto closure.
 
 ## Windows Build
 
-On Windows 11 ARM64 or x86-64, extract the matching Runtime `2.3.0` archive and
-the SFTP addon `1.1.0` archive. The current package carries GNU-compatible
-import libraries and is verified with Zig's `windows-gnu` target. Configure the
-same two C applications from PowerShell with the included toolchain file:
+On Windows 11 ARM64 or x86-64, extract the matching Runtime `2.3.0` or newer
+archive and the SFTP addon `1.2.0` archive. The package carries MSVC import
+libraries. Configure the same two C applications from a Visual Studio developer
+PowerShell with the matching architecture:
 
 ```powershell
-cmake -S . -B build -G Ninja `
-  -DCMAKE_TOOLCHAIN_FILE=cmake\windows-zig-aarch64.cmake `
+cmake -S . -B build -A ARM64 `
   -DCoAkkaRuntimeNativeV2_DIR=C:\coakka\runtime\cmake `
   -DCoAkkaRuntimeAddonArtifactPublisherSftp_DIR=C:\coakka\sftp-addon\cmake
-cmake --build build
+cmake --build build --config Release
 ```
 
-Use the x86-64 Zig toolchain file on x86-64. Put the matching Runtime and addon DLLs beside
+Use `-A x64` on x86-64. Put the matching Runtime and addon DLLs beside
 `coakka_sftp_sample_service_a.exe`; put the Runtime DLL beside
 `coakka_sftp_sample_service_b.exe`. Service configuration uses the
 `COAKKA_SAMPLE_*` environment variables read in `service_a.c` and

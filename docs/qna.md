@@ -1150,10 +1150,12 @@ Current status:
 
 ```text
 runtime-addons release family: defined
-SFTP artifact publisher: public native 1.1.0+42841ae2
-published platforms: Linux ARM64/x86-64, macOS ARM64, Windows 11 ARM64/x86-64
-native SFTP-to-File-Lane sample: immutable archive consumer
-connector package changes: none
+artifact-source wave: public native 1.1.0+d1032f6d
+SFTP artifact publisher: replacement native 1.2.0+88b9a047
+native addon samples: exact immutable archive consumers
+addon integration priority: native C ABI and C11 samples first
+addon-specific language connectors: demand-driven, not currently committed
+existing Runtime connector package changes: none
 ```
 
 Read [Runtime Addons](runtime-addons.md) before selecting or generating addon
