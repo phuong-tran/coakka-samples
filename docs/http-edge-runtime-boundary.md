@@ -178,4 +178,8 @@ Before adding another internal HTTP endpoint, ask:
 
 Read [Questions And Answers](qna.md) for the Bun/Node positioning question and
 [Runtime Message And Routing Model](runtime-message-and-routing-model.md) for
-the complete target, envelope, reply, timeout, and deadletter vocabulary.
+the complete target, envelope, reply, timeout, and deadletter vocabulary. For a
+full-duplex browser edge, read
+[WebSocket Integration With CoAkka](runtime-websocket-integration.md); the
+app-host still owns the public protocol while Runtime messages and Stream Lane
+remain behind it.

@@ -26,6 +26,10 @@ Use normal application messages or an existing authenticated API to authorize
 the operation and exchange a stream grant. Keep live frame bytes out of
 `Envelope.payload`. Use the file lane instead when the source is immutable,
 has a known final size, and needs integrity verification or resumable storage.
+For a browser-facing composition, read
+[WebSocket Integration With CoAkka](runtime-websocket-integration.md). The
+WebSocket endpoint, asynchronous send queue, browser format, and fan-out remain
+app-host responsibilities.
 
 ## When To Use Stream Lane
 

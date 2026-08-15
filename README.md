@@ -22,6 +22,8 @@ bounded CoAkka request/reply boundary instead of becoming another internal HTTP
 service. Read
 [Keep HTTP At The Edge](docs/http-edge-runtime-boundary.md) and
 [Should I Choose Bun Over Node.js To Make CoAkka Faster?](docs/qna.md#should-i-choose-bun-over-nodejs-to-make-coakka-faster).
+For browser streaming, read
+[WebSocket Integration With CoAkka](docs/runtime-websocket-integration.md).
 
 ## Featured Runtime Samples
 
@@ -91,6 +93,7 @@ capabilities, lifecycle rules, and connector examples:
 - [Connection strategies](docs/connection-strategies.md)
 - [Runtime file transfer](docs/runtime-file-transfer.md)
 - [Runtime streaming](docs/runtime-streaming.md)
+- [WebSocket integration](docs/runtime-websocket-integration.md)
 - [AI-assisted integration](docs/ai-assisted-integration.md)
 
 Runtime `2.1.0` introduced the bounded File Lane. Runtime `2.3.0` adds the

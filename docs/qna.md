@@ -13,6 +13,7 @@ Start here before reading the full index:
 | [Is CoAkka Equivalent To gRPC?](#is-coakka-equivalent-to-grpc) | No. gRPC is right for real service APIs; CoAkka avoids promoting app-owned internal capabilities into L7 APIs too early. |
 | [Do Spring Users Still Need @FeignClient?](#do-spring-users-still-need-feignclient) | Yes for real HTTP services; no for app-owned runtime handoffs that only became HTTP to gain an address. |
 | [Should I Choose Bun Over Node.js To Make CoAkka Faster?](#should-i-choose-bun-over-nodejs-to-make-coakka-faster) | Keep either host at a thin HTTP edge; a faster wrapper does not remove an HTTP-shaped internal architecture. |
+| [Does CoAkka Support WebSocket?](#does-coakka-support-websocket) | CoAkka does not terminate WebSocket. A WebSocket app-host composes Runtime messages for control with Stream Lane for bounded data. |
 | [Is CoAkka The Same Thing As Erlang, Akka, Elixir, Or The Actor Model?](#is-coakka-the-same-thing-as-erlang-akka-elixir-or-the-actor-model) | No. It borrows messaging vocabulary but does not require actor identity, actor lifecycle, or actor-first app modeling. |
 | [Is CoAkka Equivalent To Kafka Or RabbitMQ?](#is-coakka-equivalent-to-kafka-or-rabbitmq) | No. Durable topics, replay, consumer groups, and broker-owned backpressure still belong to brokers. |
 | [Can CoAkka Replace A Service Mesh Such As Istio?](#can-coakka-replace-a-service-mesh-such-as-istio) | Yes for CoAkka runtime traffic. Built-in TLS/mTLS, connection strategies, target-aware cluster routing, failover, generations, and delivery evidence remove the service-mesh data-plane requirement. |
@@ -41,6 +42,7 @@ L7, mesh, and platform boundaries:
 - [Is CoAkka A gRPC Add-On?](#is-coakka-a-grpc-add-on)
 - [Do Spring Users Still Need @FeignClient?](#do-spring-users-still-need-feignclient)
 - [Should I Choose Bun Over Node.js To Make CoAkka Faster?](#should-i-choose-bun-over-nodejs-to-make-coakka-faster)
+- [Does CoAkka Support WebSocket?](#does-coakka-support-websocket)
 - [Why A Transport-Backed Runtime Boundary Instead Of Another L7 Application API?](#why-a-transport-backed-runtime-boundary-instead-of-another-l7-application-api)
 - [Can CoAkka Replace A Service Mesh Such As Istio?](#can-coakka-replace-a-service-mesh-such-as-istio)
 - [Why Do Teams Reach For Istio In The First Place, And How Can CoAkka Change That?](#why-do-teams-reach-for-istio-in-the-first-place-and-how-can-coakka-change-that)
@@ -89,6 +91,7 @@ Logger and explanation:
 | Spring Boot/Quarkus | Use the framework adapters to keep HTTP at the app edge and route selected app-owned work as runtime targets. | The work is just ordinary in-process code or a real external HTTP service API. |
 | HTTP/API gateway | CoAkka sits behind or beside the app-host edge. | The caller is external, public, or needs product API semantics. |
 | Bun/Node.js | Keep either runtime at a thin HTTP edge and choose by ecosystem and operations. | Benchmark their HTTP surfaces when edge throughput is the actual constraint. |
+| WebSocket | Terminate it in the app-host; use Runtime messages for control and Stream Lane for bounded point-to-point frames. | The requirement is only browser/session protocol, or it needs a dedicated media/event system with replay, fan-out, or browser-native delivery. |
 | Dapr | CoAkka is narrower: target routing, bounded delivery, replies, deadletters, and diagnostics. | The team wants a broad distributed application runtime with state, pub/sub, bindings, secrets, and workflow. |
 | Akka/Erlang/Elixir | CoAkka shares some messaging vocabulary but is not actor-first. | The team wants actors, supervision trees, actor identity, and actor lifecycle as the application model. |
 | CQRS/Event Sourcing | CoAkka can carry commands, queries, events, projections, and replay work. | The question is command validation, aggregate invariants, event store, consistency, or read-model design. |
@@ -708,6 +711,37 @@ ownership.
 
 Read [Keep HTTP At The Edge](http-edge-runtime-boundary.md) for the complete
 request and reply adapter ownership contract.
+
+## Does CoAkka Support WebSocket?
+
+CoAkka Runtime does not implement or terminate WebSocket. That is an
+intentional ownership boundary, not a missing Stream Lane transport mode.
+
+A WebSocket-facing app-host can compose the protocols naturally:
+
+```text
+browser
+  <-> WebSocket app-host (auth, session protocol, bounded client queues)
+        -> ordinary Runtime message/request-reply for start, stop, and status
+        <- Stream Lane for one ordered bounded frame sequence
+```
+
+WebSocket remains the browser-facing full-duplex protocol. Ordinary Runtime
+messages carry control intent and outcomes. Stream Lane carries live opaque
+frames between one publisher and one subscriber. The app-host maps those
+frames to WebSocket binary messages, MJPEG, HLS, WebRTC, or another reviewed
+sink.
+
+The bridge must preserve two important limits. Stream Lane consumer bytes are
+borrowed only during the callback, so an asynchronous WebSocket send requires
+a copy into app-owned bounded storage. Stream Lane version 1 does not fan out;
+one gateway may distribute app-owned copies to multiple browser clients, but
+the gateway owns every per-client bound, drop, disconnect, and slow-consumer
+decision.
+
+Read [WebSocket Integration With CoAkka](runtime-websocket-integration.md) for
+the integration sequence, backpressure law, shutdown order, security boundary,
+and browser-format checklist.
 
 ## Why A Transport-Backed Runtime Boundary Instead Of Another L7 Application API?
 
