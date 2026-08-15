@@ -12,6 +12,7 @@ Start here before reading the full index:
 | [What Does CoAkka Add Compared With No Runtime Boundary?](#what-does-coakka-add-compared-with-no-runtime-boundary) | A shared target, route snapshot, bounded admission, reply/deadletter, and diagnostics vocabulary across process and language boundaries. |
 | [Is CoAkka Equivalent To gRPC?](#is-coakka-equivalent-to-grpc) | No. gRPC is right for real service APIs; CoAkka avoids promoting app-owned internal capabilities into L7 APIs too early. |
 | [Do Spring Users Still Need @FeignClient?](#do-spring-users-still-need-feignclient) | Yes for real HTTP services; no for app-owned runtime handoffs that only became HTTP to gain an address. |
+| [Should I Choose Bun Over Node.js To Make CoAkka Faster?](#should-i-choose-bun-over-nodejs-to-make-coakka-faster) | Keep either host at a thin HTTP edge; a faster wrapper does not remove an HTTP-shaped internal architecture. |
 | [Is CoAkka The Same Thing As Erlang, Akka, Elixir, Or The Actor Model?](#is-coakka-the-same-thing-as-erlang-akka-elixir-or-the-actor-model) | No. It borrows messaging vocabulary but does not require actor identity, actor lifecycle, or actor-first app modeling. |
 | [Is CoAkka Equivalent To Kafka Or RabbitMQ?](#is-coakka-equivalent-to-kafka-or-rabbitmq) | No. Durable topics, replay, consumer groups, and broker-owned backpressure still belong to brokers. |
 | [Can CoAkka Replace A Service Mesh Such As Istio?](#can-coakka-replace-a-service-mesh-such-as-istio) | Yes for CoAkka runtime traffic. Built-in TLS/mTLS, connection strategies, target-aware cluster routing, failover, generations, and delivery evidence remove the service-mesh data-plane requirement. |
@@ -39,6 +40,7 @@ L7, mesh, and platform boundaries:
 - [Is CoAkka Equivalent To gRPC?](#is-coakka-equivalent-to-grpc)
 - [Is CoAkka A gRPC Add-On?](#is-coakka-a-grpc-add-on)
 - [Do Spring Users Still Need @FeignClient?](#do-spring-users-still-need-feignclient)
+- [Should I Choose Bun Over Node.js To Make CoAkka Faster?](#should-i-choose-bun-over-nodejs-to-make-coakka-faster)
 - [Why A Transport-Backed Runtime Boundary Instead Of Another L7 Application API?](#why-a-transport-backed-runtime-boundary-instead-of-another-l7-application-api)
 - [Can CoAkka Replace A Service Mesh Such As Istio?](#can-coakka-replace-a-service-mesh-such-as-istio)
 - [Why Do Teams Reach For Istio In The First Place, And How Can CoAkka Change That?](#why-do-teams-reach-for-istio-in-the-first-place-and-how-can-coakka-change-that)
@@ -86,6 +88,7 @@ Logger and explanation:
 | Spring `@FeignClient` | CoAkka can remove Feign from app-owned runtime handoffs that only became HTTP to gain an address. | The target is a real HTTP service API with independent ownership, URL/discovery policy, and HTTP client semantics. |
 | Spring Boot/Quarkus | Use the framework adapters to keep HTTP at the app edge and route selected app-owned work as runtime targets. | The work is just ordinary in-process code or a real external HTTP service API. |
 | HTTP/API gateway | CoAkka sits behind or beside the app-host edge. | The caller is external, public, or needs product API semantics. |
+| Bun/Node.js | Keep either runtime at a thin HTTP edge and choose by ecosystem and operations. | Benchmark their HTTP surfaces when edge throughput is the actual constraint. |
 | Dapr | CoAkka is narrower: target routing, bounded delivery, replies, deadletters, and diagnostics. | The team wants a broad distributed application runtime with state, pub/sub, bindings, secrets, and workflow. |
 | Akka/Erlang/Elixir | CoAkka shares some messaging vocabulary but is not actor-first. | The team wants actors, supervision trees, actor identity, and actor lifecycle as the application model. |
 | CQRS/Event Sourcing | CoAkka can carry commands, queries, events, projections, and replay work. | The question is command validation, aggregate invariants, event store, consistency, or read-model design. |
@@ -660,6 +663,52 @@ ownership or platform policy. Prefer CoAkka when the target is an application
 capability that should be named, routed, observed, and moved without turning it
 into another backend HTTP service.
 
+## Should I Choose Bun Over Node.js To Make CoAkka Faster?
+
+That starts at the wrong architectural boundary.
+
+Bun and Node.js can have different HTTP throughput, startup, memory, tooling,
+and package-compatibility characteristics. Measure those differences when
+choosing an edge host. CoAkka does not require either JavaScript runtime to
+become the distributed execution model.
+
+Keep HTTP where it belongs:
+
+```text
+external client
+  -> Node.js or Bun HTTP edge
+  -> auth, validation, and application policy
+  -> thin request adapter
+  -> CoAkka target and bounded runtime delivery
+  -> structured reply, timeout, rejection, or deadletter
+  -> thin HTTP response adapter
+  -> external client
+```
+
+The response adapter maps the terminal CoAkka outcome into the application's
+HTTP status, body, Content-Type, and selected headers. It does not reproduce
+runtime routing, queueing, retries, topology, or failure semantics inside the
+HTTP host.
+
+Once that adapter is deliberately thin, Bun versus Node.js is an edge-host
+choice rather than a distributed-system architecture decision. A faster HTTP
+host can accelerate that small edge segment. It cannot remove the HTTP servers,
+clients, middleware, connection pools, retry stacks, and duplicated status
+mapping created when every internal handoff is modeled as another HTTP API.
+
+```text
+Making the HTTP wrapper faster is useful.
+Needing fewer internal HTTP wrappers is the architectural improvement.
+```
+
+Choose Bun or Node.js for the ecosystem and operational properties the edge
+actually needs. Keep the internal execution path on the CoAkka request/reply
+contract so changing the edge host does not redefine runtime routing or handler
+ownership.
+
+Read [Keep HTTP At The Edge](http-edge-runtime-boundary.md) for the complete
+request and reply adapter ownership contract.
+
 ## Why A Transport-Backed Runtime Boundary Instead Of Another L7 Application API?
 
 CoAkka deliberately keeps the delivery path below the application API layer
@@ -684,12 +733,13 @@ interceptor chain, and bounded admission at the runtime intake. That can show
 up as lower overhead and more predictable behavior under queue pressure. Keep
 that as supporting evidence, not the main product claim.
 
-A fair benchmark needs a same-class comparator. Bun vs Node is a reasonable
-kind of comparison because both are JavaScript runtimes competing for many of
-the same jobs. CoAkka vs HTTP/gRPC is not that shape: HTTP/gRPC is an L7 API
-boundary, while CoAkka Runtime is a transport-backed capability-delivery
-boundary. If there is no comparable runtime system with target routing,
-bounded admission,
+A fair benchmark needs a same-class comparator. Bun versus Node.js can be a
+reasonable edge-host comparison when HTTP execution is the measured job. Once
+HTTP is intentionally thin at the edge, however, that result should not be
+promoted into an internal architecture decision. CoAkka versus HTTP/gRPC is
+also not a same-class comparison: HTTP/gRPC is an L7 API boundary, while CoAkka
+Runtime is a transport-backed capability-delivery boundary. If there is no
+comparable runtime system with target routing, bounded admission,
 reply/deadletter matching, and route ownership, the honest comparison is
 against CoAkka's own releases and deployment profiles.
 

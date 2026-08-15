@@ -15,6 +15,14 @@ GitHub Releases. Git tags may preserve useful checkpoints; the current branch,
 exact dependency pins, and passing CI define the sample surface users should
 run.
 
+## Architecture Boundary
+
+HTTP remains the external API edge; selected application-owned work crosses a
+bounded CoAkka request/reply boundary instead of becoming another internal HTTP
+service. Read
+[Keep HTTP At The Edge](docs/http-edge-runtime-boundary.md) and
+[Should I Choose Bun Over Node.js To Make CoAkka Faster?](docs/qna.md#should-i-choose-bun-over-nodejs-to-make-coakka-faster).
+
 ## Featured Runtime Samples
 
 `coakka-samples` contains reviewable source and consumer projects only. Its
@@ -316,6 +324,7 @@ Start here:
 - [Build The Product Before The Infrastructure](docs/startup-development-path.md)
 - [Runtime Field Guide](docs/runtime-field-guide.md)
 - [How It Works](docs/how-it-works.md)
+- [Keep HTTP At The Edge](docs/http-edge-runtime-boundary.md)
 - [Questions And Answers](docs/qna.md)
 
 Core runtime model:
