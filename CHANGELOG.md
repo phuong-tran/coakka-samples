@@ -7,6 +7,10 @@ and checksums live in the versioned
 
 ## 2026-08-17
 
+- Moved the Spring Boot starter and Quarkus extension samples from the static
+  GitHub Maven mirror to Maven Central coordinates
+  `io.github.phuong-tran.coakka:spring-boot-starter:2.4.1` and
+  `io.github.phuong-tran.coakka:quarkus-extension:2.4.1`.
 - Advanced C# Runtime and Logger samples to NuGet `CoAkka.Runtime==2.4.1` and
   `CoAkka.Logger==1.2.3`. Disposable consumers now target `net8.0`; the same
   public packages are verified on .NET 8, 9, and 10 while retaining their

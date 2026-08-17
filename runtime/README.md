@@ -95,7 +95,7 @@ Spring Boot same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("coakka.spring:coakka-spring-boot-starter:2.4.0-gc2f53117-0afb5e9")
+    implementation("io.github.phuong-tran.coakka:spring-boot-starter:2.4.1")
     implementation("org.springframework.boot:spring-boot-starter-web")
 }
 ```
@@ -104,7 +104,7 @@ Quarkus same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("coakka.quarkus:coakka-quarkus-extension:2.4.0-gc2f53117-0afb5e9")
+    implementation("io.github.phuong-tran.coakka:quarkus-extension:2.4.1")
     implementation("io.quarkus:quarkus-rest-jackson")
 }
 ```

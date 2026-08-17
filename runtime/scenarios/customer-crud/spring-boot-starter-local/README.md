@@ -38,7 +38,7 @@ development should not need a backend HTTP service just to feel comfortable.
 The sample consumes the public Spring Boot starter artifact:
 
 ```kotlin
-implementation("coakka.spring:coakka-spring-boot-starter:1.3.4-gdc6ec284-f68ff5c")
+implementation("io.github.phuong-tran.coakka:spring-boot-starter:2.4.1")
 ```
 
 That starter depends on the shared runtime JVM artifact
@@ -130,7 +130,7 @@ keeps business work as ordinary Spring beans:
 
 ```kotlin
 dependencies {
-    implementation("coakka.spring:coakka-spring-boot-starter:1.3.4-gdc6ec284-f68ff5c")
+    implementation("io.github.phuong-tran.coakka:spring-boot-starter:2.4.1")
     implementation("org.springframework.boot:spring-boot-starter-web")
 }
 ```

@@ -117,20 +117,17 @@ another runtime route later without turning it into a fake REST API first.
 
 Current public coordinates are listed in the
 [compatibility matrix](https://github.com/phuong-tran/coakka-publish/blob/main/docs/compatibility-matrix.md).
-The Quarkus extension lane is:
+The Quarkus extension lane is published to Maven Central:
 
 ```kotlin
-implementation("coakka.quarkus:coakka-quarkus-extension:<current-version>")
+implementation("io.github.phuong-tran.coakka:quarkus-extension:2.4.1")
 ```
 
-When using the raw GitHub Maven mirror, include the publish repository:
+Only Maven Central is required:
 
 ```kotlin
 repositories {
     mavenCentral()
-    maven {
-        url = uri("https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/maven")
-    }
 }
 ```
 

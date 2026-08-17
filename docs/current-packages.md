@@ -16,10 +16,11 @@ packaging surface, and native payload.
 
 The promoted repository artifact generation is `2.4.0+c2f53117`. Its native,
 JVM, Spring Boot, Quarkus, and connector archives expose File Lane, Stream
-Lane, and explicit runtime network participation modes. The JVM distribution
-is published to Maven Central as `2.4.1` while retaining that exact native
-generation. Logger JVM distribution `1.2.2` is published independently over
-native logger generation `1.2.1+f50756ebff0d`. NuGet publishes Runtime
+Lane, and explicit runtime network participation modes. The JVM distribution,
+Spring Boot starter, and Quarkus extension are published to Maven Central as
+`2.4.1` while retaining that exact native generation. Logger JVM distribution
+`1.2.2` is published independently over native logger generation
+`1.2.1+f50756ebff0d`. NuGet publishes Runtime
 `2.4.1` and Logger `1.2.3` as `net8.0` packages verified on .NET 8, 9, and 10
 without changing either native generation. npm, PyPI, Go, and Swift packages
 use the separately listed coordinates; version numbers remain independent by
@@ -64,6 +65,14 @@ complete matrix with `bash run.sh runtime-addons all published`.
 | Go modules | [`coakka-runtime-go` v1.7.0](https://github.com/phuong-tran/coakka-runtime-go/tree/v1.7.0) | [`coakka-logger-go` v1.2.5](https://pkg.go.dev/github.com/phuong-tran/coakka-logger-go@v1.2.5) | `bash run.sh runtime go basic` |
 | SwiftPM | [`coakka-runtime-swift` v2.4.0](https://github.com/phuong-tran/coakka-runtime-swift/tree/v2.4.0) | [`coakka-logger-swift` v1.2.1](https://github.com/phuong-tran/coakka-logger-swift/releases/tag/v1.2.1) | `bash run.sh runtime swift basic` |
 
+Java 17 app hosts can use the independently versioned Maven Central framework
+adapters: [`spring-boot-starter`
+2.4.1](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/spring-boot-starter/2.4.1)
+or [`quarkus-extension`
+2.4.1](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/quarkus-extension/2.4.1).
+Both depend on public Runtime `2.4.1`; applications select their own verified
+Spring Boot or Quarkus platform line.
+
 The current source coordinates are
 `github.com/phuong-tran/coakka-runtime-go@v1.7.0` and
 `github.com/phuong-tran/coakka-runtime-swift@v2.4.0`. Go remains on semantic
@@ -75,8 +84,8 @@ major `v1` because its established module path does not carry a `/v2` suffix.
 | --- | --- |
 | Native C ABI | `runtime/native/releases/2.4.0+c2f53117/coakka-runtime-native-v2-2.4.0.tar.gz` |
 | JVM | `io.github.phuong-tran.coakka:runtime:2.4.1` |
-| Spring Boot | `coakka.spring:coakka-spring-boot-starter:2.4.0-gc2f53117-0afb5e9` |
-| Quarkus | `coakka.quarkus:coakka-quarkus-extension:2.4.0-gc2f53117-0afb5e9` |
+| Spring Boot | `io.github.phuong-tran.coakka:spring-boot-starter:2.4.1` |
+| Quarkus | `io.github.phuong-tran.coakka:quarkus-extension:2.4.1` |
 | Connector archives | `runtime/<lane>/releases/2.4.0+c2f53117-0afb5e9/` |
 | npm | `coakka-v2-connector-{node,bun,electron}@2.4.0` |
 | PyPI | `coakka-v2-connector`, exact `2.4.0` |

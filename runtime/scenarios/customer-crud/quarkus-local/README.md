@@ -17,7 +17,8 @@ coakka.askBlocking(
 )
 ```
 
-The app consumes the public `coakka.quarkus:coakka-quarkus-extension` artifact.
+The app consumes the public
+`io.github.phuong-tran.coakka:quarkus-extension` artifact from Maven Central.
 Quarkus owns HTTP/CDI lifecycle, and the adapter starts the CoAkka runtime with
 process-owned routes for CDI `CoAkkaLocalHandler` beans.
 
@@ -100,7 +101,7 @@ With the adapter, Quarkus config owns same-process runtime defaults:
 
 ```kotlin
 dependencies {
-    implementation("coakka.quarkus:coakka-quarkus-extension:1.3.4-gdc6ec284-f68ff5c")
+    implementation("io.github.phuong-tran.coakka:quarkus-extension:2.4.1")
     implementation("io.quarkus:quarkus-rest-jackson")
 }
 ```
