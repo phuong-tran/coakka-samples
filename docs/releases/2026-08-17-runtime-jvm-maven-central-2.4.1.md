@@ -59,9 +59,8 @@ distribution.
 - All five detached signatures verify against the published OpenPGP key.
 - Clean Java 8 and Java 26 consumers load the macOS ARM64 native payload and
   complete embedded request/reply against runtime `2.4.0+c2f53117`.
-- Connector CI passes JVM compatibility, Java 8 consumer, framework adapter,
-  documentation, and cross-platform source gates at
-  [connector-gates run 31985456816](https://github.com/phuong-tran/coakkaJVMConnector/actions/runs/31985456816).
+- Connector CI run `31985456816` passes JVM compatibility, Java 8 consumer,
+  framework adapter, documentation, and cross-platform source gates.
 - The jar contains verified native payloads for Linux ARM64/x86-64, macOS
   ARM64, and Windows ARM64/x86-64. Matching-host execution claims remain those
   recorded in
@@ -71,7 +70,6 @@ distribution.
 
 - [Runnable JVM samples](https://github.com/phuong-tran/coakka-samples/tree/main/runtime/jvm)
 - [Artifact catalog and documentation](https://github.com/phuong-tran/coakka-publish)
-- [JVM connector source](https://github.com/phuong-tran/coakkaJVMConnector)
 
 This release does not publish `io.github.phuong-tran.coakka:logger`. Logger
 remains a separately versioned future Maven Central lane.
