@@ -2,6 +2,9 @@
 
 Electron samples consume `coakka-logger-electron@1.2.6` from npm.
 
+The basic sample requires Node.js 22 and Electron 42 or newer. Set
+`COAKKA_ELECTRON_VERSION` to exercise another supported Electron release.
+
 - [Story](#story)
 - [Before And After](#before-and-after)
 - [Run](#run)

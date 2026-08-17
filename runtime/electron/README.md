@@ -4,6 +4,9 @@ Electron runtime samples document the `coakka-v2-connector-electron` package
 shape. The renderer sends one intent through preload and IPC; the Electron main
 process owns the CoAkka runtime host and returns the projected result.
 
+The desktop sample requires Node.js 22 and Electron 42 or newer. Set
+`COAKKA_ELECTRON_VERSION` to exercise another supported Electron release.
+
 - [Story](#story)
 - [Before And After](#before-and-after)
 - [Run](#run)

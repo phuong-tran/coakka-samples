@@ -4,23 +4,26 @@ set -euo pipefail
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../../.." && pwd)"
 source "${repo_root}/scripts/sample-utils.sh"
+electron_version="${COAKKA_ELECTRON_VERSION:-^42.0.0}"
 
-coakka_require_command node "Install Node.js 20 or newer, then retry."
+coakka_require_command node "Install Node.js 22 or newer, then retry."
 coakka_require_command npm "Install npm, then retry."
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
 
 resolve_electron_logger_package() {
-  local connector_root package_path
+  local connector_root package_path package_version
   connector_root="${COAKKA_CONNECTOR_ROOT:-}"
   if [[ -n "${connector_root}" && -d "${connector_root}/logger/electron" ]]; then
+    connector_root="$(cd "${connector_root}" && pwd)"
     (
       cd "${connector_root}/logger/electron"
       npm run pack:release >/dev/null
     )
-    package_path="$(find "${connector_root}/logger/electron" -maxdepth 1 -name 'coakka-logger-electron-*.tgz' | head -n 1)"
-    if [[ -n "${package_path}" ]]; then
+    package_version="$(node -p "require('${connector_root}/logger/electron/package.json').version")"
+    package_path="${connector_root}/logger/electron/coakka-logger-electron-${package_version}.tgz"
+    if [[ -f "${package_path}" ]]; then
       printf '%s\n' "${package_path}"
       return 0
     fi
@@ -30,18 +33,20 @@ resolve_electron_logger_package() {
 }
 
 resolve_node_logger_package_for_local_connector() {
-  local connector_root package_path
+  local connector_root package_path package_version
   connector_root="${COAKKA_CONNECTOR_ROOT:-}"
   if [[ -z "${connector_root}" || ! -d "${connector_root}/logger/node" ]]; then
     return 0
   fi
+  connector_root="$(cd "${connector_root}" && pwd)"
 
   (
     cd "${connector_root}/logger/node"
     npm run pack:release >/dev/null
   )
-  package_path="$(find "${connector_root}/logger/node" -maxdepth 1 -name 'coakka-logger-node-*.tgz' | head -n 1)"
-  if [[ -n "${package_path}" ]]; then
+  package_version="$(node -p "require('${connector_root}/logger/node/package.json').version")"
+  package_path="${connector_root}/logger/node/coakka-logger-node-${package_version}.tgz"
+  if [[ -f "${package_path}" ]]; then
     printf '%s\n' "${package_path}"
   fi
 }
@@ -87,6 +92,6 @@ cp "${script_dir}/index.html" "${tmp_dir}/index.html"
 (
   cd "${tmp_dir}"
   npm init -y >/dev/null
-  npm install "${package_path}" electron@^38.0.0 >/dev/null
+  npm install "${package_path}" "electron@${electron_version}" >/dev/null
   npx electron main.mjs
 )
