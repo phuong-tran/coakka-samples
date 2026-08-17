@@ -73,9 +73,8 @@ Runtime `2.4.1`.
   Boot `3.5.16` on Java 17.
 - An independent empty-cache Maven Central consumer builds a Quarkus `3.35.2`
   fast-jar and completes HTTP-to-runtime request/reply on Java 17.
-- Connector CI run
-  [`32030679227`](https://github.com/phuong-tran/coakkaJVMConnector/actions/runs/32030679227)
-  passes Spring Boot `3.2.7`, `3.4.13`, and `3.5.16`; Quarkus `3.20.4`,
+- Connector CI run `32030679227` passes Spring Boot `3.2.7`, `3.4.13`, and
+  `3.5.16`; Quarkus `3.20.4`,
   `3.27.4`, and `3.35.2`; the complete connector gate; and platform-source
   jobs on macOS, Linux, and Windows.
 
