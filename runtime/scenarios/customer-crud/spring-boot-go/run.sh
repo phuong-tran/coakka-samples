@@ -32,7 +32,7 @@ require_web_commands() {
 }
 
 require_go_commands() {
-  coakka_require_command go "Install Go 1.23 or newer, then retry."
+  coakka_require_command go "Install Go 1.22 or newer, then retry."
 }
 
 prepare_go_workspace() {
@@ -42,9 +42,9 @@ prepare_go_workspace() {
   cat > "${tmp_dir}/go.mod" <<EOF
 module coakka-runtime-spring-boot-go-store
 
-go 1.23.0
+go 1.22
 
-require ${module_path} v1.5.1
+require ${module_path} v1.7.1
 EOF
 }
 

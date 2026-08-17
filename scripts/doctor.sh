@@ -182,7 +182,7 @@ check_command java "JVM samples" "Install JDK 17 or newer."
 check_command python3 "Python samples" "Install Python 3.11 or newer."
 check_command node "Node.js samples" "Install Node.js 20 or newer."
 check_command npm "Node.js samples" "Install npm."
-check_command go "Go samples" "Install Go 1.22+ for logger or Go 1.23+ for runtime v2."
+check_command go "Go samples" "Install Go 1.22 or newer. Use a supported Go release for production."
 check_command dotnet "C# Runtime and Logger samples" "Install .NET SDK 8 or newer."
 check_command zig "Zig logger and runtime samples" "Install Zig 0.16 or newer."
 check_command mojo "Mojo logger and runtime samples" "Install Mojo 1.0 beta or newer."
@@ -196,7 +196,7 @@ check_minimum_version java "JVM samples" 17 0
 check_minimum_version python3 "Python samples" 3 11
 check_minimum_version node "Node.js samples" 20 0
 check_minimum_version go "Go logger samples" 1 22
-check_minimum_version go "Go runtime v2 samples" 1 23
+check_minimum_version go "Go runtime v2 samples" 1 22
 check_minimum_version dotnet "C# runtime samples" 10 0
 check_minimum_version zig "Zig logger and runtime samples" 0 16
 check_minimum_version mojo "Mojo logger and runtime samples" 1 0

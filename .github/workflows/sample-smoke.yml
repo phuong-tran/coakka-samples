@@ -11,6 +11,30 @@ permissions:
   contents: read
 
 jobs:
+  go-runtime:
+    name: Go runtime samples (${{ matrix.go-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        go-version:
+          - "1.22.12"
+          - stable
+    steps:
+      - name: Check out samples
+        uses: actions/checkout@v6
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Run public Go runtime samples
+        run: |
+          bash run.sh runtime go basic
+          bash run.sh runtime go deadletter
+
   surface:
     name: public sample surface
     runs-on: ubuntu-24.04-arm

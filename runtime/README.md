@@ -223,7 +223,7 @@ Full recording: [coakka-runtime-native.mp4](../docs/assets/coakka-runtime-native
 Go module:
 
 ```sh
-go get github.com/phuong-tran/coakka-runtime-go@v1.7.0
+go get github.com/phuong-tran/coakka-runtime-go@v1.7.1
 ```
 
 C# NuGet package:
