@@ -1,8 +1,12 @@
 # Go Logger Samples
 
-Go logger samples consume `github.com/phuong-tran/coakka-logger-go@v1.2.5`.
+Go logger samples consume `github.com/phuong-tran/coakka-logger-go@v1.2.6`.
 The package embeds native logger generation `1.2.1+f50756ebff0d` for macOS,
 Linux, and Windows.
+These samples have a Go `1.18` compatibility floor. Use a currently supported
+Go release for production builds. The Linux native payload requires glibc
+`2.34` or newer independently of the Go version and reports `git=unknown` in
+its info snapshot; its manifest generation and payload digest remain pinned.
 
 ## New To CoAkka Logger
 
@@ -28,7 +32,7 @@ Current samples:
 Install the package through normal Go module resolution:
 
 ```sh
-go get github.com/phuong-tran/coakka-logger-go@v1.2.5
+go get github.com/phuong-tran/coakka-logger-go@v1.2.6
 ```
 
 Run:

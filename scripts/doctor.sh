@@ -182,7 +182,7 @@ check_command java "JVM samples" "Install JDK 17 or newer."
 check_command python3 "Python samples" "Install Python 3.11 or newer."
 check_command node "Node.js samples" "Install Node.js 20 or newer."
 check_command npm "Node.js samples" "Install npm."
-check_command go "Go samples" "Install Go 1.22 or newer. Use a supported Go release for production."
+check_command go "Go samples" "Install Go 1.18 or newer. Runtime Go samples require 1.22; use a supported Go release for production."
 check_command dotnet "C# Runtime and Logger samples" "Install .NET SDK 8 or newer."
 check_command zig "Zig logger and runtime samples" "Install Zig 0.16 or newer."
 check_command mojo "Mojo logger and runtime samples" "Install Mojo 1.0 beta or newer."
@@ -195,7 +195,7 @@ check_command curl "artifact download fallback" "Install curl or provide COAKKA_
 check_minimum_version java "JVM samples" 17 0
 check_minimum_version python3 "Python samples" 3 11
 check_minimum_version node "Node.js samples" 20 0
-check_minimum_version go "Go logger samples" 1 22
+check_minimum_version go "Go logger samples" 1 18
 check_minimum_version go "Go runtime v2 samples" 1 22
 check_minimum_version dotnet "C# runtime samples" 10 0
 check_minimum_version zig "Zig logger and runtime samples" 0 16
