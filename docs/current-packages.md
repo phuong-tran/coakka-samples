@@ -16,9 +16,11 @@ packaging surface, and native payload.
 
 The promoted repository artifact generation is `2.4.0+c2f53117`. Its native,
 JVM, Spring Boot, Quarkus, and connector archives expose File Lane, Stream
-Lane, and explicit runtime network participation modes. npm, NuGet, PyPI,
-runtime Go, and runtime Swift have been promoted on the separately listed
-coordinates; connector version numbers remain independent by channel.
+Lane, and explicit runtime network participation modes. The JVM distribution
+is published to Maven Central as `2.4.1` while retaining that exact native
+generation. npm, NuGet, PyPI, runtime Go, and runtime Swift have been promoted
+on the separately listed coordinates; connector version numbers remain
+independent by channel.
 
 For exact package contents, matching-host execution, and known platform gaps,
 use [Runtime Package And Platform Evidence](runtime-package-platform-evidence.md).
@@ -50,6 +52,7 @@ complete matrix with `bash run.sh runtime-addons all published`.
 
 | Channel | Runtime package | Logger package | Sample command |
 | --- | --- | --- | --- |
+| Maven Central | [`coakka.runtime` 2.4.1](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/runtime/2.4.1) | Not published in this channel | `bash run.sh runtime jvm basic` |
 | NuGet | [`CoAkka.Runtime` 2.4.0](https://www.nuget.org/packages/CoAkka.Runtime/2.4.0) | [`CoAkka.Logger` 1.2.2](https://www.nuget.org/packages/CoAkka.Logger/1.2.2) | `bash run.sh runtime csharp basic` |
 | npm | [`coakka-v2-connector-node` 2.4.0](https://www.npmjs.com/package/coakka-v2-connector-node/v/2.4.0) | [`coakka-logger-node` 1.2.6](https://www.npmjs.com/package/coakka-logger-node/v/1.2.6) | `bash run.sh runtime node basic` |
 | npm (Bun) | [`coakka-v2-connector-bun` 2.4.0](https://www.npmjs.com/package/coakka-v2-connector-bun/v/2.4.0) | [`coakka-logger-bun` 1.2.6](https://www.npmjs.com/package/coakka-logger-bun/v/1.2.6) | `bash run.sh runtime bun basic` |
@@ -68,7 +71,7 @@ major `v1` because its established module path does not carry a `/v2` suffix.
 | Surface | Exact coordinate |
 | --- | --- |
 | Native C ABI | `runtime/native/releases/2.4.0+c2f53117/coakka-runtime-native-v2-2.4.0.tar.gz` |
-| JVM | `coakka.v2:coakka-jvm-native-runtime-v2:2.4.0-gc2f53117-0afb5e9` |
+| JVM | `io.github.phuong-tran.coakka:runtime:2.4.1` |
 | Spring Boot | `coakka.spring:coakka-spring-boot-starter:2.4.0-gc2f53117-0afb5e9` |
 | Quarkus | `coakka.quarkus:coakka-quarkus-extension:2.4.0-gc2f53117-0afb5e9` |
 | Connector archives | `runtime/<lane>/releases/2.4.0+c2f53117-0afb5e9/` |

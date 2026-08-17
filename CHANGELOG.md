@@ -5,6 +5,13 @@ surface. It is not a repository release ledger. Artifact versions, manifests,
 and checksums live in the versioned
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) warehouse.
 
+## 2026-08-17
+
+- Moved runnable JVM Runtime samples from the static GitHub Maven mirror to
+  Maven Central coordinate `io.github.phuong-tran.coakka:runtime:2.4.1`. The
+  distribution embeds native generation `2.4.0+c2f53117`; framework adapter
+  samples retain their separately versioned coordinates.
+
 ## 2026-08-12
 
 - Updated the public architecture path to show how CoAkka runtime TLS/mTLS,

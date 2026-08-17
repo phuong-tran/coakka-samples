@@ -1,9 +1,8 @@
 # JVM Runtime Samples
 
-JVM runtime samples document the `coakka-jvm-native-runtime-v2` jar shape. This
-runtime lane consumes
-`coakka.v2:coakka-jvm-native-runtime-v2:2.4.0-gc2f53117-0afb5e9`, built against
-native runtime generation `2.4.0+c2f53117`.
+JVM runtime samples consume the `coakka.runtime` Maven Central distribution at
+`io.github.phuong-tran.coakka:runtime:2.4.1`, built against native runtime
+generation `2.4.0+c2f53117`.
 
 ## Run
 
@@ -114,13 +113,10 @@ The sample uses the same Maven dependency shape an application should use:
 ```kotlin
 repositories {
     mavenCentral()
-    maven {
-        url = uri("https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/maven")
-    }
 }
 
 dependencies {
-    implementation("coakka.v2:coakka-jvm-native-runtime-v2:2.4.0-gc2f53117-0afb5e9")
+    implementation("io.github.phuong-tran.coakka:runtime:2.4.1")
 }
 ```
 
@@ -283,5 +279,5 @@ It links the canonical feature guides, exact package catalog, and platform
 evidence, and it defines when only workflow pseudocode is justified.
 
 The current public package train includes File Lane and Stream Lane. Use the
-exact connector names and lifecycle rules shipped by the `2.4.0` artifact when
-integrating either lane.
+exact connector names and lifecycle rules shipped by JVM distribution `2.4.1`
+over native generation `2.4.0+c2f53117` when integrating either lane.

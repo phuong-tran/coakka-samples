@@ -10,7 +10,7 @@ Current artifact generation:
 ```text
 native runtime:   2.4.0+c2f53117
 connector source: 0afb5e9
-JVM/Maven:        2.4.0-gc2f53117-0afb5e9
+JVM/Maven Central: 2.4.1
 source artifacts: 2.4.0+c2f53117-0afb5e9
 ```
 
@@ -65,7 +65,7 @@ the inspect archives.
 
 | Surface | Exact artifact coordinate | Native payloads | Current exact-artifact evidence |
 | --- | --- | --- | --- |
-| JVM | `coakka.v2:coakka-jvm-native-runtime-v2:2.4.0-gc2f53117-0afb5e9` | All five | JVM checks, embedded-native verification, packaged runtime smoke, Spring Boot tests, and Quarkus tests pass on macOS ARM64. |
+| JVM | `io.github.phuong-tran.coakka:runtime:2.4.1` | All five | Signed Maven Central bundle validation, clean Java 8 and Java 26 consumers, JVM checks, embedded-native verification, packaged runtime smoke, Spring Boot tests, and Quarkus tests pass on macOS ARM64. |
 | Node.js | `runtime/node/releases/2.4.0+c2f53117-0afb5e9/` | All five | Build, unit tests, package-surface verification, and packaged request/reply pass on macOS ARM64. |
 | Bun | `runtime/bun/releases/2.4.0+c2f53117-0afb5e9/` | All five | Runtime request/reply, lane native-call tests, package-surface verification, and packaged request/reply pass on macOS ARM64. |
 | Electron | `runtime/electron/releases/2.4.0+c2f53117-0afb5e9/` | All five through Node | Packaged Electron main/preload intent smoke passes on macOS ARM64. |
