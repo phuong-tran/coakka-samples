@@ -31,7 +31,7 @@ require_web_commands() {
 }
 
 require_csharp_commands() {
-  coakka_require_command dotnet "Install .NET SDK 10 or newer, then retry."
+  coakka_require_command dotnet "Install .NET SDK 8 or newer, then retry."
 }
 
 cleanup_temp_dir() {
@@ -47,9 +47,9 @@ prepare_csharp_workspace() {
 
   export NUGET_PACKAGES="${tmp_dir}/nuget-packages"
   export NUGET_HTTP_CACHE_PATH="${tmp_dir}/http-cache"
-  dotnet new console -o "${tmp_dir}/store" --framework net10.0 --force >/dev/null
+  dotnet new console -o "${tmp_dir}/store" --framework net8.0 --force >/dev/null
   dotnet add "${tmp_dir}/store/store.csproj" package CoAkka.Runtime \
-    --version 2.4.0 \
+    --version 2.4.1 \
     --source "https://api.nuget.org/v3/index.json" >/dev/null
   cp "${script_dir}/Program.cs" "${tmp_dir}/store/Program.cs"
 }

@@ -98,20 +98,26 @@ outcome, and close on a named Android image and ABI.
 
 ## Registry Coordinates
 
-npm, PyPI, and NuGet are independent publication channels. All three are
-published and clean-install verified at `2.4.0`:
+npm, PyPI, and NuGet are independent publication channels. Their current
+published and clean-install verified coordinates are:
 
 | Registry | Current verified coordinate | Bundled native generation |
 | --- | --- | --- |
 | npm | `coakka-v2-connector-{node,bun,electron}@2.4.0` | `2.4.0+c2f53117` |
 | PyPI | `coakka-v2-connector==2.4.0` | `2.4.0+c2f53117` |
-| NuGet | `CoAkka.Runtime==2.4.0` | `2.4.0+c2f53117` |
+| NuGet | `CoAkka.Runtime==2.4.1` | `2.4.0+c2f53117` |
 | Go modules | `github.com/phuong-tran/coakka-runtime-go@v1.7.0` | `2.4.0+c2f53117` |
 | SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v2.4.0` | `2.4.0+c2f53117` |
 
-npm `2.4.0`, PyPI `2.4.0`, NuGet `2.4.0`, Go `v1.7.0`, and Swift `v2.4.0`
+npm `2.4.0`, PyPI `2.4.0`, NuGet `2.4.1`, Go `v1.7.0`, and Swift `v2.4.0`
 expose File Lane and Stream Lane. Select an exact coordinate whose release
 receipt records the required native generation.
+
+NuGet Runtime `2.4.1` and Logger `1.2.3` each expose one `lib/net8.0` managed
+asset and five native RID assets. The same repository-signed packages execute
+their consumer smokes on .NET 8, 9, and 10; `net8.0` is the minimum supported
+application target, while newer hosts are compatibility targets rather than
+separate packages.
 
 ## File-Lane Generation Rule
 

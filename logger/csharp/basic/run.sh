@@ -3,23 +3,19 @@ set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../../.." && pwd)"
-publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
-source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 
-coakka_require_command dotnet "Install .NET SDK 10 or newer, then retry."
+coakka_require_command dotnet "Install .NET SDK 8 or newer, then retry."
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
-artifact_rel="logger/csharp/releases/1.2.1+f50756ebff0d/CoAkka.Logger.1.2.1.nupkg"
-package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/CoAkka.Logger.1.2.1.nupkg")"
-package_source="$(dirname "${package_path}")"
 export NUGET_PACKAGES="${tmp_dir}/nuget-packages"
+export NUGET_HTTP_CACHE_PATH="${tmp_dir}/http-cache"
 
-dotnet new console -o "${tmp_dir}/consumer" --framework net10.0 --force >/dev/null
+dotnet new console -o "${tmp_dir}/consumer" --framework net8.0 --force >/dev/null
 dotnet add "${tmp_dir}/consumer/consumer.csproj" package CoAkka.Logger \
-  --version 1.2.1 \
-  --source "${package_source}" >/dev/null
+  --version 1.2.3 \
+  --source "https://api.nuget.org/v3/index.json" >/dev/null
 cp "${script_dir}/Program.cs" "${tmp_dir}/consumer/Program.cs"
 
 dotnet run --project "${tmp_dir}/consumer/consumer.csproj"

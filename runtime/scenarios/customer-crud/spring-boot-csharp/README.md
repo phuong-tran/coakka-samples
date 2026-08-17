@@ -9,7 +9,8 @@ This scenario runs:
 
 The Spring Boot web service reuses the same customer UI/API from the
 Spring-to-Spring scenario. The C# store uses the published
-`CoAkka.Runtime==2.4.0` NuGet package and runs as a headless message handler.
+`CoAkka.Runtime==2.4.1` NuGet package targeting `net8.0` and runs as a headless
+message handler.
 
 ## Runtime Transport Note
 

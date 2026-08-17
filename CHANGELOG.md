@@ -7,6 +7,10 @@ and checksums live in the versioned
 
 ## 2026-08-17
 
+- Advanced C# Runtime and Logger samples to NuGet `CoAkka.Runtime==2.4.1` and
+  `CoAkka.Logger==1.2.3`. Disposable consumers now target `net8.0`; the same
+  public packages are verified on .NET 8, 9, and 10 while retaining their
+  existing native generations.
 - Moved runnable JVM Runtime samples from the static GitHub Maven mirror to
   Maven Central coordinate `io.github.phuong-tran.coakka:runtime:2.4.1`. The
   distribution embeds native generation `2.4.0+c2f53117`; framework adapter

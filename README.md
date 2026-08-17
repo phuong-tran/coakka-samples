@@ -104,7 +104,8 @@ out of ordinary runtime message payloads.
 
 Native, JVM/Maven, connector-archive, `coakka-client`, and
 `coakka-runtime-inspect` sample pins resolve exact generation
-`2.4.0+c2f53117`. Registry-backed npm, NuGet, and PyPI samples use `2.4.0`.
+`2.4.0+c2f53117`. Registry-backed npm and PyPI samples use `2.4.0`; NuGet
+samples use Runtime `2.4.1` and Logger `1.2.3` with a `net8.0` baseline.
 All expose File Lane and Stream Lane.
 
 ## Runtime Test
