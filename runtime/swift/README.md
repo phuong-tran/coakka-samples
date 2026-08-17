@@ -1,7 +1,7 @@
 # Swift Runtime Samples
 
 Swift runtime samples consume
-`github.com/phuong-tran/coakka-runtime-swift@2.4.0`, built against native
+`github.com/phuong-tran/coakka-runtime-swift@2.4.1`, built against native
 runtime generation `2.4.0+c2f53117`. The package contains native payloads for
 Linux ARM64/x86-64, macOS ARM64, and Windows ARM64/x86-64; matching-host Swift
 execution evidence is tracked separately from package contents.

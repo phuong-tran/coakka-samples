@@ -40,7 +40,7 @@ independently from the artifact mirror. The separate
 [`../runtime-client`](../runtime-client/README.md).
 
 Swift runtime is published at
-`github.com/phuong-tran/coakka-runtime-swift@2.4.0` with native runtime
+`github.com/phuong-tran/coakka-runtime-swift@2.4.1` with native runtime
 generation `2.4.0+c2f53117`; current Swift execution evidence covers macOS
 ARM64.
 

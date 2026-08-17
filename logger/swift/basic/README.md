@@ -1,6 +1,6 @@
 # Swift Logger Basic
 
-This public logger sample installs `coakka-logger-swift@1.2.1` from the public
+This public logger sample installs `coakka-logger-swift@1.2.2` from the public
 SwiftPM GitHub tag and writes one bounded logger record through the embedded
 native logger package.
 

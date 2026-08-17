@@ -30,7 +30,7 @@ the team wants logging behavior that stays explicit under load instead of
 becoming another hidden source of stalls, heap growth, or ambiguous loss.
 
 Swift logger is published as a SwiftPM package for macOS ARM64 at
-`github.com/phuong-tran/coakka-logger-swift@1.2.1` with native logger
+`github.com/phuong-tran/coakka-logger-swift@1.2.2` with native logger
 generation `1.2.1+f50756ebff0d`.
 
 ## Why The Logger Matters

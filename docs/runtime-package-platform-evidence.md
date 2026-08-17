@@ -107,7 +107,7 @@ published and clean-install verified coordinates are:
 | PyPI | `coakka-v2-connector==2.4.0` | `2.4.0+c2f53117` |
 | NuGet | `CoAkka.Runtime==2.4.1` | `2.4.0+c2f53117` |
 | Go modules | `github.com/phuong-tran/coakka-runtime-go@v1.7.1` | `2.4.0+c2f53117` |
-| SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v2.4.0` | `2.4.0+c2f53117` |
+| SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v2.4.1` | `2.4.0+c2f53117` |
 
 npm `2.4.0`, PyPI `2.4.0`, NuGet `2.4.1`, Go `v1.7.1`, and Swift `v2.4.0`
 expose File Lane and Stream Lane. Select an exact coordinate whose release
