@@ -18,8 +18,9 @@ The promoted repository artifact generation is `2.4.0+c2f53117`. Its native,
 JVM, Spring Boot, Quarkus, and connector archives expose File Lane, Stream
 Lane, and explicit runtime network participation modes. The JVM distribution
 is published to Maven Central as `2.4.1` while retaining that exact native
-generation. npm, NuGet, PyPI, runtime Go, and runtime Swift have been promoted
-on the separately listed coordinates; connector version numbers remain
+generation. Logger JVM distribution `1.2.2` is published independently over
+native logger generation `1.2.1+f50756ebff0d`. npm, NuGet, PyPI, Go, and
+Swift packages use the separately listed coordinates; version numbers remain
 independent by channel.
 
 For exact package contents, matching-host execution, and known platform gaps,
@@ -52,7 +53,7 @@ complete matrix with `bash run.sh runtime-addons all published`.
 
 | Channel | Runtime package | Logger package | Sample command |
 | --- | --- | --- | --- |
-| Maven Central | [`coakka.runtime` 2.4.1](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/runtime/2.4.1) | Not published in this channel | `bash run.sh runtime jvm basic` |
+| Maven Central | [`coakka.runtime` 2.4.1](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/runtime/2.4.1) | [`coakka.logger` 1.2.2](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/logger/1.2.2) | `bash run.sh logger jvm basic` |
 | NuGet | [`CoAkka.Runtime` 2.4.0](https://www.nuget.org/packages/CoAkka.Runtime/2.4.0) | [`CoAkka.Logger` 1.2.2](https://www.nuget.org/packages/CoAkka.Logger/1.2.2) | `bash run.sh runtime csharp basic` |
 | npm | [`coakka-v2-connector-node` 2.4.0](https://www.npmjs.com/package/coakka-v2-connector-node/v/2.4.0) | [`coakka-logger-node` 1.2.6](https://www.npmjs.com/package/coakka-logger-node/v/1.2.6) | `bash run.sh runtime node basic` |
 | npm (Bun) | [`coakka-v2-connector-bun` 2.4.0](https://www.npmjs.com/package/coakka-v2-connector-bun/v/2.4.0) | [`coakka-logger-bun` 1.2.6](https://www.npmjs.com/package/coakka-logger-bun/v/1.2.6) | `bash run.sh runtime bun basic` |

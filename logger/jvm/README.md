@@ -1,20 +1,17 @@
 # JVM Logger Samples
 
-JVM samples consume the published `coakka-jvm-native-logger` jar from the
-static Maven repository in `coakka-publish`.
+JVM samples consume `coakka.logger` from Maven Central. The artifact embeds the
+matching native logger for each supported platform.
 
 Gradle dependency shape:
 
 ```kotlin
 repositories {
     mavenCentral()
-    maven {
-        url = uri("https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/maven")
-    }
 }
 
 dependencies {
-    implementation("coakka.logger:coakka-jvm-native-logger:1.2.1-gf50756ebff0d")
+    implementation("io.github.phuong-tran.coakka:logger:1.2.2")
 }
 ```
 

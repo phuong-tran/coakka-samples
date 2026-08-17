@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    implementation("coakka.logger:coakka-jvm-native-logger:1.2.1-gf50756ebff0d")
+    implementation("io.github.phuong-tran.coakka:logger:1.2.2")
 }
 
 kotlin {
