@@ -96,7 +96,7 @@ Current public native CLI generation: `2.4.0+c2f53117`.
 Native CLI archives live under:
 
 ```text
-coakka-tools/coakka-client/releases/2.4.0+c2f53117/
+coakka-tools/coakka-client/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a/
 ```
 
 The Docker Linux verification bundle remains on its separately released

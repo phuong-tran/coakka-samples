@@ -1,10 +1,9 @@
 # Runtime Lane Owner Grants
 
-> **Native release-candidate status:** this additive C ABI is present in native
-> candidate `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. Released
-> high-level connector coordinates still expose their existing lane APIs and
-> do not project typed owner grants. Use this page for the native contract; do
-> not infer high-level availability from a bundled feature bit.
+> **Source-candidate status:** this additive native C ABI is under development
+> and is not part of the current published `2.4.0+c2f53117` runtime artifacts
+> or released high-level connectors. Use this page to review the contract, not
+> to infer availability from an existing package coordinate.
 
 Runtime messages and lane sessions have different ownership laws:
 
