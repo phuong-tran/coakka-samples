@@ -82,8 +82,17 @@ comparable with a controlled Linux host or with each other.
 | `soak` | Direct native submit API | Submission duration or request limit | Every submitted request reaches one terminal outcome; the default expects replies without rejection. |
 | `race` | Concurrent direct native submit API | Finite requests plus bounded stop/lifecycle phases | Multi-producer requests reach exactly one reply or explicit queue-pressure deadletter, submit-versus-stop converges on `CLOSED`, and independent runtime lifecycles complete without shared-state failures. |
 | `hot-reload` | Concurrent direct native submit API plus full snapshot apply | Finite requests and generations | New generations replace the full route table atomically while producers remain active; stale and invalid applies preserve the active generation. |
-| `file-lane` | Public File Lane contract over loopback | One 9 MiB direct-profile transfer | Both peers complete with matching SHA-256, final progress, monotonic observed update cursors, durable receiver receipt, and consistent lane counters. |
-| `stream-lane` | Public Stream Lane contract over loopback | 97 deterministic variable-size frames | Ordered bytes, capture metadata, source-reported drops, terminal state, neutral pressure, nonblocking wait behavior, counters, and forget lifecycle all agree across independent lanes. |
+| `file-lane-simple` | Stable Simple File Lane API over loopback | One 9 MiB direct-profile transfer | Application-managed endpoint fields drive a transfer whose peers complete with matching SHA-256, terminal state, progress, and counters. |
+| `file-lane-owner-aware` | Additive native owner-grant API over loopback | The same bounded transfer | Feature detection, exact owner projection, fixed-size grant handoff, token cleanup, and both peer terminal results pass. |
+| `stream-lane-simple` | Stable Simple Stream Lane API over loopback | 97 deterministic variable-size frames | Application-managed endpoint fields drive ordered frames, pressure observation, terminal state, counters, and forget lifecycle. |
+| `stream-lane-owner-aware` | Additive native owner-grant API over loopback | The same bounded frame sequence | Feature detection, exact publisher projection, single-admission grant handoff, token cleanup, pressure, and terminal results pass. |
+
+`file-lane` and `stream-lane` remain command aliases for their `-simple`
+profiles. Simple is supported, not deprecated. Use it for one stable lane
+instance or when the application already owns endpoint selection. Use
+Owner-aware when a logical service has multiple replicas or an endpoint may be
+reassigned; the grant must reach the exact process or pod retaining prepared
+state.
 
 The `smoke`, `pressure`, `stress`, and `soak` modes require:
 
@@ -202,31 +211,34 @@ bash run.sh runtime-test pressure --requests 512 --queue-capacity 2
 bash run.sh runtime-test stress --payload 128K --requests 2000
 bash run.sh runtime-test soak --payload 64K --duration 30s --max-in-flight 64
 bash run.sh runtime-test connection-strategies
-bash run.sh runtime-test file-lane
-bash run.sh runtime-test stream-lane
+bash run.sh runtime-test file-lane-simple
+bash run.sh runtime-test file-lane-owner-aware
+bash run.sh runtime-test stream-lane-simple
+bash run.sh runtime-test stream-lane-owner-aware
 bash run.sh runtime-test race --threads 4 --requests 256
 bash run.sh runtime-test hot-reload --threads 4 --requests 256 --generations 64
 ```
 
-The `2.3.0+a83ab412` native package contains both `coakka/v2/file_lane.h` and
-`coakka/v2/stream_lane.h`, so the normal commands resolve the checksum-pinned
-public artifact directly. For
-development against a local Core change, override the package with an exact
-source tree:
+The sealed `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` candidate contains
+the Simple and owner-aware File/Stream Lane C ABIs. These release-branch
+commands resolve that checksum-pinned candidate; they do not claim it is
+published. For development against a local Core change, override the package
+with an exact source tree:
 
 ```sh
 COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR=../coakkaCoreNativeDev/v2 \
-  bash run.sh runtime-test file-lane
+  bash run.sh runtime-test file-lane-owner-aware
 ```
 
 The CMake target is conditional for compatibility with older packages. Setting
 `COAKKA_NATIVE_EVIDENCE_REQUIRE_FILE_LANE=ON` makes absence of the ABI a
 configure error.
 
-Run Stream Lane evidence against the exact 2.3 artifact with:
+Run both Stream Lane profiles against the exact candidate with:
 
 ```sh
-bash run.sh runtime-test stream-lane
+bash run.sh runtime-test stream-lane-simple
+bash run.sh runtime-test stream-lane-owner-aware
 ```
 
 The command builds the evidence consumer against the packaged public boundary,
@@ -236,17 +248,18 @@ forget, and stop. Setting
 `COAKKA_NATIVE_EVIDENCE_REQUIRE_STREAM_LANE=ON` makes absence of the packaged
 contract a configure error.
 
-macOS ARM64 and Linux ARM64/x86-64 package-built modes use native generation
-`2.3.0+a83ab412`. The prebuilt `1.3.4+dc6ec284` evidence runner remains a
+macOS ARM64 and Linux ARM64/x86-64 package-built lane modes use native
+generation `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. The prebuilt
+`1.3.4+dc6ec284` evidence runner remains a
 separate compatibility path for workload modes that do not require the newer
 connection-strategy ABI.
 
 For the original workload modes, the Windows PowerShell entrypoint executes the
 checksum-verified `1.3.4+dc6ec284` compatibility evidence runner. For
-`file-lane`, `stream-lane`, `race`, and `hot-reload`, it builds this public C11
-source against the checksum-verified `2.3.0+a83ab412` package. File Lane and
-Stream Lane select Windows ARM64 or x86-64 to match the host; the concurrency
-harness remains x86-64-only.
+File/Stream Lane profiles, `race`, and `hot-reload`, it builds this public C11
+source against the checksum-verified candidate package. File Lane and Stream
+Lane select Windows ARM64 or x86-64 to match the host; the concurrency harness
+remains x86-64-only.
 The archive contains runtime DLLs but no MSVC import library, so the harness
 generates a consumer-only `.lib` from its checked-in public export definition
 during CMake configure. It does not alter or relink the published DLL.

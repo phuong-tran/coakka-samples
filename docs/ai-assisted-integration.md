@@ -92,12 +92,19 @@ Generated File Lane code must include:
 - `forget` only after the terminal result has been recorded;
 - lane close only after concurrent calls have returned.
 
+Select the API profile deliberately. Generate the supported Simple API for a
+single stable receiver or application-pinned endpoint. Generate the native C
+Owner-aware API only when the exact `2.5.0` candidate is selected, the runtime
+reports `COAKKA_V2_RUNTIME_FEATURE_LANE_OWNER_GRANTS`, and replica/process
+pinning is an actual deployment requirement. Do not invent owner-grant methods
+for high-level connectors that have not published a typed projection.
+
 ### Stream Lane
 
 Stream Lane is an official runtime contract beginning with the 2.2 source
-line. Exact artifact generation `2.4.0+c2f53117` adds neutral pressure
-snapshots and waits and is the first complete public artifact train for the
-lane.
+line. The sealed native `2.5.0+4b65d0b2` candidate adds owner-aware grant
+projection without removing the Simple API. It is not a published coordinate
+until coordinated promotion.
 
 A coding agent must select one exact current coordinate from
 [Current Packages](current-packages.md), preserve its recorded native and
@@ -105,7 +112,9 @@ connector generation, and use the API names from that connector package. It
 must not generate Stream Lane imports against a historical package coordinate
 that still carries a 2.1 generation. npm `2.4.1`, PyPI `2.4.0`, NuGet `2.4.1`,
 Go `v1.7.1`, SwiftPM `v2.4.1`, and their recorded artifact generations expose
-the lane.
+the Simple lane API. Generate native owner-aware Stream Lane code only after
+feature detection and only when replica pinning is required; current typed
+connector packages do not expose owner-grant methods.
 
 ## Language And Host Boundaries
 

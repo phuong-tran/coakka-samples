@@ -1,9 +1,10 @@
 # Runtime Lane Owner Grants
 
-> **Source-candidate status:** this additive native C ABI is under development
-> and is not part of the current published `2.4.0+c2f53117` runtime artifacts
-> or released high-level connectors. Use this page to review the contract, not
-> to infer availability from an existing package coordinate.
+> **Release-candidate status:** the additive native C ABI is sealed in exact
+> candidate `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. It is not a
+> published coordinate until the coordinated release moves tags, registries,
+> and public `current` pointers. Released high-level connectors do not yet
+> project typed owner grants.
 
 Runtime messages and lane sessions have different ownership laws:
 
@@ -18,6 +19,33 @@ Service may route a prepare message to `billing-2` and a later TCP connection to
 destination, source callback, checkpoint, or pressure state. File Lane and
 Stream Lane reject that mismatch, but an application that uses the Service
 address for both connections will fail intermittently.
+
+## Choose The API Profile
+
+Both profiles are supported. Simple is not deprecated.
+
+| Profile | Use it when | Endpoint responsibility | Native entrypoints |
+| --- | --- | --- | --- |
+| Simple | One stable lane instance owns the endpoint, or the application already pins the selected instance. | The application carries the prepared ID, token, host, port, and File/Stream identity together. | `coakka_v2_*_lane_create()` plus `prepare_receive()` or `prepare_publish()` |
+| Owner-aware | A logical service has replicas, a pod/process incarnation matters, or an endpoint may be reassigned. | The lane returns one fixed-size capability naming the exact owner and actual listener port. | `coakka_v2_*_lane_create_owned()` plus `prepare_*_grant()` |
+
+Start with Simple for a single process, stable edge device, loopback tool, or
+application-managed endpoint. Move to Owner-aware when prepare may land on one
+replica while a later data connection could otherwise land on another. Do not
+use Owner-aware merely because it is newer; use it when owner pinning is part
+of the deployment law.
+
+Availability is explicit:
+
+| Surface | Simple | Owner-aware |
+| --- | --- | --- |
+| Native C candidate `2.5.0+4b65d0b2` | Yes | Yes, feature-gated by `COAKKA_V2_RUNTIME_FEATURE_LANE_OWNER_GRANTS` |
+| Candidate JVM, Node, Bun, Electron, Python, Go, C#, Rust, Swift, Mojo, Zig, and Tauri typed APIs | Yes | Not yet projected as a typed connector API |
+| Currently published pre-`2.5.0` coordinates | Yes where their lane version supports it | No |
+
+Do not reach around a connector's public API to resolve embedded native symbols.
+Use Owner-aware through the native C package until a connector explicitly
+documents a typed projection.
 
 ## Owner-Pinned Workflow
 
@@ -50,8 +78,8 @@ generation or a wire-v2 owner binding is not part of this source candidate.
 
 ## Native C ABI
 
-The original lane config structs remain frozen. Owner-aware creation uses an
-additive wrapper that embeds the complete legacy config:
+The original Simple API lane config structs remain frozen. Owner-aware creation
+uses an additive wrapper that embeds the complete Simple config:
 
 ```c
 coakka_v2_lane_owner_config_t owner = {
@@ -62,7 +90,7 @@ coakka_v2_lane_owner_config_t owner = {
 
 coakka_v2_file_lane_owned_config_t config = {
     .struct_size = sizeof(config),
-    .lane = legacy_file_lane_config,
+    .lane = simple_file_lane_config,
     .owner = owner,
 };
 
@@ -90,6 +118,21 @@ Check `COAKKA_V2_RUNTIME_FEATURE_LANE_OWNER_GRANTS` before resolving or invoking
 the additive symbols from a dynamically loaded runtime. Existing create and
 prepare APIs remain available for single-instance or application-managed
 endpoint workflows.
+
+The release-branch C11 samples run both profiles through the same bounded
+lifecycle and terminal checks:
+
+```sh
+bash run.sh runtime-test file-lane-simple
+bash run.sh runtime-test file-lane-owner-aware
+bash run.sh runtime-test stream-lane-simple
+bash run.sh runtime-test stream-lane-owner-aware
+```
+
+The owner-aware profiles consume the projected endpoint instead of rebuilding
+it from separate fields, never print the token, clear their local fixed-size
+grant after synchronous submission, stop both lanes, and destroy only after
+concurrent calls have returned.
 
 ## Kubernetes Addressing
 

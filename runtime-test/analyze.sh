@@ -40,6 +40,9 @@ fi
 if [[ -f "${runtime_include}/coakka/v2/file_lane.h" ]]; then
   sources+=(file_lane_main.c)
 fi
+if [[ -f "${runtime_include}/coakka/v2/stream_lane.h" ]]; then
+  sources+=(stream_lane_main.c)
+fi
 
 platform_definitions=()
 case "$(uname -s)" in
