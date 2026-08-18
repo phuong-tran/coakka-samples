@@ -35,11 +35,18 @@ The owner-issued grant contains:
 - `owner_instance_id`: diagnostic and orchestration identity of the exact pod,
   process, or host retaining the prepared state;
 - `advertised_host` and the listener's actual bound port;
-- the transfer/session ID and secret one-use token;
+- the transfer/session ID and secret bearer token;
 - File Lane size and SHA-256 identity, or Stream Lane format and frame bound.
 
 `advertised_host` must reach that exact owner. Do not replace it with a
 replica-load-balancing Service address after the grant is issued.
+
+Protocol v1 pinning is endpoint-level. `owner_instance_id` is a diagnostic and
+orchestration label; it is not carried in the File Offer or Stream Open and is
+not cryptographically authenticated by the lane handshake. TLS authenticates
+the advertised host, not this label. Use a unique incarnation identity and a
+fresh unpredictable application token after owner loss. An authenticated owner
+generation or a wire-v2 owner binding is not part of this source candidate.
 
 ## Native C ABI
 
@@ -72,6 +79,12 @@ returns `coakka_v2_file_receive_grant_t`. The Stream Lane equivalent is
 The fixed-size grant owns its projected strings. It allocates no runtime state
 beyond the bounded transfer/session record already admitted by prepare. Treat
 its token as a secret: do not log or persist the complete grant.
+
+File and Stream tokens have different lifetime laws. A File grant may be reused
+for bounded resume and idempotent completed-status handling while its owning
+record remains retained. A Stream grant is consumed when the publisher admits
+the first valid `OPEN`; transport failure after that admission requires a new
+prepare and grant. Invalid authentication or format attempts do not consume it.
 
 Check `COAKKA_V2_RUNTIME_FEATURE_LANE_OWNER_GRANTS` before resolving or invoking
 the additive symbols from a dynamically loaded runtime. Existing create and
@@ -131,6 +144,11 @@ Stopping or destroying the lane invalidates every grant issued by that owner.
 Pod loss has the same effect. CoAkka does not migrate a prepared session
 silently because another replica does not own its callback, local file state,
 token record, committed offset, or pressure state.
+
+Because protocol v1 does not authenticate `owner_instance_id`, address reuse is
+an application/deployment boundary. Do not reuse a prior owner's token when a
+pod or process incarnation changes, even when StatefulSet DNS or a fixed port
+remains the same.
 
 Recovery is explicit:
 

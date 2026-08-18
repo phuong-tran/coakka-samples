@@ -320,6 +320,12 @@ verified offset. The transfer ID, size, digest, destination, and authorization
 must still match. A changed source is rejected rather than resumed as if it
 were the original file.
 
+The File grant token therefore is not a one-use Stream token. It remains a
+bearer capability for bounded resume and idempotent completed-status handling
+while the receiver retains the owning transfer record. Forgetting the record,
+stopping the lane, or replacing the owner requires a new prepare and fresh
+token.
+
 ## Ownership And UI Boundaries
 
 - The application owns file meaning, authorization, destination selection, and

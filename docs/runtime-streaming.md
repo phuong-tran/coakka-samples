@@ -473,8 +473,11 @@ subscriber host.
 
 TLS identity is not business authorization. Service B must still prepare a
 unique session and compare its opaque token before invoking the source
-callback. Tokens must not be logged and should expire through application
-policy if the prepared session is never used.
+callback. A valid `OPEN` consumes the prepared Stream token before frame
+delivery; a lost `ACCEPT` or later transport failure requires a new prepare and
+grant. Invalid token, format, frame, or window attempts do not consume it.
+Tokens must not be logged and should expire through application policy if the
+prepared session is never used.
 
 ## Protocol V1 Non-Goals
 
