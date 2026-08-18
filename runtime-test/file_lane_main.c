@@ -323,8 +323,9 @@ int main(void) {
           source_size == k_file_bytes,
           "source-digest");
 
-  /* Service B: keep a receiver lane alive, authorize the destination, and
-   * prepare the exact size and digest before sharing a transfer grant. */
+  /* Service B: start a receiver lane, authorize the destination, and prepare
+   * the exact size and digest before sharing a transfer grant. Admission is
+   * intentionally closed until start has completed. */
   receiver_config.struct_size = sizeof(receiver_config);
   receiver_config.flags = COAKKA_V2_FILE_LANE_ENABLE_RECEIVER;
   receiver_config.bind_host = "127.0.0.1";
@@ -336,6 +337,9 @@ int main(void) {
   receiver_config.progress_interval_ms = 50u;
   receiver = coakka_v2_file_lane_create(&receiver_config);
   REQUIRE(receiver != NULL, "receiver-create");
+  REQUIRE(coakka_v2_file_lane_start(receiver) == COAKKA_V2_OK,
+          "receiver-start");
+  receiver_started = 1;
 
   receive_spec.struct_size = sizeof(receive_spec);
   receive_spec.transfer_id = transfer_id;
@@ -346,9 +350,6 @@ int main(void) {
   REQUIRE(coakka_v2_file_lane_prepare_receive(receiver, &receive_spec) ==
               COAKKA_V2_OK,
           "receiver-prepare");
-  REQUIRE(coakka_v2_file_lane_start(receiver) == COAKKA_V2_OK,
-          "receiver-start");
-  receiver_started = 1;
   REQUIRE(coakka_v2_file_lane_get_bound_port(receiver, &receiver_port) ==
                   COAKKA_V2_OK &&
               receiver_port != 0u,
