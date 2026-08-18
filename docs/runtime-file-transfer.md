@@ -68,6 +68,14 @@ destination. A successful sender result does not replace the receiver result:
 the receiving application must observe its own `COMPLETED + OK` state before
 using the file.
 
+When the receiver target has multiple replicas, the prepared transfer belongs
+to the exact replica that admitted it. The application-defined grant in the
+current published package train must preserve that owner's direct endpoint; do
+not reconnect through a load-balancing Service address. A source-candidate
+native owner-grant ABI now formalizes this rule. See
+[Runtime Lane Owner Grants](runtime-lane-owner-grants.md) for its availability,
+Kubernetes addressing, explicit one/all distribution, and owner-loss contract.
+
 ## Service A To Service B Connector Example
 
 The example uses Kotlin syntax only to make the service workflow concrete.

@@ -172,6 +172,14 @@ sequenceDiagram
 7. Either host may cancel. Each host waits for its local terminal session
    record, records the outcome, and then forgets that record.
 
+When the publisher target has multiple replicas, the prepared source callback
+and session state belong to the exact replica that admitted the session. The
+application-defined grant in the current published package train must preserve
+that owner's direct endpoint; do not reconnect through a load-balancing Service
+address. A source-candidate native owner-grant ABI now formalizes this rule.
+See [Runtime Lane Owner Grants](runtime-lane-owner-grants.md) for its
+availability, Kubernetes addressing, fan-out pressure, and owner-loss contract.
+
 `PUBLISH` is Service B's local direction. `SUBSCRIBE` is Service A's local
 direction. Protocol v1 prepares one publisher for one subscriber; it does not
 provide fan-out.
