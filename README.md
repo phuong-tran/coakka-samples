@@ -15,6 +15,34 @@ GitHub Releases. Git tags may preserve useful checkpoints; the current branch,
 exact dependency pins, and passing CI define the sample surface users should
 run.
 
+**CoAkka is a polyglot, multi-language, multi-platform runtime ecosystem.**
+
+CoAkka Runtime is a native-backed capability runtime for application-owned
+work across processes and languages. It helps an app route work by stable
+target name, handle request/reply, report deadletters, enforce bounded
+admission, and expose delivery diagnostics without turning every internal
+handoff into another hand-written HTTP endpoint.
+
+Application-owned work means capability code governed by the same product or
+application boundary, even when it runs in another process, language,
+container, or host.
+
+CoAkka Logger is a separate bounded logging surface in the same ecosystem.
+
+One native core and a stable public C ABI support native C/C++, JVM and
+framework adapters, JavaScript runtimes, Python, Go, C#, Rust, Swift, Zig,
+Mojo, and related host integrations according to each release's compatibility
+row.
+
+Kubernetes is a first-class deployment lane because topology, rollout, and
+scale require deep operational guidance. It is not a prerequisite. The same
+target, request/reply, bounded-admission, and deadletter contract also applies
+to standalone Linux services, macOS and Windows hosts, containers, VMs, bare
+metal, and architecture-matched edge deployments. Check the
+[Ecosystem Overview](docs/ecosystem-overview.md) and the
+[Compatibility Matrix](https://github.com/phuong-tran/coakka-publish/blob/main/docs/compatibility-matrix.md)
+for exact package, OS, CPU, and release-channel evidence.
+
 ## Install Published Packages
 
 Normal application consumers install CoAkka Runtime and Logger from public
@@ -81,34 +109,6 @@ Release attachments.
 lane for complete Stream Lane workflows. It is a sibling of
 [`runtime-addons/`](runtime-addons/README.md), not a subdirectory of one
 language binding.
-
-**CoAkka is a polyglot, multi-language, multi-platform runtime ecosystem.**
-
-CoAkka Runtime is a native-backed capability runtime for application-owned
-work across processes and languages. It helps an app route work by stable
-target name, handle request/reply, report deadletters, enforce bounded
-admission, and expose delivery diagnostics without turning every internal
-handoff into another hand-written HTTP endpoint.
-
-Application-owned work means capability code governed by the same product or
-application boundary, even when it runs in another process, language,
-container, or host.
-
-CoAkka Logger is a separate bounded logging surface in the same ecosystem.
-
-One native core and a stable public C ABI support native C/C++, JVM and
-framework adapters, JavaScript runtimes, Python, Go, C#, Rust, Swift, Zig,
-Mojo, and related host integrations according to each release's compatibility
-row.
-
-Kubernetes is a first-class deployment lane because topology, rollout, and
-scale require deep operational guidance. It is not a prerequisite. The same
-target, request/reply, bounded-admission, and deadletter contract also applies
-to standalone Linux services, macOS and Windows hosts, containers, VMs, bare
-metal, and architecture-matched edge deployments. Check the
-[Ecosystem Overview](docs/ecosystem-overview.md) and the
-[Compatibility Matrix](https://github.com/phuong-tran/coakka-publish/blob/main/docs/compatibility-matrix.md)
-for exact package, OS, CPU, and release-channel evidence.
 
 ## Runtime Addons
 
