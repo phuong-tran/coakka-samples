@@ -10,7 +10,7 @@ Current artifact generation:
 ```text
 native runtime:   2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a
 connector source: f36c396
-payload staging:  e75df01
+payload staging:  eb62ec8
 source artifacts: 2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-f36c396
 ```
 
@@ -32,8 +32,8 @@ such; it is not presented as x86-64 hardware evidence.
 
 | Platform | Library | SHA-256 | Release evidence |
 | --- | --- | --- | --- |
-| Linux ARM64 | `libcoakka_runtime_v2.so` | `9fae00b6361d185e2a6bc7c0c7a9c232b97dddd4c4e062f44cd4202cee6cfc12` | Native build, runtime identity, exact 139-export, dependency, archive, package, and matching-host execution gates pass. |
-| Linux x86-64 | `libcoakka_runtime_v2.so` | `cf25c7feba3caace786afd7203c311c7626e332a70ca2f07e2e2ff8caff3aa49` | Native build, runtime identity, exact 139-export, dependency, archive, package, and matching-host execution gates pass. |
+| Linux ARM64 | `libcoakka_runtime_v2.so` | `bf32ebb908cde7ab7eade427356365ad561c1a4222a950d73097ff92329b79c1` | Debian 12/glibc 2.36 native build, runtime identity, exact 139-export, dependency, archive, package, public C lifecycle, File/Stream Lane, pressure, Client, and Inspect gates pass on Raspberry Pi 5. |
+| Linux x86-64 | `libcoakka_runtime_v2.so` | `07b246b97bad301b81cc90bb9d6f02d9ed425227bc302bc4b9039489b60d1727` | Debian 12/glibc 2.36 native build, runtime identity, exact 139-export, dependency, archive, package, Client, and Inspect gates pass in matching-architecture Actions. |
 | macOS ARM64 | `libcoakka_runtime_v2.dylib` | `391d2256bd5276f7b9001ae9afa8900dd82c5d29e2d81bc0edc1949c509dc4c1` | Native build, exact 139-export and dependency gates, full connector conformance, and packaged consumer smokes pass. |
 | Windows ARM64 | `libcoakka_runtime_v2.dll` | `5662cd77be9e5446bf530c7aedbeccd4b22e5a08b3c96acd92825014abba020f` | Zig cross-build, PE architecture, exact 139-export, dependency, archive, package, and matching-host execution gates pass. |
 | Windows x86-64 | `libcoakka_runtime_v2.dll` | `45e4832d0a4c05cce36ec2dea9cc3e32695159b6bc8c741fce9d0bee583a938f` | Zig cross-build plus PE architecture, exact 139-export, dependency, digest, archive, and package gates pass. Matching-host packaged DLL command, snapshot, and bounded Inspect-server execution pass on Windows Server 2025; the focused native `6/6` suite also passes under Windows-on-ARM x64 emulation. |
@@ -41,10 +41,16 @@ such; it is not presented as x86-64 hardware evidence.
 The native archive is
 `runtime/native/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a/coakka-runtime-native-v2-2.5.0.tar.gz`
 with SHA-256
-`c9500525773a29d3a0430d185738608ec6cec45fa0e5a538d9c0dd027c2d6a84`.
+`1a7c33f167e03554e7eaa137b92d87f697c8dcec7186fa42b12b70460006055c`.
 It contains all five libraries, the public headers including
 `coakka/v2/file_lane.h` and `coakka/v2/stream_lane.h`, CMake metadata,
 manifest, and per-file checksums.
+
+The Linux payloads were restaged after Raspberry Pi 5 execution rejected the
+first candidate for requiring `GLIBC_2.38`. Both replacements fail closed above
+the glibc 2.36 baseline. Raspberry Pi 5 Debian 12 execution covers the exact
+ARM64 native and tool packages; Core Actions run `32131181333` supplies the
+corresponding Debian 12 x86-64 evidence.
 
 ## Runtime Tool 2.5.0 Matrix
 
@@ -63,6 +69,9 @@ Windows x86-64 matching-host tool execution is recorded by Core Actions run
 commit `d5cff2a7922470b4b33bd48cac2b472bb75acbc4`, checksums and loads both
 packaged DLL sets, executes both command surfaces, and proves bounded inspect
 HTTP serving and shutdown.
+Those Windows archives are byte-identical to the files retained by Publish
+artifact commit `53ade103faf819f180c6cb518d5d4d8c4e855861`; the Linux-only
+restage did not regenerate them.
 
 ## Connector Artifact Matrix
 
