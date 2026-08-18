@@ -15,6 +15,32 @@ GitHub Releases. Git tags may preserve useful checkpoints; the current branch,
 exact dependency pins, and passing CI define the sample surface users should
 run.
 
+## Install Published Packages
+
+Normal application consumers install CoAkka Runtime and Logger from public
+package registries. You do not need to build the native core or clone a
+connector repository for these paths; this repository provides the runnable
+examples and verification commands.
+
+| Registry | Runtime | Logger | Registry-backed sample |
+| --- | --- | --- | --- |
+| npm | [`coakka-v2-connector-node@2.4.1`](https://www.npmjs.com/package/coakka-v2-connector-node/v/2.4.1) | [`coakka-logger-node@1.2.7`](https://www.npmjs.com/package/coakka-logger-node/v/1.2.7) | `bash run.sh runtime node basic` |
+| PyPI | [`coakka-v2-connector==2.4.0`](https://pypi.org/project/coakka-v2-connector/2.4.0/) | [`coakka-logger==1.2.2`](https://pypi.org/project/coakka-logger/1.2.2/) | `bash run.sh runtime python basic` |
+| NuGet | [`CoAkka.Runtime@2.4.1`](https://www.nuget.org/packages/CoAkka.Runtime/2.4.1) | [`CoAkka.Logger@1.2.3`](https://www.nuget.org/packages/CoAkka.Logger/1.2.3) | `bash run.sh runtime csharp basic` |
+
+Install the Node.js, Python, or .NET package directly:
+
+```sh
+npm install coakka-v2-connector-node@2.4.1 coakka-logger-node@1.2.7
+python3 -m pip install coakka-v2-connector==2.4.0 coakka-logger==1.2.2
+dotnet add package CoAkka.Runtime --version 2.4.1
+dotnet add package CoAkka.Logger --version 1.2.3
+```
+
+npm also publishes the matching Bun and Electron Runtime `2.4.1` and Logger
+`1.2.7` packages. See [Current Packages](docs/current-packages.md) for every
+package-manager lane and exact compatibility evidence.
+
 ## Architecture Boundary
 
 HTTP remains the external API edge; selected application-owned work crosses a
@@ -316,7 +342,9 @@ and
 | Route generation and hot reload | `bash run.sh runtime python hot-reload` |
 | Native public-ABI correctness and connection-strategy evidence | `bash run.sh runtime-test smoke` |
 | Framework handoff shape | `bash run.sh list` then choose a `runtime/scenarios/customer-crud/*` lane |
-| Published npm without cloning samples | [docs/first-npm-smoke.md](docs/first-npm-smoke.md) |
+| Published npm packages | `bash run.sh runtime node basic`; [no-checkout npm smoke](docs/first-npm-smoke.md) |
+| Published PyPI packages | `bash run.sh runtime python basic`; `bash run.sh logger python basic` |
+| Published NuGet packages | `bash run.sh runtime csharp basic`; `bash run.sh logger csharp basic` |
 
 Use `bash run.sh doctor` to check local prerequisites and `bash run.sh list`
 to see available lanes.
