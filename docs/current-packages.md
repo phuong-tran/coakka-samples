@@ -36,6 +36,13 @@ optional native capabilities that compose with Runtime without entering the
 default runtime package. Addons carry their own versions, compatibility
 manifests, native dependency closure, and matching-host evidence.
 
+The current Artifact Source Addons acquire a pinned external file, verify and
+stage it locally, then compose with File Lane for bounded peer delivery. They
+exist because File Lane transfers an already-realized file but intentionally
+does not embed S3, Hugging Face, SFTP, or other provider clients in runtime
+core. High-level language addon connectors are ready to wrap over the public C
+ABI but remain demand-driven and are not currently released.
+
 The 11-addon artifact-source wave is published at native
 `1.1.0+d1032f6d`. HTTPS, S3/MinIO, Azure Blob, GCS, WebDAV, OCI Distribution,
 Hugging Face Hub, GitHub release assets, Google Drive, and Dropbox carry five

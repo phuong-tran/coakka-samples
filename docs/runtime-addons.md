@@ -5,31 +5,127 @@ with CoAkka Runtime without becoming part of runtime core or the default runtime
 package. Each addon owns one focused external workflow or protocol family and
 uses stable runtime features such as File Lane when distribution is needed.
 
+The current released family is **Artifact Source Addons**, also described in
+user-facing material as **file acquisition providers** or provider-specific
+downloaders. They answer a question that File Lane intentionally does not
+answer: how does an application obtain the exact file before a point-to-point
+transfer can begin?
+
+## Why These Addons Exist
+
+File Lane starts with a stable local source file. It moves that known file
+between two trusted CoAkka application hosts with bounded I/O, explicit
+authorization, resume, cancellation, exact size and SHA-256 verification, and
+terminal outcomes on both peers.
+
+Real workflows often begin one step earlier. The required file may exist only
+as an S3 object version, Hugging Face commit, GitHub release asset, Google Drive
+revision, SFTP path, or immutable HTTPS resource. Runtime core should not own
+every provider SDK, credential format, retry law, redirect rule, or remote
+identity model. An Artifact Source Addon acquires and realizes that remote
+identity as one verified local file; File Lane can then distribute it.
+
+```mermaid
+flowchart LR
+    Remote["External source<br/>S3, Hugging Face, SFTP, HTTPS, ..."]
+    Addon["Artifact Source Addon<br/>authenticate + acquire"]
+    Stage["Verified local file<br/>exact size + SHA-256<br/>no-clobber staging"]
+    Lane["CoAkka File Lane<br/>bounded peer transfer"]
+    Worker["Destination service<br/>receiver COMPLETED + OK"]
+
+    Remote --> Addon --> Stage --> Lane --> Worker
+```
+
+This is the boundary:
+
+- **Artifact Source Addon:** obtain one pinned external file and make its local
+  identity trustworthy;
+- **File Lane:** transfer already-realized bytes between CoAkka peers;
+- **application host:** own credentials, authorization, business rollout,
+  destination choice, and the decision to activate the received artifact.
+
+If a diagnostic bundle or generated media file already exists locally, no
+source addon is required; send it through File Lane directly. If the bundle is
+retained in an external store and another workflow must acquire that exact
+revision first, select the matching source addon.
+
+## A Practical AI-Era Story
+
+An inference worker may require an 8 GB model, tokenizer, embedding index, or
+dataset shard that is not installed on its host. Sending a small `load-model`
+command does not create those bytes, and embedding them in an ordinary runtime
+message would destroy the bounded message contract.
+
+A production-shaped workflow is:
+
+1. the application selects an immutable model identity, expected size, and
+   SHA-256 digest;
+2. the matching Hugging Face, S3, OCI, HTTPS, or other source addon authenticates
+   and acquires that exact remote revision;
+3. the addon stages the verified file without replacing an existing path;
+4. File Lane transfers the staged file to the selected inference worker;
+5. the worker activates the model only after its receiver reaches
+   `COMPLETED + OK` and application policy accepts the identity.
+
+The same shape applies to large media inputs, checkpoints, build artifacts,
+firmware, backup fragments, archived logs, and diagnostic bundles. Addons do
+not turn Runtime into a content catalog or cloud-storage SDK; they provide the
+small protocol-specific bridge needed before Runtime can move the file.
+
+## Why Not Add Another Internal HTTP File Server?
+
+HTTP remains the right choice for browser downloads, public APIs, CDN caching,
+and broadly shared long-lived objects. It can also transfer large files when an
+application deliberately engineers the complete upload/download contract.
+The problem is repeatedly creating an internal HTTP server solely to hand one
+large application-owned file to another service.
+
+| Concern | Ad hoc internal HTTP endpoint | Artifact Source Addon + File Lane |
+| --- | --- | --- |
+| External provider acquisition | Each service implements provider credentials, redirects, revisions, retries, and staging. | One focused addon owns the provider protocol and remote identity law. |
+| Large-byte path | The application must design streaming, request-thread isolation, body limits, temporary files, and memory bounds around its HTTP framework. | File bytes use a dedicated bounded lane and stay out of ordinary message envelopes. |
+| Integrity | Size, digest, partial-download cleanup, and final-file publication are application-specific unless implemented explicitly. | The source is size/SHA-256 verified; the receiver verifies a temporary file before atomic publication. |
+| Resume and cancellation | Range semantics, committed offsets, cancellation, and retry identity need a custom contract. | File Lane exposes committed-offset resume, cooperative cancellation, waits, and retained terminal state. |
+| Completion | A successful client response can be confused with durable receiver acceptance unless both sides define it carefully. | Sender and receiver outcomes are distinct; the destination may use the file only after receiver `COMPLETED + OK`. |
+| Reuse | Every internal file endpoint adds routing, authentication, observability, and lifecycle surface. | Provider mechanics remain in an optional addon; peer delivery reuses the Runtime lifecycle and diagnostics contract. |
+
+This is not a claim that HTTP cannot move large files. It is a reason not to
+invent another private HTTP API when the application needs a bounded,
+identity-verified, point-to-point file handoff between CoAkka peers.
+
 > **Current status:** eleven artifact-source addons are public at native
 > `1.1.0+d1032f6d`; SFTP is public at replacement native
 > `1.2.0+88b9a047`. They remain separate from the default Runtime package and
 > expose native C ABIs only; no high-level language addon connector is claimed.
 
-## Native-First Support Policy
+## Language Connectors: Ready To Port, Demand-Driven
 
 Artifact-source addons are supported as native C ABI products first. The native
 implementation, package evidence, and C11 consumer sample are the maintained
 integration boundary for each released addon.
 
-Addon-specific connectors for JVM, Python, Node.js, Go, .NET, Swift, or other
-hosts may be added later when real adoption justifies their implementation,
-platform matrix, packaging, tests, and ongoing maintenance. They are not part
-of the current addon releases and are not a committed cross-language roadmap.
-Until such a connector is explicitly released, applications should integrate
-through the documented native C ABI and native sample.
+There are currently no released addon-specific connectors for JVM, Python,
+Node.js, Go, .NET, Swift, or other high-level hosts. This is a scope decision,
+not a protocol-engine blocker. The public C ABI already isolates lifecycle,
+bounded inputs and outputs, cancellation, failure reporting, and Runtime/File
+Lane composition so a language connector can wrap the addon without rewriting
+its provider engine.
+
+Supporting every provider across every host language and native platform still
+requires substantial ownership work: lifetime-safe bindings, callback and
+threading laws, package layout, credential handling, failure mapping,
+matching-host execution, and long-term compatibility. Addon connectors will be
+released when demonstrated demand justifies that matrix. Until then, only the
+documented native C ABI and C11 samples are claimed as supported surfaces;
+portability readiness must not be presented as an already-published connector.
 
 ## Where Addons Fit
 
 ```mermaid
 flowchart LR
     Host["Application host"] -->|"owns config, credentials, policy, lifecycle"| Addon["Optional runtime addon"]
-    Addon -->|"external protocol"| Source["External system or artifact source"]
-    Addon -->|"stable public runtime feature"| Runtime["CoAkka Runtime"]
+    Source["External system or artifact source"] -->|"pinned remote identity"| Addon
+    Addon -->|"verified local staging"| Runtime["CoAkka Runtime"]
     Runtime -->|"File Lane, routing, diagnostics"| Peer["Peer service"]
 ```
 
@@ -88,7 +184,32 @@ addon is installable only when its immutable archive appears in
 [`artifacts/public-artifacts.tsv`](https://github.com/phuong-tran/coakka-publish/blob/main/artifacts/public-artifacts.tsv)
 with its manifest and `SHA256SUMS`.
 
-## Current Addon Lanes
+## Choose A File Acquisition Provider
+
+Choose the addon from the file's current authoritative location, not from the
+language of the consuming service:
+
+| File currently lives in | Artifact Source Addon |
+| --- | --- |
+| Immutable or digest-pinned web resource | HTTPS |
+| S3 or MinIO versioned object | S3/MinIO |
+| Azure Blob exact object version | Azure Blob |
+| Google Cloud Storage generation | GCS |
+| Strong-ETag WebDAV resource | WebDAV |
+| Content-addressed container-registry blob | OCI Distribution |
+| Commit-pinned model or dataset file | Hugging Face Hub |
+| Exact GitHub release asset | GitHub Release |
+| Retained Google Drive blob revision | Google Drive |
+| Exact Dropbox revision | Dropbox |
+| Stable file below an application-owned drop root | Local Drop |
+| Host-key-pinned remote path | SFTP |
+
+Release directories retain the established `artifact-publisher-<source>` name.
+In this family, `publisher` means the addon publishes the acquired, verified
+file into the File Lane workflow; it does not mean the addon uploads a new file
+to S3, Hugging Face, SFTP, or another external provider.
+
+## Current Addon Releases
 
 | Addon | Workflow | Public status |
 | --- | --- | --- |

@@ -114,14 +114,23 @@ language binding.
 
 [Runtime addons](docs/runtime-addons.md) are optional, independently released
 capabilities that compose with public Runtime features without entering runtime
-core or every runtime package. The
+core or every runtime package. The current Artifact Source Addons exist because
+File Lane transfers a stable local file but does not acquire that file from S3,
+Hugging Face, GitHub, Google Drive, SFTP, or another external provider. An addon
+authenticates, acquires one immutable identity, verifies size/SHA-256, and stages
+it locally; File Lane then performs the bounded peer transfer.
+
+This is useful when an AI worker needs a multi-gigabyte model, or when a service
+needs an exact media input, checkpoint, build artifact, archived log, or
+diagnostic bundle without creating another internal HTTP file server. The
 [`runtime-addons/`](runtime-addons/README.md) tree contains runnable native C11
-samples for all 12 released artifact publishers. The root runner exposes them
-through a distinct `runtime-addons` command while their release cadence remains
-independent from Runtime and Logger. Artifact addons are native-first: their C
-ABI and C11 samples are the current supported integration boundary. Dedicated
-language connectors may be considered when real usage justifies the additional
-platform, packaging, test, and maintenance surface; none is currently claimed.
+samples for all 12 released providers.
+
+The public C ABI is shaped for language wrappers, but no addon-specific JVM,
+Python, Node.js, Go, .NET, Swift, or other high-level connector is currently
+released. Those connectors remain demand-driven because each requires its own
+ownership-safe bindings, packaging, credential mapping, platform tests, and
+maintenance surface.
 
 ## Runtime Transport
 

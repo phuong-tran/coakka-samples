@@ -1219,6 +1219,14 @@ with CoAkka Runtime through stable public contracts. They keep external
 protocol mechanics, dependencies, credentials, and workflow policy out of
 runtime core and out of the default runtime package.
 
+The current Artifact Source Addons are file acquisition providers. File Lane
+transfers a stable local file between CoAkka peers; it does not obtain that file
+from S3, Hugging Face, GitHub, Google Drive, SFTP, or another remote system. A
+source addon authenticates, acquires one pinned identity, verifies exact size
+and SHA-256, and stages it without replacement before File Lane performs the
+bounded peer transfer. This is useful for multi-gigabyte AI models, media,
+checkpoints, build artifacts, archived logs, and diagnostic bundles.
+
 One addon should own one coherent capability or protocol family. For example,
 the SFTP artifact publisher acquires and verifies an artifact, then uses the
 existing File Lane to distribute it. SFTP does not become part of File Lane,
@@ -1238,9 +1246,16 @@ artifact-source wave: public native 1.1.0+d1032f6d
 SFTP artifact publisher: replacement native 1.2.0+88b9a047
 native addon samples: exact immutable archive consumers
 addon integration priority: native C ABI and C11 samples first
-addon-specific language connectors: demand-driven, not currently committed
+addon-specific language connectors: ready to port over the C ABI, demand-driven, not currently released
 existing Runtime connector package changes: none
 ```
+
+The absence of high-level addon connectors is intentional scope control. Each
+JVM, Python, Node.js, Go, .NET, Swift, or other wrapper still needs
+lifetime-safe bindings, credential and error mapping, packaging, platform
+execution, and ongoing compatibility evidence. Those connectors will be added
+when real demand justifies the work; the native ABI remains the only currently
+claimed integration surface.
 
 Read [Runtime Addons](runtime-addons.md) before selecting or generating addon
 integration code.
