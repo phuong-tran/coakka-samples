@@ -10,8 +10,10 @@ Current artifact generation:
 ```text
 native runtime:   2.4.0+c2f53117
 connector source: 0afb5e9
+JavaScript/Tauri patch source: 7718ce6
 JVM/Maven Central: 2.4.1
 source artifacts: 2.4.0+c2f53117-0afb5e9
+JavaScript/Tauri patch artifacts: 2.4.0+c2f53117-7718ce6
 ```
 
 ## Evidence Terms
@@ -66,9 +68,9 @@ the inspect archives.
 | Surface | Exact artifact coordinate | Native payloads | Current exact-artifact evidence |
 | --- | --- | --- | --- |
 | JVM | `io.github.phuong-tran.coakka:runtime:2.4.1` | All five | Signed Maven Central bundle validation, clean Java 8 and Java 26 consumers, JVM checks, embedded-native verification, packaged runtime smoke, Spring Boot tests, and Quarkus tests pass on macOS ARM64. |
-| Node.js | `runtime/node/releases/2.4.0+c2f53117-0afb5e9/` | All five | Build, unit tests, package-surface verification, and packaged request/reply pass on macOS ARM64. |
-| Bun | `runtime/bun/releases/2.4.0+c2f53117-0afb5e9/` | All five | Runtime request/reply, lane native-call tests, package-surface verification, and packaged request/reply pass on macOS ARM64. |
-| Electron | `runtime/electron/releases/2.4.0+c2f53117-0afb5e9/` | All five through Node | Packaged Electron main/preload intent smoke passes on macOS ARM64. |
+| Node.js | `runtime/node/releases/2.4.0+c2f53117-7718ce6/` | All five | npm `2.4.1` registry tarball matches the sealed candidate; clean Node 22 and 24 request/reply consumers pass on macOS ARM64. |
+| Bun | `runtime/bun/releases/2.4.0+c2f53117-7718ce6/` | All five | npm `2.4.1` registry tarball matches the sealed candidate; clean Bun 1.2 and current request/reply consumers pass on macOS ARM64. |
+| Electron | `runtime/electron/releases/2.4.0+c2f53117-7718ce6/` | All five through Node | npm `2.4.1` registry tarball matches the sealed candidate; clean Electron 42 and 43 main/preload intent smokes pass on macOS ARM64. |
 | Python | `runtime/python/releases/2.4.0+c2f53117-0afb5e9/` | All five | Source tests, package readiness, clean local wheel request/reply, and File/Stream Lane tests pass on macOS ARM64. |
 | Go | `runtime/go/releases/2.4.0+c2f53117-0afb5e9/` | All five | Packaged request/reply, Stream Lane tests, and `go test ./...` pass; public module publication remains separate. |
 | C# | `runtime/csharp/releases/2.4.0+c2f53117-0afb5e9/` | Five RID assets | Package readiness and clean local NuGet request/reply/deadletter execution pass on macOS ARM64. |
@@ -76,7 +78,7 @@ the inspect archives.
 | Swift | `runtime/swift/releases/2.4.0+c2f53117-0afb5e9/` | All five | Swift build, native-payload verification, runtime tests, and source-package smokes pass on macOS ARM64; SwiftPM publication remains separate. |
 | Mojo | `runtime/mojo/releases/2.4.0+c2f53117-0afb5e9/` | All five | Strict source/platform gates and native lifecycle, request/reply, and lane checks pass. |
 | Zig | `runtime/zig/releases/2.4.0+c2f53117-0afb5e9/` | All five | Cross-platform compile/link gates plus native lifecycle, request/reply, and lane checks pass. |
-| Tauri | `runtime/tauri/releases/2.4.0+c2f53117-0afb5e9/` | All five through Rust | Source-package, intent-command, desktop tests, and dependency-lock gates pass. |
+| Tauri | `runtime/tauri/releases/2.4.0+c2f53117-7718ce6/` | All five through Rust | Runtime `2.4.1-source` command-source smoke and real Tauri v2 desktop scaffold tests/build pass on macOS ARM64. |
 
 Every release directory has a manifest and `SHA256SUMS`. The manifest records
 the five-platform matrix, native source generation, connector source
@@ -103,13 +105,13 @@ published and clean-install verified coordinates are:
 
 | Registry | Current verified coordinate | Bundled native generation |
 | --- | --- | --- |
-| npm | `coakka-v2-connector-{node,bun,electron}@2.4.0` | `2.4.0+c2f53117` |
+| npm | `coakka-v2-connector-{node,bun,electron}@2.4.1` | `2.4.0+c2f53117` |
 | PyPI | `coakka-v2-connector==2.4.0` | `2.4.0+c2f53117` |
 | NuGet | `CoAkka.Runtime==2.4.1` | `2.4.0+c2f53117` |
 | Go modules | `github.com/phuong-tran/coakka-runtime-go@v1.7.1` | `2.4.0+c2f53117` |
 | SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v2.4.1` | `2.4.0+c2f53117` |
 
-npm `2.4.0`, PyPI `2.4.0`, NuGet `2.4.1`, Go `v1.7.1`, and Swift `v2.4.0`
+npm `2.4.1`, PyPI `2.4.0`, NuGet `2.4.1`, Go `v1.7.1`, and Swift `v2.4.1`
 expose File Lane and Stream Lane. Select an exact coordinate whose release
 receipt records the required native generation.
 

@@ -26,5 +26,5 @@ canonical feature guides, exact package catalog, and platform evidence, and it
 defines when only workflow pseudocode is justified.
 
 The current SwiftPM package includes File Lane and Stream Lane. Use the exact
-connector names and lifecycle rules shipped by SwiftPM `2.4.0` when integrating
+connector names and lifecycle rules shipped by SwiftPM `2.4.1` when integrating
 either lane.

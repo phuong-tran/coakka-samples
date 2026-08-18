@@ -1,6 +1,6 @@
 # Bun Logger Samples
 
-Bun samples consume `coakka-logger-bun@1.2.6` from npm.
+Bun samples consume `coakka-logger-bun@1.2.7` from npm.
 
 Current samples:
 

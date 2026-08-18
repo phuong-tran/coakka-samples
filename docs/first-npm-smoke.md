@@ -66,7 +66,7 @@ Install the runtime package:
 mkdir coakka-runtime-first-run
 cd coakka-runtime-first-run
 npm init -y
-npm install coakka-v2-connector-node@2.4.0
+npm install coakka-v2-connector-node@2.4.1
 ```
 
 Create `runtime.mjs`:
@@ -152,7 +152,7 @@ that the controller asks a runtime target instead of forwarding to
 mkdir coakka-logger-first-run
 cd coakka-logger-first-run
 npm init -y
-npm install coakka-logger-node
+npm install coakka-logger-node@1.2.7
 ```
 
 Create `logger.mjs`:

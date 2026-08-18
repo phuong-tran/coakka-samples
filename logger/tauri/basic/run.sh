@@ -4,7 +4,7 @@ set -euo pipefail
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../../.." && pwd)"
 publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
-artifact_rel="logger/tauri/releases/1.2.1+f50756ebff0d-3e8a6ae/coakka-logger-tauri-intents-1.2.1-source.tar.gz"
+artifact_rel="logger/tauri/releases/1.2.1+f50756ebff0d-7718ce6/coakka-logger-tauri-intents-1.2.2-source.tar.gz"
 source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 

@@ -1,6 +1,6 @@
 # Node.js Logger Samples
 
-Node.js samples consume `coakka-logger-node@1.2.6` from npm.
+Node.js samples consume `coakka-logger-node@1.2.7` from npm.
 
 Current samples:
 

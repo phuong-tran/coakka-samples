@@ -5,6 +5,16 @@ surface. It is not a repository release ledger. Artifact versions, manifests,
 and checksums live in the versioned
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) warehouse.
 
+## 2026-08-18
+
+- Advanced Node.js, Bun, and Electron samples to registry-verified Runtime
+  `2.4.1` and Logger `1.2.7`, with Node.js 22, Bun 1.2.0, and Electron 42
+  minimum hosts. Clean public-registry request/reply, emit/drain, and Electron
+  intent smokes pass.
+- Advanced Tauri samples to Runtime `2.4.1-source` and Logger `1.2.2-source`.
+  The Rust command, Tauri v2 desktop scaffold, and logger intent consumers pass
+  against the promoted source archives.
+
 ## 2026-08-17
 
 - Moved the Spring Boot starter and Quarkus extension samples from the static

@@ -10,7 +10,7 @@ This scenario runs:
 
 The Spring Boot web service reuses the same customer UI/API from the
 Spring-to-Spring scenario. The Node.js services use
-`coakka-v2-connector-node@2.4.0` from npm; the store owns state and emits typed
+`coakka-v2-connector-node@2.4.1` from npm; the store owns state and emits typed
 audit events to a second Node.js service after create, update, and delete
 operations.
 
