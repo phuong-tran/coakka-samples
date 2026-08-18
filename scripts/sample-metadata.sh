@@ -2,8 +2,8 @@
 
 COAKKA_PUBLISH_RAW_BASE_DEFAULT="https://raw.githubusercontent.com/phuong-tran/coakka-publish/26cc1a8037d168a74d1d8a56c4d710b25d687156"
 
-COAKKA_RUNTIME_NATIVE_VERSION="2.4.0"
-COAKKA_RUNTIME_NATIVE_RELEASE="2.4.0+c2f53117"
+COAKKA_RUNTIME_NATIVE_VERSION="2.5.0"
+COAKKA_RUNTIME_NATIVE_RELEASE="2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a"
 COAKKA_RUNTIME_NATIVE_ARTIFACT="runtime/native/releases/${COAKKA_RUNTIME_NATIVE_RELEASE}/coakka-runtime-native-v2-${COAKKA_RUNTIME_NATIVE_VERSION}.tar.gz"
 
 COAKKA_SAMPLE_ROWS=(
@@ -112,7 +112,7 @@ COAKKA_ARTIFACT_ROWS=(
   "runtime addon Google Drive native|runtime-addons/artifact-publisher-google-drive/native/releases/1.1.0+d1032f6d/coakka-runtime-addon-artifact-publisher-google-drive-native-1.1.0.tar.gz"
   "runtime addon Dropbox native|runtime-addons/artifact-publisher-dropbox/native/releases/1.1.0+d1032f6d/coakka-runtime-addon-artifact-publisher-dropbox-native-1.1.0.tar.gz"
   "runtime addon SFTP native|runtime-addons/artifact-publisher-sftp/native/releases/1.2.0+88b9a047/coakka-runtime-addon-artifact-publisher-sftp-native-1.2.0.tar.gz"
-  "runtime JVM jar|runtime/jvm/releases/2.4.0+c2f53117-0afb5e9/coakka-jvm-native-runtime-v2-2.4.0-gc2f53117-0afb5e9.jar"
+  "runtime JVM jar|runtime/jvm/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-f36c396/coakka-jvm-native-runtime-v2-2.5.0-g4b65d0b2-f36c396.jar"
   "runtime Python wheel|runtime/python/releases/2.4.0+c2f53117-0afb5e9/coakka_v2_connector-2.4.0-py3-none-any.whl"
   "runtime Node package|runtime/node/releases/2.4.0+c2f53117-0afb5e9/coakka-v2-connector-node-2.4.0.tgz"
   "runtime Bun package|runtime/bun/releases/2.4.0+c2f53117-0afb5e9/coakka-v2-connector-bun-2.4.0.tgz"
