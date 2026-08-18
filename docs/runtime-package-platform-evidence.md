@@ -36,7 +36,7 @@ such; it is not presented as x86-64 hardware evidence.
 | Linux x86-64 | `libcoakka_runtime_v2.so` | `cf25c7feba3caace786afd7203c311c7626e332a70ca2f07e2e2ff8caff3aa49` | Native build, runtime identity, exact 139-export, dependency, archive, package, and matching-host execution gates pass. |
 | macOS ARM64 | `libcoakka_runtime_v2.dylib` | `391d2256bd5276f7b9001ae9afa8900dd82c5d29e2d81bc0edc1949c509dc4c1` | Native build, exact 139-export and dependency gates, full connector conformance, and packaged consumer smokes pass. |
 | Windows ARM64 | `libcoakka_runtime_v2.dll` | `5662cd77be9e5446bf530c7aedbeccd4b22e5a08b3c96acd92825014abba020f` | Zig cross-build, PE architecture, exact 139-export, dependency, archive, package, and matching-host execution gates pass. |
-| Windows x86-64 | `libcoakka_runtime_v2.dll` | `45e4832d0a4c05cce36ec2dea9cc3e32695159b6bc8c741fce9d0bee583a938f` | Zig cross-build plus PE architecture, exact 139-export, dependency, digest, archive, and package gates pass; matching-host execution is a release-day gate. |
+| Windows x86-64 | `libcoakka_runtime_v2.dll` | `45e4832d0a4c05cce36ec2dea9cc3e32695159b6bc8c741fce9d0bee583a938f` | Zig cross-build plus PE architecture, exact 139-export, dependency, digest, archive, and package gates pass. Matching-host packaged DLL command, snapshot, and bounded Inspect-server execution pass on Windows Server 2025; the focused native `6/6` suite also passes under Windows-on-ARM x64 emulation. |
 
 The native archive is
 `runtime/native/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a/coakka-runtime-native-v2-2.5.0.tar.gz`
@@ -55,11 +55,14 @@ and checksum-pinned in `artifacts/public-artifacts.tsv`.
 
 | Tool | Matching-host execution | Additional verified payloads |
 | --- | --- | --- |
-| `coakka-client` | macOS ARM64, Linux ARM64/x86-64, and Windows ARM64 command execution pass. | All five archives pass dependency, architecture, archive, and checksum gates. |
-| `coakka-runtime-inspect` | macOS ARM64, Linux ARM64/x86-64, and Windows ARM64 command execution pass; macOS and Linux also pass `serve` smokes. | All five archives pass dependency, architecture, archive, and checksum gates. |
+| `coakka-client` | Command execution passes on macOS ARM64, Linux ARM64/x86-64, and Windows ARM64/x86-64. | All five archives pass dependency, architecture, archive, and checksum gates. |
+| `coakka-runtime-inspect` | Command execution passes on all five platforms; macOS ARM64, Linux ARM64/x86-64, and Windows x86-64 also pass `serve` smokes. | All five archives pass dependency, architecture, archive, and checksum gates. |
 
-Windows x86-64 matching-host command execution remains a release-day evidence
-gate for both tools.
+Windows x86-64 matching-host tool execution is recorded by Core Actions run
+`32115663861` on Microsoft Windows Server 2025. It verifies the exact Publish
+commit `d5cff2a7922470b4b33bd48cac2b472bb75acbc4`, checksums and loads both
+packaged DLL sets, executes both command surfaces, and proves bounded inspect
+HTTP serving and shutdown.
 
 ## Connector Artifact Matrix
 

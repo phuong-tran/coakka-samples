@@ -36,11 +36,11 @@ Artifact catalog and manifest:
 Per-lane checksums are stored beside each release directory in
 `coakka-publish`.
 
-The macOS ARM64 archive completed command smoke. Linux ARM64/x86-64 passed
-matching-architecture Docker build, dependency, archive, and checksum gates.
-Windows ARM64/x86-64 passed cross-build, PE architecture, dependency, archive,
-and checksum gates. Matching-host Linux or Windows command execution is not
-recorded for this generation.
+The macOS ARM64, Linux ARM64/x86-64, and Windows ARM64/x86-64 archives complete
+matching-host command execution. All five also pass dependency, architecture,
+archive, and checksum gates. Windows x86-64 evidence is Core Actions run
+`32115663861` over exact Publish commit
+`d5cff2a7922470b4b33bd48cac2b472bb75acbc4`.
 
 Artifact layout:
 

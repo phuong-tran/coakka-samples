@@ -106,10 +106,11 @@ Artifact catalog and manifest:
 [CoAkka Public Artifacts](https://github.com/phuong-tran/coakka-publish/tree/d5cff2a7922470b4b33bd48cac2b472bb75acbc4),
 [public-artifacts.tsv](https://raw.githubusercontent.com/phuong-tran/coakka-publish/d5cff2a7922470b4b33bd48cac2b472bb75acbc4/artifacts/public-artifacts.tsv)
 
-The macOS ARM64 and Linux ARM64/x86-64 archives completed matching-host command
-and `serve` smoke. Windows ARM64/x86-64 passed cross-build, PE architecture,
-dependency, archive, and checksum gates; matching-host Windows execution is not
-claimed for this release.
+All five archives complete matching-host command execution. macOS ARM64, Linux
+ARM64/x86-64, and Windows x86-64 also complete `serve` smoke. Both Windows
+architectures pass PE architecture, dependency, archive, and checksum gates.
+Windows x86-64 evidence is Core Actions run `32115663861` over exact Publish
+commit `d5cff2a7922470b4b33bd48cac2b472bb75acbc4`.
 
 ## Docker
 
