@@ -41,6 +41,21 @@ npm also publishes the matching Bun and Electron Runtime `2.4.1` and Logger
 `1.2.7` packages. See [Current Packages](docs/current-packages.md) for every
 package-manager lane and exact compatibility evidence.
 
+## Repository Map
+
+| Repository | Use it for |
+| --- | --- |
+| [`coakka-samples`](https://github.com/phuong-tran/coakka-samples) | Runnable examples and code you can inspect first. |
+| [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) | Released packages, native archives, manifests, checksums, compatibility matrix, and release notes. |
+| [`coakka-runtime-go`](https://github.com/phuong-tran/coakka-runtime-go) | Public Go module for CoAkka Runtime. |
+| [`coakka-logger-go`](https://github.com/phuong-tran/coakka-logger-go) | Public Go module for CoAkka Logger. |
+| [`coakka-runtime-swift`](https://github.com/phuong-tran/coakka-runtime-swift) | Public SwiftPM runtime package with all five native payloads; Swift execution is verified on macOS ARM64. |
+| [`coakka-logger-swift`](https://github.com/phuong-tran/coakka-logger-swift) | Public SwiftPM logger package for macOS ARM64. |
+
+Use `coakka-samples` when you want to run examples. Use `coakka-publish` when
+you need exact released files, checksums, compatibility status, or release
+history.
+
 ## Architecture Boundary
 
 HTTP remains the external API edge; selected application-owned work crosses a
@@ -302,21 +317,6 @@ Do not add CoAkka when:
 - the problem is auth, authorization, public-edge policy, heterogeneous
   non-CoAkka traffic governance, or business transaction design. CoAkka runtime
   traffic does not require a service-mesh data plane.
-
-## Repository Map
-
-| Repository | Use it for |
-| --- | --- |
-| [`coakka-samples`](https://github.com/phuong-tran/coakka-samples) | Runnable examples and code you can inspect first. |
-| [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) | Released packages, native archives, manifests, checksums, compatibility matrix, and release notes. |
-| [`coakka-runtime-go`](https://github.com/phuong-tran/coakka-runtime-go) | Public Go module for CoAkka Runtime. |
-| [`coakka-logger-go`](https://github.com/phuong-tran/coakka-logger-go) | Public Go module for CoAkka Logger. |
-| [`coakka-runtime-swift`](https://github.com/phuong-tran/coakka-runtime-swift) | Public SwiftPM runtime package with all five native payloads; Swift execution is verified on macOS ARM64. |
-| [`coakka-logger-swift`](https://github.com/phuong-tran/coakka-logger-swift) | Public SwiftPM logger package for macOS ARM64. |
-
-Use `coakka-samples` when you want to run examples. Use `coakka-publish` when
-you need exact released files, checksums, compatibility status, or release
-history.
 
 ## Packages
 
