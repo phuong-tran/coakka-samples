@@ -66,7 +66,7 @@ Install the runtime package:
 mkdir coakka-runtime-first-run
 cd coakka-runtime-first-run
 npm init -y
-npm install coakka-v2-connector-node@2.4.1
+npm install coakka-v2-connector-node@2.5.0
 ```
 
 Create `runtime.mjs`:

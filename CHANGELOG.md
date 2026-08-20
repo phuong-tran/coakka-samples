@@ -7,6 +7,10 @@ and checksums live in the versioned
 
 ## 2026-08-20
 
+- Advanced Node.js, Bun, Electron, and Spring Boot-to-Node runtime samples to
+  registry-verified npm Runtime `2.5.0` over exact native generation
+  `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. Clean Node.js request/reply
+  and deadletter, Bun request/reply, and Electron intent smokes pass.
 - Advanced the C# runtime sample to registry-verified
   `CoAkka.Runtime==2.5.0` over exact native generation
   `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. The downloaded repository-signed

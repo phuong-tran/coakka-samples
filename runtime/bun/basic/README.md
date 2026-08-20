@@ -5,7 +5,7 @@ connector package.
 
 This sample covers:
 
-- install `coakka-v2-connector-bun@2.4.1` from npm
+- install `coakka-v2-connector-bun@2.5.0` from npm
 - embedded native runtime loading
 - no runtime package dependency install beyond the published connector package
 - runtime version/git diagnostics
@@ -28,7 +28,7 @@ bash run.sh runtime bun basic
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=2.4.0 git=c2f53117
+coakka_runtime_info abi=1 version=2.5.0 git=4b65d0b2
 coakka_runtime_response payload={"echo":"hello-runtime-bun"}
 coakka_runtime_stats generation=1 routes=1 delivered=1 matchedResponses=1
 ```
