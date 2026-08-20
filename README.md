@@ -52,20 +52,20 @@ examples and verification commands.
 
 | Registry | Runtime | Logger | Registry-backed sample |
 | --- | --- | --- | --- |
-| npm | [`coakka-v2-connector-node@2.5.0`](https://www.npmjs.com/package/coakka-v2-connector-node/v/2.5.0) | [`coakka-logger-node@1.2.7`](https://www.npmjs.com/package/coakka-logger-node/v/1.2.7) | `bash run.sh runtime node basic` |
-| PyPI | [`coakka-v2-connector==2.5.0`](https://pypi.org/project/coakka-v2-connector/2.5.0/) | [`coakka-logger==1.2.2`](https://pypi.org/project/coakka-logger/1.2.2/) | `bash run.sh runtime python basic` |
-| NuGet | [`CoAkka.Runtime@2.5.0`](https://www.nuget.org/packages/CoAkka.Runtime/2.5.0) | [`CoAkka.Logger@1.2.3`](https://www.nuget.org/packages/CoAkka.Logger/1.2.3) | `bash run.sh runtime csharp basic` |
+| npm | [`coakka-v2-connector-node@2.5.1`](https://www.npmjs.com/package/coakka-v2-connector-node/v/2.5.1) | [`coakka-logger-node@1.2.7`](https://www.npmjs.com/package/coakka-logger-node/v/1.2.7) | `bash run.sh runtime node basic` |
+| PyPI | [`coakka-v2-connector==2.5.1`](https://pypi.org/project/coakka-v2-connector/2.5.1/) | [`coakka-logger==1.2.2`](https://pypi.org/project/coakka-logger/1.2.2/) | `bash run.sh runtime python basic` |
+| NuGet | [`CoAkka.Runtime@2.5.1`](https://www.nuget.org/packages/CoAkka.Runtime/2.5.1) | [`CoAkka.Logger@1.2.3`](https://www.nuget.org/packages/CoAkka.Logger/1.2.3) | `bash run.sh runtime csharp basic` |
 
 Install the Node.js, Python, or .NET package directly:
 
 ```sh
-npm install coakka-v2-connector-node@2.5.0 coakka-logger-node@1.2.7
-python3 -m pip install coakka-v2-connector==2.5.0 coakka-logger==1.2.2
-dotnet add package CoAkka.Runtime --version 2.5.0
+npm install coakka-v2-connector-node@2.5.1 coakka-logger-node@1.2.7
+python3 -m pip install coakka-v2-connector==2.5.1 coakka-logger==1.2.2
+dotnet add package CoAkka.Runtime --version 2.5.1
 dotnet add package CoAkka.Logger --version 1.2.3
 ```
 
-npm also publishes the matching Bun and Electron Runtime `2.5.0` and Logger
+npm also publishes the matching Bun and Electron Runtime `2.5.1` and Logger
 `1.2.7` packages. See [Current Packages](docs/current-packages.md) for every
 package-manager lane and exact compatibility evidence.
 
@@ -154,9 +154,9 @@ out of ordinary runtime message payloads.
 
 Native, JVM/Maven, connector-archive, `coakka-client`, and
 `coakka-runtime-inspect` sample pins resolve exact generation
-`2.4.0+c2f53117`. Registry-backed npm samples use Runtime `2.5.0` and Logger
-`1.2.7`; PyPI samples use Runtime `2.5.0` and Logger `1.2.2`; NuGet samples use
-Runtime `2.5.0` and Logger `1.2.3` with a `net8.0` baseline.
+`2.4.0+c2f53117`. Registry-backed npm samples use Runtime `2.5.1` and Logger
+`1.2.7`; PyPI samples use Runtime `2.5.1` and Logger `1.2.2`; NuGet samples use
+Runtime `2.5.1` and Logger `1.2.3` with a `net8.0` baseline.
 All expose File Lane and Stream Lane.
 
 ## Runtime Test
