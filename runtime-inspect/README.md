@@ -83,34 +83,33 @@ The current published inspect release is platform-specific:
 
 ```text
 coakka-runtime-inspect native UI
-2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a release id for macOS ARM64
-2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a release id for Linux x86_64
-2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a release id for Linux ARM64
-2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a release id for Windows x86_64
-2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a release id for Windows ARM64
+2.4.0+c2f53117 release id for macOS ARM64
+2.4.0+c2f53117 release id for Linux x86_64
+2.4.0+c2f53117 release id for Linux ARM64
+2.4.0+c2f53117 release id for Windows x86_64
+2.4.0+c2f53117 release id for Windows ARM64
 ```
 
 Direct download:
 
-[coakka-runtime-inspect-v2-2.5.0-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/d5cff2a7922470b4b33bd48cac2b472bb75acbc4/coakka-tools/coakka-runtime-inspect/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a/coakka-runtime-inspect-v2-2.5.0-linux-aarch64.tar.gz)
+[coakka-runtime-inspect-v2-2.4.0-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/da4a5e9c3f1f846970fb84c8f18bca893051c487/coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/coakka-runtime-inspect-v2-2.4.0-linux-aarch64.tar.gz)
 
-[coakka-runtime-inspect-v2-2.5.0-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/d5cff2a7922470b4b33bd48cac2b472bb75acbc4/coakka-tools/coakka-runtime-inspect/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a/coakka-runtime-inspect-v2-2.5.0-linux-x86_64.tar.gz)
+[coakka-runtime-inspect-v2-2.4.0-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/da4a5e9c3f1f846970fb84c8f18bca893051c487/coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/coakka-runtime-inspect-v2-2.4.0-linux-x86_64.tar.gz)
 
-[coakka-runtime-inspect-v2-2.5.0-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/d5cff2a7922470b4b33bd48cac2b472bb75acbc4/coakka-tools/coakka-runtime-inspect/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a/coakka-runtime-inspect-v2-2.5.0-macos-aarch64.tar.gz)
+[coakka-runtime-inspect-v2-2.4.0-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/da4a5e9c3f1f846970fb84c8f18bca893051c487/coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/coakka-runtime-inspect-v2-2.4.0-macos-aarch64.tar.gz)
 
-[coakka-runtime-inspect-v2-2.5.0-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/d5cff2a7922470b4b33bd48cac2b472bb75acbc4/coakka-tools/coakka-runtime-inspect/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a/coakka-runtime-inspect-v2-2.5.0-windows-x86_64.tar.gz)
+[coakka-runtime-inspect-v2-2.4.0-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/da4a5e9c3f1f846970fb84c8f18bca893051c487/coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/coakka-runtime-inspect-v2-2.4.0-windows-x86_64.tar.gz)
 
-[coakka-runtime-inspect-v2-2.5.0-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/d5cff2a7922470b4b33bd48cac2b472bb75acbc4/coakka-tools/coakka-runtime-inspect/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a/coakka-runtime-inspect-v2-2.5.0-windows-aarch64.tar.gz)
+[coakka-runtime-inspect-v2-2.4.0-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/da4a5e9c3f1f846970fb84c8f18bca893051c487/coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/coakka-runtime-inspect-v2-2.4.0-windows-aarch64.tar.gz)
 
 Artifact catalog and manifest:
-[CoAkka Public Artifacts](https://github.com/phuong-tran/coakka-publish/tree/d5cff2a7922470b4b33bd48cac2b472bb75acbc4),
-[public-artifacts.tsv](https://raw.githubusercontent.com/phuong-tran/coakka-publish/d5cff2a7922470b4b33bd48cac2b472bb75acbc4/artifacts/public-artifacts.tsv)
+[CoAkka Public Artifacts](https://github.com/phuong-tran/coakka-publish/tree/da4a5e9c3f1f846970fb84c8f18bca893051c487),
+[public-artifacts.tsv](https://raw.githubusercontent.com/phuong-tran/coakka-publish/da4a5e9c3f1f846970fb84c8f18bca893051c487/artifacts/public-artifacts.tsv)
 
-All five archives complete matching-host command execution. macOS ARM64, Linux
-ARM64/x86-64, and Windows x86-64 also complete `serve` smoke. Both Windows
-architectures pass PE architecture, dependency, archive, and checksum gates.
-Windows x86-64 evidence is Core Actions run `32115663861` over exact Publish
-commit `d5cff2a7922470b4b33bd48cac2b472bb75acbc4`.
+macOS ARM64 and Linux ARM64/x86-64 complete matching-host command and `serve`
+smokes. Both Windows architectures pass Zig cross-build, PE architecture,
+dependency, archive, and checksum gates; matching-host Windows execution is not
+recorded for this generation.
 
 ## Docker
 

@@ -11,11 +11,15 @@ code and when it must stop at workflow pseudocode.
 
 For large immutable files, use the `2.1.0` file lane instead of placing bytes
 inside an `Envelope`. See [Runtime File Transfer](../docs/runtime-file-transfer.md)
-for use cases, the receiver-first workflow, and connector guidance. The
-artifact-backed samples pin the complete `2.4.0+c2f53117` train. Registry-backed
-npm `2.5.2`, PyPI `2.5.2`, and NuGet Runtime `2.5.2` samples consume
-published, clean-install verified packages that expose File Lane and Stream
-Lane.
+for use cases, the receiver-first workflow, and connector guidance. The native
+pointer, static JVM/framework and Go/C#/Swift compatibility artifacts, and
+runtime tools retain generation `2.4.0+c2f53117`. Current Rust/Mojo/Zig/Tauri
+mirrors package connector `2.5.2` sources over native generation
+`2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. Registry-backed Maven Runtime
+`2.5.2`, npm `2.5.2`, PyPI `2.5.2`, NuGet Runtime `2.5.2`, Go `v1.8.2`, and
+SwiftPM `v2.5.2` samples consume published, clean-install verified packages
+that use the same native generation and expose typed replica-owner File and
+Stream Lane grants.
 
 For day-to-day development and connector validation, treat macOS and Windows as
 valid host environments. For deployment claims, operational drills, and the
@@ -31,11 +35,12 @@ than a runnable or current public sample. Use the exact
 network-mode, and device-evaluation guidance without inferring desktop evidence
 as Android execution.
 
-This `runtime/` directory is the app-host connector sample lane. The current
-artifact train is native generation `2.4.0+c2f53117` with Linux ARM64/x86-64,
-macOS ARM64, and Windows ARM64/x86-64 payloads. Package-manager samples use the
-current version published on their registry; those versions advance
-independently from the artifact mirror. The separate
+This `runtime/` directory is the app-host connector sample lane. Artifact
+generations advance independently: compatibility mirrors retain
+`2.4.0+c2f53117`, while current Rust/Mojo/Zig/Tauri mirrors and registry-backed
+Runtime packages use native generation
+`2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. Package-manager samples use the
+exact version published on their registry. The separate
 `coakka-runtime-client` CLI sample lane lives under
 [`../runtime-client`](../runtime-client/README.md).
 
@@ -87,7 +92,7 @@ repositories {
 }
 
 dependencies {
-    implementation("io.github.phuong-tran.coakka:runtime:2.4.1")
+    implementation("io.github.phuong-tran.coakka:runtime:2.5.2")
 }
 ```
 

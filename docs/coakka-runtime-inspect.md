@@ -56,7 +56,7 @@ Current public native generation: `2.4.0+c2f53117`.
 Native UI archives live under:
 
 ```text
-coakka-tools/coakka-runtime-inspect/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a/
+coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/
 ```
 
 Current public platforms:

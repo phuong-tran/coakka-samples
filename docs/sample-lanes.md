@@ -86,9 +86,9 @@ installs it.
 The npm package-manager lane is current for Node.js, Bun, and Electron
 runtime/logger packages, so those JavaScript samples install registry
 coordinates. The Go module lane is also current for runtime/logger samples:
-`github.com/phuong-tran/coakka-runtime-go@v1.8.0` and
+`github.com/phuong-tran/coakka-runtime-go@v1.8.2` and
 `github.com/phuong-tran/coakka-logger-go@v1.2.6`. SwiftPM is current for
-`github.com/phuong-tran/coakka-runtime-swift@2.5.0`, which carries all five
+`github.com/phuong-tran/coakka-runtime-swift@2.5.2`, which carries all five
 runtime native payloads and has Swift execution evidence on macOS ARM64. The
 logger package `github.com/phuong-tran/coakka-logger-swift@1.2.2` remains a
 macOS ARM64 package. crates.io and apt/deb

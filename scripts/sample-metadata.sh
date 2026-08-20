@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-COAKKA_PUBLISH_RAW_BASE_DEFAULT="https://raw.githubusercontent.com/phuong-tran/coakka-publish/26cc1a8037d168a74d1d8a56c4d710b25d687156"
+COAKKA_PUBLISH_RAW_BASE_DEFAULT="https://raw.githubusercontent.com/phuong-tran/coakka-publish/4c4e1e589e6024ce869bd622ec07959896339de9"
 
 COAKKA_RUNTIME_NATIVE_VERSION="2.4.0"
 COAKKA_RUNTIME_NATIVE_RELEASE="2.4.0+c2f53117"
@@ -119,11 +119,11 @@ COAKKA_ARTIFACT_ROWS=(
   "runtime Electron package|runtime/electron/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-6b56a27/coakka-v2-connector-electron-2.5.0.tgz"
   "runtime Go package|runtime/go/releases/2.4.0+c2f53117-0afb5e9/coakka-v2-connector-go-2.4.0.tar.gz"
   "runtime C# package|runtime/csharp/releases/2.4.0+c2f53117-0afb5e9/CoAkka.Runtime.2.4.0.nupkg"
-  "runtime Rust package|runtime/rust/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/coakka-runtime-rs-2.5.2.tar.gz"
+  "runtime Rust package 2.5.2|runtime/rust/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/coakka-runtime-rs-2.5.2.tar.gz"
   "runtime Swift package|runtime/swift/releases/2.4.0+c2f53117-0afb5e9/coakka-runtime-swift-2.4.0.tar.gz"
-  "runtime Mojo source package|runtime/mojo/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/coakka-runtime-mojo-2.5.2-source.tar.gz"
-  "runtime Zig source package|runtime/zig/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/coakka-runtime-zig-2.5.2-source.tar.gz"
-  "runtime Tauri source package|runtime/tauri/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/coakka-runtime-tauri-intents-2.5.2-source.tar.gz"
+  "runtime Mojo source package 2.5.2|runtime/mojo/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/coakka-runtime-mojo-2.5.2-source.tar.gz"
+  "runtime Zig source package 2.5.2|runtime/zig/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/coakka-runtime-zig-2.5.2-source.tar.gz"
+  "runtime Tauri source package 2.5.2|runtime/tauri/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/coakka-runtime-tauri-intents-2.5.2-source.tar.gz"
   "Spring Boot starter Maven jar|maven/coakka/spring/coakka-spring-boot-starter/2.4.0-gc2f53117-0afb5e9/coakka-spring-boot-starter-2.4.0-gc2f53117-0afb5e9.jar"
   "Quarkus extension Maven jar|maven/coakka/quarkus/coakka-quarkus-extension/2.4.0-gc2f53117-0afb5e9/coakka-quarkus-extension-2.4.0-gc2f53117-0afb5e9.jar"
   "coakka-client linux-x86_64|coakka-tools/coakka-client/releases/2.4.0+c2f53117/coakka-client-v2-2.4.0-linux-x86_64.tar.gz"

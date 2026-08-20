@@ -7,6 +7,11 @@ and checksums live in the versioned
 
 ## 2026-08-20
 
+- Advanced the direct JVM Runtime samples to Maven Central
+  `io.github.phuong-tran.coakka:runtime:2.5.2`. Clean Java 8/current-JVM
+  consumers pass over native generation
+  `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`; Spring Boot and Quarkus
+  adapter coordinates remain independently pinned to `2.4.1`.
 - Advanced npm, PyPI, NuGet, Go, and Swift Runtime samples to the
   connector-first replica-owner releases `2.5.2`, Go `v1.8.2`, and Swift
   `v2.5.2`. Public-registry and remote-tag consumers pass while the native

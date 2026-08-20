@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    implementation("io.github.phuong-tran.coakka:runtime:2.4.1")
+    implementation("io.github.phuong-tran.coakka:runtime:2.5.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 }
 

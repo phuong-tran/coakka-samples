@@ -10,7 +10,7 @@ Current artifact generation:
 ```text
 native runtime:   2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a
 non-JVM source:   3ae74f4
-JVM source:       f36c396
+JVM source:       3ae74f4
 payload staging:  3ae74f4
 non-JVM artifacts: 2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4
 ```
@@ -50,35 +50,32 @@ manifest, and per-file checksums.
 The Linux payloads were restaged after Raspberry Pi 5 execution rejected the
 first candidate for requiring `GLIBC_2.38`. Both replacements fail closed above
 the glibc 2.36 baseline. Raspberry Pi 5 Debian 12 execution covers the exact
-ARM64 native and tool packages; Core Actions run `32131181333` supplies the
-corresponding Debian 12 x86-64 evidence.
+ARM64 native archive and unpublished `2.5.0` candidate tool packages; Core
+Actions run `32131181333` supplies the corresponding Debian 12 x86-64 evidence.
+That candidate tool evidence does not advance the published `2.4.0` tool train
+below.
 
-## Runtime Tool 2.5.0 Matrix
+## Runtime Tool 2.4.0 Matrix
 
 `coakka-client` and `coakka-runtime-inspect` are published for the same five
-platforms under native generation
-`2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. Each archive is immutable
+platforms under native generation `2.4.0+c2f53117`. Each archive is immutable
 and checksum-pinned in `artifacts/public-artifacts.tsv`.
 
 | Tool | Matching-host execution | Additional verified payloads |
 | --- | --- | --- |
-| `coakka-client` | Command execution passes on macOS ARM64, Linux ARM64/x86-64, and Windows ARM64/x86-64. | All five archives pass dependency, architecture, archive, and checksum gates. |
-| `coakka-runtime-inspect` | Command execution passes on all five platforms; macOS ARM64, Linux ARM64/x86-64, and Windows x86-64 also pass `serve` smokes. | All five archives pass dependency, architecture, archive, and checksum gates. |
+| `coakka-client` | Command execution passes on macOS ARM64. Linux ARM64/x86-64 pass matching-architecture Docker build and dependency gates. | All five archives pass dependency, architecture, archive, and checksum gates. |
+| `coakka-runtime-inspect` | Command and `serve` smokes pass on macOS ARM64 and Linux ARM64/x86-64. | All five archives pass dependency, architecture, archive, and checksum gates. |
 
-Windows x86-64 matching-host tool execution is recorded by Core Actions run
-`32115663861` on Microsoft Windows Server 2025. It verifies the exact Publish
-commit `d5cff2a7922470b4b33bd48cac2b472bb75acbc4`, checksums and loads both
-packaged DLL sets, executes both command surfaces, and proves bounded inspect
-HTTP serving and shutdown.
-Those Windows archives are byte-identical to the files retained by Publish
-artifact commit `53ade103faf819f180c6cb518d5d4d8c4e855861`; the Linux-only
-restage did not regenerate them.
+Matching-host Linux command execution is not recorded for `coakka-client`, and
+matching-host Windows execution is not recorded for either tool. Windows
+ARM64/x86-64 pass Zig cross-build, PE architecture, native dependency, archive,
+and checksum gates.
 
 ## Connector Artifact Matrix
 
 | Surface | Exact artifact coordinate | Native payloads | Current exact-artifact evidence |
 | --- | --- | --- | --- |
-| JVM | `runtime/jvm/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-f36c396/` | All five | Java 8 through current JVM checks, embedded-native verification, packaged runtime smoke, Spring Boot tests, and Quarkus tests pass. |
+| JVM | `io.github.phuong-tran.coakka:runtime:2.5.2` | All five | Maven Central validation, all 50 public files byte-for-byte against the signed candidate, five detached signatures, Java 8 through current JVM package checks, owner-grant tests, and clean-cache Java 8/current consumers pass. |
 | Node.js | `runtime/node/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/` | All five | Frozen tarball, registry bytes, request/reply, File Lane, and Stream Lane gates pass. |
 | Bun | `runtime/bun/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/` | All five | Frozen tarball, registry bytes, request/reply, File Lane, and bounded Stream Lane gates pass. |
 | Electron | `runtime/electron/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/` | All five through Node | Frozen tarball, registry bytes, and main/preload/hidden-renderer execution pass. |
@@ -118,20 +115,24 @@ outcome, and close on a named Android image and ABI.
 
 ## Registry Coordinates
 
-npm, PyPI, and NuGet are independent publication channels. Their current
-published and clean-install verified coordinates are:
+Maven Central, npm, PyPI, NuGet, Go modules, and SwiftPM are independent
+publication channels. Their current published and clean-install verified
+coordinates are:
 
 | Registry | Current verified coordinate | Bundled native generation |
 | --- | --- | --- |
+| Maven Central | `io.github.phuong-tran.coakka:runtime:2.5.2` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 | npm | `coakka-v2-connector-{node,bun,electron}@2.5.2` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 | PyPI | `coakka-v2-connector==2.5.2` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 | NuGet | `CoAkka.Runtime==2.5.2` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 | Go modules | `github.com/phuong-tran/coakka-runtime-go@v1.8.2` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 | SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v2.5.2` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 
-npm `2.5.2`, PyPI `2.5.2`, NuGet `2.5.2`, Go `v1.8.2`, and Swift `v2.5.2`
-expose File Lane and Stream Lane. Select an exact coordinate whose release
-receipt records the required native generation.
+Maven Runtime `2.5.2`, npm `2.5.2`, PyPI `2.5.2`, NuGet `2.5.2`, Go `v1.8.2`,
+and Swift `v2.5.2` expose typed replica-owner File and Stream Lane grants.
+Select an exact coordinate whose release receipt records the required native
+generation. The signed JVM audit is recorded in
+[JVM Runtime Maven Central 2.5.2](releases/2026-08-20-jvm-runtime-2.5.2-maven-central.md).
 
 NuGet Runtime `2.5.2` and Logger `1.2.3` each expose one `lib/net8.0` managed
 asset and five native RID assets. The same repository-signed packages execute

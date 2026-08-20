@@ -14,26 +14,21 @@ package, PyPI package, Go module, and SwiftPM tag do not need to share the same
 version number. Each lane follows the release cadence of its connector,
 packaging surface, and native payload.
 
-The promoted repository artifact generation is `2.4.0+c2f53117`. Its native,
-JVM, Spring Boot, Quarkus, and connector archives expose File Lane, Stream
-Lane, and explicit runtime network participation modes. The JVM distribution,
-Spring Boot starter, and Quarkus extension are published to Maven Central as
-`2.4.1` while retaining that exact native generation. Logger JVM distribution
-`1.2.2` is published independently over native logger generation
-`1.2.1+f50756ebff0d`. NuGet publishes Runtime
-`2.5.2` and Logger `1.2.3` as `net8.0` packages verified on .NET 8, 9, and 10.
-Runtime uses native generation `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`;
-Logger remains on `1.2.1+f50756ebff0d`. npm Runtime `2.5.2`, Go `v1.8.2`,
-SwiftPM `v2.5.2`, and PyPI Runtime `2.5.2` also embed that sealed Runtime generation. All
-Logger packages use the separately listed generations; version numbers remain
-independent by channel.
-
-Go `v1.8.2`, SwiftPM `v2.5.2`, NuGet Runtime `2.5.2`, and npm Runtime `2.5.2`
+The promoted repository native artifact pointer remains
+`2.4.0+c2f53117`. Maven Central Runtime `2.5.2`, npm Runtime `2.5.2`, PyPI
+Runtime `2.5.2`, NuGet Runtime `2.5.2`, Go `v1.8.2`, and SwiftPM `v2.5.2`
 independently embed sealed native generation
-`2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. These scoped package
-releases do not advance Maven Central or the promoted native repository
-artifact pointer. Their eleven non-JVM archive mirrors are published from
-connector source `3ae74f4` and checksum-pinned independently.
+`2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. The Spring Boot starter and
+Quarkus extension remain on their independently published `2.4.1` train and
+depend on Maven Runtime `2.4.1`; they are not part of the Runtime `2.5.2`
+release. Logger JVM distribution `1.2.2` is published independently over
+native logger generation `1.2.1+f50756ebff0d`. NuGet Logger remains `1.2.3`.
+All Logger packages use the separately listed generations; version numbers
+remain independent by channel.
+
+These scoped package releases do not advance the promoted native repository
+artifact pointer. Their shared connector source is `3ae74f4`; the eleven
+non-JVM archive mirrors are checksum-pinned independently.
 
 Runtime connector release `2.5.2` is the replica-owner release. The supported
 host connectors expose typed File receive and Stream publish grants, reconstruct
@@ -80,7 +75,7 @@ complete matrix with `bash run.sh runtime-addons all published`.
 
 | Channel | Runtime package | Logger package | Sample command |
 | --- | --- | --- | --- |
-| Maven Central | [`coakka.runtime` 2.4.1](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/runtime/2.4.1) | [`coakka.logger` 1.2.2](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/logger/1.2.2) | `bash run.sh logger jvm basic` |
+| Maven Central | [`coakka.runtime` 2.5.2](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/runtime/2.5.2) | [`coakka.logger` 1.2.2](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/logger/1.2.2) | `bash run.sh runtime jvm basic`; `bash run.sh logger jvm basic` |
 | NuGet | [`CoAkka.Runtime` 2.5.2](https://www.nuget.org/packages/CoAkka.Runtime/2.5.2) | [`CoAkka.Logger` 1.2.3](https://www.nuget.org/packages/CoAkka.Logger/1.2.3) | `bash run.sh runtime csharp basic`; `bash run.sh logger csharp basic` |
 | npm | [`coakka-v2-connector-node` 2.5.2](https://www.npmjs.com/package/coakka-v2-connector-node/v/2.5.2) | [`coakka-logger-node` 1.2.7](https://www.npmjs.com/package/coakka-logger-node/v/1.2.7) | `bash run.sh runtime node basic` |
 | npm (Bun) | [`coakka-v2-connector-bun` 2.5.2](https://www.npmjs.com/package/coakka-v2-connector-bun/v/2.5.2) | [`coakka-logger-bun` 1.2.7](https://www.npmjs.com/package/coakka-logger-bun/v/1.2.7) | `bash run.sh runtime bun basic` |
@@ -107,11 +102,11 @@ major `v1` because its established module path does not carry a `/v2` suffix.
 | Surface | Exact coordinate |
 | --- | --- |
 | Native C ABI | `runtime/native/releases/2.4.0+c2f53117/coakka-runtime-native-v2-2.4.0.tar.gz` |
-| JVM | `io.github.phuong-tran.coakka:runtime:2.4.1` |
+| JVM | `io.github.phuong-tran.coakka:runtime:2.5.2` |
 | Spring Boot | `io.github.phuong-tran.coakka:spring-boot-starter:2.4.1` |
 | Quarkus | `io.github.phuong-tran.coakka:quarkus-extension:2.4.1` |
 | Non-JVM connector archives | `runtime/<lane>/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/` |
-| JVM connector archive | `runtime/jvm/releases/2.4.0+c2f53117-0afb5e9/` |
+| JVM signed public tree | `https://repo1.maven.org/maven2/io/github/phuong-tran/coakka/runtime/2.5.2/` |
 | npm | `coakka-v2-connector-{node,bun,electron}@2.5.2` |
 | PyPI | `coakka-v2-connector`, exact `2.5.2` |
 | NuGet | `CoAkka.Runtime`, exact `2.5.2` |
