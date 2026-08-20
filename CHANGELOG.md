@@ -21,8 +21,8 @@ and checksums live in the versioned
   `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. The downloaded repository-signed
   package passes request/reply and route-miss deadletter consumers on .NET 8,
   9, and 10.
-- Advanced the Go runtime basic/deadletter samples to `v1.8.0` and the Swift
-  runtime basic sample to exact `2.5.0`. Clean consumers resolve both remote
+- Advanced the Go runtime basic/deadletter samples to `v1.8.1` and the Swift
+  runtime basic sample to exact `2.5.1`. Clean consumers resolve both remote
   tags, load native generation
   `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`, and complete their expected
   request/reply or deadletter paths on macOS ARM64.

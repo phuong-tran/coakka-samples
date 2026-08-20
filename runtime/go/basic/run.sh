@@ -17,7 +17,7 @@ module coakka-runtime-go-basic-sample
 
 go 1.22
 
-require ${module_path} v1.8.0
+require ${module_path} v1.8.1
 EOF
 
 (
