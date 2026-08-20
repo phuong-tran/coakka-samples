@@ -1,0 +1,16 @@
+CoAkka Packages
+Copyright 2026 Phuong Tran and contributors.
+
+Connector source, generated bindings, type declarations, package metadata,
+examples, and package documentation are licensed under the Apache License,
+Version 2.0.
+
+Bundled CoAkka native libraries or executables, native headers, symbol files,
+and native-only provenance are licensed under the CoAkka Native Artifact
+License 1.2.
+
+See PACKAGE-LICENSE.md for the file-scope map, LICENSE for Apache-2.0, and
+NATIVE-LICENSE.md for the native terms. CoAkka packages are free to use in
+applications, including commercial and production applications. Selling or
+offering CoAkka itself as managed runtime or infrastructure requires a separate
+agreement under the native terms.

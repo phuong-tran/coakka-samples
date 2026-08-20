@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+package coakka.v2.control;
+
+option java_multiple_files = true;
+option java_package = "coakka.v2.control";
+
+// ControlEnvelope is the stable outer shell for control/config traffic between
+// connector and runtime. The outer shell is always protobuf. The inner payload
+// is opaque bytes whose interpretation depends on payload_format and
+// payload_type.
+message ControlEnvelope {
+  // Connector-side sequencing for diagnostics or request/ack matching.
+  uint64 seq = 1;
+
+  // Monotonic config generation carried by the envelope.
+  uint64 generation = 2;
+
+  // High-level control action such as applying a snapshot.
+  ControlKind kind = 3;
+
+  // Format of the opaque payload bytes.
+  ConfigFormat payload_format = 4;
+
+  // Logical payload type carried inside payload bytes.
+  ControlPayloadType payload_type = 5;
+
+  // Version of the inner payload schema for the given payload_type.
+  uint32 schema_version = 6;
+
+  // Opaque inner config/control bytes.
+  bytes payload = 7;
+
+  // Extra diagnostics or rollout hints that do not justify first-class
+  // fields yet. Core semantics must not depend on this map.
+  map<string, string> metadata = 8;
+}
+
+enum ControlKind {
+  CONTROL_KIND_UNSPECIFIED = 0;
+  CONTROL_KIND_APPLY_SNAPSHOT = 1;
+  CONTROL_KIND_ACK = 2;
+  CONTROL_KIND_NACK = 3;
+}
+
+enum ConfigFormat {
+  CONFIG_FORMAT_UNSPECIFIED = 0;
+  CONFIG_FORMAT_JSON = 1;
+  CONFIG_FORMAT_PROTOBUF = 2;
+}
+
+enum ControlPayloadType {
+  CONTROL_PAYLOAD_TYPE_UNSPECIFIED = 0;
+  CONTROL_PAYLOAD_TYPE_ROUTE_SNAPSHOT = 1;
+}
+
+message RouteSnapshotPayload {
+  uint64 generation = 1;
+  repeated Route routes = 2;
+  OverloadPolicy overload_policy = 3;
+}
+
+message Route {
+  string target = 1;
+  RouteResolutionStrategy strategy = 2;
+  string route_key_hint = 3;
+  uint32 flags = 4;
+  repeated Endpoint endpoints = 5;
+}
+
+message Endpoint {
+  string host = 1;
+  uint32 port = 2;
+  uint32 weight = 3;
+  uint32 flags = 4;
+}
+
+enum RouteResolutionStrategy {
+  ROUTE_RESOLUTION_STRATEGY_UNSPECIFIED = 0;
+  ROUTE_RESOLUTION_STRATEGY_SINGLE_OWNER = 1;
+  ROUTE_RESOLUTION_STRATEGY_WEIGHTED_ROUND_ROBIN = 2;
+  ROUTE_RESOLUTION_STRATEGY_RENDEZVOUS_HASH = 3;
+}
+
+message OverloadPolicy {
+  OverloadMode ingress_mode = 1;
+  OverloadMode local_delivery_mode = 2;
+  OverloadMode remote_outbound_mode = 3;
+  uint32 remote_outbound_reply_reserve_slots = 4;
+}
+
+enum OverloadMode {
+  OVERLOAD_MODE_REJECT = 0;
+  OVERLOAD_MODE_DROP_EXPIRED_FIRST = 1;
+  OVERLOAD_MODE_DROP_ONE_WAY_FIRST = 2;
+}
