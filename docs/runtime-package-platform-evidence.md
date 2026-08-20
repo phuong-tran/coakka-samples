@@ -118,10 +118,10 @@ published and clean-install verified coordinates are:
 | npm | `coakka-v2-connector-{node,bun,electron}@2.5.0` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 | PyPI | `coakka-v2-connector==2.5.0` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 | NuGet | `CoAkka.Runtime==2.5.0` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
-| Go modules | `github.com/phuong-tran/coakka-runtime-go@v1.8.0` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
-| SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v2.5.0` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
+| Go modules | `github.com/phuong-tran/coakka-runtime-go@v1.8.1` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
+| SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v2.5.1` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 
-npm `2.5.0`, PyPI `2.5.0`, NuGet `2.5.0`, Go `v1.8.0`, and Swift `v2.5.0`
+npm `2.5.0`, PyPI `2.5.0`, NuGet `2.5.0`, Go `v1.8.1`, and Swift `v2.5.1`
 expose File Lane and Stream Lane. Select an exact coordinate whose release
 receipt records the required native generation.
 
