@@ -40,8 +40,8 @@ independently from the artifact mirror. The separate
 [`../runtime-client`](../runtime-client/README.md).
 
 Swift runtime is published at
-`github.com/phuong-tran/coakka-runtime-swift@2.4.1` with native runtime
-generation `2.4.0+c2f53117`; current Swift execution evidence covers macOS
+`github.com/phuong-tran/coakka-runtime-swift@2.5.0` with native runtime
+generation `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`; current Swift execution evidence covers macOS
 ARM64.
 
 The runtime lane is not introduced as a generic framework. It starts from
@@ -223,7 +223,7 @@ Full recording: [coakka-runtime-native.mp4](../docs/assets/coakka-runtime-native
 Go module:
 
 ```sh
-go get github.com/phuong-tran/coakka-runtime-go@v1.7.1
+go get github.com/phuong-tran/coakka-runtime-go@v1.8.0
 ```
 
 C# NuGet package:
