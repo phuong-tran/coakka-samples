@@ -21,14 +21,15 @@ Spring Boot starter, and Quarkus extension are published to Maven Central as
 `2.4.1` while retaining that exact native generation. Logger JVM distribution
 `1.2.2` is published independently over native logger generation
 `1.2.1+f50756ebff0d`. NuGet publishes Runtime
-`2.4.1` and Logger `1.2.3` as `net8.0` packages verified on .NET 8, 9, and 10
-without changing either native generation. npm, PyPI, Go, and Swift packages
+`2.5.0` and Logger `1.2.3` as `net8.0` packages verified on .NET 8, 9, and 10.
+Runtime uses native generation `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`;
+Logger remains on `1.2.1+f50756ebff0d`. npm, PyPI, Go, and Swift packages
 use the separately listed coordinates; version numbers remain independent by
 channel.
 
-Go `v1.8.0` and SwiftPM `v2.5.0` independently embed sealed native generation
-`2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. This scoped source-package
-release does not advance Maven Central, npm, PyPI, NuGet, or the promoted
+Go `v1.8.0`, SwiftPM `v2.5.0`, and NuGet Runtime `2.5.0` independently embed sealed native generation
+`2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. This scoped package
+release does not advance Maven Central, npm, PyPI, or the promoted
 repository artifact mirror.
 
 For exact package contents, matching-host execution, and known platform gaps,
@@ -69,7 +70,7 @@ complete matrix with `bash run.sh runtime-addons all published`.
 | Channel | Runtime package | Logger package | Sample command |
 | --- | --- | --- | --- |
 | Maven Central | [`coakka.runtime` 2.4.1](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/runtime/2.4.1) | [`coakka.logger` 1.2.2](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/logger/1.2.2) | `bash run.sh logger jvm basic` |
-| NuGet | [`CoAkka.Runtime` 2.4.1](https://www.nuget.org/packages/CoAkka.Runtime/2.4.1) | [`CoAkka.Logger` 1.2.3](https://www.nuget.org/packages/CoAkka.Logger/1.2.3) | `bash run.sh runtime csharp basic`; `bash run.sh logger csharp basic` |
+| NuGet | [`CoAkka.Runtime` 2.5.0](https://www.nuget.org/packages/CoAkka.Runtime/2.5.0) | [`CoAkka.Logger` 1.2.3](https://www.nuget.org/packages/CoAkka.Logger/1.2.3) | `bash run.sh runtime csharp basic`; `bash run.sh logger csharp basic` |
 | npm | [`coakka-v2-connector-node` 2.4.1](https://www.npmjs.com/package/coakka-v2-connector-node/v/2.4.1) | [`coakka-logger-node` 1.2.7](https://www.npmjs.com/package/coakka-logger-node/v/1.2.7) | `bash run.sh runtime node basic` |
 | npm (Bun) | [`coakka-v2-connector-bun` 2.4.1](https://www.npmjs.com/package/coakka-v2-connector-bun/v/2.4.1) | [`coakka-logger-bun` 1.2.7](https://www.npmjs.com/package/coakka-logger-bun/v/1.2.7) | `bash run.sh runtime bun basic` |
 | npm (Electron) | [`coakka-v2-connector-electron` 2.4.1](https://www.npmjs.com/package/coakka-v2-connector-electron/v/2.4.1) | [`coakka-logger-electron` 1.2.7](https://www.npmjs.com/package/coakka-logger-electron/v/1.2.7) | `bash run.sh runtime electron basic` |
@@ -102,7 +103,7 @@ major `v1` because its established module path does not carry a `/v2` suffix.
 | JavaScript/Tauri patch archives | `runtime/{node,bun,electron,tauri}/releases/2.4.0+c2f53117-7718ce6/` |
 | npm | `coakka-v2-connector-{node,bun,electron}@2.4.1` |
 | PyPI | `coakka-v2-connector`, exact `2.4.0` |
-| NuGet | `CoAkka.Runtime`, exact `2.4.1` |
+| NuGet | `CoAkka.Runtime`, exact `2.5.0` |
 | Go module | `github.com/phuong-tran/coakka-runtime-go@v1.8.0` |
 | SwiftPM | `https://github.com/phuong-tran/coakka-runtime-swift.git`, exact `2.5.0` |
 | coakka-client | `coakka-tools/coakka-client/releases/2.4.0+c2f53117/` |

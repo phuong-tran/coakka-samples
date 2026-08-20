@@ -30,7 +30,7 @@ bash run.sh runtime csharp basic
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=1.4.1 git=<git>
+coakka_runtime_info abi=1 version=2.5.0 git=4b65d0b2
 coakka_runtime_config system=csharp-runtime-sample node=csharp-runtime-sample-node generation=1 routes=1 state=Started
 coakka_runtime_response payload=hello Ada
 coakka_runtime_client_stats delivered=1 matchedResponses=1 matchedDeadletters=1

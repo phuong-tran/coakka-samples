@@ -107,15 +107,15 @@ published and clean-install verified coordinates are:
 | --- | --- | --- |
 | npm | `coakka-v2-connector-{node,bun,electron}@2.4.1` | `2.4.0+c2f53117` |
 | PyPI | `coakka-v2-connector==2.4.0` | `2.4.0+c2f53117` |
-| NuGet | `CoAkka.Runtime==2.4.1` | `2.4.0+c2f53117` |
+| NuGet | `CoAkka.Runtime==2.5.0` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 | Go modules | `github.com/phuong-tran/coakka-runtime-go@v1.8.0` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 | SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v2.5.0` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 
-npm `2.4.1`, PyPI `2.4.0`, NuGet `2.4.1`, Go `v1.8.0`, and Swift `v2.5.0`
+npm `2.4.1`, PyPI `2.4.0`, NuGet `2.5.0`, Go `v1.8.0`, and Swift `v2.5.0`
 expose File Lane and Stream Lane. Select an exact coordinate whose release
 receipt records the required native generation.
 
-NuGet Runtime `2.4.1` and Logger `1.2.3` each expose one `lib/net8.0` managed
+NuGet Runtime `2.5.0` and Logger `1.2.3` each expose one `lib/net8.0` managed
 asset and five native RID assets. The same repository-signed packages execute
 their consumer smokes on .NET 8, 9, and 10; `net8.0` is the minimum supported
 application target, while newer hosts are compatibility targets rather than
