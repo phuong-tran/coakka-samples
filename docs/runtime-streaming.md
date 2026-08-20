@@ -117,13 +117,14 @@ blocking pressure waits. This is an additive host-observation contract; it
 does not change stream wire version 1 or move source, codec, relay, and sink
 policy into CoAkka.
 
-Exact candidate generation
+Exact released generation
 `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` contains the public Stream
 Lane header, pressure snapshots and waits, plus the additive native owner-grant
-symbols. It is not a published coordinate until coordinated promotion.
-Connector archives pair it with their recorded connector source checkpoint,
-but their typed APIs remain on the Simple Stream Lane profile. Dynamic native
-consumers must feature-detect optional owner-grant symbols.
+symbols. It is published through Runtime `2.5.0` on npm, PyPI, and NuGet,
+Runtime Go `v1.8.0`, and SwiftPM `v2.5.0`. Maven Central Runtime remains at
+`2.4.1`, and the promoted standalone native artifact pointer remains deferred.
+Published typed connector APIs remain on the Simple Stream Lane profile.
+Dynamic native consumers must feature-detect optional owner-grant symbols.
 
 Direct TCP, TLS, and mutual TLS use the same security profiles as the file
 lane. The release gate includes a standalone C11 roundtrip built only against
@@ -178,9 +179,9 @@ sequenceDiagram
 When the publisher target has multiple replicas, the prepared source callback
 and session state belong to the exact replica that admitted the session. The
 Simple API remains supported when one stable publisher owns the endpoint or the
-application already pins it. The additive Owner-aware native API in the sealed
-`2.5.0` candidate returns the exact publisher endpoint. Do not reconnect either
-profile through a replica-load-balancing Service address.
+application already pins it. The additive Owner-aware native API in released
+generation `2.5.0+4b65d0b2` returns the exact publisher endpoint. Do not
+reconnect either profile through a replica-load-balancing Service address.
 See [Runtime Lane Owner Grants](runtime-lane-owner-grants.md) for its
 availability, Kubernetes addressing, fan-out pressure, and owner-loss contract.
 
@@ -200,8 +201,8 @@ The Owner-aware profile checks
 `coakka_v2_stream_lane_create_owned()`, and subscribes using the fixed-size
 result from `coakka_v2_stream_lane_prepare_publish_grant()`. Its first valid
 `OPEN` consumes the grant; reconnect after admission requires a fresh prepare
-and grant. Only the native C `2.5.0` candidate exposes this profile today;
-typed high-level connector APIs remain Simple.
+and grant. The released native C `2.5.0` generation exposes this profile;
+published typed high-level connector APIs remain Simple.
 
 ## Service A To Service B Connector Example
 

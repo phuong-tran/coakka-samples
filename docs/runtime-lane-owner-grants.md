@@ -1,10 +1,10 @@
 # Runtime Lane Owner Grants
 
-> **Release-candidate status:** the additive native C ABI is sealed in exact
-> candidate `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. It is not a
-> published coordinate until the coordinated release moves tags, registries,
-> and public `current` pointers. Released high-level connectors do not yet
-> project typed owner grants.
+> **Release status:** the additive native C ABI is released in exact generation
+> `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` through Runtime npm,
+> PyPI, NuGet, Go, and Swift packages. Maven Central Runtime and the promoted
+> standalone native artifact pointer remain deferred. Released high-level
+> connectors do not yet project typed owner grants.
 
 Runtime messages and lane sessions have different ownership laws:
 
@@ -39,9 +39,9 @@ Availability is explicit:
 
 | Surface | Simple | Owner-aware |
 | --- | --- | --- |
-| Native C candidate `2.5.0+4b65d0b2` | Yes | Yes, feature-gated by `COAKKA_V2_RUNTIME_FEATURE_LANE_OWNER_GRANTS` |
-| Candidate JVM, Node, Bun, Electron, Python, Go, C#, Rust, Swift, Mojo, Zig, and Tauri typed APIs | Yes | Not yet projected as a typed connector API |
-| Currently published pre-`2.5.0` coordinates | Yes where their lane version supports it | No |
+| Native C generation `2.5.0+4b65d0b2` | Yes | Yes, feature-gated by `COAKKA_V2_RUNTIME_FEATURE_LANE_OWNER_GRANTS` |
+| Published Runtime npm `2.5.0`, PyPI `2.5.0`, NuGet `2.5.0`, Go `v1.8.0`, and SwiftPM `v2.5.0` typed APIs | Yes | Not yet projected as a typed connector API |
+| Maven Central Runtime `2.4.1` | Yes where supported by that version | No; Runtime `2.5.0` has not been published there |
 
 Do not reach around a connector's public API to resolve embedded native symbols.
 Use Owner-aware through the native C package until a connector explicitly
@@ -74,7 +74,7 @@ orchestration label; it is not carried in the File Offer or Stream Open and is
 not cryptographically authenticated by the lane handshake. TLS authenticates
 the advertised host, not this label. Use a unique incarnation identity and a
 fresh unpredictable application token after owner loss. An authenticated owner
-generation or a wire-v2 owner binding is not part of this source candidate.
+generation or a wire-v2 owner binding is not part of Runtime `2.5.0`.
 
 ## Native C ABI
 

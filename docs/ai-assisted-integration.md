@@ -94,17 +94,18 @@ Generated File Lane code must include:
 
 Select the API profile deliberately. Generate the supported Simple API for a
 single stable receiver or application-pinned endpoint. Generate the native C
-Owner-aware API only when the exact `2.5.0` candidate is selected, the runtime
-reports `COAKKA_V2_RUNTIME_FEATURE_LANE_OWNER_GRANTS`, and replica/process
-pinning is an actual deployment requirement. Do not invent owner-grant methods
-for high-level connectors that have not published a typed projection.
+Owner-aware API only when exact native generation `2.5.0+4b65d0b2` is selected,
+the runtime reports `COAKKA_V2_RUNTIME_FEATURE_LANE_OWNER_GRANTS`, and
+replica/process pinning is an actual deployment requirement. Do not invent
+owner-grant methods for high-level connectors that have not published a typed
+projection.
 
 ### Stream Lane
 
 Stream Lane is an official runtime contract beginning with the 2.2 source
-line. The sealed native `2.5.0+4b65d0b2` candidate adds owner-aware grant
-projection without removing the Simple API. It is not a published coordinate
-until coordinated promotion.
+line. Released native generation `2.5.0+4b65d0b2` adds owner-aware grant
+projection without removing the Simple API. Runtime npm, PyPI, NuGet, Go, and
+Swift packages carry that generation; Maven Central Runtime remains at `2.4.1`.
 
 A coding agent must select one exact current coordinate from
 [Current Packages](current-packages.md), preserve its recorded native and

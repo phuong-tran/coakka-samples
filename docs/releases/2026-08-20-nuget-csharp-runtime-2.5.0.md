@@ -33,3 +33,11 @@ Connector material is Apache-2.0. Bundled CoAkka native files retain the CoAkka
 Public Artifact License 1.1. `PACKAGE-LICENSE.md` maps the terms by file scope,
 and `NOTICE` summarizes the aggregate. Publisher signing remains absent; the
 downloaded public package carries the NuGet.org repository signature.
+
+NuGet's generated `License Info` endpoint for `2.5.0` returns `200` and renders
+the packaged `PACKAGE-LICENSE.md`. The package README only names `LICENSE`,
+`NATIVE-LICENSE.md`, `PACKAGE-LICENSE.md`, and `NOTICE` as code, so it does not
+provide dead relative links, but it also does not provide direct public links
+to the Apache and native terms. Later package READMEs use the absolute links
+defined by [Runtime Package Licensing](../package-licensing.md), and the NuGet
+gate requires them before publication.
