@@ -7,6 +7,10 @@ and checksums live in the versioned
 
 ## 2026-08-20
 
+- Advanced npm, PyPI, and NuGet Runtime samples to registry-verified `2.5.1`
+  from connector source `11c1555`. The package-only patch keeps native
+  generation `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` unchanged;
+  Node.js, Bun, Electron, Python, and C# public-registry consumers pass.
 - Advanced Python runtime samples to registry-verified
   `coakka-v2-connector==2.5.0` over exact native generation
   `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. The public wheel is

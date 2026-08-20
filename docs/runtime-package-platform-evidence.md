@@ -9,9 +9,10 @@ Current artifact generation:
 
 ```text
 native runtime:   2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a
-connector source: f36c396
+non-JVM source:   11c1555
+JVM source:       f36c396
 payload staging:  eb62ec8
-source artifacts: 2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-f36c396
+non-JVM artifacts: 2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-11c1555
 ```
 
 ## Evidence Terms
@@ -78,17 +79,17 @@ restage did not regenerate them.
 | Surface | Exact artifact coordinate | Native payloads | Current exact-artifact evidence |
 | --- | --- | --- | --- |
 | JVM | `runtime/jvm/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-f36c396/` | All five | Java 8 through current JVM checks, embedded-native verification, packaged runtime smoke, Spring Boot tests, and Quarkus tests pass. |
-| Node.js | `runtime/node/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-f36c396/` | All five | Package metadata, tarball contents, packaged request/reply, File Lane, and Stream Lane execution pass. |
-| Bun | `runtime/bun/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-f36c396/` | All five | Package metadata, tarball contents, request/reply, File Lane, and bounded Stream Lane execution pass. |
-| Electron | `runtime/electron/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-f36c396/` | All five through Node | Packaged main/preload/hidden-renderer execution passes. |
-| Python | `runtime/python/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-6b56a27/` | All five | Wheel readiness, file-scope license metadata, byte-identical PyPI download, and clean registry-installed request/reply execution pass. Candidate File Lane and Stream Lane execution also pass. |
-| Go | `runtime/go/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-f36c396/` | All five | Native payload, package consumer, request/reply, File Lane, and Stream Lane gates pass. |
-| C# | `runtime/csharp/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-f36c396/` | Five RID assets | Warnings-as-errors, NuGet readiness, and packaged .NET 8 execution pass. |
-| Rust | `runtime/rust/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-f36c396/` | All five | Format, Clippy, rustdoc, package readiness, and packaged File/Stream Lane execution pass. |
-| Swift | `runtime/swift/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-f36c396/` | All five | Swift build, native-payload verification, runtime, File Lane, Stream Lane, and source-package gates pass. |
-| Mojo | `runtime/mojo/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-f36c396/` | All five | Strict source/platform gates and native lifecycle, request/reply, File Lane, and Stream Lane checks pass. |
-| Zig | `runtime/zig/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-f36c396/` | All five | Cross-platform compile/link plus native lifecycle, request/reply, File Lane, and Stream Lane gates pass. |
-| Tauri | `runtime/tauri/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-f36c396/` | All five through Rust | Runtime `2.5.0-source` command-source and Tauri v2 host tests pass. |
+| Node.js | `runtime/node/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-11c1555/` | All five | Frozen tarball, registry bytes, request/reply, File Lane, and Stream Lane gates pass. |
+| Bun | `runtime/bun/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-11c1555/` | All five | Frozen tarball, registry bytes, request/reply, File Lane, and bounded Stream Lane gates pass. |
+| Electron | `runtime/electron/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-11c1555/` | All five through Node | Frozen tarball, registry bytes, and main/preload/hidden-renderer execution pass. |
+| Python | `runtime/python/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-11c1555/` | All five | Frozen wheel, file-scope license metadata, byte-identical PyPI download, and clean registry-installed consumers pass. |
+| Go | `runtime/go/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-11c1555/` | All five | Native payload, package consumer, remote-tag request/reply, File Lane, and Stream Lane gates pass. |
+| C# | `runtime/csharp/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-11c1555/` | Five RID assets | Frozen NuGet candidate, repository signature, entry equality, and .NET 8/9/10 consumers pass. |
+| Rust | `runtime/rust/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-11c1555/` | All five | Format, Clippy, rustdoc, package readiness, and packaged File/Stream Lane execution pass. |
+| Swift | `runtime/swift/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-11c1555/` | All five | Swift build, exact payload, remote-tag runtime, File Lane, Stream Lane, and source-package gates pass. |
+| Mojo | `runtime/mojo/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-11c1555/` | All five | Strict source/platform gates and native lifecycle, request/reply, File Lane, and Stream Lane checks pass. |
+| Zig | `runtime/zig/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-11c1555/` | All five | Cross-platform compile/link plus native lifecycle, request/reply, File Lane, and Stream Lane gates pass. |
+| Tauri | `runtime/tauri/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-11c1555/` | All five through Rust | Runtime `2.5.1-source` command-source and Tauri v2 host tests pass. |
 
 Every release directory has a manifest and `SHA256SUMS`. The manifest records
 the five-platform matrix, native source generation, connector source
@@ -115,17 +116,17 @@ published and clean-install verified coordinates are:
 
 | Registry | Current verified coordinate | Bundled native generation |
 | --- | --- | --- |
-| npm | `coakka-v2-connector-{node,bun,electron}@2.5.0` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
-| PyPI | `coakka-v2-connector==2.5.0` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
-| NuGet | `CoAkka.Runtime==2.5.0` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
+| npm | `coakka-v2-connector-{node,bun,electron}@2.5.1` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
+| PyPI | `coakka-v2-connector==2.5.1` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
+| NuGet | `CoAkka.Runtime==2.5.1` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 | Go modules | `github.com/phuong-tran/coakka-runtime-go@v1.8.1` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 | SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v2.5.1` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 
-npm `2.5.0`, PyPI `2.5.0`, NuGet `2.5.0`, Go `v1.8.1`, and Swift `v2.5.1`
+npm `2.5.1`, PyPI `2.5.1`, NuGet `2.5.1`, Go `v1.8.1`, and Swift `v2.5.1`
 expose File Lane and Stream Lane. Select an exact coordinate whose release
 receipt records the required native generation.
 
-NuGet Runtime `2.5.0` and Logger `1.2.3` each expose one `lib/net8.0` managed
+NuGet Runtime `2.5.1` and Logger `1.2.3` each expose one `lib/net8.0` managed
 asset and five native RID assets. The same repository-signed packages execute
 their consumer smokes on .NET 8, 9, and 10; `net8.0` is the minimum supported
 application target, while newer hosts are compatibility targets rather than

@@ -23,6 +23,6 @@ cp "${script_dir}/main.mjs" "${tmp_dir}/main.mjs"
 (
   cd "${tmp_dir}"
   bun init -y >/dev/null
-  bun add coakka-v2-connector-bun@2.5.0 >/dev/null
+  bun add coakka-v2-connector-bun@2.5.1 >/dev/null
   bun main.mjs
 )

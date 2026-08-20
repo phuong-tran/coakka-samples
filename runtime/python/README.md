@@ -1,9 +1,9 @@
 # Python Runtime Samples
 
 Python runtime samples document the `coakka_v2_connector` package shape. This
-runtime lane consumes `coakka-v2-connector==2.5.0` from PyPI, built against
+runtime lane consumes `coakka-v2-connector==2.5.1` from PyPI, built against
 native runtime generation `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`
-from connector source `6b56a27`.
+from connector source `11c1555`.
 
 ## Run
 
@@ -28,7 +28,7 @@ venv on exit so the user's global Python installation is not modified.
 Install the package through your normal packaging path:
 
 ```sh
-python -m pip install coakka-v2-connector==2.5.0
+python -m pip install coakka-v2-connector==2.5.1
 ```
 
 The samples install that PyPI package into a disposable venv and remove the
