@@ -19,7 +19,7 @@ flowchart LR
     A -->|"size, SHA-256,<br/>business identity"| C
     C -->|"authorize and choose destination"| B
     B -->|"prepareReceive"| L
-    B -->|"transfer ID, one-use token,<br/>endpoint"| C
+    B -->|"transfer ID, transfer-scoped token,<br/>endpoint"| C
     C -->|"transfer grant"| A
     A ==>|"submitSend"| L
     L ==>|"verify and atomically publish"| D
@@ -49,8 +49,9 @@ or replacement for application authorization.
 
 1. The application authorizes the operation and computes the source file's
    exact size and SHA-256 digest.
-2. It creates a unique transfer ID and a cryptographically strong, single-use
-   authorization token. Tokens must not be logged.
+2. It creates a unique transfer ID and a cryptographically strong bearer token
+   scoped to that prepared transfer. Tokens must not be logged or reused for a
+   different transfer.
 3. The receiver opens a receiver-capable lane and calls `prepareReceive` with
    the destination path, size, digest, ID, and token.
 4. After the receiver reports its bound port, the sender calls `submitSend`
@@ -90,11 +91,11 @@ Simple uses `coakka_v2_file_lane_create()` and
 `COAKKA_V2_RUNTIME_FEATURE_LANE_OWNER_GRANTS`, uses
 `coakka_v2_file_lane_create_owned()` and
 `coakka_v2_file_lane_prepare_receive_grant()`, then submits from the returned
-fixed-size projection. The released native C `2.5.0` generation exposes the
-Owner-aware profile. Typed high-level connector APIs remain Simple until a
-connector explicitly documents an Owner-aware projection. Select an exact
-published coordinate from [Current Packages](current-packages.md); availability
-does not belong to this long-lived protocol contract.
+fixed-size projection. Typed connectors carrying the corrective `2.5.2` source
+train expose equivalent `openOwned`, `prepareReceiveGrant`, and grant-to-send
+helpers; naming follows each language. Select an exact published coordinate
+from [Current Packages](current-packages.md). Do not attach these typed APIs to
+an older package merely because it carries the same native generation.
 
 ## Service A To Service B Connector Example
 
@@ -119,7 +120,7 @@ sequenceDiagram
     API->>B: Authorize and choose destination
     B->>L: prepareReceive(id, token, destination, size, digest)
     B-->>API: Transfer grant and bound endpoint
-    API-->>A: ID, one-use token, endpoint, expected identity
+    API-->>A: ID, transfer-scoped token, endpoint, expected identity
     A->>L: submitSend(grant, source)
     L->>B: Resume from receiver committed offset
     L->>B: Bounded file bytes
@@ -129,7 +130,8 @@ sequenceDiagram
 ```
 
 These are the control-plane values exchanged between the services. The token
-is a secret, single-use capability and must not be logged.
+is a secret capability for one prepared transfer identity and must not be
+logged or reused for another transfer.
 
 ```kotlin
 data class PrepareFileRequest(
@@ -234,7 +236,7 @@ fun prepareUploadEndpoint(
 ### Service A: Request A Grant And Send
 
 Service A hashes the exact source, asks Service B to prepare that identity, and
-uses the returned endpoint and one-use token. It observes its own sender result;
+uses the returned endpoint and transfer-scoped token. It observes its own sender result;
 this does not replace Service B's receiver result.
 
 ```kotlin
@@ -319,9 +321,9 @@ or expose the token to a browser, renderer, or WebView.
 
 File-lane credentials are startup configuration. Protect private-key files
 with operating-system permissions and rotate them by creating a new lane with a
-new credential generation. The one-use transfer token remains necessary even
+new credential generation. The transfer-scoped token remains necessary even
 with TLS or mutual TLS because it authorizes one prepared transfer; it is not a
-user session or a long-lived bearer credential.
+user session or a general-purpose bearer credential.
 
 ## Bounded Operation
 
@@ -340,7 +342,7 @@ verified offset. The transfer ID, size, digest, destination, and authorization
 must still match. A changed source is rejected rather than resumed as if it
 were the original file.
 
-The File grant token therefore is not a one-use Stream token. It remains a
+The File grant token therefore is not a single-admission Stream token. It remains a
 bearer capability for bounded resume and idempotent completed-status handling
 while the receiver retains the owning transfer record. Forgetting the record,
 stopping the lane, or replacing the owner requires a new prepare and fresh
@@ -372,5 +374,5 @@ public compatibility matrix. Source-level evidence is not a published artifact
 claim.
 
 This document is projected identically from the CoAkka documentation authority.
-Connector READMEs link to its public `coakka-publish` copy for connector-specific
+Connector READMEs link to its public `coakka-samples` copy for connector-specific
 entry points and blocking behavior.

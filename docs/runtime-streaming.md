@@ -121,9 +121,11 @@ Exact released generation
 `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` contains the public Stream
 Lane header, pressure snapshots and waits, plus the additive native owner-grant
 symbols. Package availability is recorded separately in
-[Current Packages](current-packages.md). Published typed connector APIs remain
-on the Simple Stream Lane profile.
-Dynamic native consumers must feature-detect optional owner-grant symbols.
+[Current Packages](current-packages.md). Typed owner-aware connector APIs begin
+in the corrective connector `2.5.2` source train; older connectors carrying the
+same native generation remain on their previously published surface. Dynamic
+native consumers and connectors must feature-detect optional owner-grant
+symbols.
 
 Direct TCP, TLS, and mutual TLS use the same security profiles as the file
 lane. The release gate includes a standalone C11 roundtrip built only against
@@ -178,8 +180,9 @@ sequenceDiagram
 When the publisher target has multiple replicas, the prepared source callback
 and session state belong to the exact replica that admitted the session. The
 Simple API remains supported when one stable publisher owns the endpoint or the
-application already pins it. The additive Owner-aware native API in released
-generation `2.5.0+4b65d0b2` returns the exact publisher endpoint. Do not
+application already pins it. The Owner-aware API in connector train `2.5.2`
+over native generation `2.5.0+4b65d0b2` returns the exact publisher endpoint.
+Do not
 reconnect either profile through a replica-load-balancing Service address.
 See [Runtime Lane Owner Grants](runtime-lane-owner-grants.md) for its
 availability, Kubernetes addressing, fan-out pressure, and owner-loss contract.
@@ -200,8 +203,10 @@ The Owner-aware profile checks
 `coakka_v2_stream_lane_create_owned()`, and subscribes using the fixed-size
 result from `coakka_v2_stream_lane_prepare_publish_grant()`. Its first valid
 `OPEN` consumes the grant; reconnect after admission requires a fresh prepare
-and grant. The released native C `2.5.0` generation exposes this profile;
-published typed high-level connector APIs remain Simple.
+and grant. The released native C `2.5.0` generation exposes the underlying
+profile, and typed connectors in the corrective `2.5.2` train project it using
+the host-language names listed in
+[Runtime Lane Owner Grants](runtime-lane-owner-grants.md).
 
 ## Service A To Service B Connector Example
 

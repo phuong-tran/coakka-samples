@@ -11,7 +11,7 @@ flowchart LR
     Registry["Pinned SFTP source"] -->|"SFTP + host-key pin"| Addon["Service A: SFTP addon"]
     Addon -->|"size + SHA-256"| Stage["No-clobber staging"]
     Stage -->|"sendFile semantics"| Sender["Service A: sender File Lane"]
-    Sender -->|"one-use transfer grant"| Receiver["Service B: receiver File Lane"]
+    Sender -->|"transfer-scoped grant"| Receiver["Service B: receiver File Lane"]
     Receiver --> Model["Verified model file"]
 ```
 
@@ -22,7 +22,7 @@ flowchart LR
 | Service A app host | Credentials, pinned host identity, expected artifact metadata, target grants, retry/rollout policy, and lifecycle. |
 | SFTP addon | Bounded acquisition, integrity verification, safe staging, File Lane submission, and aggregate terminal projection. |
 | CoAkka Runtime | File Lane admission, transport, receiver verification, terminal state, and diagnostics. |
-| Service B app host | Destination policy, one-use receive authorization, receiver lifecycle, and post-transfer activation. |
+| Service B app host | Destination policy, transfer-scoped receive authorization, receiver lifecycle, and post-transfer activation. |
 
 The sample uses two native C11 processes and the public C contracts only:
 

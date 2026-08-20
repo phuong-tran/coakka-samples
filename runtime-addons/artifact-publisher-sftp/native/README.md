@@ -102,7 +102,7 @@ only for synchronous admission; the addon copies accepted request data into
 bounded owned state. The host retains and then explicitly forgets terminal job
 records.
 
-Service B prepares an exact transfer ID, one-use token, size, digest, and
+Service B prepares an exact transfer ID, transfer-scoped token, size, digest, and
 destination before it announces readiness. It verifies the terminal snapshot
 and hashes the destination again before forgetting the receive record. Both
 processes use bounded capacities and bounded monotonic waits; neither polls with

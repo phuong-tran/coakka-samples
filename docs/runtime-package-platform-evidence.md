@@ -138,7 +138,7 @@ Generated integrations must preserve the complete workflow:
 
 1. Service B authorizes the operation, chooses the destination, and prepares
    the receiver.
-2. Service A receives a one-use transfer grant, hashes the source, and submits
+2. Service A receives a transfer-scoped grant, hashes the source, and submits
    the sender job.
 3. Both sides wait through the notification API instead of busy-polling.
 4. Service B uses the file only after receiver `COMPLETED + OK` and digest
