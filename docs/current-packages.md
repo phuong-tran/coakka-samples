@@ -90,19 +90,19 @@ The current source coordinates are
 `github.com/phuong-tran/coakka-runtime-swift@v2.5.0`. Go remains on semantic
 major `v1` because its established module path does not carry a `/v2` suffix.
 
-## Runtime 2.5.0 Internal And Source-Package Entrypoints
+## Runtime 2.4.0 Artifact And Current Source-Package Entrypoints
 
 | Surface | Exact coordinate |
 | --- | --- |
-| Native C ABI | `runtime/native/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a/coakka-runtime-native-v2-2.5.0.tar.gz` |
-| JVM and connector archives | `runtime/<lane>/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-f36c396/` |
+| Native C ABI | `runtime/native/releases/2.4.0+c2f53117/coakka-runtime-native-v2-2.4.0.tar.gz` |
+| JVM and connector archives | `runtime/<lane>/releases/2.4.0+c2f53117-0afb5e9/` |
 | npm | `coakka-v2-connector-{node,bun,electron}@2.4.1` |
 | PyPI | `coakka-v2-connector`, exact `2.4.0` |
 | NuGet | `CoAkka.Runtime`, exact `2.4.1` |
 | Go module | `github.com/phuong-tran/coakka-runtime-go@v1.8.0` |
 | SwiftPM | `https://github.com/phuong-tran/coakka-runtime-swift.git`, exact `2.5.0` |
-| coakka-client | `coakka-tools/coakka-client/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a/` |
-| coakka-runtime-inspect | `coakka-tools/coakka-runtime-inspect/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a/` |
+| coakka-client | `coakka-tools/coakka-client/releases/2.4.0+c2f53117/` |
+| coakka-runtime-inspect | `coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/` |
 
 ## Main Public Repositories
 
