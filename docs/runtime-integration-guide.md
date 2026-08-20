@@ -279,13 +279,6 @@ resolve the service name. The second shape gives the route snapshot direct
 visibility into each replica. Neither shape requires the application image to
 know pod hostnames ahead of time.
 
-The Service-DNS shape is appropriate for ordinary Runtime messages, where any
-eligible replica may handle one correlated request. File Lane and Stream Lane
-are different after a replica prepares local transfer/session state: the
-returned lane grant must advertise that exact owner, not the load-balancing
-Service endpoint. See
-[Runtime Lane Owner Grants](runtime-lane-owner-grants.md).
-
 For container and Kubernetes examples, see
 [Containerized Runtime Notes](containerized-runtime.md).
 

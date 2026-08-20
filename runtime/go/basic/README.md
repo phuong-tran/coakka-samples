@@ -27,7 +27,7 @@ bash run.sh runtime go basic
 Expected output shape:
 
 ```text
-coakka_runtime_info abi=1 version=2.5.0 git=4b65d0b2
+coakka_runtime_info abi=1 version=2.1.0 git=60ddf70d
 coakka_runtime_response payload={"echo":"hello-runtime-go"}
 coakka_runtime_stats generation=1 routes=1 delivered=1 matchedResponses=1
 ```

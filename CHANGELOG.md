@@ -5,21 +5,8 @@ surface. It is not a repository release ledger. Artifact versions, manifests,
 and checksums live in the versioned
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) warehouse.
 
-## 2026-08-20
-
-- Advanced the Go runtime basic/deadletter samples to `v1.8.0` and the Swift
-  runtime basic sample to exact `2.5.0`. Clean consumers resolve both remote
-  tags, load native generation
-  `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`, and complete their expected
-  request/reply or deadletter paths on macOS ARM64.
-
 ## 2026-08-18
 
-- Retargeted the native C/C++ sample front door to five-platform Runtime
-  candidate `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. File Lane and
-  Stream Lane owner grants are available through the additive native C ABI;
-  registry-backed high-level samples remain on their published 2.4.x
-  coordinates until their own package trains are promoted.
 - Advanced Node.js, Bun, and Electron samples to registry-verified Runtime
   `2.4.1` and Logger `1.2.7`, with Node.js 22, Bun 1.2.0, and Electron 42
   minimum hosts. Clean public-registry request/reply, emit/drain, and Electron
