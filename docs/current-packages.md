@@ -26,6 +26,11 @@ without changing either native generation. npm, PyPI, Go, and Swift packages
 use the separately listed coordinates; version numbers remain independent by
 channel.
 
+Go `v1.8.0` and SwiftPM `v2.5.0` independently embed sealed native generation
+`2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. This scoped source-package
+release does not advance Maven Central, npm, PyPI, NuGet, or the promoted
+repository artifact mirror.
+
 For exact package contents, matching-host execution, and known platform gaps,
 use [Runtime Package And Platform Evidence](runtime-package-platform-evidence.md).
 
@@ -69,8 +74,8 @@ complete matrix with `bash run.sh runtime-addons all published`.
 | npm (Bun) | [`coakka-v2-connector-bun` 2.4.1](https://www.npmjs.com/package/coakka-v2-connector-bun/v/2.4.1) | [`coakka-logger-bun` 1.2.7](https://www.npmjs.com/package/coakka-logger-bun/v/1.2.7) | `bash run.sh runtime bun basic` |
 | npm (Electron) | [`coakka-v2-connector-electron` 2.4.1](https://www.npmjs.com/package/coakka-v2-connector-electron/v/2.4.1) | [`coakka-logger-electron` 1.2.7](https://www.npmjs.com/package/coakka-logger-electron/v/1.2.7) | `bash run.sh runtime electron basic` |
 | PyPI | [`coakka-v2-connector` 2.4.0](https://pypi.org/project/coakka-v2-connector/2.4.0/) | [`coakka-logger` 1.2.2](https://pypi.org/project/coakka-logger/1.2.2/) | `bash run.sh runtime python basic` |
-| Go modules | [`coakka-runtime-go` v1.7.1](https://github.com/phuong-tran/coakka-runtime-go/tree/v1.7.1) | [`coakka-logger-go` v1.2.6](https://pkg.go.dev/github.com/phuong-tran/coakka-logger-go@v1.2.6) | `bash run.sh runtime go basic` |
-| SwiftPM | [`coakka-runtime-swift` v2.4.1](https://github.com/phuong-tran/coakka-runtime-swift/tree/v2.4.1) | [`coakka-logger-swift` v1.2.2](https://github.com/phuong-tran/coakka-logger-swift/releases/tag/v1.2.2) | `bash run.sh runtime swift basic` |
+| Go modules | [`coakka-runtime-go` v1.8.0](https://github.com/phuong-tran/coakka-runtime-go/tree/v1.8.0) | [`coakka-logger-go` v1.2.6](https://pkg.go.dev/github.com/phuong-tran/coakka-logger-go@v1.2.6) | `bash run.sh runtime go basic` |
+| SwiftPM | [`coakka-runtime-swift` v2.5.0](https://github.com/phuong-tran/coakka-runtime-swift/tree/v2.5.0) | [`coakka-logger-swift` v1.2.2](https://github.com/phuong-tran/coakka-logger-swift/releases/tag/v1.2.2) | `bash run.sh runtime swift basic` |
 
 Java 17 app hosts can use the independently versioned Maven Central framework
 adapters: [`spring-boot-starter`
@@ -81,25 +86,21 @@ Both depend on public Runtime `2.4.1`; applications select their own verified
 Spring Boot or Quarkus platform line.
 
 The current source coordinates are
-`github.com/phuong-tran/coakka-runtime-go@v1.7.1` and
-`github.com/phuong-tran/coakka-runtime-swift@v2.4.1`. Go remains on semantic
+`github.com/phuong-tran/coakka-runtime-go@v1.8.0` and
+`github.com/phuong-tran/coakka-runtime-swift@v2.5.0`. Go remains on semantic
 major `v1` because its established module path does not carry a `/v2` suffix.
 
-## Runtime 2.4.0 Artifact Entrypoints
+## Runtime 2.4.0 Artifact And Current Source-Package Entrypoints
 
 | Surface | Exact coordinate |
 | --- | --- |
 | Native C ABI | `runtime/native/releases/2.4.0+c2f53117/coakka-runtime-native-v2-2.4.0.tar.gz` |
-| JVM | `io.github.phuong-tran.coakka:runtime:2.4.1` |
-| Spring Boot | `io.github.phuong-tran.coakka:spring-boot-starter:2.4.1` |
-| Quarkus | `io.github.phuong-tran.coakka:quarkus-extension:2.4.1` |
-| Connector archives | `runtime/<lane>/releases/2.4.0+c2f53117-0afb5e9/` |
-| JavaScript/Tauri patch archives | `runtime/{node,bun,electron,tauri}/releases/2.4.0+c2f53117-7718ce6/` |
+| JVM and connector archives | `runtime/<lane>/releases/2.4.0+c2f53117-0afb5e9/` |
 | npm | `coakka-v2-connector-{node,bun,electron}@2.4.1` |
 | PyPI | `coakka-v2-connector`, exact `2.4.0` |
 | NuGet | `CoAkka.Runtime`, exact `2.4.1` |
-| Go module | `github.com/phuong-tran/coakka-runtime-go@v1.7.1` |
-| SwiftPM | `https://github.com/phuong-tran/coakka-runtime-swift.git`, exact `2.4.1` |
+| Go module | `github.com/phuong-tran/coakka-runtime-go@v1.8.0` |
+| SwiftPM | `https://github.com/phuong-tran/coakka-runtime-swift.git`, exact `2.5.0` |
 | coakka-client | `coakka-tools/coakka-client/releases/2.4.0+c2f53117/` |
 | coakka-runtime-inspect | `coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/` |
 

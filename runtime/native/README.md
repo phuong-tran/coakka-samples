@@ -7,7 +7,7 @@ The native package is not a Maven artifact. On macOS ARM64 and Linux
 ARM64/x86-64, the sample runner resolves:
 
 ```text
-runtime/native/releases/2.4.0+c2f53117/coakka-runtime-native-v2-2.4.0.tar.gz
+runtime/native/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a/coakka-runtime-native-v2-2.5.0.tar.gz
 ```
 
 The same archive contains the exact five-platform matrix; the sample runner
@@ -65,5 +65,5 @@ It links the canonical feature guides, exact package catalog, and platform
 evidence, and it defines when only workflow pseudocode is justified.
 
 The current public package train includes File Lane and Stream Lane. Use the
-exact public contract and lifecycle rules shipped by the `2.4.0` archive when
+exact public contract and lifecycle rules shipped by the `2.5.0` archive when
 integrating either lane.

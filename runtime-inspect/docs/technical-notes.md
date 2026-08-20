@@ -30,15 +30,16 @@ That is intentional until a dedicated remote read/observe adapter exists.
 
 ## Published Archive Status
 
-The current public inspect archive generation is `2.4.0+c2f53117` for all five
+The current public inspect archive generation is `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` for all five
 platforms. The sample runner selects by platform and verifies every
 archive through the same manifest/checksum resolver used by the runtime-client
 lane.
 
-The macOS ARM64 and Linux ARM64/x86-64 archives completed matching-host command
-and `serve` smoke. The Windows ARM64/x86-64 archives passed cross-build, PE
-architecture, dependency, archive, and checksum gates; matching-host Windows
-execution is not recorded for this generation.
+All five archives complete matching-host command execution. macOS ARM64, Linux
+ARM64/x86-64, and Windows x86-64 also complete `serve` smoke. Both Windows
+architectures pass PE architecture, dependency, archive, and checksum gates.
+Windows x86-64 evidence is Core Actions run `32115663861` over exact Publish
+commit `d5cff2a7922470b4b33bd48cac2b472bb75acbc4`.
 
 The browser walkthrough GIF and MP4 were recorded on macOS from the published
 macOS ARM64 inspect archive. The recording used two local native runtime

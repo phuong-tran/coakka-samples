@@ -117,12 +117,13 @@ blocking pressure waits. This is an additive host-observation contract; it
 does not change stream wire version 1 or move source, codec, relay, and sink
 policy into CoAkka.
 
-Exact artifact generation `2.4.0+c2f53117` contains the public Stream Lane
-header, symbols, pressure snapshots, and pressure waits. Connector archives
-must pair that native generation with their recorded connector source
-checkpoint. Registry packages still carrying a 2.1 coordinate predate the
-lane; dynamic connectors must continue to feature-detect before resolving
-optional symbols.
+Exact candidate generation
+`2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` contains the public Stream
+Lane header, pressure snapshots and waits, plus the additive native owner-grant
+symbols. It is not a published coordinate until coordinated promotion.
+Connector archives pair it with their recorded connector source checkpoint,
+but their typed APIs remain on the Simple Stream Lane profile. Dynamic native
+consumers must feature-detect optional owner-grant symbols.
 
 Direct TCP, TLS, and mutual TLS use the same security profiles as the file
 lane. The release gate includes a standalone C11 roundtrip built only against
@@ -161,8 +162,10 @@ sequenceDiagram
 2. Service B authorizes the caller and creates a unique session ID, a
    cryptographically strong short-lived token, and an application-defined
    `format_id`.
-3. Service B calls `coakka_v2_stream_lane_prepare_publish()` with its bounded
-   source callback, then returns the endpoint and grant to Service A.
+3. Service B calls `coakka_v2_stream_lane_prepare_publish()` in the Simple
+   profile, or `coakka_v2_stream_lane_prepare_publish_grant()` on an
+   owner-aware lane, with its bounded source callback. It returns the endpoint
+   capability to Service A.
 4. Service A calls `coakka_v2_stream_lane_subscribe()` with the same identity,
    token, format, maximum frame size, receiver window, and consumer callback.
 5. Service B admits the dedicated connection only when the prepared identity,
@@ -172,9 +175,33 @@ sequenceDiagram
 7. Either host may cancel. Each host waits for its local terminal session
    record, records the outcome, and then forgets that record.
 
+When the publisher target has multiple replicas, the prepared source callback
+and session state belong to the exact replica that admitted the session. The
+Simple API remains supported when one stable publisher owns the endpoint or the
+application already pins it. The additive Owner-aware native API in the sealed
+`2.5.0` candidate returns the exact publisher endpoint. Do not reconnect either
+profile through a replica-load-balancing Service address.
+See [Runtime Lane Owner Grants](runtime-lane-owner-grants.md) for its
+availability, Kubernetes addressing, fan-out pressure, and owner-loss contract.
+
 `PUBLISH` is Service B's local direction. `SUBSCRIBE` is Service A's local
 direction. Protocol v1 prepares one publisher for one subscriber; it does not
 provide fan-out.
+
+## Choose Simple Or Owner-Aware
+
+| Choose | When it is the clearer contract | Runnable C11 profile |
+| --- | --- | --- |
+| Simple | One publisher instance has a stable endpoint, or application control state already keeps session identity, token, format, frame bound, and endpoint together. | `bash run.sh runtime-test stream-lane-simple` |
+| Owner-aware | A prepare command may select one of several replicas, or publisher replacement must invalidate the prior endpoint capability. | `bash run.sh runtime-test stream-lane-owner-aware` |
+
+The Owner-aware profile checks
+`COAKKA_V2_RUNTIME_FEATURE_LANE_OWNER_GRANTS`, creates the publisher with
+`coakka_v2_stream_lane_create_owned()`, and subscribes using the fixed-size
+result from `coakka_v2_stream_lane_prepare_publish_grant()`. Its first valid
+`OPEN` consumes the grant; reconnect after admission requires a fresh prepare
+and grant. Only the native C `2.5.0` candidate exposes this profile today;
+typed high-level connector APIs remain Simple.
 
 ## Service A To Service B Connector Example
 
@@ -465,8 +492,11 @@ subscriber host.
 
 TLS identity is not business authorization. Service B must still prepare a
 unique session and compare its opaque token before invoking the source
-callback. Tokens must not be logged and should expire through application
-policy if the prepared session is never used.
+callback. A valid `OPEN` consumes the prepared Stream token before frame
+delivery; a lost `ACCEPT` or later transport failure requires a new prepare and
+grant. Invalid token, format, frame, or window attempts do not consume it.
+Tokens must not be logged and should expire through application policy if the
+prepared session is never used.
 
 ## Protocol V1 Non-Goals
 
