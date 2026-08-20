@@ -68,6 +68,32 @@ destination. A successful sender result does not replace the receiver result:
 the receiving application must observe its own `COMPLETED + OK` state before
 using the file.
 
+When the receiver target has multiple replicas, the prepared transfer belongs
+to the exact replica that admitted it. The Simple API remains supported for a
+single stable receiver or when the application already pins that receiver's
+endpoint. The additive Owner-aware native API in released generation
+`2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` projects the exact owner
+endpoint into the grant. In either profile, do not
+reconnect through a replica-load-balancing Service address. See
+[Runtime Lane Owner Grants](runtime-lane-owner-grants.md) for its availability,
+Kubernetes addressing, explicit one/all distribution, and owner-loss contract.
+
+## Choose Simple Or Owner-Aware
+
+| Choose | When it is the clearer contract | Runnable C11 profile |
+| --- | --- | --- |
+| Simple | One receiver instance has a stable endpoint, or application control state already keeps the ID, token, endpoint, size, and digest together. | `bash run.sh runtime-test file-lane-simple` |
+| Owner-aware | A prepare command may select one of several replicas, or pod/process replacement must invalidate the prior endpoint capability. | `bash run.sh runtime-test file-lane-owner-aware` |
+
+Simple uses `coakka_v2_file_lane_create()` and
+`coakka_v2_file_lane_prepare_receive()`. Owner-aware feature-detects
+`COAKKA_V2_RUNTIME_FEATURE_LANE_OWNER_GRANTS`, uses
+`coakka_v2_file_lane_create_owned()` and
+`coakka_v2_file_lane_prepare_receive_grant()`, then submits from the returned
+fixed-size projection. The released native C `2.5.0` generation exposes the
+Owner-aware profile. Published npm, PyPI, NuGet, Go, and Swift typed connector
+APIs remain Simple; Maven Central has not yet published Runtime `2.5.0`.
+
 ## Service A To Service B Connector Example
 
 The example uses Kotlin syntax only to make the service workflow concrete.

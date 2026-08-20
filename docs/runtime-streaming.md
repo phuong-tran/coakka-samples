@@ -117,12 +117,14 @@ blocking pressure waits. This is an additive host-observation contract; it
 does not change stream wire version 1 or move source, codec, relay, and sink
 policy into CoAkka.
 
-Exact artifact generation `2.4.0+c2f53117` contains the public Stream Lane
-header, symbols, pressure snapshots, and pressure waits. Connector archives
-must pair that native generation with their recorded connector source
-checkpoint. Registry packages still carrying a 2.1 coordinate predate the
-lane; dynamic connectors must continue to feature-detect before resolving
-optional symbols.
+Exact released generation
+`2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` contains the public Stream
+Lane header, pressure snapshots and waits, plus the additive native owner-grant
+symbols. It is published through Runtime `2.5.0` on npm, PyPI, and NuGet,
+Runtime Go `v1.8.0`, and SwiftPM `v2.5.0`. Maven Central Runtime remains at
+`2.4.1`, and the promoted standalone native artifact pointer remains deferred.
+Published typed connector APIs remain on the Simple Stream Lane profile.
+Dynamic native consumers must feature-detect optional owner-grant symbols.
 
 Direct TCP, TLS, and mutual TLS use the same security profiles as the file
 lane. The release gate includes a standalone C11 roundtrip built only against
@@ -172,9 +174,33 @@ sequenceDiagram
 7. Either host may cancel. Each host waits for its local terminal session
    record, records the outcome, and then forgets that record.
 
+When the publisher target has multiple replicas, the prepared source callback
+and session state belong to the exact replica that admitted the session. The
+Simple API remains supported when one stable publisher owns the endpoint or the
+application already pins it. The additive Owner-aware native API in released
+generation `2.5.0+4b65d0b2` returns the exact publisher endpoint. Do not
+reconnect either profile through a replica-load-balancing Service address.
+See [Runtime Lane Owner Grants](runtime-lane-owner-grants.md) for its
+availability, Kubernetes addressing, fan-out pressure, and owner-loss contract.
+
 `PUBLISH` is Service B's local direction. `SUBSCRIBE` is Service A's local
 direction. Protocol v1 prepares one publisher for one subscriber; it does not
 provide fan-out.
+
+## Choose Simple Or Owner-Aware
+
+| Choose | When it is the clearer contract | Runnable C11 profile |
+| --- | --- | --- |
+| Simple | One publisher instance has a stable endpoint, or application control state already keeps session identity, token, format, frame bound, and endpoint together. | `bash run.sh runtime-test stream-lane-simple` |
+| Owner-aware | A prepare command may select one of several replicas, or publisher replacement must invalidate the prior endpoint capability. | `bash run.sh runtime-test stream-lane-owner-aware` |
+
+The Owner-aware profile checks
+`COAKKA_V2_RUNTIME_FEATURE_LANE_OWNER_GRANTS`, creates the publisher with
+`coakka_v2_stream_lane_create_owned()`, and subscribes using the fixed-size
+result from `coakka_v2_stream_lane_prepare_publish_grant()`. Its first valid
+`OPEN` consumes the grant; reconnect after admission requires a fresh prepare
+and grant. The released native C `2.5.0` generation exposes this profile;
+published typed high-level connector APIs remain Simple.
 
 ## Service A To Service B Connector Example
 

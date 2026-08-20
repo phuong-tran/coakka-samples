@@ -47,6 +47,16 @@ The packaged README presents `File Lane`, `Stream Lane`, and
 documentation links target `coakka-samples/docs`; intentional package,
 artifact, checksum, and release-evidence links target `coakka-publish`.
 
+## Known README Link Defect
+
+The `2.5.0` README License section links to `LICENSE`, `NATIVE-LICENSE.md`,
+`PACKAGE-LICENSE.md`, and `NOTICE` using relative paths. npm does not expose
+tarball members at those README-relative URLs, so the rendered links fail even
+though all four files are present in each published tarball. npm packages are
+immutable; the connector source and package gates require absolute public
+license links for the next release. See
+[Runtime Package Licensing](../package-licensing.md).
+
 ## Verification
 
 - Node.js 24.13.0 and npm 11.6.2 package build, tests, tarball surface, and
@@ -58,9 +68,11 @@ artifact, checksum, and release-evidence links target `coakka-publish`.
   macOS ARM64.
 - Registry version, license, dependency, dist-tag, SHA-1, integrity, and exact
   tarball-byte checks pass for all three coordinates.
-- Candidate verification rejects missing package-license files, stale license
-  metadata, private source metadata, install lifecycle scripts, transport
-  codec leaks, invalid native matrices, and macOS deployment-target drift.
+- Candidate verification at publication rejected missing package-license files
+  and stale metadata, but did not model registry resolution of README-relative
+  links. The corrected gate rejects relative registry License links in
+  addition to private metadata, install lifecycle scripts, transport codec
+  leaks, invalid native matrices, and macOS deployment-target drift.
 
 This publication reuses the sealed native payload matrix and its earlier
 matching-host evidence. The release-day registry execution above is macOS

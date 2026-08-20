@@ -30,13 +30,25 @@ The wheel carries Apache `LICENSE` for connector material,
 file-scope map, and `NOTICE`. These are simultaneous file-scoped terms rather
 than alternative package-wide licenses.
 
+## Known README Link Defect
+
+The `2.5.0` project description links those four embedded files using relative
+paths. PyPI resolves them below the project page, where they return `404`;
+the wheel itself still contains the verified license bytes and metadata above.
+PyPI release files are immutable, so corrected absolute links require a later
+package release. The connector source and readiness gate now reject relative
+registry License links. See
+[Runtime Package Licensing](../package-licensing.md).
+
 ## Verification
 
 - The dependency-local package suite passes 33 tests, 9 platform skips, and 4
   subtests on macOS ARM64.
 - Wheel metadata, the exact five-platform native matrix, native digests,
-  package README links, File Lane, Stream Lane, and license files pass the
-  PyPI readiness gate and `twine check`.
+  non-License documentation links, File Lane, Stream Lane, and embedded
+  license files passed the publication gate and `twine check`. The gate did
+  not model PyPI resolution of README-relative License links; that omission is
+  corrected for later packages.
 - A disposable environment installs exact `coakka-v2-connector==2.5.0` from
   `https://pypi.org/simple`, loads native runtime `2.5.0` at git
   `4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`, and completes request/reply.
