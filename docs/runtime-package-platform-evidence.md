@@ -81,7 +81,7 @@ restage did not regenerate them.
 | Node.js | `runtime/node/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-f36c396/` | All five | Package metadata, tarball contents, packaged request/reply, File Lane, and Stream Lane execution pass. |
 | Bun | `runtime/bun/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-f36c396/` | All five | Package metadata, tarball contents, request/reply, File Lane, and bounded Stream Lane execution pass. |
 | Electron | `runtime/electron/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-f36c396/` | All five through Node | Packaged main/preload/hidden-renderer execution passes. |
-| Python | `runtime/python/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-f36c396/` | All five | Wheel readiness and installed-wheel request/reply, File Lane, and Stream Lane execution pass. |
+| Python | `runtime/python/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-6b56a27/` | All five | Wheel readiness, file-scope license metadata, byte-identical PyPI download, and clean registry-installed request/reply execution pass. Candidate File Lane and Stream Lane execution also pass. |
 | Go | `runtime/go/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-f36c396/` | All five | Native payload, package consumer, request/reply, File Lane, and Stream Lane gates pass. |
 | C# | `runtime/csharp/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-f36c396/` | Five RID assets | Warnings-as-errors, NuGet readiness, and packaged .NET 8 execution pass. |
 | Rust | `runtime/rust/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-f36c396/` | All five | Format, Clippy, rustdoc, package readiness, and packaged File/Stream Lane execution pass. |
@@ -116,12 +116,12 @@ published and clean-install verified coordinates are:
 | Registry | Current verified coordinate | Bundled native generation |
 | --- | --- | --- |
 | npm | `coakka-v2-connector-{node,bun,electron}@2.5.0` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
-| PyPI | `coakka-v2-connector==2.4.0` | `2.4.0+c2f53117` |
+| PyPI | `coakka-v2-connector==2.5.0` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 | NuGet | `CoAkka.Runtime==2.5.0` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 | Go modules | `github.com/phuong-tran/coakka-runtime-go@v1.8.0` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 | SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v2.5.0` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 
-npm `2.5.0`, PyPI `2.4.0`, NuGet `2.5.0`, Go `v1.8.0`, and Swift `v2.5.0`
+npm `2.5.0`, PyPI `2.5.0`, NuGet `2.5.0`, Go `v1.8.0`, and Swift `v2.5.0`
 expose File Lane and Stream Lane. Select an exact coordinate whose release
 receipt records the required native generation.
 
