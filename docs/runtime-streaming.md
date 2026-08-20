@@ -163,8 +163,10 @@ sequenceDiagram
 2. Service B authorizes the caller and creates a unique session ID, a
    cryptographically strong short-lived token, and an application-defined
    `format_id`.
-3. Service B calls `coakka_v2_stream_lane_prepare_publish()` with its bounded
-   source callback, then returns the endpoint and grant to Service A.
+3. Service B calls `coakka_v2_stream_lane_prepare_publish()` in the Simple
+   profile, or `coakka_v2_stream_lane_prepare_publish_grant()` on an
+   owner-aware lane, with its bounded source callback. It returns the endpoint
+   capability to Service A.
 4. Service A calls `coakka_v2_stream_lane_subscribe()` with the same identity,
    token, format, maximum frame size, receiver window, and consumer callback.
 5. Service B admits the dedicated connection only when the prepared identity,
@@ -491,8 +493,11 @@ subscriber host.
 
 TLS identity is not business authorization. Service B must still prepare a
 unique session and compare its opaque token before invoking the source
-callback. Tokens must not be logged and should expire through application
-policy if the prepared session is never used.
+callback. A valid `OPEN` consumes the prepared Stream token before frame
+delivery; a lost `ACCEPT` or later transport failure requires a new prepare and
+grant. Invalid token, format, frame, or window attempts do not consume it.
+Tokens must not be logged and should expire through application policy if the
+prepared session is never used.
 
 ## Protocol V1 Non-Goals
 
