@@ -13,7 +13,7 @@ For large immutable files, use the `2.1.0` file lane instead of placing bytes
 inside an `Envelope`. See [Runtime File Transfer](../docs/runtime-file-transfer.md)
 for use cases, the receiver-first workflow, and connector guidance. The
 artifact-backed samples pin the complete `2.4.0+c2f53117` train. Registry-backed
-npm `2.4.1`, PyPI `2.4.0`, and NuGet Runtime `2.4.1` samples consume
+npm `2.5.0`, PyPI `2.4.0`, and NuGet Runtime `2.5.0` samples consume
 published, clean-install verified packages that expose File Lane and Stream
 Lane.
 
@@ -118,13 +118,13 @@ python -m pip install coakka-v2-connector==2.4.0
 Node.js package:
 
 ```sh
-npm install coakka-v2-connector-node@2.4.1
+npm install coakka-v2-connector-node@2.5.0
 ```
 
 Bun package:
 
 ```sh
-bun add coakka-v2-connector-bun@2.4.1
+bun add coakka-v2-connector-bun@2.5.0
 ```
 
 Tauri intent bridge:
@@ -137,7 +137,7 @@ bash run.sh runtime tauri desktop-intent
 Electron intent bridge:
 
 ```sh
-npm install coakka-v2-connector-electron@2.4.1
+npm install coakka-v2-connector-electron@2.5.0
 ```
 
 Bun, Tauri, and Electron validation commands:
@@ -229,7 +229,7 @@ go get github.com/phuong-tran/coakka-runtime-go@v1.8.0
 C# NuGet package:
 
 ```sh
-dotnet add package CoAkka.Runtime --version 2.4.1
+dotnet add package CoAkka.Runtime --version 2.5.0
 ```
 
 Rust currently ships as a published archive package:
