@@ -104,7 +104,7 @@ A coding agent must select one exact current coordinate from
 connector generation, and use the API names from that connector package. It
 must not generate Stream Lane imports against a historical package coordinate
 that still carries a 2.1 generation. npm `2.4.1`, PyPI `2.4.0`, NuGet `2.4.1`,
-Go `v1.7.1`, SwiftPM `v2.4.1`, and their recorded artifact generations expose
+Go `v1.8.0`, SwiftPM `v2.5.0`, and their recorded artifact generations expose
 the lane.
 
 ## Language And Host Boundaries

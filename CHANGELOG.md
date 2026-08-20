@@ -5,6 +5,14 @@ surface. It is not a repository release ledger. Artifact versions, manifests,
 and checksums live in the versioned
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) warehouse.
 
+## 2026-08-20
+
+- Advanced the Go runtime basic/deadletter samples to `v1.8.0` and the Swift
+  runtime basic sample to exact `2.5.0`. Clean consumers resolve both remote
+  tags, load native generation
+  `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`, and complete their expected
+  request/reply or deadletter paths on macOS ARM64.
+
 ## 2026-08-18
 
 - Advanced Node.js, Bun, and Electron samples to registry-verified Runtime
