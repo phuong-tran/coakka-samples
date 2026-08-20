@@ -33,11 +33,11 @@ than alternative package-wide licenses.
 ## Known README Link Defect
 
 The `2.5.0` project description links those four embedded files using relative
-paths. PyPI resolves them below the project page and currently redirects them
-back to that page instead of serving the files. The wheel itself still contains
-the verified license bytes and metadata above. PyPI release files are
-immutable, so corrected absolute links require a later package release. The
-connector source and readiness gate now reject relative registry License links. See
+paths. PyPI resolves those paths as registry pages instead of serving embedded
+wheel files. The wheel itself still contains the verified license bytes and
+metadata above. PyPI release files are immutable, so corrected absolute links
+require a later package release. The connector source and readiness gate now
+reject relative registry License links. See
 [Runtime Package Licensing](../package-licensing.md).
 
 ## Verification
