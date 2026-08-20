@@ -113,7 +113,7 @@ COAKKA_ARTIFACT_ROWS=(
   "runtime addon Dropbox native|runtime-addons/artifact-publisher-dropbox/native/releases/1.1.0+d1032f6d/coakka-runtime-addon-artifact-publisher-dropbox-native-1.1.0.tar.gz"
   "runtime addon SFTP native|runtime-addons/artifact-publisher-sftp/native/releases/1.2.0+88b9a047/coakka-runtime-addon-artifact-publisher-sftp-native-1.2.0.tar.gz"
   "runtime JVM jar|runtime/jvm/releases/2.4.0+c2f53117-0afb5e9/coakka-jvm-native-runtime-v2-2.4.0-gc2f53117-0afb5e9.jar"
-  "runtime Python wheel|runtime/python/releases/2.4.0+c2f53117-0afb5e9/coakka_v2_connector-2.4.0-py3-none-any.whl"
+  "runtime Python wheel|runtime/python/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-6b56a27/coakka_v2_connector-2.5.0-py3-none-any.whl"
   "runtime Node package|runtime/node/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-6b56a27/coakka-v2-connector-node-2.5.0.tgz"
   "runtime Bun package|runtime/bun/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-6b56a27/coakka-v2-connector-bun-2.5.0.tgz"
   "runtime Electron package|runtime/electron/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-6b56a27/coakka-v2-connector-electron-2.5.0.tgz"

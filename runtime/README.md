@@ -13,7 +13,7 @@ For large immutable files, use the `2.1.0` file lane instead of placing bytes
 inside an `Envelope`. See [Runtime File Transfer](../docs/runtime-file-transfer.md)
 for use cases, the receiver-first workflow, and connector guidance. The
 artifact-backed samples pin the complete `2.4.0+c2f53117` train. Registry-backed
-npm `2.5.0`, PyPI `2.4.0`, and NuGet Runtime `2.5.0` samples consume
+npm `2.5.0`, PyPI `2.5.0`, and NuGet Runtime `2.5.0` samples consume
 published, clean-install verified packages that expose File Lane and Stream
 Lane.
 
@@ -112,7 +112,7 @@ dependencies {
 Python wheel:
 
 ```sh
-python -m pip install coakka-v2-connector==2.4.0
+python -m pip install coakka-v2-connector==2.5.0
 ```
 
 Node.js package:

@@ -68,10 +68,10 @@ the inspect archives.
 | Surface | Exact artifact coordinate | Native payloads | Current exact-artifact evidence |
 | --- | --- | --- | --- |
 | JVM | `io.github.phuong-tran.coakka:runtime:2.4.1` | All five | Signed Maven Central bundle validation, clean Java 8 and Java 26 consumers, JVM checks, embedded-native verification, packaged runtime smoke, Spring Boot tests, and Quarkus tests pass on macOS ARM64. |
-| Node.js | `runtime/node/releases/2.4.0+c2f53117-7718ce6/` | All five | npm `2.4.1` registry tarball matches the sealed candidate; clean Node 22 and 24 request/reply consumers pass on macOS ARM64. |
-| Bun | `runtime/bun/releases/2.4.0+c2f53117-7718ce6/` | All five | npm `2.4.1` registry tarball matches the sealed candidate; clean Bun 1.2 and current request/reply consumers pass on macOS ARM64. |
-| Electron | `runtime/electron/releases/2.4.0+c2f53117-7718ce6/` | All five through Node | npm `2.4.1` registry tarball matches the sealed candidate; clean Electron 42 and 43 main/preload intent smokes pass on macOS ARM64. |
-| Python | `runtime/python/releases/2.4.0+c2f53117-0afb5e9/` | All five | Source tests, package readiness, clean local wheel request/reply, and File/Stream Lane tests pass on macOS ARM64. |
+| Node.js | `runtime/node/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-6b56a27/` | All five | npm `2.5.0` registry tarball is byte-identical to the sealed candidate; clean Node.js request/reply passes on macOS ARM64. |
+| Bun | `runtime/bun/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-6b56a27/` | All five | npm `2.5.0` registry tarball is byte-identical to the sealed candidate; clean Bun request/reply passes on macOS ARM64. |
+| Electron | `runtime/electron/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-6b56a27/` | All five through Node | npm `2.5.0` registry tarball is byte-identical to the sealed candidate; Electron 42 main/preload intent smoke passes on macOS ARM64. |
+| Python | `runtime/python/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-6b56a27/` | All five | Wheel readiness, file-scope license metadata, byte-identical PyPI download, and clean registry-installed request/reply execution pass. Candidate File Lane and Stream Lane execution also pass. |
 | Go | `runtime/go/releases/2.4.0+c2f53117-0afb5e9/` | All five | Packaged request/reply, Stream Lane tests, and `go test ./...` pass; public module publication remains separate. |
 | C# | `runtime/csharp/releases/2.4.0+c2f53117-0afb5e9/` | Five RID assets | Package readiness and clean local NuGet request/reply/deadletter execution pass on macOS ARM64. |
 | Rust | `runtime/rust/releases/2.4.0+c2f53117-0afb5e9/` | All five | Package readiness, packaged request/reply/deadletter, and Stream Lane tests pass on macOS ARM64. |
@@ -106,12 +106,12 @@ published and clean-install verified coordinates are:
 | Registry | Current verified coordinate | Bundled native generation |
 | --- | --- | --- |
 | npm | `coakka-v2-connector-{node,bun,electron}@2.5.0` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
-| PyPI | `coakka-v2-connector==2.4.0` | `2.4.0+c2f53117` |
+| PyPI | `coakka-v2-connector==2.5.0` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 | NuGet | `CoAkka.Runtime==2.5.0` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 | Go modules | `github.com/phuong-tran/coakka-runtime-go@v1.8.0` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 | SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v2.5.0` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 
-npm `2.5.0`, PyPI `2.4.0`, NuGet `2.5.0`, Go `v1.8.0`, and Swift `v2.5.0`
+npm `2.5.0`, PyPI `2.5.0`, NuGet `2.5.0`, Go `v1.8.0`, and Swift `v2.5.0`
 expose File Lane and Stream Lane. Select an exact coordinate whose release
 receipt records the required native generation.
 

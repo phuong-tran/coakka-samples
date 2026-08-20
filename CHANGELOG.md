@@ -7,6 +7,11 @@ and checksums live in the versioned
 
 ## 2026-08-20
 
+- Advanced Python runtime samples to registry-verified
+  `coakka-v2-connector==2.5.0` over exact native generation
+  `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. The public wheel is
+  byte-identical to candidate `6b56a27`; basic request/reply, deadletter, and
+  hot-reload samples install from PyPI in disposable environments.
 - Advanced Node.js, Bun, Electron, and Spring Boot-to-Node runtime samples to
   registry-verified npm Runtime `2.5.0` over exact native generation
   `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. Clean Node.js request/reply
