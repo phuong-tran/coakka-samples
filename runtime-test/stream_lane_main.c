@@ -148,11 +148,13 @@ static coakka_v2_stream_session_snapshot_t wait_terminal(
     return snapshot;
 }
 
-int main(void) {
+int main(int argc, char **argv) {
     coakka_v2_runtime_info_t runtime_info;
     coakka_v2_stream_lane_config_t publisher_config;
     coakka_v2_stream_lane_config_t subscriber_config;
+    coakka_v2_stream_lane_owned_config_t owned_publisher_config;
     coakka_v2_stream_publish_spec_t publish;
+    coakka_v2_stream_publish_grant_t publish_grant;
     coakka_v2_stream_subscribe_spec_t subscribe;
     coakka_v2_stream_session_snapshot_t publisher_result;
     coakka_v2_stream_session_snapshot_t subscriber_result;
@@ -167,6 +169,14 @@ int main(void) {
     uint16_t port = 0u;
     uint64_t publisher_observed_updates = 0u;
     uint64_t subscriber_observed_updates = 0u;
+    int owner_aware = 0;
+
+    if (argc == 2 && strcmp(argv[1], "--owner-aware") == 0) {
+        owner_aware = 1;
+    } else if (argc != 1) {
+        fprintf(stderr, "usage: %s [--owner-aware]\n", argv[0]);
+        return 2;
+    }
 
     _Static_assert(COAKKA_V2_STREAM_LANE_WIRE_VERSION == 1u,
                    "stream wire version drifted");
@@ -184,6 +194,10 @@ int main(void) {
     assert(runtime_info.runtime_version[0] != '\0');
     assert((runtime_info.feature_flags &
             COAKKA_V2_RUNTIME_FEATURE_STREAM_LANE) != 0u);
+    if (owner_aware) {
+        assert((runtime_info.feature_flags &
+                COAKKA_V2_RUNTIME_FEATURE_LANE_OWNER_GRANTS) != 0u);
+    }
 
     memset(&publisher_config, 0, sizeof(publisher_config));
     publisher_config.struct_size = sizeof(publisher_config);
@@ -200,8 +214,20 @@ int main(void) {
     subscriber_config.max_window_bytes = kWindowBytes;
     subscriber_config.io_timeout_ms = 3000u;
 
-    assert(coakka_v2_stream_lane_create_ex(&publisher_config, &publisher) ==
-           COAKKA_V2_OK);
+    if (owner_aware) {
+        memset(&owned_publisher_config, 0, sizeof(owned_publisher_config));
+        owned_publisher_config.struct_size = sizeof(owned_publisher_config);
+        owned_publisher_config.lane = publisher_config;
+        owned_publisher_config.owner.struct_size =
+            sizeof(owned_publisher_config.owner);
+        owned_publisher_config.owner.owner_instance_id = "stream-publisher-1";
+        owned_publisher_config.owner.advertised_host = "127.0.0.1";
+        publisher =
+            coakka_v2_stream_lane_create_owned(&owned_publisher_config);
+    } else {
+        assert(coakka_v2_stream_lane_create_ex(&publisher_config, &publisher) ==
+               COAKKA_V2_OK);
+    }
     assert(coakka_v2_stream_lane_create_ex(&subscriber_config, &subscriber) ==
            COAKKA_V2_OK);
     assert(publisher != NULL);
@@ -220,23 +246,50 @@ int main(void) {
     publish.max_frame_bytes = kFrameBytes;
     publish.source_next = source_next;
     publish.source_context = &source;
-    assert(coakka_v2_stream_lane_prepare_publish(publisher, &publish) ==
-           COAKKA_V2_OK);
+    memset(&publish_grant, 0, sizeof(publish_grant));
+    if (owner_aware) {
+        publish_grant.struct_size = sizeof(publish_grant);
+        assert(coakka_v2_stream_lane_prepare_publish_grant(
+                   publisher, &publish, &publish_grant) == COAKKA_V2_OK);
+        assert(publish_grant.owner.struct_size == sizeof(publish_grant.owner));
+        assert(strcmp(publish_grant.owner.owner_instance_id,
+                      "stream-publisher-1") == 0);
+        assert(strcmp(publish_grant.owner.advertised_host, "127.0.0.1") == 0);
+        assert(publish_grant.owner.port == port);
+        assert(strcmp(publish_grant.session_id, kSessionId) == 0);
+        assert(strcmp(publish_grant.authorization_token, kToken) == 0);
+        assert(publish_grant.format_id == kFormatId);
+        assert(publish_grant.max_frame_bytes == kFrameBytes);
+    } else {
+        assert(coakka_v2_stream_lane_prepare_publish(publisher, &publish) ==
+               COAKKA_V2_OK);
+    }
 
     memset(&subscribe, 0, sizeof(subscribe));
     subscribe.struct_size = sizeof(subscribe);
-    subscribe.session_id = kSessionId;
-    subscribe.authorization_token = kToken;
-    subscribe.remote_host = "127.0.0.1";
-    subscribe.remote_port = port;
-    subscribe.format_id = kFormatId;
-    subscribe.max_frame_bytes = kFrameBytes;
+    subscribe.session_id = owner_aware ? publish_grant.session_id : kSessionId;
+    subscribe.authorization_token =
+        owner_aware ? publish_grant.authorization_token : kToken;
+    subscribe.remote_host = owner_aware ? publish_grant.owner.advertised_host
+                                        : "127.0.0.1";
+    subscribe.remote_port = owner_aware ? publish_grant.owner.port : port;
+    subscribe.format_id = owner_aware ? publish_grant.format_id : kFormatId;
+    subscribe.max_frame_bytes =
+        owner_aware ? publish_grant.max_frame_bytes : kFrameBytes;
     subscribe.initial_window_bytes = kWindowBytes;
     subscribe.timeout_ms = 3000u;
     subscribe.consume = consume_frame;
     subscribe.consumer_context = &consumer;
     assert(coakka_v2_stream_lane_subscribe(subscriber, &subscribe) ==
            COAKKA_V2_OK);
+    if (owner_aware) {
+        /* subscribe copies the capability synchronously. The Stream grant is
+         * single-admission and its local bearer-token copy is no longer needed. */
+        memset(&publish_grant, 0, sizeof(publish_grant));
+        subscribe.session_id = NULL;
+        subscribe.authorization_token = NULL;
+        subscribe.remote_host = NULL;
+    }
 
     subscriber_result =
         wait_terminal(subscriber, COAKKA_V2_STREAM_DIRECTION_SUBSCRIBE,
@@ -309,7 +362,8 @@ int main(void) {
     coakka_v2_stream_lane_destroy(subscriber);
     coakka_v2_stream_lane_destroy(publisher);
     printf("{\"schema\":\"coakka.runtime.stream-lane.evidence.v1\"," 
-           "\"passed\":true,\"frames\":%u,\"publishedBytes\":%" PRIu64 ","
+           "\"profile\":\"%s\",\"passed\":true,\"frames\":%u,"
+           "\"publishedBytes\":%" PRIu64 ","
            "\"consumedBytes\":%" PRIu64 ",\"sourceReportedDrops\":%" PRIu64 ","
            "\"publisherUpdateSequence\":%" PRIu64 ","
            "\"subscriberUpdateSequence\":%" PRIu64 ","
@@ -318,7 +372,8 @@ int main(void) {
            "\"publisherPressureSequence\":%" PRIu64 ","
            "\"subscriberPressureSequence\":%" PRIu64 ","
            "\"observedDeliveryBps\":%" PRIu64 "}\n",
-           kFrameCount, source.bytes, consumer.bytes, source.drops,
+           owner_aware ? "owner-aware" : "simple", kFrameCount, source.bytes,
+           consumer.bytes, source.drops,
            publisher_result.update_sequence, subscriber_result.update_sequence,
            publisher_observed_updates, subscriber_observed_updates,
            publisher_pressure.update_sequence, subscriber_pressure.update_sequence,

@@ -259,10 +259,12 @@ static void remove_workspace(const char *workspace) {
 #endif
 }
 
-int main(void) {
+int main(int argc, char **argv) {
   static const char *transfer_id = "public-file-lane-roundtrip";
   /* Deterministic evidence only. Service B must generate a cryptographically
-   * strong, single-use token in production and must never log it. */
+   * strong bearer token scoped to one prepared transfer in production and
+   * must never log it. The receiver may retain that grant only for bounded
+   * resume and idempotent completed-status handling for this transfer. */
   static const char *token = "public-file-lane-token";
   const char *failure = "";
   char workspace[FILE_LANE_EVIDENCE_PATH_BYTES] = {0};
@@ -279,8 +281,11 @@ int main(void) {
   coakka_v2_file_lane_t *sender = NULL;
   coakka_v2_file_lane_config_t receiver_config = {0};
   coakka_v2_file_lane_config_t sender_config = {0};
+  coakka_v2_file_lane_owned_config_t owned_receiver_config = {0};
+  coakka_v2_file_receive_grant_t receive_grant = {0};
   coakka_v2_file_receive_spec_t receive_spec = {0};
   coakka_v2_file_send_spec_t send_spec = {0};
+  coakka_v2_runtime_info_t runtime_info = {0};
   coakka_v2_file_transfer_snapshot_t sent = {0};
   coakka_v2_file_transfer_snapshot_t received = {0};
   coakka_v2_file_lane_stats_t sender_stats = {0};
@@ -289,7 +294,15 @@ int main(void) {
   transfer_observation_t receiver_observation = {0};
   int receiver_started = 0;
   int sender_started = 0;
+  int owner_aware = 0;
   int passed = 0;
+
+  if (argc == 2 && strcmp(argv[1], "--owner-aware") == 0) {
+    owner_aware = 1;
+  } else if (argc != 1) {
+    fprintf(stderr, "usage: %s [--owner-aware]\n", argv[0]);
+    return 2;
+  }
 
 #define REQUIRE(condition, message)                                             \
   do {                                                                          \
@@ -298,6 +311,14 @@ int main(void) {
       goto cleanup;                                                             \
     }                                                                           \
   } while (0)
+
+  if (owner_aware) {
+    runtime_info.struct_size = sizeof(runtime_info);
+    REQUIRE(coakka_v2_runtime_get_info(&runtime_info) == COAKKA_V2_OK &&
+                (runtime_info.feature_flags &
+                 COAKKA_V2_RUNTIME_FEATURE_LANE_OWNER_GRANTS) != 0u,
+            "owner-grant-feature");
+  }
 
   REQUIRE(create_workspace(workspace, sizeof(workspace)) == 0,
           "workspace-create");
@@ -323,8 +344,10 @@ int main(void) {
           source_size == k_file_bytes,
           "source-digest");
 
-  /* Service B: keep a receiver lane alive, authorize the destination, and
-   * prepare the exact size and digest before sharing a transfer grant. */
+  /* Service B owns the receiver lane and prepared destination. The simple
+   * profile publishes application-managed endpoint fields. The owner-aware
+   * profile lets the lane project its exact owner and bound port into a
+   * caller-owned grant. Admission stays closed until start completes. */
   receiver_config.struct_size = sizeof(receiver_config);
   receiver_config.flags = COAKKA_V2_FILE_LANE_ENABLE_RECEIVER;
   receiver_config.bind_host = "127.0.0.1";
@@ -334,8 +357,21 @@ int main(void) {
   receiver_config.checkpoint_bytes = 256u * 1024u;
   receiver_config.progress_bytes = 64u * 1024u;
   receiver_config.progress_interval_ms = 50u;
-  receiver = coakka_v2_file_lane_create(&receiver_config);
+  if (owner_aware) {
+    owned_receiver_config.struct_size = sizeof(owned_receiver_config);
+    owned_receiver_config.lane = receiver_config;
+    owned_receiver_config.owner.struct_size =
+        sizeof(owned_receiver_config.owner);
+    owned_receiver_config.owner.owner_instance_id = "file-receiver-1";
+    owned_receiver_config.owner.advertised_host = "127.0.0.1";
+    receiver = coakka_v2_file_lane_create_owned(&owned_receiver_config);
+  } else {
+    receiver = coakka_v2_file_lane_create(&receiver_config);
+  }
   REQUIRE(receiver != NULL, "receiver-create");
+  REQUIRE(coakka_v2_file_lane_start(receiver) == COAKKA_V2_OK,
+          "receiver-start");
+  receiver_started = 1;
 
   receive_spec.struct_size = sizeof(receive_spec);
   receive_spec.transfer_id = transfer_id;
@@ -343,20 +379,36 @@ int main(void) {
   receive_spec.destination_path = destination_path;
   receive_spec.expected_size = source_size;
   memcpy(receive_spec.expected_sha256, source_digest, sizeof(source_digest));
-  REQUIRE(coakka_v2_file_lane_prepare_receive(receiver, &receive_spec) ==
-              COAKKA_V2_OK,
-          "receiver-prepare");
-  REQUIRE(coakka_v2_file_lane_start(receiver) == COAKKA_V2_OK,
-          "receiver-start");
-  receiver_started = 1;
-  REQUIRE(coakka_v2_file_lane_get_bound_port(receiver, &receiver_port) ==
-                  COAKKA_V2_OK &&
-              receiver_port != 0u,
-          "receiver-port");
+  if (owner_aware) {
+    receive_grant.struct_size = sizeof(receive_grant);
+    REQUIRE(coakka_v2_file_lane_prepare_receive_grant(
+                receiver, &receive_spec, &receive_grant) == COAKKA_V2_OK,
+            "receiver-prepare-grant");
+    REQUIRE(receive_grant.owner.struct_size == sizeof(receive_grant.owner) &&
+                strcmp(receive_grant.owner.owner_instance_id,
+                       "file-receiver-1") == 0 &&
+                strcmp(receive_grant.owner.advertised_host, "127.0.0.1") ==
+                    0 &&
+                receive_grant.owner.port != 0u &&
+                strcmp(receive_grant.transfer_id, transfer_id) == 0 &&
+                strcmp(receive_grant.authorization_token, token) == 0 &&
+                receive_grant.expected_size == source_size &&
+                memcmp(receive_grant.expected_sha256, source_digest,
+                       sizeof(source_digest)) == 0,
+            "receiver-grant");
+    receiver_port = receive_grant.owner.port;
+  } else {
+    REQUIRE(coakka_v2_file_lane_prepare_receive(receiver, &receive_spec) ==
+                COAKKA_V2_OK,
+            "receiver-prepare");
+    REQUIRE(coakka_v2_file_lane_get_bound_port(receiver, &receiver_port) ==
+                    COAKKA_V2_OK &&
+                receiver_port != 0u,
+            "receiver-port");
+  }
 
-  /* The production control API now returns transfer_id, token, size, digest,
-   * host, and receiver_port to Service A. This loopback evidence passes those
-   * values directly because both independent lanes live in this test process. */
+  /* An authenticated application control API hands these fields to Service A.
+   * This loopback sample passes them in-process and never prints the token. */
 
   /* Service A: open its own sender lane and submit the source using the grant
    * that Service B created above. */
@@ -373,15 +425,29 @@ int main(void) {
   sender_started = 1;
 
   send_spec.struct_size = sizeof(send_spec);
-  send_spec.transfer_id = transfer_id;
-  send_spec.authorization_token = token;
-  send_spec.remote_host = "127.0.0.1";
+  send_spec.transfer_id =
+      owner_aware ? receive_grant.transfer_id : transfer_id;
+  send_spec.authorization_token =
+      owner_aware ? receive_grant.authorization_token : token;
+  send_spec.remote_host = owner_aware ? receive_grant.owner.advertised_host
+                                      : "127.0.0.1";
   send_spec.remote_port = receiver_port;
   send_spec.source_path = source_path;
-  send_spec.expected_size = source_size;
-  memcpy(send_spec.expected_sha256, source_digest, sizeof(source_digest));
+  send_spec.expected_size =
+      owner_aware ? receive_grant.expected_size : source_size;
+  memcpy(send_spec.expected_sha256,
+         owner_aware ? receive_grant.expected_sha256 : source_digest,
+         sizeof(source_digest));
   REQUIRE(coakka_v2_file_lane_submit_send(sender, &send_spec) == COAKKA_V2_OK,
           "sender-submit");
+  if (owner_aware) {
+    /* submit_send copies the grant fields synchronously. Remove the local
+     * bearer-token projection as soon as the handoff completes. */
+    memset(&receive_grant, 0, sizeof(receive_grant));
+    send_spec.transfer_id = NULL;
+    send_spec.authorization_token = NULL;
+    send_spec.remote_host = NULL;
+  }
 
   /* Each service owns and checks its own terminal result. Alternate bounded
    * waits so one fast peer cannot starve observation of the other. */
@@ -422,6 +488,20 @@ int main(void) {
               receiver_stats.completed_receives == 1u &&
               receiver_stats.completed_receive_bytes == source_size,
           "lane-stats");
+  REQUIRE(coakka_v2_file_lane_forget_transfer(
+              sender, transfer_id,
+              COAKKA_V2_FILE_TRANSFER_DIRECTION_SEND) == COAKKA_V2_OK &&
+              coakka_v2_file_lane_forget_transfer(
+                  receiver, transfer_id,
+                  COAKKA_V2_FILE_TRANSFER_DIRECTION_RECEIVE) == COAKKA_V2_OK,
+          "lane-forget");
+  REQUIRE(coakka_v2_file_lane_get_stats(sender, &sender_stats) == COAKKA_V2_OK &&
+              coakka_v2_file_lane_get_stats(receiver, &receiver_stats) ==
+                  COAKKA_V2_OK &&
+              sender_stats.retained_records == 0u &&
+              receiver_stats.retained_records == 0u &&
+              receiver_stats.prepared_receives == 0u,
+          "lane-forget-stats");
   passed = 1;
 
 cleanup:
@@ -459,7 +539,8 @@ cleanup:
             received.update_sequence);
   }
   printf("{\"schema\":\"coakka.runtime.file-lane.evidence.v1\","
-         "\"passed\":%s,\"failure\":\"%s\",\"fileBytes\":%" PRIu64 ","
+         "\"profile\":\"%s\",\"passed\":%s,\"failure\":\"%s\","
+         "\"fileBytes\":%" PRIu64 ","
          "\"senderState\":%u,\"senderResult\":%u,"
          "\"receiverState\":%u,\"receiverResult\":%u,"
          "\"senderUpdateSequence\":%" PRIu64 ","
@@ -470,6 +551,7 @@ cleanup:
          "\"receiverSawIntermediateProgress\":%s,"
          "\"senderCompletedBytes\":%" PRIu64 ","
          "\"receiverCompletedBytes\":%" PRIu64 "}\n",
+         owner_aware ? "owner-aware" : "simple",
          passed ? "true" : "false", failure, source_size, sent.state,
          sent.result, received.state, received.result, sent.update_sequence,
          received.update_sequence, sender_observation.updates,

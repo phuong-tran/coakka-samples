@@ -22,15 +22,23 @@ function Write-EvidenceStatus([string]$Message) {
 }
 
 try {
+  if ($Mode -eq "file-lane") {
+    $Mode = "file-lane-simple"
+  } elseif ($Mode -eq "stream-lane") {
+    $Mode = "stream-lane-simple"
+  }
+  $IsFileLane = $Mode -like "file-lane-*"
+  $IsStreamLane = $Mode -like "stream-lane-*"
+  $IsOwnerAware = $Mode -like "*-owner-aware"
   $Architecture = [Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString().ToLowerInvariant()
   $Platform = if ($Architecture -eq "arm64") { "windows-aarch64" } else { "windows-x86_64" }
-  if ($Mode -in @("file-lane", "stream-lane") -and $env:COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR) {
-    $RequireOption = if ($Mode -eq "stream-lane") {
+  if (($IsFileLane -or $IsStreamLane) -and $env:COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR) {
+    $RequireOption = if ($IsStreamLane) {
       "COAKKA_NATIVE_EVIDENCE_REQUIRE_STREAM_LANE"
     } else {
       "COAKKA_NATIVE_EVIDENCE_REQUIRE_FILE_LANE"
     }
-    $EvidenceTarget = if ($Mode -eq "stream-lane") {
+    $EvidenceTarget = if ($IsStreamLane) {
       "coakka_runtime_v2_stream_lane_evidence"
     } else {
       "coakka_runtime_v2_file_lane_evidence"
@@ -60,16 +68,18 @@ try {
     $env:PATH = "$($RuntimeDll.DirectoryName);$env:PATH"
     $env:COAKKA_EVIDENCE_EXECUTION_PATH = "core-source"
     Write-EvidenceStatus "starting native runtime evidence mode=$Mode path=core-source platform=$Platform"
-    & $Executable
+    if ($IsOwnerAware) {
+      & $Executable --owner-aware
+    } else {
+      & $Executable
+    }
     exit $LASTEXITCODE
   }
-  if ($Mode -in @("file-lane", "stream-lane", "race", "hot-reload")) {
-    if ($Mode -notin @("file-lane", "stream-lane") -and $Platform -ne "windows-x86_64") {
-      throw "runtime 2.3.0 concurrency evidence is not published for $Platform"
-    }
-    $RuntimeVersion = "2.3.0"
-    $RuntimeRelease = "2.3.0+a83ab412"
-    $RuntimeSha256 = "7d1c58a17c0b24b547fe6339886387d4deb3f778c987970db2f85b0d9921e1ab"
+  if ($IsFileLane -or $IsStreamLane -or $Mode -in @("race", "hot-reload")) {
+    $RuntimeVersion = "2.5.0"
+    $RuntimeRelease = "2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a"
+    $RuntimeSha256 = "1a7c33f167e03554e7eaa137b92d87f697c8dcec7186fa42b12b70460006055c"
+    $RuntimeRawCommit = "bd216a1ff02917e372ca18bb148a188c00fa2c51"
     $RuntimeArtifact = "coakka-runtime-native-v2-$RuntimeVersion.tar.gz"
     $RuntimeRelativePath = "runtime/native/releases/$RuntimeRelease/$RuntimeArtifact"
     $RuntimeArchive = Join-Path $TemporaryRoot "artifacts\$RuntimeArtifact"
@@ -87,7 +97,7 @@ try {
     if (Test-Path $LocalRuntimeArchive) {
       Copy-Item $LocalRuntimeArchive $RuntimeArchive
     } else {
-      $RuntimeUrl = "https://raw.githubusercontent.com/phuong-tran/coakka-publish/621f36edcb489c5151348986e76b7ef42893f5e7/$RuntimeRelativePath"
+      $RuntimeUrl = "https://raw.githubusercontent.com/phuong-tran/coakka-publish/$RuntimeRawCommit/$RuntimeRelativePath"
       Write-EvidenceStatus "downloading runtime package generation=$RuntimeRelease platform=$Platform"
       Invoke-WebRequest -Uri $RuntimeUrl -OutFile $RuntimeArchive
     }
@@ -106,18 +116,18 @@ try {
       "-A", $(if ($Platform -eq "windows-aarch64") { "ARM64" } else { "x64" }),
       "-DCMAKE_PREFIX_PATH=$RuntimePackageRoot"
     )
-    if ($Mode -eq "file-lane") {
+    if ($IsFileLane) {
       $ConfigureArguments += "-DCOAKKA_NATIVE_EVIDENCE_REQUIRE_FILE_LANE=ON"
-    } elseif ($Mode -eq "stream-lane") {
+    } elseif ($IsStreamLane) {
       $ConfigureArguments += "-DCOAKKA_NATIVE_EVIDENCE_REQUIRE_STREAM_LANE=ON"
     }
     cmake @ConfigureArguments
     if ($LASTEXITCODE -ne 0) {
       throw "failed to configure concurrency evidence"
     }
-    $EvidenceTarget = if ($Mode -eq "file-lane") {
+    $EvidenceTarget = if ($IsFileLane) {
       "coakka_runtime_v2_file_lane_evidence"
-    } elseif ($Mode -eq "stream-lane") {
+    } elseif ($IsStreamLane) {
       "coakka_runtime_v2_stream_lane_evidence"
     } else {
       "coakka_runtime_v2_concurrency_evidence"
@@ -137,7 +147,13 @@ try {
     $env:PATH = "$NativePath;$env:PATH"
     $env:COAKKA_EVIDENCE_EXECUTION_PATH = "source"
     Write-EvidenceStatus "starting native runtime evidence mode=$Mode path=source platform=$Platform runtime=$RuntimeVersion"
-    & $Executable $Mode @EvidenceArguments
+    if ($IsOwnerAware) {
+      & $Executable --owner-aware
+    } elseif ($IsFileLane -or $IsStreamLane) {
+      & $Executable
+    } else {
+      & $Executable $Mode @EvidenceArguments
+    }
     exit $LASTEXITCODE
   }
   $ExpectedSha256 = if ($Platform -eq "windows-aarch64") {

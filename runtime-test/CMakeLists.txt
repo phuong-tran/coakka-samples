@@ -40,10 +40,10 @@ else()
   find_package(CoAkkaRuntimeNativeV2 CONFIG REQUIRED)
 endif()
 
-if(WIN32 AND MSVC AND NOT COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR)
-  # The published DLL is sufficient for dynamic loaders. Native MSVC consumers
-  # additionally need an import library, which this harness derives without
-  # modifying or relinking the runtime under test.
+if(WIN32 AND NOT COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR)
+  # The published DLL is sufficient for dynamic loaders. Native linkers also
+  # need a consumer-side import library, which this harness derives from the
+  # checked-in public export definition without modifying or relinking the DLL.
   get_target_property(
     _coakka_native_evidence_import_library
     CoAkkaRuntimeNativeV2::runtime_v2
@@ -63,17 +63,38 @@ if(WIN32 AND MSVC AND NOT COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR)
       _coakka_native_evidence_import_library
       "${CMAKE_CURRENT_BINARY_DIR}/coakka_runtime_v2.lib"
     )
-    execute_process(
-      COMMAND
-        "${CMAKE_AR}"
-        /nologo
-        "/machine:${_coakka_native_evidence_machine}"
-        "/def:${CMAKE_CURRENT_SOURCE_DIR}/coakka_runtime_v2.def"
-        "/out:${_coakka_native_evidence_import_library}"
-      RESULT_VARIABLE _coakka_native_evidence_import_library_status
-      OUTPUT_VARIABLE _coakka_native_evidence_import_library_stdout
-      ERROR_VARIABLE _coakka_native_evidence_import_library_stderr
-    )
+    if(MSVC)
+      execute_process(
+        COMMAND
+          "${CMAKE_AR}"
+          /nologo
+          "/machine:${_coakka_native_evidence_machine}"
+          "/def:${CMAKE_CURRENT_SOURCE_DIR}/coakka_runtime_v2.def"
+          "/out:${_coakka_native_evidence_import_library}"
+        RESULT_VARIABLE _coakka_native_evidence_import_library_status
+        OUTPUT_VARIABLE _coakka_native_evidence_import_library_stdout
+        ERROR_VARIABLE _coakka_native_evidence_import_library_stderr
+      )
+    else()
+      find_program(_coakka_native_evidence_zig NAMES zig REQUIRED)
+      if(_coakka_native_evidence_machine STREQUAL "ARM64")
+        set(_coakka_native_evidence_dlltool_machine arm64)
+      else()
+        set(_coakka_native_evidence_dlltool_machine i386:x86-64)
+      endif()
+      execute_process(
+        COMMAND
+          "${_coakka_native_evidence_zig}"
+          dlltool
+          -m "${_coakka_native_evidence_dlltool_machine}"
+          -D libcoakka_runtime_v2.dll
+          -d "${CMAKE_CURRENT_SOURCE_DIR}/coakka_runtime_v2.def"
+          -l "${_coakka_native_evidence_import_library}"
+        RESULT_VARIABLE _coakka_native_evidence_import_library_status
+        OUTPUT_VARIABLE _coakka_native_evidence_import_library_stdout
+        ERROR_VARIABLE _coakka_native_evidence_import_library_stderr
+      )
+    endif()
     if(NOT _coakka_native_evidence_import_library_status EQUAL 0)
       message(FATAL_ERROR
         "Failed to create the Windows consumer import library from the public export definition:\n"
