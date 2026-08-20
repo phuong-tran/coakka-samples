@@ -12,8 +12,10 @@ The web listener is intentionally restricted to `127.0.0.1`. The Pi listener
 uses a bearer token and is intended for a trusted private network. This sample
 does not provide TLS, Internet exposure, or multi-user browser authentication.
 
-Release `v1.1.0` is the first audited stable sample line. Its detailed thread,
-memory, device, shutdown, and evidence boundaries are in
+Release `v1.1.1` moves the stable sample to exact CoAkka Runtime native
+`2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` and corrects Stream Lane
+publisher startup ordering. Its detailed thread, memory, device, shutdown, and
+evidence boundaries are in
 [`SYSTEMS-AUDIT.md`](SYSTEMS-AUDIT.md).
 
 ## Distribution Boundary
@@ -21,16 +23,26 @@ memory, device, shutdown, and evidence boundaries are in
 The focused public source belongs in
 [`coakka-samples`](https://github.com/phuong-tran/coakka-samples/tree/main/runtime-streaming-demo/rpi-camera).
 Prebuilt evaluation binaries belong in the versioned
-[`coakka-publish`](https://github.com/phuong-tran/coakka-publish/tree/main/samples/runtime/native/rpi-camera/releases/1.1.0)
+[`coakka-publish`](https://github.com/phuong-tran/coakka-publish/tree/main/samples/runtime/native/rpi-camera/releases/1.1.1)
 lane. Neither repository uses GitHub Releases for this sample; merging reviewed
 content to `main` is the publication event.
+
+**Free for application use, including commercial and production use.** The
+sample source is Apache-2.0; the bundled CoAkka Native Core remains subject to
+the [CoAkka Native Artifact License 1.2](https://github.com/phuong-tran/coakka-samples/blob/licenses-1.2/NATIVE-LICENSE.md)
+and may not be resold or offered as managed CoAkka runtime infrastructure
+without a separate agreement. Every binary archive carries `LICENSE`,
+`NATIVE-LICENSE.md`, `PACKAGE-LICENSE.md`, and `NOTICE` beside this README so
+the mapping remains available offline.
 
 - Treat the source commit recorded in the Publish manifest as the authority for
   review, rebuilds, driver adaptation, and license compliance.
 - Consume one architecture-specific binary archive directly from the Publish
   lane; do not use GitHub Release attachments.
-- Verify `SHA256SUMS` before extraction. The manifest records the source commit,
-  platform, verification level, and Windows signing state.
+- Verify `SHA256SUMS` before extraction. The manifest records the source commit
+  and tree, build-producer hash, per-platform build-receipt hashes, verification
+  level, and Windows signing state. Each platform archive also carries its
+  `BUILD-RECEIPT.json` offline.
 - Do not put binaries in `coakka-samples`, publish a Core repository snapshot,
   or ship tokens, device paths, IP addresses, recordings, or signing secrets.
 
@@ -61,7 +73,7 @@ network access on first use. Managed corporate devices can reject unsigned
 applications entirely according to local policy.
 
 The release manifest states the exact Windows verification level. Release
-`v1.1.0` carries forward the Windows 11 native smoke: CLI validation passed,
+`v1.1.1` carries forward the Windows 11 native smoke: CLI validation passed,
 the host connected
 to a live Pi publisher, and the loopback UI was fetched locally. Windows-side
 WebSocket control and recording remain pending and are not implied by that
@@ -247,25 +259,22 @@ process list. Run either binary with `--help` to print its exact CLI contract.
 
 ## Build From Public Source
 
-Clone the public samples repository. For macOS or Linux x86-64, unpack CoAkka
-Runtime native `2.3.0` or newer and set `RUNTIME_ROOT` to that package:
+Clone the public samples repository. Unpack exact CoAkka Runtime native `2.5.0`
+and set `RUNTIME_ROOT` to that package:
 
 ```sh
 git clone https://github.com/phuong-tran/coakka-samples.git
 cd coakka-samples/runtime-streaming-demo/rpi-camera
-export RUNTIME_ROOT=/absolute/path/to/coakka-runtime-native-v2-2.3.0
+export RUNTIME_ROOT=/absolute/path/to/coakka-runtime-native-v2-2.5.0
 ```
 
-The generic Runtime `2.3.0` Linux ARM64 archive was built against glibc 2.38;
-Raspberry Pi OS 12 provides glibc 2.36. Do not link that generic library on Pi
-OS 12. Instead, unpack this release's Pi archive and use its Pi-compatible
-runtime library with the public Runtime package headers:
+The audited Runtime `2.5.0` Linux ARM64 library targets Debian 12 / glibc 2.36
+and is the same byte included in the Pi bundle. Build against that exact file:
 
 ```sh
-export PI_BUNDLE_ROOT=/absolute/path/to/pi-linux-arm64
 cmake -S . -B build/pi -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
-  -DCOAKKA_RUNTIME_LIBRARY="$PI_BUNDLE_ROOT/libcoakka_runtime_v2.so" \
+  -DCOAKKA_RUNTIME_LIBRARY="$RUNTIME_ROOT/native/linux-aarch64/libcoakka_runtime_v2.so" \
   -DCOAKKA_RUNTIME_INCLUDE_DIR="$RUNTIME_ROOT/include" \
   -DCOAKKA_CAMERA_BUILD_HOST=OFF \
   -DCOAKKA_CAMERA_BUILD_PI=ON
@@ -291,13 +300,34 @@ Runtime DLL in the native package. The prebuilt Windows archive is the normal
 evaluation path. It remains unsigned and must not be represented as natively
 verified until the release matrix says so.
 
+Ordinary local builds embed `development` as their source identity. Release
+executables are different: the release producer materializes the immutable
+`camera-demo-v1.1.1` Git tree, passes its full commit through
+`COAKKA_CAMERA_SOURCE_COMMIT`, and writes a `BUILD-RECEIPT.json` recording the
+executable hash, binary format, Runtime byte, public tree and archive objects,
+generated CMake/Ninja inputs, C/C++ compiler bytes, and producer-script hash.
+The Python contract helper used for bounded extraction and receipt validation is
+hashed separately. Native builds accept no caller CMake options. The Windows
+cross-build accepts
+only one explicit toolchain file and the Runtime import library; both identities
+are recorded, while compiler-launcher and project-include environment injection
+is cleared. The stager independently recreates the tagged source archive and
+rejects arbitrary build directories, a changed executable, a foreign source
+receipt, or an archive without that exact compiled commit marker.
+
+`BUILD-RECEIPT.json` is unsigned local build evidence, not a cryptographic
+source-to-binary attestation. Its source claim depends on the reviewed producer,
+build host, dependencies, compiler, and Windows toolchain being trusted. Their
+hashes make that boundary auditable; they do not make a compromised release
+operator or compiler trustworthy.
+
 ## Download And Verify Published Binaries
 
 Download `SHA256SUMS` and the archive for the target machine directly from the
 Publish repository. For example, on macOS ARM64:
 
 ```sh
-base='https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/samples/runtime/native/rpi-camera/releases/1.1.0'
+base='https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/samples/runtime/native/rpi-camera/releases/1.1.1'
 curl -fLO "$base/SHA256SUMS"
 curl -fLO "$base/coakka-camera-host-macos-arm64.tar.gz"
 shasum -a 256 -c SHA256SUMS --ignore-missing

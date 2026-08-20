@@ -1,4 +1,5 @@
 #include "coakka/v2/stream_lane.h"
+#include "stream_lane_camera_lane_owner.h"
 #if defined(COAKKA_V2_CAMERA_PI_APP)
 #include "alsa_pcm_audio_source.h"
 #include "stream_lane_camera_control_server.h"
@@ -41,6 +42,10 @@
 #include <string>
 #include <string_view>
 
+#ifndef COAKKA_CAMERA_PUBLIC_SOURCE_COMMIT
+#define COAKKA_CAMERA_PUBLIC_SOURCE_COMMIT "development"
+#endif
+
 namespace {
 
 constexpr uint64_t kMjpegFrameFormat = UINT64_C(0x4d4a504547303031);
@@ -53,6 +58,8 @@ constexpr uint32_t kAudioFrameBytes = 1920u;
 constexpr uint32_t kLaneMaxFrameBytes = COAKKA_V2_STREAM_LANE_MAX_FRAME_BYTES;
 constexpr uint32_t kIoTimeoutMs = 30000u;
 constexpr uint32_t kWaitQuantumMs = 250u;
+constexpr char kPublicSourceMarker[] =
+    "COAKKA_CAMERA_PUBLIC_SOURCE_COMMIT=" COAKKA_CAMERA_PUBLIC_SOURCE_COMMIT;
 #if defined(COAKKA_V2_CAMERA_PI_APP)
 constexpr uint32_t kCameraPollTimeoutMs = 100u;
 constexpr uint32_t kCameraBufferCount = 4u;
@@ -61,11 +68,6 @@ constexpr uint32_t kCameraBufferCount = 4u;
 volatile std::sig_atomic_t interrupted = 0;
 
 extern "C" void handle_signal(int) { interrupted = 1; }
-
-struct LaneOwner {
-  coakka_v2_stream_lane_t *value = nullptr;
-  ~LaneOwner() { coakka_v2_stream_lane_destroy(value); }
-};
 
 bool terminal_state(uint32_t state) noexcept {
   return state == COAKKA_V2_STREAM_STATE_ENDED ||
@@ -643,8 +645,9 @@ bool publish_camera(const char *device, const char *audio_device,
   }
 
   const auto config = publisher_config(bind_host, bind_port, audio_enabled);
-  LaneOwner lane{coakka_v2_stream_lane_create(&config)};
-  if (lane.value == nullptr) {
+  coakka::v2::camera::StreamLaneOwner lane{
+      coakka_v2_stream_lane_create(&config)};
+  if (lane.get() == nullptr) {
     std::cerr << "publisher lane creation failed\n";
     return false;
   }
@@ -665,16 +668,33 @@ bool publish_camera(const char *device, const char *audio_device,
   audio_publish.max_frame_bytes = COAKKA_V2_CAMERA_AUDIO_FRAME_BYTES;
   audio_publish.source_next = coakka_v2_alsa_pcm_source_next;
   audio_publish.source_context = audio.value;
-  if (coakka_v2_stream_lane_prepare_publish(lane.value, &video_publish) !=
-          COAKKA_V2_OK ||
-      (audio_enabled && coakka_v2_stream_lane_prepare_publish(
-                            lane.value, &audio_publish) != COAKKA_V2_OK) ||
-      coakka_v2_stream_lane_start(lane.value) != COAKKA_V2_OK) {
-    std::cerr << "publisher prepare/start failed\n";
+  const coakka_v2_status_t start_rc = coakka_v2_stream_lane_start(lane.get());
+  if (start_rc != COAKKA_V2_OK) {
+    std::cerr << "publisher lane start failed: status=" << start_rc << '\n';
     return false;
   }
+  const coakka_v2_status_t video_prepare_rc =
+      coakka_v2_stream_lane_prepare_publish(lane.get(), &video_publish);
+  if (video_prepare_rc != COAKKA_V2_OK) {
+    std::cerr << "video publisher prepare failed: status=" << video_prepare_rc
+              << '\n';
+    return false;
+  }
+  if (audio_enabled) {
+    const coakka_v2_status_t audio_prepare_rc =
+        coakka_v2_stream_lane_prepare_publish(lane.get(), &audio_publish);
+    if (audio_prepare_rc != COAKKA_V2_OK) {
+      std::cerr << "audio publisher prepare failed: status="
+                << audio_prepare_rc << '\n';
+      return false;
+    }
+  }
   uint16_t port = 0u;
-  if (coakka_v2_stream_lane_get_bound_port(lane.value, &port) != COAKKA_V2_OK) {
+  const coakka_v2_status_t bound_port_rc =
+      coakka_v2_stream_lane_get_bound_port(lane.get(), &port);
+  if (bound_port_rc != COAKKA_V2_OK) {
+    std::cerr << "publisher bound-port lookup failed: status=" << bound_port_rc
+              << '\n';
     return false;
   }
   if (port == UINT16_MAX) {
@@ -721,15 +741,15 @@ bool publish_camera(const char *device, const char *audio_device,
 
   coakka_v2_stream_session_snapshot_t stream_snapshot{};
   const bool waited =
-      wait_terminal(lane.value, session_id, "camera-service",
+      wait_terminal(lane.get(), session_id, "camera-service",
                     COAKKA_V2_STREAM_DIRECTION_PUBLISH, &stream_snapshot);
   if (audio_enabled) {
     (void)coakka_v2_stream_lane_cancel_session(
-        lane.value, audio_session_id.c_str(),
+        lane.get(), audio_session_id.c_str(),
         COAKKA_V2_STREAM_DIRECTION_PUBLISH);
   }
   control->stop();
-  (void)coakka_v2_stream_lane_stop(lane.value);
+  (void)coakka_v2_stream_lane_stop(lane.get());
   (void)camera.snapshot(&camera_snapshot);
   coakka_v2_alsa_pcm_snapshot_t audio_snapshot{};
   if (audio_enabled) {
@@ -793,9 +813,10 @@ bool subscribe_web(const char *remote_host, uint16_t remote_port,
             << std::flush;
 
   const auto config = subscriber_config(max_frame_bytes, audio_enabled);
-  LaneOwner lane{coakka_v2_stream_lane_create(&config)};
-  if (lane.value == nullptr ||
-      coakka_v2_stream_lane_start(lane.value) != COAKKA_V2_OK) {
+  coakka::v2::camera::StreamLaneOwner lane{
+      coakka_v2_stream_lane_create(&config)};
+  if (lane.get() == nullptr ||
+      coakka_v2_stream_lane_start(lane.get()) != COAKKA_V2_OK) {
     std::cerr << "subscriber lane creation/start failed\n";
     gateway->stop();
     return false;
@@ -813,7 +834,7 @@ bool subscribe_web(const char *remote_host, uint16_t remote_port,
   subscribe.consume = consume_frame;
   subscribe.consumer_context = gateway.get();
   gateway->set_transport_state(COAKKA_V2_STREAM_STATE_CONNECTING);
-  if (coakka_v2_stream_lane_subscribe(lane.value, &subscribe) != COAKKA_V2_OK) {
+  if (coakka_v2_stream_lane_subscribe(lane.get(), &subscribe) != COAKKA_V2_OK) {
     std::cerr << "subscriber submit failed\n";
     gateway->stop();
     return false;
@@ -833,12 +854,12 @@ bool subscribe_web(const char *remote_host, uint16_t remote_port,
   audio_subscribe.consumer_context = gateway.get();
   if (audio_enabled) {
     gateway->set_audio_transport_state(COAKKA_V2_STREAM_STATE_CONNECTING);
-    if (coakka_v2_stream_lane_subscribe(lane.value, &audio_subscribe) !=
+    if (coakka_v2_stream_lane_subscribe(lane.get(), &audio_subscribe) !=
         COAKKA_V2_OK) {
       std::cerr << "audio subscriber submit failed\n";
       (void)coakka_v2_stream_lane_cancel_session(
-          lane.value, session_id, COAKKA_V2_STREAM_DIRECTION_SUBSCRIBE);
-      (void)coakka_v2_stream_lane_stop(lane.value);
+          lane.get(), session_id, COAKKA_V2_STREAM_DIRECTION_SUBSCRIBE);
+      (void)coakka_v2_stream_lane_stop(lane.get());
       gateway->stop();
       return false;
     }
@@ -849,14 +870,14 @@ bool subscribe_web(const char *remote_host, uint16_t remote_port,
                             static_cast<uint16_t>(remote_port + 1u), token,
                             audio_enabled ? audio_session_id.c_str() : nullptr};
   const bool waited =
-      wait_terminal(lane.value, session_id, "livestream-service",
+      wait_terminal(lane.get(), session_id, "livestream-service",
                     COAKKA_V2_STREAM_DIRECTION_SUBSCRIBE, &snapshot, &control);
   if (audio_enabled) {
     (void)coakka_v2_stream_lane_cancel_session(
-        lane.value, audio_session_id.c_str(),
+        lane.get(), audio_session_id.c_str(),
         COAKKA_V2_STREAM_DIRECTION_SUBSCRIBE);
   }
-  (void)coakka_v2_stream_lane_stop(lane.value);
+  (void)coakka_v2_stream_lane_stop(lane.get());
   gateway->stop();
   if (waited) {
     print_result("subscriber", snapshot);
@@ -1164,6 +1185,7 @@ void usage(const char *program, std::ostream &stream) {
       << "  --ffmpeg-binary PATH     FFmpeg executable path\n"
       << "  --help                    Show this help\n";
 #endif
+  stream << "Build source: " << kPublicSourceMarker << '\n';
 }
 
 } // namespace

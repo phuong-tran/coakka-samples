@@ -1,10 +1,19 @@
 cmake_minimum_required(VERSION 3.20)
-project(CoAkkaRpiCameraSample VERSION 1.1.0 LANGUAGES C CXX)
+project(CoAkkaRpiCameraSample VERSION 1.1.1 LANGUAGES C CXX)
 
 include(CTest)
 
 option(COAKKA_CAMERA_BUILD_HOST "Build the desktop host application" ON)
 option(COAKKA_CAMERA_BUILD_PI "Build the Raspberry Pi publisher" OFF)
+set(COAKKA_CAMERA_SOURCE_COMMIT "development" CACHE STRING
+  "Full public Samples commit embedded in release executables")
+string(LENGTH "${COAKKA_CAMERA_SOURCE_COMMIT}" COAKKA_CAMERA_SOURCE_COMMIT_LENGTH)
+if(NOT COAKKA_CAMERA_SOURCE_COMMIT STREQUAL "development" AND
+   (NOT COAKKA_CAMERA_SOURCE_COMMIT MATCHES "^[0-9a-f]+$" OR
+    NOT COAKKA_CAMERA_SOURCE_COMMIT_LENGTH EQUAL 40))
+  message(FATAL_ERROR
+    "COAKKA_CAMERA_SOURCE_COMMIT must be 'development' or 40 lowercase hex")
+endif()
 
 if(COAKKA_RUNTIME_LIBRARY)
   if(NOT COAKKA_RUNTIME_INCLUDE_DIR)
@@ -114,7 +123,8 @@ if(COAKKA_CAMERA_BUILD_HOST)
     src/stream_lane_camera_web_ui.cc
     src/runtime_addon_web_wire.cc)
   target_compile_definitions(coakka_camera_host PRIVATE
-    COAKKA_V2_CAMERA_HOST_APP=1)
+    COAKKA_V2_CAMERA_HOST_APP=1
+    COAKKA_CAMERA_PUBLIC_SOURCE_COMMIT="${COAKKA_CAMERA_SOURCE_COMMIT}")
   coakka_camera_target_defaults(coakka_camera_host)
   if(WIN32)
     target_link_libraries(coakka_camera_host PRIVATE dbghelp ws2_32)
@@ -138,6 +148,26 @@ if(COAKKA_CAMERA_BUILD_HOST)
     COMMAND coakka_camera_gateway_lifecycle_tests)
   set_tests_properties(coakka_camera_gateway_lifecycle_tests PROPERTIES
     LABELS "camera;concurrency;lifecycle" TIMEOUT 15)
+
+  add_executable(coakka_camera_lane_owner_lifecycle_tests
+    src/stream_lane_camera_lane_owner_tests.cc)
+  target_compile_features(coakka_camera_lane_owner_lifecycle_tests PRIVATE
+    cxx_std_20)
+  target_include_directories(coakka_camera_lane_owner_lifecycle_tests PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/src")
+  target_link_libraries(coakka_camera_lane_owner_lifecycle_tests PRIVATE
+    CoAkkaRuntimeNativeV2::runtime_v2)
+  if(MSVC)
+    target_compile_options(coakka_camera_lane_owner_lifecycle_tests PRIVATE
+      /W4 /WX)
+  else()
+    target_compile_options(coakka_camera_lane_owner_lifecycle_tests PRIVATE
+      -Wall -Wextra -Wpedantic -Werror)
+  endif()
+  add_test(NAME coakka_camera_lane_owner_lifecycle_tests
+    COMMAND coakka_camera_lane_owner_lifecycle_tests)
+  set_tests_properties(coakka_camera_lane_owner_lifecycle_tests PROPERTIES
+    LABELS "camera;lifecycle;ownership" TIMEOUT 10)
 endif()
 
 if(COAKKA_CAMERA_BUILD_PI)
@@ -152,7 +182,8 @@ if(COAKKA_CAMERA_BUILD_PI)
     src/v4l2_mjpeg_camera_source.c
     src/runtime_addon_web_wire.cc)
   target_compile_definitions(coakka_camera_pi PRIVATE
-    COAKKA_V2_CAMERA_PI_APP=1)
+    COAKKA_V2_CAMERA_PI_APP=1
+    COAKKA_CAMERA_PUBLIC_SOURCE_COMMIT="${COAKKA_CAMERA_SOURCE_COMMIT}")
   coakka_camera_target_defaults(coakka_camera_pi)
   target_link_libraries(coakka_camera_pi PRIVATE ALSA::ALSA)
   add_test(NAME coakka_camera_pi_cli_help
