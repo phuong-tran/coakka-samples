@@ -21,7 +21,7 @@ EOF
 }
 
 with_python_env() {
-  coakka_with_python_package_env "coakka-v2-connector==2.5.1" "${script_dir}/app.py" "$@"
+  coakka_with_python_package_env "coakka-v2-connector==2.5.2" "${script_dir}/app.py" "$@"
 }
 
 check_app() {

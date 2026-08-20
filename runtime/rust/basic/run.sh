@@ -12,8 +12,8 @@ coakka_require_command tar "Install tar, then retry."
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
-artifact_rel="runtime/rust/releases/2.4.0+c2f53117-0afb5e9/coakka-runtime-rs-2.4.0.tar.gz"
-package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-runtime-rs-2.4.0.tar.gz")"
+artifact_rel="runtime/rust/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/coakka-runtime-rs-2.5.2.tar.gz"
+package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-runtime-rs-2.5.2.tar.gz")"
 mkdir -p "${tmp_dir}/package"
 tar -C "${tmp_dir}/package" --strip-components 1 -xzf "${package_path}"
 

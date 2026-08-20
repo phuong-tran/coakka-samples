@@ -7,6 +7,10 @@ and checksums live in the versioned
 
 ## 2026-08-20
 
+- Advanced npm, PyPI, NuGet, Go, and Swift Runtime samples to the
+  connector-first replica-owner releases `2.5.2`, Go `v1.8.2`, and Swift
+  `v2.5.2`. Public-registry and remote-tag consumers pass while the native
+  generation remains `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`.
 - Advanced npm, PyPI, and NuGet Runtime samples to registry-verified `2.5.1`
   from connector source `11c1555`. The package-only patch keeps native
   generation `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` unchanged;

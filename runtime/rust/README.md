@@ -1,8 +1,9 @@
 # Rust Runtime Samples
 
 Rust runtime samples document the published `coakka-runtime-rs` archive shape.
-This runtime lane consumes source version `2.4.0`, built against native runtime
-generation `2.4.0+c2f53117` from connector generation `0afb5e9`.
+This runtime lane consumes source version `2.5.2`, built against native runtime
+generation `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` from connector generation
+`3ae74f4`.
 
 ## Run
 
@@ -134,5 +135,5 @@ It links the canonical feature guides, exact package catalog, and platform
 evidence, and it defines when only workflow pseudocode is justified.
 
 The current public package train includes File Lane and Stream Lane. Use the
-exact connector names and lifecycle rules shipped by the `2.4.0` archive when
+exact connector names and lifecycle rules shipped by the `2.5.2` archive when
 integrating either lane.

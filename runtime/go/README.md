@@ -1,6 +1,6 @@
 # Go Runtime Samples
 
-Go runtime samples consume `github.com/phuong-tran/coakka-runtime-go@v1.8.1`.
+Go runtime samples consume `github.com/phuong-tran/coakka-runtime-go@v1.8.2`.
 The package embeds native runtime generation `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` for Linux
 ARM64/x86-64, macOS ARM64, and Windows ARM64/x86-64. Package presence and
 execution evidence remain separate in the compatibility matrix.
@@ -40,7 +40,7 @@ supported Go release for production builds.
 Install the package through normal Go module resolution:
 
 ```sh
-go get github.com/phuong-tran/coakka-runtime-go@v1.8.1
+go get github.com/phuong-tran/coakka-runtime-go@v1.8.2
 ```
 
 The samples create a disposable Go module, require that public coordinate, run
@@ -221,5 +221,5 @@ It links the canonical feature guides, exact package catalog, and platform
 evidence, and it defines when only workflow pseudocode is justified.
 
 The current public package train includes File Lane and Stream Lane. Use the
-exact connector names and lifecycle rules shipped by `v1.8.1` when integrating
+exact connector names and lifecycle rules shipped by `v1.8.2` when integrating
 either lane.

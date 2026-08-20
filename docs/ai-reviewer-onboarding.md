@@ -50,8 +50,8 @@ contract. Before generating an integration:
    `1.4.x` registry package; select an exact 2.1.0 artifact or later compatible
    registry release.
 9. Generate Stream Lane imports only for an exact package or artifact
-   coordinate that records the lane. npm `2.5.1`, PyPI `2.5.1`, NuGet `2.5.1`,
-   Go `v1.8.1`, SwiftPM `v2.5.1`, and their recorded native generations qualify.
+   coordinate that records the lane. npm `2.5.2`, PyPI `2.5.2`, NuGet `2.5.2`,
+   Go `v1.8.2`, SwiftPM `v2.5.2`, and their recorded native generations qualify.
 10. If the repository contains only a language-neutral workflow, produce
     pseudocode and name the missing connector evidence instead of translating
     identifiers from another language.

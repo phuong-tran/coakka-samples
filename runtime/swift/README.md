@@ -1,7 +1,7 @@
 # Swift Runtime Samples
 
 Swift runtime samples consume
-`github.com/phuong-tran/coakka-runtime-swift@2.5.1`, built against native
+`github.com/phuong-tran/coakka-runtime-swift@2.5.2`, built against native
 runtime generation `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. The package contains native payloads for
 Linux ARM64/x86-64, macOS ARM64, and Windows ARM64/x86-64; matching-host Swift
 execution evidence is tracked separately from package contents.
@@ -26,5 +26,5 @@ canonical feature guides, exact package catalog, and platform evidence, and it
 defines when only workflow pseudocode is justified.
 
 The current SwiftPM package includes File Lane and Stream Lane. Use the exact
-connector names and lifecycle rules shipped by SwiftPM `2.5.1` when integrating
+connector names and lifecycle rules shipped by SwiftPM `2.5.2` when integrating
 either lane.

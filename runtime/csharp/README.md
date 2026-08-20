@@ -1,8 +1,8 @@
 # C# Runtime Samples
 
 C# runtime samples document the `CoAkka.Runtime` NuGet package shape. This
-runtime lane consumes package version `2.5.1` from NuGet, built against native
-runtime `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` from connector source `11c1555`.
+runtime lane consumes package version `2.5.2` from NuGet, built against native
+runtime `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` from connector source `3ae74f4`.
 
 For a CRUD developer, the point is not to replace ASP.NET Core. Keep HTTP at
 the browser/API edge. Use CoAkka for work that is owned by the application
@@ -205,7 +205,7 @@ deadletter, native loading, lifecycle, and diagnostics baseline.
 
 ## What This Sample Proves
 
-- `dotnet` can install `CoAkka.Runtime==2.5.1` from nuget.org.
+- `dotnet` can install `CoAkka.Runtime==2.5.2` from nuget.org.
 - The package can load the native runtime from the bundled macOS, Linux, and
   Windows RID assets.
 - A .NET process can start one process-owned `RuntimeHost`.
@@ -235,4 +235,4 @@ evidence, and it defines when only workflow pseudocode is justified.
 
 The current public package train includes File Lane and Stream Lane. Use the
 exact C# types, callbacks, ownership, and disposal rules shipped by NuGet
-`2.5.1` when integrating either lane.
+`2.5.2` when integrating either lane.

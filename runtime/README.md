@@ -13,7 +13,7 @@ For large immutable files, use the `2.1.0` file lane instead of placing bytes
 inside an `Envelope`. See [Runtime File Transfer](../docs/runtime-file-transfer.md)
 for use cases, the receiver-first workflow, and connector guidance. The
 artifact-backed samples pin the complete `2.4.0+c2f53117` train. Registry-backed
-npm `2.5.1`, PyPI `2.5.1`, and NuGet Runtime `2.5.1` samples consume
+npm `2.5.2`, PyPI `2.5.2`, and NuGet Runtime `2.5.2` samples consume
 published, clean-install verified packages that expose File Lane and Stream
 Lane.
 
@@ -40,7 +40,7 @@ independently from the artifact mirror. The separate
 [`../runtime-client`](../runtime-client/README.md).
 
 Swift runtime is published at
-`github.com/phuong-tran/coakka-runtime-swift@2.5.1` with native runtime
+`github.com/phuong-tran/coakka-runtime-swift@2.5.2` with native runtime
 generation `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`; current Swift execution evidence covers macOS
 ARM64.
 
@@ -112,19 +112,19 @@ dependencies {
 Python wheel:
 
 ```sh
-python -m pip install coakka-v2-connector==2.5.1
+python -m pip install coakka-v2-connector==2.5.2
 ```
 
 Node.js package:
 
 ```sh
-npm install coakka-v2-connector-node@2.5.1
+npm install coakka-v2-connector-node@2.5.2
 ```
 
 Bun package:
 
 ```sh
-bun add coakka-v2-connector-bun@2.5.1
+bun add coakka-v2-connector-bun@2.5.2
 ```
 
 Tauri intent bridge:
@@ -137,7 +137,7 @@ bash run.sh runtime tauri desktop-intent
 Electron intent bridge:
 
 ```sh
-npm install coakka-v2-connector-electron@2.5.1
+npm install coakka-v2-connector-electron@2.5.2
 ```
 
 Bun, Tauri, and Electron validation commands:
@@ -223,21 +223,21 @@ Full recording: [coakka-runtime-native.mp4](../docs/assets/coakka-runtime-native
 Go module:
 
 ```sh
-go get github.com/phuong-tran/coakka-runtime-go@v1.8.1
+go get github.com/phuong-tran/coakka-runtime-go@v1.8.2
 ```
 
 C# NuGet package:
 
 ```sh
-dotnet add package CoAkka.Runtime --version 2.5.1
+dotnet add package CoAkka.Runtime --version 2.5.2
 ```
 
 Rust currently ships as a published archive package:
 
 ```sh
 curl -L \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/rust/releases/2.4.0+c2f53117-0afb5e9/coakka-runtime-rs-2.4.0.tar.gz" \
-  -o /tmp/coakka-runtime-rs-2.4.0.tar.gz
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/rust/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/coakka-runtime-rs-2.5.2.tar.gz" \
+  -o /tmp/coakka-runtime-rs-2.5.2.tar.gz
 ```
 
 After dependency setup, every host follows the same shape:
