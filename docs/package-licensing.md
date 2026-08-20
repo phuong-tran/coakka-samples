@@ -1,34 +1,61 @@
-# Runtime Package Licensing
+# CoAkka Package Licensing
 
-CoAkka Runtime packages that bundle native libraries are file-scoped
-multi-license distributions. The terms are simultaneous, not alternative
-licenses for the package as a whole.
+## Free For Application Use
+
+CoAkka platform packages are free to use in applications, including commercial
+and production applications. Connector code, bindings, samples, and
+documentation use Apache-2.0. Bundled Native Core files use the CoAkka Native
+Artifact License, which permits ordinary application use but reserves selling
+CoAkka itself as managed runtime or infrastructure.
+
+No runtime activation, paid feature gate, or production-use fee is imposed by
+these package licenses.
 
 ## File Scope
 
-| Material | Terms | Packaged file |
+Binary-bearing packages are file-scoped multi-license distributions. The terms
+apply simultaneously to their respective files; they are not alternative
+licenses for the package as a whole.
+
+| Material | Terms | Packaged copy |
 | --- | --- | --- |
-| Connector source, generated bindings, type declarations, package metadata, examples, and package documentation | [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0) | `LICENSE` |
-| CoAkka native libraries, native headers, symbol files, and native-only provenance | [CoAkka Public Artifact License 1.1](https://github.com/phuong-tran/coakka-publish/blob/main/LICENSE.md) | `NATIVE-LICENSE.md` |
-| File-to-license mapping | The scope in this document and the package-specific map | `PACKAGE-LICENSE.md` |
-| Aggregate package notice | Package identity and applicable license summary | `NOTICE` |
+| Connector source, generated bindings, type declarations, package metadata, examples, and package documentation | [Apache License, Version 2.0](https://github.com/phuong-tran/coakka-samples/blob/main/LICENSE) | `LICENSE` |
+| Compiled CoAkka native libraries or executables, native headers, symbols, and native-only provenance | [CoAkka Native Artifact License 1.2](https://github.com/phuong-tran/coakka-samples/blob/main/NATIVE-LICENSE.md) | `NATIVE-LICENSE.md` |
+| File-to-license mapping | This document and the package-specific scope map | `PACKAGE-LICENSE.md` |
+| Aggregate attribution | Package identity and applicable license summary | `NOTICE` |
 
-Third-party or vendored components retain their own terms. An explicit notice
-inside a file or component controls that material.
+Source-only framework adapters that do not contain Native Artifacts can use
+Apache-2.0 alone. A package that contains Native Artifacts must preserve both
+license copies and the file-scope map.
 
-## Registry Pages
+## Infrastructure Boundary
 
-Package registry pages do not expose arbitrary files embedded in an npm
-tarball, Python wheel, or NuGet package at paths relative to the rendered
-README. Registry-facing README links must therefore use absolute public URLs.
-The embedded `LICENSE`, `NATIVE-LICENSE.md`, `PACKAGE-LICENSE.md`, and `NOTICE`
-remain the authoritative offline copies shipped with each package.
+The Native Artifact License allows companies of any size, including cloud and
+infrastructure companies, to run CoAkka internally and to use it inside an
+independent application or SaaS product. A separate agreement is required when
+the primary or substantial product offered to third parties is hosted CoAkka,
+a CoAkka control plane, a CoAkka runtime platform, or equivalent managed
+infrastructure.
 
-Runtime `2.5.0` npm and PyPI READMEs incorrectly used relative links for those
-four files. The files and package license metadata are present and unchanged,
-but the registry-rendered links do not open those files. PyPI resolves those
-paths as registry pages rather than serving embedded wheel files. Published
-package bytes are immutable; corrected absolute links require a later package
-release. NuGet Runtime `2.5.0` serves its `PACKAGE-LICENSE.md` through the
-registry's `License Info` endpoint, while its README names the other embedded
-files without linking them.
+The restriction depends on what is offered, not who the user is.
+
+## Package Manager Display
+
+Registry README pages should lead with the free application-use statement and
+link to the three stable `coakka-samples` documents above. Registry metadata
+must still identify the embedded package license file when a package contains
+custom-licensed Native Artifacts. It must not label the complete binary-bearing
+package as Apache-2.0.
+
+Every package also carries offline copies of `LICENSE`, `NATIVE-LICENSE.md`,
+`PACKAGE-LICENSE.md`, and `NOTICE`. Registry rendering is not assumed to expose
+arbitrary package members through README-relative URLs.
+
+## Historical Releases
+
+Runtime `2.5.0` npm and PyPI packages contain their required offline license
+files, but their immutable registry READMEs use relative links that the
+registries do not expose as package-member pages. NuGet Runtime `2.5.0` serves
+its embedded package license through the registry License Info endpoint. The
+documentation-and-licensing patch train supersedes the broken README links
+without changing the Runtime `2.5.0` native generation.

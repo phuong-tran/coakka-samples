@@ -5,7 +5,6 @@ This repository contains public sample code, documentation, and scripts for
 trying the CoAkka runtime and logger integration surfaces.
 
 The sample code and documentation are licensed under the Apache License,
-Version 2.0. Runtime binaries, connector packages, Maven artifacts, and other
-released artifacts fetched from coakka-publish are covered by the
-license terms of that artifact repository or by the license terms included in
-the specific release artifact.
+Version 2.0. Bundled CoAkka Native Core files are covered by the versioned
+NATIVE-LICENSE.md terms included in or explicitly referenced by their release.
+See docs/package-licensing.md for the file-scope package map.

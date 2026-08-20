@@ -173,8 +173,10 @@ separate ThreadSanitizer controls are included for supported Clang/GCC hosts.
 ```sh
 bash run.sh runtime-test smoke
 bash run.sh runtime-test pressure --requests 512 --queue-capacity 2
-bash run.sh runtime-test file-lane
-bash run.sh runtime-test stream-lane
+bash run.sh runtime-test file-lane-simple
+bash run.sh runtime-test file-lane-owner-aware
+bash run.sh runtime-test stream-lane-simple
+bash run.sh runtime-test stream-lane-owner-aware
 bash run.sh runtime-test race --threads 4 --requests 256
 bash run.sh runtime-test hot-reload --threads 4 --requests 256 --generations 64
 ```
@@ -450,6 +452,12 @@ output.
 ## License And Trademark
 
 See [TRADEMARKS.md](TRADEMARKS.md) for CoAkka naming and trademark guidance.
-Sample source licensing and published artifact licensing are documented
-separately. Use the license terms shipped with each release artifact for that
-artifact, and the repository license files for sample source and docs.
+
+CoAkka is free for application use, including commercial and production use.
+Sample source and documentation use the [Apache License, Version 2.0](LICENSE).
+CoAkka Native Core files use the
+[CoAkka Native Artifact License 1.2](NATIVE-LICENSE.md), which permits ordinary
+application and SaaS use but requires a separate agreement to sell or offer
+CoAkka itself as managed runtime or infrastructure. See
+[Package Licensing](docs/package-licensing.md) for the file-scope map used by
+binary-bearing platform packages.

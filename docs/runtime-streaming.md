@@ -120,10 +120,9 @@ policy into CoAkka.
 Exact released generation
 `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` contains the public Stream
 Lane header, pressure snapshots and waits, plus the additive native owner-grant
-symbols. It is published through Runtime `2.5.0` on npm, PyPI, and NuGet,
-Runtime Go `v1.8.0`, and SwiftPM `v2.5.0`. Maven Central Runtime remains at
-`2.4.1`, and the promoted standalone native artifact pointer remains deferred.
-Published typed connector APIs remain on the Simple Stream Lane profile.
+symbols. Package availability is recorded separately in
+[Current Packages](current-packages.md). Published typed connector APIs remain
+on the Simple Stream Lane profile.
 Dynamic native consumers must feature-detect optional owner-grant symbols.
 
 Direct TCP, TLS, and mutual TLS use the same security profiles as the file

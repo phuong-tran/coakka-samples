@@ -91,8 +91,10 @@ Simple uses `coakka_v2_file_lane_create()` and
 `coakka_v2_file_lane_create_owned()` and
 `coakka_v2_file_lane_prepare_receive_grant()`, then submits from the returned
 fixed-size projection. The released native C `2.5.0` generation exposes the
-Owner-aware profile. Published npm, PyPI, NuGet, Go, and Swift typed connector
-APIs remain Simple; Maven Central has not yet published Runtime `2.5.0`.
+Owner-aware profile. Typed high-level connector APIs remain Simple until a
+connector explicitly documents an Owner-aware projection. Select an exact
+published coordinate from [Current Packages](current-packages.md); availability
+does not belong to this long-lived protocol contract.
 
 ## Service A To Service B Connector Example
 

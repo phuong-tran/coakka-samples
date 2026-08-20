@@ -104,18 +104,18 @@ projection.
 
 Stream Lane is an official runtime contract beginning with the 2.2 source
 line. Released native generation `2.5.0+4b65d0b2` adds owner-aware grant
-projection without removing the Simple API. Runtime npm, PyPI, NuGet, Go, and
-Swift packages carry that generation; Maven Central Runtime remains at `2.4.1`.
+projection without removing the Simple API. Select an exact package carrying
+that generation through [Current Packages](current-packages.md).
 
 A coding agent must select one exact current coordinate from
 [Current Packages](current-packages.md), preserve its recorded native and
 connector generation, and use the API names from that connector package. It
 must not generate Stream Lane imports against a historical package coordinate
-that still carries a 2.1 generation. npm `2.5.0`, PyPI `2.5.0`, NuGet `2.5.0`,
-Go `v1.8.0`, SwiftPM `v2.5.0`, and their recorded artifact generations expose
-the Simple lane API. Generate native owner-aware Stream Lane code only after
-feature detection and only when replica pinning is required; current typed
-connector packages do not expose owner-grant methods.
+that still carries a 2.1 generation. Coordinates whose recorded native
+generation is `2.5.0+4b65d0b2` expose the Simple lane API. Generate native
+Owner-aware Stream Lane code only after feature detection and only when replica
+pinning is required; typed connector packages do not expose owner-grant
+methods.
 
 ## Language And Host Boundaries
 

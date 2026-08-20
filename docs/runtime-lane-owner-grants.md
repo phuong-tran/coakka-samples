@@ -1,10 +1,10 @@
 # Runtime Lane Owner Grants
 
-> **Release status:** the additive native C ABI is released in exact generation
-> `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` through Runtime npm,
-> PyPI, NuGet, Go, and Swift packages. Maven Central Runtime and the promoted
-> standalone native artifact pointer remain deferred. Released high-level
-> connectors do not yet project typed owner grants.
+> **Availability:** the additive native C ABI begins in exact generation
+> `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. High-level connectors do
+> not yet project typed owner grants. Select a published package through
+> [Current Packages](current-packages.md); registry status is maintained there,
+> not in this long-lived ownership contract.
 
 Runtime messages and lane sessions have different ownership laws:
 
@@ -40,8 +40,7 @@ Availability is explicit:
 | Surface | Simple | Owner-aware |
 | --- | --- | --- |
 | Native C generation `2.5.0+4b65d0b2` | Yes | Yes, feature-gated by `COAKKA_V2_RUNTIME_FEATURE_LANE_OWNER_GRANTS` |
-| Published Runtime npm `2.5.0`, PyPI `2.5.0`, NuGet `2.5.0`, Go `v1.8.0`, and SwiftPM `v2.5.0` typed APIs | Yes | Not yet projected as a typed connector API |
-| Maven Central Runtime `2.4.1` | Yes where supported by that version | No; Runtime `2.5.0` has not been published there |
+| Typed high-level connector APIs carrying this native generation | Yes | Not yet projected as a typed connector API |
 
 Do not reach around a connector's public API to resolve embedded native symbols.
 Use Owner-aware through the native C package until a connector explicitly
