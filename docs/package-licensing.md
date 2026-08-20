@@ -26,8 +26,8 @@ remain the authoritative offline copies shipped with each package.
 
 Runtime `2.5.0` npm and PyPI READMEs incorrectly used relative links for those
 four files. The files and package license metadata are present and unchanged,
-but the registry-rendered links return `404`. Published package bytes are
-immutable; corrected absolute links require a later package release. NuGet
-Runtime `2.5.0` serves its `PACKAGE-LICENSE.md` through the registry's
-`License Info` endpoint, while its README names the other embedded files
-without linking them.
+but the registry-rendered links do not open those files; PyPI currently
+redirects them back to the project page. Published package bytes are immutable;
+corrected absolute links require a later package release. NuGet Runtime `2.5.0`
+serves its `PACKAGE-LICENSE.md` through the registry's `License Info` endpoint,
+while its README names the other embedded files without linking them.
