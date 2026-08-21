@@ -48,6 +48,10 @@ require_text maven-central.gradle.kts 'expectedAndroidCoreCommit'
 require_text scripts/build-native-runtime.sh 'load-release-identity.sh'
 require_text scripts/build-host-jni.sh 'load-release-identity.sh'
 require_text scripts/run-device-smoke.sh 'load-release-identity.sh'
+require_text device-smoke/test-proguard-rules.pro \
+  '-keep class coakka.v2.android.CoAkkaAndroidRuntime { *; }'
+require_text device-smoke/test-proguard-rules.pro \
+  '-keep class coakka.v2.transport.** { *; }'
 require_text src/main/cpp/CMakeLists.txt 'coakka_android_file_lane_jni.cpp'
 require_text src/main/cpp/CMakeLists.txt 'coakka_android_stream_lane_jni.cpp'
 require_text src/main/java/coakka/v2/android/FileLane.kt 'fun openOwned('
