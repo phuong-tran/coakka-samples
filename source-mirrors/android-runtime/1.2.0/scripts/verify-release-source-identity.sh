@@ -52,6 +52,10 @@ require_text device-smoke/test-proguard-rules.pro \
   '-keep class coakka.v2.android.CoAkkaAndroidRuntime { *; }'
 require_text device-smoke/test-proguard-rules.pro \
   '-keep class coakka.v2.transport.** { *; }'
+require_text device-smoke/proguard-smoke-rules.pro \
+  '-keep class com.google.protobuf.** { *; }'
+require_text device-smoke/test-proguard-rules.pro \
+  '-keep class com.google.protobuf.** { *; }'
 require_text src/main/cpp/CMakeLists.txt 'coakka_android_file_lane_jni.cpp'
 require_text src/main/cpp/CMakeLists.txt 'coakka_android_stream_lane_jni.cpp'
 require_text src/main/java/coakka/v2/android/FileLane.kt 'fun openOwned('

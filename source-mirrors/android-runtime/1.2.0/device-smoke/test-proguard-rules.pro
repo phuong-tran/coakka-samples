@@ -13,6 +13,7 @@
 -keep class coakka.v2.android.CoAkkaAndroidRuntime { *; }
 -keep class coakka.v2.android.CoAkkaAndroidRuntime$* { *; }
 -keep class coakka.v2.android.File** { *; }
--keep class coakka.v2.android.LaneOwnerConfig { *; }
+-keep class coakka.v2.android.LaneOwner** { *; }
 -keep class coakka.v2.android.Stream** { *; }
+-keep class com.google.protobuf.** { *; }
 -keep class coakka.v2.transport.** { *; }
