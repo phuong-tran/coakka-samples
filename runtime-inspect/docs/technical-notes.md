@@ -30,18 +30,16 @@ That is intentional until a dedicated remote read/observe adapter exists.
 
 ## Published Archive Status
 
-The last public inspect archive generation is `2.4.0+c2f53117` for all five
-platforms. The sample runner selects by platform and verifies every archive
+The current public inspect archive generation is
+`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` for all five platforms. The
+sample runner selects by platform and verifies every archive
 through the same manifest/checksum resolver used by the runtime-client lane.
 
-Internal source and Docker preparation use Runtime
-`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`; no replacement Inspect archive
-or image is published by this source closeout.
+The archive and Docker image use that exact Runtime generation.
 
-macOS ARM64 and Linux ARM64/x86-64 complete matching-host command and `serve`
-smokes. Both Windows architectures pass Zig cross-build, PE architecture,
-dependency, archive, and checksum gates; matching-host Windows execution is not
-recorded for this generation.
+All five archives pass Runtime identity, dependency, architecture, archive,
+and checksum gates. macOS ARM64 completed command and `serve` smoke. Docker
+image smoke passed on Linux amd64 and arm64.
 
 The browser walkthrough GIF and MP4 were recorded on macOS from the published
 macOS ARM64 inspect archive. The recording used two local native runtime

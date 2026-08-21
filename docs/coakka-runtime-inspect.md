@@ -51,12 +51,13 @@ for application-owned work behind or beside the HTTP edge.
 
 ## Published Artifacts
 
-Current public native generation: `2.4.0+c2f53117`.
+Current public native generation:
+`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`.
 
 Native UI archives live under:
 
 ```text
-coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/
+coakka-tools/coakka-runtime-inspect/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/
 ```
 
 Current public platforms:
@@ -70,10 +71,10 @@ Current public platforms:
 Use `coakka-publish/artifacts/public-artifacts.tsv` for exact paths and
 checksums.
 
-The macOS ARM64 and both Linux archives completed command and `serve` smoke on
-matching hosts. The Windows archives passed Zig cross-build, PE architecture,
-native dependency, archive, and checksum gates; matching-host Windows execution
-is not claimed for this generation.
+All five archives pass Runtime identity, dependency, architecture, archive,
+and checksum gates. macOS ARM64 completed command and `serve` smoke. The
+Docker Hub image passed its inspect smoke on Linux amd64 and arm64. Native
+matching-host execution is not claimed for the other four archive targets.
 
 ## Sample Entry Points
 
@@ -91,14 +92,17 @@ bash run.sh runtime-inspect dockerhub-smoke
 For the Docker Hub zero-install path:
 
 ```sh
-docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.2-caff6d6d-remote
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:2.5.1-26f7944d-remote
 ```
 
 To serve the browser UI from the Docker Hub sample image:
 
 ```sh
-docker run --rm -p 18080:18080 docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.2-caff6d6d-remote serve
+docker run --rm -p 18080:18080 docker.io/gabrielgun1983/coakka-runtime-inspect-sample:2.5.1-26f7944d-remote serve
 ```
+
+The multi-architecture image digest is
+`sha256:8dae4f4f392a83a2cbbc4d6d4e15b39ad4186996a469d36a11e0992334329ac3`.
 
 ## Relationship To coakka-client
 

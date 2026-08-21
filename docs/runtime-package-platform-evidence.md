@@ -53,8 +53,11 @@ separately versioned public tool train remains at `2.4.0` below.
 ## Runtime Tool 2.4.0 Matrix
 
 `coakka-client` and `coakka-runtime-inspect` are published for the same five
-platforms under native generation `2.4.0+c2f53117`. Each archive is immutable
-and checksum-pinned in `artifacts/public-artifacts.tsv`.
+platforms under native generation
+`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`. Each archive is immutable
+and checksum-pinned in `artifacts/public-artifacts.tsv`. Their Docker Hub
+images are also published for Linux amd64/arm64 and passed their live
+walkthrough or inspect smoke.
 
 | Tool | Matching-host execution | Additional verified payloads |
 | --- | --- | --- |

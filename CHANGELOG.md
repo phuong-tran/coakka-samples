@@ -5,6 +5,13 @@ surface. It is not a repository release ledger. Artifact versions, manifests,
 and checksums live in the versioned
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) warehouse.
 
+## 2026-08-21
+
+- Advanced the Client and Inspect samples, archive pins, Docker bundle pins,
+  and Docker Hub defaults to Runtime
+  `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`. Native package smoke passes on
+  macOS ARM64; both published images pass their Linux amd64/arm64 live gates.
+
 ## 2026-08-20
 
 - Advanced the direct JVM Runtime samples to Maven Central

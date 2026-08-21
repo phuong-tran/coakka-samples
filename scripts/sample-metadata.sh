@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-COAKKA_PUBLISH_RAW_BASE_DEFAULT="https://raw.githubusercontent.com/phuong-tran/coakka-publish/8dc484826987a45a2029c7ac7db0a72d604bbb68"
+COAKKA_PUBLISH_RAW_BASE_DEFAULT="https://raw.githubusercontent.com/phuong-tran/coakka-publish/9429dd78fee2127e3aacbf0e753ec1a7bc141f6b"
 
 COAKKA_RUNTIME_NATIVE_VERSION="2.5.1"
 COAKKA_RUNTIME_NATIVE_RELEASE="2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be"
@@ -126,18 +126,18 @@ COAKKA_ARTIFACT_ROWS=(
   "runtime Tauri source package|runtime/tauri/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e/coakka-runtime-tauri-intents-2.5.3-source.tar.gz"
   "Spring Boot starter Maven jar|maven/io/github/phuong-tran/coakka/spring-boot-starter/2.5.3/spring-boot-starter-2.5.3.jar"
   "Quarkus extension Maven jar|maven/io/github/phuong-tran/coakka/quarkus-extension/2.5.3/quarkus-extension-2.5.3.jar"
-  "coakka-client linux-x86_64|coakka-tools/coakka-client/releases/2.4.0+c2f53117/coakka-client-v2-2.4.0-linux-x86_64.tar.gz"
-  "coakka-client linux-aarch64|coakka-tools/coakka-client/releases/2.4.0+c2f53117/coakka-client-v2-2.4.0-linux-aarch64.tar.gz"
-  "coakka-client macos-aarch64|coakka-tools/coakka-client/releases/2.4.0+c2f53117/coakka-client-v2-2.4.0-macos-aarch64.tar.gz"
-  "coakka-client windows-x86_64|coakka-tools/coakka-client/releases/2.4.0+c2f53117/coakka-client-v2-2.4.0-windows-x86_64.tar.gz"
-  "coakka-client windows-aarch64|coakka-tools/coakka-client/releases/2.4.0+c2f53117/coakka-client-v2-2.4.0-windows-aarch64.tar.gz"
-  "coakka-client docker-demo linux-x86_64|coakka-tools/coakka-client/docker-demo/releases/1.3.2+caff6d6d/coakka-client-docker-demo-v2-1.3.2-linux-x86_64.tar.gz"
-  "coakka-client docker-demo linux-aarch64|coakka-tools/coakka-client/docker-demo/releases/1.3.2+caff6d6d/coakka-client-docker-demo-v2-1.3.2-linux-aarch64.tar.gz"
-  "coakka-runtime-inspect linux-aarch64|coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/coakka-runtime-inspect-v2-2.4.0-linux-aarch64.tar.gz"
-  "coakka-runtime-inspect linux-x86_64|coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/coakka-runtime-inspect-v2-2.4.0-linux-x86_64.tar.gz"
-  "coakka-runtime-inspect macos-aarch64|coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/coakka-runtime-inspect-v2-2.4.0-macos-aarch64.tar.gz"
-  "coakka-runtime-inspect windows-x86_64|coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/coakka-runtime-inspect-v2-2.4.0-windows-x86_64.tar.gz"
-  "coakka-runtime-inspect windows-aarch64|coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/coakka-runtime-inspect-v2-2.4.0-windows-aarch64.tar.gz"
+  "coakka-client linux-x86_64 2.5.1|coakka-tools/coakka-client/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-client-v2-2.5.1-linux-x86_64.tar.gz"
+  "coakka-client linux-aarch64 2.5.1|coakka-tools/coakka-client/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-client-v2-2.5.1-linux-aarch64.tar.gz"
+  "coakka-client macos-aarch64 2.5.1|coakka-tools/coakka-client/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-client-v2-2.5.1-macos-aarch64.tar.gz"
+  "coakka-client windows-x86_64 2.5.1|coakka-tools/coakka-client/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-client-v2-2.5.1-windows-x86_64.tar.gz"
+  "coakka-client windows-aarch64 2.5.1|coakka-tools/coakka-client/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-client-v2-2.5.1-windows-aarch64.tar.gz"
+  "coakka-client docker-demo linux-x86_64 2.5.1|coakka-tools/coakka-client/docker-demo/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-client-docker-demo-v2-2.5.1-linux-x86_64.tar.gz"
+  "coakka-client docker-demo linux-aarch64 2.5.1|coakka-tools/coakka-client/docker-demo/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-client-docker-demo-v2-2.5.1-linux-aarch64.tar.gz"
+  "coakka-runtime-inspect linux-aarch64 2.5.1|coakka-tools/coakka-runtime-inspect/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-runtime-inspect-v2-2.5.1-linux-aarch64.tar.gz"
+  "coakka-runtime-inspect linux-x86_64 2.5.1|coakka-tools/coakka-runtime-inspect/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-runtime-inspect-v2-2.5.1-linux-x86_64.tar.gz"
+  "coakka-runtime-inspect macos-aarch64 2.5.1|coakka-tools/coakka-runtime-inspect/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-runtime-inspect-v2-2.5.1-macos-aarch64.tar.gz"
+  "coakka-runtime-inspect windows-x86_64 2.5.1|coakka-tools/coakka-runtime-inspect/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-runtime-inspect-v2-2.5.1-windows-x86_64.tar.gz"
+  "coakka-runtime-inspect windows-aarch64 2.5.1|coakka-tools/coakka-runtime-inspect/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-runtime-inspect-v2-2.5.1-windows-aarch64.tar.gz"
 )
 
 coakka_runtime_native_package_fields() {

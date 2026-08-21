@@ -91,29 +91,30 @@ runtime target.
 
 ## Published Artifacts
 
-Current public native CLI generation: `2.4.0+c2f53117`.
+Current public native CLI generation:
+`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`.
 
 Native CLI archives live under:
 
 ```text
-coakka-tools/coakka-client/releases/2.4.0+c2f53117/
+coakka-tools/coakka-client/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/
 ```
 
-The Docker Linux verification bundle remains on its separately released
-generation:
+The Docker Linux verification bundle uses the same Runtime generation:
 
 ```text
-coakka-tools/coakka-client/docker-demo/releases/1.3.2+caff6d6d/
+coakka-tools/coakka-client/docker-demo/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/
 ```
 
 Use `coakka-publish/artifacts/public-artifacts.tsv` for exact paths and
 checksums.
 
-The macOS ARM64 archive completes matching-host command execution. Linux
-ARM64/x86-64 complete matching-architecture Docker build and dependency gates.
-All five archives pass dependency, architecture, archive, and checksum gates;
-matching-host Linux command execution and Windows execution are not recorded
-for this generation.
+All five archives pass Runtime identity, dependency, architecture, archive,
+and checksum gates. The Docker Hub image
+`docker.io/gabrielgun1983/coakka-runtime-client-demo:2.5.1-26f7944d-remote`
+has digest
+`sha256:30586188a7a400b8085a3eed475ad086761f1506816ac6d1b70887fe901958e6`;
+its full walkthrough passed on Linux amd64 and arm64.
 
 ## Sample Entry Points
 

@@ -20,8 +20,8 @@ and independently verified outcome per owner. The native pointer, Maven
 Runtime/framework adapters, checksum-pinned connector archives, Go `v1.8.3`,
 and SwiftPM `v2.5.3` use Core
 `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`. npm, PyPI, and NuGet Runtime
-`2.5.3` use that same Core generation. Runtime tools remain independently
-versioned at `2.4.0+c2f53117`.
+`2.5.3` use that same Core generation. Runtime tools are published at
+`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`.
 
 For day-to-day development and connector validation, treat macOS and Windows as
 valid host environments. For deployment claims, operational drills, and the

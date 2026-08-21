@@ -207,18 +207,16 @@ The final check is a `coakka-client shell --script` run that switches from
 
 ## Docker Hub Demo Image
 
-The following is the last public Docker Hub evaluation image. Internal source
-now targets Runtime `2.5.1+C1`; this source closeout does not publish a
-replacement:
+The current public Docker Hub image uses Runtime `2.5.1+C1`:
 
 ```sh
-docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.2-caff6d6d-remote
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:2.5.1-26f7944d-remote
 ```
 
 The default command starts two native runtime services inside the container and
 uses `coakka-client` to call both. To run the packaged CLI directly:
 
 ```sh
-docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.2-caff6d6d-remote client --help
-docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.2-caff6d6d-remote client version --output json
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:2.5.1-26f7944d-remote client --help
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:2.5.1-26f7944d-remote client version --output json
 ```

@@ -111,8 +111,8 @@ major `v1` because its established module path does not carry a `/v2` suffix.
 | NuGet | `CoAkka.Runtime`, exact `2.5.3` |
 | Go module | `github.com/phuong-tran/coakka-runtime-go@v1.8.3` |
 | SwiftPM | `https://github.com/phuong-tran/coakka-runtime-swift.git`, exact `2.5.3` |
-| coakka-client | `coakka-tools/coakka-client/releases/2.4.0+c2f53117/` |
-| coakka-runtime-inspect | `coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/` |
+| coakka-client | `coakka-tools/coakka-client/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/` |
+| coakka-runtime-inspect | `coakka-tools/coakka-runtime-inspect/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/` |
 
 ## Main Public Repositories
 

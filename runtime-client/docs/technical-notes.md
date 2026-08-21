@@ -16,22 +16,22 @@ Current release lines:
 ```text
 coakka-runtime-client product lane
 coakka-client command and archive prefix
-last public release `2.4.0+c2f53117` on all five listed platforms
+current public release `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` on all five listed platforms
 ```
 
 Published CLI archives:
 
 | Platform | Archive |
 | --- | --- |
-| macOS ARM64 | [coakka-client-v2-2.4.0-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/da4a5e9c3f1f846970fb84c8f18bca893051c487/coakka-tools/coakka-client/releases/2.4.0+c2f53117/coakka-client-v2-2.4.0-macos-aarch64.tar.gz) |
-| Linux x86_64 | [coakka-client-v2-2.4.0-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/da4a5e9c3f1f846970fb84c8f18bca893051c487/coakka-tools/coakka-client/releases/2.4.0+c2f53117/coakka-client-v2-2.4.0-linux-x86_64.tar.gz) |
-| Linux ARM64 | [coakka-client-v2-2.4.0-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/da4a5e9c3f1f846970fb84c8f18bca893051c487/coakka-tools/coakka-client/releases/2.4.0+c2f53117/coakka-client-v2-2.4.0-linux-aarch64.tar.gz) |
-| Windows x86_64 | [coakka-client-v2-2.4.0-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/da4a5e9c3f1f846970fb84c8f18bca893051c487/coakka-tools/coakka-client/releases/2.4.0+c2f53117/coakka-client-v2-2.4.0-windows-x86_64.tar.gz) |
-| Windows ARM64 | [coakka-client-v2-2.4.0-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/da4a5e9c3f1f846970fb84c8f18bca893051c487/coakka-tools/coakka-client/releases/2.4.0+c2f53117/coakka-client-v2-2.4.0-windows-aarch64.tar.gz) |
+| macOS ARM64 | [coakka-client-v2-2.5.1-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/9429dd78fee2127e3aacbf0e753ec1a7bc141f6b/coakka-tools/coakka-client/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-client-v2-2.5.1-macos-aarch64.tar.gz) |
+| Linux x86_64 | [coakka-client-v2-2.5.1-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/9429dd78fee2127e3aacbf0e753ec1a7bc141f6b/coakka-tools/coakka-client/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-client-v2-2.5.1-linux-x86_64.tar.gz) |
+| Linux ARM64 | [coakka-client-v2-2.5.1-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/9429dd78fee2127e3aacbf0e753ec1a7bc141f6b/coakka-tools/coakka-client/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-client-v2-2.5.1-linux-aarch64.tar.gz) |
+| Windows x86_64 | [coakka-client-v2-2.5.1-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/9429dd78fee2127e3aacbf0e753ec1a7bc141f6b/coakka-tools/coakka-client/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-client-v2-2.5.1-windows-x86_64.tar.gz) |
+| Windows ARM64 | [coakka-client-v2-2.5.1-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/9429dd78fee2127e3aacbf0e753ec1a7bc141f6b/coakka-tools/coakka-client/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-client-v2-2.5.1-windows-aarch64.tar.gz) |
 
 Artifact catalog and manifest:
-[CoAkka Public Artifacts](https://github.com/phuong-tran/coakka-publish/tree/da4a5e9c3f1f846970fb84c8f18bca893051c487),
-[public-artifacts.tsv](https://raw.githubusercontent.com/phuong-tran/coakka-publish/da4a5e9c3f1f846970fb84c8f18bca893051c487/artifacts/public-artifacts.tsv)
+[CoAkka Public Artifacts](https://github.com/phuong-tran/coakka-publish/tree/9429dd78fee2127e3aacbf0e753ec1a7bc141f6b),
+[public-artifacts.tsv](https://raw.githubusercontent.com/phuong-tran/coakka-publish/9429dd78fee2127e3aacbf0e753ec1a7bc141f6b/artifacts/public-artifacts.tsv)
 
 Per-lane checksums are stored beside each release directory in
 `coakka-publish`.
@@ -45,18 +45,18 @@ for this generation.
 Artifact layout:
 
 ```text
-coakka-tools/coakka-client/releases/2.4.0+c2f53117/
-  coakka-client-v2-2.4.0-macos-aarch64.tar.gz
-  coakka-client-v2-2.4.0-linux-x86_64.tar.gz
-  coakka-client-v2-2.4.0-linux-aarch64.tar.gz
-  coakka-client-v2-2.4.0-windows-x86_64.tar.gz
-  coakka-client-v2-2.4.0-windows-aarch64.tar.gz
+coakka-tools/coakka-client/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/
+  coakka-client-v2-2.5.1-macos-aarch64.tar.gz
+  coakka-client-v2-2.5.1-linux-x86_64.tar.gz
+  coakka-client-v2-2.5.1-linux-aarch64.tar.gz
+  coakka-client-v2-2.5.1-windows-x86_64.tar.gz
+  coakka-client-v2-2.5.1-windows-aarch64.tar.gz
 ```
 
 The matching Docker verification bundle lives under:
 
 ```text
-coakka-tools/coakka-client/docker-demo/releases/1.3.2+caff6d6d/
+coakka-tools/coakka-client/docker-demo/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/
 ```
 
 The `demo/` path segment is an existing artifact layout name. Public wording
@@ -87,7 +87,7 @@ behavior. They are not runtime-core schema.
 
 ## Transport Profile
 
-The last public runtime-client release reports:
+The current public runtime-client release reports:
 
 ```text
 southbound_backend=tcp
@@ -121,8 +121,8 @@ runtime service containers and prints the service, port, and route before each
 `coakka-client` call. This remains sample orchestration; it does not add a new
 runtime-core responsibility or a new published artifact lane.
 
-The last public Docker Hub image
-`docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.2-caff6d6d-remote`
+The current public Docker Hub image
+`docker.io/gabrielgun1983/coakka-runtime-client-demo:2.5.1-26f7944d-remote`
 prebuilds that walkthrough into one container. It contains the published
 `coakka-client` and native demo service artifacts for Linux amd64/arm64 and
 starts two native runtime service processes before driving them from the CLI.

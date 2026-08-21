@@ -5,11 +5,8 @@ It is the visual sibling of `coakka-client`: both point at a caller-supplied
 runtime address, both use runtime-owned truth, and both keep route try behavior
 aligned with `call` / `ask`.
 
-The internal source and Docker context now target Runtime native
-`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`. This source closeout does not
-publish a replacement Inspect archive or Docker Hub image. The `2.4.0` archives
-are the last public product artifacts; the `1.3.2` image is the last public
-Docker sample artifact.
+The published archives and Docker image use Runtime native
+`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`.
 
 This sample lane can verify the published macOS ARM64, Linux x86_64, Linux
 ARM64, Windows x86_64, and Windows ARM64 inspect archives from
@@ -85,37 +82,37 @@ are explicitly labelled `local-linked-runtime`.
 
 ## Published Release
 
-The last public inspect release is platform-specific:
+The current public inspect release is platform-specific:
 
 ```text
 coakka-runtime-inspect native UI
-2.4.0+c2f53117 release id for macOS ARM64
-2.4.0+c2f53117 release id for Linux x86_64
-2.4.0+c2f53117 release id for Linux ARM64
-2.4.0+c2f53117 release id for Windows x86_64
-2.4.0+c2f53117 release id for Windows ARM64
+2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be release id for macOS ARM64
+2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be release id for Linux x86_64
+2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be release id for Linux ARM64
+2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be release id for Windows x86_64
+2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be release id for Windows ARM64
 ```
 
 Direct download:
 
-[coakka-runtime-inspect-v2-2.4.0-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/da4a5e9c3f1f846970fb84c8f18bca893051c487/coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/coakka-runtime-inspect-v2-2.4.0-linux-aarch64.tar.gz)
+[coakka-runtime-inspect-v2-2.5.1-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/9429dd78fee2127e3aacbf0e753ec1a7bc141f6b/coakka-tools/coakka-runtime-inspect/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-runtime-inspect-v2-2.5.1-linux-aarch64.tar.gz)
 
-[coakka-runtime-inspect-v2-2.4.0-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/da4a5e9c3f1f846970fb84c8f18bca893051c487/coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/coakka-runtime-inspect-v2-2.4.0-linux-x86_64.tar.gz)
+[coakka-runtime-inspect-v2-2.5.1-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/9429dd78fee2127e3aacbf0e753ec1a7bc141f6b/coakka-tools/coakka-runtime-inspect/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-runtime-inspect-v2-2.5.1-linux-x86_64.tar.gz)
 
-[coakka-runtime-inspect-v2-2.4.0-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/da4a5e9c3f1f846970fb84c8f18bca893051c487/coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/coakka-runtime-inspect-v2-2.4.0-macos-aarch64.tar.gz)
+[coakka-runtime-inspect-v2-2.5.1-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/9429dd78fee2127e3aacbf0e753ec1a7bc141f6b/coakka-tools/coakka-runtime-inspect/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-runtime-inspect-v2-2.5.1-macos-aarch64.tar.gz)
 
-[coakka-runtime-inspect-v2-2.4.0-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/da4a5e9c3f1f846970fb84c8f18bca893051c487/coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/coakka-runtime-inspect-v2-2.4.0-windows-x86_64.tar.gz)
+[coakka-runtime-inspect-v2-2.5.1-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/9429dd78fee2127e3aacbf0e753ec1a7bc141f6b/coakka-tools/coakka-runtime-inspect/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-runtime-inspect-v2-2.5.1-windows-x86_64.tar.gz)
 
-[coakka-runtime-inspect-v2-2.4.0-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/da4a5e9c3f1f846970fb84c8f18bca893051c487/coakka-tools/coakka-runtime-inspect/releases/2.4.0+c2f53117/coakka-runtime-inspect-v2-2.4.0-windows-aarch64.tar.gz)
+[coakka-runtime-inspect-v2-2.5.1-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/9429dd78fee2127e3aacbf0e753ec1a7bc141f6b/coakka-tools/coakka-runtime-inspect/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-runtime-inspect-v2-2.5.1-windows-aarch64.tar.gz)
 
 Artifact catalog and manifest:
-[CoAkka Public Artifacts](https://github.com/phuong-tran/coakka-publish/tree/da4a5e9c3f1f846970fb84c8f18bca893051c487),
-[public-artifacts.tsv](https://raw.githubusercontent.com/phuong-tran/coakka-publish/da4a5e9c3f1f846970fb84c8f18bca893051c487/artifacts/public-artifacts.tsv)
+[CoAkka Public Artifacts](https://github.com/phuong-tran/coakka-publish/tree/9429dd78fee2127e3aacbf0e753ec1a7bc141f6b),
+[public-artifacts.tsv](https://raw.githubusercontent.com/phuong-tran/coakka-publish/9429dd78fee2127e3aacbf0e753ec1a7bc141f6b/artifacts/public-artifacts.tsv)
 
-macOS ARM64 and Linux ARM64/x86-64 complete matching-host command and `serve`
-smokes. Both Windows architectures pass Zig cross-build, PE architecture,
-dependency, archive, and checksum gates; matching-host Windows execution is not
-recorded for this generation.
+All five archives pass Runtime identity, dependency, architecture, archive,
+and checksum gates. macOS ARM64 completed command and `serve` smoke. The
+Docker Hub image passed inspect smoke on Linux amd64 and arm64. Native
+matching-host execution is not claimed for the other four archive targets.
 
 ## Docker
 
@@ -147,16 +144,16 @@ COAKKA_RUNTIME_INSPECT_DOCKER_PORT=18081 \
   bash run.sh runtime-inspect docker-serve
 ```
 
-Run the last public Docker Hub evaluation image without preparing a local artifact context:
+Run the current public Docker Hub image without preparing a local artifact context:
 
 ```sh
 bash run.sh runtime-inspect dockerhub-smoke
-docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.2-caff6d6d-remote
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:2.5.1-26f7944d-remote
 ```
 
 Serve the browser UI from Docker Hub:
 
 ```sh
 bash run.sh runtime-inspect dockerhub-serve
-docker run --rm -p 18080:18080 docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.2-caff6d6d-remote serve
+docker run --rm -p 18080:18080 docker.io/gabrielgun1983/coakka-runtime-inspect-sample:2.5.1-26f7944d-remote serve
 ```

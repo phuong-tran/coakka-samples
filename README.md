@@ -155,8 +155,8 @@ authorization in the application's control plane; keep file and stream bytes
 out of ordinary runtime message payloads.
 
 The promoted native pointer, static JVM/framework and Go/C#/Swift compatibility
-archives, `coakka-client`, and `coakka-runtime-inspect` pins retain generation
-`2.4.0+c2f53117`. Current Rust/Mojo/Zig/Tauri mirrors package connector
+archives, `coakka-client`, and `coakka-runtime-inspect` use generation
+`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`. Current Rust/Mojo/Zig/Tauri mirrors package connector
 `2.5.3` sources over native generation
 `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`. Maven Central Runtime `2.5.3`,
 registry-backed npm/PyPI/NuGet Runtime `2.5.3`, Go `v1.8.3`, and SwiftPM `v2.5.3`

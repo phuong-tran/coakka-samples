@@ -123,20 +123,18 @@ bash run.sh runtime-inspect docker-serve --connect host.docker.internal:19091
 
 ## Docker Hub Image
 
-The following is the last public Docker Hub evaluation image. Internal source
-now targets Runtime `2.5.1+C1`; this source closeout does not publish a
-replacement:
+The current public Docker Hub image uses Runtime `2.5.1+C1`:
 
 ```sh
 bash run.sh runtime-inspect dockerhub-smoke
-docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.2-caff6d6d-remote
+docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:2.5.1-26f7944d-remote
 ```
 
 Serve the browser UI:
 
 ```sh
 bash run.sh runtime-inspect dockerhub-serve
-docker run --rm -p 18080:18080 docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.2-caff6d6d-remote serve
+docker run --rm -p 18080:18080 docker.io/gabrielgun1983/coakka-runtime-inspect-sample:2.5.1-26f7944d-remote serve
 ```
 
 Route-try can still point at a caller-supplied runtime address:
