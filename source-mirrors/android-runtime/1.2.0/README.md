@@ -55,12 +55,12 @@ scripts/run-device-smoke.sh \
 
 That release-minified app consumes the exact AAR file, verifies its four-ABI
 inventory and metadata schema 2, and requires clean public-connector and
-exact-Core provenance. R8 must preserve every statically named JNI class,
-native method, callback method, and callback-interface descriptor through the
-AAR's consumer rules. Instrumentation then checks native identity/capabilities,
-one request outcome, one owner-pinned File transfer, and one owner-pinned
-Stream delivery. Evidence from the earlier Core `2.5.0` AAR is historical and
-must not be reused for this pin.
+exact-Core provenance. The R8 gate checks four exact JNI/callback class
+identities in the mapping and 34 native plus two callback members and
+descriptors in the final APK DEX. Instrumentation then checks native
+identity/capabilities, one request outcome, one owner-pinned File transfer, and
+one owner-pinned Stream delivery. The clean public-tag candidate passes this
+path on the named API 36 ARM64 emulator.
 
 The unsigned Central publication shape is independently checkable from the
 mirror and needs no release credential:
@@ -82,9 +82,9 @@ public Samples tag. In particular, an artifact built from the canonical Core
 producer checkout records that repository's commit as the connector source;
 it must not be signed or promoted as the Samples connector.
 
-After public tag `android-runtime-1.2.0` exists, prepare the signed Portal
-bundle only from a separate clean checkout of that tag and a separate clean
-Core checkout at the pinned C1 commit:
+Prepare the signed Portal bundle only from a separate clean checkout of the
+annotated public tag `android-runtime-1.2.0` and a separate clean Core checkout
+at the pinned C1 commit:
 
 ```sh
 samples_checkout=/absolute/path/to/clean-coakka-samples-tag
