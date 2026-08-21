@@ -16,15 +16,13 @@ target has replicas, read
 [Runtime Lane Owner Grants](../docs/runtime-lane-owner-grants.md) and run the
 package-backed [`go/replica-file-fanout`](go/replica-file-fanout/README.md)
 sample; it demonstrates the application-level `ALL` policy with one exact grant
-and independently verified outcome per owner. The native
-pointer, static JVM/framework and Go/C#/Swift compatibility artifacts, and
-runtime tools retain generation `2.4.0+c2f53117`. Current Rust/Mojo/Zig/Tauri
-mirrors package connector `2.5.2` sources over native generation
-`2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. Registry-backed Maven Runtime
-`2.5.2`, npm `2.5.2`, PyPI `2.5.2`, NuGet Runtime `2.5.2`, Go `v1.8.2`, and
-SwiftPM `v2.5.2` samples consume published, clean-install verified packages
-that use the same native generation and expose typed replica-owner File and
-Stream Lane grants.
+and independently verified outcome per owner. The native pointer, Maven
+Runtime/framework adapters, checksum-pinned connector archives, Go `v1.8.3`,
+and SwiftPM `v2.5.3` use Core
+`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`. npm, PyPI, and NuGet remain
+at connector `2.5.2` over their preceding native generation until those
+registries receive a separate release. Runtime tools remain independently
+versioned at `2.4.0+c2f53117`.
 
 For day-to-day development and connector validation, treat macOS and Windows as
 valid host environments. For deployment claims, operational drills, and the
@@ -42,17 +40,15 @@ gate. No Maven Central publication is planned, so use the
 without treating any coordinate as live.
 
 This `runtime/` directory is the app-host connector sample lane. Artifact
-generations advance independently: compatibility mirrors retain
-`2.4.0+c2f53117`, while current Rust/Mojo/Zig/Tauri mirrors and registry-backed
-Runtime packages use native generation
-`2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. Package-manager samples use the
-exact version published on their registry. The separate
+generations advance independently: current static connector mirrors use
+`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e`, while package-manager
+samples use the exact version published on their registry. The separate
 `coakka-runtime-client` CLI sample lane lives under
 [`../runtime-client`](../runtime-client/README.md).
 
 Swift runtime is published at
-`github.com/phuong-tran/coakka-runtime-swift@2.5.2` with native runtime
-generation `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`; current Swift execution evidence covers macOS
+`github.com/phuong-tran/coakka-runtime-swift@2.5.3` with native runtime
+generation `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`; current Swift execution evidence covers macOS
 ARM64.
 
 The runtime lane is not introduced as a generic framework. It starts from
@@ -98,7 +94,7 @@ repositories {
 }
 
 dependencies {
-    implementation("io.github.phuong-tran.coakka:runtime:2.5.2")
+    implementation("io.github.phuong-tran.coakka:runtime:2.5.3")
 }
 ```
 
@@ -106,7 +102,7 @@ Spring Boot same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("io.github.phuong-tran.coakka:spring-boot-starter:2.5.2")
+    implementation("io.github.phuong-tran.coakka:spring-boot-starter:2.5.3")
     implementation("org.springframework.boot:spring-boot-starter-web")
 }
 ```
@@ -115,7 +111,7 @@ Quarkus same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("io.github.phuong-tran.coakka:quarkus-extension:2.5.2")
+    implementation("io.github.phuong-tran.coakka:quarkus-extension:2.5.3")
     implementation("io.quarkus:quarkus-rest-jackson")
 }
 ```
@@ -234,7 +230,7 @@ Full recording: [coakka-runtime-native.mp4](../docs/assets/coakka-runtime-native
 Go module:
 
 ```sh
-go get github.com/phuong-tran/coakka-runtime-go@v1.8.2
+go get github.com/phuong-tran/coakka-runtime-go@v1.8.3
 ```
 
 C# NuGet package:
@@ -247,8 +243,8 @@ Rust currently ships as a published archive package:
 
 ```sh
 curl -L \
-  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/rust/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/coakka-runtime-rs-2.5.2.tar.gz" \
-  -o /tmp/coakka-runtime-rs-2.5.2.tar.gz
+  "https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/runtime/rust/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e/coakka-runtime-rs-2.5.3.tar.gz" \
+  -o /tmp/coakka-runtime-rs-2.5.3.tar.gz
 ```
 
 After dependency setup, every host follows the same shape:

@@ -8,11 +8,9 @@ code.
 Current artifact generation:
 
 ```text
-native runtime:   2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a
-non-JVM source:   3ae74f4
-JVM source:       3ae74f4
-payload staging:  3ae74f4
-non-JVM artifacts: 2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4
+native runtime:   2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be
+connector source: 0ba485e8ff19f3ce23902345cb445a1f652fe3f3
+connector artifacts: 2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e
 ```
 
 ## Evidence Terms
@@ -29,31 +27,28 @@ non-JVM artifacts: 2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4
 the Windows 11 ARM64 test VM uses Microsoft x64 emulation and is identified as
 such; it is not presented as x86-64 hardware evidence.
 
-## Native 2.5.0 Matrix
+## Native 2.5.1 Matrix
 
 | Platform | Library | SHA-256 | Release evidence |
 | --- | --- | --- | --- |
-| Linux ARM64 | `libcoakka_runtime_v2.so` | `bf32ebb908cde7ab7eade427356365ad561c1a4222a950d73097ff92329b79c1` | Debian 12/glibc 2.36 native build, runtime identity, exact 139-export, dependency, archive, package, public C lifecycle, File/Stream Lane, pressure, Client, and Inspect gates pass on Raspberry Pi 5. |
-| Linux x86-64 | `libcoakka_runtime_v2.so` | `07b246b97bad301b81cc90bb9d6f02d9ed425227bc302bc4b9039489b60d1727` | Debian 12/glibc 2.36 native build, runtime identity, exact 139-export, dependency, archive, package, Client, and Inspect gates pass in matching-architecture Actions. |
-| macOS ARM64 | `libcoakka_runtime_v2.dylib` | `391d2256bd5276f7b9001ae9afa8900dd82c5d29e2d81bc0edc1949c509dc4c1` | Native build, exact 139-export and dependency gates, full connector conformance, and packaged consumer smokes pass. |
-| Windows ARM64 | `libcoakka_runtime_v2.dll` | `5662cd77be9e5446bf530c7aedbeccd4b22e5a08b3c96acd92825014abba020f` | Zig cross-build, PE architecture, exact 139-export, dependency, archive, package, and matching-host execution gates pass. |
-| Windows x86-64 | `libcoakka_runtime_v2.dll` | `45e4832d0a4c05cce36ec2dea9cc3e32695159b6bc8c741fce9d0bee583a938f` | Zig cross-build plus PE architecture, exact 139-export, dependency, digest, archive, and package gates pass. Matching-host packaged DLL command, snapshot, and bounded Inspect-server execution pass on Windows Server 2025; the focused native `6/6` suite also passes under Windows-on-ARM x64 emulation. |
+| Linux ARM64 | `libcoakka_runtime_v2.so` | `dedacfa666c398b01e0aefa0bd9f649a6a63722645e5b822252d3e505e7fda43` | Debian 12/glibc 2.36 build and matching physical ARM64-host RuntimeInfo and focused execution pass. |
+| Linux x86-64 | `libcoakka_runtime_v2.so` | `0ce69740cff0a5f7d5b2f002340ecff645c3c82f4f50d6dfdb9fb8a19e90a38b` | Debian 12/glibc 2.36 build, RuntimeInfo, exports, dependencies, and Docker/QEMU execution pass; matching x86-64 hardware remains open. |
+| macOS ARM64 | `libcoakka_runtime_v2.dylib` | `277d9ff36b017f2eef2e630ac82bb9ba68f112879297e8067521fe665f82368a` | Native build, RuntimeInfo, exact 139-export, dependency, archive, and installed-package consumer gates pass. |
+| Windows ARM64 | `libcoakka_runtime_v2.dll` | `0ee49c59de50dad40fa403ce2f32b59e0da05ab7677bf3d1ca8a9ccfe2f9b545` | PE architecture, exact 139-export, dependency, archive, and matching ARM64-guest lifecycle/RuntimeInfo gates pass. |
+| Windows x86-64 | `libcoakka_runtime_v2.dll` | `a54e8a43089adf68f9275c83d0a4495bf8deb384c25f993cd13ef42233da573b` | PE architecture, exact 139-export, dependency, archive, and Windows-on-ARM x64 compatibility execution pass; matching x86-64 hardware remains open. |
 
 The native archive is
-`runtime/native/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a/coakka-runtime-native-v2-2.5.0.tar.gz`
+`runtime/native/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-runtime-native-v2-2.5.1.tar.gz`
 with SHA-256
-`1a7c33f167e03554e7eaa137b92d87f697c8dcec7186fa42b12b70460006055c`.
+`da1e5713de30efb841896670dbeb310ac9e91547e9a2a25ecea3315c7d812e93`.
 It contains all five libraries, the public headers including
 `coakka/v2/file_lane.h` and `coakka/v2/stream_lane.h`, CMake metadata,
 manifest, and per-file checksums.
 
-The Linux payloads were restaged after Raspberry Pi 5 execution rejected the
-first candidate for requiring `GLIBC_2.38`. Both replacements fail closed above
-the glibc 2.36 baseline. Raspberry Pi 5 Debian 12 execution covers the exact
-ARM64 native archive and unpublished `2.5.0` candidate tool packages; Core
-Actions run `32131181333` supplies the corresponding Debian 12 x86-64 evidence.
-That candidate tool evidence does not advance the published `2.4.0` tool train
-below.
+Both Linux payloads fail closed above the glibc 2.36 baseline. The archive and
+all five libraries pass architecture, dependency, exact 139-export, public
+header, legal-bundle, checksum, and embedded build-identity verification. The
+separately versioned public tool train remains at `2.4.0` below.
 
 ## Runtime Tool 2.4.0 Matrix
 
@@ -75,25 +70,15 @@ and checksum gates.
 
 | Surface | Exact artifact coordinate | Native payloads | Current exact-artifact evidence |
 | --- | --- | --- | --- |
-| JVM | `io.github.phuong-tran.coakka:runtime:2.5.2` | All five | Maven Central validation, all 50 public files byte-for-byte against the signed candidate, five detached signatures, Java 8 through current JVM package checks, owner-grant tests, and clean-cache Java 8/current consumers pass. |
-| Node.js | `runtime/node/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/` | All five | Frozen tarball, registry bytes, request/reply, File Lane, and Stream Lane gates pass. |
-| Bun | `runtime/bun/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/` | All five | Frozen tarball, registry bytes, request/reply, File Lane, and bounded Stream Lane gates pass. |
-| Electron | `runtime/electron/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/` | All five through Node | Frozen tarball, registry bytes, and main/preload/hidden-renderer execution pass. |
-| Python | `runtime/python/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/` | All five | Frozen wheel, file-scope license metadata, byte-identical PyPI download, and clean registry-installed consumers pass. |
-| Go | `runtime/go/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/` | All five | Native payload, package consumer, remote-tag request/reply, File Lane, and Stream Lane gates pass. |
-| C# | `runtime/csharp/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/` | Five RID assets | Frozen NuGet candidate, repository signature, entry equality, and .NET 8/9/10 consumers pass. |
-| Rust | `runtime/rust/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/` | All five | Format, Clippy, rustdoc, package readiness, and packaged File/Stream Lane execution pass. |
-| Swift | `runtime/swift/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/` | All five | Swift build, exact payload, remote-tag runtime, File Lane, Stream Lane, and source-package gates pass. |
-| Mojo | `runtime/mojo/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/` | All five | Strict source/platform gates and native lifecycle, request/reply, File Lane, and Stream Lane checks pass. |
-| Zig | `runtime/zig/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/` | All five | Cross-platform compile/link plus native lifecycle, request/reply, File Lane, and Stream Lane gates pass. |
-| Tauri | `runtime/tauri/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/` | All five through Rust | Runtime `2.5.2-source` command-source and Tauri v2 host tests pass. |
+| JVM | `io.github.phuong-tran.coakka:runtime:2.5.3` | All five | Maven Central signed publication, native identity gate, Java package checks, and clean consumers pass. |
+| Node.js, Bun, Electron, Python, Go, C#, Rust, Swift, Mojo, Zig, Tauri | `runtime/<lane>/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e/` | All five where supported | Frozen connector packages pass the public artifact-surface verifier against the exact C1 native archive. Registry versions remain independently listed below. |
 | Android | signed internal `1.2.0` candidate; not published | `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64` | Exact tagged AAR passed clean build, package/ABI checks, R8 name verification, and the release-minified API 36 ARM64 Runtime/request/File/Stream smoke. |
 
 Every release directory has a manifest and `SHA256SUMS`. The manifest records
 the five-platform matrix, native source generation, connector source
 generation, and artifact name.
 
-Connector source `3ae74f4` makes the native owner-grant contract usable from
+Connector source `0ba485e8ff19f3ce23902345cb445a1f652fe3f3` makes the native owner-grant contract usable from
 the host-language surfaces. File transfers use transfer-scoped grants with
 bounded resume while the exact receiver owner retains the record. Stream
 grants admit one valid OPEN. A multi-replica fan-out enumerates owners and
@@ -124,15 +109,15 @@ coordinates are:
 
 | Registry | Current verified coordinate | Bundled native generation |
 | --- | --- | --- |
-| Maven Central | `io.github.phuong-tran.coakka:runtime:2.5.2` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
+| Maven Central | `io.github.phuong-tran.coakka:runtime:2.5.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
 | npm | `coakka-v2-connector-{node,bun,electron}@2.5.2` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 | PyPI | `coakka-v2-connector==2.5.2` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
 | NuGet | `CoAkka.Runtime==2.5.2` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
-| Go modules | `github.com/phuong-tran/coakka-runtime-go@v1.8.2` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
-| SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v2.5.2` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
+| Go modules | `github.com/phuong-tran/coakka-runtime-go@v1.8.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
+| SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v2.5.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
 
-Maven Runtime `2.5.2`, npm `2.5.2`, PyPI `2.5.2`, NuGet `2.5.2`, Go `v1.8.2`,
-and Swift `v2.5.2` expose typed replica-owner File and Stream Lane grants.
+Maven Runtime `2.5.3`, npm `2.5.2`, PyPI `2.5.2`, NuGet `2.5.2`, Go `v1.8.3`,
+and Swift `v2.5.3` expose typed replica-owner File and Stream Lane grants.
 Select an exact coordinate whose release receipt records the required native
 generation. The signed JVM audit is recorded in
 [JVM Runtime Maven Central 2.5.2](releases/2026-08-20-jvm-runtime-2.5.2-maven-central.md).
