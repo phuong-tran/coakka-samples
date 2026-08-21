@@ -18,20 +18,19 @@ Use these identities together:
 | Minimum Android API | `24` |
 | Compile SDK | Android API `36.1` or newer |
 | Exact AAR | SHA-256 `edadc38b61a47ad70de6e0a52afeec14cdac467b3cac1c7a15c1d6aa9fd4ad29`, 4,859,325 bytes |
-| Publication state | signed Central bundle frozen; no accepted deployment; registry closed |
+| Publication state | signed internal candidate; no Maven Central publication planned |
 
 The exact release-minified AAR passed on
 `google/sdk_gphone64_arm64/emu64a:16/BE2A.250530.026.D1/13818094:user/release-keys`
 (API 36, `arm64-v8a`). The test verifies runtime identity/capabilities, one
 request outcome, one owner-pinned File transfer, and one owner-pinned Stream
-delivery. Connector `1.2.0` is not yet a public Maven coordinate because no
-Central deployment has reached `PUBLISHED`; treat the instructions below as
-candidate integration guidance rather than a registry claim.
+delivery. Connector `1.2.0` has no public Maven coordinate and no Central
+publication is planned. Treat the instructions below as local candidate
+integration guidance rather than a registry claim.
 
-## Gradle And Maven
+## Gradle And Local AAR
 
-After the coordinate appears in the public artifact manifest, resolve it from
-Maven Central:
+Use normal repositories for the AAR's Kotlin and protobuf dependencies:
 
 ```kotlin
 dependencyResolutionManagement {
@@ -42,17 +41,19 @@ dependencyResolutionManagement {
 }
 ```
 
-Then add the exact candidate coordinate to `app/build.gradle.kts`:
+Place the exact candidate AAR under `app/libs` and pin its dependencies in
+`app/build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("io.github.phuong-tran.coakka:coakka-runtime-android:1.2.0")
+    implementation(files("libs/coakka-runtime-android-1.2.0.aar"))
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.2.10")
+    implementation("com.google.protobuf:protobuf-javalite:4.31.1")
 }
 ```
 
-Do not use that coordinate before publication. For candidate testing, consume
-the exact local AAR file and its pinned protobuf dependency. Do not mix a Maven
-coordinate and `app/libs`; that can package the same classes and native
+Verify the local AAR SHA-256 before use. Do not add an unpublished Maven
+coordinate alongside `app/libs`; that can package the same classes and native
 libraries twice.
 
 The Apache connector/JNI source projection lives under

@@ -37,9 +37,9 @@ Boot and Quarkus adapters. These samples consume those public artifacts.
 Android connector `1.2.0` is frozen at tag `android-runtime-1.2.0` over Core
 `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`. Its exact release-minified
 AAR passed the Android API 36 ARM64 Runtime, request, File Lane, and Stream Lane
-gate. Maven Central publication is still closed, so use the
-[Android integration recipe](android/README.md) as candidate guidance rather
-than treating the coordinate as live.
+gate. No Maven Central publication is planned, so use the
+[Android integration recipe](android/README.md) for exact local-AAR evaluation
+without treating any coordinate as live.
 
 This `runtime/` directory is the app-host connector sample lane. Artifact
 generations advance independently: compatibility mirrors retain

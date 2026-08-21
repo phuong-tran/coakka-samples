@@ -111,8 +111,8 @@ stable targets.
 Connector `1.2.0` has a signed candidate AAR with `arm64-v8a`, `armeabi-v7a`,
 `x86`, and `x86_64` payloads, a thin JNI layer, and Android lifecycle guidance.
 The exact release-minified AAR passed Runtime, request/reply, File Lane, and
-Stream Lane on the named API 36 ARM64 emulator image. It is not yet a current
-public package because Maven Central has not accepted and published a deployment.
+Stream Lane on the named API 36 ARM64 emulator image. It remains an internal
+candidate; no Maven Central publication is planned.
 
 A proper Android lane should include:
 
