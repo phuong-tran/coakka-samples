@@ -11,7 +11,12 @@ code and when it must stop at workflow pseudocode.
 
 For large immutable files, use the `2.1.0` file lane instead of placing bytes
 inside an `Envelope`. See [Runtime File Transfer](../docs/runtime-file-transfer.md)
-for use cases, the receiver-first workflow, and connector guidance. The native
+for use cases, the receiver-first workflow, and connector guidance. When a
+target has replicas, read
+[Runtime Lane Owner Grants](../docs/runtime-lane-owner-grants.md) and run the
+package-backed [`go/replica-file-fanout`](go/replica-file-fanout/README.md)
+sample; it demonstrates the application-level `ALL` policy with one exact grant
+and independently verified outcome per owner. The native
 pointer, static JVM/framework and Go/C#/Swift compatibility artifacts, and
 runtime tools retain generation `2.4.0+c2f53117`. Current Rust/Mojo/Zig/Tauri
 mirrors package connector `2.5.2` sources over native generation
@@ -29,11 +34,12 @@ The public publish surface exposes logger packages, the public native
 runtime C ABI package, runtime JVM/language connector packages, and the Spring
 Boot and Quarkus adapters. These samples consume those public artifacts.
 
-Android connector `1.1.0` is currently an intake-gated AAR candidate rather
-than a runnable or current public sample. Use the exact
-[Android integration recipe](android/README.md) for Gradle, ABI, lifecycle,
-network-mode, and device-evaluation guidance without inferring desktop evidence
-as Android execution.
+Android connector `1.2.0` is frozen at tag `android-runtime-1.2.0` over Core
+`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`. Its exact release-minified
+AAR passed the Android API 36 ARM64 Runtime, request, File Lane, and Stream Lane
+gate. Maven Central publication is still closed, so use the
+[Android integration recipe](android/README.md) as candidate guidance rather
+than treating the coordinate as live.
 
 This `runtime/` directory is the app-host connector sample lane. Artifact
 generations advance independently: compatibility mirrors retain
@@ -100,7 +106,7 @@ Spring Boot same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("io.github.phuong-tran.coakka:spring-boot-starter:2.4.1")
+    implementation("io.github.phuong-tran.coakka:spring-boot-starter:2.5.2")
     implementation("org.springframework.boot:spring-boot-starter-web")
 }
 ```
@@ -109,7 +115,7 @@ Quarkus same-process adapter:
 
 ```kotlin
 dependencies {
-    implementation("io.github.phuong-tran.coakka:quarkus-extension:2.4.1")
+    implementation("io.github.phuong-tran.coakka:quarkus-extension:2.5.2")
     implementation("io.quarkus:quarkus-rest-jackson")
 }
 ```

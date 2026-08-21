@@ -8,10 +8,11 @@ boundary just to call application-owned capabilities. It needs an app host, a
 supported native runtime package, route snapshots, handlers, and the normal
 platform services around it.
 
-Android industrial tablets are feasible. An Android app or Android background
-service can host a connector, load a native runtime through the Android NDK,
-register handlers, and call stable targets. The Android lane is planned after
-the first edge Linux lanes rather than being the first packaging priority.
+Android industrial tablets are feasible. Android connector `1.2.0` now provides
+a four-ABI AAR and a release-minified API 36 ARM64 emulator gate. An Android app
+or background service can host the connector, load the native runtime through
+the Android NDK, register handlers, and call stable targets. Physical-device
+lifecycle and industrial soak evidence remain separate support gates.
 
 ## Edge Linux First
 
@@ -107,10 +108,11 @@ framework. An Android app or Android background service can host a connector,
 load a native runtime through the Android NDK, register handlers, and call
 stable targets.
 
-Android support is feasible. Connector `1.1.0` now has an intake-gated AAR
-candidate with `arm64-v8a` and `x86_64` payloads, a thin JNI layer, and Android
-lifecycle guidance. It is not yet a current public package because matching
-device or emulator lifecycle execution has not been recorded.
+Connector `1.2.0` has a signed candidate AAR with `arm64-v8a`, `armeabi-v7a`,
+`x86`, and `x86_64` payloads, a thin JNI layer, and Android lifecycle guidance.
+The exact release-minified AAR passed Runtime, request/reply, File Lane, and
+Stream Lane on the named API 36 ARM64 emulator image. It is not yet a current
+public package because Maven Central has not accepted and published a deployment.
 
 A proper Android lane should include:
 
@@ -146,8 +148,8 @@ Treat this as the support boundary:
 - current public package lanes are the released artifact surface;
 - edge Linux is the first practical expansion target for device and gateway
   validation;
-- Android connector `1.1.0` is a packaged candidate, not a supported public
-  coordinate;
-- Android industrial tablet support should be declared official only after the
-  exact AAR passes lifecycle and runtime smoke tests on a named device or
-  emulator image and is promoted into the public artifact manifest.
+- Android connector `1.2.0` is a tagged, signed, emulator-tested candidate, not
+  yet a supported public coordinate;
+- the basic API 36 ARM64 gate does not establish physical-tablet Activity or
+  service restart, process-death recovery, LAN behavior, thermal pressure, or
+  soak support.

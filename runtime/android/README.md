@@ -5,26 +5,28 @@ Android builds depend on an SDK, NDK, emulator or device image, application
 namespace, signing setup, and lifecycle policy that this repository cannot
 choose for a consuming app.
 
-## Prepared Candidate
+## Tagged Candidate
 
 Use these identities together:
 
 | Identity | Value |
 | --- | --- |
 | Android connector | `1.2.0` |
-| Native runtime package | Core `2.5.1` plus the exact full `core.commit` in [the source-mirror release identity](../../source-mirrors/android-runtime/1.2.0/release-identity.properties) |
+| Source tag | `android-runtime-1.2.0` at `53d39fd9b6dd417374662a25437af106198aff7a` |
+| Native runtime package | Core `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
 | Android ABIs | `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64` |
 | Minimum Android API | `24` |
 | Compile SDK | Android API `36.1` or newer |
-| Publication state | source candidate; registry closed |
+| Exact AAR | SHA-256 `edadc38b61a47ad70de6e0a52afeec14cdac467b3cac1c7a15c1d6aa9fd4ad29`, 4,859,325 bytes |
+| Publication state | signed Central bundle frozen; no accepted deployment; registry closed |
 
-The predecessor exact-AAR gate executed on an Android API 36 ARM64 emulator and
-covered runtime identity/capabilities, one request outcome, one owner-pinned
-File transfer, and one owner-pinned Stream delivery. That Core `2.5.0` evidence
-is not reusable for this pin. Connector `1.2.0` is not yet a public Maven
-coordinate: the exact-Core rebuild, immutable public source tag, frozen digest,
-and publication receipt still have to agree. Treat the instructions below as
-candidate integration guidance, not as a registry claim.
+The exact release-minified AAR passed on
+`google/sdk_gphone64_arm64/emu64a:16/BE2A.250530.026.D1/13818094:user/release-keys`
+(API 36, `arm64-v8a`). The test verifies runtime identity/capabilities, one
+request outcome, one owner-pinned File transfer, and one owner-pinned Stream
+delivery. Connector `1.2.0` is not yet a public Maven coordinate because no
+Central deployment has reached `PUBLISHED`; treat the instructions below as
+candidate integration guidance rather than a registry claim.
 
 ## Gradle And Maven
 
@@ -90,9 +92,9 @@ libraries separately.
 
 The AAR also carries consumer R8 rules for the name-based JNI bridge. Keep those
 rules enabled in minified applications; do not replace them with a blanket
-`-dontobfuscate`. The release evidence app consumes the exact AAR, verifies that
-R8 preserves every native and callback entrypoint, and then executes Runtime,
-File Lane, and Stream Lane operations from the minified APK.
+`-dontobfuscate`. The release evidence app checks four exact JNI/callback class
+identities in the R8 mapping and 34 native plus two callback members in the
+final APK DEX before executing Runtime, request/reply, File Lane, and Stream Lane.
 
 ## Android Manifest
 
@@ -256,11 +258,9 @@ Do not read one lane from multiple workers. On shutdown:
 Do not retain raw file descriptor integers, adopt a descriptor twice, or wait
 for blocked readers before closing the runtime.
 
-The source is sufficient to show the exact lifecycle and configuration APIs.
-The existing exact-AAR emulator execution belongs to the predecessor Core and
-must be repeated for this candidate. Build envelope serialization from the
-exact `coakka.v2.transport` classes in the AAR; do not invent an Android-only
-request/reply facade.
+The exact tagged AAR now owns the basic release-minified emulator evidence.
+Build envelope serialization from the exact `coakka.v2.transport` classes in
+the AAR; do not invent an Android-only request/reply facade.
 
 ## File And Stream Owner Grants
 
@@ -361,10 +361,10 @@ Record all of these against the exact AAR digest:
 - inbound reachability for network-node mode;
 - queue pressure, resident memory, and long-running behavior.
 
-The exact-AAR instrumentation app defines the basic ARM64 checks; its
-predecessor result is historical until the exact-Core candidate repeats it.
-Physical device behavior, Activity/service restart, process death, LAN paths,
-pressure, and soak remain explicit support gates rather than inferred evidence.
+The exact-AAR instrumentation app passed the basic API 36 ARM64 Runtime,
+request, File Lane, and Stream Lane checks. Physical device behavior,
+Activity/service restart, process death, LAN paths, pressure, and soak remain
+explicit support gates rather than inferred evidence.
 
 ## Troubleshooting
 
@@ -378,4 +378,4 @@ unreachable peer after a successful bind usually means `advertiseHost`, device
 firewall, Wi-Fi isolation, VPN, or route configuration is wrong.
 
 For connector source identity and reproduction material, use the immutable
-Android source-mirror tag once the publication gate opens.
+[`android-runtime-1.2.0` source tag](https://github.com/phuong-tran/coakka-samples/tree/android-runtime-1.2.0/source-mirrors/android-runtime/1.2.0).

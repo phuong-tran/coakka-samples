@@ -87,6 +87,7 @@ and checksum gates.
 | Mojo | `runtime/mojo/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/` | All five | Strict source/platform gates and native lifecycle, request/reply, File Lane, and Stream Lane checks pass. |
 | Zig | `runtime/zig/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/` | All five | Cross-platform compile/link plus native lifecycle, request/reply, File Lane, and Stream Lane gates pass. |
 | Tauri | `runtime/tauri/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/` | All five through Rust | Runtime `2.5.2-source` command-source and Tauri v2 host tests pass. |
+| Android | signed `1.2.0` Central candidate; coordinate not yet live | `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64` | Exact tagged AAR passed clean build, package/ABI checks, R8 name verification, and the release-minified API 36 ARM64 Runtime/request/File/Stream smoke. |
 
 Every release directory has a manifest and `SHA256SUMS`. The manifest records
 the five-platform matrix, native source generation, connector source
@@ -101,17 +102,19 @@ is not a substitute for owner enumeration.
 
 ## Android Candidate Evidence
 
-Android connector `1.1.0` is staged at
-`maven/android/releases/1.1.0+345e97b2/`. Its AAR embeds native package
-generation `2.3.0+345e97b2` and matching runtime/JNI libraries for
-`arm64-v8a` and `x86_64`. The exact file passes build, unit-test, lint, intake,
-checksum, and recursive package-surface gates.
+Android connector `1.2.0` is frozen at annotated Samples tag
+`android-runtime-1.2.0` (`53d39fd9b6dd417374662a25437af106198aff7a`)
+over Core `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`. The AAR
+SHA-256 is `edadc38b61a47ad70de6e0a52afeec14cdac467b3cac1c7a15c1d6aa9fd4ad29`
+and it contains matching runtime/JNI libraries for all four Android ABIs.
 
-This entry is packaged-file evidence only. No Android device or emulator
-execution is recorded, so the AAR is absent from `artifacts/public-artifacts.tsv`
-and is not a current package coordinate. Promotion requires the exact AAR
-digest to complete open, route application, start, one terminal request
-outcome, and close on a named Android image and ABI.
+The exact release-minified AAR passed on
+`google/sdk_gphone64_arm64/emu64a:16/BE2A.250530.026.D1/13818094:user/release-keys`
+(API 36, `arm64-v8a`). R8 evidence checks four exact JNI/callback class names in
+the mapping and 34 native plus two callback members in the final APK DEX before
+executing Runtime, request/reply, File Lane, and Stream Lane. The signed Central
+bundle is frozen, but no Central deployment has been accepted; the coordinate
+therefore remains non-public and is not listed in the registry table below.
 
 ## Registry Coordinates
 
