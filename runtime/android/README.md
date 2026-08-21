@@ -5,41 +5,37 @@ Android builds depend on an SDK, NDK, emulator or device image, application
 namespace, signing setup, and lifecycle policy that this repository cannot
 choose for a consuming app.
 
-## Exact Candidate
+## Prepared Candidate
 
 Use these identities together:
 
 | Identity | Value |
 | --- | --- |
-| Android connector | `1.1.0` |
-| Native runtime package | `2.3.0+345e97b2` |
-| Android ABIs | `arm64-v8a`, `x86_64` |
+| Android connector | `1.2.0` |
+| Native runtime package | Core `2.5.1` plus the exact full `core.commit` in [the source-mirror release identity](../../source-mirrors/android-runtime/1.2.0/release-identity.properties) |
+| Android ABIs | `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64` |
 | Minimum Android API | `24` |
 | Compile SDK | Android API `36.1` or newer |
-| AAR SHA-256 | `3ce799885322c9ac92664bf028591bc77432960e7b2d85ecbd3c4e73362bf3cb` |
+| Publication state | source candidate; registry closed |
 
-This AAR is a Maven-resolvable candidate in `coakka-publish`, but it is not in
-the current public artifact manifest because matching Android device or
-emulator execution has not been recorded. Treat the instructions below as
-candidate integration guidance, not as a supported public package claim.
+The predecessor exact-AAR gate executed on an Android API 36 ARM64 emulator and
+covered runtime identity/capabilities, one request outcome, one owner-pinned
+File transfer, and one owner-pinned Stream delivery. That Core `2.5.0` evidence
+is not reusable for this pin. Connector `1.2.0` is not yet a public Maven
+coordinate: the exact-Core rebuild, immutable public source tag, frozen digest,
+and publication receipt still have to agree. Treat the instructions below as
+candidate integration guidance, not as a registry claim.
 
 ## Gradle And Maven
 
-Add the checked-in CoAkka Maven repository to the existing
-`dependencyResolutionManagement.repositories` block in `settings.gradle.kts`:
+After the coordinate appears in the public artifact manifest, resolve it from
+Maven Central:
 
 ```kotlin
 dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven {
-            name = "CoAkkaCandidates"
-            url = uri("https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/maven")
-            content {
-                includeModule("coakka.v2", "coakka-runtime-android")
-            }
-        }
     }
 }
 ```
@@ -48,22 +44,23 @@ Then add the exact candidate coordinate to `app/build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("coakka.v2:coakka-runtime-android:1.1.0")
+    implementation("io.github.phuong-tran.coakka:coakka-runtime-android:1.2.0")
 }
 ```
 
-Gradle resolves the AAR, sources, and the pinned Kotlin and protobuf
-dependencies from its POM and module metadata. Do not also place the AAR in
-`app/libs`; mixing the Maven coordinate with a local copy can package the same
-classes and native libraries twice.
+Do not use that coordinate before publication. For candidate testing, consume
+the exact local AAR file and its pinned protobuf dependency. Do not mix a Maven
+coordinate and `app/libs`; that can package the same classes and native
+libraries twice.
 
-The immutable candidate bundle, manifest, and `SHA256SUMS` remain under
-[`maven/android/releases/1.1.0+345e97b2`](https://github.com/phuong-tran/coakka-publish/tree/main/maven/android/releases/1.1.0%2B345e97b2).
-The AAR digest Gradle resolves must match the SHA-256 value in the identity
-table above.
+The Apache connector/JNI source projection lives under
+[`source-mirrors/android-runtime/1.2.0`](../../source-mirrors/android-runtime/1.2.0/README.md).
+The AAR carries `LICENSE`, `NATIVE-LICENSE.md`, `PACKAGE-LICENSE.md`, and
+`NOTICE` offline because its Kotlin/JNI connector and bundled Native Core files
+have different file-scoped terms.
 
-Keep the ABI that matches the evaluation target. Keeping both is useful while
-testing physical ARM64 devices and x86-64 emulators:
+Keep only the ABI set the application actually ships, or keep all four while
+testing the complete AAR matrix:
 
 ```kotlin
 android {
@@ -76,7 +73,12 @@ android {
     defaultConfig {
         minSdk = 24
         ndk {
-            abiFilters += listOf("arm64-v8a", "x86_64")
+            abiFilters += listOf(
+                "arm64-v8a",
+                "armeabi-v7a",
+                "x86",
+                "x86_64",
+            )
         }
     }
 }
@@ -85,6 +87,12 @@ android {
 The AAR carries both `libcoakka_runtime_v2.so` and
 `libcoakka_android_jni.so` for each declared ABI. Do not copy or load those
 libraries separately.
+
+The AAR also carries consumer R8 rules for the name-based JNI bridge. Keep those
+rules enabled in minified applications; do not replace them with a blanket
+`-dontobfuscate`. The release evidence app consumes the exact AAR, verifies that
+R8 preserves every native and callback entrypoint, and then executes Runtime,
+File Lane, and Stream Lane operations from the minified APK.
 
 ## Android Manifest
 
@@ -219,10 +227,12 @@ belong to the consuming application and are not hidden by the connector.
 
 ## Pipe And Worker Ownership
 
-Connector `1.1.0` is a low-level host bridge. It exposes framed request,
+Connector `1.2.0` is a low-level host bridge. It exposes framed request,
 delivered-request, response, deadletter, control, and monitor lanes. It does
 not yet expose the higher-level Android `handler` or `ask` helpers available in
-some other connectors.
+some other connectors. It now also exposes Simple and owner-aware File and
+Stream Lane APIs; those lanes are separate bounded native resources rather
+than runtime message pipes.
 
 Use one blocking reader per output lane that the app consumes:
 
@@ -246,11 +256,96 @@ Do not read one lane from multiple workers. On shutdown:
 Do not retain raw file descriptor integers, adopt a descriptor twice, or wait
 for blocked readers before closing the runtime.
 
-The current evidence is sufficient to show exact lifecycle and configuration
-API names. It is not sufficient to invent a full Android request/reply helper
-or claim a device-run sample. Build envelope serialization from the exact
-`coakka.v2.transport` classes in the AAR, or wait for the higher-level Android
-facade before presenting application request/reply as a stable beginner API.
+The source is sufficient to show the exact lifecycle and configuration APIs.
+The existing exact-AAR emulator execution belongs to the predecessor Core and
+must be repeated for this candidate. Build envelope serialization from the
+exact `coakka.v2.transport` classes in the AAR; do not invent an Android-only
+request/reply facade.
+
+## File And Stream Owner Grants
+
+The Simple API remains available through `FileLane.open(...)` and
+`StreamLane.open(...)`. Use owner-aware creation when a prepare request can
+land on any replica:
+
+```kotlin
+fun awaitTerminal(
+    lane: FileLane,
+    transferId: String,
+    direction: FileTransferDirection,
+): FileTransferSnapshot {
+    val deadlineNs = System.nanoTime() + 30_000_000_000L
+    var snapshot = lane.transfer(transferId, direction)
+    while (!snapshot.terminal) {
+        val remainingNs = deadlineNs - System.nanoTime()
+        check(remainingNs > 0) { "$direction $transferId did not reach terminal state" }
+        val remainingMs = ((remainingNs + 999_999L) / 1_000_000L)
+            .coerceAtMost(Int.MAX_VALUE.toLong())
+            .toInt()
+        snapshot = lane.waitTransfer(
+            transferId,
+            direction,
+            afterUpdateSequence = snapshot.updateSequence,
+            timeoutMs = remainingMs,
+        )
+    }
+    return snapshot
+}
+
+val receiver = FileLane.openOwned(
+    FileLaneConfig(flags = FileLaneFlags.RECEIVER, bindHost = "0.0.0.0"),
+    LaneOwnerConfig(
+        ownerInstanceId = "worker-2",
+        advertisedHost = "10.0.0.12",
+    ),
+)
+val fileGrant = receiver.prepareReceiveGrant(receiveSpec)
+
+val transferFailures = mutableListOf<String>()
+FileLane.open(FileLaneConfig(flags = FileLaneFlags.SENDER)).use { sender ->
+    sender.submitSend(fileGrant.toSendSpec(sourceFile))
+    val sent = awaitTerminal(sender, fileGrant.transferId, FileTransferDirection.SEND)
+    if (!sent.completed) {
+        transferFailures += "SEND ${sent.state}/${sent.result}: ${sent.detail}"
+    }
+    sender.forget(fileGrant.transferId, FileTransferDirection.SEND)
+}
+
+val received = awaitTerminal(receiver, fileGrant.transferId, FileTransferDirection.RECEIVE)
+if (!received.completed) {
+    transferFailures +=
+        "RECEIVE ${received.state}/${received.result}: ${received.detail}"
+}
+receiver.forget(fileGrant.transferId, FileTransferDirection.RECEIVE)
+check(transferFailures.isEmpty()) { transferFailures.joinToString("; ") }
+```
+
+Run these blocking waits on a bounded worker, never an Android UI thread. The
+sender and receiver each require their own terminal check and `forget`; sender
+success does not prove that the destination was committed.
+
+For Stream Lane, the exact publisher owner returns a single-admission grant:
+
+```kotlin
+val publisher = StreamLane.openOwned(
+    StreamLaneConfig(flags = StreamLaneFlags.PUBLISHER),
+    LaneOwnerConfig("camera-3", "10.0.0.23"),
+)
+val streamGrant = publisher.preparePublishGrant(publishSpec)
+subscriber.subscribe(streamGrant.toSubscribeSpec(initialWindowBytes, consumer))
+```
+
+`formatId` must be in `1..Long.MAX_VALUE`. Source and consumer buffers are
+borrowed only for the callback. Calling `close()` on that same Stream Lane from
+either callback fails fast; schedule shutdown on a different thread so native
+stop can join its bounded worker.
+
+Never replace the owner endpoint in either grant with a load-balancing Service
+address. `ONE` uses one selected owner's grant. `ALL` enumerates every exact
+owner, obtains one fresh grant per owner, and tracks one independent terminal
+outcome per transfer/session. The full Android types, callback borrowing law,
+ONE/ALL Mermaid flows, and token lifetime rules are in
+[Runtime Lane Owner Grants](../../docs/runtime-lane-owner-grants.md).
 
 ## Device Evaluation Checklist
 
@@ -261,12 +356,15 @@ Record all of these against the exact AAR digest:
 - Activity recreation while the service remains the owner;
 - service restart and process-death recovery;
 - one terminal request outcome and one deadletter outcome;
+- owner-aware File and Stream prepare/grant terminal outcomes;
 - network loss and reconnect for outbound mode;
 - inbound reachability for network-node mode;
 - queue pressure, resident memory, and long-running behavior.
 
-Promote Android to a runnable sample lane only after those results and the
-corresponding app source are committed.
+The exact-AAR instrumentation app defines the basic ARM64 checks; its
+predecessor result is historical until the exact-Core candidate repeats it.
+Physical device behavior, Activity/service restart, process death, LAN paths,
+pressure, and soak remain explicit support gates rather than inferred evidence.
 
 ## Troubleshooting
 
@@ -279,5 +377,5 @@ local, the port is already in use, or the app lacks network permission. An
 unreachable peer after a successful bind usually means `advertiseHost`, device
 firewall, Wi-Fi isolation, VPN, or route configuration is wrong.
 
-For release identity and remaining evidence gaps, read the Android candidate's
-[`RELEASE.md`](https://github.com/phuong-tran/coakka-publish/blob/main/maven/android/releases/1.1.0+345e97b2/RELEASE.md).
+For connector source identity and reproduction material, use the immutable
+Android source-mirror tag once the publication gate opens.

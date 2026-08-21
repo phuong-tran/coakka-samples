@@ -5,7 +5,10 @@
 > `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. Use an exact coordinate
 > from [Current Packages](current-packages.md); do not generate these methods
 > against `2.5.1` or an older connector merely because it carries that native
-> generation.
+> generation. The separately versioned Android AAR begins this surface at
+> connector `1.2.0` over exact native generation
+> `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`; it must report that
+> independently pinned identity rather than the JVM connector generation.
 
 Runtime messages and lane sessions have different ownership laws:
 
@@ -28,6 +31,7 @@ Names follow host-language conventions:
 | Host surface | Open exact owner | Prepare capability | Derive remote job |
 | --- | --- | --- | --- |
 | JVM/Kotlin/Java | `FileLane.openOwned`, `StreamLane.openOwned` | `prepareReceiveGrant`, `preparePublishGrant` | `toSendSpec`, `toSubscribeSpec` |
+| Android/Kotlin | `FileLane.openOwned`, `StreamLane.openOwned` | `prepareReceiveGrant`, `preparePublishGrant` | `toSendSpec`, `toSubscribeSpec` |
 | Python | `FileLane.open_owned`, `StreamLane.open_owned` | `prepare_receive_grant`, `prepare_publish_grant` | `to_send_spec`, `to_subscribe_spec` |
 | Node.js | `FileLane.openOwned`, `StreamLane.openOwned` | `prepareReceiveGrant`, `preparePublishGrant` | `toSendSpec`, `toSubscribeSpec` |
 | Bun | `FileLane.openOwned`, `StreamLane.openOwned` | `prepareReceiveGrant`, `preparePublishGrant` | `toSendSpec`, mailbox `toSubscribeSpec` |
@@ -44,6 +48,14 @@ constructors, and Rust `from_control_plane` constructors support explicit
 reconstruction. Keep serialization inside the authenticated application
 control plane and ensure logs redact the bearer token.
 
+Android uses the same Kotlin operation names but its File API accepts
+`java.io.File`, not the desktop JVM connector's `java.nio.file.Path`. Stream
+source and consumer callbacks receive borrowed direct `ByteBuffer` views on
+bounded native lane workers; copy bytes before returning if the app retains
+them. Same-lane `close()` from either callback fails fast because native stop
+cannot join its current worker; hand shutdown to another thread. Android Stream
+format IDs are positive Kotlin `Long` values (`1..Long.MAX_VALUE`).
+
 Tauri intentionally does not expose lanes to WebView code. Its trusted Rust
 host uses the Rust API above. Mojo currently has a C conformance shim proving
 the native File and Stream grant path, not a stable high-level Mojo grant API.
@@ -52,6 +64,18 @@ The Simple API remains supported for a single stable lane instance or for an
 application that already pins the selected process endpoint. Owner-aware is
 required when prepare may land on one replica while a later data connection
 could otherwise land on another.
+
+For an executable connector example, run the
+[`runtime/go/replica-file-fanout`](https://github.com/phuong-tran/coakka-samples/tree/main/runtime/go/replica-file-fanout)
+sample. It resolves public Go module `v1.8.2`, prepares three exact owners,
+round-trips every grant through JSON, sends one immutable source independently
+to all three replicas, and verifies sender terminal state, receiver terminal
+state, and destination digest per owner:
+
+```sh
+cd runtime/go/replica-file-fanout
+bash run.sh
+```
 
 ## One Owner Workflow
 
@@ -123,12 +147,128 @@ Live Stream fan-out needs one grant per publisher owner plus an
 application-owned bounded tee, journal, or independent source cursor. Stream
 Lane does not silently multiplex one callback across several sessions.
 
+## Android AAR Example
+
+The one-owner and all-replicas diagrams above apply unchanged to Android. The
+replica selected by the authenticated control request prepares locally and
+returns the copied grant; the sender must use the endpoint carried by that
+grant:
+
+```kotlin
+val source = File(filesDir, "model.bin")
+val digest = FileLane.sha256(source)
+
+// This long-lived receiver is owned by the exact Android process or replica.
+val receiver = FileLane.openOwned(
+    FileLaneConfig(flags = FileLaneFlags.RECEIVER, bindHost = "0.0.0.0"),
+    LaneOwnerConfig("worker-2", "10.0.0.12"),
+)
+val grant = receiver.prepareReceiveGrant(
+    FileReceiveSpec(
+        transferId = "model-42-worker-2",
+        authorizationToken = freshTransferToken,
+        destinationFile = File(filesDir, "model-42.bin"),
+        expectedSize = digest.size,
+        expectedSha256 = digest.sha256,
+    ),
+)
+
+// After authenticated serialization/reconstruction at the sender, finalize
+// both records. submitSend alone is not completion.
+FileLane.open(FileLaneConfig(flags = FileLaneFlags.SENDER)).use { sender ->
+    var sent: FileTransferSnapshot? = null
+    var received: FileTerminalDto? = null
+    try {
+        sender.submitSend(grant.toSendSpec(source))
+        sent = finalizeAndForgetSend(sender, grant.transferId, cancelFirst = false)
+    } finally {
+        received = finalizeAndForgetReceive(
+            receiver,
+            grant.transferId,
+            cancelFirst = sent?.completed != true,
+        )
+    }
+    check(sent?.completed == true && received?.completed == true)
+}
+```
+
+The Stream callback surface is also available from Android connector `1.2.0`:
+
+```kotlin
+val publisher = StreamLane.openOwned(
+    StreamLaneConfig(
+        flags = StreamLaneFlags.PUBLISHER,
+        bindHost = "0.0.0.0",
+        maxFrameBytes = 256 * 1024,
+        maxWindowBytes = 512 * 1024,
+    ),
+    LaneOwnerConfig("camera-3", "10.0.0.23"),
+)
+val grant = publisher.preparePublishGrant(
+    StreamPublishSpec(
+        sessionId = "camera-3-session-7",
+        authorizationToken = freshSessionToken,
+        formatId = cameraFormatId,
+        maxFrameBytes = 256 * 1024,
+        source = AndroidStreamSource { destination -> nextFrameInto(destination) },
+    ),
+)
+
+subscriber.subscribe(
+    grant.toSubscribeSpec(
+        initialWindowBytes = 512 * 1024,
+        consumer = AndroidStreamConsumer { borrowedFrame, metadata ->
+            consumeBeforeReturn(borrowedFrame, metadata)
+            AndroidStreamConsumerDecision.CONTINUE
+        },
+    ),
+)
+```
+
+For `ALL`, call each exact Android owner's authenticated control endpoint once,
+verify the returned `ownerInstanceId`, and retain one independent terminal
+outcome per File transfer or Stream session. Repeating the same request against
+a load balancer does not enumerate replicas.
+
 ## Connector File Example
 
-This Kotlin sample shows the complete distributed shape. `FileGrantDto` is the
-application control-plane payload. The equivalent language constructor or
-decode operation from the API table reconstructs the connector grant at the
-sender.
+This Kotlin reference shows the distributed ownership and cleanup shape.
+`FileGrantDto` is the application control-plane payload. The equivalent
+language constructor or decode operation from the API table reconstructs the
+connector grant at the sender.
+
+The orchestrator creates the transfer ID before the prepare RPC. Therefore it
+can ask the same exact owner to cancel and forget a possibly prepared receive
+even when the prepare response is lost:
+
+```mermaid
+sequenceDiagram
+    participant O as Fan-out orchestrator
+    participant R as Exact replica control endpoint
+    participant S as Sender File Lane
+    participant L as Replica-owned receiver File Lane
+
+    O->>R: prepareFile(transferId, size, SHA-256)
+    R->>L: prepareReceiveGrant
+    L-->>R: owner-pinned grant
+    R-->>O: serialized grant
+    O->>O: verify ownerInstanceId
+    O->>S: submitSend(grant.toSendSpec(source))
+    alt sender reaches COMPLETED + OK
+        par sender terminal
+            S-->>O: SEND terminal
+        and receiver terminal
+            L-->>R: RECEIVE terminal
+        end
+        O->>R: finalizeReceive(cancelFirst=false)
+    else prepare response, submit, or sender fails
+        O->>R: finalizeReceive(cancelFirst=true)
+        R->>L: cancel if retained, then bounded terminal wait
+    end
+    R->>R: persist redacted terminal outcome, then forget RECEIVE
+    O->>S: forget terminal SEND if a record exists
+    O->>O: retain one outcome for this owner
+```
 
 ```kotlin
 data class FileGrantDto(
@@ -143,7 +283,14 @@ data class FileGrantDto(
     override fun toString() =
         "FileGrantDto(ownerInstanceId=$ownerInstanceId, transferId=$transferId, " +
             "authorizationToken=<redacted>, expectedSize=$expectedSize)"
-}
+    }
+
+data class FileTerminalDto(
+    val state: String,
+    val result: String,
+    val completed: Boolean,
+    val detail: String,
+)
 
 fun FileReceiveGrant.toDto() = FileGrantDto(
     owner.ownerInstanceId,
@@ -165,7 +312,8 @@ fun FileGrantDto.toConnectorGrant() = FileReceiveGrant(
 ```
 
 Each replica owns one long-lived receiver lane. Its authenticated handler
-chooses the destination and creates a fresh capability locally:
+chooses the destination and creates a fresh capability locally. It accepts the
+caller-generated transfer ID so an uncertain prepare can still be finalized:
 
 ```kotlin
 class ReplicaFileReceiver(
@@ -180,8 +328,12 @@ class ReplicaFileReceiver(
     )
 
     // Called only through this replica's authenticated control endpoint.
-    fun prepare(objectKey: String, size: Long, sha256: ByteArray): FileGrantDto {
-        val transferId = UUID.randomUUID().toString()
+    fun prepare(
+        transferId: String,
+        objectKey: String,
+        size: Long,
+        sha256: ByteArray,
+    ): FileGrantDto {
         val tokenBytes = ByteArray(32).also(random::nextBytes)
         val token = Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes)
         val grant = lane.prepareReceiveGrant(
@@ -196,46 +348,144 @@ class ReplicaFileReceiver(
         return grant.toDto()
     }
 
+    // Application control-plane operation, not a connector method. It first
+    // returns a previously persisted redacted outcome for an idempotent retry.
+    // Otherwise it optionally cancels, waits with a monotonic deadline, stores
+    // the terminal DTO without the token, forgets RECEIVE, and returns the DTO.
+    // It returns null only when neither a retained record nor stored outcome exists.
+    fun finalizeReceive(transferId: String, cancelFirst: Boolean): FileTerminalDto? =
+        finalizeAndForgetReceive(lane, transferId, cancelFirst)
+
     override fun close() = lane.close()
 }
 ```
 
-The sender hashes once, obtains one grant from every exact owner, verifies the
-owner identity, and submits independent sends:
+`finalizeAndForgetReceive` must be notification-driven and bounded. If its
+normal wait reaches the deadline, it requests cancellation and waits for the
+terminal cancellation result before forgetting. The authenticated endpoint
+persists only the redacted terminal DTO in a bounded TTL or durable outcome
+store before it forgets native state, so a lost finalize response can be
+retried without retaining the grant token.
+
+The sender hashes once and processes every exact owner independently. It does
+not stop at the first failure and it never returns a successful owner outcome
+until both sides report `COMPLETED + OK`:
 
 ```kotlin
 data class ReplicaControl(
     val expectedOwnerInstanceId: String,
-    val prepareFile: (objectKey: String, size: Long, sha256: ByteArray) -> FileGrantDto,
+    val prepareFile: (
+        transferId: String,
+        objectKey: String,
+        size: Long,
+        sha256: ByteArray,
+    ) -> FileGrantDto,
+    val finalizeReceive: (transferId: String, cancelFirst: Boolean) -> FileTerminalDto?,
 )
 
-fun sendToAllReplicas(source: Path, objectKey: String, owners: List<ReplicaControl>) {
-    val digest = FileLane.sha256(source)
-    FileLane.open(FileLaneConfig(flags = FileLaneFlags.SENDER)).use { sender ->
-        val grants = owners.map { owner ->
-            val dto = owner.prepareFile(objectKey, digest.size, digest.sha256)
-            check(dto.ownerInstanceId == owner.expectedOwnerInstanceId) {
-                "control endpoint returned a grant for another replica"
-            }
-            dto.toConnectorGrant()
-        }
+data class ReplicaFileOutcome(
+    val ownerInstanceId: String,
+    val transferId: String,
+    val sender: FileTransferSnapshot?,
+    val receiver: FileTerminalDto?,
+    val failures: List<String>,
+) {
+    val completed: Boolean
+        get() = sender?.completed == true && receiver?.completed == true && failures.isEmpty()
+}
 
-        grants.forEach { grant -> sender.submitSend(grant.toSendSpec(source)) }
-        grants.forEach { grant ->
-            val sent = waitUntilTerminal(sender, grant.transferId, FileTransferDirection.SEND)
-            check(sent.completed) {
-                "${grant.owner.ownerInstanceId}: ${sent.state}/${sent.result} ${sent.detail}"
-            }
-            sender.forget(grant.transferId, FileTransferDirection.SEND)
+fun sendToAllReplicas(
+    source: Path,
+    objectKey: String,
+    owners: List<ReplicaControl>,
+): List<ReplicaFileOutcome> {
+    require(owners.map { it.expectedOwnerInstanceId }.distinct().size == owners.size) {
+        "ALL requires a unique exact owner list"
+    }
+    val digest = FileLane.sha256(source)
+    return FileLane.open(FileLaneConfig(flags = FileLaneFlags.SENDER)).use { sender ->
+        owners.map { owner ->
+            sendToOneReplica(sender, source, objectKey, digest, owner)
         }
     }
 }
+
+private fun sendToOneReplica(
+    sender: FileLane,
+    source: Path,
+    objectKey: String,
+    digest: FileDigest,
+    owner: ReplicaControl,
+): ReplicaFileOutcome {
+    val transferId = UUID.randomUUID().toString()
+    val failures = mutableListOf<String>()
+    var prepareAttempted = false
+    var prepareConfirmed = false
+    var sendAttempted = false
+    var senderTerminal: FileTransferSnapshot? = null
+    var receiverTerminal: FileTerminalDto? = null
+
+    try {
+        prepareAttempted = true
+        val dto = owner.prepareFile(transferId, objectKey, digest.size, digest.sha256)
+        prepareConfirmed = true
+        require(dto.transferId == transferId) { "control endpoint changed transferId" }
+        require(dto.ownerInstanceId == owner.expectedOwnerInstanceId) {
+            "control endpoint returned a grant for another replica"
+        }
+
+        sendAttempted = true
+        sender.submitSend(dto.toConnectorGrant().toSendSpec(source))
+    } catch (failure: Exception) {
+        failures += redactedFailure(failure)
+    } finally {
+        if (sendAttempted) {
+            runCatching {
+                // Application helper: find the SEND record if present; optionally
+                // cancel; wait to a bounded terminal state; then forget it.
+                finalizeAndForgetSend(
+                    sender,
+                    transferId,
+                    cancelFirst = failures.isNotEmpty(),
+                )
+            }.onSuccess { senderTerminal = it }
+                .onFailure { failures += "sender cleanup: ${redactedFailure(it)}" }
+        }
+
+        if (prepareAttempted) {
+            runCatching {
+                owner.finalizeReceive(
+                    transferId,
+                    cancelFirst = senderTerminal?.completed != true,
+                )
+            }.onSuccess { receiverTerminal = it }
+                .onFailure { failures += "receiver cleanup: ${redactedFailure(it)}" }
+        }
+    }
+
+    if (sendAttempted && senderTerminal?.completed != true) {
+        failures += "sender did not complete"
+    }
+    if (prepareConfirmed && receiverTerminal?.completed != true) {
+        failures += "receiver did not complete"
+    }
+    return ReplicaFileOutcome(
+        owner.expectedOwnerInstanceId,
+        transferId,
+        senderTerminal,
+        receiverTerminal,
+        failures.distinct(),
+    )
+}
 ```
 
-The receiver must independently observe `RECEIVE COMPLETED + OK` before using
-its file, then forget its local record. Sender success cannot replace that
-receiver check. Waits are blocking and notification-driven; run them on bounded
-workers, not latency-sensitive request or UI threads.
+`FileTerminalDto`, `finalizeAndForgetSend`, `finalizeAndForgetReceive`, and
+`redactedFailure` are application control-plane helpers, not extra connector
+APIs. They must never serialize a token or raw destination path. Finalize calls
+are blocking and notification-driven; execute at most one per enumerated owner
+on a bounded worker pool, never on latency-sensitive request, event-loop, or UI
+threads. A cleanup failure remains in that owner's outcome and must be retried;
+it must not be converted into success or hide outcomes from other replicas.
 
 ## Connector Stream Example
 

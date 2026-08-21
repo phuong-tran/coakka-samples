@@ -1,0 +1,9 @@
+/.gradle/
+/.cxx/
+/.native-build/
+/.native-source/
+/build/
+/device-smoke/.gradle/
+/device-smoke/build/
+/local.properties
+/src/main/jniLibs/*/*.so

@@ -1,0 +1,204 @@
+name: android-runtime-evidence
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_tag:
+        description: Immutable public Android source tag
+        required: true
+        default: android-runtime-1.2.0
+        type: string
+      candidate_release_tag:
+        description: Draft release containing coakka-runtime-android-1.2.0.aar
+        required: true
+        type: string
+      aar_sha256:
+        description: Lowercase SHA-256 of the exact candidate AAR
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  translated-and-x86-runtime:
+    name: API 30 x86_64 / ${{ matrix.abi }} APK
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        abi:
+          - x86_64
+          - x86
+          - armeabi-v7a
+    steps:
+      - name: Validate immutable inputs
+        env:
+          SOURCE_TAG: ${{ inputs.source_tag }}
+          CANDIDATE_RELEASE_TAG: ${{ inputs.candidate_release_tag }}
+          AAR_SHA256: ${{ inputs.aar_sha256 }}
+        run: |
+          set -euo pipefail
+          [[ "${SOURCE_TAG}" == "android-runtime-1.2.0" ]]
+          [[ "${CANDIDATE_RELEASE_TAG}" =~ ^android-runtime-1\.2\.0-candidate\.[1-9][0-9]*$ ]]
+          [[ "${AAR_SHA256}" =~ ^[0-9a-f]{64}$ ]]
+
+      - name: Check out exact public source tag
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ inputs.source_tag }}
+
+      - name: Load exact Android release identity
+        id: identity
+        working-directory: source-mirrors/android-runtime/1.2.0
+        run: |
+          set -euo pipefail
+          identity_file=release-identity.properties
+          read_identity() {
+            local key=$1
+            awk -F= -v expected_key="${key}" \
+              '$1 == expected_key { sub(/^[^=]*=/, ""); print }' \
+              "${identity_file}"
+          }
+          connector_version="$(read_identity connector.version)"
+          core_version="$(read_identity core.version)"
+          core_commit="$(read_identity core.commit)"
+          android_abis="$(read_identity android.abis)"
+          [[ "${connector_version}" == "1.2.0" ]]
+          [[ "${core_version}" == "2.5.1" ]]
+          [[ "${core_commit}" =~ ^[0-9a-f]{40}$ ]]
+          [[ "${android_abis}" == "arm64-v8a,armeabi-v7a,x86,x86_64" ]]
+          printf 'connector_version=%s\n' "${connector_version}" >> "${GITHUB_OUTPUT}"
+          printf 'core_version=%s\n' "${core_version}" >> "${GITHUB_OUTPUT}"
+          printf 'core_commit=%s\n' "${core_commit}" >> "${GITHUB_OUTPUT}"
+          printf 'native_package=%s+%s\n' \
+            "${core_version}" "${core_commit}" >> "${GITHUB_OUTPUT}"
+
+      - name: Set up Java
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Download and verify exact draft-release AAR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CANDIDATE_RELEASE_TAG: ${{ inputs.candidate_release_tag }}
+          AAR_SHA256: ${{ inputs.aar_sha256 }}
+          CONNECTOR_VERSION: ${{ steps.identity.outputs.connector_version }}
+          CORE_COMMIT: ${{ steps.identity.outputs.core_commit }}
+          NATIVE_PACKAGE: ${{ steps.identity.outputs.native_package }}
+        run: |
+          set -euo pipefail
+          mkdir -p "${RUNNER_TEMP}/coakka-android-candidate"
+          gh release download "${CANDIDATE_RELEASE_TAG}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --pattern coakka-runtime-android-1.2.0.aar \
+            --dir "${RUNNER_TEMP}/coakka-android-candidate"
+          printf '%s  %s\n' \
+            "${AAR_SHA256}" \
+            "${RUNNER_TEMP}/coakka-android-candidate/coakka-runtime-android-1.2.0.aar" \
+            | sha256sum --check --strict
+          source_commit="$(git rev-parse HEAD)"
+          unzip -p \
+            "${RUNNER_TEMP}/coakka-android-candidate/coakka-runtime-android-1.2.0.aar" \
+            assets/coakka/runtime-package.json \
+            | jq -e \
+              --arg connector_version "${CONNECTOR_VERSION}" \
+              --arg connector_commit "${source_commit}" \
+              --arg core_commit "${CORE_COMMIT}" \
+              --arg native_package "${NATIVE_PACKAGE}" \
+              '.schema_version == 2 and
+               .connector_version == $connector_version and
+               .connector_source_git_commit == $connector_commit and
+               .connector_source_tree_dirty == false and
+               .bundled_native_git_commit == $core_commit and
+               .bundled_native_package_version == $native_package and
+               .core_source_git_commit == $core_commit and
+               .core_checkout_git_commit == $core_commit and
+               .core_source_tree_dirty == false and
+               .source_tree_dirty == false and
+               .native_source_verified == true and
+               (.included_android_abis ==
+                 ["arm64-v8a", "armeabi-v7a", "x86", "x86_64"])'
+
+      - name: Verify public source projection
+        working-directory: source-mirrors/android-runtime/1.2.0
+        run: ./verify-source-checksum.sh
+
+      - name: Execute exact-AAR ABI-filtered consumer
+        uses: ReactiveCircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2
+        with:
+          api-level: 30
+          target: google_apis
+          arch: x86_64
+          profile: pixel_2
+          disable-animations: true
+          emulator-options: >-
+            -no-window -no-snapshot -noaudio -no-boot-anim
+            -gpu swiftshader_indirect -camera-back none
+          script: >-
+            timeout 20m bash
+            source-mirrors/android-runtime/1.2.0/scripts/run-device-smoke.sh
+            "${RUNNER_TEMP}/coakka-android-candidate/coakka-runtime-android-1.2.0.aar"
+            "${ANDROID_SERIAL}"
+            "${{ matrix.abi }}"
+
+      - name: Write execution receipt
+        if: always()
+        env:
+          TARGET_ABI: ${{ matrix.abi }}
+          SOURCE_TAG: ${{ inputs.source_tag }}
+          CANDIDATE_RELEASE_TAG: ${{ inputs.candidate_release_tag }}
+          AAR_SHA256: ${{ inputs.aar_sha256 }}
+          CORE_SOURCE_COMMIT: ${{ steps.identity.outputs.core_commit }}
+          NATIVE_PACKAGE: ${{ steps.identity.outputs.native_package }}
+        run: |
+          set -euo pipefail
+          image_root="${ANDROID_SDK_ROOT}/system-images/android-30/google_apis/x86_64"
+          image_revision=unavailable
+          if [[ -f "${image_root}/source.properties" ]]; then
+            image_revision="$(sed -n 's/^Pkg.Revision=//p' "${image_root}/source.properties" | head -n 1)"
+          fi
+          image_revision="${image_revision:-unavailable}"
+          source_commit="$(git rev-parse HEAD 2>/dev/null || true)"
+          source_commit="${source_commit:-unavailable}"
+          device_abilist="$(adb shell getprop ro.product.cpu.abilist 2>/dev/null | tr -d '\r' || true)"
+          device_abilist="${device_abilist:-unavailable}"
+          execution_mode=native
+          if [[ "${TARGET_ABI}" == armeabi-v7a ]]; then
+            execution_mode=android-native-bridge-translation
+          elif [[ "${TARGET_ABI}" == x86 ]]; then
+            execution_mode=x86-compatibility
+          fi
+          jq -n \
+            --arg source_tag "${SOURCE_TAG}" \
+            --arg source_commit "${source_commit}" \
+            --arg candidate_release_tag "${CANDIDATE_RELEASE_TAG}" \
+            --arg aar_sha256 "${AAR_SHA256}" \
+            --arg core_source_commit "${CORE_SOURCE_COMMIT}" \
+            --arg native_package "${NATIVE_PACKAGE}" \
+            --arg target_abi "${TARGET_ABI}" \
+            --arg execution_mode "${execution_mode}" \
+            --arg emulator_api "30" \
+            --arg emulator_arch "x86_64" \
+            --arg system_image_revision "${image_revision}" \
+            --arg device_abilist "${device_abilist}" \
+            '{source_tag: $source_tag, source_commit: $source_commit,
+              candidate_release_tag: $candidate_release_tag, aar_sha256: $aar_sha256,
+              core_source_commit: $core_source_commit,
+              native_package: $native_package,
+              target_abi: $target_abi, execution_mode: $execution_mode,
+              emulator_api: $emulator_api, emulator_arch: $emulator_arch,
+              system_image_revision: $system_image_revision,
+              device_abilist: $device_abilist}' \
+            > "${RUNNER_TEMP}/coakka-android-${TARGET_ABI}.json"
+
+      - name: Upload execution receipt
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: coakka-android-${{ matrix.abi }}-${{ github.run_id }}
+          path: ${{ runner.temp }}/coakka-android-${{ matrix.abi }}.json
+          if-no-files-found: error
