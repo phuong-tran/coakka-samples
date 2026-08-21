@@ -19,9 +19,8 @@ sample; it demonstrates the application-level `ALL` policy with one exact grant
 and independently verified outcome per owner. The native pointer, Maven
 Runtime/framework adapters, checksum-pinned connector archives, Go `v1.8.3`,
 and SwiftPM `v2.5.3` use Core
-`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`. npm, PyPI, and NuGet remain
-at connector `2.5.2` over their preceding native generation until those
-registries receive a separate release. Runtime tools remain independently
+`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`. npm, PyPI, and NuGet Runtime
+`2.5.3` use that same Core generation. Runtime tools remain independently
 versioned at `2.4.0+c2f53117`.
 
 For day-to-day development and connector validation, treat macOS and Windows as
@@ -119,19 +118,19 @@ dependencies {
 Python wheel:
 
 ```sh
-python -m pip install coakka-v2-connector==2.5.2
+python -m pip install coakka-v2-connector==2.5.3
 ```
 
 Node.js package:
 
 ```sh
-npm install coakka-v2-connector-node@2.5.2
+npm install coakka-v2-connector-node@2.5.3
 ```
 
 Bun package:
 
 ```sh
-bun add coakka-v2-connector-bun@2.5.2
+bun add coakka-v2-connector-bun@2.5.3
 ```
 
 Tauri intent bridge:
@@ -144,7 +143,7 @@ bash run.sh runtime tauri desktop-intent
 Electron intent bridge:
 
 ```sh
-npm install coakka-v2-connector-electron@2.5.2
+npm install coakka-v2-connector-electron@2.5.3
 ```
 
 Bun, Tauri, and Electron validation commands:
@@ -236,7 +235,7 @@ go get github.com/phuong-tran/coakka-runtime-go@v1.8.3
 C# NuGet package:
 
 ```sh
-dotnet add package CoAkka.Runtime --version 2.5.2
+dotnet add package CoAkka.Runtime --version 2.5.3
 ```
 
 Rust currently ships as a published archive package:

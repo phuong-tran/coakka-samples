@@ -1,9 +1,9 @@
 # Node.js Runtime Samples
 
 Node.js runtime samples document the `coakka-v2-connector-node` package shape.
-This runtime lane consumes `coakka-v2-connector-node@2.5.2` from npm, built
+This runtime lane consumes `coakka-v2-connector-node@2.5.3` from npm, built
 against native runtime generation
-`2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`.
+`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`.
 
 ## Run
 

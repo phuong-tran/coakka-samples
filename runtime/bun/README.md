@@ -2,9 +2,9 @@
 
 These samples exercise the Bun-facing CoAkka runtime connector lane.
 
-The current Bun lane consumes `coakka-v2-connector-bun@2.5.2` from npm and
+The current Bun lane consumes `coakka-v2-connector-bun@2.5.3` from npm and
 loads native runtime generation
-`2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`.
+`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`.
 
 The package carries the native runtime resources. A sample user installs the
 published Bun package and runs `RuntimeHost`; there is no separate native
@@ -48,5 +48,5 @@ It links the canonical feature guides, exact package catalog, and platform
 evidence, and it defines when only workflow pseudocode is justified.
 
 The current public package train includes File Lane and Stream Lane. Use the
-exact connector names and lifecycle rules shipped by `2.5.2` when integrating
+exact connector names and lifecycle rules shipped by `2.5.3` when integrating
 either lane.

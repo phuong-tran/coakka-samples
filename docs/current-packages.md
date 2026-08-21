@@ -16,11 +16,9 @@ packaging surface, and native payload.
 
 The promoted repository native artifact pointer is
 `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`. Maven Central Runtime
-`2.5.3`, Go `v1.8.3`, SwiftPM `v2.5.3`, and the checksum-pinned connector
-archives use that Core generation. npm Runtime `2.5.2`, PyPI Runtime `2.5.2`,
-and NuGet Runtime `2.5.2` remain the current registry releases and retain
-native generation `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` until
-those registries receive a separate release. The independently versioned
+`2.5.3`, npm Runtime `2.5.3`, PyPI Runtime `2.5.3`, NuGet Runtime `2.5.3`, Go
+`v1.8.3`, SwiftPM `v2.5.3`, and the checksum-pinned connector archives all use
+that Core generation. The independently versioned
 Spring Boot starter and Quarkus extension are current at `2.5.3` and depend
 exactly on Maven Runtime `2.5.3`. Logger JVM distribution `1.2.2` is
 published independently over
@@ -77,11 +75,11 @@ complete matrix with `bash run.sh runtime-addons all published`.
 | Channel | Runtime package | Logger package | Sample command |
 | --- | --- | --- | --- |
 | Maven Central | [`coakka.runtime` 2.5.3](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/runtime/2.5.3) | [`coakka.logger` 1.2.2](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/logger/1.2.2) | `bash run.sh runtime jvm basic`; `bash run.sh logger jvm basic` |
-| NuGet | [`CoAkka.Runtime` 2.5.2](https://www.nuget.org/packages/CoAkka.Runtime/2.5.2) | [`CoAkka.Logger` 1.2.3](https://www.nuget.org/packages/CoAkka.Logger/1.2.3) | `bash run.sh runtime csharp basic`; `bash run.sh logger csharp basic` |
-| npm | [`coakka-v2-connector-node` 2.5.2](https://www.npmjs.com/package/coakka-v2-connector-node/v/2.5.2) | [`coakka-logger-node` 1.2.7](https://www.npmjs.com/package/coakka-logger-node/v/1.2.7) | `bash run.sh runtime node basic` |
-| npm (Bun) | [`coakka-v2-connector-bun` 2.5.2](https://www.npmjs.com/package/coakka-v2-connector-bun/v/2.5.2) | [`coakka-logger-bun` 1.2.7](https://www.npmjs.com/package/coakka-logger-bun/v/1.2.7) | `bash run.sh runtime bun basic` |
-| npm (Electron) | [`coakka-v2-connector-electron` 2.5.2](https://www.npmjs.com/package/coakka-v2-connector-electron/v/2.5.2) | [`coakka-logger-electron` 1.2.7](https://www.npmjs.com/package/coakka-logger-electron/v/1.2.7) | `bash run.sh runtime electron basic` |
-| PyPI | [`coakka-v2-connector` 2.5.2](https://pypi.org/project/coakka-v2-connector/2.5.2/) | [`coakka-logger` 1.2.2](https://pypi.org/project/coakka-logger/1.2.2/) | `bash run.sh runtime python basic` |
+| NuGet | [`CoAkka.Runtime` 2.5.3](https://www.nuget.org/packages/CoAkka.Runtime/2.5.3) | [`CoAkka.Logger` 1.2.3](https://www.nuget.org/packages/CoAkka.Logger/1.2.3) | `bash run.sh runtime csharp basic`; `bash run.sh logger csharp basic` |
+| npm | [`coakka-v2-connector-node` 2.5.3](https://www.npmjs.com/package/coakka-v2-connector-node/v/2.5.3) | [`coakka-logger-node` 1.2.7](https://www.npmjs.com/package/coakka-logger-node/v/1.2.7) | `bash run.sh runtime node basic` |
+| npm (Bun) | [`coakka-v2-connector-bun` 2.5.3](https://www.npmjs.com/package/coakka-v2-connector-bun/v/2.5.3) | [`coakka-logger-bun` 1.2.7](https://www.npmjs.com/package/coakka-logger-bun/v/1.2.7) | `bash run.sh runtime bun basic` |
+| npm (Electron) | [`coakka-v2-connector-electron` 2.5.3](https://www.npmjs.com/package/coakka-v2-connector-electron/v/2.5.3) | [`coakka-logger-electron` 1.2.7](https://www.npmjs.com/package/coakka-logger-electron/v/1.2.7) | `bash run.sh runtime electron basic` |
+| PyPI | [`coakka-v2-connector` 2.5.3](https://pypi.org/project/coakka-v2-connector/2.5.3/) | [`coakka-logger` 1.2.2](https://pypi.org/project/coakka-logger/1.2.2/) | `bash run.sh runtime python basic` |
 | Go modules | [`coakka-runtime-go` v1.8.3](https://github.com/phuong-tran/coakka-runtime-go/tree/v1.8.3) | [`coakka-logger-go` v1.2.6](https://pkg.go.dev/github.com/phuong-tran/coakka-logger-go@v1.2.6) | `bash run.sh runtime go basic` |
 | SwiftPM | [`coakka-runtime-swift` v2.5.3](https://github.com/phuong-tran/coakka-runtime-swift/tree/v2.5.3) | [`coakka-logger-swift` v1.2.2](https://github.com/phuong-tran/coakka-logger-swift/releases/tag/v1.2.2) | `bash run.sh runtime swift basic` |
 
@@ -108,9 +106,9 @@ major `v1` because its established module path does not carry a `/v2` suffix.
 | Quarkus | `io.github.phuong-tran.coakka:quarkus-extension:2.5.3` |
 | Connector archives | `runtime/<lane>/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e/` |
 | JVM signed public tree | `https://repo1.maven.org/maven2/io/github/phuong-tran/coakka/runtime/2.5.3/` |
-| npm | `coakka-v2-connector-{node,bun,electron}@2.5.2` |
-| PyPI | `coakka-v2-connector`, exact `2.5.2` |
-| NuGet | `CoAkka.Runtime`, exact `2.5.2` |
+| npm | `coakka-v2-connector-{node,bun,electron}@2.5.3` |
+| PyPI | `coakka-v2-connector`, exact `2.5.3` |
+| NuGet | `CoAkka.Runtime`, exact `2.5.3` |
 | Go module | `github.com/phuong-tran/coakka-runtime-go@v1.8.3` |
 | SwiftPM | `https://github.com/phuong-tran/coakka-runtime-swift.git`, exact `2.5.3` |
 | coakka-client | `coakka-tools/coakka-client/releases/2.4.0+c2f53117/` |

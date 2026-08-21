@@ -52,22 +52,22 @@ examples and verification commands.
 
 | Registry | Runtime | Logger | Registry-backed sample |
 | --- | --- | --- | --- |
-| Maven Central | [`coakka.runtime` 2.5.2](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/runtime/2.5.2) | [`coakka.logger` 1.2.2](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/logger/1.2.2) | `bash run.sh runtime jvm basic` |
-| npm | [`coakka-v2-connector-node@2.5.2`](https://www.npmjs.com/package/coakka-v2-connector-node/v/2.5.2) | [`coakka-logger-node@1.2.7`](https://www.npmjs.com/package/coakka-logger-node/v/1.2.7) | `bash run.sh runtime node basic` |
-| PyPI | [`coakka-v2-connector==2.5.2`](https://pypi.org/project/coakka-v2-connector/2.5.2/) | [`coakka-logger==1.2.2`](https://pypi.org/project/coakka-logger/1.2.2/) | `bash run.sh runtime python basic` |
-| NuGet | [`CoAkka.Runtime@2.5.2`](https://www.nuget.org/packages/CoAkka.Runtime/2.5.2) | [`CoAkka.Logger@1.2.3`](https://www.nuget.org/packages/CoAkka.Logger/1.2.3) | `bash run.sh runtime csharp basic` |
+| Maven Central | [`coakka.runtime` 2.5.3](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/runtime/2.5.3) | [`coakka.logger` 1.2.2](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/logger/1.2.2) | `bash run.sh runtime jvm basic` |
+| npm | [`coakka-v2-connector-node@2.5.3`](https://www.npmjs.com/package/coakka-v2-connector-node/v/2.5.3) | [`coakka-logger-node@1.2.7`](https://www.npmjs.com/package/coakka-logger-node/v/1.2.7) | `bash run.sh runtime node basic` |
+| PyPI | [`coakka-v2-connector==2.5.3`](https://pypi.org/project/coakka-v2-connector/2.5.3/) | [`coakka-logger==1.2.2`](https://pypi.org/project/coakka-logger/1.2.2/) | `bash run.sh runtime python basic` |
+| NuGet | [`CoAkka.Runtime@2.5.3`](https://www.nuget.org/packages/CoAkka.Runtime/2.5.3) | [`CoAkka.Logger@1.2.3`](https://www.nuget.org/packages/CoAkka.Logger/1.2.3) | `bash run.sh runtime csharp basic` |
 
 Install the Node.js, Python, or .NET package directly; JVM projects declare the
 Maven coordinate through Gradle or Maven as shown in the JVM sample:
 
 ```sh
-npm install coakka-v2-connector-node@2.5.2 coakka-logger-node@1.2.7
-python3 -m pip install coakka-v2-connector==2.5.2 coakka-logger==1.2.2
-dotnet add package CoAkka.Runtime --version 2.5.2
+npm install coakka-v2-connector-node@2.5.3 coakka-logger-node@1.2.7
+python3 -m pip install coakka-v2-connector==2.5.3 coakka-logger==1.2.2
+dotnet add package CoAkka.Runtime --version 2.5.3
 dotnet add package CoAkka.Logger --version 1.2.3
 ```
 
-npm also publishes the matching Bun and Electron Runtime `2.5.2` and Logger
+npm also publishes the matching Bun and Electron Runtime `2.5.3` and Logger
 `1.2.7` packages. See [Current Packages](docs/current-packages.md) for every
 package-manager lane and exact compatibility evidence.
 
@@ -157,9 +157,9 @@ out of ordinary runtime message payloads.
 The promoted native pointer, static JVM/framework and Go/C#/Swift compatibility
 archives, `coakka-client`, and `coakka-runtime-inspect` pins retain generation
 `2.4.0+c2f53117`. Current Rust/Mojo/Zig/Tauri mirrors package connector
-`2.5.2` sources over native generation
-`2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. Maven Central Runtime `2.5.2`,
-registry-backed npm/PyPI/NuGet Runtime `2.5.2`, Go `v1.8.2`, and SwiftPM `v2.5.2`
+`2.5.3` sources over native generation
+`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`. Maven Central Runtime `2.5.3`,
+registry-backed npm/PyPI/NuGet Runtime `2.5.3`, Go `v1.8.3`, and SwiftPM `v2.5.3`
 use that same native generation and expose typed replica-owner File and Stream
 Lane grants. Logger packages remain on their independently listed versions and
 native generation.

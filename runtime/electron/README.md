@@ -107,5 +107,5 @@ File Lane, or Stream Lane code, follow
 [AI-Assisted Integration](../../docs/ai-assisted-integration.md).
 
 Connection policy and native lanes belong to Electron main, never the renderer.
-The current `2.5.2` package train includes typed replica-owner File and Stream
+The current `2.5.3` package train includes typed replica-owner File and Stream
 Lane grants; keep both lane lifecycles in the main process.

@@ -110,19 +110,21 @@ coordinates are:
 | Registry | Current verified coordinate | Bundled native generation |
 | --- | --- | --- |
 | Maven Central | `io.github.phuong-tran.coakka:runtime:2.5.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
-| npm | `coakka-v2-connector-{node,bun,electron}@2.5.2` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
-| PyPI | `coakka-v2-connector==2.5.2` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
-| NuGet | `CoAkka.Runtime==2.5.2` | `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` |
+| npm | `coakka-v2-connector-{node,bun,electron}@2.5.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
+| PyPI | `coakka-v2-connector==2.5.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
+| NuGet | `CoAkka.Runtime==2.5.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
 | Go modules | `github.com/phuong-tran/coakka-runtime-go@v1.8.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
 | SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v2.5.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
 
-Maven Runtime `2.5.3`, npm `2.5.2`, PyPI `2.5.2`, NuGet `2.5.2`, Go `v1.8.3`,
+Maven Runtime `2.5.3`, npm `2.5.3`, PyPI `2.5.3`, NuGet `2.5.3`, Go `v1.8.3`,
 and Swift `v2.5.3` expose typed replica-owner File and Stream Lane grants.
 Select an exact coordinate whose release receipt records the required native
 generation. The signed JVM audit is recorded in
 [JVM Runtime Maven Central 2.5.2](releases/2026-08-20-jvm-runtime-2.5.2-maven-central.md).
+The npm, PyPI, and NuGet publication and registry comparison are recorded in
+[Runtime registry packages 2.5.3](releases/2026-08-21-runtime-registries-2.5.3.md).
 
-NuGet Runtime `2.5.2` and Logger `1.2.3` each expose one `lib/net8.0` managed
+NuGet Runtime `2.5.3` and Logger `1.2.3` each expose one `lib/net8.0` managed
 asset and five native RID assets. The same repository-signed packages execute
 their consumer smokes on .NET 8, 9, and 10; `net8.0` is the minimum supported
 application target, while newer hosts are compatibility targets rather than
