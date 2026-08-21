@@ -7,7 +7,7 @@ repositories. Neither repository is a single release unit for the ecosystem.
 
 | Repository | Role | What to look for |
 | --- | --- | --- |
-| `coakka-samples` | Rolling public examples that consume exact published coordinates. | Sample code, container flows, framework scenarios, docs, pins, and smoke workflows. |
+| `coakka-samples` | Rolling public examples that consume exact published coordinates, plus deliberately scoped tagged source mirrors used by public registry SCM metadata. | Sample code, container flows, framework scenarios, docs, pins, smoke workflows, and immutable source-only projections. |
 | [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) | Versioned artifact warehouse and catalog. | Immutable package lanes, optional `runtime-addons/`, native archives, source packages, release notes, manifests, provenance, and checksums. |
 | Runtime and connector implementation workspaces | Artifact producers consumed through `coakka-publish`. | Source used to build the public artifacts. Public samples should not depend on a local implementation checkout. |
 
@@ -55,6 +55,8 @@ For the full wording rule, read
 - language-specific basic, deadletter, hot-reload, pressure, and logger samples
 - artifact pin verification against the public manifest
 - public smoke workflows
+- tagged, source-only release projections when a public package registry needs
+  a stable and anonymously reachable SCM URL
 
 ## What coakka-samples Does Not Own
 
@@ -65,6 +67,8 @@ For the full wording rule, read
 - production capacity claims
 - private operator runbooks for a specific deployment
 - product releases or an aggregate ecosystem version
+- implementation authority or private release tooling for a projected source
+  mirror
 
 ## Documentation Ownership
 
@@ -85,6 +89,12 @@ would. That means:
 - Every resolved artifact is checked against
   `artifacts/public-artifacts.tsv`.
 - Samples should not require a local implementation checkout to run.
+
+A tagged source mirror is a transparency and reproducibility surface, not a
+second implementation branch. It contains only the source, license, manifest,
+and minimal build/test material declared by its producer. The producer verifies
+the projection byte-for-byte before tagging it, and package metadata points at
+the immutable tag rather than at a rolling branch or private repository.
 
 ## Runtime Boundary
 

@@ -467,6 +467,34 @@ must not destroy the lane from inside a callback, retain runtime-owned byte
 pointers, or block indefinitely. Device reads need a bounded wait so stop and
 cancel remain observable.
 
+The native `2.5.1` source line services publisher control independently of
+receiver-window exhaustion. Complete Frames enter a fixed, worker-local ACK
+window until the subscriber returns their byte credit. Its active capacity is
+bounded from the accepted socket's existing receive buffer; the runtime does
+not enlarge that buffer. When the window fills, the publisher reads control at
+a complete Frame boundary until one Frame slot is acknowledged. Split and
+aggregate `WINDOW_UPDATE` messages are accepted. A productive publisher also
+checks ready control on a bounded monotonic cadence, and a source returning
+`COAKKA_V2_ERR_WOULD_BLOCK` waits on the control socket during its bounded retry
+interval. A subscriber cancel therefore no longer waits for a small-frame
+producer to consume its full byte window on an upgraded publisher. This changes
+private worker liveness only; Stream wire version 1 and the public C ABI are
+unchanged.
+
+During a mixed `2.5.0`/`2.5.1` rollout, upgrade Stream publisher owners before
+their subscribers. A `2.5.1` publisher accepts the per-Frame credit pattern of a
+`2.5.0` subscriber. The reverse direction cannot inherit the fix: a `2.5.0`
+publisher may still defer reverse control while it has spare byte credit.
+Drain or reroute active publishers, upgrade every publisher owner, verify no old
+publisher can be selected, and then upgrade subscribers. Roll back subscribers
+first and publisher owners last. Dual-role pods require role-aware draining or
+routing so they do not become new subscribers while still serving as old
+publishers.
+
+The lane worker cannot service control while the app's source callback is
+executing. Source adapters must still bound device or queue waits and return
+`COAKKA_V2_ERR_WOULD_BLOCK` when no frame is ready.
+
 ## Lifecycle And Operations
 
 Session states progress through `PREPARED`, `QUEUED`, `CONNECTING`, `ACTIVE`,

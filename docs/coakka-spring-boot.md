@@ -116,7 +116,7 @@ Current public coordinates are listed in the
 The Spring Boot starter lane is published to Maven Central:
 
 ```kotlin
-implementation("io.github.phuong-tran.coakka:spring-boot-starter:2.4.1")
+implementation("io.github.phuong-tran.coakka:spring-boot-starter:2.5.2")
 ```
 
 Only Maven Central is required:

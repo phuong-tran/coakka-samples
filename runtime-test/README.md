@@ -219,11 +219,11 @@ bash run.sh runtime-test race --threads 4 --requests 256
 bash run.sh runtime-test hot-reload --threads 4 --requests 256 --generations 64
 ```
 
-Published native generation
-`2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` contains the Simple
-and owner-aware File/Stream Lane C ABIs. The wrapper resolves its
-checksum-pinned native package. For development against a local Core change,
-override the package with an exact source tree:
+The sealed `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` candidate contains
+the Simple and owner-aware File/Stream Lane C ABIs. These release-branch
+commands resolve that checksum-pinned candidate; they do not claim it is
+published. For development against a local Core change, override the package
+with an exact source tree:
 
 ```sh
 COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR=../coakkaCoreNativeDev/v2 \
@@ -248,12 +248,21 @@ forget, and stop. Setting
 `COAKKA_NATIVE_EVIDENCE_REQUIRE_STREAM_LANE=ON` makes absence of the packaged
 contract a configure error.
 
-The 2.5.0 prebuilt runner includes all five evidence executables on macOS ARM64,
-Linux ARM64/x86-64, and Windows ARM64/x86-64. The Bash and PowerShell wrappers
-checksum the platform archive before extraction and dispatch every mode to its
-dedicated executable. The Windows archive contains the matching Runtime DLL;
-source builds generate a consumer-only import library from the checked-in
-public export definition and do not alter or relink that DLL.
+macOS ARM64 and Linux ARM64/x86-64 package-built lane modes use native
+generation `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. The prebuilt
+`1.3.4+dc6ec284` evidence runner remains a
+separate compatibility path for workload modes that do not require the newer
+connection-strategy ABI.
+
+For the original workload modes, the Windows PowerShell entrypoint executes the
+checksum-verified `1.3.4+dc6ec284` compatibility evidence runner. For
+File/Stream Lane profiles, `race`, and `hot-reload`, it builds this public C11
+source against the checksum-verified candidate package. File Lane and Stream
+Lane select Windows ARM64 or x86-64 to match the host; the concurrency harness
+remains x86-64-only.
+The archive contains runtime DLLs but no MSVC import library, so the harness
+generates a consumer-only `.lib` from its checked-in public export definition
+during CMake configure. It does not alter or relink the published DLL.
 
 Documented payload presets are:
 
@@ -422,19 +431,15 @@ available:
 ```sh
 COAKKA_NATIVE_EVIDENCE_USE_PREBUILT=1 \
   bash run.sh runtime-test smoke
-COAKKA_NATIVE_EVIDENCE_USE_PREBUILT=1 \
-  bash run.sh runtime-test file-lane-owner-aware
-COAKKA_NATIVE_EVIDENCE_USE_PREBUILT=1 \
-  bash run.sh runtime-test stream-lane-owner-aware
 ```
 
 Both paths execute the same public sample source. The prebuilt archive bundles
 the matching published runtime shared library; it does not contain private core
 source.
 
-Windows uses the matching checksum-pinned prebuilt runner for every mode.
-Setting `COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR` remains an explicit
-developer path for File and Stream Lane builds against a local Core tree.
+Windows uses the matching published prebuilt runner for the original workload
+modes. The concurrency modes build the auditable C11 source against the current
+published runtime DLL through `run.ps1`.
 
 ## Reproducibility
 

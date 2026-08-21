@@ -18,10 +18,10 @@ The promoted repository native artifact pointer remains
 `2.4.0+c2f53117`. Maven Central Runtime `2.5.2`, npm Runtime `2.5.2`, PyPI
 Runtime `2.5.2`, NuGet Runtime `2.5.2`, Go `v1.8.2`, and SwiftPM `v2.5.2`
 independently embed sealed native generation
-`2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. The Spring Boot starter and
-Quarkus extension remain on their independently published `2.4.1` train and
-depend on Maven Runtime `2.4.1`; they are not part of the Runtime `2.5.2`
-release. Logger JVM distribution `1.2.2` is published independently over
+`2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. The independently versioned
+Spring Boot starter and Quarkus extension are also current at `2.5.2` and
+depend exactly on Maven Runtime `2.5.2`. Logger JVM distribution `1.2.2` is
+published independently over
 native logger generation `1.2.1+f50756ebff0d`. NuGet Logger remains `1.2.3`.
 All Logger packages use the separately listed generations; version numbers
 remain independent by channel.
@@ -86,10 +86,10 @@ complete matrix with `bash run.sh runtime-addons all published`.
 
 Java 17 app hosts can use the independently versioned Maven Central framework
 adapters: [`spring-boot-starter`
-2.4.1](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/spring-boot-starter/2.4.1)
+2.5.2](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/spring-boot-starter/2.5.2)
 or [`quarkus-extension`
-2.4.1](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/quarkus-extension/2.4.1).
-Both depend on public Runtime `2.4.1`; applications select their own verified
+2.5.2](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/quarkus-extension/2.5.2).
+Both depend on public Runtime `2.5.2`; applications select their own verified
 Spring Boot or Quarkus platform line.
 
 The current source coordinates are
@@ -103,8 +103,8 @@ major `v1` because its established module path does not carry a `/v2` suffix.
 | --- | --- |
 | Native C ABI | `runtime/native/releases/2.4.0+c2f53117/coakka-runtime-native-v2-2.4.0.tar.gz` |
 | JVM | `io.github.phuong-tran.coakka:runtime:2.5.2` |
-| Spring Boot | `io.github.phuong-tran.coakka:spring-boot-starter:2.4.1` |
-| Quarkus | `io.github.phuong-tran.coakka:quarkus-extension:2.4.1` |
+| Spring Boot | `io.github.phuong-tran.coakka:spring-boot-starter:2.5.2` |
+| Quarkus | `io.github.phuong-tran.coakka:quarkus-extension:2.5.2` |
 | Non-JVM connector archives | `runtime/<lane>/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/` |
 | JVM signed public tree | `https://repo1.maven.org/maven2/io/github/phuong-tran/coakka/runtime/2.5.2/` |
 | npm | `coakka-v2-connector-{node,bun,electron}@2.5.2` |

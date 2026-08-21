@@ -120,7 +120,7 @@ Current public coordinates are listed in the
 The Quarkus extension lane is published to Maven Central:
 
 ```kotlin
-implementation("io.github.phuong-tran.coakka:quarkus-extension:2.4.1")
+implementation("io.github.phuong-tran.coakka:quarkus-extension:2.5.2")
 ```
 
 Only Maven Central is required:
