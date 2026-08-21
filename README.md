@@ -30,9 +30,9 @@ container, or host.
 CoAkka Logger is a separate bounded logging surface in the same ecosystem.
 
 One native core and a stable public C ABI support native C/C++, JVM and
-framework adapters, JavaScript runtimes, Python, Go, C#, Rust, Swift, Zig,
-Mojo, and related host integrations according to each release's compatibility
-row.
+framework adapters, Node.js, Bun, Electron, Tauri, Python, Go, C#, Rust,
+Swift, Zig, Mojo, and the separately scoped Android preview according to each
+release's compatibility row.
 
 Kubernetes is a first-class deployment lane because topology, rollout, and
 scale require deep operational guidance. It is not a prerequisite. The same
@@ -43,33 +43,69 @@ metal, and architecture-matched edge deployments. Check the
 [Compatibility Matrix](https://github.com/phuong-tran/coakka-publish/blob/main/docs/compatibility-matrix.md)
 for exact package, OS, CPU, and release-channel evidence.
 
-## Install Published Packages
+## Install Runtime And Logger Packages
 
-Normal application consumers install CoAkka Runtime and Logger from public
-package registries. You do not need to build the native core or clone a
-connector repository for these paths; this repository provides the runnable
-examples and verification commands.
+Stable application lanes install CoAkka Runtime and Logger from their native
+package registry or checksum-pinned source archive. You do not need to build
+the native core or clone a connector repository for those paths. Android preview
+is listed separately because it has no public Maven coordinate.
 
-| Registry | Runtime | Logger | Registry-backed sample |
-| --- | --- | --- | --- |
-| Maven Central | [`coakka.runtime` 2.5.3](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/runtime/2.5.3) | [`coakka.logger` 1.2.2](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/logger/1.2.2) | `bash run.sh runtime jvm basic` |
-| npm | [`coakka-v2-connector-node@2.5.3`](https://www.npmjs.com/package/coakka-v2-connector-node/v/2.5.3) | [`coakka-logger-node@1.2.7`](https://www.npmjs.com/package/coakka-logger-node/v/1.2.7) | `bash run.sh runtime node basic` |
-| PyPI | [`coakka-v2-connector==2.5.3`](https://pypi.org/project/coakka-v2-connector/2.5.3/) | [`coakka-logger==1.2.2`](https://pypi.org/project/coakka-logger/1.2.2/) | `bash run.sh runtime python basic` |
-| NuGet | [`CoAkka.Runtime@2.5.3`](https://www.nuget.org/packages/CoAkka.Runtime/2.5.3) | [`CoAkka.Logger@1.2.3`](https://www.nuget.org/packages/CoAkka.Logger/1.2.3) | `bash run.sh runtime csharp basic` |
+| Host lane | Distribution | Runtime | Logger | Sample or guide |
+| --- | --- | --- | --- | --- |
+| JVM | Maven Central | [`coakka.runtime` 2.5.3](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/runtime/2.5.3) | [`coakka.logger` 1.2.2](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/logger/1.2.2) | `bash run.sh runtime jvm basic` |
+| Node.js | npm | [`coakka-v2-connector-node@2.5.3`](https://www.npmjs.com/package/coakka-v2-connector-node/v/2.5.3) | [`coakka-logger-node@1.2.7`](https://www.npmjs.com/package/coakka-logger-node/v/1.2.7) | `bash run.sh runtime node basic` |
+| Bun | npm | [`coakka-v2-connector-bun@2.5.3`](https://www.npmjs.com/package/coakka-v2-connector-bun/v/2.5.3) | [`coakka-logger-bun@1.2.7`](https://www.npmjs.com/package/coakka-logger-bun/v/1.2.7) | `bash run.sh runtime bun basic` |
+| Electron main process | npm | [`coakka-v2-connector-electron@2.5.3`](https://www.npmjs.com/package/coakka-v2-connector-electron/v/2.5.3) | [`coakka-logger-electron@1.2.7`](https://www.npmjs.com/package/coakka-logger-electron/v/1.2.7) | `bash run.sh runtime electron basic` |
+| Python | PyPI | [`coakka-v2-connector==2.5.3`](https://pypi.org/project/coakka-v2-connector/2.5.3/) | [`coakka-logger==1.2.2`](https://pypi.org/project/coakka-logger/1.2.2/) | `bash run.sh runtime python basic` |
+| .NET | NuGet | [`CoAkka.Runtime@2.5.3`](https://www.nuget.org/packages/CoAkka.Runtime/2.5.3) | [`CoAkka.Logger@1.2.3`](https://www.nuget.org/packages/CoAkka.Logger/1.2.3) | `bash run.sh runtime csharp basic` |
+| Go | Go modules | [`coakka-runtime-go@v1.8.3`](https://github.com/phuong-tran/coakka-runtime-go/tree/v1.8.3) | [`coakka-logger-go@v1.2.6`](https://pkg.go.dev/github.com/phuong-tran/coakka-logger-go@v1.2.6) | `bash run.sh runtime go basic` |
+| Swift | SwiftPM | [`coakka-runtime-swift@v2.5.3`](https://github.com/phuong-tran/coakka-runtime-swift/tree/v2.5.3) | [`coakka-logger-swift@v1.2.2`](https://github.com/phuong-tran/coakka-logger-swift/releases/tag/v1.2.2) | `bash run.sh runtime swift basic` |
+| Tauri/Rust host | Checksum-pinned source archive, not crates.io | [`coakka-runtime-tauri-intents` 2.5.3 source](https://github.com/phuong-tran/coakka-publish/tree/main/runtime/tauri/releases/2.5.1%2B26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e) | [`coakka-logger-tauri-intents` 1.2.2 source](https://github.com/phuong-tran/coakka-publish/tree/main/logger/tauri/releases/1.2.1%2Bf50756ebff0d-7718ce6) | [Tauri integration guide](runtime/tauri/README.md) |
+| Android preview | Signed preview AAR, no public Maven coordinate | [`coakka-runtime-android` 1.2.0 preview](runtime/android/README.md) | Use the app's Android logging policy | [Android integration guide](runtime/android/README.md) |
 
-Install the Node.js, Python, or .NET package directly; JVM projects declare the
-Maven coordinate through Gradle or Maven as shown in the JVM sample:
+Node.js, Bun, and Electron are separate npm packages with different host
+boundaries. Install the package for the runtime that actually owns native
+resources:
 
 ```sh
 npm install coakka-v2-connector-node@2.5.3 coakka-logger-node@1.2.7
+bun add coakka-v2-connector-bun@2.5.3 coakka-logger-bun@1.2.7
+npm install coakka-v2-connector-electron@2.5.3 coakka-logger-electron@1.2.7
+```
+
+Electron `42+` and Node.js `22+` are required by the Electron lane. Only the
+Electron main process owns CoAkka Runtime; preload and renderer code receive a
+narrow intent API rather than native handles.
+
+Python and .NET use their own registries:
+
+```sh
 python3 -m pip install coakka-v2-connector==2.5.3 coakka-logger==1.2.2
 dotnet add package CoAkka.Runtime --version 2.5.3
 dotnet add package CoAkka.Logger --version 1.2.3
 ```
 
-npm also publishes the matching Bun and Electron Runtime `2.5.3` and Logger
-`1.2.7` packages. See [Current Packages](docs/current-packages.md) for every
-package-manager lane and exact compatibility evidence.
+Tauri is not an npm or crates.io connector. Download and verify the `2.5.3`
+source archive from the table, unpack it, and use a Rust path dependency from
+the trusted Tauri host:
+
+```toml
+[dependencies]
+coakka-tauri-intents = { path = "/path/to/coakka-runtime-tauri-intents-2.5.3-source/coakka-tauri-intents" }
+```
+
+Android `1.2.0` is a preview, not a public install coordinate. A permitted
+Android consumer places the exact verified AAR under `app/libs` and uses:
+
+```kotlin
+dependencies {
+    implementation(files("libs/coakka-runtime-android-1.2.0.aar"))
+}
+```
+
+Do not invent a Maven coordinate for Android. See
+[Current Packages](docs/current-packages.md) for every release lane, native
+generation, and exact compatibility evidence.
 
 ## Repository Map
 
@@ -336,9 +372,11 @@ Do not add CoAkka when:
 
 ## Packages
 
-Published package lanes are available for JVM, Node.js, Python, Go, C#, Swift,
-and other runtime/logger surfaces. Package versions are independent across the
-ecosystem; they do not need to share the same number.
+Published package lanes are available for JVM, Node.js, Bun, Electron, Python,
+Go, C#, and Swift. Tauri uses a checksum-pinned Rust source archive, while
+Android remains a signed preview candidate without a public Maven coordinate.
+Package versions are independent across the ecosystem; they do not need to
+share the same number.
 
 Current package-manager entrypoints live in
 [docs/current-packages.md](docs/current-packages.md). Compatibility and release
@@ -358,7 +396,11 @@ and
 | Route generation and hot reload | `bash run.sh runtime python hot-reload` |
 | Native public-ABI correctness and connection-strategy evidence | `bash run.sh runtime-test smoke` |
 | Framework handoff shape | `bash run.sh list` then choose a `runtime/scenarios/customer-crud/*` lane |
-| Published npm packages | `bash run.sh runtime node basic`; [no-checkout npm smoke](docs/first-npm-smoke.md) |
+| Published Node.js npm package | `bash run.sh runtime node basic`; [no-checkout npm smoke](docs/first-npm-smoke.md) |
+| Published Bun npm package | `bash run.sh runtime bun basic` |
+| Published Electron npm package | `bash run.sh runtime electron basic` |
+| Tauri/Rust source-archive integration | [Tauri integration guide](runtime/tauri/README.md) |
+| Android signed preview | [Android integration guide](runtime/android/README.md) |
 | Published PyPI packages | `bash run.sh runtime python basic`; `bash run.sh logger python basic` |
 | Published NuGet packages | `bash run.sh runtime csharp basic`; `bash run.sh logger csharp basic` |
 

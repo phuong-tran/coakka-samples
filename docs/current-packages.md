@@ -70,9 +70,9 @@ runtime-addons/artifact-publisher-sftp/native/releases/1.2.0+88b9a047/
 Run one exact native consumer with `bash run.sh runtime-addons <addon>` or the
 complete matrix with `bash run.sh runtime-addons all published`.
 
-## Package Manager Entrypoints
+## Package And Source Entrypoints
 
-| Channel | Runtime package | Logger package | Sample command |
+| Channel | Runtime package | Logger package | Sample or guide |
 | --- | --- | --- | --- |
 | Maven Central | [`coakka.runtime` 2.5.3](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/runtime/2.5.3) | [`coakka.logger` 1.2.2](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/logger/1.2.2) | `bash run.sh runtime jvm basic`; `bash run.sh logger jvm basic` |
 | NuGet | [`CoAkka.Runtime` 2.5.3](https://www.nuget.org/packages/CoAkka.Runtime/2.5.3) | [`CoAkka.Logger` 1.2.3](https://www.nuget.org/packages/CoAkka.Logger/1.2.3) | `bash run.sh runtime csharp basic`; `bash run.sh logger csharp basic` |
@@ -82,6 +82,13 @@ complete matrix with `bash run.sh runtime-addons all published`.
 | PyPI | [`coakka-v2-connector` 2.5.3](https://pypi.org/project/coakka-v2-connector/2.5.3/) | [`coakka-logger` 1.2.2](https://pypi.org/project/coakka-logger/1.2.2/) | `bash run.sh runtime python basic` |
 | Go modules | [`coakka-runtime-go` v1.8.3](https://github.com/phuong-tran/coakka-runtime-go/tree/v1.8.3) | [`coakka-logger-go` v1.2.6](https://pkg.go.dev/github.com/phuong-tran/coakka-logger-go@v1.2.6) | `bash run.sh runtime go basic` |
 | SwiftPM | [`coakka-runtime-swift` v2.5.3](https://github.com/phuong-tran/coakka-runtime-swift/tree/v2.5.3) | [`coakka-logger-swift` v1.2.2](https://github.com/phuong-tran/coakka-logger-swift/releases/tag/v1.2.2) | `bash run.sh runtime swift basic` |
+| Tauri source archive | [`coakka-runtime-tauri-intents` 2.5.3 source](https://github.com/phuong-tran/coakka-publish/tree/main/runtime/tauri/releases/2.5.1%2B26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e) | [`coakka-logger-tauri-intents` 1.2.2 source](https://github.com/phuong-tran/coakka-publish/tree/main/logger/tauri/releases/1.2.1%2Bf50756ebff0d-7718ce6) | [Tauri integration guide](https://github.com/phuong-tran/coakka-samples/blob/main/runtime/tauri/README.md) |
+| Android preview | [`coakka-runtime-android` 1.2.0 signed preview AAR](edge-iot-android.md#android-and-industrial-tablets) | Use the app's Android logging policy | Integration guide only; no public Maven coordinate |
+
+Node.js, Bun, and Electron are three distinct npm packages. Tauri is a
+checksum-pinned source archive rather than an npm or crates.io package. Android
+`1.2.0` remains an Android preview candidate, so consumers must not infer or
+publish a Maven coordinate for it.
 
 Java 17 app hosts can use the independently versioned Maven Central framework
 adapters: [`spring-boot-starter`

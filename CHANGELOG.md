@@ -7,6 +7,10 @@ and checksums live in the versioned
 
 ## 2026-08-21
 
+- Expanded the repository front door so Node.js, Bun, and Electron have
+  separate npm package and sample instructions. Tauri is identified as a
+  checksum-pinned Rust source archive, and Android `1.2.0` as an Android preview
+  candidate without a public Maven coordinate.
 - Advanced the Client and Inspect samples, archive pins, Docker bundle pins,
   and Docker Hub defaults to Runtime
   `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`. Native package smoke passes on
