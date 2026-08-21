@@ -3,6 +3,12 @@
 `coakka-runtime-client` is the CLI runtime client lane for CoAkka Runtime.
 The published command and archive names use `coakka-client`.
 
+The internal source and Docker context now target Runtime native
+`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`. This source closeout does not
+publish a replacement Client archive or Docker Hub image. The `2.4.0` archives
+are the last public product artifacts; the `1.3.2` image is the last public
+Docker demo artifact.
+
 Run `coakka-client --help` after unpacking a published archive. If
 `coakka-runtime-client` is not found, that is expected for this release: it is
 the product lane and sample directory name, not the executable name.
@@ -47,6 +53,13 @@ bash run.sh runtime-client version
 bash run.sh runtime-client doctor
 bash run.sh runtime-client docker-walkthrough
 bash run.sh runtime-client dockerhub-demo
+```
+
+Smoke the current local product binary without resolving a public archive:
+
+```sh
+COAKKA_RUNTIME_CLIENT_BIN=/absolute/path/to/coakka-client \
+  bash run.sh runtime-client local-smoke
 ```
 
 The runner resolves the matching archive from a sibling `coakka-publish`
@@ -122,7 +135,7 @@ docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.2-caff6d
 
 ## Published Release
 
-The published CLI runtime-client release is platform-specific:
+The last public CLI runtime-client release is platform-specific:
 
 ```text
 coakka-runtime-client product lane
@@ -183,7 +196,7 @@ bundle to bring up two native runtime services and drive them with the packaged
 `coakka-client` inside Docker. That is a sample experience command, not a
 separate published artifact.
 
-The Docker Hub demo image is:
+The last public Docker Hub demo image is:
 
 ```text
 docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.2-caff6d6d-remote

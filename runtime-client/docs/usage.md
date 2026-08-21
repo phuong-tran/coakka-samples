@@ -9,6 +9,13 @@ bash run.sh runtime-client version
 bash run.sh runtime-client doctor
 ```
 
+Smoke the current local product binary without resolving a public archive:
+
+```sh
+COAKKA_RUNTIME_CLIENT_BIN=/absolute/path/to/coakka-client \
+  bash run.sh runtime-client local-smoke
+```
+
 For direct CLI usage after unpacking a published archive, run:
 
 ```sh
@@ -200,7 +207,9 @@ The final check is a `coakka-client shell --script` run that switches from
 
 ## Docker Hub Demo Image
 
-Use the Docker Hub image when the goal is a one-command runtime-client demo:
+The following is the last public Docker Hub evaluation image. Internal source
+now targets Runtime `2.5.1+C1`; this source closeout does not publish a
+replacement:
 
 ```sh
 docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.2-caff6d6d-remote

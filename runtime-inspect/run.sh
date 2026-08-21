@@ -7,7 +7,9 @@ publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
 source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 
-COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE_DEFAULT="coakka-runtime-inspect-sample:1.3.2-local"
+COAKKA_RUNTIME_INSPECT_RELEASE_ID="${COAKKA_RUNTIME_INSPECT_RELEASE_ID:-2.4.0+c2f53117}"
+COAKKA_RUNTIME_INSPECT_RELEASE_VERSION="${COAKKA_RUNTIME_INSPECT_RELEASE_VERSION:-2.4.0}"
+COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE_DEFAULT="coakka-runtime-inspect-sample:${COAKKA_RUNTIME_INSPECT_RELEASE_VERSION}-local"
 COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE_DEFAULT="docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.2-caff6d6d-remote"
 
 core_root="${COAKKA_CORE_ROOT:-}"
@@ -49,8 +51,8 @@ Environment:
   COAKKA_PUBLISH_ROOT       local coakka-publish checkout
   COAKKA_PUBLISH_RAW_BASE   raw public fallback URL
   COAKKA_RUNTIME_INSPECT_BIN=/path/to/coakka-runtime-inspect
-  COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE=coakka-runtime-inspect-sample:1.3.2-local
-  COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE=docker.io/gabrielgun1983/coakka-runtime-inspect-sample:1.3.2-caff6d6d-remote
+  COAKKA_RUNTIME_INSPECT_DOCKER_IMAGE=<local-image-tag>
+  COAKKA_RUNTIME_INSPECT_DOCKERHUB_IMAGE=<immutable-version-and-core-tag>
   COAKKA_RUNTIME_INSPECT_DOCKER_PORT=18080
 
 Notes:
@@ -114,7 +116,7 @@ coakka_runtime_inspect_release_id_for_platform() {
   local platform="$1"
   case "${platform}" in
     macos-aarch64|linux-aarch64|linux-x86_64|windows-aarch64|windows-x86_64)
-      printf '%s\n' "2.4.0+c2f53117" ;;
+      printf '%s\n' "${COAKKA_RUNTIME_INSPECT_RELEASE_ID}" ;;
     *) return 1 ;;
   esac
 }
@@ -122,7 +124,7 @@ coakka_runtime_inspect_release_id_for_platform() {
 coakka_runtime_inspect_version_for_platform() {
   case "$1" in
     macos-aarch64|linux-aarch64|linux-x86_64|windows-aarch64|windows-x86_64)
-      printf '%s\n' "2.4.0" ;;
+      printf '%s\n' "${COAKKA_RUNTIME_INSPECT_RELEASE_VERSION}" ;;
     *) return 1 ;;
   esac
 }
@@ -227,7 +229,8 @@ smoke_inspect_binary() {
 
   "${binary_path}" version >/dev/null
   "${binary_path}" doctor >/dev/null
-  "${binary_path}" help serve | grep -F "Serve a local read-first inspect UI" >/dev/null
+  "${binary_path}" help serve | \
+    grep -F "Serve a local read-first inspect UI" >/dev/null
   "${binary_path}" snapshot \
     --output json \
     --local-route inspect.echo=127.0.0.1:19001 >"${snapshot_json}"
@@ -303,8 +306,12 @@ run_published_smoke() {
 }
 
 run_local_smoke() {
+  local inspect_help
   coakka_require_executable_file "${inspect_bin}" "Set COAKKA_RUNTIME_INSPECT_BIN to a local coakka-runtime-inspect binary."
   smoke_inspect_binary "${inspect_bin}"
+  inspect_help="$("${inspect_bin}" help serve)"
+  grep -F -- "--connect host:port" <<<"${inspect_help}" >/dev/null
+  grep -F "Runtime requests accept mode call|ask" <<<"${inspect_help}" >/dev/null
   echo "coakka-runtime-inspect local smoke ok"
 }
 

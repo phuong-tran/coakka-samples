@@ -16,7 +16,7 @@ Current release lines:
 ```text
 coakka-runtime-client product lane
 coakka-client command and archive prefix
-2.4.0+c2f53117 release id on all five listed platforms
+last public release `2.4.0+c2f53117` on all five listed platforms
 ```
 
 Published CLI archives:
@@ -87,7 +87,7 @@ behavior. They are not runtime-core schema.
 
 ## Transport Profile
 
-The current runtime-client release reports:
+The last public runtime-client release reports:
 
 ```text
 southbound_backend=tcp
@@ -121,7 +121,7 @@ runtime service containers and prints the service, port, and route before each
 `coakka-client` call. This remains sample orchestration; it does not add a new
 runtime-core responsibility or a new published artifact lane.
 
-The Docker Hub image
+The last public Docker Hub image
 `docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.2-caff6d6d-remote`
 prebuilds that walkthrough into one container. It contains the published
 `coakka-client` and native demo service artifacts for Linux amd64/arm64 and

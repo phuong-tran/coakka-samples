@@ -5,6 +5,12 @@ It is the visual sibling of `coakka-client`: both point at a caller-supplied
 runtime address, both use runtime-owned truth, and both keep route try behavior
 aligned with `call` / `ask`.
 
+The internal source and Docker context now target Runtime native
+`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`. This source closeout does not
+publish a replacement Inspect archive or Docker Hub image. The `2.4.0` archives
+are the last public product artifacts; the `1.3.2` image is the last public
+Docker sample artifact.
+
 This sample lane can verify the published macOS ARM64, Linux x86_64, Linux
 ARM64, Windows x86_64, and Windows ARM64 inspect archives from
 `coakka-publish`.
@@ -79,7 +85,7 @@ are explicitly labelled `local-linked-runtime`.
 
 ## Published Release
 
-The current published inspect release is platform-specific:
+The last public inspect release is platform-specific:
 
 ```text
 coakka-runtime-inspect native UI
@@ -141,7 +147,7 @@ COAKKA_RUNTIME_INSPECT_DOCKER_PORT=18081 \
   bash run.sh runtime-inspect docker-serve
 ```
 
-Run the published Docker Hub image without preparing a local artifact context:
+Run the last public Docker Hub evaluation image without preparing a local artifact context:
 
 ```sh
 bash run.sh runtime-inspect dockerhub-smoke

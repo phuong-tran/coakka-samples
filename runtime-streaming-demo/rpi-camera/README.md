@@ -8,6 +8,13 @@ This sample has two native applications:
   serves the local camera UI, and records Matroska video with optional AAC
   audio.
 
+This is an evaluation demo for Stream Lane publication, subscription, bounded
+backpressure, cancellation, and shutdown. Its executables are provided so users
+can test those runtime paths on their own hardware; they are not a separate
+CoAkka product or a production camera support promise. Source revision `1.1.2`
+builds against Runtime native
+`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`.
+
 The web listener is intentionally restricted to `127.0.0.1`. The Pi listener
 uses a bearer token and is intended for a trusted private network. This sample
 does not provide TLS, Internet exposure, or multi-user browser authentication.
@@ -247,25 +254,22 @@ process list. Run either binary with `--help` to print its exact CLI contract.
 
 ## Build From Public Source
 
-Clone the public samples repository. For macOS or Linux x86-64, unpack CoAkka
-Runtime native `2.3.0` or newer and set `RUNTIME_ROOT` to that package:
+Clone the public samples repository, unpack exact CoAkka Runtime native `2.5.1`,
+and set `RUNTIME_ROOT` to that package:
 
 ```sh
 git clone https://github.com/phuong-tran/coakka-samples.git
 cd coakka-samples/runtime-streaming-demo/rpi-camera
-export RUNTIME_ROOT=/absolute/path/to/coakka-runtime-native-v2-2.3.0
+export RUNTIME_ROOT=/absolute/path/to/coakka-runtime-native-v2-2.5.1
 ```
 
-The generic Runtime `2.3.0` Linux ARM64 archive was built against glibc 2.38;
-Raspberry Pi OS 12 provides glibc 2.36. Do not link that generic library on Pi
-OS 12. Instead, unpack this release's Pi archive and use its Pi-compatible
-runtime library with the public Runtime package headers:
+The Runtime `2.5.1` Linux ARM64 evaluation library targets Debian 12 / glibc
+2.36 and can be used directly on Raspberry Pi OS 12:
 
 ```sh
-export PI_BUNDLE_ROOT=/absolute/path/to/pi-linux-arm64
 cmake -S . -B build/pi -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
-  -DCOAKKA_RUNTIME_LIBRARY="$PI_BUNDLE_ROOT/libcoakka_runtime_v2.so" \
+  -DCOAKKA_RUNTIME_LIBRARY="$RUNTIME_ROOT/native/linux-aarch64/libcoakka_runtime_v2.so" \
   -DCOAKKA_RUNTIME_INCLUDE_DIR="$RUNTIME_ROOT/include" \
   -DCOAKKA_CAMERA_BUILD_HOST=OFF \
   -DCOAKKA_CAMERA_BUILD_PI=ON

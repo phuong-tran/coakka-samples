@@ -7,9 +7,17 @@ publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
 source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 
-COAKKA_RUNTIME_CLIENT_DOCKER_BUNDLE_RELEASE_ID="1.3.2+caff6d6d"
-COAKKA_RUNTIME_CLIENT_DOCKER_BUNDLE_VERSION="1.3.2"
+COAKKA_RUNTIME_CLIENT_DOCKER_BUNDLE_RELEASE_ID="${COAKKA_RUNTIME_CLIENT_DOCKER_BUNDLE_RELEASE_ID:-2.4.0+c2f53117}"
+COAKKA_RUNTIME_CLIENT_DOCKER_BUNDLE_VERSION="${COAKKA_RUNTIME_CLIENT_DOCKER_BUNDLE_VERSION:-2.4.0}"
 COAKKA_RUNTIME_CLIENT_DEMO_IMAGE_DEFAULT="docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.2-caff6d6d-remote"
+core_root="${COAKKA_CORE_ROOT:-}"
+if [[ -n "${COAKKA_RUNTIME_CLIENT_BIN:-}" ]]; then
+  client_bin="${COAKKA_RUNTIME_CLIENT_BIN}"
+elif [[ -n "${core_root}" ]]; then
+  client_bin="${core_root}/build-v2/coakka-client"
+else
+  client_bin=""
+fi
 coakka_runtime_client_tmp_dir=""
 coakka_runtime_client_compose_dir=""
 coakka_runtime_client_compose_override=""
@@ -49,6 +57,7 @@ coakka-runtime-client sample
 Usage:
   bash run.sh runtime-client
   bash run.sh runtime-client check
+  bash run.sh runtime-client local-smoke
   bash run.sh runtime-client version
   bash run.sh runtime-client doctor
   bash run.sh runtime-client docker-bundle
@@ -58,6 +67,7 @@ Usage:
 Environment:
   COAKKA_PUBLISH_ROOT       local coakka-publish checkout
   COAKKA_PUBLISH_RAW_BASE   raw public fallback URL
+  COAKKA_RUNTIME_CLIENT_BIN=/path/to/coakka-client
   COAKKA_RUNTIME_CLIENT_DEMO_IMAGE Docker Hub demo image tag
 EOF
 }
@@ -87,7 +97,9 @@ coakka_runtime_client_docker_platform() {
 coakka_runtime_client_release_fields() {
   case "$1" in
     macos-aarch64|linux-aarch64|linux-x86_64|windows-aarch64|windows-x86_64)
-      printf '%s|%s\n' "2.4.0" "2.4.0+c2f53117" ;;
+      printf '%s|%s\n' \
+        "${COAKKA_RUNTIME_CLIENT_DOCKER_BUNDLE_VERSION}" \
+        "${COAKKA_RUNTIME_CLIENT_DOCKER_BUNDLE_RELEASE_ID}" ;;
     *) return 1 ;;
   esac
 }
@@ -132,6 +144,15 @@ coakka_runtime_client_run() {
   esac
 
   coakka_runtime_client_cleanup
+}
+
+coakka_runtime_client_local_smoke() {
+  coakka_require_executable_file "${client_bin}" \
+    "Set COAKKA_RUNTIME_CLIENT_BIN to a local coakka-client binary."
+  "${client_bin}" version --output json >/dev/null
+  "${client_bin}" doctor --output json >/dev/null
+  "${client_bin}" help ask >/dev/null
+  echo "coakka-client local smoke ok"
 }
 
 coakka_runtime_client_resolve_docker_bundle() {
@@ -411,6 +432,9 @@ case "${command_name}" in
   check|smoke)
     coakka_runtime_client_run version --output json
     coakka_runtime_client_run doctor --output json
+    ;;
+  local-smoke)
+    coakka_runtime_client_local_smoke
     ;;
   version)
     coakka_runtime_client_run version --output json

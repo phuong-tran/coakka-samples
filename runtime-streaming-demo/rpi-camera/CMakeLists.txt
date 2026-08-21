@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(CoAkkaRpiCameraSample VERSION 1.1.1 LANGUAGES C CXX)
+project(CoAkkaRpiCameraSample VERSION 1.1.2 LANGUAGES C CXX)
 
 include(CTest)
 
@@ -57,8 +57,17 @@ endif()
 if(PkgConfig_FOUND AND NOT CMAKE_CROSSCOMPILING)
   pkg_check_modules(COAKKA_CAMERA_LIBUV QUIET IMPORTED_TARGET libuv)
 endif()
+if(WIN32)
+  find_package(libuv CONFIG QUIET)
+endif()
 if(TARGET PkgConfig::COAKKA_CAMERA_LIBUV)
   set(COAKKA_CAMERA_LIBUV_TARGET PkgConfig::COAKKA_CAMERA_LIBUV)
+elseif(WIN32 AND TARGET libuv::uv_a)
+  set(COAKKA_CAMERA_LIBUV_TARGET libuv::uv_a)
+elseif(WIN32)
+  message(FATAL_ERROR
+    "Windows camera builds require a libuv package exporting static target "
+    "libuv::uv_a; dynamic libuv is not part of the release bundle")
 else()
   find_path(COAKKA_CAMERA_LIBUV_INCLUDE_DIR uv.h REQUIRED)
   find_library(COAKKA_CAMERA_LIBUV_LIBRARY NAMES uv libuv REQUIRED)
@@ -66,10 +75,6 @@ else()
   set_target_properties(coakka_camera_libuv PROPERTIES
     IMPORTED_LOCATION "${COAKKA_CAMERA_LIBUV_LIBRARY}"
     INTERFACE_INCLUDE_DIRECTORIES "${COAKKA_CAMERA_LIBUV_INCLUDE_DIR}")
-  if(WIN32)
-    set_property(TARGET coakka_camera_libuv PROPERTY INTERFACE_LINK_LIBRARIES
-      "psapi;user32;advapi32;iphlpapi;userenv;ws2_32;dbghelp;ole32;shell32")
-  endif()
   set(COAKKA_CAMERA_LIBUV_TARGET coakka_camera_libuv)
 endif()
 

@@ -10,10 +10,10 @@ print_usage() {
 coakka-runtime-client Docker Hub demo
 
 Usage:
-  docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.2-caff6d6d-remote
-  docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.2-caff6d6d-remote walkthrough
-  docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.2-caff6d6d-remote client --help
-  docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:1.3.2-caff6d6d-remote client version --output json
+  docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:<version>-<core-sha8>-remote
+  docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:<version>-<core-sha8>-remote walkthrough
+  docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:<version>-<core-sha8>-remote client --help
+  docker run --rm docker.io/gabrielgun1983/coakka-runtime-client-demo:<version>-<core-sha8>-remote client version --output json
 
 The default walkthrough starts two native runtime services inside the container
 and drives both with coakka-client.

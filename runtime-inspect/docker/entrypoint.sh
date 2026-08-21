@@ -9,9 +9,9 @@ print_usage() {
 coakka-runtime-inspect Docker sample
 
 Usage:
-  docker run --rm coakka-runtime-inspect-sample:1.3.2-local smoke
-  docker run --rm -p 18080:18080 coakka-runtime-inspect-sample:1.3.2-local serve
-  docker run --rm coakka-runtime-inspect-sample:1.3.2-local inspect version --output json
+  docker run --rm coakka-runtime-inspect-sample:<version>-local smoke
+  docker run --rm -p 18080:18080 coakka-runtime-inspect-sample:<version>-local serve
+  docker run --rm coakka-runtime-inspect-sample:<version>-local inspect version --output json
 
 Commands:
   smoke    Run version, doctor, help serve, and snapshot checks.
@@ -70,7 +70,8 @@ run_smoke() {
   assert_self_contained_native_deps
   "${inspect_bin}" version >/dev/null
   "${inspect_bin}" doctor >/dev/null
-  "${inspect_bin}" help serve | grep -F "Serve a local read-first inspect UI" >/dev/null
+  "${inspect_bin}" help serve | \
+    grep -F "Serve a local read-first inspect UI" >/dev/null
   "${inspect_bin}" snapshot \
     --output json \
     --local-route inspect.echo=127.0.0.1:19001 >"${snapshot_json}"

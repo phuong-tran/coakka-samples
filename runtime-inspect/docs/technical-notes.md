@@ -30,9 +30,13 @@ That is intentional until a dedicated remote read/observe adapter exists.
 
 ## Published Archive Status
 
-The current public inspect archive generation is `2.4.0+c2f53117` for all five
+The last public inspect archive generation is `2.4.0+c2f53117` for all five
 platforms. The sample runner selects by platform and verifies every archive
 through the same manifest/checksum resolver used by the runtime-client lane.
+
+Internal source and Docker preparation use Runtime
+`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`; no replacement Inspect archive
+or image is published by this source closeout.
 
 macOS ARM64 and Linux ARM64/x86-64 complete matching-host command and `serve`
 smokes. Both Windows architectures pass Zig cross-build, PE architecture,

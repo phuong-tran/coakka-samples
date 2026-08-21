@@ -123,8 +123,9 @@ bash run.sh runtime-inspect docker-serve --connect host.docker.internal:19091
 
 ## Docker Hub Image
 
-Use the Docker Hub image when the goal is a one-command browser-visible inspect
-path without building a local image:
+The following is the last public Docker Hub evaluation image. Internal source
+now targets Runtime `2.5.1+C1`; this source closeout does not publish a
+replacement:
 
 ```sh
 bash run.sh runtime-inspect dockerhub-smoke
