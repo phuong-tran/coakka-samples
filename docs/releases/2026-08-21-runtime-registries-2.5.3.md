@@ -2,17 +2,49 @@
 
 Status: published and registry-verified on 2026-08-21.
 
-This release aligns the npm, PyPI, and NuGet Runtime connectors with native
-Runtime `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` and connector source
-`0ba485e8ff19f3ce23902345cb445a1f652fe3f3`.
+This release aligns the Maven Central, npm, PyPI, and NuGet Runtime connectors
+with native Runtime `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` and
+connector source `0ba485e8ff19f3ce23902345cb445a1f652fe3f3`.
 
 ## Coordinates
 
+- Maven Central `io.github.phuong-tran.coakka:runtime:2.5.3`
+- Maven Central `io.github.phuong-tran.coakka:spring-boot-starter:2.5.3`
+- Maven Central `io.github.phuong-tran.coakka:quarkus-extension:2.5.3`
 - npm `coakka-v2-connector-node@2.5.3`
 - npm `coakka-v2-connector-bun@2.5.3`
 - npm `coakka-v2-connector-electron@2.5.3`
 - PyPI `coakka-v2-connector==2.5.3`
 - NuGet `CoAkka.Runtime@2.5.3`
+
+## Maven Central Redownload Audit
+
+The Runtime, Spring Boot starter, and Quarkus extension were downloaded again
+directly from `https://repo1.maven.org/maven2` on 2026-08-21. Their public main
+JAR SHA-256 values reproduce the published receipts:
+
+| Coordinate | Main JAR SHA-256 |
+| --- | --- |
+| `runtime:2.5.3` | `36a3ca8d0f04a5dc41de9647c665dc80c4839dd6be974b010e6df096b11f8068` |
+| `spring-boot-starter:2.5.3` | `528978b1cb3f71cedc0aa9b588a56f2a94aed7a887677efa3cbf282bd8fb9cd9` |
+| `quarkus-extension:2.5.3` | `0d7f6e2f259d6777d2f6e83d651b9d7d1bf09a77906639ecad2bcbc37314626a` |
+
+For all three coordinates, the Central JAR, POM, and Gradle module metadata are
+byte-identical to the signed publication mirror. Their detached signatures
+verify with OpenPGP fingerprint
+`2FBD20F919F251E8D984A5EBF90740BDDBBE6638`. Both adapter POMs and module
+metadata require exactly `io.github.phuong-tran.coakka:runtime:2.5.3`; neither
+adapter embeds a second native Runtime.
+
+The Central Runtime JAR contains all five advertised native libraries. Each
+library matches the exact Core archive digest listed in the independent
+registry audit below. A fresh Java 8 consumer resolves only Maven Central,
+reports RuntimeInfo
+`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`, and completes request/reply.
+Fresh Java 17 adapter consumers resolve only Maven Central and pass on Spring
+Boot `3.2.7`, `3.4.13`, and `3.5.16`, plus Quarkus `3.20.4`, `3.27.4`, and
+`3.35.2`. The Quarkus matrix also verifies that its BOM does not downgrade the
+Runtime dependency floor.
 
 ## Registry Integrity
 
