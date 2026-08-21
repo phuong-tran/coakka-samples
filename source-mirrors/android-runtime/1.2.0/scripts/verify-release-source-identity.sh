@@ -55,6 +55,21 @@ require_text src/main/java/coakka/v2/android/FileLane.kt 'fun prepareReceiveGran
 require_text src/main/java/coakka/v2/android/StreamLane.kt 'fun openOwned('
 require_text src/main/java/coakka/v2/android/StreamLane.kt 'fun preparePublishGrant('
 
+prebuild_block=$(
+  sed -n '/tasks\.matching { it\.name == "preBuild" }\.configureEach {/,/^}/p' \
+    "${connector_root}/build.gradle.kts"
+)
+configure_cmake_block=$(
+  sed -n '/tasks\.matching { it\.name\.startsWith("configureCMake") }\.configureEach {/,/^}/p' \
+    "${connector_root}/build.gradle.kts"
+)
+if ! grep -Fq 'stageNativeRuntime,' <<<"${prebuild_block}" ||
+    ! grep -Fq 'dependsOn(stageNativeRuntime,' <<<"${configure_cmake_block}"; then
+  printf '%s\n' \
+    'Android build graph must stage exact-Core Runtime libraries before preBuild and CMake configuration' >&2
+  exit 1
+fi
+
 printf '[coakka-android-identity] connector=%s native=%s abis=%s\n' \
   "${COAKKA_ANDROID_CONNECTOR_VERSION}" \
   "${COAKKA_ANDROID_NATIVE_PACKAGE_VERSION}" \

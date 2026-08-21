@@ -578,6 +578,7 @@ generateCoAkkaPackageMetadata.configure {
 
 tasks.matching { it.name == "preBuild" }.configureEach {
     dependsOn(
+        stageNativeRuntime,
         verifyPinnedNativeSource,
         verifyJniLifecycle,
         verifyJniStringBoundary,
@@ -588,7 +589,7 @@ tasks.matching { it.name == "preBuild" }.configureEach {
 }
 
 tasks.matching { it.name.startsWith("configureCMake") }.configureEach {
-    dependsOn(verifyPinnedNativeSource)
+    dependsOn(stageNativeRuntime, verifyPinnedNativeSource)
 }
 
 val androidConnectorSourcesJar by tasks.registering(Jar::class) {

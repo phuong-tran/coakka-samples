@@ -24,10 +24,10 @@ std::atomic<size_t> g_host_retained_stream_callbacks{0};
 
 namespace {
 
-using coakka::android::jni::UtfChars;
-using coakka::android::jni::UtfStringArray;
 using coakka::android::jni::owner_grants_available;
 using coakka::android::jni::read_longs;
+using coakka::android::jni::UtfChars;
+using coakka::android::jni::UtfStringArray;
 using coakka::android::jni::write_int;
 using coakka::android::jni::write_longs;
 using coakka::android::jni::write_text;
@@ -180,8 +180,7 @@ bool make_callback(JNIEnv *env, jobject callback, const char *method_name,
     return false;
   }
   jobject callback_global = env->NewGlobalRef(callback);
-  jclass bridge_global =
-      static_cast<jclass>(env->NewGlobalRef(local_bridge));
+  jclass bridge_global = static_cast<jclass>(env->NewGlobalRef(local_bridge));
   env->DeleteLocalRef(local_bridge);
   if (callback_global == nullptr || bridge_global == nullptr) {
     if (callback_global != nullptr) {
@@ -238,8 +237,7 @@ coakka_v2_status_t insert_callback(AndroidStreamLaneHandle *handle,
     return COAKKA_V2_ERR_BAD_STATE;
   }
   try {
-    const auto [entry, inserted] =
-        handle->callbacks.emplace(key, *context);
+    const auto [entry, inserted] = handle->callbacks.emplace(key, *context);
     if (!inserted) {
       return COAKKA_V2_ERR_BAD_STATE;
     }
@@ -313,8 +311,10 @@ coakka_v2_status_t source_next(void *raw_context, uint8_t *destination,
       env->NewDirectByteBuffer(destination, static_cast<jlong>(capacity));
   jlongArray metadata = env->NewLongArray(kSourceMetadataCount);
   if (buffer == nullptr || metadata == nullptr) {
-    if (buffer != nullptr) env->DeleteLocalRef(buffer);
-    if (metadata != nullptr) env->DeleteLocalRef(metadata);
+    if (buffer != nullptr)
+      env->DeleteLocalRef(buffer);
+    if (metadata != nullptr)
+      env->DeleteLocalRef(metadata);
     return COAKKA_V2_ERR_NOMEM;
   }
   const jint status = env->CallStaticIntMethod(
@@ -360,8 +360,8 @@ coakka_v2_status_t consume_frame(void *raw_context, const uint8_t *data,
   if (env == nullptr) {
     return COAKKA_V2_ERR_IO;
   }
-  jobject buffer = env->NewDirectByteBuffer(
-      const_cast<uint8_t *>(data), static_cast<jlong>(frame->size));
+  jobject buffer = env->NewDirectByteBuffer(const_cast<uint8_t *>(data),
+                                            static_cast<jlong>(frame->size));
   const jlong metadata_values[kConsumerMetadataCount] = {
       static_cast<jlong>(frame->sequence),
       static_cast<jlong>(frame->captured_mono_ns),
@@ -371,8 +371,10 @@ coakka_v2_status_t consume_frame(void *raw_context, const uint8_t *data,
   jlongArray metadata = env->NewLongArray(kConsumerMetadataCount);
   if (buffer == nullptr || metadata == nullptr ||
       !write_longs(env, metadata, kConsumerMetadataCount, metadata_values)) {
-    if (buffer != nullptr) env->DeleteLocalRef(buffer);
-    if (metadata != nullptr) env->DeleteLocalRef(metadata);
+    if (buffer != nullptr)
+      env->DeleteLocalRef(buffer);
+    if (metadata != nullptr)
+      env->DeleteLocalRef(metadata);
     return COAKKA_V2_ERR_NOMEM;
   }
   const jint status = env->CallStaticIntMethod(
@@ -384,13 +386,12 @@ coakka_v2_status_t consume_frame(void *raw_context, const uint8_t *data,
   }
   env->DeleteLocalRef(metadata);
   env->DeleteLocalRef(buffer);
-  return failed ? COAKKA_V2_ERR_IO
-                : static_cast<coakka_v2_status_t>(status);
+  return failed ? COAKKA_V2_ERR_IO : static_cast<coakka_v2_status_t>(status);
 }
 
-coakka_v2_status_t fill_session(JNIEnv *env,
-                                const coakka_v2_stream_session_snapshot_t &snapshot,
-                                jlongArray numeric, jobjectArray text) {
+coakka_v2_status_t
+fill_session(JNIEnv *env, const coakka_v2_stream_session_snapshot_t &snapshot,
+             jlongArray numeric, jobjectArray text) {
   const jlong values[kStreamSessionNumericCount] = {
       static_cast<jlong>(snapshot.direction),
       static_cast<jlong>(snapshot.state),
@@ -569,7 +570,8 @@ Java_coakka_v2_android_NativeRuntimeBridge_nativeStreamLanePreparePublish(
   CallbackContext context{};
   if (!make_callback(env, source, kSourceMethodName, kSourceMethodSignature,
                      raw_handle, &context)) {
-    if (env->ExceptionCheck()) env->ExceptionClear();
+    if (env->ExceptionCheck())
+      env->ExceptionClear();
     return COAKKA_V2_ERR_NOMEM;
   }
   CallbackContext *registered = nullptr;
@@ -657,7 +659,8 @@ Java_coakka_v2_android_NativeRuntimeBridge_nativeStreamLaneSubscribe(
   CallbackContext context{};
   if (!make_callback(env, consumer, kConsumerMethodName,
                      kConsumerMethodSignature, raw_handle, &context)) {
-    if (env->ExceptionCheck()) env->ExceptionClear();
+    if (env->ExceptionCheck())
+      env->ExceptionClear();
     return COAKKA_V2_ERR_NOMEM;
   }
   CallbackContext *registered = nullptr;
@@ -690,9 +693,9 @@ Java_coakka_v2_android_NativeRuntimeBridge_nativeStreamLaneSubscribe(
 
 extern "C" JNIEXPORT jint JNICALL
 Java_coakka_v2_android_NativeRuntimeBridge_nativeStreamLaneSession(
-    JNIEnv *env, jobject, jlong raw_handle, jstring session_id,
-    jint direction, jlong after_update_sequence, jint timeout_ms,
-    jboolean wait, jlongArray out_numeric, jobjectArray out_text) {
+    JNIEnv *env, jobject, jlong raw_handle, jstring session_id, jint direction,
+    jlong after_update_sequence, jint timeout_ms, jboolean wait,
+    jlongArray out_numeric, jobjectArray out_text) {
   AndroidStreamLaneHandle *handle = from_stream_handle(raw_handle);
   UtfChars session(env, session_id);
   if (handle == nullptr || handle->lane == nullptr || !session.valid() ||
@@ -701,14 +704,15 @@ Java_coakka_v2_android_NativeRuntimeBridge_nativeStreamLaneSession(
   }
   coakka_v2_stream_session_snapshot_t snapshot{};
   snapshot.struct_size = sizeof(snapshot);
-  const coakka_v2_status_t status = wait == JNI_TRUE
-      ? coakka_v2_stream_lane_wait_session(
-            handle->lane, session.get(), static_cast<uint32_t>(direction),
-            static_cast<uint64_t>(after_update_sequence),
-            static_cast<uint32_t>(timeout_ms), &snapshot)
-      : coakka_v2_stream_lane_get_session(
-            handle->lane, session.get(), static_cast<uint32_t>(direction),
-            &snapshot);
+  const coakka_v2_status_t status =
+      wait == JNI_TRUE
+          ? coakka_v2_stream_lane_wait_session(
+                handle->lane, session.get(), static_cast<uint32_t>(direction),
+                static_cast<uint64_t>(after_update_sequence),
+                static_cast<uint32_t>(timeout_ms), &snapshot)
+          : coakka_v2_stream_lane_get_session(handle->lane, session.get(),
+                                              static_cast<uint32_t>(direction),
+                                              &snapshot);
   return status == COAKKA_V2_OK
              ? fill_session(env, snapshot, out_numeric, out_text)
              : status;
@@ -716,9 +720,9 @@ Java_coakka_v2_android_NativeRuntimeBridge_nativeStreamLaneSession(
 
 extern "C" JNIEXPORT jint JNICALL
 Java_coakka_v2_android_NativeRuntimeBridge_nativeStreamLanePressure(
-    JNIEnv *env, jobject, jlong raw_handle, jstring session_id,
-    jint direction, jlong after_update_sequence, jint timeout_ms,
-    jboolean wait, jlongArray out_numeric) {
+    JNIEnv *env, jobject, jlong raw_handle, jstring session_id, jint direction,
+    jlong after_update_sequence, jint timeout_ms, jboolean wait,
+    jlongArray out_numeric) {
   AndroidStreamLaneHandle *handle = from_stream_handle(raw_handle);
   UtfChars session(env, session_id);
   if (handle == nullptr || handle->lane == nullptr || !session.valid() ||
@@ -727,14 +731,15 @@ Java_coakka_v2_android_NativeRuntimeBridge_nativeStreamLanePressure(
   }
   coakka_v2_stream_pressure_snapshot_t snapshot{};
   snapshot.struct_size = sizeof(snapshot);
-  const coakka_v2_status_t status = wait == JNI_TRUE
-      ? coakka_v2_stream_lane_wait_pressure(
-            handle->lane, session.get(), static_cast<uint32_t>(direction),
-            static_cast<uint64_t>(after_update_sequence),
-            static_cast<uint32_t>(timeout_ms), &snapshot)
-      : coakka_v2_stream_lane_get_pressure(
-            handle->lane, session.get(), static_cast<uint32_t>(direction),
-            &snapshot);
+  const coakka_v2_status_t status =
+      wait == JNI_TRUE
+          ? coakka_v2_stream_lane_wait_pressure(
+                handle->lane, session.get(), static_cast<uint32_t>(direction),
+                static_cast<uint64_t>(after_update_sequence),
+                static_cast<uint32_t>(timeout_ms), &snapshot)
+          : coakka_v2_stream_lane_get_pressure(handle->lane, session.get(),
+                                               static_cast<uint32_t>(direction),
+                                               &snapshot);
   if (status != COAKKA_V2_OK) {
     return status;
   }
@@ -788,7 +793,8 @@ Java_coakka_v2_android_NativeRuntimeBridge_nativeStreamLaneForget(
   const coakka_v2_status_t status = coakka_v2_stream_lane_forget_session(
       handle->lane, session.get(), static_cast<uint32_t>(direction));
   if (status == COAKKA_V2_OK) {
-    erase_callback(env, handle, session.get(), static_cast<uint32_t>(direction));
+    erase_callback(env, handle, session.get(),
+                   static_cast<uint32_t>(direction));
   }
   return status;
 }
