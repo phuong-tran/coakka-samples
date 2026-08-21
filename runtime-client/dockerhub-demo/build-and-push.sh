@@ -38,12 +38,12 @@ docker buildx build \
   --push \
   "${context_root}"
 
+manifest_report="$(docker buildx imagetools inspect "${image}")"
 image_digest="$(
-  docker buildx imagetools inspect "${image}" \
-    --format '{{.Manifest.Digest}}'
+  awk '$1 == "Digest:" { print $2; exit }' <<<"${manifest_report}"
 )"
 [[ "${image_digest}" =~ ^sha256:[0-9a-f]{64}$ ]] || \
-  coakka_die "Docker Hub client image returned an invalid manifest digest: ${image_digest}"
+  coakka_die "Docker Hub client image returned an invalid manifest digest."
 manifest_report="$(docker buildx imagetools inspect "${image}@${image_digest}")"
 grep -Eq 'Platform:[[:space:]]+linux/amd64' <<<"${manifest_report}" || \
   coakka_die "Docker Hub client image has no linux/amd64 manifest."
