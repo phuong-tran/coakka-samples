@@ -455,6 +455,18 @@ Useful counters and evidence:
 
 Read these as runtime delivery evidence, not business retry evidence.
 
+The bounded recent-event log gives per-transition context for recent requests:
+
+| Event kind | Queue scope | `code` | `value` |
+| --- | --- | --- | --- |
+| `REMOTE_FAILOVER_ATTEMPT` | `REMOTE_OUTBOUND` | Stable deadletter reason that justified failover. | One-based ordinal of the replacement endpoint about to be attempted. |
+| `REMOTE_FAILOVER_SUCCEEDED` | `REMOTE_OUTBOUND` | `0` | Total endpoint attempts consumed by the request. |
+| `REMOTE_FAILOVER_EXHAUSTED` | `REMOTE_OUTBOUND` | Stable terminal deadletter reason. | Endpoint attempts consumed before the terminal outcome. |
+
+These events retain neither endpoint identity nor diagnostic text and may be
+evicted from the bounded ring. The monitor fd remains a doorbell; consumers
+pull event pages through the runtime event-log snapshot ABI.
+
 ## Design Rule
 
 Cluster routing is a missing runtime capability, not a request for app-hosts to
