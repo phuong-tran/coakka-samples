@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "candidate": "language-native-application-and-io-backend-20260914",
+  "candidate": "language-native-application-and-io-backend-abi3-provider-20260914",
   "artifacts": [
     {
       "id": "go-application-source",
@@ -46,21 +46,21 @@
       "id": "io-backend-connector-source",
       "type": "git-archive",
       "repository": "coakka-http-runtime-connector",
-      "commit": "dc019153b09542eb3ba5fd657989613610e7a1ff",
-      "tree": "5c45d96ce25ffb14a2486df9f86e30e8eb7351a3",
+      "commit": "bede799074ccd7bab6998ad75db9dc466f9b40c9",
+      "tree": "82f3c0f864178b53ad5faa8fe8c48156abcff4b4",
       "subtree": ".",
       "destination": "packages/coakka-http-runtime-connector-source.tar",
-      "sha256": "1d81a6de69c8d336aaa6b7e86287dd0870164b117c454ceb65bcb4c029fb6288"
+      "sha256": "cf4a4699c145a4c9c67e2d46a44c6a906dab059356f98647f39083f8bb01ac0a"
     },
     {
       "id": "native-io-backend-source",
       "type": "git-archive",
       "repository": "coakka-http-runtime",
-      "commit": "8ecb1704b8dafbf485f37c79f53ba5fcf4fa4416",
-      "tree": "8c24f9dba16ade3ce0954d8de93f4c10a35fe0a5",
+      "commit": "846bfdf52e71577bb321a6b9c7a81c8f2960c21c",
+      "tree": "022022c11c921408639a22a5489273158767d411",
       "subtree": ".",
       "destination": "packages/coakka-http-runtime-native-io-source.tar",
-      "sha256": "fb0d3ec91ed01b3f160586452c7ea194edf8d980145871477e5c68234ae33c76"
+      "sha256": "5f37998ee9c2e4f369717996b3ba895c0afa8b6126eefd67f2145e3b36b92849"
     },
     {
       "id": "native-io-backend-commons-source",

@@ -221,8 +221,12 @@ The backend campaigns are a second build from the current locked
 `io_uring` enabled. Within one backend pair, both lanes use the same application
 source, connector, Core image, TLS files, and limits. Only the requested
 platform-default or `io_uring` backend changes. Preparation records the exact
-source archives, build patches, consumer source, packages, executables, and
-resulting binary digests. No registry artifact enters either protocol.
+source archives, remaining application-integration patches, consumer source,
+packages, executables, and resulting binary digests. The locked Core source
+already owns optional liburing discovery, the Linux poll shim, public
+runtime-info vocabulary, and production fallback; benchmark preparation does
+not patch or reproduce those system boundaries. No registry artifact enters
+either protocol.
 
 ## Authority Host
 

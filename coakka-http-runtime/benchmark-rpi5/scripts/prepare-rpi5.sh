@@ -173,10 +173,6 @@ if [ -f "$NATIVE_SOURCE" ]; then
     "$NATIVE_BUILD/startup" "$NATIVE_BUILD/tls" "$CONNECTOR_SOURCE_DIR"
   tar -xf "$NATIVE_SOURCE" -C "$RUNTIME_SOURCE"
   tar -xf "$CONNECTOR_SOURCE" -C "$CONNECTOR_SOURCE_DIR"
-  patch -d "$RUNTIME_SOURCE" -p1 \
-    < "$ROOT/patches/coakka-http-linux-poll-shim.patch"
-  patch -d "$RUNTIME_SOURCE" -p1 \
-    < "$ROOT/patches/coakka-http-public-io-uring-vocabulary.patch"
   cmake -S "$RUNTIME_SOURCE" -B "$NATIVE_BUILD" -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
     -DBUILD_TESTING=ON \
