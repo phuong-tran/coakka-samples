@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "campaign_family": "application-pairs",
+  "ecosystem": "jvm",
+  "workload": {
+    "id": "fixed-32",
+    "method": "GET",
+    "path": "/fixed",
+    "status": 200,
+    "body_utf8": "0123456789abcdef0123456789abcdef"
+  },
+  "server_cpu_set": "0-2",
+  "load_cpu_set": "3",
+  "cooldown": {
+    "minimum_idle_seconds": 0,
+    "target_temperature_c": 52,
+    "maximum_wait_seconds": 600,
+    "poll_interval_seconds": 5
+  },
+  "qualification": {
+    "coakka_min_requests_per_second": 20000
+  },
+  "lanes": [
+    {
+      "id": "coakka-jvm",
+      "role": "coakka-application",
+      "language": "Java",
+      "implementation": "CoAkka HTTP for JVM",
+      "ready_expect": {"application_path": "normal"},
+      "command": ["build/jvm/bin/coakka-http-rpi5-jvm-comparisons", "coakka"],
+      "environment": {
+        "JAVA_HOME": "/usr/lib/jvm/java-17-openjdk-arm64",
+        "COAKKA_HTTP_APPLICATION_CORE": "build/application-native/libcoakka_http_jvm_application.so"
+      },
+      "allowed_exit_codes": [0, 143]
+    },
+    {
+      "id": "jvm-direct",
+      "role": "direct-http",
+      "language": "Java",
+      "implementation": "JDK HttpServer 17.0.20.1",
+      "command": ["build/jvm/bin/coakka-http-rpi5-jvm-comparisons", "direct"],
+      "environment": {
+        "JAVA_HOME": "/usr/lib/jvm/java-17-openjdk-arm64",
+        "JAVA_OPTS": "-Dsun.net.httpserver.nodelay=true"
+      },
+      "allowed_exit_codes": [0, 143]
+    },
+    {
+      "id": "jvm-netty",
+      "role": "framework",
+      "language": "Java",
+      "implementation": "Netty 4.1.137.Final",
+      "command": ["build/jvm/bin/coakka-http-rpi5-jvm-comparisons", "netty"],
+      "environment": {"JAVA_HOME": "/usr/lib/jvm/java-17-openjdk-arm64"},
+      "allowed_exit_codes": [0, 143]
+    },
+    {
+      "id": "jvm-tomcat",
+      "role": "framework",
+      "language": "Java",
+      "implementation": "Tomcat 11.0.25",
+      "command": ["build/jvm/bin/coakka-http-rpi5-jvm-comparisons", "tomcat"],
+      "environment": {"JAVA_HOME": "/usr/lib/jvm/java-17-openjdk-arm64"},
+      "allowed_exit_codes": [0, 143]
+    },
+    {
+      "id": "jvm-jetty",
+      "role": "framework",
+      "language": "Java",
+      "implementation": "Jetty 12.1.13",
+      "command": ["build/jvm/bin/coakka-http-rpi5-jvm-comparisons", "jetty"],
+      "environment": {"JAVA_HOME": "/usr/lib/jvm/java-17-openjdk-arm64"},
+      "allowed_exit_codes": [0, 143]
+    }
+  ],
+  "pairs": [
+    {
+      "id": "jvm-direct-vs-coakka",
+      "kind": "non-framework",
+      "comparator": "jvm-direct",
+      "coakka": "coakka-jvm"
+    },
+    {
+      "id": "jvm-netty-vs-coakka",
+      "kind": "framework",
+      "comparator": "jvm-netty",
+      "coakka": "coakka-jvm"
+    },
+    {
+      "id": "jvm-tomcat-vs-coakka",
+      "kind": "framework",
+      "comparator": "jvm-tomcat",
+      "coakka": "coakka-jvm"
+    },
+    {
+      "id": "jvm-jetty-vs-coakka",
+      "kind": "framework",
+      "comparator": "jvm-jetty",
+      "coakka": "coakka-jvm"
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+diff --git a/connectors/javascript/native/node_api_host_inline_module.cc b/connectors/javascript/native/node_api_host_inline_module.cc
+index 3eb445d..0c74b34 100644
+--- a/connectors/javascript/native/node_api_host_inline_module.cc
++++ b/connectors/javascript/native/node_api_host_inline_module.cc
+@@ -14,8 +14,7 @@ namespace {
+   if (napi_get_cb_info(env, info, &argc, &routes, nullptr, nullptr) !=
+           napi_ok ||
+       argc != 1U) {
+-    napi_throw_type_error(env, nullptr,
+-                          "host-inline router requires one route array");
++    napi_throw_type_error(env, nullptr, "router requires one route array");
+     return nullptr;
+   }
+   return node_api_host_inline_router_create(env, routes);
+@@ -24,12 +23,12 @@ namespace {
+ 
+ napi_value init(napi_env env, napi_value exports) {
+   const napi_property_descriptor properties[] = {
+-      {"createHostInlineRouter", nullptr, create_host_inline_router, nullptr,
++      {"createRouter", nullptr, create_host_inline_router, nullptr,
+        nullptr, nullptr, napi_default, nullptr},
+   };
+   if (napi_define_properties(env, exports,
+                              sizeof(properties) / sizeof(properties[0]),
+                              properties) != napi_ok) {
+-    napi_throw_error(env, nullptr, "failed to define host-inline addon");
++    napi_throw_error(env, nullptr, "failed to define router addon");
+     return nullptr;
+   }
+   return exports;
+diff --git a/connectors/python/native/coakka_http_python_host_inline.c b/connectors/python/native/coakka_http_python_host_inline.c
+--- a/connectors/python/native/coakka_http_python_host_inline.c
++++ b/connectors/python/native/coakka_http_python_host_inline.c
+@@ -2,7 +2,7 @@
+ 
+ #include "coakka_http_host_inline_validation.h"
+ 
+-coakka_http_host_inline_status_t coakka_http_python_host_inline_validate(
++coakka_http_host_inline_status_t coakka_http_python_application_validate(
+     const coakka_http_python_host_inline_route_t *routes, uint32_t route_count,
+     uint32_t *failed_index) {
+   return coakka_http_host_inline_validate_internal(routes, route_count,
+diff --git a/connectors/python/native/coakka_http_python_host_inline.exports b/connectors/python/native/coakka_http_python_host_inline.exports
+--- a/connectors/python/native/coakka_http_python_host_inline.exports
++++ b/connectors/python/native/coakka_http_python_host_inline.exports
+@@ -1 +1 @@
+-_coakka_http_python_host_inline_validate
++_coakka_http_python_application_validate
+diff --git a/connectors/python/native/coakka_http_python_host_inline.h b/connectors/python/native/coakka_http_python_host_inline.h
+--- a/connectors/python/native/coakka_http_python_host_inline.h
++++ b/connectors/python/native/coakka_http_python_host_inline.h
+@@ -22,7 +22,7 @@ typedef coakka_http_host_inline_route_t coakka_http_python_host_inline_route_t;
+  * returning. failed_index is UINT32_MAX when no single route owns the failure.
+  */
+ COAKKA_HTTP_PYTHON_HOST_INLINE_EXPORT coakka_http_host_inline_status_t
+-coakka_http_python_host_inline_validate(
++coakka_http_python_application_validate(
+     const coakka_http_python_host_inline_route_t *routes, uint32_t route_count,
+     uint32_t *failed_index);
+ 
+diff --git a/connectors/python/native/coakka_http_python_host_inline.map b/connectors/python/native/coakka_http_python_host_inline.map
+--- a/connectors/python/native/coakka_http_python_host_inline.map
++++ b/connectors/python/native/coakka_http_python_host_inline.map
+@@ -1,6 +1,6 @@
+ COAKKA_HTTP_PYTHON_HOST_INLINE_0.1 {
+     global:
+-        coakka_http_python_host_inline_validate;
++        coakka_http_python_application_validate;
+     local:
+         *;
+ };
+diff --git a/connectors/python/native/coakka_http_python_host_inline_tests.c b/connectors/python/native/coakka_http_python_host_inline_tests.c
+--- a/connectors/python/native/coakka_http_python_host_inline_tests.c
++++ b/connectors/python/native/coakka_http_python_host_inline_tests.c
+@@ -12,7 +12,7 @@ static void expect_status(const char *label,
+                           uint32_t expected_failed_index) {
+   uint32_t failed_index = UINT32_MAX;
+   const coakka_http_host_inline_status_t status =
+-      coakka_http_python_host_inline_validate(routes, route_count,
++      coakka_http_python_application_validate(routes, route_count,
+                                               &failed_index);
+   if (status != expected_status || failed_index != expected_failed_index) {
+     (void)fprintf(stderr,

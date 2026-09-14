@@ -1,0 +1,13 @@
+--- a/settings.gradle.kts
++++ b/settings.gradle.kts
+@@ -3,10 +3,4 @@ plugins {
+ }
+ rootProject.name = "connectorKotlin"
+ 
+-include(":v2:jvm")
+ include(":http:jvm")
+-include(":logger:jvm")
+-include(":spring:boot-starter")
+-include(":quarkus:extension")
+-include(":examples:spring-multi-node:service-a")
+-include(":examples:spring-multi-node:service-b")

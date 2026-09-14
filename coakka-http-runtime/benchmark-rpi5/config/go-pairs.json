@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "campaign_family": "application-pairs",
+  "ecosystem": "go",
+  "workload": {
+    "id": "fixed-32",
+    "method": "GET",
+    "path": "/fixed",
+    "status": 200,
+    "body_utf8": "0123456789abcdef0123456789abcdef"
+  },
+  "server_cpu_set": "0-2",
+  "load_cpu_set": "3",
+  "cooldown": {
+    "minimum_idle_seconds": 0,
+    "target_temperature_c": 52,
+    "maximum_wait_seconds": 600,
+    "poll_interval_seconds": 5
+  },
+  "qualification": {
+    "coakka_min_requests_per_second": 60000
+  },
+  "lanes": [
+    {
+      "id": "coakka-go",
+      "role": "coakka-application",
+      "language": "Go",
+      "implementation": "CoAkka HTTP for Go",
+      "ready_expect": {"application_path": "normal"},
+      "command": ["build/bin/fixed-coakka-go"],
+      "environment": {
+        "GOMAXPROCS": "3"
+      }
+    },
+    {
+      "id": "go-direct",
+      "role": "direct-http",
+      "language": "Go",
+      "implementation": "Go net/http",
+      "command": ["build/bin/fixed-go-direct"],
+      "environment": {"GOMAXPROCS": "3"}
+    },
+    {
+      "id": "go-chi",
+      "role": "framework",
+      "language": "Go",
+      "implementation": "Chi 5.3.2",
+      "command": ["build/bin/fixed-go-chi"],
+      "environment": {"GOMAXPROCS": "3"}
+    },
+    {
+      "id": "go-gin",
+      "role": "framework",
+      "language": "Go",
+      "implementation": "Gin 1.12.0",
+      "command": ["build/bin/fixed-go-gin"],
+      "environment": {"GOMAXPROCS": "3"}
+    }
+  ],
+  "pairs": [
+    {
+      "id": "go-direct-vs-coakka",
+      "kind": "non-framework",
+      "comparator": "go-direct",
+      "coakka": "coakka-go"
+    },
+    {
+      "id": "go-chi-vs-coakka",
+      "kind": "framework",
+      "comparator": "go-chi",
+      "coakka": "coakka-go"
+    },
+    {
+      "id": "go-gin-vs-coakka",
+      "kind": "framework",
+      "comparator": "go-gin",
+      "coakka": "coakka-go"
+    }
+  ]
+}

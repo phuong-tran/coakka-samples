@@ -1,0 +1,25 @@
+contract_version: 1
+server_io_backend: @SERVER_IO_BACKEND@
+
+listeners {
+  listener_id: 1
+  bind_host: "127.0.0.1"
+  port: 0
+  application_protocol: COAKKA_HTTP_LISTENER_PROTOCOL_HTTP_2
+  transport_security {
+    mode: COAKKA_HTTP_TRANSPORT_SECURITY_MODE_TLS
+    credential_generation: 1
+    credential_id: "rpi5-native-backend-benchmark"
+    file_credentials {
+      certificate_chain_file: "@CERTIFICATE_CHAIN_FILE@"
+      private_key_file: "@PRIVATE_KEY_FILE@"
+    }
+  }
+}
+
+routes {
+  route_id: 1
+  method: "POST"
+  pattern: "/customer/add"
+  handler_binding_id: 1
+}

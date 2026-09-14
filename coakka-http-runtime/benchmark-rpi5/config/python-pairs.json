@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "campaign_family": "application-pairs",
+  "ecosystem": "python",
+  "workload": {
+    "id": "fixed-32",
+    "method": "GET",
+    "path": "/fixed",
+    "status": 200,
+    "body_utf8": "0123456789abcdef0123456789abcdef"
+  },
+  "server_cpu_set": "0-2",
+  "load_cpu_set": "3",
+  "cooldown": {
+    "minimum_idle_seconds": 0,
+    "target_temperature_c": 52,
+    "maximum_wait_seconds": 600,
+    "poll_interval_seconds": 5
+  },
+  "qualification": {
+    "coakka_min_requests_per_second": 10000
+  },
+  "lanes": [
+    {
+      "id": "coakka-python",
+      "role": "coakka-application",
+      "language": "Python",
+      "implementation": "CoAkka HTTP for Python",
+      "ready_expect": {"application_path": "normal"},
+      "command": ["build/python-venv/bin/python", "src/python/fixed_server.py", "coakka"],
+      "environment": {
+        "PYTHONPATH": "build/python-application-package",
+        "COAKKA_HTTP_APPLICATION_CORE": "build/application-native/libcoakka_http_python_application.so"
+      }
+    },
+    {
+      "id": "python-direct",
+      "role": "direct-http",
+      "language": "Python",
+      "implementation": "Python 3.11 http.server",
+      "command": ["build/python-venv/bin/python", "src/python/fixed_server.py", "direct"]
+    },
+    {
+      "id": "python-uvicorn",
+      "role": "direct-http",
+      "language": "Python",
+      "implementation": "Uvicorn 0.52.4 with a raw ASGI application",
+      "command": ["build/python-venv/bin/python", "src/python/fixed_server.py", "uvicorn"]
+    },
+    {
+      "id": "python-fastapi",
+      "role": "framework",
+      "language": "Python",
+      "implementation": "FastAPI 0.141.1 on Uvicorn 0.52.4",
+      "command": ["build/python-venv/bin/python", "src/python/fixed_server.py", "fastapi"]
+    }
+  ],
+  "pairs": [
+    {
+      "id": "python-stdlib-vs-coakka",
+      "kind": "non-framework",
+      "comparator": "python-direct",
+      "coakka": "coakka-python"
+    },
+    {
+      "id": "python-uvicorn-vs-coakka",
+      "kind": "server-only",
+      "comparator": "python-uvicorn",
+      "coakka": "coakka-python"
+    },
+    {
+      "id": "python-fastapi-vs-coakka",
+      "kind": "framework",
+      "comparator": "python-fastapi",
+      "coakka": "coakka-python"
+    }
+  ]
+}

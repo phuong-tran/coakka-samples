@@ -1,0 +1,9 @@
+/artifacts/
+/build/
+/evidence/
+/tools/downloads/
+/src/javascript/node_modules/
+/src/jvm/.gradle/
+/src/jvm/build/
+/src/core/go/coakka-http-rpi5-go-core
+__pycache__/

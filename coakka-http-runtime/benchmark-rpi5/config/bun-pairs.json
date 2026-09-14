@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "campaign_family": "application-pairs",
+  "ecosystem": "bun",
+  "workload": {
+    "id": "fixed-32",
+    "method": "GET",
+    "path": "/fixed",
+    "status": 200,
+    "body_utf8": "0123456789abcdef0123456789abcdef"
+  },
+  "server_cpu_set": "0-2",
+  "load_cpu_set": "3",
+  "cooldown": {
+    "minimum_idle_seconds": 0,
+    "target_temperature_c": 52,
+    "maximum_wait_seconds": 600,
+    "poll_interval_seconds": 5
+  },
+  "qualification": {
+    "coakka_min_requests_per_second": 30000
+  },
+  "lanes": [
+    {
+      "id": "coakka-bun",
+      "role": "coakka-application",
+      "language": "JavaScript",
+      "implementation": "CoAkka HTTP for Bun",
+      "ready_expect": {"application_path": "normal"},
+      "command": ["bun", "src/javascript/coakka-bun.mjs"],
+      "environment": {
+        "COAKKA_HTTP_APPLICATION_CORE": "build/application-native/coakka_http_javascript_application.node"
+      }
+    },
+    {
+      "id": "bun-direct",
+      "role": "direct-http",
+      "language": "JavaScript",
+      "implementation": "Bun.serve 1.3.14",
+      "command": ["bun", "src/javascript/comparisons/bun/direct.mjs"]
+    },
+    {
+      "id": "bun-elysia",
+      "role": "framework",
+      "language": "JavaScript",
+      "implementation": "Elysia 1.4.30",
+      "command": ["bun", "src/javascript/comparisons/bun/elysia.mjs"]
+    },
+    {
+      "id": "bun-hono",
+      "role": "framework",
+      "language": "JavaScript",
+      "implementation": "Hono 4.13.7",
+      "command": ["bun", "src/javascript/comparisons/bun/hono.mjs"]
+    }
+  ],
+  "pairs": [
+    {
+      "id": "bun-direct-vs-coakka",
+      "kind": "non-framework",
+      "comparator": "bun-direct",
+      "coakka": "coakka-bun"
+    },
+    {
+      "id": "bun-elysia-vs-coakka",
+      "kind": "framework",
+      "comparator": "bun-elysia",
+      "coakka": "coakka-bun"
+    },
+    {
+      "id": "bun-hono-vs-coakka",
+      "kind": "framework",
+      "comparator": "bun-hono",
+      "coakka": "coakka-bun"
+    }
+  ]
+}

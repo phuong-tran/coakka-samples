@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "campaign_family": "application-pairs",
+  "ecosystem": "node",
+  "workload": {
+    "id": "fixed-32",
+    "method": "GET",
+    "path": "/fixed",
+    "status": 200,
+    "body_utf8": "0123456789abcdef0123456789abcdef"
+  },
+  "server_cpu_set": "0-2",
+  "load_cpu_set": "3",
+  "cooldown": {
+    "minimum_idle_seconds": 0,
+    "target_temperature_c": 52,
+    "maximum_wait_seconds": 600,
+    "poll_interval_seconds": 5
+  },
+  "qualification": {
+    "coakka_min_requests_per_second": 15000
+  },
+  "lanes": [
+    {
+      "id": "coakka-node",
+      "role": "coakka-application",
+      "language": "JavaScript",
+      "implementation": "CoAkka HTTP for Node.js",
+      "ready_expect": {"application_path": "normal"},
+      "command": ["node", "src/javascript/coakka-node.mjs"],
+      "environment": {
+        "COAKKA_HTTP_APPLICATION_CORE": "build/application-native/coakka_http_javascript_application.node"
+      }
+    },
+    {
+      "id": "node-direct",
+      "role": "direct-http",
+      "language": "JavaScript",
+      "implementation": "Node.js node:http 24.13.0",
+      "command": ["node", "src/javascript/comparisons/node/direct.mjs"]
+    },
+    {
+      "id": "node-express",
+      "role": "framework",
+      "language": "JavaScript",
+      "implementation": "Express 5.2.1",
+      "command": ["node", "src/javascript/comparisons/node/express.mjs"]
+    },
+    {
+      "id": "node-fastify",
+      "role": "framework",
+      "language": "JavaScript",
+      "implementation": "Fastify 5.12.4",
+      "command": ["node", "src/javascript/comparisons/node/fastify.mjs"]
+    }
+  ],
+  "pairs": [
+    {
+      "id": "node-direct-vs-coakka",
+      "kind": "non-framework",
+      "comparator": "node-direct",
+      "coakka": "coakka-node"
+    },
+    {
+      "id": "node-express-vs-coakka",
+      "kind": "framework",
+      "comparator": "node-express",
+      "coakka": "coakka-node"
+    },
+    {
+      "id": "node-fastify-vs-coakka",
+      "kind": "framework",
+      "comparator": "node-fastify",
+      "coakka": "coakka-node"
+    }
+  ]
+}

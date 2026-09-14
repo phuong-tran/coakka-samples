@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "candidate": "language-native-application-and-io-backend-20260914",
+  "artifacts": [
+    {
+      "id": "go-application-source",
+      "type": "git-archive",
+      "repository": "coakka-http-runtime-connector",
+      "commit": "0f88ed4202b67f89b0d1b3287940e2760e49ce99",
+      "tree": "a17b489f69ed48540c13c27563bfcacfd05309e3",
+      "subtree": "connectors/go/coakkahttp",
+      "destination": "packages/coakka-http-go-application-source.tar",
+      "sha256": "891f5e13572c6c73d79d1e2e42e8c893e020e67f581541f3daeb16cb6e60032b"
+    },
+    {
+      "id": "jvm-application-source",
+      "type": "git-archive",
+      "repository": "coakkaJVMConnector",
+      "commit": "8ac85c912f9f112703d80b3ab829d958bf38ecf1",
+      "tree": "93951b9968d58db00e27c35b1c12c7ad9f5d40b3",
+      "subtree": ".",
+      "destination": "packages/coakka-http-jvm-application-source.tar",
+      "sha256": "672727e1d68043fdb6cc65d54dbe09cf4ec454db6f954a4b4cca5b0b7a88ceb1"
+    },
+    {
+      "id": "python-application-source",
+      "type": "git-archive",
+      "repository": "coakka-http-runtime",
+      "commit": "023e10f4914e6130f9fcdf7de0916f95b8d5759d",
+      "tree": "0245fb226c38f1e26c0b7331c73c7db5ab7aae73",
+      "subtree": "connectors/python/coakka_http_hostinline",
+      "destination": "packages/coakka-http-python-application-source.tar",
+      "sha256": "df98e57974a730b32b4fbdceccadcdaa82eaa50c7006246156c2eb6eb822b967"
+    },
+    {
+      "id": "language-native-core-source",
+      "type": "git-archive",
+      "repository": "coakka-http-runtime",
+      "commit": "b3d56281b83a77b109120c21cbd991310ed94cb7",
+      "tree": "dca6cd21346bc568b274831fb819c57ed923b5bd",
+      "subtree": ".",
+      "destination": "packages/coakka-http-language-native-core-source.tar",
+      "sha256": "4fd1b2ebfa467e3f84b79aa4bd61faa19f22cafb291169cfc270e202b53220e2"
+    },
+    {
+      "id": "io-backend-connector-source",
+      "type": "git-archive",
+      "repository": "coakka-http-runtime-connector",
+      "commit": "dc019153b09542eb3ba5fd657989613610e7a1ff",
+      "tree": "5c45d96ce25ffb14a2486df9f86e30e8eb7351a3",
+      "subtree": ".",
+      "destination": "packages/coakka-http-runtime-connector-source.tar",
+      "sha256": "1d81a6de69c8d336aaa6b7e86287dd0870164b117c454ceb65bcb4c029fb6288"
+    },
+    {
+      "id": "native-io-backend-source",
+      "type": "git-archive",
+      "repository": "coakka-http-runtime",
+      "commit": "8ecb1704b8dafbf485f37c79f53ba5fcf4fa4416",
+      "tree": "8c24f9dba16ade3ce0954d8de93f4c10a35fe0a5",
+      "subtree": ".",
+      "destination": "packages/coakka-http-runtime-native-io-source.tar",
+      "sha256": "fb0d3ec91ed01b3f160586452c7ea194edf8d980145871477e5c68234ae33c76"
+    },
+    {
+      "id": "native-io-backend-commons-source",
+      "type": "git-archive",
+      "repository": "coakka-commons",
+      "commit": "292b502f2731a6ca1aa20822061d0dbd2328f32f",
+      "tree": "449e0e0efe311a1f841575a1a261183f9cf3b1e0",
+      "subtree": ".",
+      "destination": "packages/coakka-commons-native-io-source.tar",
+      "sha256": "b9597f69f574303e819825d32033709b7d891ed8f352f6652d13819515c2e86c"
+    }
+  ]
+}

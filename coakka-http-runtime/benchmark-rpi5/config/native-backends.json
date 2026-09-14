@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "campaign_family": "native-backend-pairs",
+  "ecosystem": "native",
+  "workload": {
+    "id": "customer-json-http2-tls",
+    "method": "POST",
+    "path": "/customer/add",
+    "scheme": "https",
+    "http_version": "2",
+    "parallel_per_connection": 4,
+    "status": 201,
+    "request_body_utf8": "{\"name\":\"Nguyen Van An\",\"email\":\"an@example.com\",\"tier\":\"gold\"}",
+    "content_type": "application/json",
+    "body_utf8": "{\"status\":\"created\"}",
+    "tls_ca_file": "build/native-io-uring/tls/ca.pem"
+  },
+  "server_cpu_set": "0-2",
+  "load_cpu_set": "3",
+  "cooldown": {
+    "minimum_idle_seconds": 0,
+    "target_temperature_c": 52,
+    "maximum_wait_seconds": 600,
+    "poll_interval_seconds": 5
+  },
+  "qualification": {
+    "minimum_requests_per_second": 8000
+  },
+  "lanes": [
+    {
+      "id": "native-platform-default",
+      "role": "native-backend",
+      "language": "C/C++",
+      "implementation": "CoAkka HTTP Runtime, Linux platform backend",
+      "ready_expect": {
+        "application_protocol": 2,
+        "transport_security_mode": 2,
+        "idle_mode": "wait"
+      },
+      "command": [
+        "build/native-io-uring/coakka_http_native_connector_server",
+        "--startup-binary",
+        "build/native-io-uring/startup/platform-default.pb",
+        "--effective-config-output",
+        "build/native-io-uring/effective/platform-default.pb",
+        "--idle-mode",
+        "wait"
+      ],
+      "startup_proof": {
+        "command": [
+          "build/native-io-uring/_deps/coakka_http_protobuf_upstream-build/protoc",
+          "--decode=coakka.http.v1.CoAkkaHttpRuntimeEffectiveConfigSnapshot",
+          "--proto_path",
+          "build/runtime-source/proto",
+          "build/runtime-source/proto/coakka/http/v1/http_runtime_startup.proto"
+        ],
+        "stdin_file": "build/native-io-uring/effective/platform-default.pb",
+        "stdout_contains": [
+          "application_protocol: COAKKA_HTTP_LISTENER_PROTOCOL_HTTP_2",
+          "server_io_backend: COAKKA_HTTP_RUNTIME_SERVER_IO_BACKEND_PLATFORM_DEFAULT"
+        ]
+      }
+    },
+    {
+      "id": "native-io-uring",
+      "role": "native-backend",
+      "language": "C/C++",
+      "implementation": "CoAkka HTTP Runtime, io_uring backend",
+      "ready_expect": {
+        "application_protocol": 2,
+        "transport_security_mode": 2,
+        "idle_mode": "wait"
+      },
+      "command": [
+        "build/native-io-uring/coakka_http_native_connector_server",
+        "--startup-binary",
+        "build/native-io-uring/startup/io-uring.pb",
+        "--effective-config-output",
+        "build/native-io-uring/effective/io-uring.pb",
+        "--idle-mode",
+        "wait"
+      ],
+      "startup_proof": {
+        "command": [
+          "build/native-io-uring/_deps/coakka_http_protobuf_upstream-build/protoc",
+          "--decode=coakka.http.v1.CoAkkaHttpRuntimeEffectiveConfigSnapshot",
+          "--proto_path",
+          "build/runtime-source/proto",
+          "build/runtime-source/proto/coakka/http/v1/http_runtime_startup.proto"
+        ],
+        "stdin_file": "build/native-io-uring/effective/io-uring.pb",
+        "stdout_contains": [
+          "application_protocol: COAKKA_HTTP_LISTENER_PROTOCOL_HTTP_2",
+          "server_io_backend: COAKKA_HTTP_RUNTIME_SERVER_IO_BACKEND_IO_URING"
+        ]
+      }
+    }
+  ],
+  "pairs": [
+    {
+      "id": "platform-default-vs-io-uring",
+      "kind": "native-backend-a-b",
+      "baseline": "native-platform-default",
+      "candidate": "native-io-uring"
+    }
+  ]
+}

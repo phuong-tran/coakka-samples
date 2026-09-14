@@ -1,0 +1,211 @@
+--- a/service.py
++++ b/service.py
+@@ -1,13 +1,13 @@
+ import asyncio
+ import contextlib
+ import inspect
++import os
+ import socket
+ from dataclasses import dataclass
+-from pathlib import Path
+ 
+ import uvicorn
+ 
+-from .routing import Handler, Route, Router, canonical_raw_path
++from .routing import Handler, Route, Router, valid_raw_path
+ from .validator import validate_routes
+ from .values import EMPTY_PATH_PARAMS, Request, Response, Snapshot
+ 
+@@ -41,26 +41,25 @@
+             self.max_response_bytes,
+         )
+         if any(value <= 0 for value in scalar_values):
+-            raise ValueError("coakka Python host-inline bounds must be positive")
++            raise ValueError("CoAkka HTTP bounds must be positive")
+         if self.max_active_handlers > 16384 or self.max_connections > 16384 or self.backlog > 16384:
+-            raise ValueError("coakka Python host-inline concurrency bound exceeds 16384")
++            raise ValueError("CoAkka HTTP concurrency bound exceeds 16384")
+ 
+ 
+ class Builder:
+-    __slots__ = ("_bounds", "_host", "_library", "_port", "_routes", "_started")
++    __slots__ = ("_bounds", "_host", "_port", "_routes", "_started")
+ 
+     def __init__(self):
+         self._host = "127.0.0.1"
+         self._port = 0
+         self._routes = []
+         self._bounds = Bounds()
+-        self._library = None
+         self._started = False
+ 
+     def listen(self, host: str, port: int):
+         self._ensure_mutable()
+         if not host or not 0 <= port <= 65535:
+-            raise ValueError("coakka Python host-inline listen address is invalid")
++            raise ValueError("CoAkka HTTP listen address is invalid")
+         self._host = host
+         self._port = port
+         return self
+@@ -71,42 +70,54 @@
+         self._bounds = value
+         return self
+ 
+-    def validator_library(self, path: str | Path):
+-        self._ensure_mutable()
+-        self._library = path
+-        return self
+-
+     def route(self, method: str, pattern: str, handler: Handler):
+         self._ensure_mutable()
+         method = method.upper()
+         if method not in SUPPORTED_METHODS:
+-            raise ValueError(f"coakka Python host-inline method {method!r} is unsupported")
++            raise ValueError(f"CoAkka HTTP method {method!r} is unsupported")
+         if not isinstance(pattern, str) or not pattern.startswith("/"):
+-            raise ValueError("coakka Python host-inline route pattern is invalid")
++            raise ValueError("CoAkka HTTP route pattern is invalid")
+         if not inspect.iscoroutinefunction(handler):
+-            raise TypeError("coakka Python host-inline handlers must be async functions")
++            raise TypeError("CoAkka HTTP handlers must be async functions")
+         if len(self._routes) >= 1024:
+-            raise ValueError("coakka Python host-inline route capacity exhausted")
++            raise ValueError("CoAkka HTTP route capacity exhausted")
+         self._routes.append(Route(method, pattern, handler))
+         return self
++
++    def get(self, pattern: str, handler: Handler):
++        return self.route("GET", pattern, handler)
++
++    def post(self, pattern: str, handler: Handler):
++        return self.route("POST", pattern, handler)
+ 
++    def put(self, pattern: str, handler: Handler):
++        return self.route("PUT", pattern, handler)
++
++    def patch(self, pattern: str, handler: Handler):
++        return self.route("PATCH", pattern, handler)
++
++    def delete(self, pattern: str, handler: Handler):
++        return self.route("DELETE", pattern, handler)
++
+     def _ensure_mutable(self):
+         if self._started:
+-            raise RuntimeError("coakka Python host-inline builder is frozen")
++            raise RuntimeError("CoAkka HTTP builder is frozen")
+ 
+     async def start(self):
+         if self._started:
+-            raise RuntimeError("coakka Python host-inline builder can start only once")
++            raise RuntimeError("CoAkka HTTP builder can start only once")
+         self._started = True
+         self._bounds.validate()
+-        if self._library is None:
+-            raise ValueError("coakka Python host-inline validator library is required")
++        library = os.environ.get("COAKKA_HTTP_APPLICATION_CORE")
++        if not library:
++            raise RuntimeError("coakka-http-runtime-core is unavailable")
+         routes = tuple(self._routes)
+-        validate_routes(routes, self._library)
++        validate_routes(routes, library)
+         router = Router(routes)
+         listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+         server = None
+         task = None
+         listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
++        listener.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+         try:
+             listener.bind((self._host, self._port))
+@@ -171,7 +182,7 @@
+ 
+     async def close(self, timeout: float = 5.0):
+         if timeout <= 0:
+-            raise ValueError("coakka Python host-inline close timeout must be positive")
++            raise ValueError("CoAkka HTTP close timeout must be positive")
+         async with self._close_lock:
+             if self._closed:
+                 return
+@@ -224,7 +235,7 @@
+             return
+         handler = self._router.match_exact(method, raw_path)
+         if handler is None:
+-            if not canonical_raw_path(raw_path):
++            if not valid_raw_path(raw_path):
+                 await _send_response(send, 414, (), b"request target rejected")
+                 return
+             if method not in SUPPORTED_METHODS:
+@@ -353,8 +364,8 @@
+             return
+         if task.done():
+             await task
+-            raise RuntimeError("coakka Python host-inline server stopped before start")
++            raise RuntimeError("CoAkka HTTP server stopped before start")
+         await asyncio.sleep(0.001)
+     server.should_exit = True
+     await asyncio.gather(task, return_exceptions=True)
+-    raise TimeoutError("coakka Python host-inline server start timed out")
++    raise TimeoutError("CoAkka HTTP server start timed out")
+--- a/routing.py
++++ b/routing.py
+@@ -73,7 +73,7 @@
+         return None
+ 
+ 
+-def canonical_raw_path(raw_path: bytes) -> bool:
++def valid_raw_path(raw_path: bytes) -> bool:
+     if not raw_path.startswith(b"/") or b"//" in raw_path:
+         return False
+     return not (
+--- a/validator.py
++++ b/validator.py
+@@ -33,14 +33,14 @@
+     def __str__(self):
+         name = ROUTE_STATUS_NAMES.get(self.status, f"status_{self.status}")
+         if self.index == 0xFFFFFFFF:
+-            return f"coakka Python host-inline route validation failed: {name}"
+-        return f"coakka Python host-inline route {self.index} validation failed: {name}"
++            return f"CoAkka HTTP route validation failed: {name}"
++        return f"CoAkka HTTP route {self.index} validation failed: {name}"
+ 
+ 
+ def validate_routes(routes: tuple[Route, ...], library_path: str | Path):
+     if not 0 < len(routes) <= 1024:
+-        raise ValueError("coakka Python host-inline requires between 1 and 1024 routes")
++        raise ValueError("CoAkka HTTP requires between 1 and 1024 routes")
+     path = Path(library_path).expanduser().absolute()
+     if not path.is_file():
+-        raise ValueError(f"coakka Python host-inline validator is missing: {path}")
++        raise ValueError(f"coakka-http-runtime-core is missing: {path}")
+     library = ctypes.CDLL(str(path))
+@@ -46,3 +46,3 @@
+     library = ctypes.CDLL(str(path))
+-    validate = library.coakka_http_python_host_inline_validate
++    validate = library.coakka_http_python_application_validate
+     validate.argtypes = [ctypes.POINTER(_NativeRoute), ctypes.c_uint32, ctypes.POINTER(ctypes.c_uint32)]
+--- a/values.py
++++ b/values.py
+@@ -23,6 +23,24 @@ class Response:
+     headers: tuple[tuple[bytes, bytes], ...] = ()
+     body: bytes = b""
+ 
++    @classmethod
++    def bytes(
++        cls,
++        body: bytes,
++        *,
++        status: int = 200,
++        headers: tuple[tuple[bytes, bytes], ...] = (),
++    ):
++        return cls(status=status, headers=headers, body=bytes(body))
++
++    @classmethod
++    def text(cls, value: str, *, status: int = 200):
++        return cls(
++            status=status,
++            headers=((b"content-type", b"text/plain; charset=utf-8"),),
++            body=value.encode("utf-8"),
++        )
++
+ 
+ @dataclass(frozen=True, slots=True)
+ class Snapshot:

@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "campaign_family": "connector-backend-pairs",
+  "ecosystem": "python",
+  "workload": {
+    "id": "fixed-32-http2-tls",
+    "method": "GET",
+    "path": "/fixed",
+    "scheme": "https",
+    "http_version": "2",
+    "parallel_per_connection": 4,
+    "status": 200,
+    "body_utf8": "0123456789abcdef0123456789abcdef",
+    "tls_ca_file": "build/native-io-uring/tls/ca.pem"
+  },
+  "server_cpu_set": "0-2",
+  "load_cpu_set": "3",
+  "cooldown": {
+    "minimum_idle_seconds": 0,
+    "target_temperature_c": 52,
+    "maximum_wait_seconds": 600,
+    "poll_interval_seconds": 5
+  },
+  "qualification": {"minimum_requests_per_second": 500},
+  "lanes": [
+    {
+      "id": "coakka-python-platform-default",
+      "role": "connector-backend",
+      "language": "Python",
+      "implementation": "CoAkka HTTP for Python, Linux platform backend",
+      "ready_expect": {
+        "application_path": "normal",
+        "application_protocol": 2,
+        "transport_security_mode": 2,
+        "io_backend": "platform-default",
+        "io_uring_active": false
+      },
+      "command": ["build/python-venv/bin/python","src/python/coakka_core.py","platform-default"],
+      "environment": {
+        "COAKKA_HTTP_CORE_PATH": "build/jvm-http2-native/libcoakka_http_runtime.so.1.0.0",
+        "COAKKA_BENCHMARK_TLS_CERT": "build/native-io-uring/tls/server.pem",
+        "COAKKA_BENCHMARK_TLS_KEY": "build/native-io-uring/tls/server.key"
+      }
+    },
+    {
+      "id": "coakka-python-io-uring",
+      "role": "connector-backend",
+      "language": "Python",
+      "implementation": "CoAkka HTTP for Python, io_uring backend",
+      "ready_expect": {
+        "application_path": "normal",
+        "application_protocol": 2,
+        "transport_security_mode": 2,
+        "io_backend": "io-uring",
+        "io_uring_active": true
+      },
+      "command": ["build/python-venv/bin/python","src/python/coakka_core.py","io-uring"],
+      "environment": {
+        "COAKKA_HTTP_CORE_PATH": "build/jvm-http2-native/libcoakka_http_runtime.so.1.0.0",
+        "COAKKA_BENCHMARK_TLS_CERT": "build/native-io-uring/tls/server.pem",
+        "COAKKA_BENCHMARK_TLS_KEY": "build/native-io-uring/tls/server.key"
+      }
+    }
+  ],
+  "pairs": [
+    {
+      "id": "python-platform-default-vs-io-uring",
+      "kind": "connector-backend-a-b",
+      "baseline": "coakka-python-platform-default",
+      "candidate": "coakka-python-io-uring"
+    }
+  ]
+}

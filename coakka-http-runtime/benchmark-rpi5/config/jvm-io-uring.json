@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "campaign_family": "connector-backend-pairs",
+  "ecosystem": "jvm",
+  "workload": {
+    "id": "fixed-32-http2-tls",
+    "method": "GET",
+    "path": "/fixed",
+    "scheme": "https",
+    "http_version": "2",
+    "parallel_per_connection": 4,
+    "status": 200,
+    "body_utf8": "0123456789abcdef0123456789abcdef",
+    "tls_ca_file": "build/native-io-uring/tls/ca.pem"
+  },
+  "server_cpu_set": "0-2",
+  "load_cpu_set": "3",
+  "cooldown": {
+    "minimum_idle_seconds": 0,
+    "target_temperature_c": 52,
+    "maximum_wait_seconds": 600,
+    "poll_interval_seconds": 5
+  },
+  "qualification": {"minimum_requests_per_second": 3000},
+  "lanes": [
+    {
+      "id": "coakka-jvm-platform-default",
+      "role": "connector-backend",
+      "language": "JVM",
+      "implementation": "CoAkka HTTP for JVM, Linux platform backend",
+      "ready_expect": {
+        "application_path": "normal",
+        "application_protocol": 2,
+        "transport_security_mode": 2,
+        "io_backend": "platform-default",
+        "io_uring_active": false
+      },
+      "command": ["build/jvm/bin/coakka-http-rpi5-jvm-comparisons","core","platform-default"],
+      "environment": {
+        "JAVA_HOME": "/usr/lib/jvm/java-17-openjdk-arm64",
+        "COAKKA_BENCHMARK_CORE_LIBRARY": "build/jvm-http2-native/libcoakka_http_runtime.so.1.0.0",
+        "COAKKA_BENCHMARK_JVM_BRIDGE_LIBRARY": "build/jvm-http2-native/libcoakka_http_jvm.so",
+        "COAKKA_BENCHMARK_TLS_CERT": "build/native-io-uring/tls/server.pem",
+        "COAKKA_BENCHMARK_TLS_KEY": "build/native-io-uring/tls/server.key"
+      },
+      "allowed_exit_codes": [0, 143]
+    },
+    {
+      "id": "coakka-jvm-io-uring",
+      "role": "connector-backend",
+      "language": "JVM",
+      "implementation": "CoAkka HTTP for JVM, io_uring backend",
+      "ready_expect": {
+        "application_path": "normal",
+        "application_protocol": 2,
+        "transport_security_mode": 2,
+        "io_backend": "io-uring",
+        "io_uring_active": true
+      },
+      "command": ["build/jvm/bin/coakka-http-rpi5-jvm-comparisons","core","io-uring"],
+      "environment": {
+        "JAVA_HOME": "/usr/lib/jvm/java-17-openjdk-arm64",
+        "COAKKA_BENCHMARK_CORE_LIBRARY": "build/jvm-http2-native/libcoakka_http_runtime.so.1.0.0",
+        "COAKKA_BENCHMARK_JVM_BRIDGE_LIBRARY": "build/jvm-http2-native/libcoakka_http_jvm.so",
+        "COAKKA_BENCHMARK_TLS_CERT": "build/native-io-uring/tls/server.pem",
+        "COAKKA_BENCHMARK_TLS_KEY": "build/native-io-uring/tls/server.key"
+      },
+      "allowed_exit_codes": [0, 143]
+    }
+  ],
+  "pairs": [
+    {
+      "id": "jvm-platform-default-vs-io-uring",
+      "kind": "connector-backend-a-b",
+      "baseline": "coakka-jvm-platform-default",
+      "candidate": "coakka-jvm-io-uring"
+    }
+  ]
+}
