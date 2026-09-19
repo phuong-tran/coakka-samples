@@ -134,13 +134,31 @@ C/C++ HTTP server.
 
 | Lane | Role | Source |
 | --- | --- | --- |
-| `coakka-bun` | CoAkka JavaScript application on Bun | `src/javascript/coakka-bun.mjs` |
+| `coakka-bun` | Exact locked `@coakka/http/host-inline` connector on Bun native routes | `src/javascript/coakka-bun.mjs` |
 | `bun-direct` | Direct `Bun.serve` 1.3.14 | `src/javascript/comparisons/bun/direct.mjs` |
 | `bun-elysia` | Elysia 1.4.30 | `src/javascript/comparisons/bun/elysia.mjs` |
 | `bun-hono` | Hono 4.13.7 | `src/javascript/comparisons/bun/hono.mjs` |
 
 The configuration files are `config/go-pairs.json`, `jvm-pairs.json`,
 `python-pairs.json`, `node-pairs.json`, and `bun-pairs.json`.
+
+The Bun lane imports the locked connector package from the staged application
+Core source. Core owns bounded route admission at startup; the connector then
+compiles that immutable plan into `Bun.serve({ routes })`. No per-request Core
+or Node-API call occurs. A fixture using Bun's generic `fetch` callback is a
+different execution shape and is not valid host-inline connector evidence.
+
+The corrected physical Raspberry Pi 5 c8 campaign uses a synchronous 32-byte
+`GET /fixed`, 30 seconds of warmup, and 30 seconds of measurement. CoAkka
+records 44,218.89 req/s at 0.667 ms p99 versus direct Bun native routes at
+51,318.40 req/s and 0.554 ms p99: -13.83% throughput and +20.37% p99, inside
+the established 15%/25% host-inline gates. The synchronous dispatch correction
+raises the preceding one-round CoAkka snapshot by 14.74%. The accepted evidence
+digest is
+`9b2cf46025382b5c27817b8a1fefbd237c9e71a683c2c9ce6dbf61cd9f3a2457`.
+This is one workload snapshot, not a portable regression budget or a general
+parity claim. Earlier parity evidence used an async POST and a fetch-based Bun
+control; it answers a different question.
 
 ## Per-Language io_uring Suites
 

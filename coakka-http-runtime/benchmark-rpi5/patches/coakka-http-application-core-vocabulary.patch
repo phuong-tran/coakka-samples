@@ -28,6 +28,104 @@ index 3eb445d..0c74b34 100644
      return nullptr;
    }
    return exports;
+diff --git a/connectors/javascript/package/src/host_inline.mjs b/connectors/javascript/package/src/host_inline.mjs
+--- a/connectors/javascript/package/src/host_inline.mjs
++++ b/connectors/javascript/package/src/host_inline.mjs
+@@ -102,7 +102,7 @@ class HostInlineOwner {
+     return this.#fetch(route, request);
+   }
+ 
+-  async #fetch(route, request) {
++  #fetch(route, request) {
+     if (this.#state !== "running") {
+       this.#requestsRejected += 1;
+       return fixedJsonResponse(503, '{"error":"service unavailable"}');
+@@ -118,21 +118,52 @@ class HostInlineOwner {
+     this.#pendingRequests += 1;
+     try {
+       this.#requestsDispatched += 1;
+-      const response = await route.handler(request, this.#context);
+-      if (!(response instanceof Response)) {
+-        throw new TypeError("host-inline handler must return a Response");
++      const result = route.handler(request, this.#context);
++      if (result instanceof Response) {
++        this.#responsesCompleted += 1;
++        this.#pendingRequests -= 1;
++        return result;
+       }
+-      this.#responsesCompleted += 1;
+-      return response;
++
++      if (
++        result !== null &&
++        (typeof result === "object" || typeof result === "function") &&
++        typeof result.then === "function"
++      ) {
++        return this.#settleAsync(result);
++      }
++
++      this.#pendingRequests -= 1;
++      return this.#rejectHandlerResult();
+     } catch {
+-      this.#requestsRejected += 1;
+-      this.#responsesCompleted += 1;
+-      return fixedJsonResponse(internalResponse.status, internalResponse.body);
+-    } finally {
+       this.#pendingRequests -= 1;
++      return this.#rejectHandlerResult();
+     }
+   }
+ 
++  #settleAsync(result) {
++    // A pending Promise keeps its admission charged until terminal settlement;
++    // synchronous Response handlers never enter this deferred path.
++    return Promise.resolve(result)
++      .then((response) => {
++        if (!(response instanceof Response)) {
++          throw new TypeError("host-inline handler must return a Response");
++        }
++        this.#responsesCompleted += 1;
++        return response;
++      })
++      .catch(() => this.#rejectHandlerResult())
++      .finally(() => {
++        this.#pendingRequests -= 1;
++      });
++  }
++
++  #rejectHandlerResult() {
++    this.#requestsRejected += 1;
++    this.#responsesCompleted += 1;
++    return fixedJsonResponse(internalResponse.status, internalResponse.body);
++  }
++
+   snapshot() {
+     const router = this.#router.snapshot();
+     return Object.freeze({
+@@ -179,7 +179,7 @@ export function startHostInlineOwner(declaration, context) {
+     throw new Error("host-inline does not support outbound targets yet");
+   }
+ 
+-  const router = loadHostInlineAddon().createHostInlineRouter(
++  const router = loadHostInlineAddon().createRouter(
+     declaration.routes.map(({ routeId, method, pattern }) => ({
+       routeId,
+       method,
+diff --git a/connectors/javascript/package/src/host_inline_native_loader.mjs b/connectors/javascript/package/src/host_inline_native_loader.mjs
+--- a/connectors/javascript/package/src/host_inline_native_loader.mjs
++++ b/connectors/javascript/package/src/host_inline_native_loader.mjs
+@@ -31,9 +31,9 @@ export function loadHostInlineAddon() {
+   if (
+     candidate === null ||
+     typeof candidate !== "object" ||
+-    typeof candidate.createHostInlineRouter !== "function"
++    typeof candidate.createRouter !== "function"
+   ) {
+-    throw new Error("CoAkka HTTP host-inline addon has an incompatible surface");
++    throw new Error("CoAkka HTTP application Core has an incompatible surface");
+   }
+   loadedHostInlineAddon = candidate;
+   return loadedHostInlineAddon;
 diff --git a/connectors/python/native/coakka_http_python_host_inline.c b/connectors/python/native/coakka_http_python_host_inline.c
 --- a/connectors/python/native/coakka_http_python_host_inline.c
 +++ b/connectors/python/native/coakka_http_python_host_inline.c

@@ -73,19 +73,48 @@ Status date: 2026-09-19
   All 21 measurement samples passed exact-response, lifecycle, thermal, and
   throttle validation; no Windows or UTM Linux VM benchmark was run.
 - [done] Record the one-pass CoAkka throughput snapshots: Go 89,460.22 req/s,
-  JVM 99,829.73 req/s, Python 22,146.39 req/s, Node.js 20,727.29 req/s, and Bun
-  38,835.84 req/s. These are workload snapshots, not multi-round statistical
-  claims.
+  JVM 99,829.73 req/s, Python 22,146.39 req/s, and Node.js 20,727.29 req/s.
+  The original generic-`fetch` Bun fixture recorded 38,835.84 req/s, but is
+  retained only as superseded fixture diagnostics rather than connector
+  evidence. These are workload snapshots, not multi-round statistical claims.
 - [done] Restore the Pi after every campaign, copy all qualification and sealed
   campaign evidence back, and verify every local checksum. Evidence digests:
   Go `2d4765cc0cabee0bbd30ad13eeff11ac5e0b83284aac11a54c12bdd9023b0dd8`,
   JVM `fe4e55cd3db5cccc280a28a151d4188305fd15149659825b947d733699a0a91b`,
   Python `406cb08008240dbbf50d8bfa2f68ac4b474392c133a04f22c189bea4b4045641`,
   Node.js `23d6a539b83fc412748ac463e9866b87efea1cf607578ea7270db4247dba5fa4`,
-  and Bun `835c51b61810fbc7a9c647f5162224f5d7344cb1c628fac6d79e1e9ed97a5ede`.
+  and superseded Bun fixture diagnostics
+  `835c51b61810fbc7a9c647f5162224f5d7344cb1c628fac6d79e1e9ed97a5ede`.
 - [done] Recheck the restored authority host after the final campaign: 47.7 C,
   `throttled=0x0`, all four CPU governors back on `ondemand`, and sampled host
   services active.
+
+## Bun Host-Inline Correction
+
+- [done] Reject the 2026-09-19 Bun result as evidence for the host-inline
+  connector. The measured fixture used Bun's generic `fetch` entry, including
+  per-request URL parsing and JavaScript route lookup, instead of the connector's
+  Bun-native route table.
+- [done] Replace the Bun fixture with the exact locked
+  `@coakka/http/host-inline` connector package and its Core-owned startup route
+  admission. Keep direct Bun `routes` as the same-class comparator.
+- [done] Preserve synchronous host-inline dispatch in canonical connector source
+  `b94f5c8374bd2cc56e7bd9ae9421987e243c3ee8` and project that exact change into
+  the locked application package input. Async/thenable handlers retain their
+  bounded Promise path.
+- [done] Re-run Bun qualification on the physical Raspberry Pi 5. All four
+  lanes pass exact-response, lifecycle, thermal, and throttle admission.
+- [done] Run and seal one corrected controlled campaign at c8 with 30 seconds
+  warmup and 30 seconds measurement per lane. CoAkka records 44,218.89 req/s
+  and 0.667 ms p99 versus direct Bun routes at 51,318.40 req/s and 0.554 ms:
+  -13.83% throughput and +20.37% p99, inside the established 15%/25% gates.
+- [done] Verify every checksum in the pre-fix and corrected evidence bundles.
+  The corrected digest is
+  `9b2cf46025382b5c27817b8a1fefbd237c9e71a683c2c9ce6dbf61cd9f3a2457`;
+  the pre-fix digest
+  `19dcaf2630ed0474ab7856622f782733063713971206eb96e0df047c3a9ab0d7`
+  remains diagnostic evidence. The sync correction raises the CoAkka snapshot
+  by 14.74%, lowers p99 by 2.91%, and lowers RSS by 1,568 KiB.
 
 No registry or package-ecosystem publication is part of this slice. No ABI 2
 payload is retained as a compatibility path.

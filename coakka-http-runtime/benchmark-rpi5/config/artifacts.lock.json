@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "candidate": "language-native-application-and-io-backend-abi3-provider-20260914",
+  "candidate": "language-native-application-bun-sync-and-io-backend-abi3-provider-20260919",
   "artifacts": [
     {
       "id": "go-application-source",

@@ -29,7 +29,7 @@
       "ready_expect": {"application_path": "normal"},
       "command": ["bun", "src/javascript/coakka-bun.mjs"],
       "environment": {
-        "COAKKA_HTTP_APPLICATION_CORE": "build/application-native/coakka_http_javascript_application.node"
+        "COAKKA_HTTP_HOST_INLINE_ADDON_PATH": "build/application-native/coakka_http_javascript_application.node"
       }
     },
     {

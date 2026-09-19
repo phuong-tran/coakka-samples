@@ -157,9 +157,6 @@ export class Builder {
     const declaration = normalizeRoutes(this.#routes);
     const core = loadCore(declaration);
     try {
-      if (typeof globalThis.Bun?.serve === "function") {
-        return startBun(this.#host, this.#port, this.#activeLimit, declaration, core);
-      }
       return await startNode(this.#host, this.#port, this.#activeLimit, declaration, core);
     } catch (error) {
       core.close();
@@ -229,68 +226,6 @@ async function closeNode(server, core) {
       server.closeIdleConnections();
     });
   } finally {
-    core.close();
-  }
-}
-
-function startBun(host, port, activeLimit, declaration, core) {
-  const table = routeTable(declaration);
-  let active = 0;
-  let closePromise;
-  const server = Bun.serve({
-    hostname: host,
-    port,
-    development: false,
-    maxRequestBodySize: BODY_LIMIT,
-    fetch(request) {
-      const url = new URL(request.url);
-      const route = table.get(`${request.method} ${url.pathname}`);
-      if (route === undefined) {
-        return new globalThis.Response(null, { status: 404 });
-      }
-      if (active >= activeLimit) {
-        return new globalThis.Response(null, { status: 503 });
-      }
-      active += 1;
-      try {
-        const result = normalizeResponse(route.handler(request));
-        return new globalThis.Response(result.body, {
-          status: result.status,
-          headers: { "content-type": result.contentType },
-        });
-      } catch {
-        return new globalThis.Response(null, { status: 500 });
-      } finally {
-        active -= 1;
-      }
-    },
-  });
-  return Object.freeze({
-    port: server.port,
-    close() {
-      closePromise ??= closeBun(server, core);
-      return closePromise;
-    },
-  });
-}
-
-async function closeBun(server, core) {
-  let timer;
-  try {
-    await Promise.race([
-      server.stop(false),
-      new Promise((_, reject) => {
-        timer = setTimeout(
-          () => reject(new Error("CoAkka HTTP close timed out")),
-          5_000,
-        );
-      }),
-    ]);
-  } catch (error) {
-    await server.stop(true);
-    throw error;
-  } finally {
-    clearTimeout(timer);
     core.close();
   }
 }
