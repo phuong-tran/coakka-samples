@@ -173,6 +173,12 @@ if [ -f "$NATIVE_SOURCE" ]; then
     "$NATIVE_BUILD/startup" "$NATIVE_BUILD/tls" "$CONNECTOR_SOURCE_DIR"
   tar -xf "$NATIVE_SOURCE" -C "$RUNTIME_SOURCE"
   tar -xf "$CONNECTOR_SOURCE" -C "$CONNECTOR_SOURCE_DIR"
+  cp "$ROOT/src/native/native_connector_fixed_server.cc" \
+    "$RUNTIME_SOURCE/benchmarks/native_connector_fixed_server.cc"
+  cp "$ROOT/src/native/uws_fixed_server.cc" \
+    "$RUNTIME_SOURCE/benchmarks/uws_fixed_server.cc"
+  patch -d "$RUNTIME_SOURCE" -p1 \
+    < "$ROOT/patches/coakka-http-native-cpp-fixed-benchmark.patch"
   cmake -S "$RUNTIME_SOURCE" -B "$NATIVE_BUILD" -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
     -DBUILD_TESTING=ON \
@@ -184,6 +190,8 @@ if [ -f "$NATIVE_SOURCE" ]; then
     -DFETCHCONTENT_SOURCE_DIR_COAKKA_HTTP_BOOST_UPSTREAM="$BOOST_SOURCE"
   cmake --build "$NATIVE_BUILD" --target \
     coakka_http_native_connector_server \
+    coakka_http_native_connector_fixed_server \
+    coakka_http_uws_fixed_server \
     coakka_http_native_poller_tests \
     coakka_http_public_runtime \
     coakka_http_runtime_http2_public_fixture
@@ -318,4 +326,4 @@ python3 -m venv "$BUILD/python-venv"
   NO_COLOR=true "$DOWNLOADS/oha-1.14.0-linux-arm64" --version
 } > "$BUILD/toolchain-versions.txt"
 
-echo "prepared the Go, JVM, Python, Node.js, Bun, and native backend pair suites"
+echo "prepared the Go, JVM, Python, Node.js, Bun, native C++ connector, and native backend pair suites"

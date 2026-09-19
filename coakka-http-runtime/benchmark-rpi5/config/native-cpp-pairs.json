@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "campaign_family": "application-pairs",
+  "ecosystem": "native-cpp",
+  "workload": {
+    "id": "fixed-32",
+    "method": "GET",
+    "path": "/fixed",
+    "status": 200,
+    "body_utf8": "0123456789abcdef0123456789abcdef"
+  },
+  "server_cpu_set": "0-2",
+  "load_cpu_set": "3",
+  "cooldown": {
+    "minimum_idle_seconds": 0,
+    "target_temperature_c": 52,
+    "maximum_wait_seconds": 600,
+    "poll_interval_seconds": 5
+  },
+  "qualification": {
+    "coakka_min_requests_per_second": 8000
+  },
+  "lanes": [
+    {
+      "id": "coakka-native-cpp",
+      "role": "coakka-application",
+      "language": "C++",
+      "implementation": "CoAkka HTTP NativeConnector",
+      "ready_expect": {
+        "application_path": "normal",
+        "connector_surface": "native-cpp"
+      },
+      "command": [
+        "build/native-io-uring/coakka_http_native_connector_fixed_server"
+      ]
+    },
+    {
+      "id": "cpp-uws-direct",
+      "role": "direct-http",
+      "language": "C++",
+      "implementation": "Pinned uWebSockets C++",
+      "ready_expect": {
+        "application_path": "direct",
+        "benchmark_layer": "raw-uws-cpp"
+      },
+      "command": [
+        "build/native-io-uring/coakka_http_uws_fixed_server"
+      ]
+    }
+  ],
+  "pairs": [
+    {
+      "id": "cpp-uws-vs-coakka-native-connector",
+      "kind": "non-framework",
+      "comparator": "cpp-uws-direct",
+      "coakka": "coakka-native-cpp"
+    }
+  ]
+}

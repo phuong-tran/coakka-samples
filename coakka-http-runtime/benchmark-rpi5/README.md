@@ -48,8 +48,8 @@ its public lifecycle. The runner checks the exact status and body before warmup
 and after measurement; the load generator records status and transport errors
 during load.
 
-Every non-native CoAkka lane uses the same public builder and service that a
-normal application imports. Each comparator is joined only with the CoAkka
+Every CoAkka lane uses the same public connector surface that a normal
+application imports. Each comparator is joined only with the CoAkka
 samples from the same ecosystem, concurrency, round, CPU policy, host state,
 and workload. There is no cross-language leaderboard.
 
@@ -139,8 +139,40 @@ C/C++ HTTP server.
 | `bun-elysia` | Elysia 1.4.30 | `src/javascript/comparisons/bun/elysia.mjs` |
 | `bun-hono` | Hono 4.13.7 | `src/javascript/comparisons/bun/hono.mjs` |
 
+### Native C++
+
+| Lane | Role | Source |
+| --- | --- | --- |
+| `coakka-native-cpp` | CoAkka public C++ `NativeConnector` with its bounded handler registry | `src/native/native_connector_fixed_server.cc` |
+| `cpp-uws-direct` | Direct pinned uWebSockets C++ control | `src/native/uws_fixed_server.cc` |
+
+The native application lane is intentionally distinct from the low-level C ABI
+backend fixture. Requests travel through `NativeConnector`, its bounded
+dispatch queue, one default worker, `HandlerInvocation`, and `ResponseFrame`.
+The comparator uses the exact pinned HTTP provider directly, so the pair
+attributes the connector/runtime application path without forming a
+cross-language ranking. Neither fixture probes kernel support or calls a
+system interface for capability detection; its only host-level signal handling
+exists to provide bounded, auditable process shutdown.
+
+The accepted physical Raspberry Pi 5 c8 campaign uses HTTP/1.1 `GET /fixed`,
+an exact 32-byte response, 30 seconds of warmup, and 30 seconds of measurement.
+The default one-worker `NativeConnector` records 15,445.89 req/s at 0.649 ms
+p99 versus direct pinned uWebSockets at 105,579.20 req/s and 0.088 ms p99:
+-85.37% throughput and +637.70% p99. Connector/direct peak RSS is
+13,600/5,232 KiB, maximum threads are 4/2, and both peak at 19 file
+descriptors. All 3,630,927 measured responses are exact HTTP 200 responses;
+both error distributions are empty, connector rejection and cleanup counters
+remain zero, and throttle remains `0x0`. The sealed evidence digest is
+`3a8d28b89ff812e18a9548e3c4fee802ef082e86d09450fa7d3c0977efea824b`.
+This is one controlled workload snapshot, not a portable regression budget or
+a claim about other connector worker counts and workloads. Exact identities,
+resource observations, ownership review, and open quality gates are recorded
+in `NATIVE_CPP_CONNECTOR_AUDIT.md`.
+
 The configuration files are `config/go-pairs.json`, `jvm-pairs.json`,
-`python-pairs.json`, `node-pairs.json`, and `bun-pairs.json`.
+`python-pairs.json`, `node-pairs.json`, `bun-pairs.json`, and
+`native-cpp-pairs.json`.
 
 The Bun lane imports the locked connector package from the staged application
 Core source. Core owns bounded route admission at startup; the connector then
@@ -299,10 +331,11 @@ python3 scripts/summarize-pairs.py \
   --evidence evidence/qualification-jvm-application
 ```
 
-Repeat with `python-pairs.json`, `node-pairs.json`, `bun-pairs.json`, and
-`go-pairs.json`. Review ready identity, exact response checks, runtime and build
-identities, shutdown outcome, and throughput order of magnitude. Qualification
-numbers are diagnostic and are never publication results.
+Repeat with `python-pairs.json`, `node-pairs.json`, `bun-pairs.json`,
+`go-pairs.json`, and `native-cpp-pairs.json`. Review ready identity, exact
+response checks, runtime and build identities, shutdown outcome, and throughput
+order of magnitude. Qualification numbers are diagnostic and are never
+publication results.
 
 Qualify the per-language backend pairs independently. For example:
 
@@ -366,10 +399,11 @@ CAMPAIGN_ID=20260914-rpi5-jvm-http2-io-uring-c16p4 \
   --rounds 1 --warmup 30 --duration 30 --concurrency 16
 ```
 
-Run Go, JVM, Python, Node.js, and Bun as separate application campaigns. For
-the backend check, run exactly one disabled/enabled pair per connector plus the
-native pair. Do not begin another test until restored-state verification passes
-and the board has passed the configured temperature and throttle gate.
+Run Go, JVM, Python, Node.js, Bun, and native C++ as separate application
+campaigns. For the backend check, run exactly one disabled/enabled pair per
+connector plus the native pair. Do not begin another test until restored-state
+verification passes and the board has passed the configured temperature and
+throttle gate.
 
 ## Evidence Contract
 

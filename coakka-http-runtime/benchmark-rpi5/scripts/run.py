@@ -142,8 +142,10 @@ def capture_environment(root: Path, output: Path) -> dict[str, Any]:
                 digests[str(path.relative_to(root))] = sha256(path)
     native_evidence_files = (
         root / "build/native-io-uring/coakka_http_native_connector_server",
+        root / "build/native-io-uring/coakka_http_native_connector_fixed_server",
         root / "build/native-io-uring/coakka_http_native_poller_tests",
         root / "build/native-io-uring/coakka_http_runtime_http2_public_fixture",
+        root / "build/native-io-uring/coakka_http_uws_fixed_server",
         root / "build/native-io-uring/CMakeCache.txt",
         root / "build/native-io-uring/dependency-sources.sha256",
         root / "build/native-io-uring/startup/platform-default.pb",

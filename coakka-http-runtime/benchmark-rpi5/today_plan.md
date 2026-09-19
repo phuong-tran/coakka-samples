@@ -1,6 +1,46 @@
 # Runtime Info and io_uring Benchmark Slice
 
-Status date: 2026-09-19
+Status date: 2026-09-20
+
+## Native C++ Connector Fixed-Response Campaign
+
+- [done] Establish the measurement boundary: the CoAkka lane must use the
+  public C++ `NativeConnector`, handler registry, invocation, and response
+  frame path. The existing low-level C ABI benchmark server is not connector
+  evidence and will not be reused as the measured lane.
+- [done] Add one bounded C++ connector `GET /fixed` fixture and one direct
+  pinned-uWebSockets C++ comparator with exact response, structured
+  ready/stopped records, signal-safe shutdown ownership, and strict build
+  integration against the locked native source. Both sources pass C++20
+  warnings-as-errors syntax checks; JSON, ShellCheck, source inputs, diff, and
+  exact locked-source patch dry-run pass locally.
+- [done] Build on the physical Raspberry Pi 5 and run qualification under the
+  existing temperature/throttle policy. Both lanes passed exact response and
+  lifecycle checks; the connector handled 46,304 requests with zero handler,
+  dispatch, submission, cleanup, or fatal failures and destroyed its one
+  handler context exactly once. The short diagnostic measured 15,410.46 req/s
+  for the connector and 105,713.50 req/s for direct uWebSockets; it is not a
+  publication result.
+- [done] Run the first post-reboot c8 `30s + 30s` controlled campaign on the
+  Pi only. Correctness, thermal, throttle, restore, and checksum gates passed,
+  but exclude this run from the final result because environment capture did
+  not yet include the two new benchmark executable digests.
+- [done] Add those exact executable identities to environment capture, then
+  repeat the controlled campaign after another fresh reboot. The authoritative
+  one-round c8 result is 15,445.89 req/s at 0.649 ms p99 for the default
+  one-worker `NativeConnector`, versus 105,579.20 req/s at 0.088 ms p99 for
+  direct pinned uWebSockets (-85.37% throughput, +637.70% p99). All 3,630,927
+  measured responses are exact HTTP 200 responses; error, rejection, cleanup,
+  fatal, and throttle observations are zero. Host restoration passed, both
+  executable digests are captured, the full local evidence checksum passes,
+  and the accepted seal digest is
+  `3a8d28b89ff812e18a9548e3c4fee802ef082e86d09450fa7d3c0977efea824b`.
+  No Windows or UTM benchmark was run.
+- [done] Complete senior and expert boundary review, Cppcheck 2.20.0, strict
+  format/warnings, ShellCheck, Python/JSON/diff checks, AArch64 ELF/dependency
+  inspection, and a separate halt-on-error UBSan qualification on the Pi.
+  Record ASan/LSan, TSan, and multi-round stress/soak as open publication gates;
+  this one-round snapshot does not open a package or release claim.
 
 ## Done
 
