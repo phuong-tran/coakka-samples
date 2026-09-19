@@ -1,6 +1,6 @@
 # Runtime Info and io_uring Benchmark Slice
 
-Status date: 2026-09-14
+Status date: 2026-09-19
 
 ## Done
 
@@ -47,12 +47,45 @@ Status date: 2026-09-14
   in all four connector candidates. This production-shaped package is distinct
   from the earlier TLS benchmark image.
 
-## Next
+## Prior Follow-Up
 
-- [next] Run `prepare-rpi5.sh` from the refreshed source locks before widening
+- [done] Run `prepare-rpi5.sh` from the refreshed source locks before widening
   the benchmark campaign; the rebuild must apply no Core system-boundary patch.
-- [next] Run JVM, Python, Node.js, and Bun qualification only when widening the
+- [done] Run JVM, Python, Node.js, and Bun qualification when widening the
   campaign beyond this initial Go/Core proof.
+
+## Current Host-Inlined Campaign
+
+- [done] Reconfirm the measurement boundary: use the connector runtime through
+  the application `Builder`/`Service` path and its host-inlined native bridge;
+  do not use `coakka-core.mjs`, `takeEvent()`, or the low-level Core
+  `io_uring` A/B suites for this campaign.
+- [done] Confirm the Raspberry Pi 5 is idle, below the 52 C admission threshold,
+  and reports `throttled=0x0` before preparation.
+- [done] Rebuild and verify the locked application connector inputs on the
+  Raspberry Pi 5.
+- [done] Qualify the Go, JVM, Python, Node.js, and Bun application pair suites;
+  all 21 lanes passed identity, exact-response, lifecycle, and throughput-floor
+  admission under the thermal/throttle polling policy.
+- [done] Run the controlled host-inlined application campaign on the Raspberry
+  Pi 5 only. Each ecosystem used a fresh reboot, one 30-second warmup, one
+  30-second measurement at concurrency 8, server CPUs 0-2, and load CPU 3.
+  All 21 measurement samples passed exact-response, lifecycle, thermal, and
+  throttle validation; no Windows or UTM Linux VM benchmark was run.
+- [done] Record the one-pass CoAkka throughput snapshots: Go 89,460.22 req/s,
+  JVM 99,829.73 req/s, Python 22,146.39 req/s, Node.js 20,727.29 req/s, and Bun
+  38,835.84 req/s. These are workload snapshots, not multi-round statistical
+  claims.
+- [done] Restore the Pi after every campaign, copy all qualification and sealed
+  campaign evidence back, and verify every local checksum. Evidence digests:
+  Go `2d4765cc0cabee0bbd30ad13eeff11ac5e0b83284aac11a54c12bdd9023b0dd8`,
+  JVM `fe4e55cd3db5cccc280a28a151d4188305fd15149659825b947d733699a0a91b`,
+  Python `406cb08008240dbbf50d8bfa2f68ac4b474392c133a04f22c189bea4b4045641`,
+  Node.js `23d6a539b83fc412748ac463e9866b87efea1cf607578ea7270db4247dba5fa4`,
+  and Bun `835c51b61810fbc7a9c647f5162224f5d7344cb1c628fac6d79e1e9ed97a5ede`.
+- [done] Recheck the restored authority host after the final campaign: 47.7 C,
+  `throttled=0x0`, all four CPU governors back on `ondemand`, and sampled host
+  services active.
 
 No registry or package-ecosystem publication is part of this slice. No ABI 2
 payload is retained as a compatibility path.
