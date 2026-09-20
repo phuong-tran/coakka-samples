@@ -141,11 +141,13 @@ def capture_environment(root: Path, output: Path) -> dict[str, Any]:
             if path.is_file() and not path.is_symlink():
                 digests[str(path.relative_to(root))] = sha256(path)
     native_evidence_files = (
+        root / "build/application-core/coakka_http_native_host_inline_fixed_server",
+        root / "build/application-core/coakka_http_uws_fixed_server",
+        root / "build/application-core/libcoakka_http_host_inline.so.1.1.0",
         root / "build/native-io-uring/coakka_http_native_connector_server",
-        root / "build/native-io-uring/coakka_http_native_connector_fixed_server",
         root / "build/native-io-uring/coakka_http_native_poller_tests",
         root / "build/native-io-uring/coakka_http_runtime_http2_public_fixture",
-        root / "build/native-io-uring/coakka_http_uws_fixed_server",
+        root / "build/application-core/CMakeCache.txt",
         root / "build/native-io-uring/CMakeCache.txt",
         root / "build/native-io-uring/dependency-sources.sha256",
         root / "build/native-io-uring/startup/platform-default.pb",

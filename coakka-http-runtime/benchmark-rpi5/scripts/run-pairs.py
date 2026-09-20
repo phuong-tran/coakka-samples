@@ -74,8 +74,18 @@ def validate_config(config: dict[str, Any]) -> None:
         ]
         if len(coakka_lanes) != 1:
             raise RuntimeError("exactly one CoAkka application lane is required")
-        if coakka_lanes[0].get("ready_expect", {}).get("application_path") != "normal":
-            raise RuntimeError("the CoAkka lane must prove the ordinary application service")
+        ready_expect = coakka_lanes[0].get("ready_expect", {})
+        application_path = ready_expect.get("application_path")
+        if application_path not in {"normal", "host-inline"}:
+            raise RuntimeError(
+                "the CoAkka lane must prove a normal or host-inline application path"
+            )
+        if application_path == "host-inline" and not ready_expect.get(
+            "connector_surface"
+        ):
+            raise RuntimeError(
+                "a host-inline CoAkka lane must identify its connector surface"
+            )
         minimum_rps = config.get("qualification", {}).get(
             "coakka_min_requests_per_second"
         )

@@ -1,20 +1,21 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -6542,6 +6542,28 @@ if(COAKKA_HTTP_BUILD_BENCHMARKS)
-     coakka_http_enable_sanitizers(
-         coakka_http_native_connector_server)
+@@ -5329,5 +5329,29 @@ if(COAKKA_HTTP_BUILD_BENCHMARKS)
+         coakka_http_token_ring_benchmark)
  
 +    add_executable(
-+        coakka_http_native_connector_fixed_server
-+        benchmarks/native_connector_fixed_server.cc)
++        coakka_http_native_host_inline_fixed_server
++        benchmarks/host_inline_fixed_server.cc)
 +    target_link_libraries(
-+        coakka_http_native_connector_fixed_server
-+        PRIVATE CoAkkaHttp::native_connector_aggregate)
++        coakka_http_native_host_inline_fixed_server
++        PRIVATE
++            CoAkkaHttp::host_inline
++            CoAkkaHttp::uWebSockets)
 +    coakka_http_enable_strict_warnings(
-+        coakka_http_native_connector_fixed_server)
++        coakka_http_native_host_inline_fixed_server)
 +    coakka_http_enable_sanitizers(
-+        coakka_http_native_connector_fixed_server)
++        coakka_http_native_host_inline_fixed_server)
 +
 +    add_executable(
 +        coakka_http_uws_fixed_server
@@ -28,5 +29,5 @@ diff --git a/CMakeLists.txt b/CMakeLists.txt
 +        coakka_http_uws_fixed_server)
 +
      add_executable(
-         coakka_http_token_ring_benchmark
-         benchmarks/token_ring_benchmark.cc)
+         coakka_http_transport_baseline_server
+         benchmarks/transport_baseline_server.cc)

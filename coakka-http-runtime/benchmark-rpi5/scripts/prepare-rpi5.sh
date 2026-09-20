@@ -124,10 +124,17 @@ patch --batch --forward --no-backup-if-mismatch \
 tar -xf "$APPLICATION_CORE_SOURCE" -C "$BUILD/application-core-source"
 patch -d "$BUILD/application-core-source" -p1 \
   < "$ROOT/patches/coakka-http-application-core-vocabulary.patch"
+cp "$ROOT/src/native/host_inline_fixed_server.cc" \
+  "$BUILD/application-core-source/benchmarks/host_inline_fixed_server.cc"
+cp "$ROOT/src/native/uws_fixed_server.cc" \
+  "$BUILD/application-core-source/benchmarks/uws_fixed_server.cc"
+patch -d "$BUILD/application-core-source" -p1 \
+  < "$ROOT/patches/coakka-http-native-cpp-host-inline-benchmark.patch"
 
 cmake -S "$BUILD/application-core-source" -B "$BUILD/application-core" -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DBUILD_TESTING=OFF \
+  -DCOAKKA_HTTP_BUILD_BENCHMARKS=ON \
   -DCOAKKA_HTTP_BUILD_PYTHON_HOST_INLINE=ON \
   -DCOAKKA_HTTP_BUILD_JVM_HOST_INLINE=ON \
   -DCOAKKA_HTTP_BUILD_JAVASCRIPT_CONNECTOR=ON \
@@ -137,7 +144,9 @@ cmake -S "$BUILD/application-core-source" -B "$BUILD/application-core" -G Ninja 
 cmake --build "$BUILD/application-core" --target \
   coakka_http_python_host_inline \
   coakka_http_jvm_host_inline \
-  coakka_http_javascript_host_inline_addon
+  coakka_http_javascript_host_inline_addon \
+  coakka_http_native_host_inline_fixed_server \
+  coakka_http_uws_fixed_server
 cp "$BUILD/application-core/libcoakka_http_python_host_inline.so" \
   "$BUILD/application-native/libcoakka_http_python_application.so"
 cp "$BUILD/application-core/libcoakka_http_jvm_host_inline.so" \
@@ -173,12 +182,6 @@ if [ -f "$NATIVE_SOURCE" ]; then
     "$NATIVE_BUILD/startup" "$NATIVE_BUILD/tls" "$CONNECTOR_SOURCE_DIR"
   tar -xf "$NATIVE_SOURCE" -C "$RUNTIME_SOURCE"
   tar -xf "$CONNECTOR_SOURCE" -C "$CONNECTOR_SOURCE_DIR"
-  cp "$ROOT/src/native/native_connector_fixed_server.cc" \
-    "$RUNTIME_SOURCE/benchmarks/native_connector_fixed_server.cc"
-  cp "$ROOT/src/native/uws_fixed_server.cc" \
-    "$RUNTIME_SOURCE/benchmarks/uws_fixed_server.cc"
-  patch -d "$RUNTIME_SOURCE" -p1 \
-    < "$ROOT/patches/coakka-http-native-cpp-fixed-benchmark.patch"
   cmake -S "$RUNTIME_SOURCE" -B "$NATIVE_BUILD" -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
     -DBUILD_TESTING=ON \
@@ -190,8 +193,6 @@ if [ -f "$NATIVE_SOURCE" ]; then
     -DFETCHCONTENT_SOURCE_DIR_COAKKA_HTTP_BOOST_UPSTREAM="$BOOST_SOURCE"
   cmake --build "$NATIVE_BUILD" --target \
     coakka_http_native_connector_server \
-    coakka_http_native_connector_fixed_server \
-    coakka_http_uws_fixed_server \
     coakka_http_native_poller_tests \
     coakka_http_public_runtime \
     coakka_http_runtime_http2_public_fixture

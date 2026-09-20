@@ -143,36 +143,40 @@ C/C++ HTTP server.
 
 | Lane | Role | Source |
 | --- | --- | --- |
-| `coakka-native-cpp` | CoAkka public C++ `NativeConnector` with its bounded handler registry | `src/native/native_connector_fixed_server.cc` |
+| `coakka-native-cpp-host-inline` | C++ host-inline connector over the public Core startup validator and pinned uWebSockets | `src/native/host_inline_fixed_server.cc` |
 | `cpp-uws-direct` | Direct pinned uWebSockets C++ control | `src/native/uws_fixed_server.cc` |
 
-The native application lane is intentionally distinct from the low-level C ABI
-backend fixture. Requests travel through `NativeConnector`, its bounded
-dispatch queue, one default worker, `HandlerInvocation`, and `ResponseFrame`.
-The comparator uses the exact pinned HTTP provider directly, so the pair
-attributes the connector/runtime application path without forming a
-cross-language ranking. Neither fixture probes kernel support or calls a
-system interface for capability detection; its only host-level signal handling
-exists to provide bounded, auditable process shutdown.
+The connector submits its complete one-route declaration to Core's bounded C
+ABI validator before binding. It then compiles that admitted route into the
+host-owned uWebSockets table. Requests, responses, and the application handler
+stay on the uWebSockets event-loop thread; there is no runtime queue, worker
+dispatch, serialized request frame, completion handoff, or per-request Core
+call. The direct control uses the same pinned provider and identical handler.
+Neither fixture probes kernel support or infers a backend. POSIX signal
+handling exists only for explicit process shutdown ownership.
 
-The accepted physical Raspberry Pi 5 c8 campaign uses HTTP/1.1 `GET /fixed`,
-an exact 32-byte response, 30 seconds of warmup, and 30 seconds of measurement.
-The default one-worker `NativeConnector` records 15,445.89 req/s at 0.649 ms
-p99 versus direct pinned uWebSockets at 105,579.20 req/s and 0.088 ms p99:
--85.37% throughput and +637.70% p99. Connector/direct peak RSS is
-13,600/5,232 KiB, maximum threads are 4/2, and both peak at 19 file
-descriptors. All 3,630,927 measured responses are exact HTTP 200 responses;
-both error distributions are empty, connector rejection and cleanup counters
-remain zero, and throttle remains `0x0`. The sealed evidence digest is
-`3a8d28b89ff812e18a9548e3c4fee802ef082e86d09450fa7d3c0977efea824b`.
-This is one controlled workload snapshot, not a portable regression budget or
-a claim about other connector worker counts and workloads. Exact identities,
-resource observations, ownership review, and open quality gates are recorded
-in `NATIVE_CPP_CONNECTOR_AUDIT.md`.
+The earlier 15,445.89 req/s `NativeConnector` measurement is retained only as
+an excluded full-runtime diagnostic. It measured a reader, bounded dispatch
+queue, default worker, request/response framing, and completion submission, so
+it is not C++ host-inline evidence and must not be compared with JVM
+host-inline.
+
+The accepted physical Raspberry Pi 5 c8 host-inline campaign uses one
+30-second warmup and one 30-second measurement. CoAkka records 104,843.35
+req/s at 0.089 ms p99 versus direct pinned uWebSockets at 105,499.64 req/s and
+0.088 ms p99: -0.62% throughput and +0.80% p99. Peak RSS is 3,632/3,552 KiB;
+both processes peak at two threads and 19 file descriptors. All 6,310,597
+measured responses are HTTP 200, both error distributions are empty, handler
+errors are zero, and firmware throttle remains `0x0`. The sealed evidence
+digest is
+`b9f55710f2160767e4dcb5ab78dbfa6c6ade8c89671e98cb01f1a115c94b47f5`.
+This is a one-round workload snapshot, not a portable regression budget. Exact
+identities, ownership review, and open publication gates are recorded in
+`NATIVE_CPP_HOST_INLINE_AUDIT.md`.
 
 The configuration files are `config/go-pairs.json`, `jvm-pairs.json`,
 `python-pairs.json`, `node-pairs.json`, `bun-pairs.json`, and
-`native-cpp-pairs.json`.
+`native-cpp-host-inline-pairs.json`.
 
 The Bun lane imports the locked connector package from the staged application
 Core source. Core owns bounded route admission at startup; the connector then
@@ -332,7 +336,7 @@ python3 scripts/summarize-pairs.py \
 ```
 
 Repeat with `python-pairs.json`, `node-pairs.json`, `bun-pairs.json`,
-`go-pairs.json`, and `native-cpp-pairs.json`. Review ready identity, exact
+`go-pairs.json`, and `native-cpp-host-inline-pairs.json`. Review ready identity, exact
 response checks, runtime and build identities, shutdown outcome, and throughput
 order of magnitude. Qualification numbers are diagnostic and are never
 publication results.

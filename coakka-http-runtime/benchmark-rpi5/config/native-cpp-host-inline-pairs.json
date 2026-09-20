@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "campaign_family": "application-pairs",
-  "ecosystem": "native-cpp",
+  "ecosystem": "native-cpp-host-inline",
   "workload": {
     "id": "fixed-32",
     "method": "GET",
@@ -18,20 +18,20 @@
     "poll_interval_seconds": 5
   },
   "qualification": {
-    "coakka_min_requests_per_second": 8000
+    "coakka_min_requests_per_second": 80000
   },
   "lanes": [
     {
-      "id": "coakka-native-cpp",
+      "id": "coakka-native-cpp-host-inline",
       "role": "coakka-application",
       "language": "C++",
-      "implementation": "CoAkka HTTP NativeConnector",
+      "implementation": "CoAkka C++ host-inline connector",
       "ready_expect": {
-        "application_path": "normal",
-        "connector_surface": "native-cpp"
+        "application_path": "host-inline",
+        "connector_surface": "native-cpp-host-inline"
       },
       "command": [
-        "build/native-io-uring/coakka_http_native_connector_fixed_server"
+        "build/application-core/coakka_http_native_host_inline_fixed_server"
       ]
     },
     {
@@ -44,16 +44,16 @@
         "benchmark_layer": "raw-uws-cpp"
       },
       "command": [
-        "build/native-io-uring/coakka_http_uws_fixed_server"
+        "build/application-core/coakka_http_uws_fixed_server"
       ]
     }
   ],
   "pairs": [
     {
-      "id": "cpp-uws-vs-coakka-native-connector",
+      "id": "cpp-uws-vs-coakka-native-host-inline",
       "kind": "non-framework",
       "comparator": "cpp-uws-direct",
-      "coakka": "coakka-native-cpp"
+      "coakka": "coakka-native-cpp-host-inline"
     }
   ]
 }

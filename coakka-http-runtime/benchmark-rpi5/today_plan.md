@@ -2,12 +2,45 @@
 
 Status date: 2026-09-20
 
-## Native C++ Connector Fixed-Response Campaign
+## Native C++ Host-Inline Fixed-Response Campaign
 
-- [done] Establish the measurement boundary: the CoAkka lane must use the
+### Host-Inline Correction
+
+- [done] Replace the measured C++ `NativeConnector` lane with a C++
+  host-inline connector fixture built from the same locked application-Core
+  source used by the language host-inline connectors. Core validates the
+  complete bounded route table synchronously before bind; pinned
+  uWebSockets then owns transport and invokes the handler on its event-loop
+  thread without a runtime queue, worker dispatch, serialized request frame,
+  or completion handoff.
+- [done] Update configuration, artifact capture, documentation, and audit
+  identity so the runner rejects the old full-runtime executable for this
+  application pair. Preserve the 15,445.89 req/s result only as excluded
+  diagnostic evidence for the wrong execution shape; do not compare it with
+  JVM host-inline.
+- [done] Run local source/patch/config/script checks, then matching-host strict
+  build, functional qualification, and sanitizer/static-analysis evidence on
+  the physical Raspberry Pi 5.
+- [done] After fresh Pi reboots, run c8 `30s + 30s` controlled campaigns
+  under the existing temperature-at-most-52-C and `throttled=0x0` admission
+  policy. Exclude the first otherwise-valid host-inline campaign because it
+  omitted the dynamically loaded host-inline Core library digest. The accepted
+  rerun records 104,843.35 req/s at 0.089 ms p99 for C++ host-inline versus
+  105,499.64 req/s at 0.088 ms p99 for direct pinned uWebSockets (-0.62%
+  throughput, +0.80% p99). All 6,310,597 measured responses are HTTP 200,
+  error distributions are empty, host restoration passes, the complete local
+  checksum passes, and the accepted seal digest is
+  `b9f55710f2160767e4dcb5ab78dbfa6c6ade8c89671e98cb01f1a115c94b47f5`.
+  No Windows or UTM benchmark was run.
+
+### Superseded Full-Runtime Diagnostic
+
+- [done] The initial measurement boundary incorrectly required the CoAkka lane
+  to use the
   public C++ `NativeConnector`, handler registry, invocation, and response
   frame path. The existing low-level C ABI benchmark server is not connector
-  evidence and will not be reused as the measured lane.
+  evidence, but the selected full-runtime connector was also not host-inline
+  evidence and will not be reused as the measured application lane.
 - [done] Add one bounded C++ connector `GET /fixed` fixture and one direct
   pinned-uWebSockets C++ comparator with exact response, structured
   ready/stopped records, signal-safe shutdown ownership, and strict build
@@ -26,14 +59,14 @@ Status date: 2026-09-20
   but exclude this run from the final result because environment capture did
   not yet include the two new benchmark executable digests.
 - [done] Add those exact executable identities to environment capture, then
-  repeat the controlled campaign after another fresh reboot. The authoritative
-  one-round c8 result is 15,445.89 req/s at 0.649 ms p99 for the default
+  repeat the controlled campaign after another fresh reboot. That excluded
+  full-runtime c8 diagnostic recorded 15,445.89 req/s at 0.649 ms p99 for the default
   one-worker `NativeConnector`, versus 105,579.20 req/s at 0.088 ms p99 for
   direct pinned uWebSockets (-85.37% throughput, +637.70% p99). All 3,630,927
   measured responses are exact HTTP 200 responses; error, rejection, cleanup,
   fatal, and throttle observations are zero. Host restoration passed, both
   executable digests are captured, the full local evidence checksum passes,
-  and the accepted seal digest is
+  and its diagnostic seal digest is
   `3a8d28b89ff812e18a9548e3c4fee802ef082e86d09450fa7d3c0977efea824b`.
   No Windows or UTM benchmark was run.
 - [done] Complete senior and expert boundary review, Cppcheck 2.20.0, strict
