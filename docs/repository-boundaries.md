@@ -42,6 +42,7 @@ specific product surface when the distinction matters:
 | `coakka-runtime-connector` | Host-language and framework connector packages. |
 | `coakka-runtime-client` | CLI runtime client. The published command and archive names use `coakka-client`. |
 | `CoAkka Runtime Addon` | Independently released optional capability that composes with public Runtime features without entering runtime core or the default package. |
+| `CoAkka HTTP Runtime` | Shared HTTP contract, language packages, and HTTP-focused addons. It is distinct from CoAkka Runtime message routing. |
 | `coakka-logger` | Bounded logger product surface. |
 
 For the full wording rule, read
@@ -53,6 +54,8 @@ For the full wording rule, read
 - container flows and compose files
 - framework adapter usage examples
 - language-specific basic, deadletter, hot-reload, pressure, and logger samples
+- language-specific CoAkka HTTP Runtime lifecycle, pressure, streaming, and
+  monitoring samples after their artifact gates open
 - artifact pin verification against the public manifest
 - public smoke workflows
 - tagged, source-only release projections when a public package registry needs
@@ -114,6 +117,24 @@ surface. Sample call-sites should stay boring:
 ```text
 ask target -> reply, timeout, or deadletter
 ```
+
+## HTTP Runtime Boundary
+
+CoAkka HTTP Runtime defines listener, connection, protocol, routing, bounded
+request/response/stream, file, health, monitoring, and shutdown behavior.
+CoAkka HTTP Runtime owns the shared HTTP service contract. Language packages
+bind that contract through the App Host's
+normal HTTP facilities while preserving native values, handlers, and
+scheduling.
+
+HTTP Runtime repository artifacts are released independently under
+`coakka-publish/coakka-http-runtime/`. Runnable consumers belong under
+`coakka-samples/coakka-http-runtime/`. Annotation, decorator, dependency
+injection, validation, or other framework-style experiences belong in addons
+above the connector so the shared HTTP contract remains unchanged.
+
+The HTTP edge may call CoAkka Runtime for application-owned target routing, but
+the two products keep separate lifecycle, queue, and release identities.
 
 ## Runtime Addon Boundary
 

@@ -10,7 +10,7 @@ separate protocols:
    `io_uring` instead of the platform-default I/O backend?
 
 The first protocol uses ordinary HTTP/1.1 application APIs. The second uses the
-complete `coakka-http-runtime-core` API with HTTP/2 over TLS because the current
+complete `CoAkka HTTP Runtime` API with HTTP/2 over TLS because the current
 candidate accepts explicit `io_uring` for eligible HTTP/2 and HTTP/3 listeners,
 not HTTP/1.1. Results from the two protocols never share a comparison table.
 
@@ -48,8 +48,8 @@ its public lifecycle. The runner checks the exact status and body before warmup
 and after measurement; the load generator records status and transport errors
 during load.
 
-Every CoAkka lane uses the same public connector surface that a normal
-application imports. Each comparator is joined only with the CoAkka
+Every non-native CoAkka lane uses the same public builder and service that a
+normal application imports. Each comparator is joined only with the CoAkka
 samples from the same ecosystem, concurrency, round, CPU policy, host state,
 and workload. There is no cross-language leaderboard.
 
@@ -69,15 +69,9 @@ protocol, certificate, limits, connection count, parallel streams, CPU
 placement, and package image. Only the requested I/O backend changes. The
 runner rejects a sample unless startup reports the expected effective backend.
 Each application reads runtime info through its public connector. An explicit
-`io_uring` lane stops before measurement when Core reports the host unsupported
-or when the started Core reports fallback instead of effective `io_uring`.
+`io_uring` lane stops before measurement when runtime reports the host unsupported
+or when the started runtime reports fallback instead of effective `io_uring`.
 Applications never inspect `/proc`, probe syscalls, or infer kernel capability.
-
-Every benchmark in this suite is intentionally small: one measured pass per
-application lane, and one measured pass with `io_uring` disabled plus one with
-it enabled for each connector. Before every pass, the runner polls until the
-board is at or below the configured temperature ceiling and reports no firmware
-throttling. Results are workload snapshots, not multi-round statistical claims.
 
 The separate native backend suite keeps its existing HTTP/2 TLS JSON request:
 
@@ -116,7 +110,7 @@ C/C++ HTTP server.
 
 | Lane | Role | Source |
 | --- | --- | --- |
-| `coakka-python` | CoAkka asynchronous Python application | `src/python/fixed_server.py` |
+| `coakka-python` | CoAkka synchronous Python application | `src/python/fixed_server.py` |
 | `python-direct` | Python 3.11 standard-library HTTP server | Same source, selected by command argument |
 | `python-uvicorn` | Uvicorn 0.52.4 with a raw ASGI application | Same source, selected by command argument |
 | `python-fastapi` | FastAPI 0.141.1 on Uvicorn 0.52.4 | Same source, selected by command argument |
@@ -134,87 +128,32 @@ C/C++ HTTP server.
 
 | Lane | Role | Source |
 | --- | --- | --- |
-| `coakka-bun` | Exact locked `@coakka/http/host-inline` connector on Bun native routes | `src/javascript/coakka-bun.mjs` |
+| `coakka-bun` | CoAkka JavaScript application on Bun | `src/javascript/coakka-bun.mjs` |
 | `bun-direct` | Direct `Bun.serve` 1.3.14 | `src/javascript/comparisons/bun/direct.mjs` |
 | `bun-elysia` | Elysia 1.4.30 | `src/javascript/comparisons/bun/elysia.mjs` |
 | `bun-hono` | Hono 4.13.7 | `src/javascript/comparisons/bun/hono.mjs` |
 
-### Native C++
-
-| Lane | Role | Source |
-| --- | --- | --- |
-| `coakka-native-cpp-host-inline` | C++ host-inline connector over the public Core startup validator and pinned uWebSockets | `src/native/host_inline_fixed_server.cc` |
-| `cpp-uws-direct` | Direct pinned uWebSockets C++ control | `src/native/uws_fixed_server.cc` |
-
-The connector submits its complete one-route declaration to Core's bounded C
-ABI validator before binding. It then compiles that admitted route into the
-host-owned uWebSockets table. Requests, responses, and the application handler
-stay on the uWebSockets event-loop thread; there is no runtime queue, worker
-dispatch, serialized request frame, completion handoff, or per-request Core
-call. The direct control uses the same pinned provider and identical handler.
-Neither fixture probes kernel support or infers a backend. POSIX signal
-handling exists only for explicit process shutdown ownership.
-
-The earlier 15,445.89 req/s `NativeConnector` measurement is retained only as
-an excluded full-runtime diagnostic. It measured a reader, bounded dispatch
-queue, default worker, request/response framing, and completion submission, so
-it is not C++ host-inline evidence and must not be compared with JVM
-host-inline.
-
-The accepted physical Raspberry Pi 5 c8 host-inline campaign uses one
-30-second warmup and one 30-second measurement. CoAkka records 104,843.35
-req/s at 0.089 ms p99 versus direct pinned uWebSockets at 105,499.64 req/s and
-0.088 ms p99: -0.62% throughput and +0.80% p99. Peak RSS is 3,632/3,552 KiB;
-both processes peak at two threads and 19 file descriptors. All 6,310,597
-measured responses are HTTP 200, both error distributions are empty, handler
-errors are zero, and firmware throttle remains `0x0`. The sealed evidence
-digest is
-`b9f55710f2160767e4dcb5ab78dbfa6c6ade8c89671e98cb01f1a115c94b47f5`.
-This is a one-round workload snapshot, not a portable regression budget. Exact
-identities, ownership review, and open publication gates are recorded in
-`NATIVE_CPP_HOST_INLINE_AUDIT.md`.
-
 The configuration files are `config/go-pairs.json`, `jvm-pairs.json`,
-`python-pairs.json`, `node-pairs.json`, `bun-pairs.json`, and
-`native-cpp-host-inline-pairs.json`.
-
-The Bun lane imports the locked connector package from the staged application
-Core source. Core owns bounded route admission at startup; the connector then
-compiles that immutable plan into `Bun.serve({ routes })`. No per-request Core
-or Node-API call occurs. A fixture using Bun's generic `fetch` callback is a
-different execution shape and is not valid host-inline connector evidence.
-
-The corrected physical Raspberry Pi 5 c8 campaign uses a synchronous 32-byte
-`GET /fixed`, 30 seconds of warmup, and 30 seconds of measurement. CoAkka
-records 44,218.89 req/s at 0.667 ms p99 versus direct Bun native routes at
-51,318.40 req/s and 0.554 ms p99: -13.83% throughput and +20.37% p99, inside
-the established 15%/25% host-inline gates. The synchronous dispatch correction
-raises the preceding one-round CoAkka snapshot by 14.74%. The accepted evidence
-digest is
-`9b2cf46025382b5c27817b8a1fefbd237c9e71a683c2c9ce6dbf61cd9f3a2457`.
-This is one workload snapshot, not a portable regression budget or a general
-parity claim. Earlier parity evidence used an async POST and a fetch-based Bun
-control; it answers a different question.
+`python-pairs.json`, `node-pairs.json`, and `bun-pairs.json`.
 
 ## Per-Language io_uring Suites
 
 Each ecosystem has one independent platform-default versus `io_uring` pair:
 
-| Ecosystem | Configuration | CoAkka source |
-| --- | --- | --- |
-| Go | `config/go-io-uring.json` | `src/core/go/main.go` |
-| JVM | `config/jvm-io-uring.json` | `src/jvm/src/main/java/benchmark/jvm/CoreFixedServer.java` |
-| Python | `config/python-io-uring.json` | `src/python/coakka_core.py` |
-| Node.js | `config/node-io-uring.json` | `src/javascript/coakka-core.mjs` |
-| Bun | `config/bun-io-uring.json` | `src/javascript/coakka-core.mjs` |
-| Native | `config/native-backends.json` | Exact locked native source archive |
+| Ecosystem | Configuration |
+| --- | --- |
+| Go | `config/go-io-uring.json` |
+| JVM | `config/jvm-io-uring.json` |
+| Python | `config/python-io-uring.json` |
+| Node.js | `config/node-io-uring.json` |
+| Bun | `config/bun-io-uring.json` |
+| Native | `config/native-backends.json` |
 
 The Node.js and Bun lanes intentionally share one JavaScript application source
 while running under different hosts. Every pair uses four parallel HTTP/2
 requests per connection. A successful command is insufficient: the effective
 backend, HTTP version, TLS mode, exact response, and runtime-info proof must all
-match the configuration. For connector lanes, backend proof comes from Core
-runtime info, not process descriptor inspection.
+match the configuration.
 
 ## Repository Layout
 
@@ -224,7 +163,7 @@ runtime info, not process descriptor inspection.
 | `config/*-pairs.json` | HTTP/1.1 workload, commands, identities, bounds, CPU placement, cooldown, and pairs |
 | `config/*-io-uring.json` | Per-language HTTP/2 TLS platform-default/`io_uring` pairs |
 | `config/native-backends.json` | Native backend A/B workload |
-| `config/artifacts.lock.json` | Exact private application, connector, Core, and shared native source identities |
+| `config/artifacts.lock.json` | Exact private connector, runtime, and shared native source identities |
 | `config/tools.lock.json` | Pinned load generator and offline Python wheelhouse |
 | `scripts/stage-artifacts.py` | Stages exact locked private inputs |
 | `scripts/prepare-rpi5.sh` | Verifies, tests, and builds every suite on the Pi |
@@ -263,31 +202,26 @@ This campaign uses a new private candidate; it does not preserve the behavior
 or binary identity of the earlier package merely because that package exists.
 Nothing in this directory is a registry release.
 
-The candidate is built on the Pi from exact locked source inputs. The
-HTTP/1.1 application comparisons use each ecosystem's normal `Builder` and
-`Service` surface with language-native request handling and Core-owned route
-admission. Go, JVM, Python, and JavaScript application sources are independently
-locked so the benchmark measures the integration shape an application actually
-uses, rather than forcing every language through one transport path.
+The candidate is built on the Pi from the exact locked
+`CoAkka HTTP Runtime` source with HTTP/2, TLS, and `io_uring` enabled. Two
+reviewable patches under `patches/` complete the Linux AArch64 public image and
+keep `io_uring` as an explicit public capability. Go, JVM, Python, and
+JavaScript all come from one locked `coakka-http-runtime-connector` source
+snapshot. Preparation rebuilds each language package against the candidate
+runtime, then records its size and SHA-256 identity. No earlier language package,
+route validator, or benchmark-only application layer enters the measurement.
 
-The backend campaigns are a second build from the current locked
-`coakka-http-runtime-core` and connector sources with HTTP/2, TLS, and
-`io_uring` enabled. Within one backend pair, both lanes use the same application
-source, connector, Core image, TLS files, and limits. Only the requested
-platform-default or `io_uring` backend changes. Preparation records the exact
-source archives, remaining application-integration patches, consumer source,
-packages, executables, and resulting binary digests. The locked Core source
-already owns optional liburing discovery, the Linux poll shim, public
-runtime-info vocabulary, and production fallback; benchmark preparation does
-not patch or reproduce those system boundaries. No registry artifact enters
-either protocol.
+Both lanes in an ecosystem therefore use the same application source, bridge,
+runtime image, TLS files, and limits. Only `IOBackend.PLATFORM_DEFAULT` versus
+`IOBackend.IO_URING` changes. The evidence records all source archives, patches,
+build files, package manifests, and resulting binary digests.
 
 ## Authority Host
 
 | Item | Recorded configuration |
 | --- | --- |
 | Board | Raspberry Pi 5 Model B Rev 1.1 |
-| CPU | 4-core ARM Cortex-A76, maximum 2.4 GHz |
+| CPU | Four ARM Cortex-A76 CPU cores, maximum 2.4 GHz |
 | Memory | 16 GiB |
 | Storage | SK hynix 256 GB NVMe, ext4 root with `noatime` |
 | OS | Debian 12 Bookworm, AArch64 |
@@ -335,11 +269,10 @@ python3 scripts/summarize-pairs.py \
   --evidence evidence/qualification-jvm-application
 ```
 
-Repeat with `python-pairs.json`, `node-pairs.json`, `bun-pairs.json`,
-`go-pairs.json`, and `native-cpp-host-inline-pairs.json`. Review ready identity, exact
-response checks, runtime and build identities, shutdown outcome, and throughput
-order of magnitude. Qualification numbers are diagnostic and are never
-publication results.
+Repeat with `python-pairs.json`, `node-pairs.json`, `bun-pairs.json`, and
+`go-pairs.json`. Review ready identity, exact response checks, runtime and build
+identities, shutdown outcome, and throughput order of magnitude. Qualification
+numbers are diagnostic and are never publication results.
 
 Qualify the per-language backend pairs independently. For example:
 
@@ -391,7 +324,7 @@ HTTP/1.1 JVM example:
 BENCHMARK_CONFIG=config/jvm-pairs.json \
 CAMPAIGN_ID=20260914-rpi5-jvm-application-c8 \
   ./scripts/run-pairs-on-quiesced-rpi5.sh \
-  --rounds 1 --warmup 30 --duration 30 --concurrency 8
+  --rounds 9 --warmup 30 --duration 30 --concurrency 8
 ```
 
 HTTP/2 TLS JVM backend example:
@@ -400,14 +333,12 @@ HTTP/2 TLS JVM backend example:
 BENCHMARK_CONFIG=config/jvm-io-uring.json \
 CAMPAIGN_ID=20260914-rpi5-jvm-http2-io-uring-c16p4 \
   ./scripts/run-pairs-on-quiesced-rpi5.sh \
-  --rounds 1 --warmup 30 --duration 30 --concurrency 16
+  --rounds 9 --warmup 30 --duration 30 --concurrency 16
 ```
 
-Run Go, JVM, Python, Node.js, Bun, and native C++ as separate application
-campaigns. For the backend check, run exactly one disabled/enabled pair per
-connector plus the native pair. Do not begin another test until restored-state
-verification passes and the board has passed the configured temperature and
-throttle gate.
+Run Go, JVM, Python, Node.js, and Bun as separate application campaigns and
+separate backend campaigns. Do not begin another campaign until restored-state
+verification passes and the board again satisfies the cooldown policy.
 
 ## Evidence Contract
 
@@ -432,16 +363,16 @@ and are never silently deleted.
 
 ## Current Gate
 
-The physical authority host is available. Earlier qualification evidence is
-superseded because it mixed application and connector execution shapes. Every
-language-native application suite and every platform-default versus `io_uring`
-suite must pass fresh startup, runtime-info/effective-backend, exact-response,
-lifecycle, thermal, throttle, host-restoration, and evidence-seal checks before
-a full campaign begins. Qualification numbers remain diagnostic and are not
+The physical authority host is available. The earlier qualification evidence
+is superseded because it did not use this unified connector candidate. Every
+application suite and every platform-default versus `io_uring` suite must pass
+fresh startup, runtime-info/effective-backend, exact-response, lifecycle,
+thermal, throttle, host-restoration, and evidence-seal checks before a full
+campaign begins. Qualification numbers remain diagnostic and are not
 publication results.
 
-The publication gate remains closed until every one-pass application lane and
-every one-pass disabled/enabled backend pair finishes, the native standalone
-reference is complete, summaries are reviewed for failures and scope, host
-state is restored, and the evidence is sealed. Registry upload, public release,
-commit, and push remain outside this private benchmark step.
+The publication gate remains closed until every nine-round cooled and quiesced
+campaign finishes, the native standalone reference is complete, summaries are
+reviewed for variance and failures, host state is restored, and the evidence is
+sealed. Registry upload, public release, commit, and push remain outside this
+private benchmark step.

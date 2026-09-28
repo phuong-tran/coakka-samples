@@ -40,6 +40,28 @@ load-balancing Service.
 For exact package contents, matching-host execution, and known platform gaps,
 use [Runtime Package And Platform Evidence](runtime-package-platform-evidence.md).
 
+## CoAkka HTTP Runtime
+
+CoAkka HTTP Runtime is an independent CoAkka product surface: one operational
+HTTP contract shared by native C/C++, Java/Kotlin, Python,
+JavaScript/TypeScript on Node and Bun, and Go. Language packages share the same
+route, capacity, pressure, monitoring, and lifecycle contract through the App
+Host's normal HTTP execution model.
+
+Version `1.0.0` is staged privately under
+[`coakka-publish/coakka-http-runtime`](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime).
+Native release `1.0.0+204d6ed28231ff9a39f4584393bf7d5af0b6975a`
+and connector release
+`1.0.0+204d6ed28231ff9a39f4584393bf7d5af0b6975a-7cbe256` contain exact,
+reverified macOS ARM64, Linux ARM64/x86-64, and Windows ARM64/x86-64
+artifacts for native, Java/Kotlin, Python, JavaScript/TypeScript, and Go. npm,
+Maven Central, PyPI, a tagged public Go module, public samples, production
+signing, and performance claims remain closed gates.
+
+The [product README](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime)
+contains the full capability matrix, same-route language examples, operational
+contract, dated ecosystem comparison, and benchmark protocol.
+
 ## Runtime Addons
 
 [`runtime-addons/`](runtime-addons.md) is the independent release family for

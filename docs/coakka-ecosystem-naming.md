@@ -14,6 +14,7 @@ specific product name is available.
 | `coakka-runtime-connector` | Host-language connector packages that bind app-host code to the runtime core. | Show language/framework integration and app-owned handlers. |
 | `coakka-runtime-client` | The CLI runtime client used to drive and diagnose runtime paths. | Show local/native CLI workflows, Docker verification smokes, and scripted request/reply verification. |
 | `coakka-runtime-inspect` | The browser-visible runtime inspection surface. | Show runtime diagnostics, route state, and operator-oriented visibility without making it the runtime owner. |
+| `CoAkka HTTP Runtime` | Shared HTTP contract and language package/addon family. | Show HTTP handlers, bounded queues, backpressure, streaming, health, monitoring, and HTTP lifecycle separately from message routing. |
 | `coakka-logger` | The bounded logger product surface. | Show logger behavior separately from runtime routing unless a sample intentionally combines both. |
 
 ## Public Repository Names
@@ -41,6 +42,7 @@ names:
 | --- | --- |
 | `runtime/` | Runtime connector and runtime scenario samples. |
 | `runtime-client/` | CLI runtime client sample lane. |
+| `coakka-http-runtime/` | CoAkka HTTP Runtime sample lanes. |
 | `logger/` | Logger product samples. |
 | `containers/` | Containerized public sample flows. |
 
@@ -76,6 +78,9 @@ by CoAkka Runtime.
 - Use `coakka-runtime-connector` for language and framework connectors.
 - Use `coakka-runtime-client` for CLI-driven runtime workflows.
 - Use `coakka-runtime-inspect` for browser-visible runtime inspection workflows.
+- Use `CoAkka HTTP Runtime` for the shared HTTP contract and its language
+  packages/addons; do not shorten it to CoAkka Runtime when the HTTP boundary
+  matters.
 - Use `coakka-logger` for logger samples and logger packages.
 - Avoid calling every package simply `CoAkka`; that hides which boundary owns
   behavior.

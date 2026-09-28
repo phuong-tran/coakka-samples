@@ -122,6 +122,18 @@ Use `coakka-samples` when you want to run examples. Use `coakka-publish` when
 you need exact released files, checksums, compatibility status, or release
 history.
 
+## CoAkka HTTP Runtime
+
+CoAkka HTTP Runtime `1.0.0` is staged privately for native C/C++, Java/Kotlin,
+Python, JavaScript/TypeScript on Node and Bun, and Go. Its ordinary application
+package boundary is being corrected and reverified. The
+[documentation hub](docs/coakka-http-runtime/README.md) and
+[sample area](coakka-http-runtime/README.md) are present now so runnable lanes
+can arrive without moving their entrypoints. External registries, supported
+runnable samples, and performance claims remain closed gates; current staging
+status lives in
+[`coakka-publish/coakka-http-runtime`](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime).
+
 ## Architecture Boundary
 
 HTTP remains the external API edge; selected application-owned work crosses a
@@ -173,7 +185,7 @@ maintenance surface.
 ## Runtime Transport
 
 Runtime transport configuration is available through the full host-language
-connectors. Use the canonical guides for the supported modes, effective
+connectors. Use the main guides for the supported modes, effective
 capabilities, lifecycle rules, and connector examples:
 
 - [Runtime network modes](docs/runtime-network-modes.md)

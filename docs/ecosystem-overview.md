@@ -7,6 +7,13 @@ execution, request/reply, deadletters, delivery evidence, and transport
 mechanics. Connectors adapt host-language objects and lifecycle to the stable
 public C ABI without redefining core semantics.
 
+CoAkka HTTP Runtime is a separate but composable product in the same ecosystem.
+It gives C/C++, Java/Kotlin, Python, JavaScript/TypeScript, and Go one shared
+HTTP contract for routing, bounded pressure, streaming, health, monitoring,
+and shutdown. Its language packages preserve each App Host's normal HTTP
+execution model. An HTTP handler may call CoAkka Runtime for target-routed application
+work, while each product keeps its own lifecycle and release identity.
+
 Kubernetes is a first-class deployment lane because its topology, rollout,
 policy, and scale deserve detailed operational treatment. It is not a runtime
 prerequisite. The same contract applies to standalone services, containers,
@@ -17,6 +24,7 @@ VMs, bare-metal hosts, and architecture-matched edge deployments.
 | Surface | Responsibility |
 | --- | --- |
 | Runtime source | Native runtime behavior, public C ABI, native C++ connector, and canonical common docs |
+| HTTP Runtime source | Shared HTTP contract, stable C API, language packages, and HTTP addon contracts |
 | `coakka-publish` | Released packages, native archives, checksums, manifests, compatibility matrices, and release notes |
 | `coakka-samples` | Runnable consumer examples and integration workflows |
 | Language package repositories | Package-manager-specific runtime or logger bindings |
