@@ -37,10 +37,10 @@ done
 sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
   build-essential ca-certificates cmake curl git libcpp-httplib-dev \
-  libmicrohttpd-dev nghttp2-client ninja-build openjdk-17-jdk-headless perl \
-  pkg-config python3 python3-venv
+  libmicrohttpd-dev nghttp2-client ninja-build nodejs npm \
+  openjdk-17-jdk-headless perl pkg-config python3 python3-venv unzip
 
-for command in bun cmake java javac node npm python3; do
+for command in cmake java javac node npm python3; do
   command -v "${command}" >/dev/null || {
     printf 'required benchmark tool is unavailable: %s\n' "${command}" >&2
     exit 1
@@ -93,6 +93,33 @@ if [[ ! -x tools/go/bin/go ]]; then
 fi
 rm -f "${go_archive}"
 export PATH="${root}/tools/go/bin:${PATH}"
+
+# Use a reviewed, digest-checked ARM64 binary rather than depending on a
+# pre-existing workstation or board installation for the Bun lanes.
+bun_version=1.4.2
+bun_archive="tools/bun-v${bun_version}-linux-aarch64.zip"
+bun_sha256=54328bbc2d9c8e0c9f892c544d66c57a83b84139e34909e5ee81758f1ac8fda7
+bun_binary="tools/bun/bin/bun"
+if [[ -x "${bun_binary}" ]] &&
+  [[ "$("${bun_binary}" --version)" != "${bun_version}" ]]; then
+  printf 'existing benchmark Bun has an unexpected version\n' >&2
+  exit 1
+fi
+if [[ ! -x "${bun_binary}" ]]; then
+  curl --fail --location --retry 3 \
+    "https://github.com/oven-sh/bun/releases/download/bun-v${bun_version}/bun-linux-aarch64.zip" \
+    -o "${bun_archive}"
+  printf '%s  %s\n' "${bun_sha256}" "${bun_archive}" |
+    sha256sum --check --strict
+  mkdir -p tools/bun/bin
+  unzip -p "${bun_archive}" bun-linux-aarch64/bun >"${bun_binary}"
+  chmod 0755 "${bun_binary}"
+fi
+rm -f "${bun_archive}"
+[[ "$("${bun_binary}" --version)" == "${bun_version}" ]] || {
+  printf 'benchmark Bun version check failed\n' >&2
+  exit 1
+}
 
 reset_build_dir "${root}/build/runtime"
 reset_build_dir "${root}/build/host-prefix"
@@ -208,7 +235,8 @@ capture_tool_versions() {
     python3 --version
     node --version
     npm --version
-    bun --version
+    "${bun_binary}" --version
+    "${bun_binary}" --revision
     h2load --version
     cmake --version | head -n 1
     gcc --version | head -n 1

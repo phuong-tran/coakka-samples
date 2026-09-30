@@ -36,8 +36,8 @@ runtime surface.
 
 | Ecosystem | CoAkka lane | Framework comparisons |
 | --- | --- | --- |
-| C | CoAkka host-inlined | GNU libmicrohttpd 0.9.75 |
-| C++ | CoAkka host-inlined | cpp-httplib 0.11.4 |
+| C | CoAkka host-inlined | GNU libmicrohttpd (installed Debian version captured in evidence) |
+| C++ | CoAkka host-inlined | cpp-httplib (installed Debian version captured in evidence) |
 | Go | CoAkka host-inlined | Chi 5.3.2, Gin 1.12.0 |
 | Kotlin/JVM | CoAkka host-inlined | Netty 4.1.137.Final, Jetty 12.1.13 |
 | Python | CoAkka host-inlined | FastAPI 0.141.1 and Starlette 1.6.0 on Uvicorn 0.52.4 |
@@ -58,9 +58,9 @@ realistic integration boundary.
 | Memory | 16 GiB |
 | Architecture | Linux AArch64 |
 | Prior installation storage | SK hynix 256 GB NVMe; not the benchmark boot device |
-| Campaign boot storage | Pending capture after the clean install |
+| Campaign boot storage | SanDisk USB 3.2Gen1 250 GB; `/dev/sda2` root during Trixie qualification |
 | Required OS baseline | Current Raspberry Pi OS Lite 64-bit (Debian 13 Trixie), clean install |
-| Kernel at campaign preparation | Pending capture after the clean Trixie install |
+| Kernel at campaign preparation | `6.18.50+rpt-rpi-2712`; final campaign captures the then-current kernel |
 | Server placement | CPUs `0-2` |
 | Load generator placement | CPU `3` |
 | Load generator | `h2load --h1` from nghttp2-client |
@@ -151,7 +151,9 @@ lock. The Pi therefore needs no private repository credential, and a newer
 local `coakka-commons` checkout cannot silently change the measured binary.
 Preparation then:
 
-- installs the required Linux build tools and comparison libraries;
+- installs the required Linux build tools, Node.js, and comparison libraries;
+- installs the pinned Go 1.27.1 and Bun 1.4.2 ARM64 binaries after checking
+  their published SHA-256 digests; the Bun lanes invoke that exact local binary;
 - builds and installs the focused native host from runtime source;
 - builds Go directly against connector source;
 - imports the Python connector directly from connector source;
