@@ -121,22 +121,56 @@ rm -f "${bun_archive}"
   exit 1
 }
 
-reset_build_dir "${root}/build/runtime"
 reset_build_dir "${root}/build/host-prefix"
-cmake -S sources/runtime -B build/runtime -G Ninja \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_INSTALL_PREFIX="${root}/build/host-prefix" \
-  -DFETCHCONTENT_SOURCE_DIR_COAKKA_HTTP_COMMONS="${root}/sources/commons" \
-  -DBUILD_TESTING=OFF \
-  -DCOAKKA_HTTP_BUILD_DEPENDENCY_PROBE=OFF \
-  -DCOAKKA_HTTP_ENABLE_OPENSSL_PROVIDER=ON \
-  -DCOAKKA_HTTP_ENABLE_ZLIB_PROVIDER=ON \
-  -DCOAKKA_HTTP_ENABLE_HTTP2_FOUNDATION=ON \
-  -DCOAKKA_HTTP_ENABLE_HTTP3_DEPENDENCY_FOUNDATION=ON \
-  -DCOAKKA_HTTP_ENABLE_PINNED_CURL_CLIENT_FOUNDATION=ON \
-  -DCOAKKA_HTTP_BUILD_CURL_HTTP1_PROVIDER=ON
-cmake --build build/runtime --target coakka_http_host --parallel 3
-cmake --install build/runtime --component coakka_http_host
+qualified_build_dir="${COAKKA_HTTP_QUALIFIED_BUILD_DIR:-}"
+if [[ -n "${qualified_build_dir}" ]]; then
+  qualified_revision="${COAKKA_HTTP_QUALIFIED_SOURCE_REVISION:-}"
+  [[ "${qualified_build_dir}" == /* &&
+     -f "${qualified_build_dir}/CMakeCache.txt" &&
+     "${qualified_revision}" =~ ^[0-9a-f]{40}$ ]] || {
+    printf 'qualified native build identity is invalid\n' >&2
+    exit 1
+  }
+  grep -Fxq "COAKKA_HTTP_SOURCE_REVISION:STRING=${qualified_revision}" \
+    "${qualified_build_dir}/CMakeCache.txt"
+  grep -Fxq 'CMAKE_BUILD_TYPE:STRING=Release' \
+    "${qualified_build_dir}/CMakeCache.txt"
+  grep -Fxq "runtime_head=${qualified_revision}" \
+    evidence/locks/source-identities.txt
+  grep -Fxq 'runtime_dirty=0' evidence/locks/source-identities.txt
+  qualified_source="$(sed -n \
+    's/^CMAKE_HOME_DIRECTORY:INTERNAL=//p' \
+    "${qualified_build_dir}/CMakeCache.txt")"
+  [[ "${qualified_source}" == /* &&
+     -f "${qualified_source}/CMakeLists.txt" ]] || {
+    printf 'qualified native source tree is unavailable\n' >&2
+    exit 1
+  }
+  diff -qr sources/runtime "${qualified_source}" >/dev/null || {
+    printf 'benchmark runtime source differs from qualified native source\n' >&2
+    exit 1
+  }
+  cmake --build "${qualified_build_dir}" \
+    --target coakka_http_host --parallel 3
+  cmake --install "${qualified_build_dir}" \
+    --prefix "${root}/build/host-prefix" --component coakka_http_host
+else
+  reset_build_dir "${root}/build/runtime"
+  cmake -S sources/runtime -B build/runtime -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX="${root}/build/host-prefix" \
+    -DFETCHCONTENT_SOURCE_DIR_COAKKA_HTTP_COMMONS="${root}/sources/commons" \
+    -DBUILD_TESTING=OFF \
+    -DCOAKKA_HTTP_BUILD_DEPENDENCY_PROBE=OFF \
+    -DCOAKKA_HTTP_ENABLE_OPENSSL_PROVIDER=ON \
+    -DCOAKKA_HTTP_ENABLE_ZLIB_PROVIDER=ON \
+    -DCOAKKA_HTTP_ENABLE_HTTP2_FOUNDATION=ON \
+    -DCOAKKA_HTTP_ENABLE_HTTP3_DEPENDENCY_FOUNDATION=ON \
+    -DCOAKKA_HTTP_ENABLE_PINNED_CURL_CLIENT_FOUNDATION=ON \
+    -DCOAKKA_HTTP_BUILD_CURL_HTTP1_PROVIDER=ON
+  cmake --build build/runtime --target coakka_http_host --parallel 3
+  cmake --install build/runtime --component coakka_http_host
+fi
 host_library="${root}/build/host-prefix/lib/libcoakka_http_host.so.1.0.0"
 [[ -f "${host_library}" ]] || {
   printf 'host library was not installed: %s\n' "${host_library}" >&2

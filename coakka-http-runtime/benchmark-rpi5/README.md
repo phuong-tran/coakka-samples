@@ -128,8 +128,10 @@ evidence directory.
 
 ## Candidate Preparation
 
-From the development machine, deploy the current working trees and build them
-on the Pi:
+From the development machine, deploy the candidate to the Pi. For a release
+qualification campaign, set the exact frozen runtime commit and its already
+qualified on-board CMake build directory; preparation checks that the copied
+source matches that build before reusing the host library:
 
 ```sh
 bash scripts/deploy-rpi5.sh
@@ -140,21 +142,28 @@ Optional environment variables:
 ```text
 COAKKA_RPI5_HOST       SSH host; default pi5
 COAKKA_RPI5_ROOT       dedicated absolute directory on the Pi
+COAKKA_RPI5_KNOWN_HOSTS  dedicated SSH known-hosts file, when required
 COAKKA_HTTP_RUNTIME_ROOT
 COAKKA_HTTP_CONNECTOR_ROOT
 COAKKA_COMMONS_ROOT
+COAKKA_HTTP_RUNTIME_REF  exact frozen 40-hex runtime commit; paired with qualified build
+COAKKA_HTTP_QUALIFIED_BUILD_DIR  qualified CMake build directory on the Pi
 ```
 
 Deployment copies the benchmark plus the runtime and connector source trees.
-It also exports the exact `coakka-commons` commit named by the runtime dependency
-lock. The Pi therefore needs no private repository credential, and a newer
-local `coakka-commons` checkout cannot silently change the measured binary.
+In qualified-build mode it copies the runtime and locked `coakka-commons` trees
+from that same on-board qualification root. Otherwise it exports the exact
+`coakka-commons` commit named by the runtime dependency lock. The Pi therefore
+needs no private repository credential, and a newer local `coakka-commons`
+checkout cannot silently change the measured binary.
 Preparation then:
 
 - installs the required Linux build tools, Node.js, and comparison libraries;
 - installs the pinned Go 1.27.1 and Bun 1.4.2 ARM64 binaries after checking
   their published SHA-256 digests; the Bun lanes invoke that exact local binary;
-- builds and installs the focused native host from runtime source;
+- installs the focused native host from the qualified build when supplied,
+  after checking the source commit and byte-for-byte source tree; otherwise it
+  builds the host from the deployed source;
 - builds Go directly against connector source;
 - imports the Python connector directly from connector source;
 - builds the JavaScript native adapter and installs the local JavaScript
@@ -173,7 +182,7 @@ upload.
 Run one short round before spending time on the full campaign:
 
 ```sh
-cd /home/pi5/coakka-http-runtime-benchmark-20260930
+cd /home/pi5/coakka-http-runtime-benchmark-20261001
 taskset -c 3 python3 scripts/run-rpi5.py \
   --output evidence/qualification \
   --rounds 1 \
