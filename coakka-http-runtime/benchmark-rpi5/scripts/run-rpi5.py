@@ -13,6 +13,7 @@ import re
 import signal
 import socket
 import subprocess
+import tempfile
 import time
 from pathlib import Path
 from typing import Any
@@ -373,6 +374,32 @@ def request_log_metrics(path: Path, expected_requests: int) -> dict[str, float]:
     }
 
 
+def require_request_log_tmpfs(max_requests: int) -> Path:
+    """Keep per-request timing I/O off the benchmark boot drive.
+
+    The h2load log is temporary reduction input, not retained evidence. A
+    disk-backed log can cap the fastest lanes at storage throughput. Refuse
+    measurement unless the Linux shared-memory mount has room for a generous
+    bounded estimate; a full mount still makes h2load fail the run closed.
+    """
+    mount = Path("/dev/shm")
+    if not any(
+        fields[1:3] == [str(mount), "tmpfs"]
+        for line in Path("/proc/mounts").read_text().splitlines()
+        if len(fields := line.split()) >= 3
+    ):
+        raise RuntimeError("request timing log requires /dev/shm on tmpfs")
+    filesystem = os.statvfs(mount)
+    available = filesystem.f_bavail * filesystem.f_frsize
+    required = max_requests * 256 + 32 * 1024 * 1024
+    if available < required:
+        raise RuntimeError(
+            f"request timing log tmpfs has {available} bytes; "
+            f"requires at least {required}"
+        )
+    return mount
+
+
 def stop_server(process: subprocess.Popen[str]) -> None:
     if process.poll() is not None:
         return
@@ -593,7 +620,14 @@ def measure(
         f"-Dcoakka.http.bridge.path={jvm_bridge}"
     ).strip()
     server_log = raw_directory / f"round-{round_number:02d}-{lane['id']}-server.log"
-    with server_log.open("w") as log:
+    with (
+        server_log.open("w") as log,
+        tempfile.TemporaryDirectory(
+            prefix="coakka-http-benchmark-requests-",
+            dir=require_request_log_tmpfs(workload["max_measurement_requests"]),
+        ) as request_log_dir,
+    ):
+        request_log_root = Path(request_log_dir)
         process = subprocess.Popen(
             ["taskset", "-c", workload["server_cpus"], *command],
             cwd=root,
@@ -607,7 +641,7 @@ def measure(
             ready(port, process)
             calibration_count = workload["calibration_requests"]
             calibration_temperature_before_c = temperature_c()
-            calibration_log = raw_directory / (
+            calibration_log = request_log_root / (
                 f"round-{round_number:02d}-{lane['id']}-calibration-requests.tsv"
             )
             calibration_log.unlink(missing_ok=True)
@@ -656,7 +690,7 @@ def measure(
                 workload["cooldown_maximum_cpu_busy_percent"],
             )
             before_c = temperature_c()
-            request_log = raw_directory / (
+            request_log = request_log_root / (
                 f"round-{round_number:02d}-{lane['id']}-requests.tsv"
             )
             request_log.unlink(missing_ok=True)

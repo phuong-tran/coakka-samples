@@ -116,10 +116,13 @@ shared pages more than once. The result table also records that process count.
 The runner rejects a measured sample if group membership changes during the
 request set. These definitions are identical for every lane.
 
-`h2load` writes per-request latency rows during calibration and measurement.
-The runner reduces
-them to p50, p95, and p99 values and immediately removes the temporary row file
-so a full campaign does not retain several gigabytes of reproducible data.
+`h2load` writes per-request latency rows during calibration and measurement
+to a capacity-checked `/dev/shm` tmpfs. The runner refuses a disk-backed or
+undersized temporary mount: request-log writes to the boot USB could otherwise
+cap the fastest lane and distort the comparison. It reduces the rows to p50,
+p95, and p99 values and removes the task-owned temporary directory even when a
+lane fails. A force-killed runner may leave its named temporary directory; remove
+only that exact task-owned directory after inspection before another campaign.
 Raw `h2load` summaries, server logs, and all reduced measurements remain in the
 evidence directory.
 

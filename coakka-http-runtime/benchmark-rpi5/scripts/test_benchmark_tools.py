@@ -11,7 +11,9 @@ import tempfile
 import unittest
 from contextlib import contextmanager
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any, Iterator
+from unittest import mock
 
 
 SCRIPT_DIRECTORY = Path(__file__).resolve().parent
@@ -168,6 +170,33 @@ class BenchmarkToolsTest(unittest.TestCase):
         command = RUNNER.h2load_command(value["workload"], 100, 8080, log)
         self.assertEqual("--log-file", command[-3])
         self.assertEqual(str(log), command[-2])
+
+    def test_request_timing_log_requires_bounded_tmpfs(self) -> None:
+        enough = SimpleNamespace(f_bavail=1024, f_frsize=1024 * 1024)
+        too_small = SimpleNamespace(f_bavail=1, f_frsize=1024 * 1024)
+        with (
+            mock.patch.object(
+                RUNNER.Path, "read_text", return_value="tmpfs /dev/shm tmpfs rw 0 0\n"
+            ),
+            mock.patch.object(RUNNER.os, "statvfs", return_value=enough),
+        ):
+            self.assertEqual(Path("/dev/shm"), RUNNER.require_request_log_tmpfs(2_000_000))
+        with (
+            mock.patch.object(
+                RUNNER.Path, "read_text", return_value="/dev/sda2 /dev/shm ext4 rw 0 0\n"
+            ),
+            mock.patch.object(RUNNER.os, "statvfs", return_value=enough),
+        ):
+            with self.assertRaisesRegex(RuntimeError, "tmpfs"):
+                RUNNER.require_request_log_tmpfs(2_000_000)
+        with (
+            mock.patch.object(
+                RUNNER.Path, "read_text", return_value="tmpfs /dev/shm tmpfs rw 0 0\n"
+            ),
+            mock.patch.object(RUNNER.os, "statvfs", return_value=too_small),
+        ):
+            with self.assertRaisesRegex(RuntimeError, "requires at least"):
+                RUNNER.require_request_log_tmpfs(2_000_000)
 
     def test_load_cpu_accounting_requires_headroom(self) -> None:
         self.assertEqual(90.0, RUNNER.busy_percent_between((100, 50), (200, 60)))
