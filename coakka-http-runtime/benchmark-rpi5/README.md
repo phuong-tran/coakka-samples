@@ -25,6 +25,8 @@ The runner uses loopback HTTP/1.1 with 64 persistent connections, one load
 thread, and one in-flight request per connection. It first sends a fixed
 calibration set, derives a request count targeting ten measured seconds, and
 rejects any run with a failed, errored, timed-out, or incomplete request.
+Calibration and measurement both enable the same per-request timing log;
+otherwise log overhead could make the calibrated request rate misleading.
 
 CoAkka lanes use the end-user host-inlined API for their language. The C and
 C++ lanes use the public C host surface directly. No lane calls an internal
@@ -55,7 +57,8 @@ realistic integration boundary.
 | CPU | Four ARM Cortex-A76 cores, up to 2.4 GHz |
 | Memory | 16 GiB |
 | Architecture | Linux AArch64 |
-| Storage | SK hynix 256 GB NVMe, ext4 root |
+| Prior installation storage | SK hynix 256 GB NVMe; not the benchmark boot device |
+| Campaign boot storage | Pending capture after the clean install |
 | Required OS baseline | Current Raspberry Pi OS Lite 64-bit (Debian 13 Trixie), clean install |
 | Kernel at campaign preparation | Pending capture after the clean Trixie install |
 | Server placement | CPUs `0-2` |
@@ -92,15 +95,18 @@ The runner applies the same controls to every lane:
 5. Check the exact response before calibration.
 6. Run calibration, then pass the same temperature, power, and CPU-idle gate
    after at least 15 seconds before the measured request set.
-7. Reject the sample if any request fails or firmware reports power or thermal
-   throttling.
+7. Reject the sample if any request fails, firmware reports power or thermal
+   throttling, or the load-generator CPU is above 90% non-idle during the
+   measured request set. I/O wait counts as non-idle: logging must not become
+   a hidden client-side bottleneck.
 8. Stop the server, pass the same cooldown and CPU-idle gate after at least 15
    seconds, and only then start the next lane.
 9. Restore the original governor on success or failure.
 
 The default campaign has three matched rounds. Results use the median for
-requests per second, mean request time, p99 request time, server CPU, and server
-RSS. Relative throughput is calculated only against the CoAkka lane in the same
+requests per second, mean request time, p99 request time, server CPU,
+load-generator CPU, and server RSS. Relative throughput is calculated only
+against the CoAkka lane in the same
 ecosystem. It is never used to rank languages.
 
 Server CPU is the aggregate user-plus-system time of every process in the
@@ -110,7 +116,8 @@ shared pages more than once. The result table also records that process count.
 The runner rejects a measured sample if group membership changes during the
 request set. These definitions are identical for every lane.
 
-`h2load` writes per-request latency rows during one sample. The runner reduces
+`h2load` writes per-request latency rows during calibration and measurement.
+The runner reduces
 them to p50, p95, and p99 values and immediately removes the temporary row file
 so a full campaign does not retain several gigabytes of reproducible data.
 Raw `h2load` summaries, server logs, and all reduced measurements remain in the

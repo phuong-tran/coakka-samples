@@ -72,6 +72,7 @@ def main() -> int:
             "request_time_p99_ms",
             "server_rss_kib",
             "server_cpu_percent",
+            "load_cpu_busy_percent",
         )
         if any(
             isinstance(measurement[field], bool)
@@ -86,6 +87,7 @@ def main() -> int:
             or measurement["request_time_p99_ms"] < 0
             or measurement["server_rss_kib"] <= 0
             or measurement["server_cpu_percent"] < 0
+            or not 0 <= measurement["load_cpu_busy_percent"] <= 100
         ):
             raise ValueError(f"measurement has impossible values: {measurement['lane_id']}")
         if (
@@ -103,6 +105,13 @@ def main() -> int:
             raise ValueError(
                 f"measurement did not pass the CPU-idle gate: "
                 f"{measurement['lane_id']}"
+            )
+        if (
+            measurement["load_cpu_busy_percent"]
+            > workload["load_cpu_maximum_busy_percent"]
+        ):
+            raise ValueError(
+                f"load generator was saturated: {measurement['lane_id']}"
             )
         if (
             measurement["calibration_temperature_after_cooldown_c"]
@@ -166,6 +175,9 @@ def main() -> int:
             "p99_ms": statistics.median(item["request_time_p99_ms"] for item in values),
             "rss_mib": statistics.median(item["server_rss_kib"] for item in values) / 1024,
             "cpu_percent": statistics.median(item["server_cpu_percent"] for item in values),
+            "load_cpu_percent": statistics.median(
+                item["load_cpu_busy_percent"] for item in values
+            ),
             "processes": statistics.median(item["server_process_count"] for item in values),
         }
     lines = [
@@ -196,8 +208,8 @@ def main() -> int:
                 f"## {ecosystem}",
                 "",
                 "| Implementation | Processes | Requests/s median | RPS range | "
-                "Relative throughput | Mean | p99 | Server CPU | Server RSS |",
-                "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+                "Relative throughput | Mean | p99 | Server CPU | Load CPU | Server RSS |",
+                "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
             ]
         )
         for lane in selected:
@@ -208,6 +220,7 @@ def main() -> int:
                 f"{value['rps_min']:,.0f}-{value['rps_max']:,.0f} | "
                 f"{value['rps'] / baseline:.2f}x | {value['mean_ms']:.3f} ms | "
                 f"{value['p99_ms']:.3f} ms | {value['cpu_percent']:.1f}% | "
+                f"{value['load_cpu_percent']:.1f}% | "
                 f"{value['rss_mib']:.1f} MiB |"
             )
         lines.append("")
@@ -247,6 +260,10 @@ def main() -> int:
                 f"{workload['cooldown_minimum_seconds']} s; <= "
                 f"{workload['cooldown_maximum_c']:.1f} C; busiest CPU <= "
                 f"{workload['cooldown_maximum_cpu_busy_percent']:.1f}% |"
+            ),
+            (
+                f"| Load-generator CPU ceiling | "
+                f"{workload['load_cpu_maximum_busy_percent']:.1f}% busy |"
             ),
             "",
             "## Measured Machine",

@@ -150,34 +150,45 @@ def throttled() -> str:
     return result.stdout.strip() or "unavailable"
 
 
+def cpu_counters() -> dict[str, tuple[int, int]]:
+    """Capture per-CPU total and truly idle ticks from Linux /proc/stat.
+
+    The first eight counters are disjoint. Guest counters beyond them are
+    already included in user/nice, so summing every column double-counts
+    guest time. I/O wait is not idle headroom for a load generator that logs
+    requests, so it remains in the non-idle side of the measurement.
+    """
+    values: dict[str, tuple[int, int]] = {}
+    for line in Path("/proc/stat").read_text().splitlines():
+        fields = line.split()
+        if not fields or not re.fullmatch(r"cpu[0-9]+", fields[0]):
+            continue
+        ticks = [int(value) for value in fields[1:]]
+        if len(ticks) < 8:
+            raise RuntimeError(f"incomplete CPU counters for {fields[0]}")
+        values[fields[0]] = (sum(ticks[:8]), ticks[3])
+    if not values:
+        raise RuntimeError("no per-CPU counters were exposed")
+    return values
+
+
+def busy_percent_between(before: tuple[int, int], after: tuple[int, int]) -> float:
+    """Compute non-idle CPU occupancy from monotonic tick snapshots."""
+    total_delta = after[0] - before[0]
+    idle_delta = after[1] - before[1]
+    if total_delta <= 0 or idle_delta < 0 or idle_delta > total_delta:
+        raise RuntimeError("CPU accounting was not monotonic")
+    return (total_delta - idle_delta) / total_delta * 100.0
+
+
 def cpu_busy_percent(sample_seconds: float = 1.0) -> float:
     """Return the busiest CPU's utilization across one short idle sample."""
-
-    def snapshot() -> dict[str, tuple[int, int]]:
-        values: dict[str, tuple[int, int]] = {}
-        for line in Path("/proc/stat").read_text().splitlines():
-            fields = line.split()
-            if not re.fullmatch(r"cpu[0-9]+", fields[0]):
-                continue
-            ticks = [int(value) for value in fields[1:]]
-            idle = ticks[3] + (ticks[4] if len(ticks) > 4 else 0)
-            values[fields[0]] = (sum(ticks), idle)
-        return values
-
-    before = snapshot()
+    before = cpu_counters()
     time.sleep(sample_seconds)
-    after = snapshot()
-    if before.keys() != after.keys() or not before:
+    after = cpu_counters()
+    if before.keys() != after.keys():
         raise RuntimeError("CPU inventory changed during idle sampling")
-    busiest = 0.0
-    for cpu, (total_before, idle_before) in before.items():
-        total_after, idle_after = after[cpu]
-        total_delta = total_after - total_before
-        idle_delta = idle_after - idle_before
-        if total_delta <= 0 or idle_delta < 0 or idle_delta > total_delta:
-            raise RuntimeError("CPU accounting was not monotonic")
-        busiest = max(busiest, (total_delta - idle_delta) / total_delta * 100.0)
-    return busiest
+    return max(busy_percent_between(before[cpu], after[cpu]) for cpu in before)
 
 
 def wait_until_cool(
@@ -439,26 +450,33 @@ def validate_configuration(
     if (
         isinstance(cooldown_seconds, bool)
         or not isinstance(cooldown_seconds, int)
-        or cooldown_seconds < 0
+        or cooldown_seconds < 15
         or cooldown_seconds > 300
     ):
-        raise ValueError("cooldown_minimum_seconds must be a non-negative integer")
+        raise ValueError("cooldown_minimum_seconds must be at least 15 seconds")
     cooldown_temperature = workload.get("cooldown_maximum_c")
     if (
         isinstance(cooldown_temperature, bool)
         or not isinstance(cooldown_temperature, (int, float))
-        or not 0 < cooldown_temperature < 100
+        or not 0 < cooldown_temperature <= 50
     ):
         raise ValueError("cooldown_maximum_c is outside the accepted range")
     cooldown_busy = workload.get("cooldown_maximum_cpu_busy_percent")
     if (
         isinstance(cooldown_busy, bool)
         or not isinstance(cooldown_busy, (int, float))
-        or not 0 < cooldown_busy < 100
+        or not 0 < cooldown_busy <= 5
     ):
         raise ValueError(
             "cooldown_maximum_cpu_busy_percent is outside the accepted range"
         )
+    load_busy = workload.get("load_cpu_maximum_busy_percent")
+    if (
+        isinstance(load_busy, bool)
+        or not isinstance(load_busy, (int, float))
+        or not 0 < load_busy <= 90
+    ):
+        raise ValueError("load_cpu_maximum_busy_percent is outside the accepted range")
     identifiers = [lane.get("id") for lane in lanes]
     if any(not isinstance(identifier, str) or not identifier for identifier in identifiers):
         raise ValueError("every benchmark lane needs a non-empty identifier")
@@ -525,7 +543,11 @@ def validate_machine(facts: dict[str, Any], workload: dict[str, Any]) -> None:
         raise RuntimeError("benchmark workload requires exactly four logical CPUs")
     server_cpus = cpu_set(workload["server_cpus"])
     load_cpus = cpu_set(workload["load_cpu"])
-    if server_cpus & load_cpus or server_cpus | load_cpus != set(range(4)):
+    if (
+        len(load_cpus) != 1
+        or server_cpus & load_cpus
+        or server_cpus | load_cpus != set(range(4))
+    ):
         raise ValueError("server and load CPU sets must partition CPUs 0 through 3")
     if set(facts["governor_before"]) != {"cpu0", "cpu1", "cpu2", "cpu3"}:
         raise RuntimeError("CPU governor inventory does not cover all four CPUs")
@@ -585,22 +607,30 @@ def measure(
             ready(port, process)
             calibration_count = workload["calibration_requests"]
             calibration_temperature_before_c = temperature_c()
-            calibration = subprocess.run(
-                h2load_command(workload, calibration_count, port),
-                cwd=root,
-                check=False,
-                capture_output=True,
-                text=True,
-                timeout=60,
+            calibration_log = raw_directory / (
+                f"round-{round_number:02d}-{lane['id']}-calibration-requests.tsv"
             )
-            calibration_raw = calibration.stdout + calibration.stderr
-            (
-                raw_directory
-                / f"round-{round_number:02d}-{lane['id']}-calibration.txt"
-            ).write_text(calibration_raw)
-            calibration_metrics = validate_load(
-                lane["id"], calibration_count, calibration.returncode, calibration_raw
-            )
+            calibration_log.unlink(missing_ok=True)
+            try:
+                calibration = subprocess.run(
+                    h2load_command(workload, calibration_count, port, calibration_log),
+                    cwd=root,
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                    timeout=60,
+                )
+                calibration_raw = calibration.stdout + calibration.stderr
+                (
+                    raw_directory
+                    / f"round-{round_number:02d}-{lane['id']}-calibration.txt"
+                ).write_text(calibration_raw)
+                calibration_metrics = validate_load(
+                    lane["id"], calibration_count, calibration.returncode, calibration_raw
+                )
+                request_log_metrics(calibration_log, calibration_count)
+            finally:
+                calibration_log.unlink(missing_ok=True)
             calibration_temperature_after_c = temperature_c()
             measurement_count = round(
                 calibration_metrics["requests_per_second"]
@@ -631,6 +661,8 @@ def measure(
             )
             request_log.unlink(missing_ok=True)
             process_metrics_before = process_group_metrics(process.pid)
+            load_cpu = f"cpu{next(iter(cpu_set(workload['load_cpu'])))}"
+            load_counters_before = cpu_counters()[load_cpu]
             measurement_started = time.monotonic()
             try:
                 load = subprocess.run(
@@ -644,6 +676,7 @@ def measure(
                     timeout=workload["duration_seconds"] + 30,
                 )
                 elapsed_seconds = time.monotonic() - measurement_started
+                load_counters_after = cpu_counters()[load_cpu]
                 process_metrics_after = process_group_metrics(process.pid)
             except BaseException:
                 request_log.unlink(missing_ok=True)
@@ -664,6 +697,9 @@ def measure(
             server_rss_kib = sum(value[1] for value in process_metrics_after.values())
             if elapsed_seconds <= 0 or server_rss_kib <= 0:
                 raise RuntimeError(f"server CPU accounting failed for {lane['id']}")
+            load_cpu_busy_percent = busy_percent_between(
+                load_counters_before, load_counters_after
+            )
             raw = load.stdout + load.stderr
             (raw_directory / f"round-{round_number:02d}-{lane['id']}-h2load.txt").write_text(raw)
             try:
@@ -700,6 +736,7 @@ def measure(
                     "measurement_requests": measurement_count,
                     "server_process_count": len(process_metrics_after),
                     "server_rss_kib": server_rss_kib,
+                    "load_cpu_busy_percent": load_cpu_busy_percent,
                     "server_cpu_percent": (
                         cpu_tick_delta
                         / os.sysconf("SC_CLK_TCK")
@@ -715,6 +752,12 @@ def measure(
                 raise RuntimeError(
                     f"power or thermal throttling invalidated {lane['id']}: "
                     f"{metrics['throttled']}"
+                )
+            if load_cpu_busy_percent > workload["load_cpu_maximum_busy_percent"]:
+                raise RuntimeError(
+                    f"load generator saturated for {lane['id']}: "
+                    f"{load_cpu_busy_percent:.1f}% > "
+                    f"{workload['load_cpu_maximum_busy_percent']:.1f}%"
                 )
             return metrics
         finally:

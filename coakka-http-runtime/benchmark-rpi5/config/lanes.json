@@ -14,6 +14,7 @@
     "cooldown_minimum_seconds": 15,
     "cooldown_maximum_c": 50.0,
     "cooldown_maximum_cpu_busy_percent": 5.0,
+    "load_cpu_maximum_busy_percent": 90.0,
     "coakka_event_loop_threads": 1,
     "io_uring": false,
     "server_cpus": "0-2",

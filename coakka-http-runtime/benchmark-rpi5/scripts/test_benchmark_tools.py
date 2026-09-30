@@ -55,6 +55,7 @@ def measurement(lane_id: str, rps: float) -> dict[str, Any]:
         "server_process_count": 1,
         "server_rss_kib": 1024,
         "server_cpu_percent": 90.0,
+        "load_cpu_busy_percent": 50.0,
     }
 
 
@@ -76,6 +77,7 @@ def campaign() -> dict[str, Any]:
             "cooldown_minimum_seconds": 15,
             "cooldown_maximum_c": 50.0,
             "cooldown_maximum_cpu_busy_percent": 5.0,
+            "load_cpu_maximum_busy_percent": 90.0,
             "coakka_event_loop_threads": 1,
             "io_uring": False,
             "server_cpus": "0-2",
@@ -160,6 +162,23 @@ class BenchmarkToolsTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             RUNNER.validate_load("lane", 101, 0, raw)
 
+    def test_calibration_and_measurement_use_the_same_request_logging(self) -> None:
+        value = campaign()
+        log = Path("calibration-requests.tsv")
+        command = RUNNER.h2load_command(value["workload"], 100, 8080, log)
+        self.assertEqual("--log-file", command[-3])
+        self.assertEqual(str(log), command[-2])
+
+    def test_load_cpu_accounting_requires_headroom(self) -> None:
+        self.assertEqual(90.0, RUNNER.busy_percent_between((100, 50), (200, 60)))
+        with self.assertRaisesRegex(RuntimeError, "not monotonic"):
+            RUNNER.busy_percent_between((200, 60), (100, 50))
+        value = campaign()
+        value["measurements"][0]["load_cpu_busy_percent"] = 95.0
+        with self.assertRaisesRegex(ValueError, "load generator was saturated"):
+            with summarize_fixture(value):
+                pass
+
     def test_checked_in_configuration_is_valid(self) -> None:
         config = json.loads((SCRIPT_DIRECTORY.parent / "config/lanes.json").read_text())
         RUNNER.validate_configuration(config["workload"], config["lanes"])
@@ -176,6 +195,20 @@ class BenchmarkToolsTest(unittest.TestCase):
             RUNNER.validate_configuration(
                 event_loops["workload"], event_loops["lanes"]
             )
+
+    def test_cooldown_and_load_headroom_cannot_be_weakened(self) -> None:
+        config = json.loads((SCRIPT_DIRECTORY.parent / "config/lanes.json").read_text())
+        for field, weakened in (
+            ("cooldown_minimum_seconds", 14),
+            ("cooldown_maximum_c", 51.0),
+            ("cooldown_maximum_cpu_busy_percent", 6.0),
+            ("load_cpu_maximum_busy_percent", 91.0),
+        ):
+            with self.subTest(field=field):
+                workload = dict(config["workload"])
+                workload[field] = weakened
+                with self.assertRaisesRegex(ValueError, field):
+                    RUNNER.validate_configuration(workload, config["lanes"])
 
     def test_complete_campaign_renders_a_relative_table(self) -> None:
         with summarize_fixture(campaign()) as output:
