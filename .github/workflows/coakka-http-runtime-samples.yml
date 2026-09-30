@@ -1,0 +1,63 @@
+name: coakka-http-runtime-samples
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/coakka-http-runtime-samples.yml"
+      - "coakka-http-runtime/**"
+      - "run.sh"
+      - "scripts/sample-metadata.sh"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  linux-x86-64:
+    name: Linux x86-64 public samples
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - name: Check out samples
+        uses: actions/checkout@v6
+
+      - name: Check out runtime source
+        uses: actions/checkout@v6
+        with:
+          repository: phuong-tran/coakka-http-runtime
+          path: coakka-http-runtime-source
+
+      - name: Check out connector source
+        uses: actions/checkout@v6
+        with:
+          repository: phuong-tran/coakka-http-runtime-connector
+          path: coakka-http-runtime-connector-source
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.25.x"
+          cache: false
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3.14"
+
+      - name: Verify every sample lane
+        env:
+          COAKKA_HTTP_RUNTIME_ROOT: ${{ github.workspace }}/coakka-http-runtime-source
+          COAKKA_HTTP_CONNECTOR_ROOT: ${{ github.workspace }}/coakka-http-runtime-connector-source
+          COAKKA_HTTP_SAMPLE_WORK_ROOT: ${{ runner.temp }}/coakka-http-runtime-samples
+        run: bash coakka-http-runtime/run.sh verify

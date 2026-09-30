@@ -1,378 +1,233 @@
 # CoAkka HTTP Runtime Raspberry Pi 5 Benchmark
 
-This directory owns the complete application and comparator source for private
-Raspberry Pi 5 measurements. It answers two different questions with two
-separate protocols:
+This directory measures the same fixed HTTP/1.1 application through CoAkka's
+host-inlined surface and established frameworks in each language ecosystem.
+It does not compare CoAkka with a language's built-in HTTP server, and it does
+not create a cross-language leaderboard.
 
-1. How does CoAkka compare with direct HTTP and selected frameworks in the same
-   language ecosystem?
-2. For the same CoAkka application, what changes when Linux uses explicit
-   `io_uring` instead of the platform-default I/O backend?
+The campaign is run only on the physical Raspberry Pi 5 described below.
+Every candidate is built from the exact runtime and connector source copied to
+the board. No language registry package or previously published binary enters
+the measurement.
 
-The first protocol uses ordinary HTTP/1.1 application APIs. The second uses the
-complete `CoAkka HTTP Runtime` API with HTTP/2 over TLS because the current
-candidate accepts explicit `io_uring` for eligible HTTP/2 and HTTP/3 listeners,
-not HTTP/1.1. Results from the two protocols never share a comparison table.
+## Workload
 
-## Contents
-
-- [Measured Contracts](#measured-contracts)
-- [Application Comparison Suites](#application-comparison-suites)
-- [Per-Language io_uring Suites](#per-language-io_uring-suites)
-- [Repository Layout](#repository-layout)
-- [Frozen Inputs](#frozen-inputs)
-- [Candidate Build](#candidate-build)
-- [Authority Host](#authority-host)
-- [Prepare The Raspberry Pi](#prepare-the-raspberry-pi)
-- [Qualify Before Measuring](#qualify-before-measuring)
-- [Thermal Rest Rule](#thermal-rest-rule)
-- [Run Controlled Campaigns](#run-controlled-campaigns)
-- [Evidence Contract](#evidence-contract)
-- [Current Gate](#current-gate)
-
-## Measured Contracts
-
-### Application comparisons
-
-Every HTTP/1.1 server implements:
+Every lane implements exactly this endpoint:
 
 ```text
-GET /fixed
+GET /fixed HTTP/1.1
 status: 200
+content-type: application/octet-stream
 body: 0123456789abcdef0123456789abcdef
 ```
 
-The response is a prebuilt 32-byte body. Each process binds loopback, disables
-application access logging, reports its ready identity, and shuts down through
-its public lifecycle. The runner checks the exact status and body before warmup
-and after measurement; the load generator records status and transport errors
-during load.
+The runner uses loopback HTTP/1.1 with 64 persistent connections, one load
+thread, and one in-flight request per connection. It first sends a fixed
+calibration set, derives a request count targeting ten measured seconds, and
+rejects any run with a failed, errored, timed-out, or incomplete request.
 
-Every non-native CoAkka lane uses the same public builder and service that a
-normal application imports. Each comparator is joined only with the CoAkka
-samples from the same ecosystem, concurrency, round, CPU policy, host state,
-and workload. There is no cross-language leaderboard.
+CoAkka lanes use the end-user host-inlined API for their language. The C and
+C++ lanes use the public C host surface directly. No lane calls an internal
+runtime surface.
 
-### I/O backend comparisons
+## Lanes
 
-Every Go, JVM, Python, Node.js, and Bun backend pair implements the same
-32-byte handler over HTTP/2 TLS:
-
-```text
-GET /fixed
-status: 200
-body: 0123456789abcdef0123456789abcdef
-```
-
-For one ecosystem, both lanes use the same source, application handler,
-protocol, certificate, limits, connection count, parallel streams, CPU
-placement, and package image. Only the requested I/O backend changes. The
-runner rejects a sample unless startup reports the expected effective backend.
-Each application reads runtime info through its public connector. An explicit
-`io_uring` lane stops before measurement when runtime reports the host unsupported
-or when the started runtime reports fallback instead of effective `io_uring`.
-Applications never inspect `/proc`, probe syscalls, or infer kernel capability.
-
-The separate native backend suite keeps its existing HTTP/2 TLS JSON request:
-
-```text
-POST /customer/add
-request:  {"name":"Nguyen Van An","email":"an@example.com","tier":"gold"}
-status:   201
-response: {"status":"created"}
-```
-
-Native C/C++ are standalone references and are not compared with an external
-C/C++ HTTP server.
-
-## Application Comparison Suites
-
-### Go
-
-| Lane | Role | Source |
+| Ecosystem | CoAkka lane | Framework comparisons |
 | --- | --- | --- |
-| `coakka-go` | CoAkka Go application | `src/go/main.go` |
-| `go-direct` | Direct `net/http` | `src/comparisons/go/cmd/direct/main.go` |
-| `go-chi` | Chi 5.3.2 | `src/comparisons/go/cmd/chi/main.go` |
-| `go-gin` | Gin 1.12.0 | `src/comparisons/go/cmd/gin/main.go` |
+| C | CoAkka host-inlined | GNU libmicrohttpd 0.9.75 |
+| C++ | CoAkka host-inlined | cpp-httplib 0.11.4 |
+| Go | CoAkka host-inlined | Chi 5.3.2, Gin 1.12.0 |
+| Kotlin/JVM | CoAkka host-inlined | Netty 4.1.137.Final, Jetty 12.1.13 |
+| Python | CoAkka host-inlined | FastAPI 0.141.1 and Starlette 1.6.0 on Uvicorn 0.52.4 |
+| Node.js | CoAkka host-inlined | Express 5.2.1, Fastify 5.12.4 |
+| Bun | CoAkka host-inlined | Elysia 1.4.30, Hono 4.13.7 |
 
-### JVM
+There is deliberately no direct `net/http`, JDK HTTP server, Python standard
+library server, `node:http`, or direct `Bun.serve` comparison. A framework is
+the normal application choice in these ecosystems, so the tables compare that
+realistic integration boundary.
 
-| Lane | Role | Source |
-| --- | --- | --- |
-| `coakka-jvm` | CoAkka Java application | `src/jvm/src/main/java/benchmark/jvm/FixedServer.java` |
-| `jvm-direct` | JDK `HttpServer` 17.0.20.1 | Same source, selected by command argument |
-| `jvm-netty` | Netty 4.1.137.Final | Same source, selected by command argument |
-| `jvm-tomcat` | Tomcat 11.0.25 | Same source, selected by command argument |
-| `jvm-jetty` | Jetty 12.1.13 | Same source, selected by command argument |
+## Measured Machine
 
-### Python
-
-| Lane | Role | Source |
-| --- | --- | --- |
-| `coakka-python` | CoAkka synchronous Python application | `src/python/fixed_server.py` |
-| `python-direct` | Python 3.11 standard-library HTTP server | Same source, selected by command argument |
-| `python-uvicorn` | Uvicorn 0.52.4 with a raw ASGI application | Same source, selected by command argument |
-| `python-fastapi` | FastAPI 0.141.1 on Uvicorn 0.52.4 | Same source, selected by command argument |
-
-### Node.js
-
-| Lane | Role | Source |
-| --- | --- | --- |
-| `coakka-node` | CoAkka JavaScript application on Node.js | `src/javascript/coakka-node.mjs` |
-| `node-direct` | Direct `node:http` 24.13.0 | `src/javascript/comparisons/node/direct.mjs` |
-| `node-express` | Express 5.2.1 | `src/javascript/comparisons/node/express.mjs` |
-| `node-fastify` | Fastify 5.12.4 | `src/javascript/comparisons/node/fastify.mjs` |
-
-### Bun
-
-| Lane | Role | Source |
-| --- | --- | --- |
-| `coakka-bun` | CoAkka JavaScript application on Bun | `src/javascript/coakka-bun.mjs` |
-| `bun-direct` | Direct `Bun.serve` 1.3.14 | `src/javascript/comparisons/bun/direct.mjs` |
-| `bun-elysia` | Elysia 1.4.30 | `src/javascript/comparisons/bun/elysia.mjs` |
-| `bun-hono` | Hono 4.13.7 | `src/javascript/comparisons/bun/hono.mjs` |
-
-The configuration files are `config/go-pairs.json`, `jvm-pairs.json`,
-`python-pairs.json`, `node-pairs.json`, and `bun-pairs.json`.
-
-## Per-Language io_uring Suites
-
-Each ecosystem has one independent platform-default versus `io_uring` pair:
-
-| Ecosystem | Configuration |
-| --- | --- |
-| Go | `config/go-io-uring.json` |
-| JVM | `config/jvm-io-uring.json` |
-| Python | `config/python-io-uring.json` |
-| Node.js | `config/node-io-uring.json` |
-| Bun | `config/bun-io-uring.json` |
-| Native | `config/native-backends.json` |
-
-The Node.js and Bun lanes intentionally share one JavaScript application source
-while running under different hosts. Every pair uses four parallel HTTP/2
-requests per connection. A successful command is insufficient: the effective
-backend, HTTP version, TLS mode, exact response, and runtime-info proof must all
-match the configuration.
-
-## Repository Layout
-
-| Path | Purpose |
-| --- | --- |
-| `src/` | Reviewable CoAkka applications and comparator source |
-| `config/*-pairs.json` | HTTP/1.1 workload, commands, identities, bounds, CPU placement, cooldown, and pairs |
-| `config/*-io-uring.json` | Per-language HTTP/2 TLS platform-default/`io_uring` pairs |
-| `config/native-backends.json` | Native backend A/B workload |
-| `config/artifacts.lock.json` | Exact private connector, runtime, and shared native source identities |
-| `config/tools.lock.json` | Pinned load generator and offline Python wheelhouse |
-| `scripts/stage-artifacts.py` | Stages exact locked private inputs |
-| `scripts/prepare-rpi5.sh` | Verifies, tests, and builds every suite on the Pi |
-| `scripts/run-pairs.py` | Rotates lanes and retains load, lifecycle, thermal, and resource evidence |
-| `scripts/quiesce-host.sh` | Records and temporarily stops declared nonessential services |
-| `scripts/restore-host.sh` | Restores the exact prior services, timers, and governors |
-| `scripts/capture-restored-host.py` | Verifies host restoration, memory, cooling, temperature, and throttle state |
-| `scripts/summarize-pairs.py` | Joins matched rounds and derives pair deltas |
-| `scripts/source-manifest.py` | Captures the exact reviewed benchmark source and configuration |
-| `scripts/seal-evidence.py` | Produces the final evidence checksum |
-
-Generated packages, dependency trees, build output, downloads, and private
-evidence are ignored by Git.
-
-## Frozen Inputs
-
-On the development machine:
-
-```sh
-python3 scripts/stage-artifacts.py
-python3 scripts/fetch-tools.py
-python3 scripts/verify-inputs.py
-python3 scripts/source-manifest.py
-```
-
-The candidate is locked by full commit, tree hash, deterministic source archive
-digests, dependency lock files, and consumer source. Staging or verification
-fails if an identity differs.
-
-Transfer this complete benchmark directory to the physical Raspberry Pi only
-after the lock, source review, and local validation pass.
-
-## Candidate Build
-
-This campaign uses a new private candidate; it does not preserve the behavior
-or binary identity of the earlier package merely because that package exists.
-Nothing in this directory is a registry release.
-
-The candidate is built on the Pi from the exact locked
-`CoAkka HTTP Runtime` source with HTTP/2, TLS, and `io_uring` enabled. Two
-reviewable patches under `patches/` complete the Linux AArch64 public image and
-keep `io_uring` as an explicit public capability. Go, JVM, Python, and
-JavaScript all come from one locked `coakka-http-runtime-connector` source
-snapshot. Preparation rebuilds each language package against the candidate
-runtime, then records its size and SHA-256 identity. No earlier language package,
-route validator, or benchmark-only application layer enters the measurement.
-
-Both lanes in an ecosystem therefore use the same application source, bridge,
-runtime image, TLS files, and limits. Only `IOBackend.PLATFORM_DEFAULT` versus
-`IOBackend.IO_URING` changes. The evidence records all source archives, patches,
-build files, package manifests, and resulting binary digests.
-
-## Authority Host
-
-| Item | Recorded configuration |
+| Field | Value |
 | --- | --- |
 | Board | Raspberry Pi 5 Model B Rev 1.1 |
-| CPU | Four ARM Cortex-A76 CPU cores, maximum 2.4 GHz |
+| CPU | Four ARM Cortex-A76 cores, up to 2.4 GHz |
 | Memory | 16 GiB |
-| Storage | SK hynix 256 GB NVMe, ext4 root with `noatime` |
-| OS | Debian 12 Bookworm, AArch64 |
-| Kernel | `6.12.96+rpt-rpi-2712`, PREEMPT |
-| Cooling | Firmware-managed PWM fan; state and RPM captured per campaign |
-| Network | Loopback workload; SSH control over `wlan0` |
-| CPU placement | server CPUs `0-2`; load generator and runner CPU `3` |
-| Governor | `performance` during measurement; exact prior state restored |
-| Runtime versions | Go 1.26.3, OpenJDK 17.0.20.1, Python 3.11.2, Node.js 24.13.0, Bun 1.3.14 |
-| Load generator | `oha` 1.14.0, locked Linux ARM64 binary |
+| Architecture | Linux AArch64 |
+| Storage | SK hynix 256 GB NVMe, ext4 root |
+| Required OS baseline | Current Raspberry Pi OS Lite 64-bit (Debian 13 Trixie), clean install |
+| Kernel at campaign preparation | Pending capture after the clean Trixie install |
+| Server placement | CPUs `0-2` |
+| Load generator placement | CPU `3` |
+| Load generator | `h2load --h1` from nghttp2-client |
 
-The runner captures the full CPU/cache view, firmware and bootloader versions,
-memory, mounts, storage, power readings, thermal state, throttling flags,
-services, timers, toolchains, and executable digests. The table is a readable
-summary, not a substitute for `environment.json`.
+The campaign output records the exact OS, kernel, CPU model, memory, tool
+versions, source identities, source manifest digest, and built executable
+digests. The table is descriptive; captured evidence is authoritative for a
+specific result.
 
-## Prepare The Raspberry Pi
+Do not measure on the prior Bookworm installation or perform an in-place major
+upgrade. Raspberry Pi documents Bookworm-to-Trixie migration as a clean-install
+operation. Provision separate boot media, install the current image, fully
+update it, reboot, and capture the exact OS/kernel/firmware state before the
+qualification round. Until that clean boot exists, every result table remains
+pending.
 
-Run while normal network access remains available:
+## Fairness And Cooldown
 
-```sh
-./scripts/prepare-rpi5.sh
-```
+The runner applies the same controls to every lane:
 
-Preparation requires Linux AArch64, Go, a Java 17-compatible Gradle wrapper,
-Node.js, Bun, npm, Python 3, CMake, Ninja, OpenSSL, `taskset`, and standard
-archive tools. It verifies frozen inputs, restores pinned dependencies, installs
-the Python comparison environment from the locked wheelhouse, runs build-time
-checks, builds every server locally on the Pi, exercises both native backends,
-and records toolchain and source manifests. It fails before building unless the
-host matches the declared Go 1.26.3, Java 17.0.20.1, Python 3.11, Node.js
-24.13.0, and Bun 1.3.14 versions.
+1. Set the CPU governor to `performance` and remember the prior governor.
+2. Wait at least 15 seconds and require a board temperature at or below 50 C,
+   `get_throttled=0x0`, and no CPU above 5% utilization during a one-second
+   idle sample before the campaign starts.
+3. Randomize lane order independently in each round using a recorded,
+   deterministic seed from the checked-in workload configuration.
+4. Start the server on CPUs `0-2`; keep `h2load` on CPU `3`.
+   Every CoAkka lane uses the native runtime's single bounded event loop.
+   Idiomatic connector samples use three bounded application workers where the
+   language facade provides them; all server processes remain inside the same
+   three-CPU placement as their ecosystem peers.
+5. Check the exact response before calibration.
+6. Run calibration, then pass the same temperature, power, and CPU-idle gate
+   after at least 15 seconds before the measured request set.
+7. Reject the sample if any request fails or firmware reports power or thermal
+   throttling.
+8. Stop the server, pass the same cooldown and CPU-idle gate after at least 15
+   seconds, and only then start the next lane.
+9. Restore the original governor on success or failure.
 
-## Qualify Before Measuring
+The default campaign has three matched rounds. Results use the median for
+requests per second, mean request time, p99 request time, server CPU, and server
+RSS. Relative throughput is calculated only against the CoAkka lane in the same
+ecosystem. It is never used to rank languages.
 
-Run one short HTTP/1.1 application suite at a time:
+Server CPU is the aggregate user-plus-system time of every process in the
+server process group. Server RSS is the sum of their resident-page counts; for
+multi-process servers this intentionally counts each process and may count
+shared pages more than once. The result table also records that process count.
+The runner rejects a measured sample if group membership changes during the
+request set. These definitions are identical for every lane.
 
-```sh
-taskset -c 3 python3 scripts/run-pairs.py \
-  --config config/jvm-pairs.json \
-  --mode qualify \
-  --output evidence/qualification-jvm-application
+`h2load` writes per-request latency rows during one sample. The runner reduces
+them to p50, p95, and p99 values and immediately removes the temporary row file
+so a full campaign does not retain several gigabytes of reproducible data.
+Raw `h2load` summaries, server logs, and all reduced measurements remain in the
+evidence directory.
 
-python3 scripts/summarize-pairs.py \
-  --evidence evidence/qualification-jvm-application
-```
+## Candidate Preparation
 
-Repeat with `python-pairs.json`, `node-pairs.json`, `bun-pairs.json`, and
-`go-pairs.json`. Review ready identity, exact response checks, runtime and build
-identities, shutdown outcome, and throughput order of magnitude. Qualification
-numbers are diagnostic and are never publication results.
-
-Qualify the per-language backend pairs independently. For example:
-
-```sh
-taskset -c 3 python3 scripts/run-pairs.py \
-  --config config/jvm-io-uring.json \
-  --mode qualify \
-  --concurrency 16 \
-  --output evidence/qualification-jvm-io-uring
-```
-
-Repeat with `python-io-uring.json`, `node-io-uring.json`,
-`bun-io-uring.json`, `go-io-uring.json`, and `native-backends.json`. Here,
-`--concurrency 16` means 16 HTTP/2 connections; the checked-in workload uses
-four parallel requests per connection.
-
-Stop at qualification when an identity, runtime-info backend proof, response, lifecycle,
-thermal gate, or order-of-magnitude check fails. Diagnose that lane before
-spending a long campaign.
-
-## Thermal Rest Rule
-
-The runner applies the configured cooldown before every sample, including
-qualification:
-
-1. Sample board temperature and firmware throttle state immediately after the
-   previous sample has quiesced.
-2. Continue polling until temperature is at or below the configured ceiling
-   and the throttle state is clean.
-3. Start as soon as both conditions pass; there is no fixed five-minute wait.
-4. Fail the sample when the maximum wait expires instead of measuring a hot or
-   throttled board.
-
-Every cooldown observation is retained under `cooldowns/` in the evidence tree.
-This makes elapsed rest, start temperature, accepted temperature, frequency,
-and throttle state reviewable. Checked-in profiles use `52 C` as the
-conservative ceiling and `minimum_idle_seconds: 0`.
-
-## Run Controlled Campaigns
-
-Reboot after qualification, allow the board to cool, and run one ecosystem per
-campaign. The wrapper records host state, stops only declared nonessential
-services, pins the server to CPUs `0-2` and load/orchestration to CPU `3`, and
-restores the original services, timers, and governors on every exit path.
-
-HTTP/1.1 JVM example:
+From the development machine, deploy the current working trees and build them
+on the Pi:
 
 ```sh
-BENCHMARK_CONFIG=config/jvm-pairs.json \
-CAMPAIGN_ID=20260914-rpi5-jvm-application-c8 \
-  ./scripts/run-pairs-on-quiesced-rpi5.sh \
-  --rounds 9 --warmup 30 --duration 30 --concurrency 8
+bash scripts/deploy-rpi5.sh
 ```
 
-HTTP/2 TLS JVM backend example:
+Optional environment variables:
+
+```text
+COAKKA_RPI5_HOST       SSH host; default pi5
+COAKKA_RPI5_ROOT       dedicated absolute directory on the Pi
+COAKKA_HTTP_RUNTIME_ROOT
+COAKKA_HTTP_CONNECTOR_ROOT
+COAKKA_COMMONS_ROOT
+```
+
+Deployment copies the benchmark plus the runtime and connector source trees.
+It also exports the exact `coakka-commons` commit named by the runtime dependency
+lock. The Pi therefore needs no private repository credential, and a newer
+local `coakka-commons` checkout cannot silently change the measured binary.
+Preparation then:
+
+- installs the required Linux build tools and comparison libraries;
+- builds and installs the focused native host from runtime source;
+- builds Go directly against connector source;
+- imports the Python connector directly from connector source;
+- builds the JavaScript native adapter and installs the local JavaScript
+  connector directory without creating an archive;
+- builds the JVM connector JAR and native adapter, then builds the Kotlin
+  application distribution;
+- builds the C and C++ applications and their framework comparisons;
+- records source, dependency, tool, and executable identities.
+
+This is benchmark preparation, not release packaging. It does not build a Go
+module archive, Python wheel, npm tarball, Maven publication, or registry
+upload.
+
+## Qualification
+
+Run one short round before spending time on the full campaign:
 
 ```sh
-BENCHMARK_CONFIG=config/jvm-io-uring.json \
-CAMPAIGN_ID=20260914-rpi5-jvm-http2-io-uring-c16p4 \
-  ./scripts/run-pairs-on-quiesced-rpi5.sh \
-  --rounds 9 --warmup 30 --duration 30 --concurrency 16
+cd /home/pi5/coakka-http-runtime-benchmark-20260930
+taskset -c 3 python3 scripts/run-rpi5.py \
+  --output evidence/qualification \
+  --rounds 1 \
+  --duration 2 \
+  --calibration-requests 5000
+python3 scripts/summarize.py \
+  evidence/qualification/campaign.json \
+  --output evidence/qualification/RESULTS.md
 ```
 
-Run Go, JVM, Python, Node.js, and Bun as separate application campaigns and
-separate backend campaigns. Do not begin another campaign until restored-state
-verification passes and the board again satisfies the cooldown policy.
+Qualification must complete every lane with exact responses, zero request
+errors, clean shutdown, clean firmware throttle state, and plausible
+order-of-magnitude results. Stop and diagnose any outlier; do not promote a
+surprising value by averaging it into a longer run.
 
-## Evidence Contract
+Every `--output` directory must be new or empty. The runner refuses to mix a
+retry with stale raw logs or measurements; use a new diagnosis directory or
+remove a rejected task-owned directory deliberately before rerunning.
 
-Each accepted campaign retains:
+To isolate one or more lanes while diagnosing, repeat `--lane`:
 
-- a complete copy of every source, config, README, and runner file in the
-  source manifest;
-- source, candidate artifact, tool, executable, and dependency digests;
-- compiler, language runtime, build, kernel, CPU, storage, cooling, and power
-  information;
-- raw warmup and measurement JSON plus exact status/error distributions;
-- server stdout/stderr and startup, ready, runtime-info, and shutdown records;
-- per-sample cooldown, frequency, temperature, and throttle observations;
-- RSS, CPU, threads, descriptors, context switches, and other available
-  resource observations;
-- host state before, during, and after quiescence;
-- matched-round JSON, CSV, and Markdown summaries;
-- complete evidence checksums.
+```sh
+taskset -c 3 python3 scripts/run-rpi5.py \
+  --output evidence/qualification-go \
+  --rounds 1 --duration 2 --calibration-requests 5000 \
+  --lane go-coakka --lane go-chi --lane go-gin
+```
 
-Failed, overheated, throttled, mismatched, or interrupted rounds remain visible
-and are never silently deleted.
+## Full Campaign
 
-## Current Gate
+After qualification and a fresh cooldown:
 
-The physical authority host is available. The earlier qualification evidence
-is superseded because it did not use this unified connector candidate. Every
-application suite and every platform-default versus `io_uring` suite must pass
-fresh startup, runtime-info/effective-backend, exact-response, lifecycle,
-thermal, throttle, host-restoration, and evidence-seal checks before a full
-campaign begins. Qualification numbers remain diagnostic and are not
-publication results.
+```sh
+taskset -c 3 python3 scripts/run-rpi5.py \
+  --output evidence/campaign
+python3 scripts/summarize.py \
+  evidence/campaign/campaign.json \
+  --output evidence/campaign/RESULTS.md
+```
 
-The publication gate remains closed until every nine-round cooled and quiesced
-campaign finishes, the native standalone reference is complete, summaries are
-reviewed for variance and failures, host state is restored, and the evidence is
-sealed. Registry upload, public release, commit, and push remain outside this
-private benchmark step.
+The checked-in configuration is `config/lanes.json`. Do not change a lane,
+workload, CPU placement, duration, or cooldown after measuring one ecosystem.
+If a correction is needed, discard the incomplete comparison and rerun every
+affected lane under one revised configuration.
+
+## `io_uring` Scope
+
+This HTTP/1.1 framework campaign leaves `io_uring` at its connector default of
+`false`. Backend eligibility and fallback are native responsibilities and are
+verified by the release test matrix, not inferred by sample code. A separate
+backend study may opt in later, but its numbers must not be mixed into these
+framework tables.
+
+## Evidence Layout
+
+| Path | Contents |
+| --- | --- |
+| `evidence/locks/source-identities.txt` | Base revisions and dirty-state flags |
+| `evidence/locks/source-files.sha256` | Digest for every staged source file |
+| `evidence/locks/source-manifest.sha256` | Identity of the source manifest |
+| `evidence/locks/tool-versions.txt` | Language, compiler, build, and load tools |
+| `evidence/locks/built-artifacts.sha256` | Exact executables and native libraries |
+| `evidence/<campaign>/campaign.json` | Machine facts, workload, lanes, and reduced measurements |
+| `evidence/<campaign>/raw/` | Server logs and raw `h2load` summaries |
+| `evidence/<campaign>/RESULTS.md` | Per-ecosystem median tables |
+
+An interrupted campaign remains marked incomplete. Only a campaign with
+`"complete": true`, all configured lanes in all rounds, zero request errors,
+and clean throttle state is eligible for review.

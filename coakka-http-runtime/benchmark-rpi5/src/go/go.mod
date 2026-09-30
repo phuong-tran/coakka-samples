@@ -1,9 +1,9 @@
-module coakka-http-rpi5-benchmark
+module github.com/phuong-tran/coakka-samples/coakka-http-runtime/benchmark-rpi5
 
-go 1.23
+go 1.27
 
-require github.com/phuong-tran/coakka-publish/coakka-http-runtime/go v1.0.0
-
-require github.com/coder/websocket v1.8.15 // indirect
-
-replace github.com/phuong-tran/coakka-publish/coakka-http-runtime/go => ../../build/go-application-package
+require (
+	github.com/gin-gonic/gin v1.12.0
+	github.com/go-chi/chi/v5 v5.3.2
+	github.com/phuong-tran/coakka-http-runtime-go v0.0.0
+)

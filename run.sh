@@ -20,6 +20,7 @@ Usage:
   bash run.sh runtime-client
   bash run.sh runtime-inspect
   bash run.sh runtime-addons
+  bash run.sh coakka-http-runtime [verify|all|c|cpp|go|kotlin|python|typescript] [command]
   bash run.sh containers
   bash run.sh scenarios
   bash run.sh scenarios check
@@ -51,6 +52,7 @@ Lanes:
   runtime-client
   runtime-inspect
   runtime-addons
+  coakka-http-runtime
   containers
 
 Logger languages:
@@ -303,11 +305,15 @@ case "$1" in
       run_runtime_addon "${2}" "${3:-published}"
     fi
     ;;
+  coakka-http-runtime)
+    shift
+    bash "${script_dir}/coakka-http-runtime/run.sh" "$@"
+    ;;
   scenario)
     shift
     run_scenario "$@"
     ;;
-  logger/*|runtime/*|runtime-addons/*|runtime-client|runtime-client/*|runtime-inspect|runtime-inspect/*|containers/*)
+  logger/*|runtime/*|runtime-addons/*|runtime-client|runtime-client/*|runtime-inspect|runtime-inspect/*|coakka-http-runtime/*|containers/*)
     sample_path="$1"
     shift
     if [[ "${sample_path}" == runtime-client ]]; then
@@ -328,6 +334,11 @@ case "$1" in
     fi
     if [[ "${sample_path}" == runtime-addons/* ]]; then
       run_runtime_addon "${sample_path#runtime-addons/}" "${1:-published}"
+      exit 0
+    fi
+    if [[ "${sample_path}" == coakka-http-runtime/* ]]; then
+      bash "${script_dir}/coakka-http-runtime/run.sh" \
+        "${sample_path#coakka-http-runtime/}" "$@"
       exit 0
     fi
     run_sample_path "${sample_path}" "$@"

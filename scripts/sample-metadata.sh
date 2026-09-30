@@ -200,6 +200,10 @@ Runtime inspect sample:
 Runtime test:
   runtime-test                    Audit the native public ABI, connection strategies, and sanitizer-ready harness
 
+CoAkka HTTP Runtime samples:
+  coakka-http-runtime/verify      Check and smoke every language and security lane
+  coakka-http-runtime/<language>  Run C, C++, Go, Kotlin, Python, TypeScript/Node/Bun
+
 Runtime addon samples:
   runtime-addons/<addon>          Run one native addon through File Lane
   runtime-addons/all              Run all native addon samples

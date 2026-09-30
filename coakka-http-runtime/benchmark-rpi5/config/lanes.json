@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "workload": {
+    "method": "GET",
+    "path": "/fixed",
+    "status": 200,
+    "body": "0123456789abcdef0123456789abcdef",
+    "concurrency": 64,
+    "calibration_requests": 20000,
+    "max_measurement_requests": 2000000,
+    "duration_seconds": 10,
+    "rounds": 3,
+    "random_seed": 20260930,
+    "cooldown_minimum_seconds": 15,
+    "cooldown_maximum_c": 50.0,
+    "cooldown_maximum_cpu_busy_percent": 5.0,
+    "coakka_event_loop_threads": 1,
+    "io_uring": false,
+    "server_cpus": "0-2",
+    "load_cpu": "3"
+  },
+  "lanes": [
+    {"id":"c-coakka","ecosystem":"C","implementation":"CoAkka host-inlined","role":"coakka","command":["build/native/coakka-c","{port}"]},
+    {"id":"c-microhttpd","ecosystem":"C","implementation":"GNU libmicrohttpd 0.9.75","role":"framework","command":["build/native/microhttpd","{port}"]},
+    {"id":"cpp-coakka","ecosystem":"C++","implementation":"CoAkka host-inlined","role":"coakka","command":["build/native/coakka-cpp","{port}"]},
+    {"id":"cpp-httplib","ecosystem":"C++","implementation":"cpp-httplib 0.11.4","role":"framework","command":["build/native/cpp-httplib","{port}"]},
+    {"id":"go-coakka","ecosystem":"Go","implementation":"CoAkka host-inlined","role":"coakka","command":["build/go/fixed-server","coakka","{port}"],"environment":{"GOMAXPROCS":"3"}},
+    {"id":"go-chi","ecosystem":"Go","implementation":"Chi 5.3.2","role":"framework","command":["build/go/fixed-server","chi","{port}"],"environment":{"GOMAXPROCS":"3"}},
+    {"id":"go-gin","ecosystem":"Go","implementation":"Gin 1.12.0","role":"framework","command":["build/go/fixed-server","gin","{port}"],"environment":{"GOMAXPROCS":"3","GIN_MODE":"release"}},
+    {"id":"kotlin-coakka","ecosystem":"Kotlin/JVM","implementation":"CoAkka host-inlined","role":"coakka","command":["build/kotlin/bin/coakka-http-rpi5-kotlin","coakka","{port}"],"environment":{"JAVA_HOME":"/usr/lib/jvm/java-17-openjdk-arm64","JAVA_TOOL_OPTIONS":"-XX:ActiveProcessorCount=3"}},
+    {"id":"kotlin-netty","ecosystem":"Kotlin/JVM","implementation":"Netty 4.1.137.Final","role":"framework","command":["build/kotlin/bin/coakka-http-rpi5-kotlin","netty","{port}"],"environment":{"JAVA_HOME":"/usr/lib/jvm/java-17-openjdk-arm64","JAVA_TOOL_OPTIONS":"-XX:ActiveProcessorCount=3"}},
+    {"id":"kotlin-jetty","ecosystem":"Kotlin/JVM","implementation":"Jetty 12.1.13","role":"framework","command":["build/kotlin/bin/coakka-http-rpi5-kotlin","jetty","{port}"],"environment":{"JAVA_HOME":"/usr/lib/jvm/java-17-openjdk-arm64","JAVA_TOOL_OPTIONS":"-XX:ActiveProcessorCount=3"}},
+    {"id":"python-coakka","ecosystem":"Python","implementation":"CoAkka host-inlined","role":"coakka","command":["build/python/venv/bin/python","src/python/server.py","coakka","{port}"]},
+    {"id":"python-fastapi","ecosystem":"Python","implementation":"FastAPI 0.141.1 + Uvicorn 0.52.4","role":"framework","command":["build/python/venv/bin/uvicorn","server:fastapi_app","--app-dir","src/python","--host","127.0.0.1","--port","{port}","--workers","3","--loop","uvloop","--http","httptools","--no-access-log"]},
+    {"id":"python-starlette","ecosystem":"Python","implementation":"Starlette 1.6.0 + Uvicorn 0.52.4","role":"framework","command":["build/python/venv/bin/uvicorn","server:starlette_app","--app-dir","src/python","--host","127.0.0.1","--port","{port}","--workers","3","--loop","uvloop","--http","httptools","--no-access-log"]},
+    {"id":"node-coakka","ecosystem":"Node.js","implementation":"CoAkka host-inlined","role":"coakka","command":["node","build/javascript/server.mjs","coakka","{port}"]},
+    {"id":"node-express","ecosystem":"Node.js","implementation":"Express 5.2.1","role":"framework","command":["node","build/javascript/server.mjs","express","{port}"]},
+    {"id":"node-fastify","ecosystem":"Node.js","implementation":"Fastify 5.12.4","role":"framework","command":["node","build/javascript/server.mjs","fastify","{port}"]},
+    {"id":"bun-coakka","ecosystem":"Bun","implementation":"CoAkka host-inlined","role":"coakka","command":["bun","build/javascript/server.mjs","coakka","{port}"]},
+    {"id":"bun-elysia","ecosystem":"Bun","implementation":"Elysia 1.4.30","role":"framework","command":["bun","build/javascript/server.mjs","elysia","{port}"]},
+    {"id":"bun-hono","ecosystem":"Bun","implementation":"Hono 4.13.7","role":"framework","command":["bun","build/javascript/server.mjs","hono","{port}"]}
+  ]
+}

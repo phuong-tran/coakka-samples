@@ -1,330 +1,239 @@
-#!/bin/sh
-set -eu
+#!/usr/bin/env bash
+set -euo pipefail
 
-ROOT=$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)
-ARCH=$(uname -m)
-if [ "$ARCH" != "aarch64" ]; then
-  echo "prepare-rpi5.sh requires Linux aarch64; found $ARCH" >&2
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "${root}"
+
+[[ "$(uname -m)" == "aarch64" ]] || {
+  printf 'benchmark preparation requires Linux AArch64\n' >&2
   exit 1
-fi
+}
+grep -a -q 'Raspberry Pi 5' /proc/device-tree/model || {
+  printf 'benchmark preparation requires a physical Raspberry Pi 5\n' >&2
+  exit 1
+}
+os_codename="$(awk -F= '$1 == "VERSION_CODENAME" {
+  gsub(/^"|"$/, "", $2); print $2; exit
+}' /etc/os-release)"
+[[ "${os_codename}" == "trixie" ]] || {
+  printf 'benchmark preparation requires a clean Raspberry Pi OS Trixie install; found %s\n' \
+    "${os_codename:-unknown}" >&2
+  exit 1
+}
 
-DOWNLOADS="$ROOT/tools/downloads"
-BUILD="$ROOT/build"
-GO_APPLICATION_SOURCE="$ROOT/artifacts/packages/coakka-http-go-application-source.tar"
-JVM_APPLICATION_SOURCE="$ROOT/artifacts/packages/coakka-http-jvm-application-source.tar"
-PYTHON_APPLICATION_SOURCE="$ROOT/artifacts/packages/coakka-http-python-application-source.tar"
-APPLICATION_CORE_SOURCE="$ROOT/artifacts/packages/coakka-http-language-native-core-source.tar"
-CONNECTOR_SOURCE="$ROOT/artifacts/packages/coakka-http-runtime-connector-source.tar"
-NATIVE_SOURCE="$ROOT/artifacts/packages/coakka-http-runtime-native-io-source.tar"
-NATIVE_COMMONS_SOURCE="$ROOT/artifacts/packages/coakka-commons-native-io-source.tar"
-BOOST_SOURCE=${COAKKA_HTTP_BOOST_SOURCE:-/home/pi5/coakka-http-deps-b122/coakka_http_boost_upstream-src}
-GO=${GO:-/home/pi5/lab/go1.26.3/bin/go}
-GRADLE=${GRADLE:-/home/pi5/lab/coakka-http-jvm-g1/source/gradlew}
-
-if [ -z "${JAVA_HOME:-}" ] || [ ! -x "$JAVA_HOME/bin/java" ]; then
-  JAVA_BIN=$(command -v java || true)
-  if [ -z "$JAVA_BIN" ]; then
-    echo "Java 17 is required" >&2
+for file in \
+  sources/runtime/CMakeLists.txt \
+  sources/commons/CMakeLists.txt \
+  sources/connector/CMakeLists.txt \
+  sources/connector/gradlew \
+  sources/connector/connectors/go/coakkahttp/go.mod \
+  sources/connector/connectors/javascript/package/package.json; do
+  [[ -f "${file}" ]] || {
+    printf 'missing source input: %s\n' "${file}" >&2
     exit 1
-  fi
-  JAVA_HOME=$(dirname "$(dirname "$(readlink -f "$JAVA_BIN")")")
-  export JAVA_HOME
-fi
-
-require_version() {
-  LABEL=$1
-  ACTUAL=$2
-  EXPECTED=$3
-  if [ "$ACTUAL" != "$EXPECTED" ]; then
-    echo "$LABEL version mismatch: expected $EXPECTED, found $ACTUAL" >&2
-    exit 1
-  fi
-}
-
-if [ ! -x "$GO" ]; then
-  echo "Go 1.26.3 is required; set GO to its absolute path" >&2
-  exit 1
-fi
-command -v node >/dev/null 2>&1 || {
-  echo "Node.js 24.13.0 is required" >&2
-  exit 1
-}
-command -v bun >/dev/null 2>&1 || {
-  echo "Bun 1.3.14 is required" >&2
-  exit 1
-}
-
-PYTHON_ABI=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
-GO_VERSION=$($GO env GOVERSION)
-JAVA_VERSION=$(
-  "$JAVA_HOME/bin/java" -XshowSettings:properties -version 2>&1 |
-    sed -n 's/^[[:space:]]*java.version = //p' |
-    head -n 1
-)
-NODE_VERSION=$(node --version)
-BUN_VERSION=$(bun --version)
-require_version "Python" "$PYTHON_ABI" "3.11"
-require_version "Go" "$GO_VERSION" "go1.26.3"
-require_version "Java" "$JAVA_VERSION" "17.0.20.1"
-require_version "Node.js" "$NODE_VERSION" "v24.13.0"
-require_version "Bun" "$BUN_VERSION" "1.3.14"
-
-python3 "$ROOT/scripts/fetch-tools.py"
-python3 "$ROOT/scripts/verify-inputs.py"
-python3 "$ROOT/scripts/source-manifest.py"
-rm -rf \
-  "$BUILD/go-application-package" \
-  "$BUILD/jvm-application" \
-  "$BUILD/jvm-application-source" \
-  "$BUILD/python-application-package" \
-  "$BUILD/application-core-source" \
-  "$BUILD/application-core" \
-  "$BUILD/application-native" \
-  "$BUILD/python-venv" \
-  "$BUILD/python-package"
-mkdir -p \
-  "$BUILD/bin" \
-  "$BUILD/go-application-package" \
-  "$BUILD/jvm-application" \
-  "$BUILD/jvm-application-source" \
-  "$BUILD/python-application-package/coakka_http" \
-  "$BUILD/application-core-source" \
-  "$BUILD/application-native"
-
-if [ ! -f "$BOOST_SOURCE/boost/version.hpp" ]; then
-  echo "the exact Boost 1.91.0 source tree is required; set COAKKA_HTTP_BOOST_SOURCE" >&2
-  exit 1
-fi
-BOOST_TREE_SHA256=$(cd "$BOOST_SOURCE" && \
-  find . -type f -print0 | LC_ALL=C sort -z | xargs -0 sha256sum | sha256sum | \
-  awk '{print $1}')
-if [ "$BOOST_TREE_SHA256" != \
-  "4b07ec8fc17bcaab4b1b996869ce6ebdeb815806764fee960be97a373c0d9edd" ]; then
-  echo "Boost source tree does not match the locked benchmark input" >&2
-  exit 1
-fi
-
-COMMONS_SOURCE="$BUILD/coakka-commons-source"
-cmake -E remove_directory "$COMMONS_SOURCE"
-mkdir -p "$COMMONS_SOURCE"
-tar -xf "$NATIVE_COMMONS_SOURCE" -C "$COMMONS_SOURCE"
-
-tar -xf "$GO_APPLICATION_SOURCE" --strip-components=3 \
-  -C "$BUILD/go-application-package"
-tar -xf "$JVM_APPLICATION_SOURCE" -C "$BUILD/jvm-application-source"
-patch -d "$BUILD/jvm-application-source" -p1 \
-  < "$ROOT/patches/coakka-http-jvm-application-api.patch"
-cp "$ROOT/src/jvm-application-api/ServiceFacade.kt" \
-  "$BUILD/jvm-application-source/http/jvm/src/main/kotlin/coakka/http/connector/ServiceFacade.kt"
-tar -xf "$PYTHON_APPLICATION_SOURCE" --strip-components=3 \
-  -C "$BUILD/python-application-package/coakka_http"
-patch --batch --forward --no-backup-if-mismatch \
-  -d "$BUILD/python-application-package/coakka_http" -p1 \
-  < "$ROOT/patches/coakka-http-python-application-api.patch"
-tar -xf "$APPLICATION_CORE_SOURCE" -C "$BUILD/application-core-source"
-patch -d "$BUILD/application-core-source" -p1 \
-  < "$ROOT/patches/coakka-http-application-core-vocabulary.patch"
-cp "$ROOT/src/native/host_inline_fixed_server.cc" \
-  "$BUILD/application-core-source/benchmarks/host_inline_fixed_server.cc"
-cp "$ROOT/src/native/uws_fixed_server.cc" \
-  "$BUILD/application-core-source/benchmarks/uws_fixed_server.cc"
-patch -d "$BUILD/application-core-source" -p1 \
-  < "$ROOT/patches/coakka-http-native-cpp-host-inline-benchmark.patch"
-
-cmake -S "$BUILD/application-core-source" -B "$BUILD/application-core" -G Ninja \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DBUILD_TESTING=OFF \
-  -DCOAKKA_HTTP_BUILD_BENCHMARKS=ON \
-  -DCOAKKA_HTTP_BUILD_PYTHON_HOST_INLINE=ON \
-  -DCOAKKA_HTTP_BUILD_JVM_HOST_INLINE=ON \
-  -DCOAKKA_HTTP_BUILD_JAVASCRIPT_CONNECTOR=ON \
-  -DCOAKKA_HTTP_NODE_API_INCLUDE_DIR=/opt/node-v24.13.0-linux-arm64/include/node \
-  -DFETCHCONTENT_SOURCE_DIR_COAKKA_HTTP_COMMONS="$COMMONS_SOURCE" \
-  -DFETCHCONTENT_SOURCE_DIR_COAKKA_HTTP_BOOST_UPSTREAM="$BOOST_SOURCE"
-cmake --build "$BUILD/application-core" --target \
-  coakka_http_python_host_inline \
-  coakka_http_jvm_host_inline \
-  coakka_http_javascript_host_inline_addon \
-  coakka_http_native_host_inline_fixed_server \
-  coakka_http_uws_fixed_server
-cp "$BUILD/application-core/libcoakka_http_python_host_inline.so" \
-  "$BUILD/application-native/libcoakka_http_python_application.so"
-cp "$BUILD/application-core/libcoakka_http_jvm_host_inline.so" \
-  "$BUILD/application-native/libcoakka_http_jvm_application.so"
-cp "$BUILD/application-core/coakka_http_javascript_host_inline.node" \
-  "$BUILD/application-native/coakka_http_javascript_application.node"
-
-"$BUILD/jvm-application-source/gradlew" \
-  -p "$BUILD/jvm-application-source" --no-daemon :http:jvm:jar
-JVM_APPLICATION_JAR=$(find \
-  "$BUILD/jvm-application-source/http/jvm/build/libs" \
-  -maxdepth 1 -type f -name '*.jar' \
-  ! -name '*sources*' ! -name '*javadoc*' | head -n 1)
-if [ -z "$JVM_APPLICATION_JAR" ] || [ ! -f "$JVM_APPLICATION_JAR" ]; then
-  echo "the CoAkka HTTP JVM application jar was not produced" >&2
-  exit 1
-fi
-cp "$JVM_APPLICATION_JAR" \
-  "$BUILD/jvm-application/coakka-http-jvm-application.jar"
-
-if [ -f "$NATIVE_SOURCE" ]; then
-  RUNTIME_SOURCE="$BUILD/runtime-source"
-  NATIVE_BUILD="$BUILD/native-io-uring"
-  CONNECTOR_SOURCE_DIR="$BUILD/http-connector-source"
-  CONNECTOR_BUILD="$BUILD/http-connector"
-  CORE_SDK="$BUILD/http-core-sdk"
-  cmake -E remove_directory "$RUNTIME_SOURCE"
-  cmake -E remove_directory "$NATIVE_BUILD"
-  cmake -E remove_directory "$CONNECTOR_SOURCE_DIR"
-  cmake -E remove_directory "$CONNECTOR_BUILD"
-  cmake -E remove_directory "$CORE_SDK"
-  mkdir -p "$RUNTIME_SOURCE" "$NATIVE_BUILD/effective" \
-    "$NATIVE_BUILD/startup" "$NATIVE_BUILD/tls" "$CONNECTOR_SOURCE_DIR"
-  tar -xf "$NATIVE_SOURCE" -C "$RUNTIME_SOURCE"
-  tar -xf "$CONNECTOR_SOURCE" -C "$CONNECTOR_SOURCE_DIR"
-  cmake -S "$RUNTIME_SOURCE" -B "$NATIVE_BUILD" -G Ninja \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DBUILD_TESTING=ON \
-    -DCOAKKA_HTTP_BUILD_BENCHMARKS=ON \
-    -DCOAKKA_HTTP_ENABLE_HTTP2_FOUNDATION=ON \
-    -DCOAKKA_HTTP_ENABLE_OPENSSL_PROVIDER=ON \
-    -DCOAKKA_HTTP_ENABLE_IO_URING=ON \
-    -DFETCHCONTENT_SOURCE_DIR_COAKKA_HTTP_COMMONS="$COMMONS_SOURCE" \
-    -DFETCHCONTENT_SOURCE_DIR_COAKKA_HTTP_BOOST_UPSTREAM="$BOOST_SOURCE"
-  cmake --build "$NATIVE_BUILD" --target \
-    coakka_http_native_connector_server \
-    coakka_http_native_poller_tests \
-    coakka_http_public_runtime \
-    coakka_http_runtime_http2_public_fixture
-  "$NATIVE_BUILD/coakka_http_native_poller_tests"
-  "$NATIVE_BUILD/coakka_http_runtime_http2_public_fixture"
-  COAKKA_HTTP_TEST_SERVER_IO_BACKEND=io_uring \
-    "$NATIVE_BUILD/coakka_http_runtime_http2_public_fixture"
-
-  cmake --install "$NATIVE_BUILD" --prefix "$CORE_SDK"
-  cmake -S "$CONNECTOR_SOURCE_DIR" -B "$CONNECTOR_BUILD" -G Ninja \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_PREFIX_PATH="$CORE_SDK" \
-    -DBUILD_TESTING=OFF \
-    -DCOAKKA_HTTP_NODE_API_INCLUDE_DIR=/opt/node-v24.13.0-linux-arm64/include/node
-  cmake --build "$CONNECTOR_BUILD" --target coakka_http_javascript_addon
-
-  "$CONNECTOR_SOURCE_DIR/gradlew" -p "$CONNECTOR_SOURCE_DIR" --no-daemon \
-    :connectors:jvm:runtime:jar \
-    -PcoakkaHttpPrefix="$CORE_SDK"
-  JVM_CONNECTOR_BUILD="$CONNECTOR_SOURCE_DIR/connectors/jvm/runtime/build"
-  JVM_CONNECTOR_JAR="$JVM_CONNECTOR_BUILD/libs/coakka-http-jvm-1.0.0.jar"
-  test -f "$JVM_CONNECTOR_JAR"
-
-  JVM_HTTP2_NATIVE="$BUILD/jvm-http2-native"
-  rm -rf "$JVM_HTTP2_NATIVE"
-  mkdir -p "$JVM_HTTP2_NATIVE"
-  cp "$NATIVE_BUILD/public/libcoakka_http_runtime.so.1.0.0" \
-    "$JVM_HTTP2_NATIVE/libcoakka_http_runtime.so.1.0.0"
-  cp "$JVM_CONNECTOR_BUILD/native/libcoakka_http_jvm.so" \
-    "$JVM_HTTP2_NATIVE/libcoakka_http_jvm.so"
-  ln -s libcoakka_http_runtime.so.1.0.0 \
-    "$JVM_HTTP2_NATIVE/libcoakka_http_runtime.so.1"
-
-  python3 "$ROOT/scripts/stage-javascript-http2-package.py" \
-    "$CONNECTOR_SOURCE_DIR/connectors/javascript/package" \
-    "$BUILD/javascript-http2-package" \
-    "$CONNECTOR_BUILD/coakka_http_javascript.node" \
-    "$NATIVE_BUILD/public/libcoakka_http_runtime.so.1.0.0"
-
-  mkdir -p "$BUILD/python-package"
-  python3 "$CONNECTOR_SOURCE_DIR/connectors/python/scripts/build-wheel.py" \
-    --platform linux-aarch64 \
-    --native "$NATIVE_BUILD/public/libcoakka_http_runtime.so.1.0.0" \
-    --output "$BUILD/python-package"
-
-  openssl req -x509 -newkey rsa:2048 -nodes -sha256 -days 1 \
-    -subj '/CN=CoAkka RPi5 benchmark CA' \
-    -keyout "$NATIVE_BUILD/tls/ca.key" \
-    -out "$NATIVE_BUILD/tls/ca.pem" >/dev/null 2>&1
-  openssl req -newkey rsa:2048 -nodes -sha256 \
-    -subj '/CN=localhost' \
-    -addext 'subjectAltName=DNS:localhost,IP:127.0.0.1' \
-    -addext 'extendedKeyUsage=serverAuth' \
-    -keyout "$NATIVE_BUILD/tls/server.key" \
-    -out "$NATIVE_BUILD/tls/server.csr" >/dev/null 2>&1
-  openssl x509 -req -sha256 -days 1 \
-    -in "$NATIVE_BUILD/tls/server.csr" \
-    -CA "$NATIVE_BUILD/tls/ca.pem" \
-    -CAkey "$NATIVE_BUILD/tls/ca.key" \
-    -CAcreateserial -copy_extensions copy \
-    -out "$NATIVE_BUILD/tls/server.pem" >/dev/null 2>&1
-
-  render_native_backend_config() {
-    BACKEND=$1
-    OUTPUT=$2
-    sed \
-      -e "s|@SERVER_IO_BACKEND@|$BACKEND|g" \
-      -e "s|@CERTIFICATE_CHAIN_FILE@|$NATIVE_BUILD/tls/server.pem|g" \
-      -e "s|@PRIVATE_KEY_FILE@|$NATIVE_BUILD/tls/server.key|g" \
-      "$ROOT/config/native-http2-backend.textproto.in" >"$OUTPUT"
   }
-  render_native_backend_config \
-    COAKKA_HTTP_RUNTIME_SERVER_IO_BACKEND_PLATFORM_DEFAULT \
-    "$NATIVE_BUILD/startup/platform-default.textproto"
-  render_native_backend_config \
-    COAKKA_HTTP_RUNTIME_SERVER_IO_BACKEND_IO_URING \
-    "$NATIVE_BUILD/startup/io-uring.textproto"
-  PROTOC="$NATIVE_BUILD/_deps/coakka_http_protobuf_upstream-build/protoc"
-  export PROTOC
-  "$RUNTIME_SOURCE/benchmarks/compile_startup_config.sh" \
-    "$NATIVE_BUILD/startup/platform-default.textproto" \
-    "$NATIVE_BUILD/startup/platform-default.pb"
-  "$RUNTIME_SOURCE/benchmarks/compile_startup_config.sh" \
-    "$NATIVE_BUILD/startup/io-uring.textproto" \
-    "$NATIVE_BUILD/startup/io-uring.pb"
-  {
-    printf 'runtime_source_sha256=%s\n' \
-      "$(sha256sum "$NATIVE_SOURCE" | awk '{print $1}')"
-    printf 'commons_source_sha256=%s\n' \
-      "$(sha256sum "$NATIVE_COMMONS_SOURCE" | awk '{print $1}')"
-    printf 'boost_source_tree_sha256=%s\n' "$BOOST_TREE_SHA256"
-  } >"$NATIVE_BUILD/dependency-sources.sha256"
-fi
-
-(cd "$ROOT/src/go" && CGO_ENABLED=1 "$GO" build -trimpath -ldflags='-s -w' \
-  -o "$BUILD/bin/fixed-coakka-go" .)
-(cd "$ROOT/src/core/go" && CGO_ENABLED=1 "$GO" build -trimpath -ldflags='-s -w' \
-  -o "$BUILD/bin/fixed-coakka-go-core" .)
-(cd "$ROOT/src/comparisons/go" && "$GO" mod download)
-for GO_PROFILE in direct chi gin; do
-  (cd "$ROOT/src/comparisons/go" && CGO_ENABLED=1 "$GO" build \
-    -mod=readonly -trimpath -ldflags='-s -w' \
-    -o "$BUILD/bin/fixed-go-$GO_PROFILE" "./cmd/$GO_PROFILE")
 done
 
-if [ ! -x "$GRADLE" ]; then
-  echo "a Gradle wrapper with Java 17 support is required; set GRADLE" >&2
-  exit 1
+sudo apt-get update
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+  build-essential ca-certificates cmake curl git libcpp-httplib-dev \
+  libmicrohttpd-dev nghttp2-client ninja-build openjdk-17-jdk-headless perl \
+  pkg-config python3 python3-venv
+
+for command in bun cmake java javac node npm python3; do
+  command -v "${command}" >/dev/null || {
+    printf 'required benchmark tool is unavailable: %s\n' "${command}" >&2
+    exit 1
+  }
+done
+
+javac_path="$(readlink -f "$(command -v javac)")"
+export JAVA_HOME
+JAVA_HOME="$(dirname "$(dirname "${javac_path}")")"
+mkdir -p build tools evidence/locks
+
+reset_build_dir() {
+  local directory="$1"
+  case "${directory}" in
+    "${root}/build/"*) ;;
+    *)
+      printf 'refusing to reset non-build directory: %s\n' "${directory}" >&2
+      exit 1
+      ;;
+  esac
+  if [[ -d "${directory}" ]]; then
+    find "${directory}" -depth -delete
+  fi
+}
+
+# This manifest, rather than a package version, identifies every benchmark,
+# runtime and connector source byte used for this candidate.
+find config scripts src sources -type f \
+  ! -path '*/.gradle/*' ! -path '*/build/*' ! -name .DS_Store \
+  -print0 | LC_ALL=C sort -z | xargs -0 sha256sum \
+  >evidence/locks/source-files.sha256
+sha256sum evidence/locks/source-files.sha256 \
+  >evidence/locks/source-manifest.sha256
+
+go_version=1.27.1
+go_archive="tools/go${go_version}.linux-arm64.tar.gz"
+go_sha256=3450b45a3f9ee8568792736a5c5e70a1f2e9b36c35a8f74958c03e51d7d92bec
+if [[ -x tools/go/bin/go ]] &&
+  [[ "$(tools/go/bin/go version)" != "go version go${go_version} linux/arm64" ]]; then
+  find tools/go -depth -delete
 fi
-(cd "$ROOT/src/jvm" && "$GRADLE" --no-daemon clean installDist)
-rm -rf "$BUILD/jvm"
-cp -R \
-  "$ROOT/src/jvm/build/install/coakka-http-rpi5-jvm-comparisons" \
-  "$BUILD/jvm"
+if [[ ! -x tools/go/bin/go ]]; then
+  if [[ -d tools/go ]]; then
+    find tools/go -depth -delete
+  fi
+  curl --fail --location --retry 3 \
+    "https://go.dev/dl/go${go_version}.linux-arm64.tar.gz" -o "${go_archive}"
+  printf '%s  %s\n' "${go_sha256}" "${go_archive}" | sha256sum --check --strict
+  tar -xzf "${go_archive}" -C tools
+fi
+rm -f "${go_archive}"
+export PATH="${root}/tools/go/bin:${PATH}"
 
-(cd "$ROOT/src/javascript" && npm ci --ignore-scripts)
-python3 -m venv "$BUILD/python-venv"
-"$BUILD/python-venv/bin/python" -m pip install --no-index \
-  --find-links "$DOWNLOADS/python-wheels" \
-  -r "$ROOT/src/python/requirements.txt"
-"$BUILD/python-venv/bin/python" -m pip install --no-deps \
-  "$BUILD/python-package/coakka_http-1.0.0-py3-none-manylinux_2_28_aarch64.whl"
+reset_build_dir "${root}/build/runtime"
+reset_build_dir "${root}/build/host-prefix"
+cmake -S sources/runtime -B build/runtime -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX="${root}/build/host-prefix" \
+  -DFETCHCONTENT_SOURCE_DIR_COAKKA_HTTP_COMMONS="${root}/sources/commons" \
+  -DBUILD_TESTING=OFF \
+  -DCOAKKA_HTTP_BUILD_DEPENDENCY_PROBE=OFF \
+  -DCOAKKA_HTTP_ENABLE_OPENSSL_PROVIDER=ON \
+  -DCOAKKA_HTTP_ENABLE_ZLIB_PROVIDER=ON \
+  -DCOAKKA_HTTP_ENABLE_HTTP2_FOUNDATION=ON \
+  -DCOAKKA_HTTP_ENABLE_HTTP3_DEPENDENCY_FOUNDATION=ON \
+  -DCOAKKA_HTTP_ENABLE_PINNED_CURL_CLIENT_FOUNDATION=ON \
+  -DCOAKKA_HTTP_BUILD_CURL_HTTP1_PROVIDER=ON
+cmake --build build/runtime --target coakka_http_host --parallel 3
+cmake --install build/runtime --component coakka_http_host
+host_library="${root}/build/host-prefix/lib/libcoakka_http_host.so.1.0.0"
+[[ -f "${host_library}" ]] || {
+  printf 'host library was not installed: %s\n' "${host_library}" >&2
+  exit 1
+}
 
-{
-  uname -a
-  python3 --version
-  "$GO" version
-  java -version 2>&1
-  node --version
-  bun --version
-  npm --version
-  NO_COLOR=true "$DOWNLOADS/oha-1.14.0-linux-arm64" --version
-} > "$BUILD/toolchain-versions.txt"
+reset_build_dir "${root}/build/go"
+mkdir -p build/go/app
+cp src/go/go.mod src/go/main.go build/go/app/
+(
+  cd build/go/app
+  go mod edit \
+    -replace="github.com/phuong-tran/coakka-http-runtime-go=${root}/sources/connector/connectors/go/coakkahttp"
+  go mod tidy
+  CGO_ENABLED=1 \
+    CGO_CFLAGS="-I${root}/build/host-prefix/include" \
+    CGO_LDFLAGS="-L${root}/build/host-prefix/lib -Wl,-rpath,${root}/build/host-prefix/lib" \
+    go build -trimpath -ldflags='-s -w' -o ../fixed-server .
+)
+cp build/go/app/go.sum evidence/locks/go.sum
 
-echo "prepared the Go, JVM, Python, Node.js, Bun, native C++ connector, and native backend pair suites"
+reset_build_dir "${root}/build/python"
+python3 -m venv build/python/venv
+build/python/venv/bin/python -m pip install --disable-pip-version-check --upgrade pip
+build/python/venv/bin/python -m pip install --disable-pip-version-check \
+  -r src/python/requirements.txt
+build/python/venv/bin/python -m pip freeze --all >evidence/locks/python-freeze.txt
+
+reset_build_dir "${root}/build/javascript-connector"
+cmake -S sources/connector -B build/javascript-connector -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DBUILD_TESTING=OFF \
+  -DCMAKE_PREFIX_PATH="${root}/build/host-prefix"
+cmake --build build/javascript-connector \
+  --target coakka_http_javascript_addon --parallel 3
+javascript_addon="$(find build/javascript-connector -type f \
+  -name coakka_http_javascript.node -print -quit)"
+[[ -n "${javascript_addon}" ]] || {
+  printf 'JavaScript connector addon was not built\n' >&2
+  exit 1
+}
+javascript_addon="${root}/${javascript_addon}"
+
+reset_build_dir "${root}/build/javascript"
+mkdir -p build/javascript
+cp src/typescript/package.json src/typescript/server.mjs build/javascript/
+npm install --prefix build/javascript --install-links --no-audit --no-fund \
+  "${root}/sources/connector/connectors/javascript/package"
+cp build/javascript/package-lock.json evidence/locks/javascript-package-lock.json
+
+reset_build_dir "${root}/build/jvm-connector"
+reset_build_dir "${root}/build/jvm-connector-cache"
+GRADLE_USER_HOME="${root}/build/jvm-connector-cache" \
+  sources/connector/gradlew --no-daemon -p sources/connector \
+  -PcoakkaHttpPrefix="${root}/build/host-prefix" \
+  -PcoakkaHttpBuildDir="${root}/build/jvm-connector" \
+  :connectors:jvm:runtime:jar :connectors:jvm:runtime:compileNativeBridge
+jvm_jar="$(find build/jvm-connector/libs -maxdepth 1 -type f \
+  -name 'coakka-http-jvm-*.jar' -print -quit)"
+jvm_bridge="$(find build/jvm-connector/native -maxdepth 1 -type f \
+  -name 'libcoakka_http_jvm.so' -print -quit)"
+[[ -n "${jvm_jar}" && -n "${jvm_bridge}" ]] || {
+  printf 'JVM connector outputs are incomplete\n' >&2
+  exit 1
+}
+jvm_jar="${root}/${jvm_jar}"
+jvm_bridge="${root}/${jvm_bridge}"
+
+reset_build_dir "${root}/build/kotlin"
+reset_build_dir "${root}/build/kotlin-gradle"
+reset_build_dir "${root}/build/kotlin-cache"
+GRADLE_USER_HOME="${root}/build/kotlin-cache" \
+  sources/connector/gradlew --no-daemon -p src/kotlin \
+  -PcoakkaHttpJar="${jvm_jar}" \
+  -PsampleBuildDir="${root}/build/kotlin-gradle" \
+  installDist
+cp -a build/kotlin-gradle/install/coakka-http-rpi5-kotlin build/kotlin
+GRADLE_USER_HOME="${root}/build/kotlin-cache" \
+  sources/connector/gradlew --no-daemon -p src/kotlin \
+  -PcoakkaHttpJar="${jvm_jar}" \
+  -PsampleBuildDir="${root}/build/kotlin-gradle" \
+  dependencies >evidence/locks/kotlin-dependencies.txt
+
+reset_build_dir "${root}/build/native"
+reset_build_dir "${root}/build/native-cmake"
+cmake -S src/native -B build/native-cmake -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_PREFIX_PATH="${root}/build/host-prefix" \
+  -DCMAKE_RUNTIME_OUTPUT_DIRECTORY="${root}/build/native"
+cmake --build build/native-cmake --parallel 3
+
+capture_tool_versions() {
+  {
+    tools/go/bin/go version
+    java -version 2>&1 | head -n 1
+    python3 --version
+    node --version
+    npm --version
+    bun --version
+    h2load --version
+    cmake --version | head -n 1
+    gcc --version | head -n 1
+    dpkg-query -W -f='${Package}=${Version}\n' \
+      libmicrohttpd-dev libcpp-httplib-dev nghttp2-client
+  } >evidence/locks/tool-versions.txt
+}
+capture_tool_versions
+
+sha256sum \
+  "${host_library}" \
+  build/go/fixed-server \
+  "${javascript_addon}" \
+  "${jvm_jar}" \
+  "${jvm_bridge}" \
+  build/native/coakka-c \
+  build/native/coakka-cpp \
+  build/native/microhttpd \
+  build/native/cpp-httplib \
+  >evidence/locks/built-artifacts.sha256
+
+printf '%s\n' \
+  "host_library=${host_library}" \
+  "javascript_addon=${javascript_addon}" \
+  "jvm_jar=${jvm_jar}" \
+  "jvm_bridge=${jvm_bridge}" \
+  >evidence/locks/runtime-paths.env
+printf 'rpi5-prepare=pass\n'

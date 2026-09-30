@@ -1,119 +1,127 @@
 # CoAkka HTTP Runtime Samples
 
-This directory is the application-source companion to CoAkka HTTP Runtime.
-Samples use the same public APIs that an application imports: normal handlers,
-language-owned request and response values, explicit capacity, and ordered
-shutdown. Release `1.0.0` is an immutable private candidate; registry upload,
-production signing, runnable-sample promotion, and performance publication
-remain separate actions.
+These runnable applications show CoAkka HTTP Runtime from each supported
+language without hiding lifecycle, capacity, security, or failure handling.
+Kotlin is the JVM sample language. One TypeScript source set runs on both
+Node.js and Bun.
 
-## Contents
+The samples build the sibling runtime and connector source into an external
+work directory. They do not install CoAkka from npm, Maven, PyPI, or a Go
+module proxy, and they do not publish anything to those registries.
 
-- [Learning Path](#learning-path)
-- [Language Lanes](#language-lanes)
-- [Raspberry Pi 5 Benchmark Lab](#raspberry-pi-5-benchmark-lab)
-- [Sample Contract](#sample-contract)
-- [Current Status](#current-status)
-- [Documentation](#documentation)
+## Languages
 
-## Learning Path
+| Directory | Language and host | Guide |
+| --- | --- | --- |
+| `c/` | C11 | [C sample](c/README.md) |
+| `cpp/` | C++20 | [C++ sample](cpp/README.md) |
+| `go/` | Go 1.23 or newer | [Go sample](go/README.md) |
+| `kotlin/` | Kotlin on JVM 17 | [Kotlin sample](kotlin/README.md) |
+| `python/` | Python 3.11 or newer | [Python sample](python/README.md) |
+| `typescript/` | TypeScript on Node.js 22+ and Bun 1.3+ | [TypeScript sample](typescript/README.md) |
 
-The planned sample set is organized around real application growth, not
-isolated API fragments:
+## Feature Map
 
-| Sample | What it demonstrates |
+`main` is a runnable application, not a collection of disconnected snippets.
+It combines the features an application commonly uses together. `security`
+is separate so temporary test identities never enter the source tree.
+
+| Feature | Runnable source |
 | --- | --- |
-| `hello-api` | One route, one response, bound port, and graceful close |
-| `frontend-and-api` | Built `index.html` and assets beside `/api/*` handlers |
-| `spa-fallback` | Browser navigation fallback without capturing API routes |
-| `tls` | HTTP over a server certificate with explicit protocol and identity generation |
-| `mtls` | Mutual client/server authentication and trust-root configuration |
-| `monitoring` | Health, fresh liveness, aggregates, cursor-based events, missed-history reporting, wait, and interrupt |
-| `handler-change` | Prepare a new binding, atomically activate it, and drain admitted work from the previous binding |
-| `sse` | Bounded Server-Sent Event lifecycle and cancellation |
-| `websocket` | Upgrade, message flow, pressure, and close |
-| `queue-pressure` | Finite admission with observable refusal, recovery, and shutdown outcomes |
+| Buffered routing and responses | Every `main` application |
+| Path/query values and ordered headers | Go, Kotlin, Python, and TypeScript `main` |
+| Streamed request body | Go, Kotlin, Python, and TypeScript `main` |
+| Streamed response with final trailers | Go, Kotlin, Python, and TypeScript `main` |
+| Server-Sent Events | Go, Kotlin, Python, and TypeScript `main` |
+| WebSocket upgrade and message callback | Go, Kotlin, Python, and TypeScript `main` |
+| Static frontend, index, and SPA fallback | Every `main` application |
+| Confined application-file response | Every `main` application |
+| Logical-target outbound HTTP | Go, Kotlin, Python, and TypeScript `main` |
+| Health, fresh liveness, and bounded monitor events | Every `main` application |
+| Handler-only activation | Every `main` application |
+| Complete route-generation publication | Go, Kotlin, Python, and TypeScript `main` |
+| io_uring opt-in with observable native fallback | Every language lane |
+| TLS and mutual TLS | Every `security` application |
+| HTTP/1.1, HTTP/2, and HTTP/3 listener selection | Native `security` applications; the language packages use the same listener declaration |
+| Graceful close and process signals | Every language lane |
+| Finite connections, queues, bodies, streams, files, events, and shutdown | Every language lane |
 
-The frontend samples matter because one CoAkka service can own the built browser
-application, backend API, SSE endpoints, and WebSocket sessions. TLS/mTLS,
-monitoring, and live handler activation use the complete
-`CoAkka HTTP Runtime` surface in the same language package.
+The feature applications deliberately use ordinary public service APIs. The
+low-level configuration surfaces remain available for specialized control
+planes, but are not a better starting point for application code.
 
-## Language Lanes
+## Run
 
-| Lane | Application experience |
+From the repository root:
+
+```bash
+export COAKKA_HTTP_SAMPLE_WORK_ROOT=/path/to/a-build-volume/coakka-http-runtime-samples
+bash coakka-http-runtime/run.sh verify
+```
+
+`verify` performs static checks, builds every lane with warnings treated as
+errors where the compiler supports it, runs the application smoke tests, and
+then runs real TLS and mutual-TLS handshakes. A client without an identity must
+be rejected by every mutual-TLS sample.
+
+Run one lane instead:
+
+```bash
+bash coakka-http-runtime/run.sh go smoke
+bash coakka-http-runtime/run.sh kotlin security-smoke
+bash coakka-http-runtime/run.sh typescript run
+bash coakka-http-runtime/run.sh typescript run-bun
+```
+
+Sibling checkouts are discovered as `../coakka-http-runtime` and
+`../coakka-http-runtime-connector`. Set `COAKKA_HTTP_RUNTIME_ROOT` and
+`COAKKA_HTTP_CONNECTOR_ROOT` for another layout. Every build, cache, generated
+identity, and staged application stays below `COAKKA_HTTP_SAMPLE_WORK_ROOT`.
+
+## Routes
+
+The four application-language lanes share these recognizable routes:
+
+| Route | Purpose |
 | --- | --- |
-| Native C | Callback-based buffered service or complete runtime lifecycle |
-| Native C++ | The stable C service/runtime contract from C++20 |
-| Java | `ServiceBuilder`, Java lambdas, `Service`, and complete `HttpCore` control |
-| Kotlin | Idiomatic builder calls, `Handler`, and typed `HttpCore` events |
-| Python | Synchronous callable handlers plus context-managed runtime event leases |
-| JavaScript/TypeScript on Node.js | Synchronous functions plus typed runtime events and promise-based close |
-| JavaScript/TypeScript on Bun | The same package and application contract running on Bun |
-| Go | Ordinary functions, Go-owned values, `Service`, and typed advanced control |
+| `/hello/...` or `/hello?name=...` | Read a path or query value |
+| `/echo` | Buffered request and response |
+| `/upload` | Incremental request body |
+| `/stream` | Incremental response and final trailer |
+| `/events` | Finite Server-Sent Event response |
+| `/socket` | WebSocket upgrade and text echo |
+| `/download` | File response confined to an authority root |
+| `/app/...` | Static files and SPA navigation fallback |
+| `/version` | Generation-checked handler activation |
 
-Each sample keeps its route and observable outcome recognizable across
-languages while respecting the host's normal lifecycle and concurrency model.
-Users never select an execution mode.
+Each smoke command also starts a loopback upstream, submits one logical-target
+outbound request, publishes a complete route generation on an isolated
+service, reads fresh liveness and monitoring truth, and closes all owners in
+reverse order.
 
-## Raspberry Pi 5 Benchmark Lab
+## Security Sample
 
-[`benchmark-rpi5/`](benchmark-rpi5/README.md) contains the complete private
-benchmark applications, framework comparators, pinned dependencies, workload
-configuration, host-quiescence scripts, thermal-rest gate, runner, summaries,
-and evidence sealing.
+`scripts/generate-test-certificates.sh` creates a short-lived authority,
+server identity, and client identity in the configured build directory. The
+files are test-only and are removed with that directory. Production services
+should use their normal secret manager and advance the credential generation
+when identities rotate.
 
-It measures two different questions separately:
+## Raspberry Pi 5 Benchmark
 
-1. HTTP/1.1 application comparisons pair CoAkka with direct HTTP and selected
-   frameworks in Go, JVM, Python, Node.js, and Bun.
-2. HTTP/2 over TLS backend comparisons run the same CoAkka handler in each of
-   those five ecosystems once with the Linux platform default and once with
-   explicit `io_uring`.
+The [Raspberry Pi 5 benchmark](benchmark-rpi5/README.md) is run only after all
+language samples pass. It measures the `host-inlined` path and compares it with
+frameworks developers actually choose in each ecosystem. Language-standard
+HTTP servers are intentionally excluded. Raw evidence and machine facts are
+required before any result table is treated as publishable.
 
-Native C/C++ remain standalone references. Every reported result must include
-the exact measured source and artifact identities, raw output, latency, CPU,
-memory, thermal state, lifecycle evidence, and restored-host proof.
+## Boundaries
 
-## Sample Contract
-
-Every promoted sample must:
-
-- consume only a frozen repository artifact or a later public package
-  coordinate;
-- use the ordinary language API for every non-native language;
-- verify the selected target image and capabilities instead of reaching into a
-  build tree;
-- set finite request, body, dispatch, stream, session, and shutdown budgets
-  relevant to the sample;
-- start, serve a real request, and validate status and body;
-- expose health or monitor truth appropriate to the selected API level;
-- close through the public graceful lifecycle;
-- document supported platforms, security assumptions, and known limits;
-- retain matching-host evidence before being described as supported.
-
-## Current Status
-
-| Gate | State |
-| --- | --- |
-| Language application packages | Five-target private candidates verified |
-| Benchmark source for Go, JVM, Python, Node.js, Bun, and per-language `io_uring` A/B | Present and under local validation |
-| Physical Raspberry Pi 5 campaigns | Pending an available, cool, quiesced authority host |
-| Learning-path sample promotion | Pending package agreement and matching-host smoke evidence |
-| External registries and public performance tables | Closed |
-
-Keeping the release private does not reduce the product capability described in
-the documentation. It means install coordinates and performance numbers remain
-gated until package bytes, samples, and retained evidence agree.
-
-## Documentation
-
-Start with the [documentation hub](../docs/coakka-http-runtime/README.md), then
-continue with:
-
-- [How It Works](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/how-it-works.md)
-- [Frontend And Backend](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/frontend-and-backend.md)
-- [Observability And Monitoring](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/observability-and-monitoring.md)
-- [TLS And mTLS](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/tls-and-mtls.md)
-- [Live Handler Changes](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/handler-swap-and-hot-reload.md)
-- [Platform Comparisons](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/docs/comparisons)
+- Application routing, codecs, authentication policy, and domain behavior stay
+  in application code or addons.
+- The file samples grant only a declared root and never accept an arbitrary
+  operating-system path from a request.
+- Monitor retention excludes headers, bodies, credentials, cookies, and
+  certificate material.
+- The generated test identities are not deployment credentials.
+- Package-manager publication is outside this sample change.
