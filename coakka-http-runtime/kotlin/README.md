@@ -36,3 +36,7 @@ Gradle and all build output are redirected to the configured external work
 directory. The runner builds the sibling connector as a class-only local JAR
 and supplies the host and native adapter libraries separately; no Maven
 publication is required.
+
+For repeated qualification runs, set `COAKKA_HTTP_SAMPLE_GRADLE_USER_HOME` to
+an existing task-owned Gradle cache on that build volume. Connector and sample
+compiled outputs still remain in `COAKKA_HTTP_SAMPLE_WORK_ROOT`.

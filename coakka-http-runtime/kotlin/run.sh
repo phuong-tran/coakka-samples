@@ -10,7 +10,9 @@ source "${lane_root}/../scripts/common.sh"
 command="${1:-smoke}"
 work="$(prepare_work_dir kotlin)"
 prefix="$(prepare_host_prefix)"
-gradle_user_home="${work}/gradle-home"
+# A shared, task-owned cache can be supplied for multi-lane qualification.
+# Compiled connector and sample outputs still stay in this lane's work tree.
+gradle_user_home="${COAKKA_HTTP_SAMPLE_GRADLE_USER_HOME:-${work}/gradle-home}"
 build_dir="${work}/build"
 connector_build="${work}/connector-build"
 GRADLE_USER_HOME="${gradle_user_home}" "${connector_root}/gradlew" --no-daemon \
