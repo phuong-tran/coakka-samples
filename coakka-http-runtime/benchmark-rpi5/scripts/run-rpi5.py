@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import http.client
 import json
 import math
 import os
@@ -253,6 +254,30 @@ def ready(port: int, process: subprocess.Popen[str]) -> None:
             pass
         time.sleep(0.1)
     raise TimeoutError("server readiness timed out")
+
+
+def require_persistent_http1(port: int, lane_id: str) -> None:
+    """Prove two fixed responses use one socket before timing a lane."""
+    connection = http.client.HTTPConnection("127.0.0.1", port, timeout=2)
+    try:
+        first_socket: socket.socket | None = None
+        for request_number in range(2):
+            connection.request("GET", "/fixed")
+            response = connection.getresponse()
+            if (
+                response.status != 200
+                or response.getheader("content-type") != "application/octet-stream"
+                or response.read() != BODY
+                or response.will_close
+                or connection.sock is None
+            ):
+                raise RuntimeError(f"{lane_id} does not serve persistent HTTP/1.1")
+            if request_number == 0:
+                first_socket = connection.sock
+            elif connection.sock is not first_socket:
+                raise RuntimeError(f"{lane_id} reopened its HTTP/1.1 connection")
+    finally:
+        connection.close()
 
 
 def duration_ms(value: str) -> float:
@@ -688,6 +713,7 @@ def measure(
         )
         try:
             ready(port, process)
+            require_persistent_http1(port, lane["id"])
             calibration_count = workload["calibration_requests"]
             calibration_temperature_before_c = temperature_c()
             calibration_log = request_log_root / (

@@ -91,6 +91,14 @@ first stage at 40 C with PWM 250; the temperature and throttling gates are
 unchanged. That cooling change is recorded as part of the machine baseline,
 not as a per-lane adjustment.
 
+A later short qualification rejected the libmicrohttpd lane when one load CPU
+reached 98.8% busy. Wire inspection found that this sample queued its response
+on libmicrohttpd's first callback, which made it close every connection and
+forced a reconnect for each measured request. The sample now follows
+[libmicrohttpd's documented callback lifecycle](https://git.gnunet.org/gnunet/libmicrohttpd/file/doc/chapters/hellobrowser.inc.html):
+it queues the response on the later callback. A two-request socket-reuse probe
+passed on the Pi. The rejected campaign remains diagnostic, not publishable.
+
 ## Fairness And Cooldown
 
 The runner applies the same controls to every lane:
@@ -106,7 +114,9 @@ The runner applies the same controls to every lane:
    Idiomatic connector samples use three bounded application workers where the
    language facade provides them; all server processes remain inside the same
    two-CPU placement as their ecosystem peers.
-5. Check the exact response before calibration.
+5. Check the exact response and prove two requests reuse one HTTP/1.1 socket
+   before calibration. A close/reconnect lane is rejected rather than compared
+   against persistent-connection lanes.
 6. Run calibration, then pass the same temperature, power, and CPU-idle gate
    after at least 15 seconds before the measured request set.
 7. Reject the sample if any request fails, status observations do not match

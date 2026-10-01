@@ -182,6 +182,22 @@ class BenchmarkToolsTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "could not parse"):
             RUNNER.validate_load("lane", 100, 0, raw.split("status codes:")[0])
 
+    def test_lane_must_reuse_one_http1_connection(self) -> None:
+        connection = mock.MagicMock()
+        connection.sock = object()
+        response = mock.MagicMock()
+        response.status = 200
+        response.getheader.return_value = "application/octet-stream"
+        response.read.return_value = RUNNER.BODY
+        response.will_close = False
+        connection.getresponse.return_value = response
+        with mock.patch.object(RUNNER.http.client, "HTTPConnection", return_value=connection):
+            RUNNER.require_persistent_http1(8080, "framework")
+            self.assertEqual(2, connection.request.call_count)
+            response.will_close = True
+            with self.assertRaisesRegex(RuntimeError, "persistent HTTP/1.1"):
+                RUNNER.require_persistent_http1(8080, "framework")
+
     def test_calibration_and_measurement_use_the_same_request_logging(self) -> None:
         value = campaign()
         log = Path("calibration-requests.tsv")

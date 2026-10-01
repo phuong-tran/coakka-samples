@@ -8,6 +8,8 @@
 #include <unistd.h>
 
 static volatile sig_atomic_t stopping = 0;
+/* MHD uses a non-NULL per-request context to distinguish later callbacks. */
+static int request_started;
 static const char body[] = "0123456789abcdef0123456789abcdef";
 
 static void stop_signal(int signal_number) {
@@ -25,9 +27,16 @@ static enum MHD_Result fixed(void *context, struct MHD_Connection *connection,
   (void)version;
   (void)upload_data;
   (void)upload_size;
-  (void)request_context;
   if (strcmp(method, "GET") != 0 || strcmp(url, "/fixed") != 0) {
     return MHD_NO;
+  }
+  /* Queuing a response in the first callback makes MHD close the connection.
+   * Defer it until the request is ready so this lane measures persistent
+   * HTTP/1.1 connections like the other framework and CoAkka lanes.
+   */
+  if (*request_context == NULL) {
+    *request_context = &request_started;
+    return MHD_YES;
   }
   response = MHD_create_response_from_buffer(sizeof(body) - 1U, (void *)body,
                                              MHD_RESPMEM_PERSISTENT);
