@@ -4,6 +4,7 @@ project(coakka_http_rpi5_native LANGUAGES C CXX)
 find_package(CoAkkaHttpHost 1.0.0 EXACT CONFIG REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(Threads REQUIRED)
+find_package(OpenSSL REQUIRED)
 pkg_check_modules(MICROHTTPD REQUIRED IMPORTED_TARGET libmicrohttpd)
 pkg_check_modules(CPPHTTPLIB REQUIRED IMPORTED_TARGET cpp-httplib)
 
@@ -20,7 +21,10 @@ target_link_libraries(coakka-cpp PRIVATE CoAkkaHttp::host Threads::Threads)
 target_compile_features(coakka-cpp PRIVATE cxx_std_20)
 
 add_executable(cpp-httplib cpp_httplib.cpp)
-target_link_libraries(cpp-httplib PRIVATE PkgConfig::CPPHTTPLIB Threads::Threads)
+# Debian enables cpp-httplib's OpenSSL-backed inline code in its public header.
+# Its shared-library pkg-config line omits those direct executable references.
+target_link_libraries(cpp-httplib PRIVATE PkgConfig::CPPHTTPLIB Threads::Threads
+  OpenSSL::SSL OpenSSL::Crypto)
 target_compile_features(cpp-httplib PRIVATE cxx_std_20)
 
 foreach(target coakka-c microhttpd coakka-cpp cpp-httplib)
