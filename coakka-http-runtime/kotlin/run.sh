@@ -43,6 +43,7 @@ case "${command}" in
   check)
     GRADLE_USER_HOME="${gradle_user_home}" "${repo_root}/gradlew" --no-daemon \
       -p "${lane_root}" \
+      --project-cache-dir "${work}/sample-project-cache" \
       -PcoakkaHttpJar="${jar}" \
       -PcoakkaHttpHost="${host_library}" \
       -PcoakkaHttpBridge="${bridge_library}" \
@@ -52,6 +53,7 @@ case "${command}" in
   smoke)
     GRADLE_USER_HOME="${gradle_user_home}" "${repo_root}/gradlew" --no-daemon \
       -p "${lane_root}" \
+      --project-cache-dir "${work}/sample-project-cache" \
       -PcoakkaHttpJar="${jar}" \
       -PcoakkaHttpHost="${host_library}" \
       -PcoakkaHttpBridge="${bridge_library}" \
@@ -59,6 +61,7 @@ case "${command}" in
       run --args="${args}"
     GRADLE_USER_HOME="${gradle_user_home}" "${repo_root}/gradlew" --no-daemon \
       -p "${lane_root}" \
+      --project-cache-dir "${work}/sample-project-cache" \
       -PcoakkaHttpJar="${jar}" \
       -PcoakkaHttpHost="${host_library}" \
       -PcoakkaHttpBridge="${bridge_library}" \
@@ -68,6 +71,7 @@ case "${command}" in
   security-smoke|run)
     GRADLE_USER_HOME="${gradle_user_home}" "${repo_root}/gradlew" --no-daemon \
       -p "${lane_root}" \
+      --project-cache-dir "${work}/sample-project-cache" \
       -PcoakkaHttpJar="${jar}" \
       -PcoakkaHttpHost="${host_library}" \
       -PcoakkaHttpBridge="${bridge_library}" \
