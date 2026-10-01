@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
   }
   daemon = MHD_start_daemon(
       MHD_USE_INTERNAL_POLLING_THREAD | MHD_USE_EPOLL_INTERNAL_THREAD,
-      (uint16_t)port, NULL, NULL, &fixed, NULL, MHD_OPTION_THREAD_POOL_SIZE, 3U,
+      (uint16_t)port, NULL, NULL, &fixed, NULL, MHD_OPTION_THREAD_POOL_SIZE, 1U,
       MHD_OPTION_CONNECTION_LIMIT, 512U, MHD_OPTION_END);
   if (daemon == NULL) {
     return EXIT_FAILURE;

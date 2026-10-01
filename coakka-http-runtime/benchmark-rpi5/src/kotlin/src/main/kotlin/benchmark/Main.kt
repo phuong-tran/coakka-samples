@@ -78,7 +78,7 @@ private fun startCoakka(port: Int): RunningServer {
     )
     val service = ServiceBuilder()
         .listen("127.0.0.1", port)
-        .concurrency(3)
+        .concurrency(1)
         .get("/fixed", CoAkkaHandler { response })
         .start()
     return object : RunningServer {
@@ -88,7 +88,7 @@ private fun startCoakka(port: Int): RunningServer {
 
 private fun startNetty(port: Int): RunningServer {
     val boss: EventLoopGroup = NioEventLoopGroup(1)
-    val workers: EventLoopGroup = NioEventLoopGroup(3)
+    val workers: EventLoopGroup = NioEventLoopGroup(1)
     val listener: Channel = try {
         ServerBootstrap()
             .group(boss, workers)

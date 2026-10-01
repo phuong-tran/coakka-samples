@@ -21,7 +21,7 @@ content-type: application/octet-stream
 body: 0123456789abcdef0123456789abcdef
 ```
 
-The runner uses loopback HTTP/1.1 with 64 persistent connections, two load
+The runner uses loopback HTTP/1.1 with 64 persistent connections, three load
 threads, and one in-flight request per connection. It first sends a fixed
 calibration set, derives a request count targeting ten measured seconds, and
 rejects any run with a failed, errored, timed-out, or incomplete request. It
@@ -64,8 +64,8 @@ realistic integration boundary.
 | Campaign boot storage | SanDisk USB 3.2Gen1 250 GB; `/dev/sda2` root during Trixie qualification |
 | Required OS baseline | Current Raspberry Pi OS Lite 64-bit (Debian 13 Trixie), clean install |
 | Kernel at campaign preparation | `6.18.50+rpt-rpi-2712`; final campaign captures the then-current kernel |
-| Server placement | CPUs `0-1` |
-| Load generator placement | CPUs `2-3`, two load threads |
+| Server placement | CPU `0` |
+| Load generator placement | CPUs `1-3`, three load threads |
 | Load generator | `h2load --h1` from nghttp2-client |
 | Cooling policy | Pi5 firmware fan first stage at 40 C, PWM 250; original boot config retained for rollback |
 
@@ -81,10 +81,11 @@ short qualification and the full campaign pass on that exact installation.
 
 An initial single-generator-CPU qualification was rejected when it reached
 91.8% busy in one framework lane, above the declared 90% ceiling. No result
-from that incomplete run is publishable. Before any complete qualification,
-the protocol was revised to reserve two CPUs for the server and two isolated
-CPUs for the generator. The same revised placement applies to every lane; the
-busiest generator CPU, not a two-CPU average, must remain below the ceiling.
+from that incomplete run is publishable. A second two-server/two-generator-CPU
+qualification also failed the generator-headroom gate. The current protocol
+reserves one CPU for every server and three isolated CPUs for the generator.
+That placement applies to every lane; the busiest generator CPU, not an
+average, must remain below the ceiling.
 The stock Pi5 fan profile could not reach the fixed 50 C idle gate with the
 performance governor. The documented firmware fan parameters now start its
 first stage at 40 C with PWM 250; the temperature and throttling gates are
@@ -97,7 +98,9 @@ on libmicrohttpd's first callback, which made it close every connection and
 forced a reconnect for each measured request. The sample now follows
 [libmicrohttpd's documented callback lifecycle](https://git.gnunet.org/gnunet/libmicrohttpd/file/doc/chapters/hellobrowser.inc.html):
 it queues the response on the later callback. A two-request socket-reuse probe
-passed on the Pi. The rejected campaign remains diagnostic, not publishable.
+passed on the Pi. After the correction, the framework exceeded 230k requests/s
+under the two-generator-CPU diagnostic, again saturating the generator. Both
+rejected campaigns remain diagnostic, not publishable.
 
 ## Fairness And Cooldown
 
@@ -109,11 +112,11 @@ The runner applies the same controls to every lane:
    idle sample before the campaign starts.
 3. Randomize lane order independently in each round using a recorded,
    deterministic seed from the checked-in workload configuration.
-4. Start the server on CPUs `0-1`; keep two `h2load` threads on CPUs `2-3`.
+4. Start the server on CPU `0`; keep three `h2load` threads on CPUs `1-3`.
    Every CoAkka lane uses the native runtime's single bounded event loop.
-   Idiomatic connector samples use three bounded application workers where the
-   language facade provides them; all server processes remain inside the same
-   two-CPU placement as their ecosystem peers.
+   Connector and framework workers are set for the one-core server budget
+   where configurable; all server processes stay on the same CPU as their
+   ecosystem peers.
 5. Check the exact response and prove two requests reuse one HTTP/1.1 socket
    before calibration. A close/reconnect lane is rejected rather than compared
    against persistent-connection lanes.
@@ -121,7 +124,7 @@ The runner applies the same controls to every lane:
    after at least 15 seconds before the measured request set.
 7. Reject the sample if any request fails, status observations do not match
    successful request accounting, firmware reports power or thermal
-   throttling, or either load-generator CPU is above 90% non-idle during the
+   throttling, or any load-generator CPU is above 90% non-idle during the
    measured request set. I/O wait counts as non-idle: logging must not become
    a hidden client-side bottleneck.
 8. Stop the server, pass the same cooldown and CPU-idle gate after at least 15
@@ -213,7 +216,7 @@ Run one short round before spending time on the full campaign:
 
 ```sh
 cd /home/pi5/coakka-http-runtime-benchmark-20261001
-taskset -c 2-3 python3 scripts/run-rpi5.py \
+taskset -c 1-3 python3 scripts/run-rpi5.py \
   --output evidence/qualification \
   --rounds 1 \
   --duration 2 \
@@ -235,7 +238,7 @@ remove a rejected task-owned directory deliberately before rerunning.
 To isolate one or more lanes while diagnosing, repeat `--lane`:
 
 ```sh
-taskset -c 2-3 python3 scripts/run-rpi5.py \
+taskset -c 1-3 python3 scripts/run-rpi5.py \
   --output evidence/qualification-go \
   --rounds 1 --duration 2 --calibration-requests 5000 \
   --lane go-coakka --lane go-chi --lane go-gin
@@ -246,7 +249,7 @@ taskset -c 2-3 python3 scripts/run-rpi5.py \
 After qualification and a fresh cooldown:
 
 ```sh
-taskset -c 2-3 python3 scripts/run-rpi5.py \
+taskset -c 1-3 python3 scripts/run-rpi5.py \
   --output evidence/campaign
 python3 scripts/summarize.py \
   evidence/campaign/campaign.json \

@@ -526,9 +526,9 @@ def validate_configuration(
         raise ValueError("the framework campaign must keep io_uring disabled")
     if (
         isinstance(workload.get("load_threads"), bool)
-        or workload.get("load_threads") != 2
+        or workload.get("load_threads") != 3
     ):
-        raise ValueError("the Pi campaign requires two load-generator threads")
+        raise ValueError("the Pi campaign requires three load-generator threads")
     if workload["calibration_requests"] > workload["max_measurement_requests"]:
         raise ValueError("calibration request count exceeds the measurement ceiling")
     cooldown_seconds = workload.get("cooldown_minimum_seconds")
@@ -644,10 +644,8 @@ def validate_machine(facts: dict[str, Any], workload: dict[str, Any]) -> None:
     server_cpus = cpu_set(workload["server_cpus"])
     load_cpus = cpu_set(workload["load_cpus"])
     if (
-        len(server_cpus) != 2
-        or len(load_cpus) != 2
-        or server_cpus & load_cpus
-        or server_cpus | load_cpus != set(range(4))
+        server_cpus != {0}
+        or load_cpus != {1, 2, 3}
     ):
         raise ValueError("server and load CPU sets must partition CPUs 0 through 3")
     if set(facts["governor_before"]) != {"cpu0", "cpu1", "cpu2", "cpu3"}:
@@ -814,7 +812,7 @@ def measure(
             server_rss_kib = sum(value[1] for value in process_metrics_after.values())
             if elapsed_seconds <= 0 or server_rss_kib <= 0:
                 raise RuntimeError(f"server CPU accounting failed for {lane['id']}")
-            # Averaging two cores could conceal one saturated h2load worker.
+            # Averaging three cores could conceal one saturated h2load worker.
             (
                 load_cpu_busy_percent,
                 load_cpu_busy_percent_by_core,

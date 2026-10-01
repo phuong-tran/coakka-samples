@@ -49,7 +49,7 @@ func runCoakka(port uint16) {
 		fatal(err)
 	}
 	service, err := coakkahttp.NewBuilder().Listen("127.0.0.1", port).
-		Concurrency(3).
+		Concurrency(1).
 		Get("/fixed", func(*coakkahttp.Request) (coakkahttp.Response, error) {
 			return response, nil
 		}).Start()

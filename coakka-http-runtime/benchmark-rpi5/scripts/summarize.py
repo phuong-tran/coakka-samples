@@ -24,9 +24,9 @@ def main() -> int:
         raise ValueError("benchmark campaign is incomplete")
     machine = campaign["machine"]
     workload = campaign["workload"]
-    if workload.get("server_cpus") != "0-1" or workload.get("load_cpus") != "2-3":
+    if workload.get("server_cpus") != "0" or workload.get("load_cpus") != "1-3":
         raise ValueError("benchmark CPU placement differs from the qualified campaign")
-    if workload.get("load_threads") != 2:
+    if workload.get("load_threads") != 3:
         raise ValueError("benchmark load-generator thread count differs")
     finite_machine_fields = (
         "temperature_after_initial_cooldown_c",
@@ -97,7 +97,7 @@ def main() -> int:
         by_core = measurement.get("load_cpu_busy_percent_by_core")
         if (
             not isinstance(by_core, dict)
-            or set(by_core) != {"cpu2", "cpu3"}
+            or set(by_core) != {"cpu1", "cpu2", "cpu3"}
             or any(
                 isinstance(value, bool)
                 or not isinstance(value, (int, float))

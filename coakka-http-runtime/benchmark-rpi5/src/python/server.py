@@ -39,7 +39,7 @@ def run_coakka(port: int) -> None:
     service = (
         Builder()
         .listen("127.0.0.1", port)
-        .concurrency(3)
+        .concurrency(1)
         .get("/fixed", lambda _request: Response(headers=COAKKA_HEADERS, body=BODY))
         .start()
     )

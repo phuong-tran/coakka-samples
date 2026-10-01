@@ -62,7 +62,11 @@ def measurement(lane_id: str, rps: float) -> dict[str, Any]:
         "server_rss_kib": 1024,
         "server_cpu_percent": 90.0,
         "load_cpu_busy_percent": 50.0,
-        "load_cpu_busy_percent_by_core": {"cpu2": 50.0, "cpu3": 40.0},
+        "load_cpu_busy_percent_by_core": {
+            "cpu1": 30.0,
+            "cpu2": 50.0,
+            "cpu3": 40.0,
+        },
     }
 
 
@@ -87,9 +91,9 @@ def campaign() -> dict[str, Any]:
             "load_cpu_maximum_busy_percent": 90.0,
             "coakka_event_loop_threads": 1,
             "io_uring": False,
-            "server_cpus": "0-1",
-            "load_cpus": "2-3",
-            "load_threads": 2,
+            "server_cpus": "0",
+            "load_cpus": "1-3",
+            "load_threads": 3,
         },
         "machine": {
             "throttled_before": "throttled=0x0",
@@ -204,8 +208,8 @@ class BenchmarkToolsTest(unittest.TestCase):
         command = RUNNER.h2load_command(value["workload"], 100, 8080, log)
         self.assertEqual("--log-file", command[-3])
         self.assertEqual(str(log), command[-2])
-        self.assertEqual(["taskset", "-c", "2-3", "h2load"], command[:4])
-        self.assertEqual("2", command[command.index("-t") + 1])
+        self.assertEqual(["taskset", "-c", "1-3", "h2load"], command[:4])
+        self.assertEqual("3", command[command.index("-t") + 1])
 
     def test_request_timing_log_requires_bounded_tmpfs(self) -> None:
         enough = SimpleNamespace(f_bavail=1024, f_frsize=1024 * 1024)
@@ -299,7 +303,7 @@ class BenchmarkToolsTest(unittest.TestCase):
             )
         threads = copy.deepcopy(config)
         threads["workload"]["load_threads"] = 1
-        with self.assertRaisesRegex(ValueError, "two load-generator threads"):
+        with self.assertRaisesRegex(ValueError, "three load-generator threads"):
             RUNNER.validate_configuration(threads["workload"], threads["lanes"])
         facts = campaign()["machine"]
         facts["governor_before"] = {
