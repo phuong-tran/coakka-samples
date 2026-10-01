@@ -26,8 +26,11 @@ threads, and one in-flight request per connection. Each lane warms those same
 connections for five seconds, then measures a fixed ten-second interval with
 `h2load --duration` and `--warm-up-time`. Warm-up requests are excluded from
 the measured request count and latency log. The runner rejects a shortened
-interval, a failed, errored, timed-out, incomplete, or over-ceiling request
-set, and any mismatch between completed requests and 2xx observations.
+interval, failed, errored, timed-out, or over-ceiling completed requests, and
+any mismatch between completed requests and 2xx observations. At the fixed-time
+cutoff, up to one initiated request per connection may still be in flight;
+those requests are excluded from completed-request throughput and their count
+is disclosed in the result.
 
 CoAkka lanes use the end-user host-inlined API for their language. The C and
 C++ lanes use the public C host surface directly. No lane calls an internal
@@ -96,6 +99,16 @@ remained and no revised native candidate had yet been selected. That partial
 run is also incomplete; it is not a table or a release result. The native
 performance review must finish before committing the board to another full
 campaign.
+
+A subsequent baseline campaign finished its first 19 lanes but the next
+`cpp-httplib` lane exposed an overly strict timed-cutoff check: h2load reported
+417,165 successful completed 2xx requests and 11 additional requests started
+but still in flight when the fixed interval ended. There were no failures,
+errors, or timeouts. That campaign remains incomplete and is not release
+evidence. The runner and summarizer now accept at most the configured number
+of in-flight requests at cutoff, exclude them from throughput, and disclose
+their maximum count. This is a measurement-method correction, not a server
+performance or response-behavior change.
 
 An earlier three-round fixed-request campaign passed response and cooldown
 checks but is rejected as release evidence. Its 20,000-request calibration

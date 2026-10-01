@@ -186,7 +186,9 @@ def main() -> int:
             )
         if (
             measurement["requests_total"] != expected
-            or measurement["requests_started"] != expected
+            or not expected
+            <= measurement["requests_started"]
+            <= expected + workload["concurrency"]
             or measurement["requests_done"] != expected
             or measurement["requests_succeeded"] != expected
             or measurement["requests_failed"] != 0
@@ -211,6 +213,11 @@ def main() -> int:
     if len(lanes) != len(campaign["lanes"]):
         raise ValueError("benchmark configuration contains duplicate lane identifiers")
     medians: dict[str, dict[str, float]] = {}
+    maximum_in_flight_at_cutoff = max(
+        item["requests_started"] - item["requests_done"]
+        for values in grouped.values()
+        for item in values
+    )
     for lane_id, values in grouped.items():
         medians[lane_id] = {
             "rps": statistics.median(item["requests_per_second"] for item in values),
@@ -285,6 +292,11 @@ def main() -> int:
             (
                 f"| Concurrency | {workload['concurrency']} clients, one request "
                 "in flight per connection |"
+            ),
+            (
+                f"| Maximum in flight at timed cutoff | "
+                f"{maximum_in_flight_at_cutoff}; excluded from completed-request "
+                "throughput, bounded by concurrency |"
             ),
             (
                 f"| Same-connection warm-up | {workload['warmup_seconds']} "

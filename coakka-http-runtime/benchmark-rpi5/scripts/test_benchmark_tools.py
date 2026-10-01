@@ -220,6 +220,10 @@ class BenchmarkToolsTest(unittest.TestCase):
         parsed = RUNNER.validate_load("lane", workload, 0, raw)
         self.assertEqual(100, parsed["requests_succeeded"])
         self.assertEqual(100, parsed["responses_2xx"])
+        cutoff = RUNNER.validate_load(
+            "lane", workload, 0, raw.replace("100 started", "111 started")
+        )
+        self.assertEqual(11, cutoff["requests_started"] - cutoff["requests_done"])
         with self.assertRaisesRegex(RuntimeError, "timing interval"):
             RUNNER.validate_load("lane", workload, 0, raw.replace("15.00s", "3.00s"))
         with self.assertRaisesRegex(RuntimeError, "timing interval"):
@@ -229,6 +233,8 @@ class BenchmarkToolsTest(unittest.TestCase):
                 "lane", workload, 0, raw.replace("10.00 req/s", "100.00 req/s")
             )
         for inconsistent in (
+            raw.replace("100 started", "99 started"),
+            raw.replace("100 started", "165 started"),
             raw.replace("100 2xx", "101 2xx"),
             raw.replace("100 2xx", "99 2xx"),
             raw.replace("0 4xx", "1 4xx"),
@@ -410,6 +416,19 @@ class BenchmarkToolsTest(unittest.TestCase):
     def test_request_accounting_mismatch_is_rejected(self) -> None:
         value = campaign()
         value["measurements"][0]["requests_succeeded"] = 99
+        with self.assertRaisesRegex(ValueError, "request accounting"):
+            with summarize_fixture(value):
+                pass
+
+    def test_bounded_in_flight_requests_at_cutoff_are_disclosed(self) -> None:
+        value = campaign()
+        value["measurements"][0]["requests_started"] += 11
+        with summarize_fixture(value) as output:
+            self.assertIn(
+                "| Maximum in flight at timed cutoff | 11;",
+                output.read_text(),
+            )
+        value["measurements"][0]["requests_started"] += 54
         with self.assertRaisesRegex(ValueError, "request accounting"):
             with summarize_fixture(value):
                 pass

@@ -376,7 +376,7 @@ def h2load_command(
 def validate_load(
     lane_id: str, workload: dict[str, Any], returncode: int, raw: str
 ) -> dict[str, Any]:
-    """Reject truncated intervals, incomplete requests, or status failures."""
+    """Count successful completions; bound requests in flight at the timed cutoff."""
     if returncode != 0:
         raise RuntimeError(f"h2load failed for {lane_id}:\n{raw}")
     metrics = parse_h2load(raw)
@@ -404,7 +404,9 @@ def validate_load(
         or not math.isfinite(metrics["requests_per_second"])
         or abs(metrics["requests_per_second"] - measured_rate)
         > measured_rate * 0.05
-        or metrics["requests_started"] != expected_requests
+        or not expected_requests
+        <= metrics["requests_started"]
+        <= expected_requests + workload["concurrency"]
         or metrics["requests_done"] != expected_requests
         or metrics["requests_succeeded"] != expected_requests
         or metrics["requests_failed"] != 0
