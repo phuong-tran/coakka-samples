@@ -101,6 +101,7 @@ reset_build_dir() {
 # runtime and connector source byte used for this candidate.
 find config scripts src sources -type f \
   ! -path '*/.gradle/*' ! -path '*/build/*' ! -name .DS_Store \
+  ! -path '*/__pycache__/*' ! -name '*.pyc' \
   -print0 | LC_ALL=C sort -z | xargs -0 sha256sum \
   >evidence/locks/source-files.sha256
 sha256sum evidence/locks/source-files.sha256 \
