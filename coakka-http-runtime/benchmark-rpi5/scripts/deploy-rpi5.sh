@@ -10,6 +10,7 @@ commons_root="${COAKKA_COMMONS_ROOT:-${samples_repo}/../coakka-commons}"
 host="${COAKKA_RPI5_HOST:-pi5}"
 remote_root="${COAKKA_RPI5_ROOT:-/home/pi5/coakka-http-runtime-benchmark-20261001}"
 qualified_build_dir="${COAKKA_HTTP_QUALIFIED_BUILD_DIR:-}"
+qualified_binary_sha256="${COAKKA_HTTP_QUALIFIED_BINARY_SHA256:-}"
 runtime_ref="${COAKKA_HTTP_RUNTIME_REF:-}"
 known_hosts="${COAKKA_RPI5_KNOWN_HOSTS:-}"
 
@@ -35,16 +36,17 @@ fi
 if [[ -n "${qualified_build_dir}" ]]; then
   [[ "${qualified_build_dir}" =~ ^/home/pi5/[A-Za-z0-9._/-]+/build$ &&
      "${qualified_build_dir}" != *..* &&
-     "${runtime_ref}" =~ ^[0-9a-f]{40}$ ]] || {
-    printf 'qualified build requires a dedicated Pi build path and exact runtime commit\n' >&2
+     "${runtime_ref}" =~ ^[0-9a-f]{40}$ &&
+     "${qualified_binary_sha256}" =~ ^[0-9a-f]{64}$ ]] || {
+    printf 'qualified build requires a dedicated Pi build path, exact runtime commit and independently qualified binary SHA-256\n' >&2
     exit 1
   }
   git -C "${runtime_root}" cat-file -e "${runtime_ref}^{commit}"
   runtime_head="$(git -C "${runtime_root}" rev-parse "${runtime_ref}^{commit}")"
   runtime_dirty=0
 else
-  [[ -z "${runtime_ref}" ]] || {
-    printf 'runtime ref requires a qualified build directory\n' >&2
+  [[ -z "${runtime_ref}" && -z "${qualified_binary_sha256}" ]] || {
+    printf 'runtime ref and binary SHA-256 require a qualified build directory\n' >&2
     exit 1
   }
   runtime_head="$(git -C "${runtime_root}" rev-parse HEAD)"
@@ -136,5 +138,5 @@ ssh "${ssh_options[@]}" "${host}" "printf '%s\n' \
   > '${remote_root}/evidence/locks/source-identities.txt'"
 
 # shellcheck disable=SC2029
-ssh "${ssh_options[@]}" "${host}" "cd '${remote_root}' && chmod +x scripts/*.sh sources/connector/gradlew && COAKKA_HTTP_QUALIFIED_BUILD_DIR='${qualified_build_dir}' COAKKA_HTTP_QUALIFIED_SOURCE_REVISION='${runtime_head}' bash scripts/prepare-rpi5.sh"
+ssh "${ssh_options[@]}" "${host}" "cd '${remote_root}' && chmod +x scripts/*.sh sources/connector/gradlew && COAKKA_HTTP_QUALIFIED_BUILD_DIR='${qualified_build_dir}' COAKKA_HTTP_QUALIFIED_SOURCE_REVISION='${runtime_head}' COAKKA_HTTP_QUALIFIED_BINARY_SHA256='${qualified_binary_sha256}' bash scripts/prepare-rpi5.sh"
 printf 'remote benchmark prepared at %s:%s\n' "${host}" "${remote_root}"

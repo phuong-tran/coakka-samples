@@ -19,9 +19,10 @@ dependencies {
 }
 
 kotlin {
-    // Trixie supplies JDK 21; retain Java 17 bytecode for the comparison app.
+    // This local benchmark app is built and run on Trixie's JDK 21. The
+    // separately verified connector JAR retains its Java 8 bytecode contract.
     jvmToolchain(21)
-    compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
 }
 
 application {

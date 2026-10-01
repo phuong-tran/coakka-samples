@@ -148,6 +148,7 @@ COAKKA_HTTP_CONNECTOR_ROOT
 COAKKA_COMMONS_ROOT
 COAKKA_HTTP_RUNTIME_REF  exact frozen 40-hex runtime commit; paired with qualified build
 COAKKA_HTTP_QUALIFIED_BUILD_DIR  qualified CMake build directory on the Pi
+COAKKA_HTTP_QUALIFIED_BINARY_SHA256  independently qualified host library digest
 ```
 
 Deployment copies the benchmark plus the runtime and connector source trees.
@@ -156,6 +157,9 @@ from that same on-board qualification root. Otherwise it exports the exact
 `coakka-commons` commit named by the runtime dependency lock. The Pi therefore
 needs no private repository credential, and a newer local `coakka-commons`
 checkout cannot silently change the measured binary.
+Qualified-build mode checks the independently recorded host-library SHA-256
+before and after installation; a relink or a different installed binary stops
+preparation before any measurement.
 Preparation then:
 
 - installs the required Linux build tools, JDK 21, and comparison libraries;

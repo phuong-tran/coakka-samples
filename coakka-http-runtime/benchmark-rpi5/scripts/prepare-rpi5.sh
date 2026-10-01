@@ -156,12 +156,17 @@ reset_build_dir "${root}/build/host-prefix"
 qualified_build_dir="${COAKKA_HTTP_QUALIFIED_BUILD_DIR:-}"
 if [[ -n "${qualified_build_dir}" ]]; then
   qualified_revision="${COAKKA_HTTP_QUALIFIED_SOURCE_REVISION:-}"
+  qualified_binary_sha256="${COAKKA_HTTP_QUALIFIED_BINARY_SHA256:-}"
   [[ "${qualified_build_dir}" == /* &&
      -f "${qualified_build_dir}/CMakeCache.txt" &&
-     "${qualified_revision}" =~ ^[0-9a-f]{40}$ ]] || {
+     "${qualified_revision}" =~ ^[0-9a-f]{40}$ &&
+     "${qualified_binary_sha256}" =~ ^[0-9a-f]{64}$ ]] || {
     printf 'qualified native build identity is invalid\n' >&2
     exit 1
   }
+  printf '%s  %s\n' "${qualified_binary_sha256}" \
+    "${qualified_build_dir}/libcoakka_http_host.so.1.0.0" |
+    sha256sum --check --strict
   grep -Fxq "COAKKA_HTTP_SOURCE_REVISION:STRING=${qualified_revision}" \
     "${qualified_build_dir}/CMakeCache.txt"
   grep -Fxq 'CMAKE_BUILD_TYPE:STRING=Release' \
@@ -207,6 +212,10 @@ host_library="${root}/build/host-prefix/lib/libcoakka_http_host.so.1.0.0"
   printf 'host library was not installed: %s\n' "${host_library}" >&2
   exit 1
 }
+if [[ -n "${qualified_build_dir}" ]]; then
+  printf '%s  %s\n' "${qualified_binary_sha256}" "${host_library}" |
+    sha256sum --check --strict
+fi
 
 reset_build_dir "${root}/build/go"
 mkdir -p build/go/app
