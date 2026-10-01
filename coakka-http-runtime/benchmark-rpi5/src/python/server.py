@@ -55,8 +55,9 @@ def run_coakka(port: int) -> None:
                 print(
                     "CoAkka service health: "
                     f"lifecycle={health.lifecycle} "
-                    f"failed_components={health.failed_components} "
-                    f"admission_open={health.admission_open}",
+                    f"ready={health.ready} "
+                    f"admission_open={health.admission_open} "
+                    f"active_requests={health.activity.active_requests}",
                     file=sys.stderr,
                     flush=True,
                 )
