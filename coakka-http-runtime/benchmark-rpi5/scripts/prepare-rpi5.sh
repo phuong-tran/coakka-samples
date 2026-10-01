@@ -27,7 +27,9 @@ for file in \
   sources/connector/CMakeLists.txt \
   sources/connector/gradlew \
   sources/connector/connectors/go/coakkahttp/go.mod \
-  sources/connector/connectors/javascript/package/package.json; do
+  sources/connector/connectors/jvm/runtime/build.gradle.kts \
+  sources/connector/connectors/javascript/package/package.json \
+  src/kotlin/build.gradle.kts; do
   [[ -f "${file}" ]] || {
     printf 'missing source input: %s\n' "${file}" >&2
     exit 1
@@ -37,20 +39,49 @@ done
 sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
   build-essential ca-certificates cmake curl git libcpp-httplib-dev \
-  libmicrohttpd-dev nghttp2-client ninja-build nodejs npm \
-  openjdk-17-jdk-headless perl pkg-config python3 python3-venv unzip
+  libmicrohttpd-dev nghttp2-client ninja-build \
+  openjdk-21-jdk-headless perl pkg-config python3 python3-venv unzip
 
-for command in cmake java javac node npm python3; do
+for command in cmake curl java javac python3 sha256sum tar; do
   command -v "${command}" >/dev/null || {
     printf 'required benchmark tool is unavailable: %s\n' "${command}" >&2
     exit 1
   }
 done
 
+mkdir -p build tools evidence/locks
+
+# Trixie's Node 20 is below the connector's declared Node >=22 floor. Pin one
+# official ARM64 toolchain for both builds and measured Node framework lanes.
+node_version=22.23.3
+node_archive="tools/node-v${node_version}-linux-arm64.tar.xz"
+node_sha256=a44aeb94849a299b22df10b9e622ec2f605c2183501bc40590705131de7c740f
+node_binary="tools/node/bin/node"
+if [[ -x "${node_binary}" ]] &&
+  [[ "$("${node_binary}" --version)" != "v${node_version}" ]]; then
+  printf 'existing benchmark Node has an unexpected version\n' >&2
+  exit 1
+fi
+if [[ ! -x "${node_binary}" ]]; then
+  curl --fail --location --retry 3 \
+    "https://nodejs.org/download/release/v${node_version}/node-v${node_version}-linux-arm64.tar.xz" \
+    -o "${node_archive}"
+  printf '%s  %s\n' "${node_sha256}" "${node_archive}" |
+    sha256sum --check --strict
+  mkdir -p tools/node
+  tar -xJf "${node_archive}" -C tools/node --strip-components=1
+fi
+rm -f "${node_archive}"
+[[ "$("${node_binary}" --version)" == "v${node_version}" &&
+   -x tools/node/bin/npm ]] || {
+  printf 'benchmark Node toolchain check failed\n' >&2
+  exit 1
+}
+export PATH="${root}/tools/node/bin:${PATH}"
+
 javac_path="$(readlink -f "$(command -v javac)")"
 export JAVA_HOME
 JAVA_HOME="$(dirname "$(dirname "${javac_path}")")"
-mkdir -p build tools evidence/locks
 
 reset_build_dir() {
   local directory="$1"
@@ -222,8 +253,11 @@ npm install --prefix build/javascript --install-links --no-audit --no-fund \
 cp build/javascript/package-lock.json evidence/locks/javascript-package-lock.json
 
 reset_build_dir "${root}/build/jvm-connector"
-reset_build_dir "${root}/build/jvm-connector-cache"
-GRADLE_USER_HOME="${root}/build/jvm-connector-cache" \
+mkdir -p build/jvm-connector-cache
+# Both Gradle projects use the same retained dependency cache; only their
+# compiled outputs are reset when preparation is repeated.
+gradle_cache="${root}/build/jvm-connector-cache"
+GRADLE_USER_HOME="${gradle_cache}" \
   sources/connector/gradlew --no-daemon -p sources/connector \
   -PcoakkaHttpPrefix="${root}/build/host-prefix" \
   -PcoakkaHttpBuildDir="${root}/build/jvm-connector" \
@@ -241,14 +275,13 @@ jvm_bridge="${root}/${jvm_bridge}"
 
 reset_build_dir "${root}/build/kotlin"
 reset_build_dir "${root}/build/kotlin-gradle"
-reset_build_dir "${root}/build/kotlin-cache"
-GRADLE_USER_HOME="${root}/build/kotlin-cache" \
+GRADLE_USER_HOME="${gradle_cache}" \
   sources/connector/gradlew --no-daemon -p src/kotlin \
   -PcoakkaHttpJar="${jvm_jar}" \
   -PsampleBuildDir="${root}/build/kotlin-gradle" \
   installDist
 cp -a build/kotlin-gradle/install/coakka-http-rpi5-kotlin build/kotlin
-GRADLE_USER_HOME="${root}/build/kotlin-cache" \
+GRADLE_USER_HOME="${gradle_cache}" \
   sources/connector/gradlew --no-daemon -p src/kotlin \
   -PcoakkaHttpJar="${jvm_jar}" \
   -PsampleBuildDir="${root}/build/kotlin-gradle" \

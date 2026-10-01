@@ -531,6 +531,21 @@ def validate_configuration(
         for lane in lanes
     ):
         raise ValueError("every benchmark lane needs a non-empty command")
+    # The Pi also has a system Node below the connector's version floor. Keep
+    # every measured server on the checked, locally pinned toolchain instead
+    # of inheriting whichever executable a login shell happens to find.
+    pinned_commands = {"Node.js": "tools/node/bin/node", "Bun": "tools/bun/bin/bun"}
+    for lane in lanes:
+        environment = lane.get("environment", {})
+        if not isinstance(environment, dict):
+            raise ValueError("benchmark lane environment must be an object")
+        expected = pinned_commands.get(lane["ecosystem"])
+        if expected is not None and lane["command"][0] != expected:
+            raise ValueError(f"{lane['ecosystem']} lane must use {expected}")
+        if lane["ecosystem"] == "Kotlin/JVM" and environment.get(
+            "JAVA_HOME"
+        ) != "/usr/lib/jvm/java-21-openjdk-arm64":
+            raise ValueError("Kotlin/JVM lane must use the Trixie JDK 21")
     ecosystems = {lane.get("ecosystem") for lane in lanes}
     for ecosystem in ecosystems:
         selected = [lane for lane in lanes if lane.get("ecosystem") == ecosystem]

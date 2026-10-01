@@ -212,6 +212,24 @@ class BenchmarkToolsTest(unittest.TestCase):
         config = json.loads((SCRIPT_DIRECTORY.parent / "config/lanes.json").read_text())
         RUNNER.validate_configuration(config["workload"], config["lanes"])
 
+    def test_framework_lanes_cannot_fall_back_to_system_toolchains(self) -> None:
+        config = json.loads((SCRIPT_DIRECTORY.parent / "config/lanes.json").read_text())
+        for lane_id, replacement, message in (
+            ("node-coakka", "node", "Node.js lane must use"),
+            ("bun-elysia", "bun", "Bun lane must use"),
+        ):
+            with self.subTest(lane_id=lane_id):
+                changed = copy.deepcopy(config)
+                lane = next(item for item in changed["lanes"] if item["id"] == lane_id)
+                lane["command"][0] = replacement
+                with self.assertRaisesRegex(ValueError, message):
+                    RUNNER.validate_configuration(changed["workload"], changed["lanes"])
+        changed = copy.deepcopy(config)
+        lane = next(item for item in changed["lanes"] if item["id"] == "kotlin-coakka")
+        lane["environment"]["JAVA_HOME"] = "/usr/lib/jvm/java-17-openjdk-arm64"
+        with self.assertRaisesRegex(ValueError, "Trixie JDK 21"):
+            RUNNER.validate_configuration(changed["workload"], changed["lanes"])
+
     def test_framework_campaign_rejects_io_uring_or_cpu_budget_drift(self) -> None:
         config = json.loads((SCRIPT_DIRECTORY.parent / "config/lanes.json").read_text())
         io_uring = copy.deepcopy(config)

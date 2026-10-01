@@ -19,7 +19,8 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain(17)
+    // Trixie supplies JDK 21; retain Java 17 bytecode for the comparison app.
+    jvmToolchain(21)
     compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
 }
 

@@ -158,9 +158,10 @@ needs no private repository credential, and a newer local `coakka-commons`
 checkout cannot silently change the measured binary.
 Preparation then:
 
-- installs the required Linux build tools, Node.js, and comparison libraries;
-- installs the pinned Go 1.27.1 and Bun 1.4.2 ARM64 binaries after checking
-  their published SHA-256 digests; the Bun lanes invoke that exact local binary;
+- installs the required Linux build tools, JDK 21, and comparison libraries;
+- installs pinned Node.js 22.23.3, Go 1.27.1, and Bun 1.4.2 ARM64 binaries
+  after checking their published SHA-256 digests; the Node and Bun lanes invoke
+  those exact local binaries;
 - installs the focused native host from the qualified build when supplied,
   after checking the source commit and byte-for-byte source tree; otherwise it
   builds the host from the deployed source;
