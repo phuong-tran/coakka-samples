@@ -21,8 +21,8 @@ content-type: application/octet-stream
 body: 0123456789abcdef0123456789abcdef
 ```
 
-The runner uses loopback HTTP/1.1 with 64 persistent connections, one load
-thread, and one in-flight request per connection. It first sends a fixed
+The runner uses loopback HTTP/1.1 with 64 persistent connections, two load
+threads, and one in-flight request per connection. It first sends a fixed
 calibration set, derives a request count targeting ten measured seconds, and
 rejects any run with a failed, errored, timed-out, or incomplete request.
 Calibration and measurement both enable the same per-request timing log;
@@ -61,8 +61,8 @@ realistic integration boundary.
 | Campaign boot storage | SanDisk USB 3.2Gen1 250 GB; `/dev/sda2` root during Trixie qualification |
 | Required OS baseline | Current Raspberry Pi OS Lite 64-bit (Debian 13 Trixie), clean install |
 | Kernel at campaign preparation | `6.18.50+rpt-rpi-2712`; final campaign captures the then-current kernel |
-| Server placement | CPUs `0-2` |
-| Load generator placement | CPU `3` |
+| Server placement | CPUs `0-1` |
+| Load generator placement | CPUs `2-3`, two load threads |
 | Load generator | `h2load --h1` from nghttp2-client |
 
 The campaign output records the exact OS, kernel, CPU model, memory, tool
@@ -71,11 +71,16 @@ digests. The table is descriptive; captured evidence is authoritative for a
 specific result.
 
 Do not measure on the prior Bookworm installation or perform an in-place major
-upgrade. Raspberry Pi documents Bookworm-to-Trixie migration as a clean-install
-operation. Provision separate boot media, install the current image, fully
-update it, reboot, and capture the exact OS/kernel/firmware state before the
-qualification round. Until that clean boot exists, every result table remains
-pending.
+upgrade. The clean Trixie installation now boots from the separate SanDisk USB;
+the prior NVMe remains outside the campaign. Result tables remain pending until
+short qualification and the full campaign pass on that exact installation.
+
+An initial single-generator-CPU qualification was rejected when it reached
+91.8% busy in one framework lane, above the declared 90% ceiling. No result
+from that incomplete run is publishable. Before any complete qualification,
+the protocol was revised to reserve two CPUs for the server and two isolated
+CPUs for the generator. The same revised placement applies to every lane; the
+busiest generator CPU, not a two-CPU average, must remain below the ceiling.
 
 ## Fairness And Cooldown
 
@@ -87,16 +92,16 @@ The runner applies the same controls to every lane:
    idle sample before the campaign starts.
 3. Randomize lane order independently in each round using a recorded,
    deterministic seed from the checked-in workload configuration.
-4. Start the server on CPUs `0-2`; keep `h2load` on CPU `3`.
+4. Start the server on CPUs `0-1`; keep two `h2load` threads on CPUs `2-3`.
    Every CoAkka lane uses the native runtime's single bounded event loop.
    Idiomatic connector samples use three bounded application workers where the
    language facade provides them; all server processes remain inside the same
-   three-CPU placement as their ecosystem peers.
+   two-CPU placement as their ecosystem peers.
 5. Check the exact response before calibration.
 6. Run calibration, then pass the same temperature, power, and CPU-idle gate
    after at least 15 seconds before the measured request set.
 7. Reject the sample if any request fails, firmware reports power or thermal
-   throttling, or the load-generator CPU is above 90% non-idle during the
+   throttling, or either load-generator CPU is above 90% non-idle during the
    measured request set. I/O wait counts as non-idle: logging must not become
    a hidden client-side bottleneck.
 8. Stop the server, pass the same cooldown and CPU-idle gate after at least 15
@@ -104,10 +109,10 @@ The runner applies the same controls to every lane:
 9. Restore the original governor on success or failure.
 
 The default campaign has three matched rounds. Results use the median for
-requests per second, mean request time, p99 request time, server CPU,
-load-generator CPU, and server RSS. Relative throughput is calculated only
-against the CoAkka lane in the same
-ecosystem. It is never used to rank languages.
+requests per second, mean request time, p99 request time, server CPU, the
+busiest load-generator CPU, and server RSS. Relative throughput is calculated
+only against the CoAkka lane in the same ecosystem. It is never used to rank
+languages.
 
 Server CPU is the aggregate user-plus-system time of every process in the
 server process group. Server RSS is the sum of their resident-page counts; for
@@ -188,7 +193,7 @@ Run one short round before spending time on the full campaign:
 
 ```sh
 cd /home/pi5/coakka-http-runtime-benchmark-20261001
-taskset -c 3 python3 scripts/run-rpi5.py \
+taskset -c 2-3 python3 scripts/run-rpi5.py \
   --output evidence/qualification \
   --rounds 1 \
   --duration 2 \
@@ -210,7 +215,7 @@ remove a rejected task-owned directory deliberately before rerunning.
 To isolate one or more lanes while diagnosing, repeat `--lane`:
 
 ```sh
-taskset -c 3 python3 scripts/run-rpi5.py \
+taskset -c 2-3 python3 scripts/run-rpi5.py \
   --output evidence/qualification-go \
   --rounds 1 --duration 2 --calibration-requests 5000 \
   --lane go-coakka --lane go-chi --lane go-gin
@@ -221,7 +226,7 @@ taskset -c 3 python3 scripts/run-rpi5.py \
 After qualification and a fresh cooldown:
 
 ```sh
-taskset -c 3 python3 scripts/run-rpi5.py \
+taskset -c 2-3 python3 scripts/run-rpi5.py \
   --output evidence/campaign
 python3 scripts/summarize.py \
   evidence/campaign/campaign.json \

@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
   httplib::Server server;
   // cpp-httplib assigns a persistent connection to a worker. Match the
   // declared client concurrency so idle keep-alive sockets cannot starve the
-  // accept queue; taskset still confines execution to the three server CPUs.
+  // accept queue; taskset still confines execution to the server CPU set.
   server.new_task_queue = [] {
     return new httplib::ThreadPool(connection_workers);
   };

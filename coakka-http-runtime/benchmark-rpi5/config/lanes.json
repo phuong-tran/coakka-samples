@@ -17,8 +17,9 @@
     "load_cpu_maximum_busy_percent": 90.0,
     "coakka_event_loop_threads": 1,
     "io_uring": false,
-    "server_cpus": "0-2",
-    "load_cpu": "3"
+    "server_cpus": "0-1",
+    "load_cpus": "2-3",
+    "load_threads": 2
   },
   "lanes": [
     {"id":"c-coakka","ecosystem":"C","implementation":"CoAkka host-inlined","role":"coakka","command":["build/native/coakka-c","{port}"]},

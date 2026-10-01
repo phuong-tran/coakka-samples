@@ -182,6 +182,18 @@ def busy_percent_between(before: tuple[int, int], after: tuple[int, int]) -> flo
     return (total_delta - idle_delta) / total_delta * 100.0
 
 
+def busiest_cpu_busy_percent(
+    before: dict[str, tuple[int, int]], after: dict[str, tuple[int, int]]
+) -> tuple[float, dict[str, float]]:
+    """Reject missing cores and report the busiest load-generator core."""
+    if not before or before.keys() != after.keys():
+        raise RuntimeError("load-generator CPU inventory changed")
+    by_core = {
+        cpu: busy_percent_between(before[cpu], after[cpu]) for cpu in sorted(before)
+    }
+    return max(by_core.values()), by_core
+
+
 def cpu_busy_percent(sample_seconds: float = 1.0) -> float:
     """Return the busiest CPU's utilization across one short idle sample."""
     before = cpu_counters()
@@ -290,7 +302,7 @@ def h2load_command(
     command = [
         "taskset",
         "-c",
-        workload["load_cpu"],
+        workload["load_cpus"],
         "h2load",
         "--h1",
         "-n",
@@ -298,7 +310,7 @@ def h2load_command(
         "-c",
         str(workload["concurrency"]),
         "-t",
-        "1",
+        str(workload["load_threads"]),
         "-m",
         "1",
     ]
@@ -471,6 +483,11 @@ def validate_configuration(
         raise ValueError("CoAkka event-loop count must match the native one-loop contract")
     if workload.get("io_uring") is not False:
         raise ValueError("the framework campaign must keep io_uring disabled")
+    if (
+        isinstance(workload.get("load_threads"), bool)
+        or workload.get("load_threads") != 2
+    ):
+        raise ValueError("the Pi campaign requires two load-generator threads")
     if workload["calibration_requests"] > workload["max_measurement_requests"]:
         raise ValueError("calibration request count exceeds the measurement ceiling")
     cooldown_seconds = workload.get("cooldown_minimum_seconds")
@@ -584,9 +601,10 @@ def validate_machine(facts: dict[str, Any], workload: dict[str, Any]) -> None:
     if facts["cpu_count"] != 4:
         raise RuntimeError("benchmark workload requires exactly four logical CPUs")
     server_cpus = cpu_set(workload["server_cpus"])
-    load_cpus = cpu_set(workload["load_cpu"])
+    load_cpus = cpu_set(workload["load_cpus"])
     if (
-        len(load_cpus) != 1
+        len(server_cpus) != 2
+        or len(load_cpus) != 2
         or server_cpus & load_cpus
         or server_cpus | load_cpus != set(range(4))
     ):
@@ -710,8 +728,13 @@ def measure(
             )
             request_log.unlink(missing_ok=True)
             process_metrics_before = process_group_metrics(process.pid)
-            load_cpu = f"cpu{next(iter(cpu_set(workload['load_cpu'])))}"
-            load_counters_before = cpu_counters()[load_cpu]
+            load_cpu_names = {
+                f"cpu{index}" for index in cpu_set(workload["load_cpus"])
+            }
+            load_snapshot_before = cpu_counters()
+            load_counters_before = {
+                cpu: load_snapshot_before[cpu] for cpu in load_cpu_names
+            }
             measurement_started = time.monotonic()
             try:
                 load = subprocess.run(
@@ -725,7 +748,10 @@ def measure(
                     timeout=workload["duration_seconds"] + 30,
                 )
                 elapsed_seconds = time.monotonic() - measurement_started
-                load_counters_after = cpu_counters()[load_cpu]
+                load_snapshot_after = cpu_counters()
+                load_counters_after = {
+                    cpu: load_snapshot_after[cpu] for cpu in load_cpu_names
+                }
                 process_metrics_after = process_group_metrics(process.pid)
             except BaseException:
                 request_log.unlink(missing_ok=True)
@@ -746,9 +772,11 @@ def measure(
             server_rss_kib = sum(value[1] for value in process_metrics_after.values())
             if elapsed_seconds <= 0 or server_rss_kib <= 0:
                 raise RuntimeError(f"server CPU accounting failed for {lane['id']}")
-            load_cpu_busy_percent = busy_percent_between(
-                load_counters_before, load_counters_after
-            )
+            # Averaging two cores could conceal one saturated h2load worker.
+            (
+                load_cpu_busy_percent,
+                load_cpu_busy_percent_by_core,
+            ) = busiest_cpu_busy_percent(load_counters_before, load_counters_after)
             raw = load.stdout + load.stderr
             (raw_directory / f"round-{round_number:02d}-{lane['id']}-h2load.txt").write_text(raw)
             try:
@@ -786,6 +814,9 @@ def measure(
                     "server_process_count": len(process_metrics_after),
                     "server_rss_kib": server_rss_kib,
                     "load_cpu_busy_percent": load_cpu_busy_percent,
+                    "load_cpu_busy_percent_by_core": (
+                        load_cpu_busy_percent_by_core
+                    ),
                     "server_cpu_percent": (
                         cpu_tick_delta
                         / os.sysconf("SC_CLK_TCK")
