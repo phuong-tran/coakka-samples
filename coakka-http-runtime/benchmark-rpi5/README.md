@@ -22,14 +22,12 @@ body: 0123456789abcdef0123456789abcdef
 ```
 
 The runner uses loopback HTTP/1.1 with 64 persistent connections, three load
-threads, and one in-flight request per connection. It first sends a fixed
-calibration set, derives a request count targeting ten measured seconds, and
-rejects any run with a failed, errored, timed-out, or incomplete request. It
-also requires exactly one 2xx status observation per completed request and no
-3xx/4xx/5xx observation; a superficially successful but internally
-inconsistent `h2load` summary is rejected.
-Calibration and measurement both enable the same per-request timing log;
-otherwise log overhead could make the calibrated request rate misleading.
+threads, and one in-flight request per connection. Each lane warms those same
+connections for five seconds, then measures a fixed ten-second interval with
+`h2load --duration` and `--warm-up-time`. Warm-up requests are excluded from
+the measured request count and latency log. The runner rejects a shortened
+interval, a failed, errored, timed-out, incomplete, or over-ceiling request
+set, and any mismatch between completed requests and 2xx observations.
 
 CoAkka lanes use the end-user host-inlined API for their language. The C and
 C++ lanes use the public C host surface directly. No lane calls an internal
@@ -77,7 +75,14 @@ specific result.
 Do not measure on the prior Bookworm installation or perform an in-place major
 upgrade. The clean Trixie installation now boots from the separate SanDisk USB;
 the prior NVMe remains outside the campaign. Result tables remain pending until
-short qualification and the full campaign pass on that exact installation.
+revised short qualification and the full campaign pass on that exact installation.
+
+An earlier three-round fixed-request campaign passed response and cooldown
+checks but is rejected as release evidence. Its 20,000-request calibration
+underestimated slower connection startup: some supposed ten-second intervals
+lasted only about two to six seconds. The revised time-based protocol keeps
+the same 64 connections through warm-up and measurement. Old figures remain
+private diagnostic evidence and must not be merged with revised results.
 
 An initial single-generator-CPU qualification was rejected when it reached
 91.8% busy in one framework lane, above the declared 90% ceiling. No result
@@ -114,19 +119,20 @@ The runner applies the same controls to every lane:
    deterministic seed from the checked-in workload configuration.
 4. Start the server on CPU `0`; keep three `h2load` threads on CPUs `1-3`.
    Every CoAkka lane uses the native runtime's single bounded event loop.
-   Connector and framework workers are set for the one-core server budget
+   Connector and framework workers are set for the single-CPU server budget
    where configurable; all server processes stay on the same CPU as their
    ecosystem peers.
 5. Check the exact response and prove two requests reuse one HTTP/1.1 socket
-   before calibration. A close/reconnect lane is rejected rather than compared
+   before measurement. A close/reconnect lane is rejected rather than compared
    against persistent-connection lanes.
-6. Run calibration, then pass the same temperature, power, and CPU-idle gate
-   after at least 15 seconds before the measured request set.
+6. Warm the measured connections for five seconds, then measure the next ten
+   seconds in the same `h2load` process. Require the declared timing interval
+   and exactly one timing-log row per measured successful request.
 7. Reject the sample if any request fails, status observations do not match
    successful request accounting, firmware reports power or thermal
-   throttling, or any load-generator CPU is above 90% non-idle during the
-   measured request set. I/O wait counts as non-idle: logging must not become
-   a hidden client-side bottleneck.
+   throttling, or any load-generator CPU is above 90% non-idle across warm-up
+   and measurement. I/O wait counts as non-idle: logging must not become a
+   hidden client-side bottleneck.
 8. Stop the server, pass the same cooldown and CPU-idle gate after at least 15
    seconds, and only then start the next lane.
 9. Restore the original governor on success or failure.
@@ -142,9 +148,11 @@ server process group. Server RSS is the sum of their resident-page counts; for
 multi-process servers this intentionally counts each process and may count
 shared pages more than once. The result table also records that process count.
 The runner rejects a measured sample if group membership changes during the
-request set. These definitions are identical for every lane.
+combined warm-up and measurement. CPU and RSS observations cover both phases;
+throughput and latency cover measurement only. These definitions are identical
+for every lane.
 
-`h2load` writes per-request latency rows during calibration and measurement
+`h2load` writes per-request latency rows during measurement only
 to a capacity-checked `/dev/shm` tmpfs. The runner refuses a disk-backed or
 undersized temporary mount: request-log writes to the boot USB could otherwise
 cap the fastest lane and distort the comparison. It reduces the rows to p50,
@@ -219,8 +227,7 @@ cd /home/pi5/coakka-http-runtime-benchmark-20261001
 taskset -c 1-3 python3 scripts/run-rpi5.py \
   --output evidence/qualification \
   --rounds 1 \
-  --duration 2 \
-  --calibration-requests 5000
+  --duration 2
 python3 scripts/summarize.py \
   evidence/qualification/campaign.json \
   --output evidence/qualification/RESULTS.md
@@ -240,7 +247,7 @@ To isolate one or more lanes while diagnosing, repeat `--lane`:
 ```sh
 taskset -c 1-3 python3 scripts/run-rpi5.py \
   --output evidence/qualification-go \
-  --rounds 1 --duration 2 --calibration-requests 5000 \
+  --rounds 1 --duration 2 \
   --lane go-coakka --lane go-chi --lane go-gin
 ```
 

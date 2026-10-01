@@ -1,12 +1,12 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "workload": {
     "method": "GET",
     "path": "/fixed",
     "status": 200,
     "body": "0123456789abcdef0123456789abcdef",
     "concurrency": 64,
-    "calibration_requests": 20000,
+    "warmup_seconds": 5,
     "max_measurement_requests": 2000000,
     "duration_seconds": 10,
     "rounds": 3,

@@ -18,12 +18,18 @@ def main() -> int:
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     campaign = json.loads(args.campaign.read_text())
-    if campaign.get("schema_version") != 1:
+    if campaign.get("schema_version") != 2:
         raise ValueError("benchmark campaign schema is not supported")
     if campaign.get("complete") is not True:
         raise ValueError("benchmark campaign is incomplete")
     machine = campaign["machine"]
     workload = campaign["workload"]
+    if (
+        workload.get("warmup_seconds", 0) < 5
+        or workload.get("duration_seconds", 0) <= 0
+        or workload.get("max_measurement_requests", 0) <= 0
+    ):
+        raise ValueError("benchmark timing or request ceiling is invalid")
     if workload.get("server_cpus") != "0" or workload.get("load_cpus") != "1-3":
         raise ValueError("benchmark CPU placement differs from the qualified campaign")
     if workload.get("load_threads") != 3:
@@ -67,10 +73,10 @@ def main() -> int:
         if measurement["throttled"] != "throttled=0x0":
             raise ValueError(f"measurement was throttled: {measurement['lane_id']}")
         numeric_fields = (
-            "calibration_temperature_after_cooldown_c",
-            "calibration_cpu_busy_after_cooldown_percent",
             "temperature_after_cooldown_c",
             "cpu_busy_after_cooldown_percent",
+            "benchmark_duration_ms",
+            "load_wall_seconds",
             "requests_per_second",
             "request_time_mean_ms",
             "request_time_p99_ms",
@@ -87,6 +93,8 @@ def main() -> int:
             raise ValueError(f"measurement has invalid numeric evidence: {measurement['lane_id']}")
         if (
             measurement["requests_per_second"] <= 0
+            or measurement["benchmark_duration_ms"] <= 0
+            or measurement["load_wall_seconds"] <= 0
             or measurement["request_time_mean_ms"] < 0
             or measurement["request_time_p99_ms"] < 0
             or measurement["server_rss_kib"] <= 0
@@ -119,11 +127,7 @@ def main() -> int:
         ):
             raise ValueError(f"measurement has invalid process count: {measurement['lane_id']}")
         maximum_busy = workload["cooldown_maximum_cpu_busy_percent"]
-        if (
-            measurement["calibration_cpu_busy_after_cooldown_percent"]
-            > maximum_busy
-            or measurement["cpu_busy_after_cooldown_percent"] > maximum_busy
-        ):
+        if measurement["cpu_busy_after_cooldown_percent"] > maximum_busy:
             raise ValueError(
                 f"measurement did not pass the CPU-idle gate: "
                 f"{measurement['lane_id']}"
@@ -136,9 +140,7 @@ def main() -> int:
                 f"load generator was saturated: {measurement['lane_id']}"
             )
         if (
-            measurement["calibration_temperature_after_cooldown_c"]
-            > workload["cooldown_maximum_c"]
-            or measurement["temperature_after_cooldown_c"]
+            measurement["temperature_after_cooldown_c"]
             > workload["cooldown_maximum_c"]
         ):
             raise ValueError(
@@ -168,6 +170,19 @@ def main() -> int:
         ) or expected == 0:
             raise ValueError(
                 f"measurement request accounting is invalid: {measurement['lane_id']}"
+            )
+        total_seconds = workload["warmup_seconds"] + workload["duration_seconds"]
+        measured_rate = expected / workload["duration_seconds"]
+        if (
+            not (total_seconds - 0.5) * 1000
+            <= measurement["benchmark_duration_ms"]
+            <= (total_seconds + 3) * 1000
+            or abs(measurement["requests_per_second"] - measured_rate)
+            > measured_rate * 0.05
+            or measurement["load_wall_seconds"] < total_seconds - 0.5
+        ):
+            raise ValueError(
+                f"measurement duration is invalid: {measurement['lane_id']}"
             )
         if (
             measurement["requests_total"] != expected
@@ -216,6 +231,8 @@ def main() -> int:
         "All values are medians across matched rounds. `Relative throughput` is",
         "the lane throughput divided by the CoAkka host-inlined lane in the same",
         "ecosystem. It is a comparison aid, not a cross-ecosystem ranking.",
+        "The request rate and latency exclude warm-up; CPU utilization covers",
+        "the warm-up and measured interval together.",
         "",
     ]
     ecosystems = []
@@ -270,12 +287,13 @@ def main() -> int:
                 "in flight per connection |"
             ),
             (
-                f"| Calibration | {workload['calibration_requests']:,} requests "
-                "before each measured lane |"
+                f"| Same-connection warm-up | {workload['warmup_seconds']} "
+                "seconds before each measured interval |"
             ),
+            f"| Measured duration | {workload['duration_seconds']} seconds per lane |",
             (
-                f"| Target duration | {workload['duration_seconds']} seconds "
-                "converted to one fixed request count |"
+                f"| Measured request ceiling | "
+                f"{workload['max_measurement_requests']:,} per lane |"
             ),
             f"| Matched rounds | {workload['rounds']} |",
             f"| Random seed | {workload['random_seed']} |",

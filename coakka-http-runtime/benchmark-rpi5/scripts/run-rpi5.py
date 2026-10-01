@@ -29,7 +29,6 @@ def arguments() -> argparse.Namespace:
     parser.add_argument("--config", type=Path, default=Path("config/lanes.json"))
     parser.add_argument("--rounds", type=int)
     parser.add_argument("--duration", type=int)
-    parser.add_argument("--calibration-requests", type=int)
     parser.add_argument(
         "--lane",
         action="append",
@@ -328,19 +327,18 @@ def parse_h2load(output: str) -> dict[str, Any]:
 
 def h2load_command(
     workload: dict[str, Any],
-    requests: int,
     port: int,
     request_log: Path | None = None,
 ) -> list[str]:
-    """Return a fixed-request run that drains every request before exit."""
+    """Warm the same connections before a fixed-duration measured interval."""
     command = [
         "taskset",
         "-c",
         workload["load_cpus"],
         "h2load",
         "--h1",
-        "-n",
-        str(requests),
+        f"--duration={workload['duration_seconds']}s",
+        f"--warm-up-time={workload['warmup_seconds']}s",
         "-c",
         str(workload["concurrency"]),
         "-t",
@@ -355,14 +353,36 @@ def h2load_command(
 
 
 def validate_load(
-    lane_id: str, expected_requests: int, returncode: int, raw: str
+    lane_id: str, workload: dict[str, Any], returncode: int, raw: str
 ) -> dict[str, Any]:
-    """Parse one run and reject incomplete or transport-failed request sets."""
+    """Reject truncated intervals, incomplete requests, or status failures."""
     if returncode != 0:
         raise RuntimeError(f"h2load failed for {lane_id}:\n{raw}")
     metrics = parse_h2load(raw)
+    warmup = workload["warmup_seconds"]
+    duration = workload["duration_seconds"]
+    threads = workload["load_threads"]
+    timing_banner = (
+        f"Timing-based test with {warmup}s of warm-up time and "
+        f"{duration}s of main duration"
+    )
     if (
-        metrics["requests_total"] != expected_requests
+        raw.count(timing_banner) != threads
+        or raw.count("Main benchmark duration is started for thread #") != threads
+        or raw.count("Main benchmark duration is over for thread #") != threads
+        or not (warmup + duration - 0.5) * 1000
+        <= metrics["benchmark_duration_ms"]
+        <= (warmup + duration + 3) * 1000
+    ):
+        raise RuntimeError(f"{lane_id} did not complete the declared timing interval")
+    expected_requests = metrics["requests_total"]
+    measured_rate = expected_requests / duration
+    if (
+        expected_requests <= 0
+        or expected_requests > workload["max_measurement_requests"]
+        or not math.isfinite(metrics["requests_per_second"])
+        or abs(metrics["requests_per_second"] - measured_rate)
+        > measured_rate * 0.05
         or metrics["requests_started"] != expected_requests
         or metrics["requests_done"] != expected_requests
         or metrics["requests_succeeded"] != expected_requests
@@ -376,7 +396,7 @@ def validate_load(
     ):
         raise RuntimeError(
             f"{lane_id} did not complete one successful 2xx response "
-            "for each fixed request"
+            "for each measured request"
         )
     return metrics
 
@@ -474,7 +494,7 @@ def write_campaign(
 ) -> None:
     """Atomically checkpoint all validated lane results collected so far."""
     campaign = {
-        "schema_version": 1,
+        "schema_version": 2,
         "complete": complete,
         "workload": workload,
         "machine": facts,
@@ -494,7 +514,7 @@ def validate_configuration(
     positive_integer_fields = (
         "rounds",
         "duration_seconds",
-        "calibration_requests",
+        "warmup_seconds",
         "max_measurement_requests",
         "concurrency",
         "random_seed",
@@ -506,7 +526,7 @@ def validate_configuration(
     safety_ceilings = {
         "rounds": 10,
         "duration_seconds": 60,
-        "calibration_requests": 2_000_000,
+        "warmup_seconds": 30,
         "max_measurement_requests": 5_000_000,
         "concurrency": 512,
     }
@@ -529,8 +549,8 @@ def validate_configuration(
         or workload.get("load_threads") != 3
     ):
         raise ValueError("the Pi campaign requires three load-generator threads")
-    if workload["calibration_requests"] > workload["max_measurement_requests"]:
-        raise ValueError("calibration request count exceeds the measurement ceiling")
+    if workload["warmup_seconds"] < 5:
+        raise ValueError("warmup_seconds must be at least five seconds")
     cooldown_seconds = workload.get("cooldown_minimum_seconds")
     if (
         isinstance(cooldown_seconds, bool)
@@ -712,56 +732,6 @@ def measure(
         try:
             ready(port, process)
             require_persistent_http1(port, lane["id"])
-            calibration_count = workload["calibration_requests"]
-            calibration_temperature_before_c = temperature_c()
-            calibration_log = request_log_root / (
-                f"round-{round_number:02d}-{lane['id']}-calibration-requests.tsv"
-            )
-            calibration_log.unlink(missing_ok=True)
-            try:
-                calibration = subprocess.run(
-                    h2load_command(workload, calibration_count, port, calibration_log),
-                    cwd=root,
-                    check=False,
-                    capture_output=True,
-                    text=True,
-                    timeout=60,
-                )
-                calibration_raw = calibration.stdout + calibration.stderr
-                (
-                    raw_directory
-                    / f"round-{round_number:02d}-{lane['id']}-calibration.txt"
-                ).write_text(calibration_raw)
-                calibration_metrics = validate_load(
-                    lane["id"], calibration_count, calibration.returncode, calibration_raw
-                )
-                request_log_metrics(calibration_log, calibration_count)
-            finally:
-                calibration_log.unlink(missing_ok=True)
-            calibration_temperature_after_c = temperature_c()
-            measurement_count = round(
-                calibration_metrics["requests_per_second"]
-                * workload["duration_seconds"]
-            )
-            measurement_count = max(calibration_count, measurement_count)
-            if measurement_count > workload["max_measurement_requests"]:
-                raise RuntimeError(f"calibrated request count is unsafe for {lane['id']}")
-            print(
-                f"calibration cooldown lane={lane['id']} minimum_seconds="
-                f"{workload['cooldown_minimum_seconds']} "
-                f"maximum_c={workload['cooldown_maximum_c']:.1f} "
-                f"maximum_cpu_busy_percent="
-                f"{workload['cooldown_maximum_cpu_busy_percent']:.1f}",
-                flush=True,
-            )
-            (
-                calibration_temperature_after_cooldown_c,
-                calibration_cpu_busy_after_cooldown_percent,
-            ) = wait_until_cool(
-                workload["cooldown_maximum_c"],
-                workload["cooldown_minimum_seconds"],
-                workload["cooldown_maximum_cpu_busy_percent"],
-            )
             before_c = temperature_c()
             request_log = request_log_root / (
                 f"round-{round_number:02d}-{lane['id']}-requests.tsv"
@@ -778,14 +748,16 @@ def measure(
             measurement_started = time.monotonic()
             try:
                 load = subprocess.run(
-                    h2load_command(
-                        workload, measurement_count, port, request_log
-                    ),
+                    h2load_command(workload, port, request_log),
                     cwd=root,
                     check=False,
                     capture_output=True,
                     text=True,
-                    timeout=workload["duration_seconds"] + 30,
+                    timeout=(
+                        workload["warmup_seconds"]
+                        + workload["duration_seconds"]
+                        + 30
+                    ),
                 )
                 elapsed_seconds = time.monotonic() - measurement_started
                 load_snapshot_after = cpu_counters()
@@ -820,10 +792,10 @@ def measure(
             raw = load.stdout + load.stderr
             (raw_directory / f"round-{round_number:02d}-{lane['id']}-h2load.txt").write_text(raw)
             try:
-                metrics = validate_load(
-                    lane["id"], measurement_count, load.returncode, raw
+                metrics = validate_load(lane["id"], workload, load.returncode, raw)
+                metrics.update(
+                    request_log_metrics(request_log, metrics["requests_total"])
                 )
-                metrics.update(request_log_metrics(request_log, measurement_count))
             finally:
                 request_log.unlink(missing_ok=True)
             ready(port, process)
@@ -834,23 +806,8 @@ def measure(
                     "implementation": lane["implementation"],
                     "role": lane["role"],
                     "round": round_number,
-                    "calibration_requests": calibration_count,
-                    "calibration_requests_per_second": calibration_metrics[
-                        "requests_per_second"
-                    ],
-                    "calibration_temperature_before_c": (
-                        calibration_temperature_before_c
-                    ),
-                    "calibration_temperature_after_c": (
-                        calibration_temperature_after_c
-                    ),
-                    "calibration_temperature_after_cooldown_c": (
-                        calibration_temperature_after_cooldown_c
-                    ),
-                    "calibration_cpu_busy_after_cooldown_percent": (
-                        calibration_cpu_busy_after_cooldown_percent
-                    ),
-                    "measurement_requests": measurement_count,
+                    "measurement_requests": metrics["requests_total"],
+                    "load_wall_seconds": elapsed_seconds,
                     "server_process_count": len(process_metrics_after),
                     "server_rss_kib": server_rss_kib,
                     "load_cpu_busy_percent": load_cpu_busy_percent,
@@ -889,7 +846,7 @@ def main() -> int:
     root = Path(__file__).resolve().parent.parent
     os.chdir(root)
     config = json.loads(args.config.read_text())
-    if config.get("schema_version") != 1:
+    if config.get("schema_version") != 2:
         raise ValueError("benchmark configuration schema is not supported")
     workload = dict(config["workload"])
     lanes = list(config["lanes"])
@@ -904,8 +861,6 @@ def main() -> int:
         workload["rounds"] = args.rounds
     if args.duration is not None:
         workload["duration_seconds"] = args.duration
-    if args.calibration_requests is not None:
-        workload["calibration_requests"] = args.calibration_requests
     validate_configuration(workload, lanes)
     output = args.output.resolve()
     if output.exists():

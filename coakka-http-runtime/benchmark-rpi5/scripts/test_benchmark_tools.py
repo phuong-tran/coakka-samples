@@ -35,23 +35,24 @@ SUMMARIZER = load_script("benchmark_summarizer", "summarize.py")
 
 def measurement(lane_id: str, rps: float) -> dict[str, Any]:
     """Return one internally consistent reduced lane measurement."""
+    request_count = int(rps * 10)
     return {
         "lane_id": lane_id,
         "round": 1,
         "throttled": "throttled=0x0",
-        "calibration_temperature_after_cooldown_c": 40.0,
-        "calibration_cpu_busy_after_cooldown_percent": 1.0,
         "temperature_after_cooldown_c": 41.0,
         "cpu_busy_after_cooldown_percent": 2.0,
-        "measurement_requests": 100,
-        "requests_total": 100,
-        "requests_started": 100,
-        "requests_done": 100,
-        "requests_succeeded": 100,
+        "benchmark_duration_ms": 15000.0,
+        "load_wall_seconds": 15.0,
+        "measurement_requests": request_count,
+        "requests_total": request_count,
+        "requests_started": request_count,
+        "requests_done": request_count,
+        "requests_succeeded": request_count,
         "requests_failed": 0,
         "requests_errored": 0,
         "requests_timed_out": 0,
-        "responses_2xx": 100,
+        "responses_2xx": request_count,
         "responses_3xx": 0,
         "responses_4xx": 0,
         "responses_5xx": 0,
@@ -73,7 +74,7 @@ def measurement(lane_id: str, rps: float) -> dict[str, Any]:
 def campaign() -> dict[str, Any]:
     """Return the smallest complete campaign accepted by the summarizer."""
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "complete": True,
         "workload": {
             "method": "GET",
@@ -81,7 +82,8 @@ def campaign() -> dict[str, Any]:
             "status": 200,
             "body": "0123456789abcdef0123456789abcdef",
             "concurrency": 64,
-            "calibration_requests": 20_000,
+            "warmup_seconds": 5,
+            "max_measurement_requests": 2_000_000,
             "duration_seconds": 10,
             "rounds": 1,
             "random_seed": 20260930,
@@ -163,18 +165,32 @@ class BenchmarkToolsTest(unittest.TestCase):
             RUNNER.validate_machine(facts, value["workload"])
 
     def test_h2load_parser_requires_exact_accounting(self) -> None:
-        raw = (
-            "finished in 1.00s, 100.00 req/s\n"
+        timing = "".join(
+            f"spawning thread #{index}: Timing-based test with 5s of warm-up "
+            "time and 10s of main duration\n"
+            f"Main benchmark duration is started for thread #{index}\n"
+            f"Main benchmark duration is over for thread #{index}\n"
+            for index in range(3)
+        )
+        raw = timing + (
+            "finished in 15.00s, 10.00 req/s\n"
             "time for request: 100us 3ms 1ms 200us\n"
             "requests: 100 total, 100 started, 100 done, 100 succeeded, "
             "0 failed, 0 errored, 0 timeout\n"
             "status codes: 100 2xx, 0 3xx, 0 4xx, 0 5xx\n"
         )
-        parsed = RUNNER.validate_load("lane", 100, 0, raw)
+        workload = campaign()["workload"]
+        parsed = RUNNER.validate_load("lane", workload, 0, raw)
         self.assertEqual(100, parsed["requests_succeeded"])
         self.assertEqual(100, parsed["responses_2xx"])
-        with self.assertRaises(RuntimeError):
-            RUNNER.validate_load("lane", 101, 0, raw)
+        with self.assertRaisesRegex(RuntimeError, "timing interval"):
+            RUNNER.validate_load("lane", workload, 0, raw.replace("15.00s", "3.00s"))
+        with self.assertRaisesRegex(RuntimeError, "timing interval"):
+            RUNNER.validate_load("lane", workload, 0, raw.replace(timing, ""))
+        with self.assertRaisesRegex(RuntimeError, "one successful 2xx"):
+            RUNNER.validate_load(
+                "lane", workload, 0, raw.replace("10.00 req/s", "100.00 req/s")
+            )
         for inconsistent in (
             raw.replace("100 2xx", "101 2xx"),
             raw.replace("100 2xx", "99 2xx"),
@@ -182,9 +198,9 @@ class BenchmarkToolsTest(unittest.TestCase):
         ):
             with self.subTest(inconsistent=inconsistent):
                 with self.assertRaisesRegex(RuntimeError, "one successful 2xx"):
-                    RUNNER.validate_load("lane", 100, 0, inconsistent)
+                    RUNNER.validate_load("lane", workload, 0, inconsistent)
         with self.assertRaisesRegex(ValueError, "could not parse"):
-            RUNNER.validate_load("lane", 100, 0, raw.split("status codes:")[0])
+            RUNNER.validate_load("lane", workload, 0, raw.split("status codes:")[0])
 
     def test_lane_must_reuse_one_http1_connection(self) -> None:
         connection = mock.MagicMock()
@@ -202,14 +218,17 @@ class BenchmarkToolsTest(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "persistent HTTP/1.1"):
                 RUNNER.require_persistent_http1(8080, "framework")
 
-    def test_calibration_and_measurement_use_the_same_request_logging(self) -> None:
+    def test_warmup_and_measurement_share_connections_and_request_logging(self) -> None:
         value = campaign()
-        log = Path("calibration-requests.tsv")
-        command = RUNNER.h2load_command(value["workload"], 100, 8080, log)
+        log = Path("measured-requests.tsv")
+        command = RUNNER.h2load_command(value["workload"], 8080, log)
         self.assertEqual("--log-file", command[-3])
         self.assertEqual(str(log), command[-2])
         self.assertEqual(["taskset", "-c", "1-3", "h2load"], command[:4])
         self.assertEqual("3", command[command.index("-t") + 1])
+        self.assertIn("--duration=10s", command)
+        self.assertIn("--warm-up-time=5s", command)
+        self.assertNotIn("-n", command)
 
     def test_request_timing_log_requires_bounded_tmpfs(self) -> None:
         enough = SimpleNamespace(f_bavail=1024, f_frsize=1024 * 1024)
@@ -317,6 +336,7 @@ class BenchmarkToolsTest(unittest.TestCase):
     def test_cooldown_and_load_headroom_cannot_be_weakened(self) -> None:
         config = json.loads((SCRIPT_DIRECTORY.parent / "config/lanes.json").read_text())
         for field, weakened in (
+            ("warmup_seconds", 4),
             ("cooldown_minimum_seconds", 14),
             ("cooldown_maximum_c", 51.0),
             ("cooldown_maximum_cpu_busy_percent", 6.0),
@@ -340,6 +360,13 @@ class BenchmarkToolsTest(unittest.TestCase):
         value = campaign()
         value["complete"] = False
         with self.assertRaisesRegex(ValueError, "incomplete"):
+            with summarize_fixture(value):
+                pass
+
+    def test_superseded_campaign_schema_is_rejected(self) -> None:
+        value = campaign()
+        value["schema_version"] = 1
+        with self.assertRaisesRegex(ValueError, "schema"):
             with summarize_fixture(value):
                 pass
 
@@ -382,6 +409,13 @@ class BenchmarkToolsTest(unittest.TestCase):
         value = campaign()
         value["workload"]["rounds"] = 2
         with self.assertRaisesRegex(ValueError, "one result per round"):
+            with summarize_fixture(value):
+                pass
+
+    def test_short_duration_is_rejected_by_summary(self) -> None:
+        value = campaign()
+        value["measurements"][0]["benchmark_duration_ms"] = 3000.0
+        with self.assertRaisesRegex(ValueError, "measurement duration"):
             with summarize_fixture(value):
                 pass
 
