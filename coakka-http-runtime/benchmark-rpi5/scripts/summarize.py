@@ -155,6 +155,10 @@ def main() -> int:
             "requests_failed",
             "requests_errored",
             "requests_timed_out",
+            "responses_2xx",
+            "responses_3xx",
+            "responses_4xx",
+            "responses_5xx",
         )
         if any(
             isinstance(measurement[field], bool)
@@ -173,6 +177,10 @@ def main() -> int:
             or measurement["requests_failed"] != 0
             or measurement["requests_errored"] != 0
             or measurement["requests_timed_out"] != 0
+            or measurement["responses_2xx"] != expected
+            or measurement["responses_3xx"] != 0
+            or measurement["responses_4xx"] != 0
+            or measurement["responses_5xx"] != 0
         ):
             raise ValueError(
                 f"measurement request accounting failed: {measurement['lane_id']}"

@@ -273,7 +273,12 @@ def parse_h2load(output: str) -> dict[str, Any]:
         r"(\d+) succeeded,\s+(\d+) failed,\s+(\d+) errored,\s+(\d+) timeout",
         output,
     )
-    if rate is None or request_time is None or requests is None:
+    statuses = re.search(
+        r"status codes:\s+(\d+) 2xx,\s+(\d+) 3xx,\s+"
+        r"(\d+) 4xx,\s+(\d+) 5xx",
+        output,
+    )
+    if rate is None or request_time is None or requests is None or statuses is None:
         raise ValueError(f"could not parse h2load output:\n{output}")
     return {
         "benchmark_duration_ms": duration_ms(rate.group(1)),
@@ -289,6 +294,10 @@ def parse_h2load(output: str) -> dict[str, Any]:
         "requests_failed": int(requests.group(5)),
         "requests_errored": int(requests.group(6)),
         "requests_timed_out": int(requests.group(7)),
+        "responses_2xx": int(statuses.group(1)),
+        "responses_3xx": int(statuses.group(2)),
+        "responses_4xx": int(statuses.group(3)),
+        "responses_5xx": int(statuses.group(4)),
     }
 
 
@@ -335,8 +344,15 @@ def validate_load(
         or metrics["requests_failed"] != 0
         or metrics["requests_errored"] != 0
         or metrics["requests_timed_out"] != 0
+        or metrics["responses_2xx"] != expected_requests
+        or metrics["responses_3xx"] != 0
+        or metrics["responses_4xx"] != 0
+        or metrics["responses_5xx"] != 0
     ):
-        raise RuntimeError(f"{lane_id} did not complete its fixed request set")
+        raise RuntimeError(
+            f"{lane_id} did not complete one successful 2xx response "
+            "for each fixed request"
+        )
     return metrics
 
 

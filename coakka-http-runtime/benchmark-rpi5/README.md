@@ -24,7 +24,10 @@ body: 0123456789abcdef0123456789abcdef
 The runner uses loopback HTTP/1.1 with 64 persistent connections, two load
 threads, and one in-flight request per connection. It first sends a fixed
 calibration set, derives a request count targeting ten measured seconds, and
-rejects any run with a failed, errored, timed-out, or incomplete request.
+rejects any run with a failed, errored, timed-out, or incomplete request. It
+also requires exactly one 2xx status observation per completed request and no
+3xx/4xx/5xx observation; a superficially successful but internally
+inconsistent `h2load` summary is rejected.
 Calibration and measurement both enable the same per-request timing log;
 otherwise log overhead could make the calibrated request rate misleading.
 
@@ -64,6 +67,7 @@ realistic integration boundary.
 | Server placement | CPUs `0-1` |
 | Load generator placement | CPUs `2-3`, two load threads |
 | Load generator | `h2load --h1` from nghttp2-client |
+| Cooling policy | Pi5 firmware fan first stage at 40 C, PWM 250; original boot config retained for rollback |
 
 The campaign output records the exact OS, kernel, CPU model, memory, tool
 versions, source identities, source manifest digest, and built executable
@@ -81,6 +85,11 @@ from that incomplete run is publishable. Before any complete qualification,
 the protocol was revised to reserve two CPUs for the server and two isolated
 CPUs for the generator. The same revised placement applies to every lane; the
 busiest generator CPU, not a two-CPU average, must remain below the ceiling.
+The stock Pi5 fan profile could not reach the fixed 50 C idle gate with the
+performance governor. The documented firmware fan parameters now start its
+first stage at 40 C with PWM 250; the temperature and throttling gates are
+unchanged. That cooling change is recorded as part of the machine baseline,
+not as a per-lane adjustment.
 
 ## Fairness And Cooldown
 
@@ -100,7 +109,8 @@ The runner applies the same controls to every lane:
 5. Check the exact response before calibration.
 6. Run calibration, then pass the same temperature, power, and CPU-idle gate
    after at least 15 seconds before the measured request set.
-7. Reject the sample if any request fails, firmware reports power or thermal
+7. Reject the sample if any request fails, status observations do not match
+   successful request accounting, firmware reports power or thermal
    throttling, or either load-generator CPU is above 90% non-idle during the
    measured request set. I/O wait counts as non-idle: logging must not become
    a hidden client-side bottleneck.

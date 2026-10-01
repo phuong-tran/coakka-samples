@@ -51,6 +51,10 @@ def measurement(lane_id: str, rps: float) -> dict[str, Any]:
         "requests_failed": 0,
         "requests_errored": 0,
         "requests_timed_out": 0,
+        "responses_2xx": 100,
+        "responses_3xx": 0,
+        "responses_4xx": 0,
+        "responses_5xx": 0,
         "requests_per_second": rps,
         "request_time_mean_ms": 1.0,
         "request_time_p99_ms": 2.0,
@@ -160,11 +164,23 @@ class BenchmarkToolsTest(unittest.TestCase):
             "time for request: 100us 3ms 1ms 200us\n"
             "requests: 100 total, 100 started, 100 done, 100 succeeded, "
             "0 failed, 0 errored, 0 timeout\n"
+            "status codes: 100 2xx, 0 3xx, 0 4xx, 0 5xx\n"
         )
         parsed = RUNNER.validate_load("lane", 100, 0, raw)
         self.assertEqual(100, parsed["requests_succeeded"])
+        self.assertEqual(100, parsed["responses_2xx"])
         with self.assertRaises(RuntimeError):
             RUNNER.validate_load("lane", 101, 0, raw)
+        for inconsistent in (
+            raw.replace("100 2xx", "101 2xx"),
+            raw.replace("100 2xx", "99 2xx"),
+            raw.replace("0 4xx", "1 4xx"),
+        ):
+            with self.subTest(inconsistent=inconsistent):
+                with self.assertRaisesRegex(RuntimeError, "one successful 2xx"):
+                    RUNNER.validate_load("lane", 100, 0, inconsistent)
+        with self.assertRaisesRegex(ValueError, "could not parse"):
+            RUNNER.validate_load("lane", 100, 0, raw.split("status codes:")[0])
 
     def test_calibration_and_measurement_use_the_same_request_logging(self) -> None:
         value = campaign()
@@ -310,6 +326,13 @@ class BenchmarkToolsTest(unittest.TestCase):
     def test_request_accounting_mismatch_is_rejected(self) -> None:
         value = campaign()
         value["measurements"][0]["requests_succeeded"] = 99
+        with self.assertRaisesRegex(ValueError, "request accounting"):
+            with summarize_fixture(value):
+                pass
+
+    def test_response_status_accounting_mismatch_is_rejected(self) -> None:
+        value = campaign()
+        value["measurements"][0]["responses_2xx"] = 101
         with self.assertRaisesRegex(ValueError, "request accounting"):
             with summarize_fixture(value):
                 pass
