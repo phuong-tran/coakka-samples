@@ -74,8 +74,20 @@ specific result.
 
 Do not measure on the prior Bookworm installation or perform an in-place major
 upgrade. The clean Trixie installation now boots from the separate SanDisk USB;
-the prior NVMe remains outside the campaign. Result tables remain pending until
-revised short qualification and the full campaign pass on that exact installation.
+the prior NVMe remains outside the campaign. The revised 19-lane short
+qualification passed its response, timing, cooling, and throttle gates against
+the current native source. It is only a method qualification: performance
+review and the full three-round campaign remain open, so no result table is
+accepted for publication.
+
+The first full three-round time-based campaign collected all 57 lane samples
+with clean request, load, cooldown, and throttling checks, but its final
+governor restoration failed after the sudo timestamp expired. The Pi governor
+was restored manually and verified afterward. That run remains incomplete and
+is rejected as release evidence; it is not a publishable result table. The
+runner now preflights a noninteractive authenticated sudo session and refreshes
+it during cooldown, outside the timed measurement. A complete new campaign is
+required.
 
 An earlier three-round fixed-request campaign passed response and cooldown
 checks but is rejected as release evidence. Its 20,000-request calibration
@@ -136,6 +148,12 @@ The runner applies the same controls to every lane:
 8. Stop the server, pass the same cooldown and CPU-idle gate after at least 15
    seconds, and only then start the next lane.
 9. Restore the original governor on success or failure.
+
+Start the runner from a terminal with an authenticated `sudo -v` session. The
+runner requires noninteractive sudo for governor changes and refreshes the
+session only during cooldown, never inside the measured interval. A lost sudo
+session fails the campaign rather than prompting during a lane or silently
+leaving the governor changed.
 
 The default campaign has three matched rounds. Results use the median for
 requests per second, mean request time, p99 request time, server CPU, the

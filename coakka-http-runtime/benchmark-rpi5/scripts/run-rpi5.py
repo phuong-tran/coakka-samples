@@ -17,7 +17,7 @@ import subprocess
 import tempfile
 import time
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 from urllib.request import urlopen
 
 BODY = b"0123456789abcdef0123456789abcdef"
@@ -106,7 +106,23 @@ def set_governor(value: str) -> None:
         )
     )
     payload = "".join(f"printf '%s' '{value}' > '{path}'\n" for path in paths)
-    subprocess.run(["sudo", "bash", "-c", payload], check=True)
+    subprocess.run(["sudo", "-n", "bash", "-c", payload], check=True)
+
+
+def refresh_sudo_lease() -> None:
+    """Keep a pre-authenticated sudo session live outside timed load work.
+
+    A complete 57-lane campaign outlasts the default sudo timestamp. Failing
+    this check before changing the governor, or during cooldown, is safer than
+    discovering an expired credential only while restoring the machine.
+    """
+    checked = subprocess.run(
+        ["sudo", "-n", "-v"], check=False, capture_output=True, text=True
+    )
+    if checked.returncode != 0:
+        raise RuntimeError(
+            "sudo session is not authenticated; run sudo -v in this terminal"
+        )
 
 
 def require_governors(value: str) -> dict[str, str]:
@@ -134,7 +150,7 @@ def restore_governors(values: dict[str, str]) -> None:
     payload = "".join(
         f"printf '%s' '{values[path.parts[-3]]}' > '{path}'\n" for path in paths
     )
-    subprocess.run(["sudo", "bash", "-c", payload], check=True)
+    subprocess.run(["sudo", "-n", "bash", "-c", payload], check=True)
 
 
 def temperature_c() -> float:
@@ -205,12 +221,17 @@ def cpu_busy_percent(sample_seconds: float = 1.0) -> float:
 
 
 def wait_until_cool(
-    maximum_c: float, minimum_seconds: int, maximum_cpu_busy_percent: float
+    maximum_c: float,
+    minimum_seconds: int,
+    maximum_cpu_busy_percent: float,
+    keepalive: Callable[[], None] | None = None,
 ) -> tuple[float, float]:
     """Idle for the declared interval and require clean thermal/power state."""
     deadline = time.monotonic() + 600
     time.sleep(minimum_seconds)
     while True:
+        if keepalive is not None:
+            keepalive()
         current_temperature = temperature_c()
         throttle_state = throttled()
         busy_percent = cpu_busy_percent()
@@ -870,6 +891,7 @@ def main() -> int:
             )
     facts = machine_facts()
     validate_machine(facts, workload)
+    refresh_sudo_lease()
     raw_directory = output / "raw"
     raw_directory.mkdir(parents=True, exist_ok=True)
     original_governors = dict(facts["governor_before"])
@@ -896,6 +918,7 @@ def main() -> int:
             workload["cooldown_maximum_c"],
             workload["cooldown_minimum_seconds"],
             workload["cooldown_maximum_cpu_busy_percent"],
+            refresh_sudo_lease,
         )
         for round_number in range(1, workload["rounds"] + 1):
             round_lanes = list(lanes)
@@ -918,6 +941,7 @@ def main() -> int:
                     workload["cooldown_maximum_c"],
                     workload["cooldown_minimum_seconds"],
                     workload["cooldown_maximum_cpu_busy_percent"],
+                    refresh_sudo_lease,
                 )
                 results.append(result)
                 write_campaign(output, workload, facts, lanes, results, False)

@@ -153,6 +153,43 @@ def summarize_fixture(value: dict[str, Any]) -> Iterator[Path]:
 class BenchmarkToolsTest(unittest.TestCase):
     """Keep request parsing and release evidence rejection deterministic."""
 
+    def test_sudo_lease_refresh_is_noninteractive_and_fails_closed(self) -> None:
+        with mock.patch.object(RUNNER.subprocess, "run") as run:
+            run.return_value.returncode = 0
+            RUNNER.refresh_sudo_lease()
+            run.assert_called_once_with(
+                ["sudo", "-n", "-v"],
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            run.return_value.returncode = 1
+            with self.assertRaisesRegex(RuntimeError, "not authenticated"):
+                RUNNER.refresh_sudo_lease()
+
+    def test_cooldown_refreshes_lease_outside_measured_work(self) -> None:
+        keepalive = mock.Mock()
+        with (
+            mock.patch.object(RUNNER.time, "sleep") as sleep,
+            mock.patch.object(RUNNER, "temperature_c", return_value=40.0),
+            mock.patch.object(RUNNER, "throttled", return_value="throttled=0x0"),
+            mock.patch.object(RUNNER, "cpu_busy_percent", return_value=2.0),
+        ):
+            self.assertEqual((40.0, 2.0), RUNNER.wait_until_cool(50.0, 15, 5.0, keepalive))
+        sleep.assert_called_once_with(15)
+        keepalive.assert_called_once_with()
+
+    def test_governor_commands_never_prompt_for_sudo(self) -> None:
+        with (
+            mock.patch.object(RUNNER.Path, "glob", return_value=[]),
+            mock.patch.object(RUNNER.subprocess, "run") as run,
+        ):
+            RUNNER.set_governor("performance")
+            RUNNER.restore_governors({})
+        self.assertEqual(2, run.call_count)
+        for call in run.call_args_list:
+            self.assertEqual(["sudo", "-n"], call.args[0][:2])
+
     def test_machine_validation_requires_trixie(self) -> None:
         value = campaign()
         facts = value["machine"]
