@@ -89,6 +89,14 @@ runner now preflights a noninteractive authenticated sudo session and refreshes
 it during cooldown, outside the timed measurement. A complete new campaign is
 required.
 
+The corrected runner completed a one-lane Pi qualification and restored all
+four governors automatically. A later baseline full campaign was intentionally
+stopped after eight samples because the known host-inlined performance gap
+remained and no revised native candidate had yet been selected. That partial
+run is also incomplete; it is not a table or a release result. The native
+performance review must finish before committing the board to another full
+campaign.
+
 An earlier three-round fixed-request campaign passed response and cooldown
 checks but is rejected as release evidence. Its 20,000-request calibration
 underestimated slower connection startup: some supposed ten-second intervals
