@@ -202,14 +202,19 @@ sample execution evidence.
 
 ## Raspberry Pi 5 Benchmark
 
-Comparison scope: Native C baseline reference, not a separate C++ measurement.
+| Application | CPUs | Req/s median (range) | p50 / p95 / p99 ms | CPU % | RSS mean / sampled peak MiB | Errors / timeouts |
+| --- | ---: | --- | --- | ---: | --- | --- |
+| Native C + CoAkka | 1 | 61,248.1 (60,692.4–61,400.1) | 1.051 / 1.302 / 1.411 | 99.6 | 9.2 / 9.2 | 0 / 0 |
+| Native C + CoAkka | 2 | 93,072.7 (91,968.4–93,349.7) | 0.679 / 0.726 / 0.988 | 151.7 | 9.2 / 9.2 | 0 / 0 |
 
-| CPU budget | Req/s median (range) | p50 / p95 / p99 | Server CPU % | RSS mean / peak MiB | Errors / timeouts | Status |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 CPU | — | — | — | — | — | Not measured for current candidates |
-| 2 CPU | — | — | — | — | — | Not measured for current candidates |
+Installed r3 native package, public host-inlined C callbacks. Native is
+measured alone, without a competing server. Both CPU profiles report
+one event loop and notification batches 8/8. Three fresh-process runs
+per profile, with the required CPU cooldown before each run.
+These are localhost observations, not an unconstrained capacity claim.
 
-These are placeholders, not zero results. Each accepted implementation/profile
-will have its own row. The [shared methodology](../benchmark-rpi5/README.md)
-defines machine/OS/RAM facts, CPU accounting, full process-tree RSS, cooldown,
-raw evidence and acceptance rules. No historical peak is copied into this table.
+This is the **C baseline reference**, not a separate C++ measurement.
+
+See [complete results, machine facts, all runs and evidence identities](../benchmark-rpi5/README.md#verified-package-results)
+and the [methodology](../benchmark-rpi5/README.md). CPU100% means one CPU;
+RSS is sampled, and resource measurements include warm-up.

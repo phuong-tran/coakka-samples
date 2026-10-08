@@ -247,6 +247,7 @@ the preparation success marker alone is not authorization to publish numbers.
 ## Contents
 
 - [Results](#results)
+  - [Native C baseline](#native-c-baseline)
 - [Machine and measurement](#machine-and-measurement)
 - [Per-run throughput](#per-run-throughput)
 - [Evidence identities](#evidence-identities)
@@ -267,6 +268,20 @@ the preparation success marker alone is not authorization to publish numbers.
 | Bun.serve | 2 | 46,521.7 (46,263.5–46,557.1) | 1.330 / 1.741 / 2.186 | 100.3 | 39.7 / 42.0 | 0 / 0 |
 | Kotlin/JVM + CoAkka | 2 | 94,918.3 (94,639.6–95,380.8) | 0.664 / 0.700 / 0.922 | 154.8 | 219.4 / 223.9 | 0 / 0 |
 
+### Native C baseline
+
+No competitor is included. This is the installed public C callback surface;
+C++ samples reference these C measurements, not an independently measured C++ server.
+
+| Application | CPUs | Req/s median (range) | p50 / p95 / p99 ms | CPU % | RSS mean / sampled peak MiB | Errors / timeouts |
+| --- | ---: | --- | --- | ---: | --- | --- |
+| Native C + CoAkka | 1 | 61,248.1 (60,692.4–61,400.1) | 1.051 / 1.302 / 1.411 | 99.6 | 9.2 / 9.2 | 0 / 0 |
+| Native C + CoAkka | 2 | 93,072.7 (91,968.4–93,349.7) | 0.679 / 0.726 / 0.988 | 151.7 | 9.2 / 9.2 | 0 / 0 |
+
+Both CPU profiles use the runtime-reported one event loop and notification
+batches 8/8. CPU budget is not an event-loop count. These results do not
+reuse historical throughput peaks from different workloads.
+
 These are three-run **localhost observations**, not unconstrained capacity or
 a universal framework ranking. All rows use installed packages admitted as
 `2026-10-08-r3`; no package was rebuilt for this documentation update. Go,
@@ -274,8 +289,9 @@ Node.js and Python reuse their unchanged qualified cohort. Bun uses the later
 paired Bun.serve cohort. JVM uses only the final selected package's two-CPU
 cohort; the older JVM archive's results are not relabeled.
 
-Native C 1/2-CPU and final JVM 1-CPU measurements remain **Pending** in this
-table. C++ refers to native C, not a separate measurement. Chi/Gin,
+Native C is measured separately, without a competitor. C++ refers to
+that C baseline, not a separate C++ measurement. Final JVM 1-CPU measurements
+remain **Pending**. Chi/Gin,
 FastAPI/Starlette, Express/Fastify, Elysia/Hono, Spring WebFlux, Spring MVC with
 Tomcat, Jetty, Vert.x and Undertow comparisons remain **Pending** for this
 exact-package table; no missing comparison is treated as a win. Vert.x and
@@ -299,6 +315,7 @@ Undertow are intentionally not rerun. There is no public Netty comparison.
 | Cooldown | At least 30s, <=50°C and busiest CPU <=5%, three consecutive clean samples before each run |
 | Runtime settings | Ordinary host-inlined package defaults; no application loop override; notification batches 8/8 |
 | Tools | Go 1.27.1; Node 22.23.3; Bun 1.4.2; Python 3.13.5; OpenJDK 21.0.12.1; h2load 1.64.0 |
+| Native consumer | C11, GCC 14.2.0, Release with -O3 -DNDEBUG; installed r3 library unchanged |
 
 Tool versions above are benchmark versions, not minimum connector requirements.
 CPU100% means one logical CPU. CPU/RSS include warm-up plus measurement. RSS
@@ -329,6 +346,8 @@ Response. Both use the same Bun binary. CoAkka/Bun.serve median ratios are
 | Bun + CoAkka | 2 | 66,225.1 / 65,502.2 / 66,026.3 |
 | Bun.serve | 2 | 46,557.1 / 46,521.7 / 46,263.5 |
 | Kotlin/JVM + CoAkka | 2 | 94,639.6 / 94,918.3 / 95,380.8 |
+| Native C + CoAkka | 1 | 61,400.1 / 61,248.1 / 60,692.4 |
+| Native C + CoAkka | 2 | 91,968.4 / 93,072.7 / 93,349.7 |
 
 ## Evidence identities
 
@@ -344,3 +363,5 @@ Package hashes are independently listed in each r3 warehouse checksum ledger.
 | Bun paired study / 1 CPUs | `4c24cae2dc93fdd4c580b236e6b5454e7dbf262f456e9dd043ffff27ee022636` |
 | Bun paired study / 2 CPUs | `355f41ae0d0ebf885bfa065a8b44136be982f8557ab14a2961d77cae42c30d20` |
 | JVM selected package / 2 CPUs | `90b38a76fa723bf6f6af7c50133f7f16a481c84ebbd7404dbfa00cd3a303e433` |
+| Native C package / 1 CPUs | `05f393733416a5cd62aec42b7abfc4049a9524ef905494dc8b3fcb8ce5f9cfa5` |
+| Native C package / 2 CPUs | `469307472211cdb9076c4561a8671c6ed787491ba05297b30026a2096c004852` |
