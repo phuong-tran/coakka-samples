@@ -949,7 +949,17 @@ def parse_core_observation(log: str, workload: dict[str, Any]) -> dict[str, Any]
         raise ValueError("Core backend observation does not confirm io_uring disabled")
     cpu = record.get("cpu", {})
     expected_ids = sorted(cpu_set(workload["server_cpus"]))
-    if (cpu.get("selectedCpuIds") != expected_ids
+    if record.get("nativeProfile") == "explicit-host-inlined-v1":
+        # Direct public C has no CPU-selection owner. Keep that Core fact
+        # unobserved; measure() verifies the harness's actual OS affinity.
+        loops = len(expected_ids)
+        if (cpu.get("selectedCpuIds") != [] or cpu.get("selectedCpuCount") != 0
+                or record.get("execution") != {"observed": True,
+                    "configuredEventLoops": loops, "activeEventLoops": loops}
+                or record.get("requestNotificationBatchSize") != 64
+                or record.get("terminalNotificationBatchSize") != 32):
+            raise ValueError("Native explicit profile observation differs from its configuration")
+    elif (cpu.get("selectedCpuIds") != expected_ids
             or type(cpu.get("selectedCpuCount")) is not int
             or cpu["selectedCpuCount"] != len(expected_ids)):
         raise ValueError("Core CPU observation differs from the measured partition")
@@ -1073,6 +1083,15 @@ def measure(
                         raise RuntimeError("Core startup observation was not emitted")
                     time.sleep(.02)
                 core_info = parse_core_observation(server_log.read_text(), workload)
+                if core_info.get("nativeProfile") == "explicit-host-inlined-v1":
+                    if lane["ecosystem"] != "C":
+                        raise ValueError("Native profile is restricted to the C lane")
+                    allowed = cpu_set(workload["server_cpus"])
+                    if os.sched_getaffinity(process.pid) != allowed:
+                        raise ValueError("Native process affinity differs from CPU budget")
+                    for thread in Path(f"/proc/{process.pid}/task").iterdir():
+                        if not os.sched_getaffinity(int(thread.name)) <= allowed:
+                            raise ValueError("Native worker escaped the CPU budget")
             before_c = temperature_c()
             memory_before = memory_snapshot()
             frequencies_before = frequency_snapshot()

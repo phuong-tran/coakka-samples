@@ -204,12 +204,13 @@ sample execution evidence.
 
 | Application | CPUs | Req/s median (range) | p50 / p95 / p99 ms | CPU % | RSS mean / sampled peak MiB | Errors / timeouts |
 | --- | ---: | --- | --- | ---: | --- | --- |
-| Native C + CoAkka | 1 | 61,248.1 (60,692.4–61,400.1) | 1.051 / 1.302 / 1.411 | 99.6 | 9.2 / 9.2 | 0 / 0 |
-| Native C + CoAkka | 2 | 93,072.7 (91,968.4–93,349.7) | 0.679 / 0.726 / 0.988 | 151.7 | 9.2 / 9.2 | 0 / 0 |
+| Native C + CoAkka | 1 | 88,255.1 (87,753.3–88,939.2) | 0.715 / 0.756 / 0.943 | 99.7 | 12.9 / 12.9 | 0 / 0 |
+| Native C + CoAkka | 2 | 158,854.4 (158,021.3–158,903.7) | 0.375 / 0.547 / 0.640 | 195.6 | 17.1 / 17.1 | 0 / 0 |
 
-Installed r3 native package, public host-inlined C callbacks. Native is
-measured alone, without a competing server. Both CPU profiles report
-one event loop and notification batches 8/8. Three fresh-process runs
+Installed r3 native package, explicitly configured public C host-inlined
+event reader (not callback defaults). Native is measured alone, without
+a competing server. One/two CPUs use one/two loops, notifications 64/32
+and completion batch 64; full terminal events remain enabled. Three fresh-process runs
 per profile, with the required CPU cooldown before each run.
 These are localhost observations, not an unconstrained capacity claim.
 

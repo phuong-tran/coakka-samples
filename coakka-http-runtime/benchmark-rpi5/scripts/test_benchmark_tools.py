@@ -383,6 +383,26 @@ class BenchmarkToolsTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "CPU observation"):
             RUNNER.parse_core_observation("coakka-runtime-info=" + json.dumps(record), workload)
 
+    def test_native_profile_preserves_unobserved_core_cpu(self) -> None:
+        for count, cpus in ((1, "0"), (2, "0-1")):
+            record = {"nativeProfile": "explicit-host-inlined-v1",
+                      "cpu": {"selectedCpuIds": [], "selectedCpuCount": 0},
+                      "execution": {"observed": True, "configuredEventLoops": count,
+                                    "activeEventLoops": count},
+                      "requestNotificationBatchSize": 64, "terminalNotificationBatchSize": 32,
+                      "ioUringEffective": False}
+            workload = {**campaign()["workload"], "server_cpus": cpus}
+            self.assertEqual(record, RUNNER.parse_core_observation(
+                "coakka-runtime-info=" + json.dumps(record), workload))
+            for field, value in (("requestNotificationBatchSize", 8),
+                                 ("terminalNotificationBatchSize", 8),
+                                 ("cpu", {"selectedCpuIds": [0], "selectedCpuCount": 1}),
+                                 ("execution", {"observed": True, "configuredEventLoops": 3,
+                                                "activeEventLoops": 3})):
+                invalid = {**record, field: value}
+                with self.assertRaisesRegex(ValueError, "Native explicit profile"):
+                    RUNNER.parse_core_observation("coakka-runtime-info=" + json.dumps(invalid), workload)
+
     def test_sudo_lease_refresh_is_noninteractive_and_fails_closed(self) -> None:
         with mock.patch.object(RUNNER.subprocess, "run") as run:
             run.return_value.returncode = 0
