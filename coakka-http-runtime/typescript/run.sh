@@ -9,27 +9,17 @@ source "${lane_root}/../scripts/common.sh"
 
 command="${1:-smoke}"
 work="$(prepare_work_dir typescript)"
-prefix="$(prepare_host_prefix)"
-connector_build="${work}/connector-build"
-cmake -S "${connector_root}" -B "${connector_build}" \
-  -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF \
-  -DCMAKE_PREFIX_PATH="${prefix}" \
-  -DCoAkkaHttpHost_DIR="${prefix}/lib/cmake/CoAkkaHttpHost" >/dev/null
-cmake --build "${connector_build}" --target coakka_http_javascript_addon \
-  --parallel >/dev/null
-addon="${connector_build}/coakka_http_javascript.node"
-require_file "${addon}"
+package="$(prepare_package javascript)"
 app="${work}/app"
 mkdir -p "${app}"
 cp "${lane_root}/package.json" "${lane_root}/tsconfig.json" \
-  "${lane_root}/main.ts" "${lane_root}/security.ts" "${app}/"
+  "${lane_root}/main.ts" "${lane_root}/security.ts" \
+  "${lane_root}/control.ts" "${lane_root}/protocol.ts" "${lane_root}/adverse.ts" "${app}/"
 npm install --prefix "${app}" --cache "${work}/npm-cache" \
-  --no-audit --no-fund --silent "${connector_root}/connectors/javascript/package"
+  --ignore-scripts --install-links --no-audit --no-fund "${package}"
 (cd "${app}" && npm exec -- tsc --noEmit)
 (cd "${app}" && npm exec -- tsc --outDir dist)
-export COAKKA_HTTP_JAVASCRIPT_ADDON="${addon}"
-export DYLD_LIBRARY_PATH="${prefix}/lib${DYLD_LIBRARY_PATH:+:${DYLD_LIBRARY_PATH}}"
-export LD_LIBRARY_PATH="${prefix}/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
+unset COAKKA_HTTP_JAVASCRIPT_ADDON COAKKA_HTTP_HOST_PATH
 
 run_node() {
   node "${app}/dist/main.js" "$@" --assets "${sample_root}/assets"
@@ -62,7 +52,24 @@ case "${command}" in
     ;;
   smoke-node) run_node --smoke ;;
   smoke-bun) run_bun --smoke ;;
+  tuning-smoke)
+    node "${app}/dist/control.js"
+    bun "${app}/control.ts"
+    ;;
+  adverse-smoke)
+    node "${app}/dist/adverse.js"
+    bun "${app}/adverse.ts"
+    ;;
+  http2-node|http3-node|http2-bun|http3-bun)
+    fixtures="$(prepare_test_certificates)"
+    protocol="${command%-*}"
+    if [[ "${command}" == *-node ]]; then
+      node "${app}/dist/protocol.js" --protocol "${protocol}" --fixtures "${fixtures}"
+    else
+      bun "${app}/protocol.ts" --protocol "${protocol}" --fixtures "${fixtures}"
+    fi
+    ;;
   run) run_node ;;
   run-bun) run_bun ;;
-  *) printf 'usage: bash typescript/run.sh [check|smoke|security-smoke|smoke-node|smoke-bun|run|run-bun]\n' >&2; exit 2 ;;
+  *) printf 'usage: bash typescript/run.sh [check|smoke|security-smoke|tuning-smoke|adverse-smoke|smoke-node|smoke-bun|http2-node|http3-node|http2-bun|http3-bun|run|run-bun]\n' >&2; exit 2 ;;
 esac

@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import http.client
+import hashlib
 import json
 import math
 import os
@@ -29,6 +30,10 @@ def arguments() -> argparse.Namespace:
     parser.add_argument("--config", type=Path, default=Path("config/lanes.json"))
     parser.add_argument("--rounds", type=int)
     parser.add_argument("--duration", type=int)
+    parser.add_argument(
+        "--study-mode", choices=("strict", "client-limited-loopback"), default="strict",
+        help="explicit observational loopback study; retains saturation, never certifies server capacity",
+    )
     parser.add_argument(
         "--lane",
         action="append",
@@ -71,6 +76,14 @@ def machine_facts() -> dict[str, Any]:
         ),
         "cpu_count": os.cpu_count(),
         "memory_kib": memory_kib,
+        "firmware": command_output(["vcgencmd", "version"]),
+        "cpu_frequency_khz": frequency_snapshot(),
+        "memory_before": memory_snapshot(),
+        "swap_devices": Path("/proc/swaps").read_text().splitlines(),
+        "cooling": cooling_snapshot(),
+        "ambient_temperature": {"value": None, "reason": "no ambient sensor measurement"},
+        "network_topology": "HTTP/1.1 plaintext over IPv4 loopback; disjoint server/load CPU sets",
+        "observer_affinity": sorted(os.sched_getaffinity(0)),
         "root_filesystem": command_output(["df", "-h", "/"]),
         "governor_before": governors(),
         "throttled_before": throttled(),
@@ -87,6 +100,31 @@ def machine_facts() -> dict[str, Any]:
         .read_text()
         .splitlines(),
     }
+
+
+def frequency_snapshot() -> dict[str, dict[str, str]]:
+    """Read observed frequency and limits; missing sysfs facts remain absent."""
+    return {path.parts[-2]: {name: (path / name).read_text().strip()
+            for name in ("scaling_cur_freq", "scaling_min_freq", "scaling_max_freq")
+            if (path / name).is_file()}
+            for path in sorted(Path("/sys/devices/system/cpu").glob("cpu[0-9]*/cpufreq"))}
+
+
+def memory_snapshot() -> dict[str, int]:
+    """Only non-sensitive aggregate RAM/swap counters, in kernel-reported KiB."""
+    wanted = {"MemTotal", "MemAvailable", "SwapTotal", "SwapFree", "SwapCached"}
+    return {parts[0].rstrip(":"): int(parts[1])
+            for line in Path("/proc/meminfo").read_text().splitlines()
+            if (parts := line.split())[0].rstrip(":") in wanted}
+
+
+def cooling_snapshot() -> dict[str, str]:
+    """Capture fan/cooling controls without changing the user's fan policy."""
+    paths = [path for name in ("fan1_input", "pwm1", "pwm1_enable")
+             for path in Path("/sys/class/hwmon").glob("hwmon*/" + name)]
+    paths += [path for name in ("type", "cur_state", "max_state")
+              for path in Path("/sys/class/thermal").glob("cooling_device*/" + name)]
+    return {str(path): path.read_text().strip() for path in sorted(paths)}
 
 
 def governors() -> dict[str, str]:
@@ -226,9 +264,15 @@ def wait_until_cool(
     maximum_cpu_busy_percent: float,
     keepalive: Callable[[], None] | None = None,
 ) -> tuple[float, float]:
-    """Idle for the declared interval and require clean thermal/power state."""
+    """Require three consecutive clean samples after the minimum idle interval.
+
+    A transient cool/idle instant is insufficient. Any failed observation resets
+    the streak. Return the worst temperature/utilization in the admitted streak
+    so the evidence never presents a cherry-picked final observation.
+    """
     deadline = time.monotonic() + 600
     time.sleep(minimum_seconds)
+    clean_samples: list[tuple[float, float]] = []
     while True:
         if keepalive is not None:
             keepalive()
@@ -240,7 +284,11 @@ def wait_until_cool(
             and throttle_state == "throttled=0x0"
             and busy_percent <= maximum_cpu_busy_percent
         ):
-            return current_temperature, busy_percent
+            clean_samples.append((current_temperature, busy_percent))
+            if len(clean_samples) == 3:
+                return max(item[0] for item in clean_samples), max(item[1] for item in clean_samples)
+        else:
+            clean_samples.clear()
         if time.monotonic() >= deadline:
             raise TimeoutError(
                 "Raspberry Pi did not return to the thermal and power gate: "
@@ -376,7 +424,7 @@ def h2load_command(
 def validate_load(
     lane_id: str, workload: dict[str, Any], returncode: int, raw: str
 ) -> dict[str, Any]:
-    """Count successful completions; bound requests in flight at the timed cutoff."""
+    """Count successful completions; bound carry across both timing boundaries."""
     if returncode != 0:
         raise RuntimeError(f"h2load failed for {lane_id}:\n{raw}")
     metrics = parse_h2load(raw)
@@ -397,14 +445,22 @@ def validate_load(
     ):
         raise RuntimeError(f"{lane_id} did not complete the declared timing interval")
     expected_requests = metrics["requests_total"]
+    if expected_requests > workload["max_measurement_requests"]:
+        raise RuntimeError(f"{lane_id} exceeded the declared measurement request ceiling: "
+                           f"{expected_requests} > {workload['max_measurement_requests']}")
     measured_rate = expected_requests / duration
+    # h2load counts starts and completions by their current phase separately.
+    # A request submitted during warmup can complete in MAIN_DURATION; one
+    # started in MAIN_DURATION can remain unfinished at its end. With HTTP/1
+    # and -m1 each boundary has at most one request per connection. Therefore
+    # started-done is end carry minus warmup carry, not an in-flight census.
+    warmup_carry_limit = workload["concurrency"] if warmup > 0 else 0
     if (
         expected_requests <= 0
-        or expected_requests > workload["max_measurement_requests"]
         or not math.isfinite(metrics["requests_per_second"])
         or abs(metrics["requests_per_second"] - measured_rate)
         > measured_rate * 0.05
-        or not expected_requests
+        or not max(0, expected_requests - warmup_carry_limit)
         <= metrics["requests_started"]
         <= expected_requests + workload["concurrency"]
         or metrics["requests_done"] != expected_requests
@@ -424,10 +480,10 @@ def validate_load(
     return metrics
 
 
-def process_group_metrics(process_group: int) -> dict[int, tuple[int, int]]:
-    """Return CPU ticks and RSS KiB keyed by exact kernel process-group member."""
+def process_group_metrics(process_group: int) -> dict[int, tuple[int, int, int, int]]:
+    """Return total ticks, RSS KiB, user ticks and system ticks per process."""
     page_kib = os.sysconf("SC_PAGE_SIZE") // 1024
-    metrics: dict[int, tuple[int, int]] = {}
+    metrics: dict[int, tuple[int, int, int, int]] = {}
     for stat_path in Path("/proc").glob("[0-9]*/stat"):
         try:
             fields = stat_path.read_text().rsplit(")", 1)[1].split()
@@ -435,7 +491,7 @@ def process_group_metrics(process_group: int) -> dict[int, tuple[int, int]]:
                 continue
             ticks = int(fields[11]) + int(fields[12])
             resident_pages = int((stat_path.parent / "statm").read_text().split()[1])
-            metrics[int(stat_path.parent.name)] = (ticks, resident_pages * page_kib)
+            metrics[int(stat_path.parent.name)] = (ticks, resident_pages * page_kib, int(fields[11]), int(fields[12]))
         except (OSError, IndexError, ValueError):
             continue
     if not metrics:
@@ -449,7 +505,7 @@ def request_log_metrics(path: Path, expected_requests: int) -> dict[str, float]:
     with path.open() as source:
         for line in source:
             columns = line.split()
-            if len(columns) < 3 or columns[1] == "-1":
+            if len(columns) < 3 or columns[1] != "200":
                 raise RuntimeError("h2load request log contains a failed response")
             durations_ms.append(float(columns[2]) / 1000.0)
     if len(durations_ms) != expected_requests:
@@ -468,6 +524,106 @@ def request_log_metrics(path: Path, expected_requests: int) -> dict[str, float]:
         "request_time_p95_ms": percentile(0.95),
         "request_time_p99_ms": percentile(0.99),
     }
+
+
+def rss_summary(samples: list[dict[str, Any]]) -> dict[str, Any]:
+    """Time-weighted sampled RSS; never claim an unsampled instantaneous peak."""
+    if len(samples) < 2:
+        raise ValueError("RSS requires at least two observations")
+    area = 0.0
+    for before, after in zip(samples, samples[1:]):
+        delta = after["elapsed_seconds"] - before["elapsed_seconds"]
+        if delta <= 0 or min(before["server_rss_kib"], after["server_rss_kib"]) <= 0:
+            raise ValueError("RSS observations are not positive and monotonic")
+        area += delta * (before["server_rss_kib"] + after["server_rss_kib"]) / 2
+    span = samples[-1]["elapsed_seconds"] - samples[0]["elapsed_seconds"]
+    return {"server_rss_mean_kib": area / span,
+            "server_rss_peak_kib": max(sample["server_rss_kib"] for sample in samples),
+            "resource_sample_count": len(samples), "resource_sample_interval_seconds": .25,
+            "resource_window": "load-process lifetime: warm-up plus measurement",
+            "resource_samples": samples}
+
+
+def monitored_load(command: list[str], root: Path, group: int, timeout: float,
+                   raw_log: Path, *, generator_cpus: set[int] | None = None
+                   ) -> tuple[subprocess.CompletedProcess[str], dict[str, Any]]:
+    """Observe every server process at 250 ms cadence while h2load owns timing.
+
+    CPU/RSS scope is explicitly the full warm-up plus measurement window. The
+    collector does not pretend its wall clock is h2load's per-worker boundary.
+    Membership changes fail closed, rather than omitting exited workers' usage.
+    """
+    started = time.monotonic()
+    observer_started = time.process_time()
+    samples: list[dict[str, Any]] = []
+    members: set[int] | None = None
+    # The caller isolates the observer on the generator CPUs. Explicit CPU
+    # selection avoids treating a low whole-run mean as proof of headroom when
+    # JVM startup masks a saturated measurement phase. Private diagnostics may
+    # omit this argument; campaign admission must supply it and retain samples.
+    load_names = {f"cpu{cpu}" for cpu in generator_cpus or set()}
+    load_samples: list[dict[str, Any]] = []
+    cpu_before = cpu_counters() if load_names else {}
+    cpu_sample_started = started
+    load = subprocess.Popen(command, cwd=root, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                            text=True, start_new_session=True)
+    load_rss: list[int] = []
+    try:
+        while True:
+            now = time.monotonic()
+            if load_names and now - cpu_sample_started >= 1:
+                cpu_after = cpu_counters()
+                _, by_cpu = busiest_cpu_busy_percent(
+                    {cpu: cpu_before[cpu] for cpu in load_names},
+                    {cpu: cpu_after[cpu] for cpu in load_names})
+                load_samples.append({"start_seconds": cpu_sample_started - started,
+                                     "end_seconds": now - started,
+                                     "busy_by_cpu": by_cpu})
+                cpu_before = cpu_after
+                cpu_sample_started = now
+            metrics = process_group_metrics(group)
+            current_members = set(metrics)
+            if members is not None and members != current_members:
+                raise RuntimeError("server process membership changed during resource sampling")
+            members = current_members
+            samples.append({"elapsed_seconds": time.monotonic() - started,
+                            "server_rss_kib": sum(item[1] for item in metrics.values())})
+            try:
+                load_rss.append(sum(item[1] for item in process_group_metrics(load.pid).values()))
+            except RuntimeError:
+                if load.poll() is None:
+                    raise
+            remaining = timeout - (time.monotonic() - started)
+            if remaining <= 0:
+                raise TimeoutError("load generator exceeded the declared deadline")
+            try:
+                stdout, stderr = load.communicate(timeout=min(.25, remaining))
+                final_metrics = process_group_metrics(group)
+                if set(final_metrics) != members:
+                    raise RuntimeError("server process membership changed at load completion")
+                samples.append({"elapsed_seconds": time.monotonic() - started,
+                                "server_rss_kib": sum(item[1] for item in final_metrics.values())})
+                raw_log.write_text(stdout + stderr)
+                resources = rss_summary(samples)
+                if load_names and not load_samples:
+                    raise RuntimeError("generator CPU interval evidence is missing")
+                resources["load_cpu_interval_samples"] = load_samples
+                resources["load_cpu_interval_peak_percent"] = max(
+                    (value for sample in load_samples for value in sample["busy_by_cpu"].values()),
+                    default=None)
+                resources["load_rss_sampled_peak_kib"] = max(load_rss) if load_rss else None
+                resources["observer_cpu_seconds"] = time.process_time() - observer_started
+                resources["context_switches"] = {"value": None,
+                    "reason": "per-thread lifecycle accounting reserved for separate profiling; not inferred from process leader"}
+                return subprocess.CompletedProcess(command, load.returncode, stdout, stderr), resources
+            except subprocess.TimeoutExpired:
+                continue
+    except BaseException:
+        if load.poll() is None:
+            load.kill()
+        stdout, stderr = load.communicate(timeout=5)
+        raw_log.write_text(stdout + stderr)
+        raise
 
 
 def require_request_log_tmpfs(max_requests: int) -> Path:
@@ -496,15 +652,85 @@ def require_request_log_tmpfs(max_requests: int) -> Path:
     return mount
 
 
-def stop_server(process: subprocess.Popen[str]) -> None:
+def stop_server(process: subprocess.Popen[str]) -> int:
+    """Clean up a server and reject a forced kill as benchmark evidence."""
     if process.poll() is not None:
-        return
+        raise RuntimeError("benchmark server exited before requested shutdown")
     os.killpg(process.pid, signal.SIGTERM)
     try:
-        process.wait(timeout=10)
+        return process.wait(timeout=15)
     except subprocess.TimeoutExpired:
         os.killpg(process.pid, signal.SIGKILL)
         process.wait(timeout=5)
+        raise RuntimeError("benchmark server required forced shutdown")
+
+
+def package_environment(root: Path, lane: dict[str, Any], workload: dict[str, Any]) -> dict[str, str]:
+    """Isolate each public package's documented loader; forbid inherited overrides.
+
+    Package receipts are independently revalidated before changing the machine.
+    A framework process gets no CoAkka loader configuration or Python imports.
+    """
+    environment = {key: value for key, value in os.environ.items()
+                   if not key.startswith(("COAKKA_", "LD_", "DYLD_", "JAVA_", "JDK_", "PYTHON"))}
+    environment.update(lane.get("environment", {}))
+    environment["PYTHONDONTWRITEBYTECODE"] = "1"
+    if lane["role"] != "coakka":
+        return environment
+    packages = json.loads((root / "evidence/locks/package-paths.json").read_text())
+    environment["COAKKA_BENCH_CPU_POLICY"] = (
+        "single" if len(cpu_set(workload["server_cpus"])) == 1 else "auto"
+    )
+    if lane["ecosystem"] == "Python":
+        environment["PYTHONPATH"] = str(Path(packages["python"]) / "python")
+    elif lane["ecosystem"] == "Kotlin/JVM":
+        native = Path(packages["jvm"]) / "native"
+        options = environment.get("JAVA_TOOL_OPTIONS", "")
+        environment["JAVA_TOOL_OPTIONS"] = (
+            f"{options} -Dcoakka.http.host.path={native}/libcoakka_http_host.so "
+            f"-Dcoakka.http.bridge.path={native}/libcoakka_http_jvm.so"
+        ).strip()
+    return environment
+
+
+def validate_shutdown(lane: dict[str, Any], exit_code: int, log: str) -> None:
+    """Require each host's actual graceful completion convention, not exit alone."""
+    if lane["ecosystem"] == "Python" and lane["role"] == "framework":
+        # Pinned Uvicorn 0.52.4 restores and re-raises SIGTERM only after its
+        # awaited shutdown. Its multiprocess supervisor may instead return 0.
+        # A SIGTERM exit without complete worker lifespan evidence is a failure.
+        started = re.findall(r"Started server process \[(\d+)\]", log)
+        finished = re.findall(r"Finished server process \[(\d+)\]", log)
+        workers = int(lane["command"][lane["command"].index("--workers") + 1])
+        if (exit_code not in (0, -signal.SIGTERM)
+                or len(started) != workers or len(set(started)) != workers
+                or sorted(started) != sorted(finished)
+                or log.count("Application shutdown complete.") != workers):
+            raise RuntimeError(f"{lane['id']} lacks complete Uvicorn worker shutdown")
+        return
+    expected_exit = 143 if lane["ecosystem"] == "Kotlin/JVM" else 0
+    if exit_code != expected_exit:
+        raise RuntimeError(f"{lane['id']} shutdown exit {exit_code}, expected {expected_exit}")
+    if "benchmark-shutdown=pass" not in log.splitlines():
+        raise RuntimeError(f"{lane['id']} lacks graceful shutdown evidence")
+
+
+def verify_package_inputs(root: Path) -> dict[str, Any]:
+    """Recheck archives, extracted trees and compiled consumers before measuring."""
+    receipt = json.loads((root / "evidence/locks/package-paths.json").read_text())
+    if set(receipt) != {"native", "go", "jvm", "python", "javascript"}:
+        raise ValueError("benchmark package receipt is incomplete")
+    for lane, expected in receipt.items():
+        result = subprocess.run(
+            ["python3", str(root / "package-tools/resolve-package.py"),
+             "--publish", str(root / "warehouse"), "--work", str(root / "packages"),
+             lane, "linux-aarch64"], check=True, capture_output=True, text=True, timeout=60)
+        if result.stdout.strip() != expected:
+            raise ValueError("package receipt differs from independently pinned archive: " + lane)
+    for manifest in ("source-files.sha256", "built-artifacts.sha256", "tool-artifacts.sha256"):
+        subprocess.run(["sha256sum", "--check", "--strict", "evidence/locks/" + manifest],
+                       cwd=root, check=True, capture_output=True, text=True, timeout=120)
+    return json.loads((root / "package-tools/package-pins.json").read_text())
 
 
 def write_campaign(
@@ -517,7 +743,10 @@ def write_campaign(
 ) -> None:
     """Atomically checkpoint all validated lane results collected so far."""
     campaign = {
-        "schema_version": 2,
+        # A constrained study must not enter the strict v2 report pipeline,
+        # even when every individual measurement happens to have headroom.
+        "schema_version": 3 if workload.get("study_mode") == "client-limited-loopback" else 2,
+        "evidence_kind": workload.get("study_mode", "strict"),
         "complete": complete,
         "workload": workload,
         "machine": facts,
@@ -563,25 +792,32 @@ def validate_configuration(
         or workload.get("body") != BODY.decode("ascii")
     ):
         raise ValueError("workload response contract differs from the fixed servers")
-    if workload.get("coakka_event_loop_threads") != 1:
-        raise ValueError("CoAkka event-loop count must match the native one-loop contract")
+    if "coakka_event_loop_threads" in workload:
+        raise ValueError("event-loop counts are Core observations, not benchmark configuration")
     if workload.get("io_uring") is not False:
         raise ValueError("the framework campaign must keep io_uring disabled")
-    if (
-        isinstance(workload.get("load_threads"), bool)
-        or workload.get("load_threads") != 3
+    load_threads = workload.get("load_threads")
+    if isinstance(load_threads, bool) or load_threads not in {2, 3}:
+        raise ValueError("the Pi campaign requires one load-generator thread per load CPU")
+    server_cpus = cpu_set(workload["server_cpus"])
+    load_cpus = cpu_set(workload["load_cpus"])
+    if (server_cpus, load_cpus, load_threads) not in (
+        ({0}, {1, 2, 3}, 3),
+        ({0, 1}, {2, 3}, 2),
     ):
-        raise ValueError("the Pi campaign requires three load-generator threads")
+        raise ValueError("unsupported server/load CPU partition or load-generator thread count")
     if workload["warmup_seconds"] < 5:
         raise ValueError("warmup_seconds must be at least five seconds")
     cooldown_seconds = workload.get("cooldown_minimum_seconds")
+    if workload.get("cooldown_consecutive_samples") != 3:
+        raise ValueError("cooldown requires exactly three consecutive clean samples")
     if (
         isinstance(cooldown_seconds, bool)
         or not isinstance(cooldown_seconds, int)
-        or cooldown_seconds < 15
+        or cooldown_seconds < 30
         or cooldown_seconds > 300
     ):
-        raise ValueError("cooldown_minimum_seconds must be at least 15 seconds")
+        raise ValueError("cooldown_minimum_seconds must be between 30 and 300 seconds")
     cooldown_temperature = workload.get("cooldown_maximum_c")
     if (
         isinstance(cooldown_temperature, bool)
@@ -686,15 +922,115 @@ def validate_machine(facts: dict[str, Any], workload: dict[str, Any]) -> None:
         raise RuntimeError("benchmark workload requires exactly four logical CPUs")
     server_cpus = cpu_set(workload["server_cpus"])
     load_cpus = cpu_set(workload["load_cpus"])
-    if (
-        server_cpus != {0}
-        or load_cpus != {1, 2, 3}
+    if (server_cpus, load_cpus, workload["load_threads"]) not in (
+        ({0}, {1, 2, 3}, 3),
+        ({0, 1}, {2, 3}, 2),
     ):
-        raise ValueError("server and load CPU sets must partition CPUs 0 through 3")
+        raise ValueError("server and load CPU sets must use a qualified Pi partition")
     if set(facts["governor_before"]) != {"cpu0", "cpu1", "cpu2", "cpu3"}:
         raise RuntimeError("CPU governor inventory does not cover all four CPUs")
     if facts["throttled_before"] != "throttled=0x0":
         raise RuntimeError("firmware reports prior power or thermal throttling")
+
+
+def parse_core_observation(log: str, workload: dict[str, Any]) -> dict[str, Any]:
+    """Check measured CPU ownership without guessing a connector's loop tuning.
+
+    Preserve the complete public record, including language-specific enum
+    representations. The driver validates shared observation fields only; it
+    neither maps another ABI's enum values nor manufactures missing limits.
+    """
+    records = [line.removeprefix("coakka-runtime-info=") for line in log.splitlines()
+               if line.startswith("coakka-runtime-info=")]
+    if len(records) != 1:
+        raise ValueError("exactly one Core startup observation is required")
+    record = json.loads(records[0])
+    if record.get("ioUringEffective") is not False:
+        raise ValueError("Core backend observation does not confirm io_uring disabled")
+    cpu = record.get("cpu", {})
+    expected_ids = sorted(cpu_set(workload["server_cpus"]))
+    if (cpu.get("selectedCpuIds") != expected_ids
+            or type(cpu.get("selectedCpuCount")) is not int
+            or cpu["selectedCpuCount"] != len(expected_ids)):
+        raise ValueError("Core CPU observation differs from the measured partition")
+    execution = record.get("execution", {})
+    configured = execution.get("configuredEventLoops")
+    active = execution.get("activeEventLoops")
+    if (execution.get("observed") is not True
+            or type(configured) is not int or type(active) is not int
+            or not 0 < active <= configured):
+        raise ValueError("Core execution observation is missing or incoherent")
+    for field in ("requestNotificationBatchSize", "terminalNotificationBatchSize"):
+        if type(record.get(field)) is not int or record[field] <= 0:
+            raise ValueError("Core batch observation is missing or invalid")
+    return record
+
+
+def classify_headroom(metrics: dict[str, Any], workload: dict[str, Any]) -> None:
+    """Retain observed limits without confusing execution success with capacity.
+
+    Only the explicit loopback study may retain a headroom refusal. All other
+    correctness, thermal and lifecycle failures remain fatal in the caller.
+    The threshold is unchanged; absence of saturation is not proof of a server
+    performance ceiling, especially on a machine shared with its load client.
+    """
+    observed = max(metrics["load_cpu_busy_percent"], metrics["load_cpu_interval_peak_percent"])
+    if not math.isfinite(observed) or not 0 <= observed <= 100:
+        raise ValueError("invalid load-generator CPU observation")
+    limit = workload["load_cpu_maximum_busy_percent"]
+    limited = observed > limit
+    metrics["generator_headroom"] = {
+        "observed_maximum_busy_percent": observed,
+        "maximum_busy_percent": limit,
+        "passed": not limited,
+    }
+    metrics["capacity_classification"] = (
+        "client-limited" if limited else "no-generator-saturation-observed"
+    )
+    if limited and workload.get("study_mode", "strict") != "client-limited-loopback":
+        raise RuntimeError(f"load generator saturated: {observed:.1f}% > {limit:.1f}%")
+
+
+def verify_loaded_package(root: Path, lane: dict[str, Any], group: int) -> list[dict[str, Any]]:
+    """Verify actual mapped runtime bytes, not merely the intended package pin.
+
+    A reused consumer cache can retain an old RPATH despite a new package
+    receipt. Node installs an exact package copy, so identity is checked by
+    content against the canonical extracted package rather than guessed from
+    directory names. This cold probe runs before timed load. It is benchmark
+    provenance, not connector platform detection or runtime policy.
+    """
+    owners = {"C": "native", "Go": "go", "Python": "python",
+              "Kotlin/JVM": "jvm", "Node.js": "javascript", "Bun": "javascript"}
+    paths = json.loads((root / "evidence/locks/package-paths.json").read_text())
+    expected = set()
+    if lane["role"] == "coakka":
+        package = Path(paths[owners[lane["ecosystem"]]])
+        for path in package.rglob("*"):
+            if path.is_file() and "coakka_http" in path.name and (".so" in path.name or path.suffix == ".node"):
+                expected.add(hashlib.sha256(path.read_bytes()).hexdigest())
+        if not expected:
+            raise ValueError("no canonical native payload for loaded-package verification")
+    observed = []
+    for pid in process_group_metrics(group):
+        mapped = set()
+        for line in Path(f"/proc/{pid}/maps").read_text().splitlines():
+            fields = line.split(maxsplit=5)
+            if len(fields) != 6 or not fields[5].startswith("/"):
+                continue
+            path = Path(fields[5])
+            if "coakka_http" in path.name and (".so" in path.name or path.suffix == ".node"):
+                mapped.add(path)
+        for path in sorted(mapped):
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            if digest not in expected:
+                raise ValueError(f"mapped package identity mismatch: {lane['id']}: {path}")
+            observed.append({"pid": pid, "path": str(path), "sha256": digest})
+    if lane["role"] == "coakka":
+        required = "libcoakka_http_runtime" if lane["ecosystem"] == "C" else "libcoakka_http_host"
+        if not any(required in Path(row["path"]).name for row in observed):
+            raise ValueError("expected runtime library was not observed in process maps")
+    return observed
 
 
 def measure(
@@ -706,34 +1042,7 @@ def measure(
 ) -> dict[str, Any]:
     port = free_port()
     command = [part.format(port=port) for part in lane["command"]]
-    environment = os.environ.copy()
-    environment.update(lane.get("environment", {}))
-    host_library = root / "build/host-prefix/lib/libcoakka_http_host.so.1.0.0"
-    javascript_addon = root / "build/javascript-connector/coakka_http_javascript.node"
-    jvm_bridge = root / "build/jvm-connector/native/libcoakka_http_jvm.so"
-    environment["LD_LIBRARY_PATH"] = ":".join(
-        value
-        for value in [
-            str(root / "build/host-prefix/lib"),
-            environment.get("LD_LIBRARY_PATH", ""),
-        ]
-        if value
-    )
-    environment["COAKKA_HTTP_HOST_PATH"] = str(host_library)
-    environment["COAKKA_HTTP_JAVASCRIPT_ADDON"] = str(javascript_addon)
-    environment["PYTHONPATH"] = ":".join(
-        value
-        for value in [
-            str(root / "sources/connector/connectors/python"),
-            environment.get("PYTHONPATH", ""),
-        ]
-        if value
-    )
-    java_options = environment.get("JAVA_TOOL_OPTIONS", "")
-    environment["JAVA_TOOL_OPTIONS"] = (
-        f"{java_options} -Dcoakka.http.host.path={host_library} "
-        f"-Dcoakka.http.bridge.path={jvm_bridge}"
-    ).strip()
+    environment = package_environment(root, lane, workload)
     server_log = raw_directory / f"round-{round_number:02d}-{lane['id']}-server.log"
     with (
         server_log.open("w") as log,
@@ -755,7 +1064,18 @@ def measure(
         try:
             ready(port, process)
             require_persistent_http1(port, lane["id"])
+            loaded_package = verify_loaded_package(root, lane, process.pid)
+            core_info = None
+            if lane["role"] == "coakka":
+                observation_deadline = time.monotonic() + 5
+                while "coakka-runtime-info=" not in server_log.read_text():
+                    if process.poll() is not None or time.monotonic() >= observation_deadline:
+                        raise RuntimeError("Core startup observation was not emitted")
+                    time.sleep(.02)
+                core_info = parse_core_observation(server_log.read_text(), workload)
             before_c = temperature_c()
+            memory_before = memory_snapshot()
+            frequencies_before = frequency_snapshot()
             request_log = request_log_root / (
                 f"round-{round_number:02d}-{lane['id']}-requests.tsv"
             )
@@ -770,17 +1090,15 @@ def measure(
             }
             measurement_started = time.monotonic()
             try:
-                load = subprocess.run(
+                load, resources = monitored_load(
                     h2load_command(workload, port, request_log),
-                    cwd=root,
-                    check=False,
-                    capture_output=True,
-                    text=True,
-                    timeout=(
+                    root, process.pid,
+                    (
                         workload["warmup_seconds"]
                         + workload["duration_seconds"]
                         + 30
-                    ),
+                    ), raw_directory / f"round-{round_number:02d}-{lane['id']}-h2load.txt",
+                    generator_cpus=cpu_set(workload["load_cpus"]),
                 )
                 elapsed_seconds = time.monotonic() - measurement_started
                 load_snapshot_after = cpu_counters()
@@ -797,7 +1115,7 @@ def measure(
                     f"server process membership changed for {lane['id']}"
                 )
             cpu_tick_delta = 0
-            for process_id, (ticks_after, _rss_after) in process_metrics_after.items():
+            for process_id, (ticks_after, _rss_after, _user, _system) in process_metrics_after.items():
                 ticks_before = process_metrics_before[process_id][0]
                 if ticks_after < ticks_before:
                     raise RuntimeError(
@@ -825,10 +1143,12 @@ def measure(
             metrics.update(
                 {
                     "lane_id": lane["id"],
+                    "loaded_package": loaded_package,
                     "ecosystem": lane["ecosystem"],
                     "implementation": lane["implementation"],
                     "role": lane["role"],
                     "round": round_number,
+                    "core_runtime_info": core_info,
                     "measurement_requests": metrics["requests_total"],
                     "load_wall_seconds": elapsed_seconds,
                     "server_process_count": len(process_metrics_after),
@@ -843,25 +1163,32 @@ def measure(
                         / elapsed_seconds
                         * 100.0
                     ),
+                    "server_user_cpu_seconds": sum(
+                        item[2] - process_metrics_before[pid][2]
+                        for pid, item in process_metrics_after.items()) / os.sysconf("SC_CLK_TCK"),
+                    "server_system_cpu_seconds": sum(
+                        item[3] - process_metrics_before[pid][3]
+                        for pid, item in process_metrics_after.items()) / os.sysconf("SC_CLK_TCK"),
                     "temperature_before_c": before_c,
                     "temperature_after_c": after_c,
+                    "memory_before": memory_before,
+                    "memory_after": memory_snapshot(),
+                    "cpu_frequency_before_khz": frequencies_before,
+                    "cpu_frequency_after_khz": frequency_snapshot(),
                     "throttled": throttled(),
                 }
             )
+            metrics.update(resources)
             if metrics["throttled"] != "throttled=0x0":
                 raise RuntimeError(
                     f"power or thermal throttling invalidated {lane['id']}: "
                     f"{metrics['throttled']}"
                 )
-            if load_cpu_busy_percent > workload["load_cpu_maximum_busy_percent"]:
-                raise RuntimeError(
-                    f"load generator saturated for {lane['id']}: "
-                    f"{load_cpu_busy_percent:.1f}% > "
-                    f"{workload['load_cpu_maximum_busy_percent']:.1f}%"
-                )
+            classify_headroom(metrics, workload)
             return metrics
         finally:
-            stop_server(process)
+            exit_code = stop_server(process)
+            validate_shutdown(lane, exit_code, server_log.read_text())
 
 
 def main() -> int:
@@ -872,6 +1199,7 @@ def main() -> int:
     if config.get("schema_version") != 2:
         raise ValueError("benchmark configuration schema is not supported")
     workload = dict(config["workload"])
+    workload["study_mode"] = args.study_mode
     lanes = list(config["lanes"])
     if args.lane:
         known_lane_ids = {lane["id"] for lane in lanes}
@@ -885,6 +1213,7 @@ def main() -> int:
     if args.duration is not None:
         workload["duration_seconds"] = args.duration
     validate_configuration(workload, lanes)
+    package_pins = verify_package_inputs(root)
     output = args.output.resolve()
     if output.exists():
         if not output.is_dir() or any(output.iterdir()):
@@ -892,6 +1221,7 @@ def main() -> int:
                 f"benchmark output must be a new or empty directory: {output}"
             )
     facts = machine_facts()
+    facts["package_pins"] = package_pins
     validate_machine(facts, workload)
     refresh_sudo_lease()
     raw_directory = output / "raw"
@@ -902,7 +1232,12 @@ def main() -> int:
     results: list[dict[str, Any]] = []
     complete = False
     write_campaign(output, workload, facts, lanes, results, complete)
+    observer_affinity_before = os.sched_getaffinity(0)
     try:
+        # The observer shares only generator CPUs; it cannot steal scheduled
+        # time from the server partition. Its cost remains in headroom evidence.
+        os.sched_setaffinity(0, cpu_set(workload["load_cpus"]))
+        facts["observer_affinity_during"] = sorted(os.sched_getaffinity(0))
         set_governor("performance")
         facts["governor_during"] = require_governors("performance")
         print(
@@ -970,6 +1305,13 @@ def main() -> int:
     finally:
         restore_error: Exception | None = None
         try:
+            os.sched_setaffinity(0, observer_affinity_before)
+        except Exception as error:
+            restore_error = error
+            complete = False
+            facts["observer_affinity_restore_error"] = str(error)
+        facts["observer_affinity_after"] = sorted(os.sched_getaffinity(0))
+        try:
             restore_governors(original_governors)
         except Exception as error:  # Preserve evidence before failing closed.
             restore_error = error
@@ -993,7 +1335,7 @@ def main() -> int:
                 )
         write_campaign(output, workload, facts, lanes, results, complete)
         if restore_error is not None:
-            raise RuntimeError("failed to restore CPU governors") from restore_error
+            raise RuntimeError("failed to restore benchmark host state") from restore_error
     print(f"campaign={output / 'campaign.json'}", flush=True)
     return 0
 

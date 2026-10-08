@@ -7,6 +7,11 @@ import coakka.http.Responses
 import coakka.http.Service
 import coakka.http.ServiceBuilder
 import coakka.http.TransportSecurity
+import coakka.http.OutboundEndpoint
+import coakka.http.OutboundTarget
+import coakka.http.OutboundStrategy
+import coakka.http.OutboundRequest
+import coakka.http.OutboundReason
 import java.io.File
 import java.io.IOException
 import java.net.URL
@@ -66,6 +71,25 @@ internal fun runSecuritySmoke(fixtures: File) {
                     withIdentity = security == TransportSecurity.MUTUAL_TLS,
                 ) == (200 to body),
             ) { "secure response mismatch" }
+            // A separate client runtime owns outbound TLS and mTLS. Numeric
+            // connect address does not disable peer-name/certificate checking.
+            val client = ServiceBuilder().outboundTrust(11, File(fixtures, "ca.pem").readBytes())
+            if (security == TransportSecurity.MUTUAL_TLS) {
+                client.outboundIdentity(12, File(fixtures, "client.pem").readBytes(),
+                    File(fixtures, "client.key").readBytes())
+            }
+            client.outboundTarget(OutboundTarget("sample.secure", 3,
+                OutboundStrategy.SINGLE_OWNER, listOf(OutboundEndpoint(
+                    "loopback", "127.0.0.1", service.port, "localhost:${service.port}",
+                    security = security, tlsPeerIdentity = "localhost", tlsTrustGeneration = 11,
+                    tlsClientIdentityGeneration = if (security == TransportSecurity.MUTUAL_TLS) 12 else 0,
+                )))).start().use { caller ->
+                    val call = caller.submitOutbound(OutboundRequest(
+                        "sample.secure", "GET", "/secure", timeoutMillis = 3_000))
+                    val terminal = checkNotNull(caller.takeOutbound(5_000))
+                    check(terminal.call == call && terminal.reason == OutboundReason.RESPONSE)
+                    check(terminal.responseStatus == 200 && String(terminal.responseBody(), Charsets.UTF_8) == body)
+                }
         } finally {
             service.close()
         }
@@ -81,7 +105,7 @@ private fun secureGet(service: Service, fixtures: File, withIdentity: Boolean): 
     connection.connectTimeout = 5_000
     connection.readTimeout = 5_000
     return try {
-        connection.responseCode to connection.inputStream.use { String(it.readBytes()) }
+        connection.responseCode to connection.inputStream.use { String(readBounded(it, 4096), Charsets.UTF_8) }
     } finally {
         connection.disconnect()
     }

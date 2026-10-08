@@ -1,6 +1,11 @@
 name: coakka-http-runtime-samples
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/coakka-http-runtime-samples.yml"
+      - "coakka-http-runtime/**"
   pull_request:
     paths:
       - ".github/workflows/coakka-http-runtime-samples.yml"
@@ -21,17 +26,12 @@ jobs:
       - name: Check out samples
         uses: actions/checkout@v6
 
-      - name: Check out runtime source
+      - name: Check out public packages
         uses: actions/checkout@v6
         with:
-          repository: phuong-tran/coakka-http-runtime
-          path: coakka-http-runtime-source
-
-      - name: Check out connector source
-        uses: actions/checkout@v6
-        with:
-          repository: phuong-tran/coakka-http-runtime-connector
-          path: coakka-http-runtime-connector-source
+          repository: phuong-tran/coakka-publish
+          ref: main
+          path: coakka-publish
 
       - name: Set up Go
         uses: actions/setup-go@v6
@@ -57,7 +57,7 @@ jobs:
 
       - name: Verify every sample lane
         env:
-          COAKKA_HTTP_RUNTIME_ROOT: ${{ github.workspace }}/coakka-http-runtime-source
-          COAKKA_HTTP_CONNECTOR_ROOT: ${{ github.workspace }}/coakka-http-runtime-connector-source
+          COAKKA_PUBLISH_ROOT: ${{ github.workspace }}/coakka-publish
           COAKKA_HTTP_SAMPLE_WORK_ROOT: ${{ runner.temp }}/coakka-http-runtime-samples
+          PYTHONDONTWRITEBYTECODE: "1"
         run: bash coakka-http-runtime/run.sh verify

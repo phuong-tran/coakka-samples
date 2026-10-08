@@ -8,27 +8,31 @@ lane_root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${lane_root}/../scripts/common.sh"
 
 command="${1:-smoke}"
-prefix="$(prepare_host_prefix)"
-require_file "${prefix}/include/coakka/http/host.h"
+prefix="$(prepare_package native)"
+require_file "${prefix}/include/coakka/http/http.h"
 work="$(prepare_work_dir c)"
 build="${work}/build"
 
 cmake -S "${lane_root}" -B "${build}" -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_PREFIX_PATH="${prefix}" \
-  -DCoAkkaHttpHost_DIR="${prefix}/lib/cmake/CoAkkaHttpHost"
+  -DCoAkkaHttp_DIR="${prefix}/lib/cmake/CoAkkaHttp"
 cmake --build "${build}" --config Release --parallel
 
 case "${command}" in
   check) ;;
   smoke)
-    "${build}/coakka-http-c" --smoke "${sample_root}/assets"
-    "${build}/coakka-http-c" --smoke "${sample_root}/assets" --io-uring
+    python3 "${sample_root}/scripts/smoke-native.py" "${build}/coakka-http-c" "${sample_root}/assets" "${work}/smoke.log" --stream-upload --websocket
+    python3 "${sample_root}/scripts/smoke-native.py" "${build}/coakka-http-c" "${sample_root}/assets" "${work}/tuning.log" --tuning
+    "${build}/coakka-http-c-outbound"
+    python3 "${sample_root}/scripts/smoke-streaming.py" "${build}/coakka-http-c-streaming" "${work}/streaming.log"
     ;;
+  outbound) "${build}/coakka-http-c-outbound" ;;
+  streaming) "${build}/coakka-http-c-streaming" ;;
   security-smoke)
     fixtures="$(prepare_test_certificates)"
-    smoke_native_security_server "${build}/coakka-http-c-security" \
+    smoke_native_security_server "${build}/coakka-http-c" \
       "${fixtures}" c
     ;;
-  run) "${build}/coakka-http-c" --serve "${sample_root}/assets" ;;
-  *) printf 'usage: bash c/run.sh [check|smoke|security-smoke|run]\n' >&2; exit 2 ;;
+  run) "${build}/coakka-http-c" --assets "${sample_root}/assets" ;;
+  *) printf 'usage: bash c/run.sh [check|smoke|security-smoke|outbound|streaming|run]\n' >&2; exit 2 ;;
 esac

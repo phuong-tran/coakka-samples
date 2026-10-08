@@ -5,25 +5,7 @@ import coakka.http.Header as CoAkkaHeader
 import coakka.http.Headers as CoAkkaHeaders
 import coakka.http.Responses
 import coakka.http.ServiceBuilder
-import io.netty.bootstrap.ServerBootstrap
-import io.netty.buffer.Unpooled
-import io.netty.channel.Channel
-import io.netty.channel.ChannelHandlerContext
-import io.netty.channel.ChannelInitializer
-import io.netty.channel.ChannelOption
-import io.netty.channel.EventLoopGroup
-import io.netty.channel.SimpleChannelInboundHandler
-import io.netty.channel.nio.NioEventLoopGroup
-import io.netty.channel.socket.SocketChannel
-import io.netty.channel.socket.nio.NioServerSocketChannel
-import io.netty.handler.codec.http.DefaultFullHttpResponse
-import io.netty.handler.codec.http.FullHttpRequest
-import io.netty.handler.codec.http.HttpHeaderNames
-import io.netty.handler.codec.http.HttpObjectAggregator
-import io.netty.handler.codec.http.HttpResponseStatus
-import io.netty.handler.codec.http.HttpServerCodec
-import io.netty.handler.codec.http.HttpUtil
-import io.netty.handler.codec.http.HttpVersion
+import coakka.http.CpuPolicy
 import org.eclipse.jetty.http.HttpHeader
 import org.eclipse.jetty.server.Handler
 import org.eclipse.jetty.server.Request
@@ -32,11 +14,9 @@ import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.server.ServerConnector
 import org.eclipse.jetty.util.Callback
 import org.eclipse.jetty.util.thread.QueuedThreadPool
-import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
 private val BODY = "0123456789abcdef0123456789abcdef".toByteArray(StandardCharsets.US_ASCII)
@@ -46,106 +26,99 @@ private interface RunningServer {
 }
 
 fun main(arguments: Array<String>) {
-    require(arguments.size == 2) { "usage: benchmark.MainKt <coakka|netty|jetty> <port>" }
+    require(arguments.size == 2) { "usage: benchmark.MainKt <coakka|jetty> <port>" }
     val port = arguments[1].toInt()
     require(port in 1..65_535) { "port is invalid" }
-    val server = when (arguments[0]) {
-        "coakka" -> startCoakka(port)
-        "netty" -> startNetty(port)
-        "jetty" -> startJetty(port)
-        else -> error("unsupported Kotlin/JVM lane: ${arguments[0]}")
-    }
+    var server: RunningServer? = null
+    val started = CountDownLatch(1)
     val stopped = CountDownLatch(1)
     val closing = AtomicBoolean()
     Runtime.getRuntime().addShutdownHook(
         Thread({
             if (closing.compareAndSet(false, true)) {
                 try {
-                    server.close()
+                    // Signals may arrive as soon as the socket accepts, before
+                    // main finishes its cold observation. The latch publishes
+                    // the owner safely and prevents shutdown from racing start.
+                    started.await()
+                    server?.let {
+                        it.close()
+                        println("benchmark-shutdown=pass")
+                    }
                 } finally {
                     stopped.countDown()
                 }
             }
         }, "benchmark-shutdown"),
     )
+    try {
+        server = when (arguments[0]) {
+            "coakka" -> startCoakka(port)
+            "jetty" -> startJetty(port)
+            else -> error("unsupported Kotlin/JVM lane: ${arguments[0]}")
+        }
+    } finally {
+        started.countDown()
+    }
     stopped.await()
 }
 
 private fun startCoakka(port: Int): RunningServer {
+    val policy = when (System.getenv("COAKKA_BENCH_CPU_POLICY")) {
+        "single" -> CpuPolicy.SINGLE
+        "auto" -> CpuPolicy.AUTO
+        else -> error("explicit benchmark CPU intent required")
+    }
     val response = Responses.bytes(
         BODY,
         headers = CoAkkaHeaders(listOf(CoAkkaHeader("content-type", "application/octet-stream"))),
     )
     val service = ServiceBuilder()
         .listen("127.0.0.1", port)
-        .concurrency(1)
+        .cpu(policy)
         .get("/fixed", CoAkkaHandler { response })
         .start()
+    // Startup-only projection of native observations, never a mirrored default
+    // table or a per-request monitoring workload.
+    try {
+        val info = service.runtimeInfo()
+        val cpu = checkNotNull(info.cpu)
+        val limits = service.effectiveLimits()
+        println("coakka-runtime-info={\"cpu\":{\"requestedPolicy\":\"${cpu.requestedPolicy}\"," +
+            "\"placement\":\"${cpu.placement}\",\"selectedCpuCount\":${cpu.selectedCpuCount}," +
+            "\"selectedCpuIds\":${cpu.selectedCpuIds}},\"execution\":{" +
+            "\"observed\":${info.execution.observed},\"configuredEventLoops\":${info.execution.configuredEventLoops}," +
+            "\"activeEventLoops\":${info.execution.activeEventLoops}}," +
+            "\"requestNotificationBatchSize\":${info.requestNotificationBatchSize}," +
+            "\"terminalNotificationBatchSize\":${info.terminalNotificationBatchSize}," +
+            "\"ioUringEffective\":${info.ioUringEffective},\"limits\":{" +
+            "\"headerTimeoutMillis\":${limits.headerTimeoutMillis},\"bodyTimeoutMillis\":${limits.bodyTimeoutMillis}," +
+            "\"handlerTimeoutMillis\":${limits.appHostTimeoutMillis},\"idleTimeoutMillis\":${limits.idleTimeoutMillis}," +
+            "\"keepAliveTimeoutMillis\":${limits.keepAliveTimeoutMillis}}}")
+    } catch (failure: Throwable) {
+        try { service.close() } catch (cleanup: Throwable) { failure.addSuppressed(cleanup) }
+        throw failure
+    }
     return object : RunningServer {
         override fun close() = service.close()
     }
 }
 
-private fun startNetty(port: Int): RunningServer {
-    val boss: EventLoopGroup = NioEventLoopGroup(1)
-    val workers: EventLoopGroup = NioEventLoopGroup(1)
-    val listener: Channel = try {
-        ServerBootstrap()
-            .group(boss, workers)
-            .channel(NioServerSocketChannel::class.java)
-            .option(ChannelOption.SO_BACKLOG, 256)
-            .childOption(ChannelOption.TCP_NODELAY, true)
-            .childHandler(object : ChannelInitializer<SocketChannel>() {
-                override fun initChannel(channel: SocketChannel) {
-                    channel.pipeline()
-                        .addLast(HttpServerCodec())
-                        .addLast(HttpObjectAggregator(1 shl 20))
-                        .addLast(object : SimpleChannelInboundHandler<FullHttpRequest>() {
-                            override fun channelRead0(context: ChannelHandlerContext, request: FullHttpRequest) {
-                                val response = if (request.method().name() == "GET" && request.uri() == "/fixed") {
-                                    DefaultFullHttpResponse(
-                                        HttpVersion.HTTP_1_1,
-                                        HttpResponseStatus.OK,
-                                        Unpooled.wrappedBuffer(BODY),
-                                    )
-                                } else {
-                                    DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NOT_FOUND)
-                                }
-                                response.headers()[HttpHeaderNames.CONTENT_TYPE] = "application/octet-stream"
-                                HttpUtil.setContentLength(response, response.content().readableBytes().toLong())
-                                HttpUtil.setKeepAlive(response, HttpUtil.isKeepAlive(request))
-                                context.writeAndFlush(response)
-                            }
-                        })
-                }
-            })
-            .bind("127.0.0.1", port)
-            .sync()
-            .channel()
-    } catch (error: Throwable) {
-        workers.shutdownGracefully().syncUninterruptibly()
-        boss.shutdownGracefully().syncUninterruptibly()
-        throw error
-    }
-    return object : RunningServer {
-        override fun close() {
-            listener.close().syncUninterruptibly()
-            workers.shutdownGracefully(0, 5, TimeUnit.SECONDS).syncUninterruptibly()
-            boss.shutdownGracefully(0, 5, TimeUnit.SECONDS).syncUninterruptibly()
-        }
-    }
-}
-
 private fun startJetty(port: Int): RunningServer {
-    val threads = QueuedThreadPool(8, 8).apply { name = "jetty-benchmark" }
+    val threads = QueuedThreadPool(64, 8).apply { name = "jetty-benchmark" }
     val server = Server(threads)
-    val connector = ServerConnector(server, 1, 1).apply {
+    server.stopTimeout = 5_000
+    // Keep one acceptor and scale selectors only with the declared CPU budget.
+    val selectors = Runtime.getRuntime().availableProcessors().coerceIn(1, 2)
+    val connector = ServerConnector(server, 1, selectors).apply {
         host = "127.0.0.1"
         this.port = port
         acceptQueueSize = 256
     }
     server.addConnector(connector)
-    server.handler = object : Handler.Abstract() {
+    // This handler does no blocking work; declare that contract so Jetty can
+    // execute its normal nonblocking path instead of forcing worker dispatch.
+    server.handler = object : Handler.Abstract.NonBlocking() {
         override fun handle(request: Request, response: Response, callback: Callback): Boolean {
             if (request.httpURI.path != "/fixed" || request.method != "GET") {
                 response.status = 404

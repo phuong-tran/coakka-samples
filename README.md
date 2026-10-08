@@ -17,6 +17,19 @@ run.
 
 **CoAkka is a polyglot, multi-language, multi-platform runtime ecosystem.**
 
+## CoAkka Ecosystem
+
+| Product | Use it for | Start here |
+| --- | --- | --- |
+| CoAkka HTTP Runtime | HTTP APIs, static frontend files, outbound HTTP, streaming, SSE, WebSocket and TLS/mTLS with explicit lifecycle. | [C/C++, Go, Kotlin, Python and Node.js/Bun samples](coakka-http-runtime/README.md) — artifact-backed branch candidates |
+| CoAkka Runtime | Target-based application work across languages/processes, request/reply, deadletters, File Lane and Stream Lane. | [Runtime samples](runtime/README.md) |
+| CoAkka Logger | Bounded logging with visible delivery and pressure outcomes. | [Logger samples](logger/README.md) |
+| Runtime Addons | Optional capabilities composed with CoAkka Runtime. | [Addon samples](runtime-addons/README.md) |
+
+The products are independently versioned. CoAkka HTTP Runtime can serve HTTP
+on its own; it does not require CoAkka Runtime or Logger. An application may
+compose them when an HTTP handler needs runtime messaging or bounded logging.
+
 CoAkka Runtime is a native-backed capability runtime for application-owned
 work across processes and languages. It helps an app route work by stable
 target name, handle request/reply, report deadletters, enforce bounded
@@ -29,7 +42,7 @@ container, or host.
 
 CoAkka Logger is a separate bounded logging surface in the same ecosystem.
 
-One native core and a stable public C ABI support native C/C++, JVM and
+CoAkka Runtime's native library and public C ABI support native C/C++, JVM and
 framework adapters, Node.js, Bun, Electron, Tauri, Python, Go, C#, Rust,
 Swift, Zig, Mojo, and the separately scoped Android preview according to each
 release's compatibility row.
@@ -124,19 +137,33 @@ history.
 
 ## CoAkka HTTP Runtime
 
-CoAkka HTTP Runtime `1.0.0` is staged privately for native C/C++, Java/Kotlin,
-Python, JavaScript/TypeScript on Node and Bun, and Go. Its ordinary application
-package boundary is being corrected and reverified. The
-[documentation hub](docs/coakka-http-runtime/README.md) and
-[sample area](coakka-http-runtime/README.md) are present now so runnable lanes
-can arrive without moving their entrypoints. External registries, supported
-runnable samples, and performance claims remain closed gates; current staging
-status lives in
-[`coakka-publish/coakka-http-runtime`](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime).
+The [HTTP Runtime samples](coakka-http-runtime/README.md) are runnable now
+against the checksum-pinned `1.0.0` candidates in the matching `coakka-publish`
+checkout. They cover C11, C++17, Go, Kotlin/JVM, Python, and one TypeScript
+application for both Node.js and Bun. They do not rebuild the runtime or require
+a private connector checkout.
+
+```sh
+export COAKKA_PUBLISH_ROOT=/path/to/coakka-publish
+export COAKKA_HTTP_SAMPLE_WORK_ROOT=/path/to/build-volume/http-samples
+bash coakka-http-runtime/run.sh go smoke
+```
+
+Use the matching `http-runtime-release-sync` warehouse branch. The
+[sample guide](coakka-http-runtime/README.md) lists prerequisites, features and
+commands for every language. Application and TLS/mTLS smokes pass on macOS ARM64
+and Raspberry Pi Linux ARM64; Windows/Linux x86-64 sample execution is not
+claimed. Package-platform evidence is separate from sample execution.
+
+HTTP Runtime remains a **release candidate**, not a registry release. The
+Runtime/Logger installation table above does not install HTTP Runtime; npm,
+Maven, PyPI and Go registry publication are outside this train. No new throughput
+claim follows from these sample checks.
 
 ## Architecture Boundary
 
-HTTP remains the external API edge; selected application-owned work crosses a
+CoAkka HTTP Runtime can own the external HTTP edge, or an existing framework
+can retain it. Selected application-owned work crosses a
 bounded CoAkka request/reply boundary instead of becoming another internal HTTP
 service. Read
 [Keep HTTP At The Edge](docs/http-edge-runtime-boundary.md) and

@@ -14,7 +14,6 @@ providers.gradleProperty("sampleBuildDir").orNull?.let {
 
 dependencies {
     implementation(files(coakkaHttpJar))
-    implementation("io.netty:netty-codec-http:4.1.137.Final")
     implementation("org.eclipse.jetty:jetty-server:12.1.13")
 }
 

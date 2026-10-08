@@ -6,9 +6,15 @@ set -euo pipefail
 
 sample_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 repo_root="$(cd "${sample_root}/.." && pwd)"
-runtime_root="${COAKKA_HTTP_RUNTIME_ROOT:-${repo_root}/../coakka-http-runtime}"
-connector_root="${COAKKA_HTTP_CONNECTOR_ROOT:-${repo_root}/../coakka-http-runtime-connector}"
+publish_root="${COAKKA_PUBLISH_ROOT:?set COAKKA_PUBLISH_ROOT to the verified candidate warehouse checkout}"
 work_root="${COAKKA_HTTP_SAMPLE_WORK_ROOT:?set COAKKA_HTTP_SAMPLE_WORK_ROOT to an external build directory}"
+
+# Package acquisition never compiles Core or imports a private connector tree.
+prepare_package() {
+  python3 "${sample_root}/scripts/resolve-package.py" \
+    --publish "${publish_root}" --work "${work_root}/packages" \
+    "$1" "$(host_native_target)"
+}
 
 require_file() {
   local path="$1"
@@ -23,37 +29,6 @@ prepare_work_dir() {
   local directory="${work_root}/${lane}"
   mkdir -p "${directory}"
   printf '%s\n' "${directory}"
-}
-
-# Build and install only the focused host component. The shared prefix is reused
-# by every language lane and remains outside the source checkout.
-prepare_host_prefix() {
-  local build prefix
-  local -a platform_options=()
-  if [[ -n "${COAKKA_HTTP_PREPARED_HOST_PREFIX:-}" ]]; then
-    require_file "${COAKKA_HTTP_PREPARED_HOST_PREFIX}/include/coakka/http/host.h"
-    require_file "${COAKKA_HTTP_PREPARED_HOST_PREFIX}/lib/cmake/CoAkkaHttpHost/CoAkkaHttpHostConfig.cmake"
-    printf '%s\n' "${COAKKA_HTTP_PREPARED_HOST_PREFIX}"
-    return
-  fi
-  build="$(prepare_work_dir native)/build"
-  prefix="$(prepare_work_dir native)/prefix"
-  if [[ "$(uname -s)" == Darwin ]]; then
-    platform_options+=("-DCMAKE_OSX_DEPLOYMENT_TARGET=11.0")
-  fi
-  cmake -S "${runtime_root}" -B "${build}" -DCMAKE_BUILD_TYPE=Release \
-    -DBUILD_TESTING=OFF -DCOAKKA_HTTP_BUILD_DEPENDENCY_PROBE=OFF \
-    -DCOAKKA_HTTP_ENABLE_OPENSSL_PROVIDER=ON \
-    -DCOAKKA_HTTP_ENABLE_ZLIB_PROVIDER=ON \
-    -DCOAKKA_HTTP_ENABLE_HTTP2_FOUNDATION=ON \
-    -DCOAKKA_HTTP_ENABLE_HTTP3_DEPENDENCY_FOUNDATION=ON \
-    -DCOAKKA_HTTP_ENABLE_PINNED_CURL_CLIENT_FOUNDATION=ON \
-    -DCOAKKA_HTTP_BUILD_CURL_HTTP1_PROVIDER=ON \
-    "${platform_options[@]}" \
-    -DCMAKE_INSTALL_PREFIX="${prefix}" >/dev/null
-  cmake --build "${build}" --target coakka_http_host --parallel >/dev/null
-  cmake --install "${build}" --component coakka_http_host >/dev/null
-  printf '%s\n' "${prefix}"
 }
 
 prepare_test_certificates() {

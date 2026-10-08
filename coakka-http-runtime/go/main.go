@@ -5,6 +5,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
@@ -30,16 +31,31 @@ func main() {
 }
 
 // run owns both services and always closes them in reverse construction order.
-func run() error {
+func run() (result error) {
 	var smoke bool
+	var adverse bool
 	var ioUring bool
 	var assets string
 	var securityFixtures string
+	var protocol, protocolFixtures string
+	var tuning, singleCPU, compression bool
 	flag.BoolVar(&smoke, "smoke", false, "exercise representative routes and exit")
+	flag.BoolVar(&adverse, "adverse-smoke", false, "exercise bounded deadline and pressure failures and exit")
 	flag.BoolVar(&ioUring, "io-uring", false, "request io_uring and allow native fallback to epoll")
 	flag.StringVar(&assets, "assets", "../assets", "static and application-file root")
 	flag.StringVar(&securityFixtures, "security-smoke", "", "exercise TLS and mutual TLS using this fixture directory")
+	flag.StringVar(&protocol, "protocol", "", "run a TLS listener sample: http2 or http3")
+	flag.StringVar(&protocolFixtures, "protocol-fixtures", "", "test certificate directory for the protocol listener")
+	flag.BoolVar(&tuning, "tuning", false, "demonstrate explicit batch and transport timeout settings")
+	flag.BoolVar(&singleCPU, "single-cpu", false, "request Core SINGLE placement; unsupported hosts refuse")
+	flag.BoolVar(&compression, "compression", false, "enable Core-owned negotiated GZIP responses")
 	flag.Parse()
+	if protocol != "" {
+		return runProtocolServer(protocol, protocolFixtures)
+	}
+	if adverse {
+		return runAdverseSmoke()
+	}
 	if securityFixtures != "" {
 		return runSecuritySmoke(securityFixtures)
 	}
@@ -58,17 +74,25 @@ func run() error {
 	if err != nil {
 		return fmt.Errorf("start outbound target: %w", err)
 	}
-	defer upstream.Close()
+	// Keep close refusal as an application outcome, including when an earlier
+	// operation failed. Do not restart or report success after refused drain.
+	defer func() { result = errors.Join(result, closeService(upstream, "upstream")) }()
 	upstreamPort, err := upstream.Port()
 	if err != nil {
 		return fmt.Errorf("read outbound target port: %w", err)
 	}
 
-	service, err := newService(root, upstreamPort, ioUring)
+	service, err := newService(root, upstreamPort, ioUring, tuning, singleCPU, compression)
 	if err != nil {
 		return err
 	}
-	defer service.Close()
+	defer func() { result = errors.Join(result, closeService(service, "application")) }()
+	if err = demonstrateMonitorReload(service); err != nil {
+		return err
+	}
+	if err = verifySettings(service, tuning, singleCPU); err != nil {
+		return err
+	}
 
 	if err = activateReplacement(service); err != nil {
 		return err
@@ -98,7 +122,7 @@ func run() error {
 // newService declares all resources before the native listener is published.
 // The filesystem roots and handler functions remain application-owned until
 // Close returns.
-func newService(root string, upstreamPort uint16, ioUring bool) (*coakkahttp.Service, error) {
+func newService(root string, upstreamPort uint16, ioUring, tuning, singleCPU, compression bool) (*coakkahttp.Service, error) {
 	contentType, err := coakkahttp.NewHeader("content-type", "text/plain; charset=utf-8")
 	if err != nil {
 		return nil, err
@@ -127,7 +151,7 @@ func newService(root string, upstreamPort uint16, ioUring bool) (*coakkahttp.Ser
 	events := func(_ *coakkahttp.Request) (coakkahttp.Response, error) {
 		return coakkahttp.NewSSEResponse(coakkahttp.Headers{}, func(writer *coakkahttp.SSEWriter) error {
 			return writer.Write(coakkahttp.SSEEvent{
-				Data: []byte("ready"), EventType: "state", ID: "1", RetryMillis: 1500,
+				Data: []byte("ready\nsecond line"), EventType: "state", ID: "1", RetryMillis: 1000,
 				HasEventType: true, HasID: true, HasRetry: true,
 			})
 		})
@@ -140,6 +164,8 @@ func newService(root string, upstreamPort uint16, ioUring bool) (*coakkahttp.Ser
 				return session.SendText("welcome")
 			case coakkahttp.WebSocketText:
 				return session.SendText(string(event.Data))
+			case coakkahttp.WebSocketBinary:
+				return session.SendBinary(event.Data)
 			default:
 				return nil
 			}
@@ -149,12 +175,13 @@ func newService(root string, upstreamPort uint16, ioUring bool) (*coakkahttp.Ser
 	endpoint := coakkahttp.OutboundEndpoint{
 		NodeID: "loopback", ConnectHost: "127.0.0.1", ConnectPort: upstreamPort,
 		HTTPAuthority: fmt.Sprintf("127.0.0.1:%d", upstreamPort),
-		Security:      coakkahttp.SecurityPlaintext, ConnectionStrategyGeneration: 1,
+		Security:      coakkahttp.SecurityPlaintext,
 	}
 
+	limits := sampleLimits(tuning)
 	builder := coakkahttp.NewBuilder().
 		Concurrency(2).
-		Limits(coakkahttp.DefaultLimits()).
+		Limits(limits).
 		Monitor(coakkahttp.MonitorOptions{
 			Collection:    coakkahttp.MonitorAggregatesAndEvents,
 			EventCapacity: 32, MaxEventsPerRead: 8,
@@ -162,7 +189,7 @@ func newService(root string, upstreamPort uint16, ioUring bool) (*coakkahttp.Ser
 			EventCategories:     coakkahttp.MonitorCategoryLifecycle, SignalReserved: true,
 		}).
 		StaticMount(coakkahttp.StaticMount{
-			ID: 81, URLPrefix: "/app", RootPath: root,
+			URLPrefix: "/app", RootPath: root,
 			IndexFile: "index.html", SPAFallbackFile: "index.html",
 			HasIndexFile: true, HasSPAFallbackFile: true,
 		}).
@@ -185,11 +212,28 @@ func newService(root string, upstreamPort uint16, ioUring bool) (*coakkahttp.Ser
 			return coakkahttp.Bytes(201, request.Bytes())
 		}).
 		PostStream("/upload", func(request *coakkahttp.Request) (coakkahttp.Response, error) {
+			// This small echo intentionally collects a body. Core enforces the
+			// declared 64 KiB ceiling before admission; this is not a recipe for
+			// buffering arbitrary files. Read errors (including cancellation)
+			// return immediately and release the handler's local buffer.
+			fmt.Println("go-upload-reading")
 			body, readErr := io.ReadAll(request.Body)
 			if readErr != nil {
+				// A body-read failure is not by itself proof of a particular
+				// transport cause. This marker proves the blocked reader returned.
+				fmt.Println("go-upload-read-failed")
 				return coakkahttp.Response{}, readErr
 			}
-			return coakkahttp.Bytes(200, body)
+			trailer, _ := request.Trailers.Get("x-upload-check")
+			header, err := coakkahttp.NewHeader("x-upload-observed", trailer)
+			if err != nil {
+				return coakkahttp.Response{}, err
+			}
+			headers, err := coakkahttp.NewHeaders(header)
+			if err != nil {
+				return coakkahttp.Response{}, err
+			}
+			return coakkahttp.NewResponse(200, headers, body)
 		}).
 		Get("/stream", stream).
 		Get("/events", events).
@@ -197,11 +241,48 @@ func newService(root string, upstreamPort uint16, ioUring bool) (*coakkahttp.Ser
 		Get("/download", func(_ *coakkahttp.Request) (coakkahttp.Response, error) {
 			return coakkahttp.ServeFile(200, textHeaders, 82, "/sample.txt")
 		}).
-		Get("/version", textHandler(200, "v1"))
+		Get("/version", textHandler(200, "v1")).
+		Get("/parameters/{id}", parameterHandler)
 	if ioUring {
 		builder.IOBackend(coakkahttp.IOUring)
 	}
+	if singleCPU {
+		builder.CPU(coakkahttp.CPUSingle)
+	}
+	if compression {
+		// Only the tiny demonstration threshold/level are explicit. Core owns
+		// workspace/size defaults and negotiates eligible responses; handlers
+		// keep returning normal uncompressed application values.
+		builder.Compression(&coakkahttp.Compression{
+			Mode: coakkahttp.CompressionGZIP, MinimumBodyBytes: 1, GZIPLevel: 6,
+		})
+	}
 	return builder.Start()
+}
+
+// parameterHandler demonstrates Core-parsed values without reparsing Target
+// or folding duplicates into a map. Serialization is bounded by Core's input
+// metadata ceilings. Only this demo's named header is reflected, not arbitrary
+// headers, credentials or cookies.
+func parameterHandler(request *coakkahttp.Request) (coakkahttp.Response, error) {
+	value := struct {
+		Path    []coakkahttp.PathParameter  `json:"path"`
+		Query   []coakkahttp.QueryParameter `json:"query"`
+		Headers []string                    `json:"headers"`
+	}{request.PathParameters, request.QueryParameters, request.Headers.GetAll("x-sample-value")}
+	body, err := json.Marshal(value)
+	if err != nil {
+		return coakkahttp.Response{}, err
+	}
+	header, err := coakkahttp.NewHeader("content-type", "application/json")
+	if err != nil {
+		return coakkahttp.Response{}, err
+	}
+	headers, err := coakkahttp.NewHeaders(header)
+	if err != nil {
+		return coakkahttp.Response{}, err
+	}
+	return coakkahttp.NewResponse(200, headers, body)
 }
 
 // textHandler is intentionally small: handler errors stay typed and are
@@ -212,21 +293,47 @@ func textHandler(status uint32, body string) coakkahttp.Handler {
 	}
 }
 
+// closeService preserves the connector's typed cause while naming the owner.
+// This command exits unsuccessfully on refusal; it never guesses that timeout
+// means native work stopped, frees native state itself, or starts a replacement.
+func closeService(service *coakkahttp.Service, owner string) error {
+	if err := service.Close(); err != nil {
+		return fmt.Errorf("close %s service: %w", owner, err)
+	}
+	return nil
+}
+
 // activateReplacement demonstrates a handler-only update. The route shape is
 // unchanged and any already admitted request keeps its captured v1 binding.
 func activateReplacement(service *coakkahttp.Service) error {
-	if err := service.PrepareHandler(9, textHandler(201, "v2")); err != nil {
+	if err := service.PrepareHandler(100, textHandler(201, "v2")); err != nil {
 		return fmt.Errorf("prepare replacement: %w", err)
 	}
 	outcome, err := service.RebindHandler(coakkahttp.RebindRequest{
 		ActivationID: 1, ExpectedRouteGeneration: 1, RouteID: 8,
-		ExpectedBindingRevision: 1, NewHandlerBindingID: 9,
-	}, 2*time.Second)
+		ExpectedBindingRevision: 1, NewHandlerBindingID: 100,
+	})
 	if err != nil {
 		return fmt.Errorf("activate replacement: %w", err)
 	}
 	if outcome.Code != coakkahttp.RebindApplied || !outcome.Changed {
 		return fmt.Errorf("replacement rejected with code %d", outcome.Code)
+	}
+	// Core, not the application, decides whether this old revision can apply.
+	// Keep the replacement binding prepared but prove it never becomes active.
+	if err := service.PrepareHandler(101, textHandler(200, "unreachable")); err != nil {
+		return err
+	}
+	refused, err := service.RebindHandler(coakkahttp.RebindRequest{
+		ActivationID: 2, ExpectedRouteGeneration: 1, RouteID: 8,
+		ExpectedBindingRevision: 1, NewHandlerBindingID: 101,
+	})
+	if err != nil {
+		return err
+	}
+	if refused.Code != coakkahttp.RebindBindingRevisionMismatch || refused.Changed ||
+		refused.EffectiveHandlerBindingID != outcome.EffectiveHandlerBindingID {
+		return fmt.Errorf("stale replacement did not preserve active binding: %+v", refused)
 	}
 	return nil
 }
@@ -234,7 +341,7 @@ func activateReplacement(service *coakkahttp.Service) error {
 // demonstrateRoutePublication replaces a complete route generation on an
 // isolated service. Structural publication is intentionally separate from a
 // handler-only rebind because it has different generation and replay guards.
-func demonstrateRoutePublication() error {
+func demonstrateRoutePublication() (result error) {
 	limits := coakkahttp.DefaultLimits()
 	limits.MaxHandlerBindings = 3
 	service, err := coakkahttp.NewBuilder().Limits(limits).
@@ -242,28 +349,74 @@ func demonstrateRoutePublication() error {
 	if err != nil {
 		return fmt.Errorf("start route publication sample: %w", err)
 	}
-	defer service.Close()
+	defer func() { result = errors.Join(result, closeService(service, "route publication")) }()
+	initial, err := service.Routes()
+	if err != nil {
+		return err
+	}
+	if len(initial.Routes) != 1 || initial.Routes[0].RouteID != 1 {
+		return errors.New("unexpected initial Core route cut")
+	}
 	if err = service.PrepareHandler(2, textHandler(201, "new-generation")); err != nil {
 		return fmt.Errorf("prepare published route: %w", err)
 	}
 	publication := coakkahttp.RoutePublication{
-		ActivationID: 1, ExpectedRouteGeneration: 1,
-		ExpectedMetadataGeneration: 1, ExpectedBindingChangeSequence: 1,
+		ActivationID: 1, ExpectedRouteGeneration: initial.RouteGeneration,
+		ExpectedBindingChangeSequence: initial.BindingChangeSequence,
 		Routes: []coakkahttp.Route{{
 			ID: 2, HandlerBindingID: 2, Method: http.MethodGet, Pattern: "/published",
 			BodyDelivery: coakkahttp.BodyInline,
-			BodyPolicy: coakkahttp.BodyPolicy{
-				Enabled: true, AcceptAbsent: true, AcceptOther: true,
-				MaxBodyBytes: limits.MaxRequestBodyBytes,
-			},
+			// Leave policy absent: DefaultLimits delegates its body ceiling to
+			// Core; the zero declaration is not an effective body-size value.
 		}},
 	}
-	outcome, err := service.PublishRoutes(publication, 2*time.Second)
+	outcome, err := service.PublishRoutes(publication)
 	if err != nil {
 		return fmt.Errorf("publish route generation: %w", err)
 	}
 	if outcome.Code != coakkahttp.RoutePublicationApplied || !outcome.Changed {
 		return fmt.Errorf("route generation rejected: outcome=%+v", outcome)
+	}
+	// This complete pull comes from Core even though monitoring is disabled.
+	// Local declarations and prepared handlers are not effective route truth.
+	current, err := service.Routes()
+	if err != nil {
+		return err
+	}
+	if current.RouteGeneration != outcome.EffectiveRouteGeneration ||
+		current.BindingChangeSequence != outcome.EffectiveBindingChangeSequence ||
+		len(current.Routes) != 1 || current.Routes[0].RouteID != 2 || current.Routes[0].HandlerBindingID != 2 {
+		return errors.New("published Core route cut does not match the accepted generation")
+	}
+	// Replay must use the exact original activation and payload. A new
+	// activation with stale guards is a different operation and must refuse.
+	replayed, err := service.PublishRoutes(publication)
+	if err != nil {
+		return err
+	}
+	if replayed.Code != coakkahttp.RoutePublicationApplied || !replayed.Replayed ||
+		replayed.OperationDigest != outcome.OperationDigest ||
+		replayed.EffectiveRouteGeneration != outcome.EffectiveRouteGeneration {
+		return fmt.Errorf("exact publication replay mismatch: %+v", replayed)
+	}
+	publication.ActivationID = 2
+	refused, err := service.PublishRoutes(publication)
+	if err != nil {
+		return err
+	}
+	if refused.Code != coakkahttp.RoutePublicationGenerationMismatch || refused.Changed ||
+		refused.EffectiveRouteGeneration != outcome.EffectiveRouteGeneration ||
+		refused.EffectiveBindingChangeSequence != outcome.EffectiveBindingChangeSequence {
+		return fmt.Errorf("stale publication did not preserve Core state: %+v", refused)
+	}
+	afterRefusal, err := service.Routes()
+	if err != nil {
+		return err
+	}
+	if afterRefusal.RouteGeneration != current.RouteGeneration ||
+		afterRefusal.BindingChangeSequence != current.BindingChangeSequence ||
+		len(afterRefusal.Routes) != 1 || afterRefusal.Routes[0] != current.Routes[0] {
+		return errors.New("stale publication changed the effective Core route cut")
 	}
 	port, err := service.Port()
 	if err != nil {
@@ -286,18 +439,32 @@ func demonstrateRoutePublication() error {
 // demonstrateOutbound uses the runtime-owned client lane and consumes the one
 // terminal reader synchronously before returning.
 func demonstrateOutbound(service *coakkahttp.Service) error {
-	call, err := service.SubmitOutbound(coakkahttp.ClientRequest{
-		TimeoutMillis: 3000, LogicalTarget: outboundTarget, Method: "GET", Target: "/source",
-	})
-	if err != nil {
-		return fmt.Errorf("submit outbound request: %w", err)
+	for _, item := range []struct {
+		path   string
+		status uint16
+	}{{"/source", 200}, {"/missing", 404}} {
+		call, err := service.SubmitOutbound(coakkahttp.ClientRequest{
+			TimeoutMillis: 3000, LogicalTarget: outboundTarget, Method: "GET", Target: item.path,
+		})
+		if err != nil {
+			return fmt.Errorf("submit outbound request: %w", err)
+		}
+		terminal, err := service.TakeOutbound(5 * time.Second)
+		if err != nil {
+			return fmt.Errorf("take outbound result: %w", err)
+		}
+		// An HTTP404 remains a received response, not a local transport error.
+		// The runtime releases its native response lease before returning this
+		// copied value; the application never guesses or releases that lease.
+		if terminal == nil || terminal.Call != call || terminal.Reason != coakkahttp.OutboundResponse || terminal.ResponseStatus != item.status ||
+			terminal.LogicalTarget != outboundTarget || terminal.TargetGeneration != 1 ||
+			terminal.SelectedNodeID != "loopback" ||
+			(item.status == 200 && string(terminal.ResponseBody) != "outbound-ready") {
+			return errors.New("outbound result did not match the declared target")
+		}
 	}
-	terminal, err := service.TakeOutbound(5 * time.Second)
-	if err != nil {
-		return fmt.Errorf("take outbound result: %w", err)
-	}
-	if terminal == nil || terminal.Call != call || terminal.ResponseStatus != 200 || string(terminal.ResponseBody) != "outbound-ready" {
-		return errors.New("outbound result did not match the declared target")
+	if extra, err := service.TakeOutbound(0); err != nil || extra != nil {
+		return fmt.Errorf("unexpected extra outbound terminal: value=%+v error=%v", extra, err)
 	}
 	return nil
 }
@@ -318,8 +485,8 @@ func printObservability(service *coakkahttp.Service) error {
 		return fmt.Errorf("read runtime information: %w", err)
 	}
 	fmt.Printf(
-		"readiness=%d monitor-latest=%d retained=%d io-uring-requested=%t io-uring-effective=%t\n",
-		health.Readiness, page.LatestSequence, len(page.Events),
+		"ready=%t monitor-latest=%d retained=%d io-uring-requested=%t io-uring-effective=%t\n",
+		health.Ready, page.LatestSequence, len(page.Events),
 		info.RequestedIOBackend == coakkahttp.IOUring,
 		info.EffectiveIOBackend == coakkahttp.IOUring,
 	)

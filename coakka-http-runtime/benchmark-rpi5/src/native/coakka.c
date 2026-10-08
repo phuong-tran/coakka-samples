@@ -1,107 +1,111 @@
-/* Fixed response through the public host-inlined C11 event surface. */
-#include <coakka/http/host.h>
-
+/* Fixed response through the installed public C callback API. The benchmark
+ * never substitutes the internal event-pump ABI for an application handler.
+ * This runner targets the physical Linux Pi; signal waiting adds no spin loop.
+ */
+#define _POSIX_C_SOURCE 200809L
+#include <coakka/http/http.h>
+#include <errno.h>
+#include <pthread.h>
 #include <signal.h>
+#include <stdatomic.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-static volatile sig_atomic_t stopping = 0;
+static atomic_int failed = 0;
+static coakka_http_response_t fixed_response;
+static const coakka_http_header_t content_type = {
+    {(const uint8_t *)"content-type", 12U},
+    {(const uint8_t *)"application/octet-stream", 24U}};
 static const char body[] = "0123456789abcdef0123456789abcdef";
 
-static coakka_http_host_bytes_t bytes(const char *value) {
-  coakka_http_host_bytes_t result = {(const uint8_t *)value, strlen(value)};
+/* Static text survives every callback; successful respond copies these views. */
+static coakka_http_bytes_t bytes(const char *value) {
+  coakka_http_bytes_t result = {(const uint8_t *)value, strlen(value)};
   return result;
 }
 
-static void stop_signal(int signal_number) {
-  (void)signal_number;
-  stopping = 1;
+/* Diagnostics are cold failure evidence, not a per-request logging workload. */
+static int check(coakka_http_result_t result, const char *operation) {
+  if (result.code == COAKKA_HTTP_RESULT_OK) return 1;
+  fprintf(stderr, "%s: %s (%s)\n", operation,
+          coakka_http_result_code_name(result.code), result.detail);
+  atomic_store(&failed, 1);
+  return 0;
 }
 
-static int serve(coakka_http_host_service_t *service) {
-  static const coakka_http_host_header_t content_type = {
-      {(const uint8_t *)"content-type", 12U},
-      {(const uint8_t *)"application/octet-stream", 24U}};
-  while (stopping == 0) {
-    coakka_http_host_request_event_t event;
-    coakka_http_host_status_t status;
-    coakka_http_host_request_event_init(&event);
-    status = coakka_http_host_take_request(service, 100U, &event);
-    if (status == COAKKA_HTTP_HOST_TIMEOUT) {
-      continue;
-    }
-    if (status == COAKKA_HTTP_HOST_CLOSED) {
-      break;
-    }
-    if (status != COAKKA_HTTP_HOST_OK) {
-      return 0;
-    }
-    if (event.kind == COAKKA_HTTP_HOST_REQUEST) {
-      coakka_http_host_response_t response;
-      coakka_http_host_response_init(&response);
-      response.headers = &content_type;
-      response.header_count = 1U;
-      response.body = bytes(body);
-      if (coakka_http_host_respond(service, event.exchange, &response) !=
-          COAKKA_HTTP_HOST_OK) {
-        (void)coakka_http_host_release_request(service, &event);
-        return 0;
-      }
-    }
-    if (coakka_http_host_release_request(service, &event) !=
-        COAKKA_HTTP_HOST_OK) {
-      return 0;
-    }
-  }
-  return 1;
+/* Immutable response data is safe for concurrent runtime-owned callbacks.
+ * This API records the handler's outcome; Core submits it after callback
+ * return and owns races with peer disconnect. OK is not proof of wire delivery.
+ * Do not copy direct event-reader late-submission handling into this surface. */
+static void respond(void *context, coakka_http_request_t *request) {
+  (void)context;
+  (void)check(coakka_http_request_respond(request, &fixed_response), "respond");
 }
 
 int main(int argc, char **argv) {
-  coakka_http_host_configuration_t configuration;
-  coakka_http_host_route_t route;
-  coakka_http_host_service_t *service = NULL;
-  coakka_http_host_issue_t issue;
-  uint32_t failed_route = COAKKA_HTTP_HOST_FAILED_INDEX_NONE;
+  coakka_http_server_options_t options;
+  coakka_http_server_tuning_t tuning;
+  coakka_http_route_t route;
+  coakka_http_runtime_info_t info;
+  coakka_http_server_t *server = NULL;
+  sigset_t signals;
+  char *end = NULL;
+  const char *policy = getenv("COAKKA_BENCH_CPU_POLICY");
   unsigned long port;
-  int passed;
-  if (argc != 2) {
-    return EXIT_FAILURE;
-  }
-  port = strtoul(argv[1], NULL, 10);
-  if (port == 0UL || port > 65535UL) {
-    return EXIT_FAILURE;
-  }
+  int received;
+  if (argc != 2 || policy == NULL ||
+      (strcmp(policy, "single") != 0 && strcmp(policy, "auto") != 0)) return EXIT_FAILURE;
+  errno = 0;
+  port = strtoul(argv[1], &end, 10);
+  if (errno || *argv[1] == '\0' || *end != '\0' || port == 0 || port > 65535) return EXIT_FAILURE;
+  sigemptyset(&signals); sigaddset(&signals, SIGINT); sigaddset(&signals, SIGTERM);
+  if (pthread_sigmask(SIG_BLOCK, &signals, NULL) != 0) return EXIT_FAILURE;
 
-  coakka_http_host_configuration_init(&configuration);
-  coakka_http_host_issue_init(&issue);
-  configuration.port = (uint16_t)port;
-  configuration.bind_address = bytes("127.0.0.1");
-  configuration.limits.event_loop_threads = 1U;
-  configuration.limits.max_connections = 512U;
-  configuration.limits.max_active_requests = 256U;
-  configuration.limits.request_queue_capacity = 256U;
-  configuration.limits.completion_queue_capacity = 256U;
-  coakka_http_host_route_init(&route);
+  coakka_http_server_options_init(&options);
+  coakka_http_server_tuning_init(&tuning);
+  options.port = (uint16_t)port;
+  options.bind_address = bytes("127.0.0.1");
+  tuning.cpu_policy = strcmp(policy, "single") == 0 ? COAKKA_HTTP_CPU_SINGLE : COAKKA_HTTP_CPU_AUTO;
+  options.tuning = &tuning;
+  coakka_http_route_init(&route);
   route.route_id = UINT64_C(1);
-  route.handler_binding_id = UINT64_C(1);
-  route.method = bytes("GET");
-  route.encoded_path_pattern = bytes("/fixed");
-  if (coakka_http_host_service_create(&configuration, &route, 1U, &service,
-                                      &failed_route) != COAKKA_HTTP_HOST_OK ||
-      coakka_http_host_service_start(service, &issue) != COAKKA_HTTP_HOST_OK) {
-    coakka_http_host_service_destroy(&service);
-    return EXIT_FAILURE;
+  route.method = bytes("GET"); route.path = bytes("/fixed"); route.handler = respond;
+  coakka_http_response_init(&fixed_response);
+  fixed_response.headers = &content_type; fixed_response.header_count = 1;
+  fixed_response.body = bytes(body);
+  if (!check(coakka_http_server_create(&options, &route, 1, &server), "create") ||
+      !check(coakka_http_server_start(server), "start")) goto cleanup;
+  coakka_http_runtime_info_init(&info);
+  if (!check(coakka_http_server_get_runtime_info(server, &info), "runtime info")) goto cleanup;
+  if (!info.execution.observed || !info.core_started || info.cpu.selected_cpu_count < 1 ||
+      info.cpu.selected_cpu_count > 2) { atomic_store(&failed, 1); goto cleanup; }
+  if (info.effective_io_backend != COAKKA_HTTP_IO_PLATFORM_DEFAULT &&
+      info.effective_io_backend != COAKKA_HTTP_IO_URING) {
+    atomic_store(&failed, 1); goto cleanup;
   }
-
-  (void)signal(SIGINT, stop_signal);
-  (void)signal(SIGTERM, stop_signal);
-  passed = serve(service);
-  (void)coakka_http_host_service_begin_drain(service);
-  if (coakka_http_host_service_stop(service) != COAKKA_HTTP_HOST_OK) {
-    passed = 0;
+  /* Only observed Core fields are serialized. This ABI does not expose a full
+   * effective timeout table: null explicitly records that unavailable fact. */
+  printf("coakka-runtime-info={\"cpu\":{\"requestedPolicy\":%u,\"placement\":%u,"
+         "\"selectedCpuCount\":%u,\"selectedCpuIds\":[%u",
+         info.cpu.requested_policy, info.cpu.placement, info.cpu.selected_cpu_count,
+         info.cpu.selected_cpu_ids[0]);
+  if (info.cpu.selected_cpu_count == 2) printf(",%u", info.cpu.selected_cpu_ids[1]);
+  printf("]},\"execution\":{\"observed\":true,\"configuredEventLoops\":%u,\"activeEventLoops\":%u},"
+         "\"requestNotificationBatchSize\":%u,\"terminalNotificationBatchSize\":%u,"
+         "\"effectiveIoBackend\":%u,\"ioUringEffective\":%s,\"limits\":null}\n",
+         info.execution.configured_event_loops, info.execution.active_event_loops,
+         info.request_notification_batch_size, info.terminal_notification_batch_size,
+         info.effective_io_backend,
+         info.effective_io_backend == COAKKA_HTTP_IO_URING ? "true" : "false");
+  fflush(stdout);
+  if (sigwait(&signals, &received) != 0) atomic_store(&failed, 1);
+cleanup:
+  if (server != NULL) {
+    (void)check(coakka_http_server_stop(server), "stop");
+    (void)check(coakka_http_server_destroy(&server), "destroy");
   }
-  coakka_http_host_service_destroy(&service);
-  return passed != 0 ? EXIT_SUCCESS : EXIT_FAILURE;
+  if (!atomic_load(&failed)) puts("benchmark-shutdown=pass");
+  return atomic_load(&failed) ? EXIT_FAILURE : EXIT_SUCCESS;
 }

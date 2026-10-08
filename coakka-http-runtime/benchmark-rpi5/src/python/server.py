@@ -3,71 +3,86 @@
 from __future__ import annotations
 
 import signal
+import os
+import json
+from dataclasses import asdict
 import sys
 import threading
 
-from coakka_http import Builder, Header, Headers, Response
-from fastapi import FastAPI
-from fastapi.responses import Response as FastApiResponse
-from starlette.applications import Starlette
-from starlette.responses import Response as StarletteResponse
-from starlette.routing import Route
-
 BODY = b"0123456789abcdef0123456789abcdef"
 CONTENT_TYPE = "application/octet-stream"
-COAKKA_HEADERS = Headers((Header("content-type", CONTENT_TYPE),))
-
-fastapi_app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
 
-@fastapi_app.get("/fixed")
-async def fastapi_fixed() -> FastApiResponse:
-    """Return the shared immutable payload without JSON encoding."""
-    return FastApiResponse(BODY, media_type=CONTENT_TYPE)
+def __getattr__(name: str) -> object:
+    """Build only Uvicorn's selected app; exclude unrelated server imports/RSS."""
+    if name == "fastapi_app":
+        from fastapi import FastAPI
+        from fastapi.responses import Response as FrameworkResponse
 
+        app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
-async def starlette_fixed(_request: object) -> StarletteResponse:
-    """Return the same payload through the Starlette routing surface."""
-    return StarletteResponse(BODY, media_type=CONTENT_TYPE)
+        @app.get("/fixed", response_model=None)
+        async def fixed() -> object:
+            """Send immutable bytes without JSON serialization."""
+            return FrameworkResponse(BODY, media_type=CONTENT_TYPE)
 
+        return app
+    if name == "starlette_app":
+        from starlette.applications import Starlette
+        from starlette.responses import Response as FrameworkResponse
+        from starlette.routing import Route
 
-starlette_app = Starlette(routes=[Route("/fixed", starlette_fixed)])
+        async def fixed(_request: object) -> object:
+            """Send the identical body through real Starlette routing."""
+            return FrameworkResponse(BODY, media_type=CONTENT_TYPE)
+
+        return Starlette(routes=[Route("/fixed", fixed)])
+    raise AttributeError(name)
 
 
 def run_coakka(port: int) -> None:
     """Run the host-inlined Python callback until a process signal arrives."""
-    service = (
-        Builder()
-        .listen("127.0.0.1", port)
-        .concurrency(1)
-        .get("/fixed", lambda _request: Response(headers=COAKKA_HEADERS, body=BODY))
-        .start()
-    )
+    from coakka_http import Builder, CpuPolicy, Header, Headers, Response
+
+    headers = Headers((Header("content-type", CONTENT_TYPE),))
+    intent = os.environ.get("COAKKA_BENCH_CPU_POLICY")
+    if intent not in ("single", "auto"):
+        raise ValueError("explicit benchmark CPU intent required")
     stopped = threading.Event()
     signal.signal(signal.SIGINT, lambda *_: stopped.set())
     signal.signal(signal.SIGTERM, lambda *_: stopped.set())
-    while not stopped.wait(0.1):
+    service = (
+        Builder()
+        .listen("127.0.0.1", port)
+        .cpu(CpuPolicy.SINGLE if intent == "single" else CpuPolicy.AUTO)
+        .get("/fixed", lambda _request: Response(headers=headers, body=BODY))
+        .start()
+    )
+    try:
+        info = service.runtime_info()
+        if info.cpu is None:
+            raise RuntimeError("Core CPU observation unavailable")
+        print("coakka-runtime-info=" + json.dumps({
+            "cpu": {"requestedPolicy": info.cpu.requested_policy,
+                    "placement": info.cpu.placement, "selectedCpuCount": info.cpu.selected_cpu_count,
+                    "selectedCpuIds": info.cpu.selected_cpu_ids},
+            "execution": {"observed": info.execution.observed,
+                          "configuredEventLoops": info.execution.configured_event_loops,
+                          "activeEventLoops": info.execution.active_event_loops},
+            "limits": asdict(service.effective_limits()),
+            "ioUringEffective": info.io_uring_effective,
+            "requestNotificationBatchSize": info.request_notification_batch_size,
+            "terminalNotificationBatchSize": info.terminal_notification_batch_size,
+        }), flush=True)
+        # The controller owns process health checks. No periodic native query
+        # or timer wakeup is added to only one measured implementation.
+        stopped.wait()
         error = service.poll_error()
         if error is not None:
-            print(f"CoAkka service error: {error}", file=sys.stderr, flush=True)
-            try:
-                health = service.health()
-                print(
-                    "CoAkka service health: "
-                    f"lifecycle={health.lifecycle} "
-                    f"ready={health.ready} "
-                    f"admission_open={health.admission_open} "
-                    f"active_requests={health.activity.active_requests}",
-                    file=sys.stderr,
-                    flush=True,
-                )
-            except RuntimeError as health_error:
-                print(
-                    f"CoAkka health query failed: {health_error}",
-                    file=sys.stderr,
-                    flush=True,
-                )
-    service.close()
+            raise RuntimeError("benchmark handler diagnostic") from error
+    finally:
+        service.close()
+    print("benchmark-shutdown=pass", flush=True)
 
 
 if __name__ == "__main__":

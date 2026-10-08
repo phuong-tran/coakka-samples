@@ -22,6 +22,8 @@ dependencies {
 kotlin {
     jvmToolchain(17)
     compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
+    compilerOptions.freeCompilerArgs.add("-Xjdk-release=8")
+    compilerOptions.allWarningsAsErrors.set(true)
 }
 
 java {
@@ -31,6 +33,10 @@ java {
 
 application {
     mainClass.set("sample.MainKt")
+    applicationDefaultJvmArgs = listOf(
+        "-Dcoakka.http.host.path=${coakkaHttpHost.get()}",
+        "-Dcoakka.http.bridge.path=${coakkaHttpBridge.get()}",
+    )
 }
 
 tasks.withType<JavaExec>().configureEach {

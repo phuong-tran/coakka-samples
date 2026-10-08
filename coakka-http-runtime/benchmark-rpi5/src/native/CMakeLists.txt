@@ -1,36 +1,15 @@
 cmake_minimum_required(VERSION 3.24)
-project(coakka_http_rpi5_native LANGUAGES C CXX)
+project(coakka_http_rpi5_native LANGUAGES C)
 
-find_package(CoAkkaHttpHost 1.0.0 EXACT CONFIG REQUIRED)
-find_package(PkgConfig REQUIRED)
+# Compile only this consumer; the exact installed native package owns Core.
+# Native measures CoAkka C alone, without competitor or C++ comparison rows.
+find_package(CoAkkaHttp 1.0.0 EXACT CONFIG REQUIRED)
 find_package(Threads REQUIRED)
-find_package(OpenSSL REQUIRED)
-pkg_check_modules(MICROHTTPD REQUIRED IMPORTED_TARGET libmicrohttpd)
-pkg_check_modules(CPPHTTPLIB REQUIRED IMPORTED_TARGET cpp-httplib)
-
 add_executable(coakka-c coakka.c)
-target_link_libraries(coakka-c PRIVATE CoAkkaHttp::host)
-target_compile_features(coakka-c PRIVATE c_std_11)
-
-add_executable(microhttpd microhttpd.c)
-target_link_libraries(microhttpd PRIVATE PkgConfig::MICROHTTPD)
-target_compile_features(microhttpd PRIVATE c_std_11)
-
-add_executable(coakka-cpp coakka.cpp)
-target_link_libraries(coakka-cpp PRIVATE CoAkkaHttp::host Threads::Threads)
-target_compile_features(coakka-cpp PRIVATE cxx_std_20)
-
-add_executable(cpp-httplib cpp_httplib.cpp)
-# Debian enables cpp-httplib's OpenSSL-backed inline code in its public header.
-# Its shared-library pkg-config line omits those direct executable references.
-target_link_libraries(cpp-httplib PRIVATE PkgConfig::CPPHTTPLIB Threads::Threads
-  OpenSSL::SSL OpenSSL::Crypto)
-target_compile_features(cpp-httplib PRIVATE cxx_std_20)
-
-foreach(target coakka-c microhttpd coakka-cpp cpp-httplib)
-  if(MSVC)
-    target_compile_options(${target} PRIVATE /W4 /WX)
-  else()
-    target_compile_options(${target} PRIVATE -O3 -DNDEBUG -Wall -Wextra -Wpedantic -Werror)
-  endif()
-endforeach()
+target_link_libraries(coakka-c PRIVATE CoAkkaHttp::runtime Threads::Threads)
+set_target_properties(coakka-c PROPERTIES C_STANDARD 11 C_STANDARD_REQUIRED YES C_EXTENSIONS NO)
+if(MSVC)
+  target_compile_options(coakka-c PRIVATE /W4 /WX)
+else()
+  target_compile_options(coakka-c PRIVATE -O3 -DNDEBUG -Wall -Wextra -Wpedantic -Werror)
+endif()

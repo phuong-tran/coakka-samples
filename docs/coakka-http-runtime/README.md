@@ -42,7 +42,7 @@ behavior, truthful monitoring surface, lifecycle, and package gate.
 
 ## Operations And Evidence
 
-- [Dated comparison with Netty, Tomcat, Spring, Jetty, Chi, Gin, and Bun](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/comparison-2026-09-13.md)
+- [Historical architecture comparison (not a benchmark)](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/comparison-2026-09-13.md)
 - [Focused comparisons with familiar platforms](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/docs/comparisons)
 - [Raspberry Pi 5 benchmark protocol](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/benchmark-rpi5.md)
 
@@ -54,15 +54,16 @@ Linux ARM64 artifacts are measured on the physical Pi.
 
 CoAkka HTTP Runtime `1.0.0` is staged as an immutable private candidate for
 macOS ARM64, Linux ARM64/x86-64, and Windows ARM64/x86-64. npm, Maven Central,
-PyPI, a tagged public Go module, production signing, runnable samples, and
-external benchmark claims remain closed gates.
+PyPI, a tagged public Go module, production signing and external benchmark claims remain closed gates.
+Artifact-backed samples now have macOS ARM64 and Pi Linux ARM64 smoke evidence;
+complete feature-example coverage is still being audited.
 
 No staged artifact is treated as publishable until package contents, language
 README, sample source, and matching-host application evidence agree.
 
 ## Samples
 
-Runnable examples will live under the stable
-[sample area](../../coakka-http-runtime/README.md). That directory currently
-records the lane plan and promotion contract; it does not advertise an install
-command before the package-resolution and matching-host smoke paths are ready.
+Start in the [runnable sample area](../../coakka-http-runtime/README.md), then
+use the [feature coverage index](../../coakka-http-runtime/FEATURES.md). Samples
+consume checksum-pinned offline candidates, not a private source build. The
+index distinguishes working examples from remaining coverage gaps.

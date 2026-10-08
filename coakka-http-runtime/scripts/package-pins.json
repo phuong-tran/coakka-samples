@@ -1,0 +1,57 @@
+{
+  "go": {
+    "date": "2026-10-08-r3",
+    "extension": "tar.gz",
+    "sha256": {
+      "linux-aarch64": "e2b5d5c1718608acc1a12f77c09258965e576c28ed970943914661fb1a818da1",
+      "linux-x86_64": "14537257817acdcc2dae979e4ed019b55904b3a29dbb3153e60fce4be1fdd98f",
+      "macos-aarch64": "bdaf126eb0752d9284dad78321021dd0ecb762ddbd19ce0e14f97170e2d6e90a",
+      "windows-aarch64": "1e6464c4d7bc8ad3cb1b378c243c39dda08461f645aa4d2acdeafc97e15df106",
+      "windows-x86_64": "dbe8471ce6858d542b2dcc0727d6ee5e248e6a6ec9813de9e6273a0db6b8fbad"
+    }
+  },
+  "javascript": {
+    "date": "2026-10-08-r3",
+    "extension": "tgz",
+    "sha256": {
+      "linux-aarch64": "a2b0956ec75f6051f121aa718948aed2b50055338c26ff7189e8b2d7faa1942d",
+      "linux-x86_64": "e2147d2169ed97921a5c8c53b727f480bc93321a8f414d60237012d747e951b4",
+      "macos-aarch64": "95a468de572055b8a6bc99f388044750b4dad18ed4939ed352465bab1bbc1db6",
+      "windows-aarch64": "951df031e94d2721f62d1d0bbec7f0ab430c2abb8eca976ec9f6053d0849d35f",
+      "windows-x86_64": "b05a63697bbc497e3096724da2cf4061b7af7afd301fe6a9432647b108b18684"
+    }
+  },
+  "jvm": {
+    "date": "2026-10-08-r3",
+    "extension": "tar.gz",
+    "sha256": {
+      "linux-aarch64": "583dca4f6759885b5d63ac99e79ba9a1076c42138dd181e149910d256a05c88f",
+      "linux-x86_64": "e867a830734a0514c97da6aafc6f570493007e79b45a062cbfca9b9d4bbbeb4e",
+      "macos-aarch64": "d253fbff67c3717eda985a47116c2d913c3a75cef4218377474f2b4162d2a50c",
+      "windows-aarch64": "448c6b83c18409a3093f77fc4381b31fbdcf1282c8314930dd2cb7afb63226eb",
+      "windows-x86_64": "52626e2a0545302b04429f2be844caa99867c2c5cc85e08dd003f197c7a8b87e"
+    }
+  },
+  "native": {
+    "date": "2026-10-08-r3",
+    "extension": "tar.gz",
+    "sha256": {
+      "linux-aarch64": "4225febd7681d550b3f85feeb0254ed72d6332fc37079210a8f3c940ed4c148a",
+      "linux-x86_64": "7c0b63bcca23d984ea630eb2c8ee6561b7f7ceea7850eb2f810b1edbfc817634",
+      "macos-aarch64": "a3260760511e18334c1e680ff46b45b043acd305243cd98463be1c9aaa74356b",
+      "windows-aarch64": "470030b59e5a2dd674749e6973ccf6dd98d15972157a6dd75edf79bc6d71ca10",
+      "windows-x86_64": "cede881af8fc24c45fe58409a17417abcdda78bf8e4b88182093f9bb38e9e914"
+    }
+  },
+  "python": {
+    "date": "2026-10-08-r3",
+    "extension": "tar.gz",
+    "sha256": {
+      "linux-aarch64": "52ebdbd2545e2e60bb47507ac39d776116392c5c4d4cb9cc398ded9abdfcd4e8",
+      "linux-x86_64": "0e3a4bd76808461421eb0db1512d72fdae77c680addbdfdaf8f444e1020a9ef8",
+      "macos-aarch64": "04bb059ebd2b325150726af278900e55277075a4b2f5b0aff978008a0e50e96f",
+      "windows-aarch64": "bb89a034b9f9e41e654d23376e22eb95980a8a53f3524f3fb770a1eab1db87d4",
+      "windows-x86_64": "42d6d2792591651e31b46dcb7a1670fc1121f947dfa62bc3e64bee63d3bad446"
+    }
+  }
+}

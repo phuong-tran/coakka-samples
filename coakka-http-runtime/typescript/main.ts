@@ -9,12 +9,16 @@
 import {
   BodyDelivery,
   Builder,
+  CompressionMode,
   FileResponse,
   Header,
   Headers,
   Limits,
   MonitorCategory,
   MonitorCollection,
+  OutboundReason,
+  OutboundPhase,
+  OutboundCertainty,
   Response,
   RouteControlCode,
   StreamingResponse,
@@ -24,8 +28,11 @@ import {
   type Service,
 } from "@coakka/http";
 import { resolve } from "node:path";
+import { get } from "node:http";
+import { gunzipSync } from "node:zlib";
 
 const outboundTarget = "sample.upstream";
+const uploadLimit = 64 * 1024;
 
 /** Parse the intentionally small command line shared by both hosts. */
 function options(): Readonly<{ smoke: boolean; assets: string; ioUring: boolean }> {
@@ -42,30 +49,54 @@ function options(): Readonly<{ smoke: boolean; assets: string; ioUring: boolean 
   });
 }
 
-/** Collect one request stream until its terminal event selects the response. */
+/**
+ * Collect a body within Core's route byte limit and the service admission bound.
+ * END chooses a response; dispose releases retained application data on every
+ * exit, including a peer disconnect before END. It is cleanup, not HTTP success.
+ */
 function streamedUploadHandler() {
-  const chunks = new Map<string, Uint8Array[]>();
+  const chunks = new Map<string, { parts: Uint8Array[]; size: number; ended: boolean }>();
   return (event: StreamRequestEvent) => {
     const key = `${event.id.slot}:${event.id.generation}`;
+    if (event.kind === "dispose") {
+      const state = chunks.get(key);
+      // Disposal releases application retention; it is not a wire success ack.
+      if (state !== undefined && !state.ended) {
+        process.stdout.write(`typescript-upload-read-failed cause=${event.cause}\n`);
+      }
+      chunks.delete(key);
+      return undefined;
+    }
     if (event.kind === "start") {
-      chunks.set(key, []);
+      chunks.set(key, { parts: [], size: 0, ended: false });
+      process.stdout.write("typescript-upload-reading\n");
       return undefined;
     }
     if (event.kind === "data") {
-      chunks.get(key)?.push(event.data);
+      const state = chunks.get(key);
+      if (state === undefined) throw new Error("upload data without admitted start");
+      // Core enforces its route admission bound. This bounds the sample's own
+      // retained representation independently, without reparsing HTTP.
+      if (event.data.byteLength > uploadLimit - state.size) {
+        throw new Error("upload exceeds application retention bound");
+      }
+      state.parts.push(event.data);
+      state.size += event.data.byteLength;
       return undefined;
     }
     if (event.kind === "end") {
-      const parts = chunks.get(key) ?? [];
-      chunks.delete(key);
-      const size = parts.reduce((total, part) => total + part.byteLength, 0);
-      const body = new Uint8Array(size);
+      const state = chunks.get(key);
+      if (state === undefined) throw new Error("upload end without admitted start");
+      state.ended = true;
+      const body = new Uint8Array(state.size);
       let offset = 0;
-      for (const part of parts) {
+      for (const part of state.parts) {
         body.set(part, offset);
         offset += part.byteLength;
       }
-      return Response.bytes(body);
+      return Response.bytes(body, { headers: new Headers([
+        new Header("x-upload-observed", event.trailers.get("x-upload-check") ?? "absent"),
+      ]) });
     }
     return undefined;
   };
@@ -87,6 +118,8 @@ function helloResponse(request: Readonly<{
 function createService(assets: string, upstreamPort: number, ioUring: boolean): Service {
   const builder = new Builder()
     .limits(new Limits({ maxHandlerBindings: 16 }))
+    // Buffered compression is Core-owned; response streams remain identity.
+    .compression({ mode: CompressionMode.GZIP, minimumBodyBytes: 16 })
     .monitor({
       collection: MonitorCollection.AGGREGATES_AND_EVENTS,
       eventCapacity: 32,
@@ -118,14 +151,16 @@ function createService(assets: string, upstreamPort: number, ioUring: boolean): 
     })
     .get("/hello", helloResponse)
     .post("/echo", (request) => Response.bytes(request.bytes(), { status: 201 }))
-    .postStream("/upload", streamedUploadHandler())
+    .postStream("/upload", streamedUploadHandler(), {
+      bodyPolicy: { enabled: true, acceptAbsent: true, acceptOther: true, maxBodyBytes: uploadLimit },
+    })
     .get("/stream", () => new StreamingResponse(async (writer) => {
       await writer.write("stream-");
       await writer.write("ready");
       return new Headers([new Header("x-stream-end", "done")]);
     }, { headers: new Headers([new Header("content-type", "text/plain")]) }), { response: "stream" })
     .get("/events", () => sse([
-      { data: "ready", event: "state", id: "1", retry: 1500 },
+      { data: "ready\nsecond line", event: "state", id: "1", retry: 1000 },
     ]), { response: "sse" })
     .get("/socket", () => websocket({
       protocol: "coakka.sample",
@@ -135,20 +170,37 @@ function createService(assets: string, upstreamPort: number, ioUring: boolean): 
     .get("/download", () => new FileResponse(82n, "/sample.txt", {
       headers: new Headers([new Header("content-type", "text/plain")]),
     }), { response: "file" })
-    .get("/version", () => Response.text("v1"));
+    .get("/version", () => Response.text("v1"))
+    .get("/gzip", () => Response.text("compressible-sample-".repeat(64)))
+    .get("/parameters/{id}", (request) => {
+      // Core has parsed capture/query boundaries. Keep encoded values, order,
+      // duplicates, absent values and empty values distinct; do not split URL.
+      const decode = (bytes: Uint8Array) => new TextDecoder().decode(bytes);
+      return Response.text(JSON.stringify({
+        path: request.pathParameters.map((item) => ({ name: item.name, encodedValue: decode(item.encodedValue) })),
+        query: request.queryParameters.map((item) => ({ encodedKey: decode(item.encodedKey),
+          encodedValue: item.encodedValue === null ? null : decode(item.encodedValue) })),
+        headers: request.headers.getAll("x-sample-value"),
+      }), { headers: new Headers([new Header("content-type", "application/json")]) });
+    });
   if (ioUring) builder.ioUring();
   return builder.start();
 }
 
 /** Activate a prepared callback without rebuilding route structure. */
 function activateReplacement(service: Service): void {
-  service.prepareHandler(9n, () => Response.text("v2", { status: 201 }));
+  service.prepareHandler(100n, () => Response.text("v2", { status: 201 }));
+  const before = service.routes;
+  // Builder assigns stable route IDs in declaration order; /version is eighth.
+  // The snapshot supplies effective revisions, not application URL metadata.
+  const route = before.routes.find((entry) => entry.routeId === 8n);
+  if (route === undefined) throw new Error("Core snapshot omitted version route");
   const outcome = service.rebindHandler({
     activationId: 1n,
-    expectedRouteGeneration: 1n,
-    routeId: 8n,
-    expectedBindingRevision: 1n,
-    newHandlerBindingId: 9n,
+    expectedRouteGeneration: before.routeGeneration,
+    routeId: route.routeId,
+    expectedBindingRevision: route.bindingRevision,
+    newHandlerBindingId: 100n,
   });
   if (outcome.code !== RouteControlCode.APPLIED || !outcome.changed) {
     throw new Error(`handler replacement was rejected: ${outcome.code}`);
@@ -162,11 +214,12 @@ async function demonstrateRoutePublication(): Promise<void> {
     .get("/old", () => Response.text("old-generation"))
     .start();
   try {
+    const before = service.routes;
     service.prepareHandler(2n, () => Response.text("new-generation", { status: 201 }));
     const publication = Object.freeze({
       activationId: 1n,
-      expectedRouteGeneration: 1n,
-      expectedBindingChangeSequence: 1n,
+      expectedRouteGeneration: before.routeGeneration,
+      expectedBindingChangeSequence: before.bindingChangeSequence,
       routes: Object.freeze([Object.freeze({
         id: 2n,
         handlerBindingId: 2n,
@@ -184,6 +237,13 @@ async function demonstrateRoutePublication(): Promise<void> {
     const outcome = service.publishRoutes(publication);
     if (outcome.code !== RouteControlCode.APPLIED || !outcome.changed) {
       throw new Error(`route generation was rejected: ${outcome.code}`);
+    }
+    const after = service.routes;
+    const refused = service.publishRoutes({ ...publication, activationId: 2n });
+    if (refused.code !== RouteControlCode.GENERATION_MISMATCH || refused.changed ||
+        before.routes[0]?.routeId !== 1n || after.routes[0]?.routeId !== 2n ||
+        service.routes.routeGeneration !== after.routeGeneration) {
+      throw new Error("Core route snapshot/refusal contract mismatch");
     }
     const response = await fetch(`http://127.0.0.1:${service.port}/published`);
     if (response.status !== 201 || await response.text() !== "new-generation") {
@@ -204,6 +264,9 @@ async function demonstrateOutbound(service: Service): Promise<void> {
   });
   const terminal = await service.takeOutbound(5_000);
   if (terminal === null || terminal.call.slot !== call.slot ||
+      terminal.call.generation !== call.generation ||
+      terminal.reason !== OutboundReason.RESPONSE || terminal.phase !== OutboundPhase.RESPONSE ||
+      terminal.certainty !== OutboundCertainty.COMPLETE_RESPONSE ||
       terminal.responseStatus !== 200 || new TextDecoder().decode(terminal.body) !== "outbound-ready") {
     throw new Error("outbound result did not match the declared target");
   }
@@ -211,6 +274,33 @@ async function demonstrateOutbound(service: Service): Promise<void> {
 
 /** Exercise representative features through the bound loopback listener. */
 async function smoke(service: Service): Promise<void> {
+  // fetch transparently decodes content; this finite wire client also verifies
+  // that negotiation really produced GZIP rather than merely accepting config.
+  await new Promise<void>((resolveResponse, reject) => {
+    const request = get({ hostname: "127.0.0.1", port: service.port,
+      path: "/gzip", headers: { "accept-encoding": "gzip" } }, (response) => {
+      const parts: Buffer[] = [];
+      let size = 0;
+      response.on("error", reject);
+      response.on("data", (chunk: Buffer) => {
+        size += chunk.byteLength;
+        if (size > 4096) { response.destroy(new Error("encoded response exceeds bound")); return; }
+        parts.push(chunk);
+      });
+      response.on("end", () => {
+        try {
+          if (response.statusCode !== 200 || response.headers["content-encoding"] !== "gzip" ||
+              gunzipSync(Buffer.concat(parts), { maxOutputLength: 4096 }).toString() !==
+                "compressible-sample-".repeat(64)) {
+            throw new Error("buffered compression wire mismatch");
+          }
+          resolveResponse();
+        } catch (error) { reject(error); }
+      });
+    });
+    request.setTimeout(5000, () => request.destroy(new Error("GZIP peer timeout")));
+    request.on("error", reject);
+  });
   const cases = [
     ["/hello?title=hello", undefined, 200, "hello from smoke"],
     ["/echo", "payload", 201, "payload"],
@@ -239,7 +329,6 @@ async function smoke(service: Service): Promise<void> {
       throw new Error(`${path}: status=${response.status} body=${JSON.stringify(text)}`);
     }
   }
-  process.stdout.write("typescript-smoke=pass\n");
 }
 
 /** Wait for either termination signal without retaining extra application work. */
@@ -254,6 +343,9 @@ function waitForSignal(): Promise<void> {
 /** Own startup and reverse-order asynchronous shutdown. */
 async function main(): Promise<void> {
   const selected = options();
+  // Register before advertising the listener, so an immediate SIGTERM cannot
+  // bypass the checked, reverse-order close path.
+  const stopped = selected.smoke ? undefined : waitForSignal();
   await demonstrateRoutePublication();
   const upstream = new Builder()
     .get("/source", () => Response.text("outbound-ready"))
@@ -274,12 +366,15 @@ async function main(): Promise<void> {
     if (selected.smoke) {
       await smoke(service);
     } else {
-      await waitForSignal();
+      await stopped;
     }
   } finally {
-    await service?.close();
-    await upstream.close();
+    const failures: unknown[] = [];
+    try { await service?.close(); } catch (error) { failures.push(error); }
+    try { await upstream.close(); } catch (error) { failures.push(error); }
+    if (failures.length > 0) throw new AggregateError(failures, "sample shutdown failed");
   }
+  process.stdout.write(selected.smoke ? "typescript-smoke=pass\n" : "typescript-shutdown=pass\n");
 }
 
 await main();
