@@ -2,6 +2,12 @@
 
 This guide exists because CoAkka is easy to misread from a README alone.
 
+The target/envelope model reviewed here belongs to **CoAkka Runtime**, the
+ecosystem's distributed runtime. CoAkka HTTP Runtime is the separate HTTP
+server/client product; evaluate its HTTP contract and package evidence
+separately. See the [ecosystem map](ecosystem-overview.md) before comparing
+product boundaries.
+
 CoAkka is not mainly a faster transport, a message broker clone, or an
 anti-HTTP argument. It is a boundary-placement project and, for runtime traffic
 it owns, a direct alternative to a service-mesh data plane:

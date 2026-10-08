@@ -31,6 +31,24 @@ For the underlying vocabulary, read
 [Runtime Integration Guide](runtime-integration-guide.md), and
 [Runtime Cluster Routing](runtime-cluster-routing.md).
 
+## Contents
+
+- [Minimum Reading Path](#minimum-reading-path)
+- [Scenario](#scenario)
+- [What This Guide Teaches](#what-this-guide-teaches)
+- [Suggested Local Environment](#suggested-local-environment)
+- [Stage 1: Single Process Baseline](#stage-1-single-process-baseline)
+- [Stage 2: One App-Host, One Billing Runtime](#stage-2-one-app-host-one-billing-runtime)
+- [Stage 3: Start With The Familiar Kubernetes Shape](#stage-3-start-with-the-familiar-kubernetes-shape)
+- [Stage 4: Route Policy And Load Balancing](#stage-4-route-policy-and-load-balancing)
+- [Advanced: Expanded Endpoints And Generations](#advanced-expanded-endpoints-and-generations)
+- [Stage 5: Bounded Admission And Overload](#stage-5-bounded-admission-and-overload)
+- [Stage 6: Read The Evidence](#stage-6-read-the-evidence)
+- [Stage 7: Put Nginx At The Edge](#stage-7-put-nginx-at-the-edge)
+- [Stage 8: Move To Containers](#stage-8-move-to-containers)
+- [Tuning Guide](#tuning-guide)
+- [A Complete Mental Model](#a-complete-mental-model)
+
 ## Minimum Reading Path
 
 First pass:

@@ -62,8 +62,8 @@ restart or free retained state. C++ exceptions never cross the C callback.
 
 Startup executes the shared C-first [monitor recipe](../native/monitor_example.h)
 through the public API: accept a policy, reject a stale generation, reject a
-request beyond Core's reservation, then restore and read back the original
-policy. Rejection must preserve Core's returned generation and policy; no
+request beyond the runtime's reservation, then restore and read back the original
+policy. Rejection must preserve the runtime's returned generation and policy; no
 sample-owned default table or inferred effective state is used.
 
 After activating `v2`, the sample attempts a prepared binding with a stale
@@ -87,9 +87,9 @@ producer capacity, not a runtime-wide limit. No extra application thread or
 unbounded work queue is created.
 
 `finish` consumes the writer on success; failure restores it to the RAII owner.
-Local release does not manufacture successful HTTP completion. Core owns
+Local release does not manufacture successful HTTP completion. The runtime owns
 deadline/transport cleanup. Shutdown closes slot admission, releases pending
-work, joins callbacks through Core stop, then destroys the server before the
+work, joins callbacks through the runtime stop, then destroys the server before the
 producer. Exceptions never cross callbacks, and a retained owner is not silently
 discarded during destructor unwinding.
 
@@ -97,7 +97,7 @@ discarded during destructor unwinding.
 
 The ordinary server accepts `/socket`. Main owns the sole event reader, echoes
 text/binary before exact event release and handles send pressure through an
-explicit 1013 close attempt. Core owns ping/pong and connection storage. The
+explicit 1013 close attempt. The runtime owns ping/pong and connection storage. The
 sample adds no frame-retention queue and releases an event before throwing on a
 send error. Wire smoke checks handshake, text/binary, ping/pong, normal close,
 peer TCP abort and subsequent sessions.
@@ -107,7 +107,7 @@ wire tests pass; new Windows sample execution and saturation tests remain open.
 
 `POST /upload` incrementally counts bytes and trailers and returns
 `bytes=N trailers=M`. It retains no body chunks: borrowed views expire at the
-next read, while scalar counters remain callback-local. Core owns the body
+next read, while scalar counters remain callback-local. The runtime owns the body
 ceiling and request deadline; each read waits at most five seconds on the
 handler worker. Cancellation returns without a new response. Exceptions are
 contained by the callback boundary. The smoke verifies a binary chunked upload
@@ -116,7 +116,7 @@ with a trailer, an observed partial-body disconnect and continued service.
 ### Outbound Requests
 
 [`outbound.cpp`](outbound.cpp) starts a loopback upstream and declares its
-assigned port as a logical target on the client service. Core copies the
+assigned port as a logical target on the client service. The runtime copies the
 topology and owns transport/defaults. Each submitted call has a three-second
 deadline; main is the sole completion reader with a finite five-second wait.
 
@@ -132,7 +132,7 @@ ASan/LSan/UBSan, separate TSan and analyzer pass. Outbound timeout, cancellation
 and TLS fault scenarios remain unverified by this short example.
 
 The same executable next publishes a complete replacement route table. It
-prepares the callback before publication, checks Core's acceptance and exact
+prepares the callback before publication, checks the runtime's acceptance and exact
 activation replay, then requires stale-generation refusal with unchanged
 effective route/metadata/binding generations. Wire requests verify the new
 `/published` route and404 for removed `/source`. Stack-owned route declarations
@@ -149,7 +149,7 @@ capability and matching-host execution are separate claims.
 
 The pinned native candidate uses ABI11. Keep its header and library together;
 these operations are not available by mixing a new header with an ABI10 binary.
-Normal startup leaves the optional tuning pointer NULL and uses Core defaults.
+Normal startup leaves the optional tuning pointer NULL and uses the runtime defaults.
 After `run.sh check`, explicitly demonstrate advanced settings with:
 
 ```sh
@@ -160,23 +160,23 @@ After `run.sh check`, explicitly demonstrate advanced settings with:
 
 | Option | Meaning |
 | --- | --- |
-| `--cpu auto` | Core prefers two allowed logical CPUs on Linux; one when only one is allowed. Other platforms currently inherit scheduler placement and report unknown counts. |
+| `--cpu auto` | the runtime prefers two allowed logical CPUs on Linux; one when only one is allowed. Other platforms currently inherit scheduler placement and report unknown counts. |
 | `--cpu single` | Explicit one-CPU placement on Linux; unsupported elsewhere, never silently ignored. |
 | `--request-batch PROFILE` | Request-notification coalescing cap. |
 | `--terminal-batch PROFILE` | Independent terminal-notification coalescing cap. |
 | `--compression gzip\|disabled` | Construction-fixed response compression policy. |
 
 Profiles are `auto`, `small`, `medium`, `large`, `xlarge`, `xxlarge`,
-and `ultra`. Core resolves AUTO and reports the effective caps; notifications
+and `ultra`. The runtime resolves AUTO and reports the effective caps; notifications
 do not wait for a full batch. No loop-count CLI is exposed. CPU placement is
-not a process-wide quota, physical-core reservation or throughput guarantee.
-The startup log prints Core's selected CPU count, verification state and
+not a process-wide quota, exclusive CPU reservation or throughput guarantee.
+The startup log prints the runtime's selected CPU count, verification state and
 effective batch sizes, not copies of input preferences. Unknown is not zero
 hardware CPUs. These controls cannot be hot-reloaded.
 
 The GZIP demonstration deliberately chooses level6 and a one-byte threshold
-so its small response is observable; these are sample choices, not Core's
-default table. The remaining bounded limits are resolved by Core. Test it:
+so its small response is observable; these are sample choices, not the runtime's
+default table. The remaining bounded limits are resolved by the runtime. Test it:
 
 ```sh
 curl --max-time 5 --compressed -i "http://127.0.0.1:$PORT/items/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
@@ -184,14 +184,14 @@ curl --max-time 5 -i "http://127.0.0.1:$PORT/items/a%2Fb?tag=one&flag&tag=&tag=t
 ```
 
 The second request returns `a%2Fb`, `x-query-count: 4`, and
-`x-query-with-value: 3`. The handler borrows the indexed path/query views Core
+`x-query-with-value: 3`. The handler borrows the indexed path/query views the runtime
 already parsed: no raw-target split, URL decoding or temporary parameter map.
 Query order and duplicate keys survive; `?flag` has no value while `?tag=`
 has an empty value. Indexed access is O(1); enumerating all entries is O(n).
 Views expire on callback return. The response operation copies selected bytes
 before local values expire.
 
-Create/start temporarily apply Core's chosen placement while creating workers,
+Create/start temporarily apply the runtime's chosen placement while creating workers,
 then restore the caller. A rare restoration failure after create may return a
 non-NULL destroy-only owner together with failure; always clean it up.
 The RAII constructors handle this explicitly because a throwing constructor does not run its destructor.

@@ -5,14 +5,35 @@ language without hiding lifecycle, capacity, security, or failure handling.
 Kotlin is the JVM sample language. One TypeScript source set runs on both
 Node.js and Bun.
 
+## Why A Shared HTTP Runtime?
+
+Instead of building separate transport and lifecycle policies for every
+language, CoAkka HTTP Runtime supplies one native HTTP implementation. Routing,
+limits, timeouts, monitoring and graceful shutdown follow a shared contract.
+Fixes and optimizations in that implementation can benefit every connector
+that includes the updated runtime, while handlers remain idiomatic application
+code. Each host still has its own scheduling and conversion costs.
+
+Read the [introduction, benefits and capability overview](../docs/coakka-http-runtime-introduction.md)
+for the product rationale. The examples below show how to use it; they are not
+the introduction to CoAkka Runtime's separate distributed messaging model.
+
+## Distribution
+
 The samples consume checksum-pinned offline candidates from `coakka-publish`.
 No private runtime or connector checkout is required, and neither is rebuilt.
-These are the coordinated release-branch candidates, not registry releases.
+These exact archives are available on `coakka-publish/main`, not in package registries.
 Build tools may download their own dependencies; CoAkka comes only from the
 explicit warehouse checkout. Nothing is uploaded to a registry.
 
+For the distributed target/message runtime, start with
+[CoAkka Runtime samples](../runtime/README.md). HTTP Runtime is an independent
+HTTP server/client; the two products have different package coordinates.
+
 ## Contents
 
+- [Why A Shared HTTP Runtime?](#why-a-shared-http-runtime)
+- [Distribution](#distribution)
 - [Languages](#languages)
 - [Feature Map](#feature-map)
 - [Run](#run)
@@ -155,7 +176,7 @@ when identities rotate.
 
 The [Raspberry Pi 5 benchmark](benchmark-rpi5/README.md) consumes the same pinned
 public packages as the samples; preparation builds benchmark applications, not
-Core or connectors. Selected r3 package cohorts now have verified localhost
+the runtime or connectors. Selected r3 package cohorts now have verified localhost
 observations with machine facts, resources and per-run results in the linked
 ledger. Missing current-package profiles and framework pairs remain Pending;
 sample smoke never requalifies an old throughput result. Native C is measured

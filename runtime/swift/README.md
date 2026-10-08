@@ -6,6 +6,9 @@ runtime generation `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. The package
 Linux ARM64/x86-64, macOS ARM64, and Windows ARM64/x86-64; matching-host Swift
 execution evidence is tracked separately from package contents.
 
+The runner pin above is distinct from the newer release listed in
+[Current Packages](../../docs/current-packages.md).
+
 ## Run
 
 ```sh

@@ -5,6 +5,17 @@ What if internal capabilities stopped pretending to be public APIs?
 CoAkka did not start as a product category. It started as an uncomfortable
 question during an ordinary technical conversation.
 
+## Contents
+
+- [Chapter 1: Coffee, AI, And A Familiar Demo](#chapter-1-coffee-ai-and-a-familiar-demo)
+- [Chapter 2: Microservices Are Simple Until The Boundary Lies](#chapter-2-microservices-are-simple-until-the-boundary-lies)
+- [Chapter 3: The Wrong Layer Becomes Expensive](#chapter-3-the-wrong-layer-becomes-expensive)
+- [Chapter 4: The Missing Vocabulary](#chapter-4-the-missing-vocabulary)
+- [Chapter 5: Why The Name Is CoAkka](#chapter-5-why-the-name-is-coakka)
+- [Chapter 6: From Runtime To Ecosystem](#chapter-6-from-runtime-to-ecosystem)
+- [Chapter 7: What Happens When The Boundary Is Right](#chapter-7-what-happens-when-the-boundary-is-right)
+- [Chapter 8: CoAkka's Position](#chapter-8-coakkas-position)
+
 ## Chapter 1: Coffee, AI, And A Familiar Demo
 
 One day, over coffee, two friends were talking about engineering, AI, and how

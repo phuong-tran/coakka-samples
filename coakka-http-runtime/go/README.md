@@ -63,7 +63,7 @@ capability and matching-host execution are separate claims.
 ### Configuration And Live Monitoring
 
 [`control.go`](control.go) contains the focused control-plane recipes. Normal
-startup leaves CPU, batch and transport deadlines to Core; the echo application
+startup leaves CPU, batch and transport deadlines to the runtime; the echo application
 declares a 64 KiB request-body ceiling because its upload demonstration collects
 the body. Production file uploads should consume bounded chunks instead of
 copying this small-body collector blindly.
@@ -71,8 +71,8 @@ copying this small-body collector blindly.
 | Setting | Recipe | Effective observation |
 | --- | --- | --- |
 | CPU | Default AUTO; `--single-cpu` explicitly requests SINGLE | `RuntimeInfo().CPU`, including unknown/unsupported placement |
-| Request notifications | `--tuning` selects SMALL | Core reports cap 1 |
-| Terminal notifications | `--tuning` selects MEDIUM | Core reports cap 4; no terminal delivery is delayed to fill a batch |
+| Request notifications | `--tuning` selects SMALL | the runtime reports cap 1 |
+| Terminal notifications | `--tuning` selects MEDIUM | the runtime reports cap 4; no terminal delivery is delayed to fill a batch |
 | Transport deadlines | `--tuning`: header 3000, body 4000, keep-alive 2000, idle 5000 milliseconds | Accepted values from `RuntimeInfo().Limits` |
 | HTTP loops | No sample override | `RuntimeInfo().Execution`, not inferred from CPU or Go worker count |
 | Monitoring | Reserved 32 events, reads at most 8 | Generation-checked apply results and effective policy |
@@ -80,7 +80,7 @@ copying this small-body collector blindly.
 `tuning-smoke` checks explicit settings; on Linux it additionally checks SINGLE.
 AUTO may report unsupported placement on other hosts. SINGLE must not silently
 fall back. These are startup placement observations, not CPU utilization or a
-process-wide Go quota. Deadlines use Core's monotonic clock; the sample adds no
+process-wide Go quota. Deadlines use the runtime's monotonic clock; the sample adds no
 second transport timer. Batch and timeout settings are startup configuration,
 whereas the demonstrated monitor collection policy is live-reloadable.
 
@@ -90,14 +90,14 @@ restoration of the original policy. Each refusal must preserve the complete
 effective policy and generation. Diagnostic markers contain no request data.
 
 `--compression` uses the package's host-inlined `Builder.Compression` with
-GZIP, a one-byte eligibility threshold and level6. Core owns limits, workspace,
+GZIP, a one-byte eligibility threshold and level6. The runtime owns limits, workspace,
 eligibility and negotiation. `smoke` verifies an actually compressed response
 with bounded decompression while the same service also handles streams, SSE,
 uploads, static files and WebSocket. `tuning-smoke` combines explicit tuning
 and GZIP. Both recipes pass on Mac and Pi with Go1.23.
 
 GZIP applies only to eligible buffered responses. Streams remain uncompressed;
-Core does not collect them for compression. With this policy enabled, a client
+the runtime does not collect them for compression. With this policy enabled, a client
 that explicitly refuses identity receives HTTP406 before an unencoded stream
 starts. The package's consumer tests cover refusal and subsequent service reuse.
 Application-supplied content encoding remains application-owned. Use the pinned
@@ -120,14 +120,14 @@ The bounded wire client checks:
 - successful signal-driven close of the actual service process.
 
 The upload failure marker proves the blocked reader returned; it does not
-reclassify a read error as a specific Core cause or certify every lease retired.
+reclassify a read error as a specific the runtime cause or certify every lease retired.
 The metadata route reflects only its demonstration header, never arbitrary
-headers, credentials or cookies. Core parses path/query; the handler serializes
+headers, credentials or cookies. The runtime parses path/query; the handler serializes
 those values without reparsing the raw target or collapsing duplicates.
 
 Startup also checks handler-only activation plus stale-revision refusal and
 complete route publication, exact replay, and stale-generation refusal. It reads
-`Service.Routes()` with monitoring disabled and checks the complete Core-issued
+`Service.Routes()` with monitoring disabled and checks the complete runtime-issued
 generation/binding cut before and after publication/refusal. The snapshot is a
 copied control-plane value, not the local prepared-handler registry. Close
 errors are preserved alongside earlier errors using `errors.Join`; refusal is
@@ -150,18 +150,18 @@ production recommendation to block handlers and not a load benchmark.
 | --- | --- | --- |
 | Handler deadline | Core250ms; client5s; application channel released only after the wire response | HTTP504, late handler result discarded, next one-worker request succeeds, no duplicate error |
 | Dispatch pressure | One worker, one queued request, nine clients; Core10s versus diagnostic4s | At least one HTTP503, all calls terminate, next request succeeds |
-| Outbound cancellation | Wait for target handler admission, submit cancel intent, consume the sole terminal reader | Core-issued `OutboundCancelled`, exact call identity, then a successful call |
+| Outbound cancellation | Wait for target handler admission, submit cancel intent, consume the sole terminal reader | runtime-issued `OutboundCancelled`, exact call identity, then a successful call |
 | Outbound deadline | Core500ms; upstream handler budget10s; terminal reader5s | `OutboundDeadlineExceeded`, not a reader timeout; complete response on reuse |
 
 The number of refused calls may vary with scheduling; no exact refusal count
 is promised. Channels delimit application work, not native state. Diagnostic
-client timeouts fail the recipe; they are never counted as Core deadline
+client timeouts fail the recipe; they are never counted as the runtime deadline
 success. Response copies are bounded to4KiB. Every exit releases held work,
 cancels/joins diagnostic clients and checks service close; a refusal is retained
 as an error. These recipes pass five repetitions on Mac/Pi with Go1.23 and a
-separate Mac Go race run. Core sanitizer qualification is recorded separately.
+separate Mac Go race run. The runtime sanitizer qualification is recorded separately.
 
-Cancellation is intent until Core returns its typed terminal. Never infer the
+Cancellation is intent until the runtime returns its typed terminal. Never infer the
 cause from an HTTP status, a diagnostic string or how long a call took. The
 sample releases held application work separately, matches call identity and
 checks for an extra terminal; it never releases native leases itself. HTTP404
@@ -190,7 +190,7 @@ curl --http3-only --max-time 5 --cacert "$COAKKA_HTTP_SAMPLE_WORK_ROOT/tls/ident
 ```
 
 Expect `protocol-ready`; the selected server must support that wire protocol.
-Core owns negotiation, sockets and TLS. Ctrl-C requests graceful close and the
+The runtime owns negotiation, sockets and TLS. Ctrl-C requests graceful close and the
 sample preserves any drain refusal. Keep active clients progressing while the
 server drains; a vanished peer is not proof of graceful completion. Both
 listener examples pass independent protocol-peer and graceful-drain checks on

@@ -5,6 +5,18 @@ Android builds depend on an SDK, NDK, emulator or device image, application
 namespace, signing setup, and lifecycle policy that this repository cannot
 choose for a consuming app.
 
+## Contents
+
+- [Tagged Candidate](#tagged-candidate)
+- [Gradle And Local AAR](#gradle-and-local-aar)
+- [Android Manifest](#android-manifest)
+- [Embedded Lifecycle](#embedded-lifecycle)
+- [Network Modes](#network-modes)
+- [Pipe And Worker Ownership](#pipe-and-worker-ownership)
+- [File And Stream Owner Grants](#file-and-stream-owner-grants)
+- [Device Evaluation Checklist](#device-evaluation-checklist)
+- [Troubleshooting](#troubleshooting)
+
 ## Tagged Candidate
 
 Use these identities together:

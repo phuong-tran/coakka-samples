@@ -27,6 +27,16 @@ coakka-client shell --help
 The installed command is `coakka-client`. `coakka-runtime-client` is the
 product lane and sample directory name, not a command shipped in this release.
 
+## Contents
+
+- [Command Discovery](#command-discovery)
+- [Diagnostics](#diagnostics)
+- [Request/Reply](#requestreply)
+- [Payloads And Metadata](#payloads-and-metadata)
+- [Shell Script Mode](#shell-script-mode)
+- [Docker Verification Bundle](#docker-verification-bundle)
+- [Docker Hub Demo Image](#docker-hub-demo-image)
+
 ## Command Discovery
 
 Top-level help lists the public command surface:

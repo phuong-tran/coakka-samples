@@ -23,6 +23,19 @@ typed capability containing the exact owner endpoint. The remote sender or
 subscriber reconstructs that capability from its authenticated control-plane
 response and derives the send or subscribe specification from it.
 
+## Contents
+
+- [Connector API](#connector-api)
+- [One Owner Workflow](#one-owner-workflow)
+- [All Replicas Workflow](#all-replicas-workflow)
+- [Android AAR Example](#android-aar-example)
+- [Connector File Example](#connector-file-example)
+- [Connector Stream Example](#connector-stream-example)
+- [Token Lifetime](#token-lifetime)
+- [Kubernetes Addressing](#kubernetes-addressing)
+- [Owner Loss](#owner-loss)
+- [Native Contract](#native-contract)
+
 ## Connector API
 
 Every full connector in the `2.5.2` train projects the same four operations.

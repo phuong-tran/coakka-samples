@@ -13,6 +13,15 @@ This lane treats macOS and Windows as development/validation hosts. The current
 public NuGet package bundles the macOS/Linux/Windows native runtime set, and
 most server-side deployment work should still be validated on Linux first.
 
+## Contents
+
+- [Run](#run)
+- [Before: Backend HTTP](#before-backend-http)
+- [After: Runtime Target](#after-runtime-target)
+- [What This Sample Proves](#what-this-sample-proves)
+- [Production Notes](#production-notes)
+- [Continue Integrating](#continue-integrating)
+
 ## Run
 
 ```sh

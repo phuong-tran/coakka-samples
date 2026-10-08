@@ -1,6 +1,11 @@
 # Production Readiness
 
-CoAkka is a published runtime product surface. The samples are runnable product
+This page covers **CoAkka Runtime**, the distributed runtime product, and its
+deployment evidence. It is not a release-status claim for every CoAkka product.
+For the separate HTTP server/client, use the
+[HTTP Runtime catalog](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime).
+
+CoAkka Runtime is a published runtime product surface. The samples are runnable product
 evidence and integration guidance; production confidence is then attached to
 measurements in the environment where the system will run.
 

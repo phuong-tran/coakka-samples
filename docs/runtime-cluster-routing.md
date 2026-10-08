@@ -15,6 +15,22 @@ CoAkka sees one endpoint, Kubernetes distributes to backing pods, and
 `generation = 1` may be enough for a long time. Start there unless CoAkka
 needs to see individual runtime endpoints.
 
+## Contents
+
+- [What Cluster Means Here](#what-cluster-means-here)
+- [Responsibility Split](#responsibility-split)
+- [Request Path](#request-path)
+- [Route Generation Discipline](#route-generation-discipline)
+- [Generation Skew During Rollout](#generation-skew-during-rollout)
+- [Retry Versus Failover](#retry-versus-failover)
+- [Safe Failover Evidence](#safe-failover-evidence)
+- [Route Snapshot Example](#route-snapshot-example)
+- [Rendezvous Hash Stability](#rendezvous-hash-stability)
+- [Call-Site Shape](#call-site-shape)
+- [Transport Compatibility](#transport-compatibility)
+- [Operator Reading](#operator-reading)
+- [Design Rule](#design-rule)
+
 ## What Cluster Means Here
 
 In CoAkka, a cluster is not a membership system, sidecar mesh, or business

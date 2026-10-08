@@ -27,7 +27,7 @@ expected output details.
 | Tauri | public source sample | `bash run.sh runtime tauri intent-command` | WebView JavaScript sends intent; Rust owns runtime execution. |
 | Go | public | `bash run.sh runtime go basic` | Includes basic and deadletter samples. |
 | C# | public | `bash run.sh runtime csharp basic` | Uses the public .NET package. |
-| Rust | public artifact | `bash run.sh runtime rust basic` | The `2.1.0` package corrects the historical Linux loader constant and passes package readiness plus packaged runtime smoke. |
+| Rust | public artifact | `bash run.sh runtime rust basic` | The runner pins a source archive; see the Rust guide for its exact version and platform evidence. |
 | Swift | public | `bash run.sh runtime swift basic` | The SwiftPM tag contains all five native payloads; Swift execution is verified on macOS ARM64. |
 | Mojo | source sample | `bash run.sh runtime mojo basic` | Source connector package over the public native runtime. |
 | Zig | source sample | `bash run.sh runtime zig basic` | Source connector package over the public native runtime. |
@@ -70,6 +70,23 @@ expected output details.
 | Two-machine Linux | manual docs | `docs/two-machine-linux.md` | Manual setup path; live two-host capture is still pending. |
 | Benchmark smoke | manual workflow | `python3 bench/run_smoke_load.py --profile runtime-native-pressure` | Regression evidence, not the primary product claim. |
 
+## HTTP Runtime: Separate Archive-Backed Samples
+
+CoAkka HTTP Runtime is the independent HTTP server/client product. Use its
+[sample guide](../coakka-http-runtime/README.md) for C/C++, Go, Kotlin/JVM,
+Python and TypeScript on Node.js/Bun. For example, after setting the warehouse
+and build-directory variables from that guide:
+
+```sh
+bash coakka-http-runtime/run.sh go smoke
+```
+
+These samples consume pinned archives from an explicit `coakka-publish`
+checkout. They do not use Runtime's npm, PyPI, Maven or Go coordinates, and
+their resolver does not silently download a substitute when the checkout is
+absent. Feature coverage and Pi 5 HTTP benchmarks live within that product's
+sample directory, not the Runtime message benchmark lane.
+
 ## Artifact Rule
 
 Public samples consume current public distribution surfaces. JavaScript
@@ -79,19 +96,22 @@ artifact-backed samples consume artifacts from
 uses a sibling `coakka-publish` checkout when available, then falls back to the
 public raw GitHub artifact URL.
 
-Every resolved artifact-backed sample input is checked against
+Runtime/Logger archive-backed sample inputs are checked against
 `coakka-publish/artifacts/public-artifacts.tsv` before the sample unpacks or
 installs it.
 
 The npm package-manager lane is current for Node.js, Bun, and Electron
 runtime/logger packages, so those JavaScript samples install registry
-coordinates. The Go module lane is also current for runtime/logger samples:
+coordinates. The Go sample runners currently pin
 `github.com/phuong-tran/coakka-runtime-go@v1.8.2` and
-`github.com/phuong-tran/coakka-logger-go@v1.2.6`. SwiftPM is current for
+`github.com/phuong-tran/coakka-logger-go@v1.2.6`. The Swift Runtime sample pins
 `github.com/phuong-tran/coakka-runtime-swift@2.5.2`, which carries all five
 runtime native payloads and has Swift execution evidence on macOS ARM64. The
 logger package `github.com/phuong-tran/coakka-logger-swift@1.2.2` remains a
-macOS ARM64 package. crates.io and apt/deb
+macOS ARM64 package. These runnable sample pins are not the latest package
+catalog: [Current Packages](current-packages.md) lists newer Runtime Go
+`v1.8.3` and SwiftPM `2.5.3` releases. Documentation does not silently upgrade
+a sample dependency. crates.io and apt/deb
 remain planned in `coakka-publish`; samples should not present those lanes as
 current until the matching package-manager artifact and verification path
 exists.

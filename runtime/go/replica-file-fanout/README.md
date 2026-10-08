@@ -13,7 +13,7 @@ The sample:
 - reuses one immutable source and SHA-256 for three independent sends;
 - checks sender and receiver terminal outcomes separately for every owner.
 
-Run after Go module `v1.8.2` is published:
+Run with the published Go module pinned by the sample (`v1.8.2` by default):
 
 ```sh
 bash run.sh

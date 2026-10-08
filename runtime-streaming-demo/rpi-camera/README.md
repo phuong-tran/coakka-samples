@@ -23,6 +23,17 @@ Release `v1.1.0` is the first audited stable sample line. Its detailed thread,
 memory, device, shutdown, and evidence boundaries are in
 [`SYSTEMS-AUDIT.md`](SYSTEMS-AUDIT.md).
 
+## Contents
+
+- [Distribution Boundary](#distribution-boundary)
+- [Supported Artifact Matrix](#supported-artifact-matrix)
+- [Runtime Dependencies](#runtime-dependencies)
+- [Find The Camera And Microphone](#find-the-camera-and-microphone)
+- [Run The Pi App](#run-the-pi-app)
+- [Run The Host App](#run-the-host-app)
+- [Build From Public Source](#build-from-public-source)
+- [Download And Verify Published Binaries](#download-and-verify-published-binaries)
+
 ## Distribution Boundary
 
 The focused public source belongs in

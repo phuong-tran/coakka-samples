@@ -29,6 +29,19 @@ flowchart LR
 
 This is protocol composition, not built-in WebSocket support.
 
+## Contents
+
+- [Ownership Boundary](#ownership-boundary)
+- [Control Plane And Data Plane](#control-plane-and-data-plane)
+- [The Borrowed-Frame Rule](#the-borrowed-frame-rule)
+- [Backpressure Does Not Cross Automatically](#backpressure-does-not-cross-automatically)
+- [Fan-Out Belongs Above Stream Lane](#fan-out-belongs-above-stream-lane)
+- [Frame And Browser Format](#frame-and-browser-format)
+- [Failure And Cancellation Mapping](#failure-and-cancellation-mapping)
+- [Security Checklist](#security-checklist)
+- [Integration Checklist](#integration-checklist)
+- [Existing Reference](#existing-reference)
+
 ## Ownership Boundary
 
 The WebSocket app-host owns:

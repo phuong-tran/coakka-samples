@@ -54,7 +54,7 @@ as proof of the current boot environment.
 | Storage | Boot device/model and filesystem; evidence/output location |
 | Cooling | Fan policy, ambient temperature if measured, board temperature before/after each run, throttle flags |
 | Software | Exact CoAkka archive hashes, language/framework/load-tool versions and startup flags |
-| Effective configuration | Core-reported CPU/loop/batch/timeout/backend state, alongside requested configuration |
+| Effective configuration | runtime-reported CPU/loop/batch/timeout/backend state, alongside requested configuration |
 | Network | Loopback or external topology, interfaces, HTTP/TLS mode, client placement |
 
 Unknown values are explicitly unavailable, never guessed. Exclude credentials,
@@ -73,7 +73,7 @@ Measure independent 1-CPU and 2-CPU profiles. Record actual CPU IDs, all server
 workers/threads, runtime flags and the generator CPU set. Server and generator
 CPU sets must not overlap in a loopback run. An allowed two-CPU set does not
 prove that a single-threaded host uses both CPUs; show observed CPU usage.
-CPU budget and event-loop count are distinct Core-reported facts. The current
+CPU budget and event-loop count are distinct runtime-reported facts. The current
 native callback fixture reports one event loop under both CPU profiles;
 historical measurements using a different application surface or loop/batch
 configuration are not interchangeable with its results. Preserve the actual
@@ -163,10 +163,10 @@ throughput win for feature/lifecycle correctness.
 ## Runner Status
 
 Preparation now consumes five independently pinned public archives. It does
-not build Core or connectors, change the OS, or select a new toolchain. It
+not build the runtime or connectors, change the OS, or select a new toolchain. It
 records package/consumer identity; the runner rechecks identity before changing
 the CPU governor. Old source-built workspaces are refused. Loop counts are
-Core-issued observations, never a shared benchmark override.
+runtime-issued observations, never a shared benchmark override.
 
 Preparation explicitly selects the current native CMake package directory;
 changing only a prefix does not override an older cached package lookup.
@@ -175,9 +175,9 @@ mapped in the server process group and matches them to the independently
 pinned package. Framework processes must not map a CoAkka library. Receipt
 intent alone is not proof of which library a consumer loaded.
 
-The native callback response call records the handler's outcome; Core submits
+The native callback response call records the handler's outcome; the runtime submits
 it after the handler returns. A successful call does not confirm delivery to
-the peer. Core owns a concurrent client disconnect and its exchange retirement;
+the peer. The runtime owns a concurrent client disconnect and its exchange retirement;
 the sample must not duplicate lower-level submission handling. A real-socket
 cutoff check on the candidate verifies continued service and graceful shutdown
 under both CPU policies. This functional check is not a throughput result.

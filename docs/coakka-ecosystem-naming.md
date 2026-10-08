@@ -72,6 +72,12 @@ by CoAkka Runtime.
 
 ## Public Wording Rules
 
+- Introduce the ecosystem through CoAkka Runtime first. Keep Logger and Runtime
+  addons visible; introduce the independent HTTP server/client as CoAkka HTTP
+  Runtime without making it the replacement for the distributed runtime.
+- Distinguish registry packages from repository archives. HTTP Runtime has
+  archive-backed samples, not npm/PyPI/Maven Central or tagged Go-module
+  distribution; Runtime/Logger coordinates do not install HTTP Runtime.
 - Use `CoAkka` for the ecosystem.
 - Use `CoAkka Runtime` for runtime behavior and the runtime product family.
 - Use `coakka-runtime-core` for native engine or C ABI packaging.

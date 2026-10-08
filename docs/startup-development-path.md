@@ -23,6 +23,17 @@ stable business target + explicit contract
 This is not a claim that infrastructure disappears. It is a way to defer
 infrastructure work until the product has a concrete reason for it.
 
+## Contents
+
+- [Start With The Smallest Honest Shape](#start-with-the-smallest-honest-shape)
+- [A Monolith Can Have Real Boundaries](#a-monolith-can-have-real-boundaries)
+- [Polyglot Development Without A Container Build Loop](#polyglot-development-without-a-container-build-loop)
+- [What Stays Stable When A Capability Moves](#what-stays-stable-when-a-capability-moves)
+- [A Practical Startup Progression](#a-practical-startup-progression)
+- [CoAkka Can Eliminate The Service Mesh](#coakka-can-eliminate-the-service-mesh)
+- [What CoAkka Does Not Decide For You](#what-coakka-does-not-decide-for-you)
+- [Decision Rule](#decision-rule)
+
 ## Start With The Smallest Honest Shape
 
 Choose the simplest shape that supports today's development work.

@@ -24,6 +24,15 @@ starter as native-image friendly.
 This slice is same-process and is smoked on Linux in CI. Remote/Kubernetes mode
 should wait until the starter API shape is boring.
 
+## Contents
+
+- [Dev Loop](#dev-loop)
+- [Before: Backend HTTP](#before-backend-http)
+- [After: Same-Process Runtime Capability](#after-same-process-runtime-capability)
+- [Code Map](#code-map)
+- [Run](#run)
+- [Boundary Shape](#boundary-shape)
+
 ## Dev Loop
 
 Single process should keep the normal Spring Boot CRUD loop. This starter

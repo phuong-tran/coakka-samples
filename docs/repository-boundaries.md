@@ -11,9 +11,11 @@ repositories. Neither repository is a single release unit for the ecosystem.
 | [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) | Versioned artifact warehouse and catalog. | Immutable package lanes, optional `runtime-addons/`, native archives, source packages, release notes, manifests, provenance, and checksums. |
 | Runtime and connector implementation workspaces | Artifact producers consumed through `coakka-publish`. | Source used to build the public artifacts. Public samples should not depend on a local implementation checkout. |
 
-The normal public reader starts in `coakka-samples`. The samples resolve
+The normal public reader starts in `coakka-samples`. Runtime and Logger samples resolve
 artifacts from a sibling `coakka-publish` checkout when present, or from the
-public raw artifact URL when a local checkout is absent.
+public raw artifact URL when a local checkout is absent. HTTP Runtime uses a
+separate archive resolver and requires an explicit `coakka-publish` checkout;
+follow its own sample guide rather than assuming the same fallback.
 
 Use `coakka-samples` to run examples. Use
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) to download
@@ -55,7 +57,7 @@ For the full wording rule, read
 - framework adapter usage examples
 - language-specific basic, deadletter, hot-reload, pressure, and logger samples
 - language-specific CoAkka HTTP Runtime lifecycle, pressure, streaming, and
-  monitoring samples after their artifact gates open
+  monitoring samples against its checksum-pinned repository archives
 - artifact pin verification against the public manifest
 - public smoke workflows
 - tagged, source-only release projections when a public package registry needs
@@ -89,8 +91,10 @@ would. That means:
 - Maven samples resolve from the public Maven layout.
 - Python, Node.js, Go, C#, Rust, native C/C++, Mojo, and Zig samples resolve
   pinned public packages or archives.
-- Every resolved artifact is checked against
-  `artifacts/public-artifacts.tsv`.
+- Runtime/Logger archive inputs are checked against
+  `artifacts/public-artifacts.tsv`. HTTP Runtime inputs use the independent
+  pins in `coakka-http-runtime/scripts/package-pins.json` and verify extracted
+  package contents before reuse.
 - Samples should not require a local implementation checkout to run.
 
 A tagged source mirror is a transparency and reproducibility surface, not a
@@ -122,10 +126,10 @@ ask target -> reply, timeout, or deadletter
 
 CoAkka HTTP Runtime defines listener, connection, protocol, routing, bounded
 request/response/stream, file, health, monitoring, and shutdown behavior.
-CoAkka HTTP Runtime owns the shared HTTP service contract. Language packages
-bind that contract through the App Host's
-normal HTTP facilities while preserving native values, handlers, and
-scheduling.
+Core owns HTTP transport, parsing, effective configuration, and lifecycle.
+Language connectors expose host-inlined handlers through idiomatic APIs while
+preserving their host's values and scheduling. Applications do not need to
+create another language-native HTTP server in front of Core.
 
 HTTP Runtime repository artifacts are released independently under
 `coakka-publish/coakka-http-runtime/`. Runnable consumers belong under

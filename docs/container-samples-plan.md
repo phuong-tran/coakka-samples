@@ -4,6 +4,18 @@ This note records the next sample direction: Docker/Podman-first public
 samples that make the CoAkka runtime boundary visible without asking users to
 install every host-language toolchain.
 
+## Contents
+
+- [Position](#position)
+- [Why Containers](#why-containers)
+- [Wave Plan](#wave-plan)
+- [Image Strategy](#image-strategy)
+- [Prebuilt Docker Hub Images](#prebuilt-docker-hub-images)
+- [Expected Output](#expected-output)
+- [Runtime Rules](#runtime-rules)
+- [Future Commands](#future-commands)
+- [Open Questions](#open-questions)
+
 ## Position
 
 The first container sample should be intentionally small:

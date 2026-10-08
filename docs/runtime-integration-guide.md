@@ -20,6 +20,22 @@ independent deployment, read
 5. send typed requests/events to peer targets
 6. handle deadletters and shut down cleanly
 
+## Contents
+
+- [Published Public Transport](#published-public-transport)
+- [Start Spec](#start-spec)
+- [Source And Target](#source-and-target)
+- [Request Parameters](#request-parameters)
+- [Target Design](#target-design)
+- [Endpoint Flags](#endpoint-flags)
+- [Route Resolution Strategy](#route-resolution-strategy)
+- [Payload Contract](#payload-contract)
+- [Handler Pattern](#handler-pattern)
+- [Caller Pattern](#caller-pattern)
+- [Queue And Failure Policy](#queue-and-failure-policy)
+- [Shutdown](#shutdown)
+- [Language Recipes](#language-recipes)
+
 ## Published Public Transport
 
 The published artifact surface exposes logger packages, the public native
@@ -348,7 +364,9 @@ Authorization and business policy belong above the runtime. Runtime uses
 
 ## Request Parameters
 
-CoAkka does not use URL path or query parameters because `target` is not a URL.
+CoAkka Runtime target calls do not use URL path or query parameters because
+`target` is not a URL. This does not describe CoAkka HTTP Runtime, whose
+requests have ordinary HTTP paths and queries.
 Split request data by responsibility:
 
 | Concern | Put it in | Example |

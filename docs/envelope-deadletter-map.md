@@ -5,6 +5,17 @@ This page is the exact public lookup for `Envelope`, one-way delivery, and
 [Runtime Message And Routing Model](runtime-message-and-routing-model.md) for
 the end-to-end mental model.
 
+## Contents
+
+- [Read The Outcome Boundary First](#read-the-outcome-boundary-first)
+- [Envelope Fields](#envelope-fields)
+- [one_way And Message Kind](#one_way-and-message-kind)
+- [Delivery Hints](#delivery-hints)
+- [Deadletter Fields](#deadletter-fields)
+- [Deadletter Reasons](#deadletter-reasons)
+- [TLS And mTLS Failures](#tls-and-mtls-failures)
+- [Timeout And Retry Rules](#timeout-and-retry-rules)
+
 ## Read The Outcome Boundary First
 
 A send has three distinct outcome layers. Do not collapse them into one generic

@@ -12,6 +12,20 @@ capacity.
 For loader, unsigned-library, Windows, macOS, Linux, and TLS/mTLS diagnosis,
 see [Troubleshooting](../docs/troubleshooting.md).
 
+## Contents
+
+- [Measured Target Path](#measured-target-path)
+- [Choose The Measurement Environment](#choose-the-measurement-environment)
+- [Modes And Pass Invariants](#modes-and-pass-invariants)
+- [Concurrency And Snapshot Hot Reload](#concurrency-and-snapshot-hot-reload)
+- [Connection Strategy Contract](#connection-strategy-contract)
+- [Run](#run)
+- [Timing And Throughput](#timing-and-throughput)
+- [Output Contract](#output-contract)
+- [Source Layout](#source-layout)
+- [Source And Prebuilt Paths](#source-and-prebuilt-paths)
+- [Reproducibility](#reproducibility)
+
 ## Measured Target Path
 
 The harness installs one route snapshot:

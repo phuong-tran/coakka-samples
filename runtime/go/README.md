@@ -1,9 +1,21 @@
 # Go Runtime Samples
 
 Go runtime samples consume `github.com/phuong-tran/coakka-runtime-go@v1.8.2`.
+This is the sample runner pin, not the latest release. See
+[Current Packages](../../docs/current-packages.md) for the current catalog.
 The package embeds native runtime generation `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` for Linux
 ARM64/x86-64, macOS ARM64, and Windows ARM64/x86-64. Package presence and
 execution evidence remain separate in the compatibility matrix.
+
+## Contents
+
+- [New To CoAkka](#new-to-coakka)
+- [Run](#run)
+- [Integration Recipe](#integration-recipe)
+- [Before: Backend HTTP](#before-backend-http)
+- [After: Runtime Target](#after-runtime-target)
+- [Production Notes](#production-notes)
+- [Continue Integrating](#continue-integrating)
 
 ## New To CoAkka
 

@@ -1,5 +1,8 @@
 # New To CoAkka
 
+CoAkka is a polyglot, multi-language, multi-platform distributed runtime
+ecosystem. Start with its central product, **CoAkka Runtime**.
+
 CoAkka Runtime is a native-backed capability runtime for application-owned
 work across processes and languages. It helps an app route work by target
 name, handle request/reply, deadletters, bounded queues, and diagnostics
@@ -11,6 +14,13 @@ application boundary, even when it runs in another process, language,
 container, or host.
 
 CoAkka Logger is a separate bounded logging surface in the same ecosystem.
+
+CoAkka HTTP Runtime is a separate HTTP server and client product for real HTTP
+edges. It does not replace CoAkka Runtime or change its target-based model.
+Its current distribution uses checksum-pinned repository archives, not npm,
+PyPI, Maven Central, or a tagged Go module. If HTTP is your immediate task,
+use the [HTTP Runtime samples](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-http-runtime);
+otherwise follow the Runtime learning path below.
 
 If you are evaluating CoAkka for the first time, read it in this order:
 
@@ -84,7 +94,7 @@ Runtime vocabulary.
 
 ## What CoAkka Is Not
 
-CoAkka is not a Kafka clone, hosted broker, sidecar mesh, web framework, or
+CoAkka Runtime is not a Kafka clone, hosted broker, sidecar mesh, web framework, or
 replacement for public HTTP/gRPC APIs. It is an embedded runtime surface used
 by an application host through language packages. For traffic it owns, its
 built-in TLS/mTLS, connection strategies, cluster routing, failover,

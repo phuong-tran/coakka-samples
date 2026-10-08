@@ -1,4 +1,4 @@
-# coakka-samples
+# CoAkka Samples
 
 <p align="center">
   <img src="docs/assets/brand/coakka-logo.png" alt="CoAkka" width="480">
@@ -6,55 +6,103 @@
 
 [![sample-smoke](https://github.com/phuong-tran/coakka-samples/actions/workflows/sample-smoke.yml/badge.svg)](https://github.com/phuong-tran/coakka-samples/actions/workflows/sample-smoke.yml)
 
-Troubleshooting: [docs/troubleshooting.md](docs/troubleshooting.md)
-Runtime addons: [docs/runtime-addons.md](docs/runtime-addons.md)
-Contact: `gabrielgun1983@gmail.com`
+**CoAkka is a polyglot, multi-language, multi-platform distributed runtime ecosystem.**
 
-This is a rolling sample repository, not a release product. It does not publish
-GitHub Releases. Git tags may preserve useful checkpoints; the current branch,
-exact dependency pins, and passing CI define the sample surface users should
-run.
+Start with **CoAkka Runtime**, the native-backed distributed runtime for
+application-owned work. Route a request to a stable target across processes
+and languages; receive a reply or explicit delivery failure, with bounded
+admission and diagnostics. Keep business policy in the application.
 
-**CoAkka is a polyglot, multi-language, multi-platform runtime ecosystem.**
+CoAkka Logger adds bounded logging, Runtime addons add optional integration
+capabilities, and the separate **CoAkka HTTP Runtime** provides an HTTP server
+and client for real HTTP edges. Products have independent lifecycles, versions,
+and distribution channels; adopting one does not require adopting them all.
+
+## Contents
+
+- [First run](#first-run)
+- [CoAkka ecosystem](#coakka-ecosystem)
+- [Choose a sample](#choose-a-sample)
+- [Install Runtime and Logger packages](#install-runtime-and-logger-packages)
+- [Featured Runtime samples](#featured-runtime-samples)
+- [CoAkka HTTP Runtime — repository archives](#coakka-http-runtime)
+- [Documentation](#documentation)
+- [Repository map](#repository-map)
+- [Verification and contribution](#verification-and-contribution)
+- [License and trademark](#license-and-trademark)
+
+## First Run
+
+With Docker available, start with two processes in two languages:
+
+```sh
+git clone https://github.com/phuong-tran/coakka-samples.git
+cd coakka-samples
+bash run.sh containers node-python
+```
+
+The Node.js web app calls the Python store through CoAkka Runtime, not a hidden
+store REST fallback. Inspect the browser-visible state and
+[committed screenshots](docs/production-evidence.md#visual-evidence).
+
+Without Docker, use Node.js and the published Runtime package:
+
+```sh
+bash run.sh runtime node basic
+```
+
+Check the [Node.js prerequisites](runtime/node/README.md), or choose another
+language in the [Runtime sample guide](runtime/README.md). The
+[no-checkout npm smoke](docs/first-npm-smoke.md) is available if you prefer
+installing a package before cloning samples.
 
 ## CoAkka Ecosystem
 
-| Product | Use it for | Start here |
+| Product | Responsibility | Distribution and starting point |
 | --- | --- | --- |
-| CoAkka HTTP Runtime | HTTP APIs, static frontend files, outbound HTTP, streaming, SSE, WebSocket and TLS/mTLS with explicit lifecycle. | [C/C++, Go, Kotlin, Python and Node.js/Bun samples](coakka-http-runtime/README.md) — artifact-backed branch candidates |
-| CoAkka Runtime | Target-based application work across languages/processes, request/reply, deadletters, File Lane and Stream Lane. | [Runtime samples](runtime/README.md) |
-| CoAkka Logger | Bounded logging with visible delivery and pressure outcomes. | [Logger samples](logger/README.md) |
-| Runtime Addons | Optional capabilities composed with CoAkka Runtime. | [Addon samples](runtime-addons/README.md) |
+| **CoAkka Runtime** | Distributed application-owned work: targets, request/reply, deadletters, File Lane and Stream Lane. | [Runtime samples](runtime/README.md); published language packages and exact native/source archives. |
+| CoAkka Logger | Bounded logging with visible admission, delivery and pressure outcomes. | [Logger samples](logger/README.md); independently versioned packages. |
+| Runtime Addons | Optional integrations composed with Runtime, including artifact acquisition before File Lane delivery. | [Addon samples](runtime-addons/README.md); native archives, not bundled language connectors. |
+| CoAkka HTTP Runtime | Independent HTTP server/client: routes, static files, streaming, SSE, WebSocket and TLS/mTLS. | [HTTP samples](coakka-http-runtime/README.md); checksum-pinned repository archives, **not npm, PyPI, Maven Central or tagged Go modules**. |
 
-The products are independently versioned. CoAkka HTTP Runtime can serve HTTP
-on its own; it does not require CoAkka Runtime or Logger. An application may
-compose them when an HTTP handler needs runtime messaging or bounded logging.
+Runtime changes the internal handoff, not the public API:
 
-CoAkka Runtime is a native-backed capability runtime for application-owned
-work across processes and languages. It helps an app route work by stable
-target name, handle request/reply, report deadletters, enforce bounded
-admission, and expose delivery diagnostics without turning every internal
-handoff into another hand-written HTTP endpoint.
+```text
+HTTP / UI / job -> application policy -> CoAkka Runtime target -> handler
+                                                    <- reply or deadletter
+```
 
-Application-owned work means capability code governed by the same product or
-application boundary, even when it runs in another process, language,
-container, or host.
+The HTTP edge may use an existing framework or CoAkka HTTP Runtime. Runtime
+and HTTP Runtime do not share a lifecycle or package identity. See the
+[ecosystem overview](docs/ecosystem-overview.md) and
+[HTTP boundary guide](docs/http-edge-runtime-boundary.md).
 
-CoAkka Logger is a separate bounded logging surface in the same ecosystem.
+Kubernetes is a first-class deployment lane, not a prerequisite. Runtime also
+fits standalone services, containers, VMs, bare metal and supported edge hosts.
+Check [package/platform evidence](docs/runtime-package-platform-evidence.md)
+for the exact product, version, operating system and CPU.
 
-CoAkka Runtime's native library and public C ABI support native C/C++, JVM and
-framework adapters, Node.js, Bun, Electron, Tauri, Python, Go, C#, Rust,
-Swift, Zig, Mojo, and the separately scoped Android preview according to each
-release's compatibility row.
+## Choose A Sample
 
-Kubernetes is a first-class deployment lane because topology, rollout, and
-scale require deep operational guidance. It is not a prerequisite. The same
-target, request/reply, bounded-admission, and deadletter contract also applies
-to standalone Linux services, macOS and Windows hosts, containers, VMs, bare
-metal, and architecture-matched edge deployments. Check the
-[Ecosystem Overview](docs/ecosystem-overview.md) and the
-[Compatibility Matrix](https://github.com/phuong-tran/coakka-publish/blob/main/docs/compatibility-matrix.md)
-for exact package, OS, CPU, and release-channel evidence.
+| Goal | Command or doc |
+| --- | --- |
+| First proof across two processes and two languages | `bash run.sh containers node-python` |
+| Smallest local Runtime API | `bash run.sh runtime node basic` |
+| Smallest local Logger API | `bash run.sh logger node basic` |
+| Route miss and deadletter evidence | `bash run.sh runtime node deadletter` |
+| Route generation and hot reload | `bash run.sh runtime python hot-reload` |
+| Native public-ABI correctness and connection-strategy evidence | `bash run.sh runtime-test smoke` |
+| Framework handoff shape | `bash run.sh list` then choose a `runtime/scenarios/customer-crud/*` lane |
+| Published Node.js npm package | `bash run.sh runtime node basic`; [no-checkout npm smoke](docs/first-npm-smoke.md) |
+| Published Bun npm package | `bash run.sh runtime bun basic` |
+| Published Electron npm package | `bash run.sh runtime electron basic` |
+| Tauri/Rust source-archive integration | [Tauri integration guide](runtime/tauri/README.md) |
+| Android signed preview | [Android integration guide](runtime/android/README.md) |
+| Published PyPI packages | `bash run.sh runtime python basic`; `bash run.sh logger python basic` |
+| Published NuGet packages | `bash run.sh runtime csharp basic`; `bash run.sh logger csharp basic` |
+
+Use `bash run.sh doctor` to check local prerequisites and `bash run.sh list`
+to see available lanes.
 
 ## Install Runtime And Logger Packages
 
@@ -120,57 +168,6 @@ Do not invent a Maven coordinate for Android. See
 [Current Packages](docs/current-packages.md) for every release lane, native
 generation, and exact compatibility evidence.
 
-## Repository Map
-
-| Repository | Use it for |
-| --- | --- |
-| [`coakka-samples`](https://github.com/phuong-tran/coakka-samples) | Runnable examples and code you can inspect first. |
-| [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) | Released packages, native archives, manifests, checksums, compatibility matrix, and release notes. |
-| [`coakka-runtime-go`](https://github.com/phuong-tran/coakka-runtime-go) | Public Go module for CoAkka Runtime. |
-| [`coakka-logger-go`](https://github.com/phuong-tran/coakka-logger-go) | Public Go module for CoAkka Logger. |
-| [`coakka-runtime-swift`](https://github.com/phuong-tran/coakka-runtime-swift) | Public SwiftPM runtime package with all five native payloads; Swift execution is verified on macOS ARM64. |
-| [`coakka-logger-swift`](https://github.com/phuong-tran/coakka-logger-swift) | Public SwiftPM logger package for macOS ARM64. |
-
-Use `coakka-samples` when you want to run examples. Use `coakka-publish` when
-you need exact released files, checksums, compatibility status, or release
-history.
-
-## CoAkka HTTP Runtime
-
-The [HTTP Runtime samples](coakka-http-runtime/README.md) are runnable now
-against the checksum-pinned `1.0.0` candidates in the matching `coakka-publish`
-checkout. They cover C11, C++17, Go, Kotlin/JVM, Python, and one TypeScript
-application for both Node.js and Bun. They do not rebuild the runtime or require
-a private connector checkout.
-
-```sh
-export COAKKA_PUBLISH_ROOT=/path/to/coakka-publish
-export COAKKA_HTTP_SAMPLE_WORK_ROOT=/path/to/build-volume/http-samples
-bash coakka-http-runtime/run.sh go smoke
-```
-
-Use the matching `http-runtime-release-sync` warehouse branch. The
-[sample guide](coakka-http-runtime/README.md) lists prerequisites, features and
-commands for every language. Application and TLS/mTLS smokes pass on macOS ARM64
-and Raspberry Pi Linux ARM64; Windows/Linux x86-64 sample execution is not
-claimed. Package-platform evidence is separate from sample execution.
-
-HTTP Runtime remains a **release candidate**, not a registry release. The
-Runtime/Logger installation table above does not install HTTP Runtime; npm,
-Maven, PyPI and Go registry publication are outside this train. No new throughput
-claim follows from these sample checks.
-
-## Architecture Boundary
-
-CoAkka HTTP Runtime can own the external HTTP edge, or an existing framework
-can retain it. Selected application-owned work crosses a
-bounded CoAkka request/reply boundary instead of becoming another internal HTTP
-service. Read
-[Keep HTTP At The Edge](docs/http-edge-runtime-boundary.md) and
-[Should I Choose Bun Over Node.js To Make CoAkka Faster?](docs/qna.md#should-i-choose-bun-over-nodejs-to-make-coakka-faster).
-For browser streaming, read
-[WebSocket Integration With CoAkka](docs/runtime-websocket-integration.md).
-
 ## Featured Runtime Samples
 
 `coakka-samples` contains reviewable source and consumer projects only. Its
@@ -187,353 +184,96 @@ lane for complete Stream Lane workflows. It is a sibling of
 [`runtime-addons/`](runtime-addons/README.md), not a subdirectory of one
 language binding.
 
-## Runtime Addons
+## CoAkka HTTP Runtime
 
-[Runtime addons](docs/runtime-addons.md) are optional, independently released
-capabilities that compose with public Runtime features without entering runtime
-core or every runtime package. The current Artifact Source Addons exist because
-File Lane transfers a stable local file but does not acquire that file from S3,
-Hugging Face, GitHub, Google Drive, SFTP, or another external provider. An addon
-authenticates, acquires one immutable identity, verifies size/SHA-256, and stages
-it locally; File Lane then performs the bounded peer transfer.
+**One shared native HTTP runtime, with idiomatic APIs across languages.**
 
-This is useful when an AI worker needs a multi-gigabyte model, or when a service
-needs an exact media input, checkpoint, build artifact, archived log, or
-diagnostic bundle without creating another internal HTTP file server. The
-[`runtime-addons/`](runtime-addons/README.md) tree contains runnable native C11
-samples for all 12 released providers.
+Polyglot services often reimplement the same HTTP mechanics separately in Go,
+Python, JavaScript and the JVM. CoAkka HTTP Runtime reduces that fragmentation:
+transport, parsing, routing, limits, timeouts and shutdown share one native
+implementation, while handlers keep their language's normal programming style.
+When that shared implementation is fixed or optimized, every connector shipping
+the updated runtime can benefit; the work need not be repeated per language.
+This is not a promise of identical throughput across hosts.
 
-The public C ABI is shaped for language wrappers, but no addon-specific JVM,
-Python, Node.js, Go, .NET, Swift, or other high-level connector is currently
-released. Those connectors remain demand-driven because each requires its own
-ownership-safe bindings, packaging, credential mapping, platform tests, and
-maintenance surface.
+It supports HTTP server/client requests, static frontend and file delivery,
+streaming, SSE, WebSocket, TLS/mTLS, live route/handler changes, bounded
+monitoring and graceful shutdown. Read
+[why it exists, its benefits and capabilities](docs/coakka-http-runtime-introduction.md)
+before choosing a sample.
 
-## Runtime Transport
+HTTP Runtime is a newer, independent product. Its samples use the exact
+`1.0.0` candidate archives available in `coakka-publish/main`; retained
+candidate directory names identify those files, not a required working branch.
+It is not installed by any Runtime/Logger coordinate in the table above.
+There is no HTTP Runtime npm, PyPI, Maven Central or tagged Go-module release
+in this distribution.
 
-Runtime transport configuration is available through the full host-language
-connectors. Use the main guides for the supported modes, effective
-capabilities, lifecycle rules, and connector examples:
-
-- [Runtime network modes](docs/runtime-network-modes.md)
-- [TLS and mTLS](docs/tls-and-mtls.md)
-- [Connection strategies](docs/connection-strategies.md)
-- [Runtime file transfer](docs/runtime-file-transfer.md)
-- [Runtime streaming](docs/runtime-streaming.md)
-- [WebSocket integration](docs/runtime-websocket-integration.md)
-- [AI-assisted integration](docs/ai-assisted-integration.md)
-
-Runtime `2.1.0` introduced the bounded File Lane. Runtime `2.3.0` adds the
-official Stream Lane artifact train and neutral publisher/subscriber pressure
-signals while keeping adaptation policy in the app-host. Keep commands and
-authorization in the application's control plane; keep file and stream bytes
-out of ordinary runtime message payloads.
-
-The promoted native pointer, static JVM/framework and Go/C#/Swift compatibility
-archives, `coakka-client`, and `coakka-runtime-inspect` use generation
-`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`. Current Rust/Mojo/Zig/Tauri mirrors package connector
-`2.5.3` sources over native generation
-`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`. Maven Central Runtime `2.5.3`,
-registry-backed npm/PyPI/NuGet Runtime `2.5.3`, Go `v1.8.3`, and SwiftPM `v2.5.3`
-use that same native generation and expose typed replica-owner File and Stream
-Lane grants. Logger packages remain on their independently listed versions and
-native generation.
-
-## Runtime Test
-
-Start with the root-level [`runtime-test/`](runtime-test/README.md) when you
-want to audit the native runtime boundary before choosing a language connector.
-The C11 harness uses only the public C ABI and covers request/reply invariants,
-bounded admission, all four connection strategies, and structured rejection on
-Windows, macOS, and Linux. It also covers multi-producer race behavior,
-submit-versus-stop convergence, independent lifecycle contention, and atomic
-route-snapshot hot reload. Static analysis, consumer-side ASan/UBSan, and
-separate ThreadSanitizer controls are included for supported Clang/GCC hosts.
+The [HTTP sample guide](coakka-http-runtime/README.md) covers C11, C++20,
+Go, Kotlin/JVM, Python, and TypeScript on Node.js/Bun, with prerequisites,
+feature coverage and host-inlined request handlers. No private Core or
+connector checkout is required.
 
 ```sh
-bash run.sh runtime-test smoke
-bash run.sh runtime-test pressure --requests 512 --queue-capacity 2
-bash run.sh runtime-test file-lane-simple
-bash run.sh runtime-test file-lane-owner-aware
-bash run.sh runtime-test stream-lane-simple
-bash run.sh runtime-test stream-lane-owner-aware
-bash run.sh runtime-test race --threads 4 --requests 256
-bash run.sh runtime-test hot-reload --threads 4 --requests 256 --generations 64
+export COAKKA_PUBLISH_ROOT=/path/to/coakka-publish
+export COAKKA_HTTP_SAMPLE_WORK_ROOT=/path/to/build-volume/http-samples
+bash coakka-http-runtime/run.sh go smoke
 ```
 
-The optional [`bench/`](bench/README.md) tooling adds environment-local load
-measurements. It does not replace the correctness checks and opt-in sanitizer
-runs in `runtime-test/`.
+Use the [feature index](coakka-http-runtime/FEATURES.md) for routing, static
+files, streaming, SSE, WebSocket, TLS/mTLS, outbound HTTP, monitoring and
+shutdown examples. The [sample scope](coakka-http-runtime/README.md#verified-candidate-scope)
+distinguishes executed samples from package-platform qualification.
+[Pi 5 benchmarks](coakka-http-runtime/benchmark-rpi5/README.md) describe a
+specific workload, not a cross-product performance guarantee.
 
-Route application-owned work without inventing another internal REST API.
+## Documentation
 
-## First Run
+Use the [documentation index](docs/README.md) for the complete reading map.
 
-Use this as the main front door when Docker is available:
-
-```sh
-git clone https://github.com/phuong-tran/coakka-samples.git
-cd coakka-samples
-bash run.sh containers node-python
-```
-
-This runs two real processes in two languages with browser-visible state and
-no backend HTTP fallback. It is the best first proof that CoAkka is not just a
-local function-call wrapper. The committed screenshots live in
-[Production Evidence](docs/production-evidence.md#visual-evidence).
-
-If Docker is not available, use the smallest local runtime fallback:
-
-```sh
-bash run.sh runtime node basic
-```
-
-For native public-ABI smoke, pressure, stress, and soak evidence with final
-JSON output, see [Runtime Test](runtime-test/README.md) or run
-`bash run.sh runtime-test smoke`.
-Prefer Linux for deployment-oriented measurements; Windows and macOS runs are
-portable correctness gates, and VM throughput is not a comparison point.
-
-## What To Notice
-
-Before CoAkka, internal application work often becomes another backend HTTP
-surface:
-
-```text
-controller -> backend URL -> HTTP client -> backend endpoint
-```
-
-That endpoint may not be a real public product API. It often exists only
-because a capability needs an address across process, language, or deployment
-boundaries.
-
-With CoAkka, the public edge can stay public and the internal handoff can use
-a runtime target:
-
-```text
-controller -> CoAkka target -> owning handler -> reply or deadletter
-```
-
-A tiny before/after shape:
-
-```text
-before:
-  public createCustomer(request)
-    -> customerClient.post("/internal/customers", request)
-    -> customerStore.create(request)
-
-after:
-  public createCustomer(request)
-    -> runtime.ask("customer.create", request)
-    -> handler "customer.create"
-    -> customerStore.create(request)
-```
-
-The useful shift is not "HTTP is bad." Public HTTP, gRPC, browser APIs,
-auth, API gateways, Nginx, TLS/mTLS, and deployment policy still belong at
-real external or platform boundaries. CoAkka focuses on application-owned work
-that needs a runtime boundary without becoming another L7 service API by
-default.
-
-The runtime vocabulary is intentionally small:
-
-```text
-target
-route snapshot
-generation
-bounded admission
-reply
-timeout
-rejection
-deadletter
-delivery diagnostics
-```
-
-Callers submit an identified payload to a stable capability target. Connector
-APIs may add stronger typing in their host language, but the common contract is
-the target, payload identity, route snapshot, reply/deadletter, and evidence.
-Stable targets name capabilities and should evolve more slowly than URLs,
-transport settings, or deployment topology.
-
-## Why Teams Adopt CoAkka
-
-- Remove private REST handoffs that only exist to give app-owned work an
-  address.
-- Keep public HTTP and gRPC edges unchanged.
-- Move handlers across process, language, container, or host boundaries without
-  changing the caller vocabulary.
-- Get bounded admission, timeout, rejection, and deadletter evidence instead of
-  hidden retries and vague failures.
-
-Typical targets look like domain capabilities: `checkout.place-order`,
-`billing.charge`, `customer.create`, or `inventory.reserve`.
-
-The container sample demonstrates this with two real processes in two
-languages.
-
-A minimal Runtime call shape:
-
-```kotlin
-runtime.handler("customer.create") { request ->
-    customerStore.create(request)
-}
-
-val reply = runtime.ask(
-    target = "customer.create",
-    payload = request
-)
-```
-
-Exact APIs vary by connector, but the runtime idea is the same: register the
-owning handler, then ask the stable target.
-
-## When To Use It
-
-CoAkka is useful when:
-
-- work is still owned by the same product or application boundary;
-- the handler may move across process, language, container, or host;
-- a stable target is clearer than another private URL and client wrapper;
-- bounded admission, timeout, rejection, and deadletter evidence matter;
-- the same capability should be callable consistently across multiple
-  languages.
-
-Do not add CoAkka when:
-
-- an ordinary in-process function call is enough;
-- the boundary is a real public API or independently owned service API;
-- HTTP/gRPC/OpenAPI semantics are the product contract;
-- the system needs durable broker topics, replay, consumer groups, or workflow
-  history;
-- the problem is auth, authorization, public-edge policy, heterogeneous
-  non-CoAkka traffic governance, or business transaction design. CoAkka runtime
-  traffic does not require a service-mesh data plane.
-
-## Packages
-
-Published package lanes are available for JVM, Node.js, Bun, Electron, Python,
-Go, C#, and Swift. Tauri uses a checksum-pinned Rust source archive, while
-Android remains a signed preview candidate without a public Maven coordinate.
-Package versions are independent across the ecosystem; they do not need to
-share the same number.
-
-Current package-manager entrypoints live in
-[docs/current-packages.md](docs/current-packages.md). Compatibility and release
-history live in
-[`coakka-publish/docs/compatibility-matrix.md`](https://github.com/phuong-tran/coakka-publish/blob/main/docs/compatibility-matrix.md)
-and
-[`coakka-publish/docs/releases`](https://github.com/phuong-tran/coakka-publish/tree/main/docs/releases).
-
-## Choose A Sample
-
-| Goal | Command or doc |
+| You want to… | Start here |
 | --- | --- |
-| First proof across two processes and two languages | `bash run.sh containers node-python` |
-| Smallest local Runtime API | `bash run.sh runtime node basic` |
-| Smallest local Logger API | `bash run.sh logger node basic` |
-| Route miss and deadletter evidence | `bash run.sh runtime node deadletter` |
-| Route generation and hot reload | `bash run.sh runtime python hot-reload` |
-| Native public-ABI correctness and connection-strategy evidence | `bash run.sh runtime-test smoke` |
-| Framework handoff shape | `bash run.sh list` then choose a `runtime/scenarios/customer-crud/*` lane |
-| Published Node.js npm package | `bash run.sh runtime node basic`; [no-checkout npm smoke](docs/first-npm-smoke.md) |
-| Published Bun npm package | `bash run.sh runtime bun basic` |
-| Published Electron npm package | `bash run.sh runtime electron basic` |
-| Tauri/Rust source-archive integration | [Tauri integration guide](runtime/tauri/README.md) |
-| Android signed preview | [Android integration guide](runtime/android/README.md) |
-| Published PyPI packages | `bash run.sh runtime python basic`; `bash run.sh logger python basic` |
-| Published NuGet packages | `bash run.sh runtime csharp basic`; `bash run.sh logger csharp basic` |
+| Understand why CoAkka exists | [New to CoAkka](docs/new-to-coakka.md), [the story](docs/coakka-story.md) |
+| Integrate Runtime in an existing app | [Runtime integration](docs/runtime-integration-guide.md), [sample lanes](docs/sample-lanes.md) |
+| Design routes, failures and lifecycle | [Message/routing model](docs/runtime-message-and-routing-model.md), [Runtime field guide](docs/runtime-field-guide.md) |
+| Move files or live streams | [File Lane](docs/runtime-file-transfer.md), [Stream Lane](docs/runtime-streaming.md), [replica ownership](docs/runtime-lane-owner-grants.md) |
+| Add logging or optional capabilities | [Logger](logger/README.md), [Runtime addons](docs/runtime-addons.md) |
+| Build an HTTP server/client | [HTTP Runtime guide](coakka-http-runtime/README.md), [language samples](coakka-http-runtime/README.md#languages) |
+| Check deployment fit and evidence | [Production readiness](docs/production-readiness.md), [production evidence](docs/production-evidence.md) |
+| Resolve a problem | [Troubleshooting](docs/troubleshooting.md), [support](SUPPORT.md) |
 
-Use `bash run.sh doctor` to check local prerequisites and `bash run.sh list`
-to see available lanes.
+## Repository Map
 
-## Docs Map
+| Repository | Use it for |
+| --- | --- |
+| [`coakka-samples`](https://github.com/phuong-tran/coakka-samples) | Runnable examples and code you can inspect first. |
+| [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) | Released packages, native archives, manifests, checksums, compatibility matrix, and release notes. |
+| [`coakka-runtime-go`](https://github.com/phuong-tran/coakka-runtime-go) | Public Go module for CoAkka Runtime. |
+| [`coakka-logger-go`](https://github.com/phuong-tran/coakka-logger-go) | Public Go module for CoAkka Logger. |
+| [`coakka-runtime-swift`](https://github.com/phuong-tran/coakka-runtime-swift) | Public SwiftPM runtime package with all five native payloads; Swift execution is verified on macOS ARM64. |
+| [`coakka-logger-swift`](https://github.com/phuong-tran/coakka-logger-swift) | Public SwiftPM logger package for macOS ARM64. |
 
-Start here:
+Use `coakka-samples` when you want to run examples. Use `coakka-publish` when
+you need exact released files, checksums, compatibility status, or release
+history.
 
-- [New To CoAkka](docs/new-to-coakka.md)
-- [Build The Product Before The Infrastructure](docs/startup-development-path.md)
-- [Runtime Field Guide](docs/runtime-field-guide.md)
-- [How It Works](docs/how-it-works.md)
-- [Keep HTTP At The Edge](docs/http-edge-runtime-boundary.md)
-- [Questions And Answers](docs/qna.md)
+## Verification And Contribution
 
-Core runtime model:
+This is a rolling sample repository, not an aggregate product release. It does
+not create GitHub Releases. Exact dependency pins and the applicable CI results
+identify the sample surface; each product keeps its own version and evidence.
 
-- [Runtime TLS And mTLS](docs/tls-and-mtls.md)
-- [Runtime Connection Strategies](docs/connection-strategies.md)
-- [Runtime Message And Routing Model](docs/runtime-message-and-routing-model.md)
-- [Envelope And Deadletter Map](docs/envelope-deadletter-map.md)
-- [Runtime Integration Guide](docs/runtime-integration-guide.md)
-- [Runtime Glossary](docs/runtime-glossary.md)
-- [Runtime Cluster Routing](docs/runtime-cluster-routing.md)
-- [Runtime Logging And Observability](docs/runtime-logging-observability.md)
-- [Containerized Runtime](docs/containerized-runtime.md)
-- [Edge, IoT, And Industrial Android](docs/edge-iot-android.md)
+- Use `bash run.sh doctor` and `bash run.sh list` for Runtime/Logger sample discovery.
+- Use [Runtime Test](runtime-test/README.md) for native Runtime correctness,
+  concurrency, pressure and opt-in sanitizers.
+- Use [HTTP Runtime verification](coakka-http-runtime/README.md#run) for its
+  separate archive-backed build, application and security checks.
+- Use [benchmark tooling](bench/README.md) for Runtime regression evidence;
+  HTTP measurements live in their own [benchmark guide](coakka-http-runtime/benchmark-rpi5/README.md).
+- Follow [Contributing](CONTRIBUTING.md) and [AI-assisted integration](docs/ai-assisted-integration.md)
+  before adapting samples. Report the exact product, package and host.
 
-Adoption and evidence:
-
-- [Incremental Adoption](docs/incremental-adoption.md)
-- [Integration Path](docs/integration-path.md)
-- [Production Evidence](docs/production-evidence.md)
-- [Production Readiness](docs/production-readiness.md)
-- [Architecture Review Guide](docs/architecture-review-guide.md)
-- [AI Reviewer Onboarding](docs/ai-reviewer-onboarding.md)
-- [The CoAkka Story](docs/coakka-story.md)
-
-Frameworks and tools:
-
-- [CoAkka Spring Boot](docs/coakka-spring-boot.md)
-- [CoAkka Quarkus](docs/coakka-quarkus.md)
-- [CoAkka Runtime Client](docs/coakka-runtime-client.md)
-- [CoAkka Runtime Inspect](docs/coakka-runtime-inspect.md)
-- [Sample Lanes](docs/sample-lanes.md)
-
-Repository and package boundaries:
-
-- [Current Packages](docs/current-packages.md)
-- [Repository Boundaries](docs/repository-boundaries.md)
-- [CoAkka Ecosystem Naming](docs/coakka-ecosystem-naming.md)
-
-## Boring First Production Shape
-
-For a Kubernetes deployment, the boring first shape is:
-
-```text
-public request
-  -> nginx or API gateway
-    -> app-host policy
-      -> CoAkka target
-        -> Kubernetes Service DNS endpoint
-          -> runtime handler
-```
-
-Kubernetes can own pod membership, readiness, pod churn, and pod-level
-distribution. Business code does not need to see the Service DNS endpoint in
-this shape. CoAkka does not need to discover individual pods in that common
-shape. The app or connector maps normal platform configuration into a route
-snapshot, often with a stable generation such as `1`.
-
-Advanced expanded endpoints, weighted routing, affinity, pressure-aware
-routing, and generation changes are covered in
-[Runtime Cluster Routing](docs/runtime-cluster-routing.md) and
-[Runtime Field Guide](docs/runtime-field-guide.md).
-
-## CI
-
-The public sample smoke workflow runs the supported quick lanes from published
-artifacts where possible:
-
-```sh
-bash run.sh doctor
-bash run.sh containers node-python smoke
-bash run.sh runtime node basic
-bash run.sh logger csharp basic
-bash run.sh logger rust basic
-bash run.sh runtime-client
-```
-
-Individual sample READMEs document lane-specific prerequisites and expected
-output.
+Contact: `gabrielgun1983@gmail.com`.
 
 ## License And Trademark
 

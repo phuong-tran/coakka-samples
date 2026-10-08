@@ -16,6 +16,15 @@ The goal is not to teach customer management. The goal is to make process,
 language, routing, request/reply, deadletter, and diagnostics visible through a
 workflow people already understand.
 
+## Contents
+
+- [User Experience Contract](#user-experience-contract)
+- [Shared Domain Contract](#shared-domain-contract)
+- [Topologies](#topologies)
+- [Browser Walkthrough](#browser-walkthrough)
+- [Headless Smoke Shape](#headless-smoke-shape)
+- [Implementation Order](#implementation-order)
+
 ## User Experience Contract
 
 Every customer scenario should provide the same surface:

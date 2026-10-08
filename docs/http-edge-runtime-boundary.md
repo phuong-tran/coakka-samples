@@ -16,6 +16,17 @@ edge, while selected application-owned work crosses the runtime boundary as a
 targeted envelope with bounded admission and an explicit reply, timeout, or
 deadletter outcome.
 
+## Contents
+
+- [Boundary In One View](#boundary-in-one-view)
+- [HTTP Still Owns The External Contract](#http-still-owns-the-external-contract)
+- [Runtime Owns Internal Delivery](#runtime-owns-internal-delivery)
+- [Thin Request Adapter](#thin-request-adapter)
+- [Thin Reply-To-HTTP Adapter](#thin-reply-to-http-adapter)
+- [Node.js Versus Bun Is Then An Edge Choice](#nodejs-versus-bun-is-then-an-edge-choice)
+- [When Internal HTTP Is Still Correct](#when-internal-http-is-still-correct)
+- [Review Questions](#review-questions)
+
 ## Boundary In One View
 
 ```text

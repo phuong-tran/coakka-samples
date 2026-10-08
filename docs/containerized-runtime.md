@@ -27,6 +27,15 @@ code.
 Read [Runtime Network Modes](runtime-network-modes.md) first for the
 `EMBEDDED`, `OUTBOUND_ONLY`, and `NETWORK_NODE` ownership contract.
 
+## Contents
+
+- [Build Time Versus Runtime](#build-time-versus-runtime)
+- [Kubernetes](#kubernetes)
+- [Network And Route Addresses](#network-and-route-addresses)
+- [Docker Compose](#docker-compose)
+- [What Must Be Unique?](#what-must-be-unique)
+- [Route Strategy Still Decides Work Placement](#route-strategy-still-decides-work-placement)
+
 ## Build Time Versus Runtime
 
 At build time, every replica should use the same image:

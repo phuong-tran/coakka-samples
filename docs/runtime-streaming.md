@@ -31,6 +31,23 @@ For a browser-facing composition, read
 WebSocket endpoint, asynchronous send queue, browser format, and fan-out remain
 app-host responsibilities.
 
+## Contents
+
+- [When To Use Stream Lane](#when-to-use-stream-lane)
+- [Typical Use Cases](#typical-use-cases)
+- [Availability](#availability)
+- [Session Workflow](#session-workflow)
+- [Choose Simple Or Owner-Aware](#choose-simple-or-owner-aware)
+- [Service A To Service B Connector Example](#service-a-to-service-b-connector-example)
+- [Frame Contract](#frame-contract)
+- [Backpressure And Memory](#backpressure-and-memory)
+- [Transport Pressure](#transport-pressure)
+- [Wire Compatibility](#wire-compatibility)
+- [Callback Rules](#callback-rules)
+- [Lifecycle And Operations](#lifecycle-and-operations)
+- [Security](#security)
+- [Protocol V1 Non-Goals](#protocol-v1-non-goals)
+
 ## When To Use Stream Lane
 
 Use the stream lane when all or most of these statements are true:

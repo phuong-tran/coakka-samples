@@ -1,6 +1,11 @@
 # Production Evidence
 
-This page is the product evidence ledger for the public sample repository. The
+This page is the **CoAkka Runtime and Logger** evidence ledger for the public
+sample repository. HTTP server/client evidence is recorded separately in the
+[HTTP Runtime sample scope](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/README.md#verified-candidate-scope)
+and [HTTP benchmark results](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/benchmark-results-rpi5.md).
+
+The
 samples show that the published artifact surface is runnable and that the
 runtime vocabulary stays consistent across languages. Capacity, SLO, and
 operator-acceptance claims are attached to the target environment where the
@@ -94,12 +99,12 @@ sample benchmark artifacts must record:
 - whether the result is only a smoke-load reference
 
 Benchmark artifacts are supporting evidence, not the main product positioning.
-CoAkka's primary claim is the runtime capability boundary: target ownership,
+CoAkka Runtime's primary claim is the runtime capability boundary: target ownership,
 route snapshots, bounded delivery, replies, deadletters, and diagnostics for
 application-owned work.
 
 Benchmark comparisons should stay at the transport-backed runtime delivery boundary. CoAkka
-is not an L7 HTTP/gRPC framework benchmark; do not frame numbers as HTTP/gRPC
+Runtime is not an L7 HTTP/gRPC framework benchmark; do not frame its numbers as HTTP/gRPC
 replacement claims. Compare route lookup, bounded admission, framing, delivery
 outcome, reply matching, deadletter behavior, and queue pressure under the same
 payload and transport profile.

@@ -5,6 +5,15 @@ runtime lane consumes `coakka-v2-connector==2.5.3` from PyPI, built against
 native runtime generation `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`
 from connector source `0ba485e`.
 
+## Contents
+
+- [Run](#run)
+- [Integration Recipe](#integration-recipe)
+- [Before: Fake Backend HTTP](#before-fake-backend-http)
+- [After: Runtime Target](#after-runtime-target)
+- [Production Notes](#production-notes)
+- [Continue Integrating](#continue-integrating)
+
 ## Run
 
 ```sh

@@ -5,6 +5,22 @@ integrate CoAkka from the public repositories. It defines how to select source
 material before generating code. It does not replace the connector README or
 the runnable sample for a language.
 
+The contracts below describe **CoAkka Runtime**. For the separate CoAkka HTTP
+Runtime HTTP server/client, start with its
+[sample guide](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-http-runtime)
+and exact archive-backed language guide. Do not use Runtime's npm/PyPI/Maven/Go
+coordinates to install HTTP Runtime, or map Runtime targets to HTTP routes.
+
+## Contents
+
+- [Start With An Exact Surface](#start-with-an-exact-surface)
+- [Read By Task](#read-by-task)
+- [Evidence Levels](#evidence-levels)
+- [Current Feature Gates](#current-feature-gates)
+- [Language And Host Boundaries](#language-and-host-boundaries)
+- [Generated Answer Checklist](#generated-answer-checklist)
+- [Prompt Template](#prompt-template)
+
 ## Start With An Exact Surface
 
 Answer these questions before writing code:

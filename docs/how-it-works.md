@@ -34,6 +34,14 @@ The runtime core stays platform-agnostic. The connector receives framework and
 platform configuration, then passes explicit start specs, route snapshots,
 handlers, envelopes, and lifecycle calls into the runtime.
 
+## Contents
+
+- [Startup Configuration](#startup-configuration)
+- [Route Apply](#route-apply)
+- [Same-Process Delivery](#same-process-delivery)
+- [Multi-Process Delivery](#multi-process-delivery)
+- [Strict Semantics](#strict-semantics)
+
 ## Startup Configuration
 
 The connector or framework adapter reads the host environment, validates the

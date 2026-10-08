@@ -29,6 +29,17 @@ Keep business commands, authorization decisions, and transfer metadata in the
 application's existing control plane. Put the file bytes on the file lane. Do
 not put a large file into an `Envelope` payload.
 
+## Contents
+
+- [Good Use Cases](#good-use-cases)
+- [Transfer Workflow](#transfer-workflow)
+- [Choose Simple Or Owner-Aware](#choose-simple-or-owner-aware)
+- [Service A To Service B Connector Example](#service-a-to-service-b-connector-example)
+- [Security Profiles](#security-profiles)
+- [Bounded Operation](#bounded-operation)
+- [Ownership And UI Boundaries](#ownership-and-ui-boundaries)
+- [Availability And Evidence](#availability-and-evidence)
+
 ## Good Use Cases
 
 - moving media, model, dataset, backup, checkpoint, or build-artifact files

@@ -24,7 +24,7 @@ JVM shutdown hook rather than translating a Java sample line by line.
 - default platform I/O plus an explicit `--io-uring` opt-in;
 - finite close in reverse construction order.
 - bounded buffered GZIP alongside unbuffered streaming;
-- Core-issued route snapshots and CPU/batch/transport-timeout observations.
+- runtime-issued route snapshots and CPU/batch/transport-timeout observations.
 
 `io_uring` is off unless `--io-uring` is present. The Kotlin builder forwards
 the preference; native startup owns capability detection and falls back to
@@ -33,7 +33,7 @@ the preference; native startup owns capability detection and falls back to
 `Security.kt` builds a JVM trust store from the test authority and an optional
 client key store from the generated identity. It verifies TLS and proves that
 mutual TLS refuses an unidentified client. It also starts a separate client
-runtime with explicit CA and client-identity generations: Core, not the JVM
+runtime with explicit CA and client-identity generations: the runtime, not the JVM
 client, owns that outbound TLS/mTLS connection and verifies the peer name.
 
 ## Run
@@ -82,14 +82,14 @@ not swallowed. A failed close never authorizes restarting or freeing an owner.
 
 | Recipe | Contract demonstrated |
 | --- | --- |
-| [Main.kt](src/main/kotlin/sample/Main.kt) route publication | Pull Core snapshot, publish against its generation, reject stale intent without changing the effective route |
+| [Main.kt](src/main/kotlin/sample/Main.kt) route publication | Pull the runtime snapshot, publish against its generation, reject stale intent without changing the effective route |
 | [Control.kt](src/main/kotlin/sample/Control.kt) monitoring | Apply within startup reservation, reject stale/oversized policy atomically, restore initial policy |
-| `tuning-smoke` | Named SMALL/MEDIUM notification profiles; independently observed Core caps and header/body timeouts |
-| `tuning-smoke` on Linux | Also requests SINGLE and checks Core's selected CPU count; default remains AUTO |
-| [Adverse.kt](src/main/kotlin/sample/Adverse.kt) handler deadline | Core returns504 while application work is held; late result does not become a second response; service remains usable |
+| `tuning-smoke` | Named SMALL/MEDIUM notification profiles; independently observed the runtime caps and header/body timeouts |
+| `tuning-smoke` on Linux | Also requests SINGLE and checks the runtime's selected CPU count; default remains AUTO |
+| [Adverse.kt](src/main/kotlin/sample/Adverse.kt) handler deadline | the runtime returns504 while application work is held; late result does not become a second response; service remains usable |
 | Outbound cancellation/deadline | Exactly matched typed terminal followed by successful call reuse; application work is released separately |
 | Pressure recipe | Finite request burst and bounded queues; HTTP503 does not identify which admission owner refused it |
-| [Security.kt](src/main/kotlin/sample/Security.kt) | Inbound independent TLS verifier plus Core-owned outbound TLS/mTLS, without disabling identity checks |
+| [Security.kt](src/main/kotlin/sample/Security.kt) | Inbound independent TLS verifier plus runtime-owned outbound TLS/mTLS, without disabling identity checks |
 
 CPU placement is not a JVM-wide quota: pre-existing GC/JIT threads are outside
 the service scope. Unsupported placement reports unknown counts rather than
@@ -97,7 +97,7 @@ inventing them. Notification profiles are startup-only; monitor collection
 policy is generation-checked and live. Neither is changed on the request path.
 The sample's5000ms transport deadlines and64KiB body ceiling are explicit
 application choices, not duplicated runtime defaults. Read accepted settings
-through Core's runtime-info/effective-limits API.
+through the runtime's runtime-info/effective-limits API.
 
 Java8 execution of the feature/wire, deadline/cancellation/reuse, security and
 HTTP2/3 recipes passes on macOS ARM64 and Pi Linux ARM64. Pi uses class files
@@ -119,10 +119,10 @@ curl --http3-only --cacert "$COAKKA_HTTP_SAMPLE_WORK_ROOT/tls/identities/ca.pem"
 ```
 
 Check `curl --version` for protocol support; an unsupported client is not a
-runtime failure. Expected body is `protocol-ready`. These listeners use Core's
+runtime failure. Expected body is `protocol-ready`. These listeners use the runtime's
 TLS/HTTP2/HTTP3 implementation with ordinary Kotlin handlers, not a replacement
 server. Independent protocol peers verified wire output and graceful drain on
-Mac/Pi; the HTTP3 peer remains alive to acknowledge shutdown until Core drains.
+Mac/Pi; the HTTP3 peer remains alive to acknowledge shutdown until the runtime drains.
 
 ## Raspberry Pi 5 Benchmark
 

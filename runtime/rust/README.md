@@ -117,7 +117,7 @@ stay as a runtime target with request/reply and deadletter semantics.
 
 ## Production Notes
 
-- Treat `coakka-runtime-rs-2.1.0.tar.gz` as the pinned published Rust archive
+- Treat `coakka-runtime-rs-2.5.2.tar.gz` as the pinned published Rust archive
   line for this sample.
 - Keep one active `RuntimeHost` per process.
 - Keep queue sizes bounded.

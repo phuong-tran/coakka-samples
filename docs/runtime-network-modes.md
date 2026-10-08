@@ -4,6 +4,18 @@ CoAkka Runtime is embedded in the application process. Embedding the runtime
 does not mean the process must open a TCP listener. Network participation is a
 separate startup decision and must not be inferred from route metadata.
 
+## Contents
+
+- [Choose One Mode](#choose-one-mode)
+- [Embedded Means No Port](#embedded-means-no-port)
+- [Outbound Only](#outbound-only)
+- [Network Node](#network-node)
+- [Connector Examples](#connector-examples)
+- [Startup Order](#startup-order)
+- [Android](#android)
+- [Release Compatibility](#release-compatibility)
+- [Review Checklist](#review-checklist)
+
 ## Choose One Mode
 
 | Mode | Inbound listener | Remote routes | Typical use |

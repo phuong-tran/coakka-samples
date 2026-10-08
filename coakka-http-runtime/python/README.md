@@ -31,7 +31,7 @@ the preference; native startup owns capability detection and falls back to
 
 `security.py` uses Python's verifying TLS context as an independent peer for
 TLS/mTLS; its negative case requires an unidentified client to fail. Separate
-calls exercise Core-owned outbound TLS/mTLS with trust/client-identity
+calls exercise runtime-owned outbound TLS/mTLS with trust/client-identity
 generations and server-name verification.
 
 ## Run
@@ -62,16 +62,16 @@ these fixtures are not production credentials.
 ## Control And Failure Recipes
 
 - `main.py`: bounded 64 KiB upload, trailers after EOF, multiline SSE,
-  text/binary WebSocket, Core route snapshots and stale-publication refusal.
+  text/binary WebSocket, the runtime route snapshots and stale-publication refusal.
   The wire smoke checks disconnect/reuse, response trailers, file range/validators
   and WebSocket close/reuse.
-- `control.py`: Core-issued CPU/batch/deadline facts; accepted monitor reload,
+- `control.py`: runtime-issued CPU/batch/deadline facts; accepted monitor reload,
   stale-generation/over-reservation refusal and restoration. `--tuning` submits
   SMALL/MEDIUM batch intents; `--single-cpu` submits SINGLE, otherwise AUTO.
   Unsupported placement is reported, not guessed. Placement does not remove
   the GIL or impose a process-wide CPU quota.
 - `adverse.py`: held-handler deadline, bounded overload, outbound cancel/deadline
-  with exact typed terminals and subsequent reuse. Core expiry cannot forcibly
+  with exact typed terminals and subsequent reuse. The runtime expiry cannot forcibly
   stop Python application code; explicit events release finite test handlers.
   Deliberate dispatch saturation emits visible bounded diagnostics. HTTP 503
   alone does not identify which owner refused work.

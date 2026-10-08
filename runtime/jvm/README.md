@@ -4,6 +4,16 @@ JVM runtime samples consume the `coakka.runtime` Maven Central distribution at
 `io.github.phuong-tran.coakka:runtime:2.5.2`, built against native runtime
 generation `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`.
 
+## Contents
+
+- [Run](#run)
+- [Before: Backend HTTP](#before-backend-http)
+- [After: Runtime Target](#after-runtime-target)
+- [Integration Recipe](#integration-recipe)
+- [Boundary Note](#boundary-note)
+- [Production Notes](#production-notes)
+- [Continue Integrating](#continue-integrating)
+
 ## Run
 
 ```sh

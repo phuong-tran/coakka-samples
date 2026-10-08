@@ -11,6 +11,19 @@ downloaders. They answer a question that File Lane intentionally does not
 answer: how does an application obtain the exact file before a point-to-point
 transfer can begin?
 
+## Contents
+
+- [Why These Addons Exist](#why-these-addons-exist)
+- [A Practical AI-Era Story](#a-practical-ai-era-story)
+- [Why Not Add Another Internal HTTP File Server?](#why-not-add-another-internal-http-file-server)
+- [Language Connectors: Ready To Port, Demand-Driven](#language-connectors-ready-to-port-demand-driven)
+- [Where Addons Fit](#where-addons-fit)
+- [When To Use One](#when-to-use-one)
+- [Package And Compatibility Contract](#package-and-compatibility-contract)
+- [Choose A File Acquisition Provider](#choose-a-file-acquisition-provider)
+- [Current Addon Releases](#current-addon-releases)
+- [Release Evidence](#release-evidence)
+
 ## Why These Addons Exist
 
 File Lane starts with a stable local source file. It moves that known file

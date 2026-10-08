@@ -40,28 +40,6 @@ load-balancing Service.
 For exact package contents, matching-host execution, and known platform gaps,
 use [Runtime Package And Platform Evidence](runtime-package-platform-evidence.md).
 
-## CoAkka HTTP Runtime
-
-CoAkka HTTP Runtime is an independent CoAkka product surface: one operational
-HTTP contract shared by native C/C++, Java/Kotlin, Python,
-JavaScript/TypeScript on Node and Bun, and Go. Language packages share the same
-route, capacity, pressure, monitoring, and lifecycle contract through the App
-Host's normal HTTP execution model.
-
-Version `1.0.0` is staged privately under
-[`coakka-publish/coakka-http-runtime`](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime).
-Native release `1.0.0+204d6ed28231ff9a39f4584393bf7d5af0b6975a`
-and connector release
-`1.0.0+204d6ed28231ff9a39f4584393bf7d5af0b6975a-7cbe256` contain exact,
-reverified macOS ARM64, Linux ARM64/x86-64, and Windows ARM64/x86-64
-artifacts for native, Java/Kotlin, Python, JavaScript/TypeScript, and Go. npm,
-Maven Central, PyPI, a tagged public Go module, public samples, production
-signing, and performance claims remain closed gates.
-
-The [product README](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime)
-contains the full capability matrix, same-route language examples, operational
-contract, dated ecosystem comparison, and benchmark protocol.
-
 ## Runtime Addons
 
 [`runtime-addons/`](runtime-addons.md) is the independent release family for
@@ -142,6 +120,23 @@ major `v1` because its established module path does not carry a `/v2` suffix.
 | SwiftPM | `https://github.com/phuong-tran/coakka-runtime-swift.git`, exact `2.5.3` |
 | coakka-client | `coakka-tools/coakka-client/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/` |
 | coakka-runtime-inspect | `coakka-tools/coakka-runtime-inspect/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/` |
+
+## CoAkka HTTP Runtime: Separate Archive Distribution
+
+The Runtime/Logger coordinates above do not install CoAkka HTTP Runtime.
+The separate HTTP server/client currently uses checksum-pinned `1.0.0`
+repository archives, not npm, PyPI, Maven Central or a tagged Go module.
+
+The [HTTP catalog](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime)
+contains the native C/C++, Go, JVM, Python and Node.js/Bun archives under
+`<lane>/candidates/2026-10-08-r3/`, for macOS ARM64, Linux ARM64/x86-64 and
+Windows ARM64/x86-64. The directory name is the retained artifact identity;
+consumers use `coakka-publish/main`, not an old release branch.
+
+Start with the [archive-backed samples](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-http-runtime).
+Their feature index, matching-host scope and measured Pi 5 benchmark report
+are separate from Runtime's message-delivery evidence. Optional HTTP Inspect
+archives have their own, narrower platform scope.
 
 ## Main Public Repositories
 
