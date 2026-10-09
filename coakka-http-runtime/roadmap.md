@@ -12,6 +12,7 @@ published.
 - [Certificate lifecycle](#certificate-lifecycle)
 - [More language connectors](#more-language-connectors)
 - [Current guides](#current-guides)
+- [Inspect integration](#inspect-integration)
 
 ## Package distribution
 
@@ -50,6 +51,24 @@ verification mature. Each connector should remain idiomatic and thin, with
 configuration, HTTP mechanics and effective-state truth owned by the shared
 Core. These are HTTP Runtime plans, separate from connector availability for
 the distributed CoAkka Runtime product.
+
+## Inspect integration
+
+Core already supports route API metadata, including parameters, request bodies,
+responses and schemas. Inspect already consumes that metadata and projects
+OpenAPI 3.0.3; its standalone application has its own qualified packages.
+
+The language connectors do not yet expose the end-user API for declaring this
+metadata. A future update will connect idiomatic connector declarations to the
+existing Core capability, with Java-friendly JVM APIs, per-language samples,
+documentation and artifact-backed tests. Metadata belongs to route registration,
+not to every incoming request. This work extends the public integration path;
+it does not redesign the metadata model or add schema work to the request path.
+
+Downstream OpenAPI-tool verification will accompany that integration. See
+[metadata and OpenAPI](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/inspect/metadata-and-openapi.md)
+for current behavior and the distinction between route snapshots and schema
+publication. No new connector API is implied by this roadmap entry.
 
 ## Current guides
 

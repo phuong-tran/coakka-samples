@@ -16,6 +16,8 @@ and [certificate rotation versus hot reload](https://github.com/phuong-tran/coak
 
 ## Contents
 
+- [Inspect, metadata and OpenAPI](#inspect-metadata-and-openapi)
+
 - [1. Install and prepare](#1-install-and-prepare)
 - [2. Run your first server](#2-run-your-first-server)
 - [3. Read and adapt the application](#3-read-and-adapt-the-application)
@@ -385,6 +387,19 @@ deliberately blocked handlers into production. HTTP 503 alone does not tell you
 which admission owner refused work; inspect typed outcomes where available.
 
 The sample uses `signal.NotifyContext` and retains close errors alongside earlier errors with `errors.Join`. Close the outbound owner before its upstream. On a retained close failure, keep the owner alive and finish/cancel application work before retrying cleanup; never restart that instance.
+
+## Inspect, metadata and OpenAPI
+
+The optional standalone Inspect application shows an explicitly enabled
+target's route/schema snapshots and exports OpenAPI 3.0.3. It does not infer
+business schemas from handlers, types or traffic. These language samples do
+not currently enable the inspection target or declare route API metadata.
+Snapshot APIs alone are not metadata-publication APIs.
+
+Read [Inspect, metadata and Swagger UI](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/inspect/metadata-and-openapi.md)
+for its purpose, connection settings, metadata checklist, export semantics
+and the current public-package integration path. Do not copy private schema
+or imagined builder calls into your application.
 
 ## Troubleshooting and next steps
 
