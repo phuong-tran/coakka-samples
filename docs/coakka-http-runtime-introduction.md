@@ -1,6 +1,8 @@
 # Introducing CoAkka HTTP Runtime
 
-**One shared native HTTP runtime, with idiomatic application APIs across languages.**
+**Polyglot applications should not require polyglot HTTP infrastructure.**
+
+One shared native HTTP runtime, with idiomatic application APIs across languages.
 
 CoAkka HTTP Runtime is the HTTP server and client product in the CoAkka
 ecosystem. It lets applications use C/C++, Go, Kotlin/Java, Python, or
@@ -16,6 +18,8 @@ targets. An application can use either alone or compose them at its handler.
 - [Why It Exists](#why-it-exists)
 - [What A Shared Runtime Gives You](#what-a-shared-runtime-gives-you)
 - [How Application Code Fits](#how-application-code-fits)
+- [Native Baseline And Language Costs](#native-baseline-and-language-costs)
+- [Monitoring Across Languages](#monitoring-across-languages)
 - [Supported Capabilities](#supported-capabilities)
 - [What It Does Not Promise](#what-it-does-not-promise)
 - [When To Use It](#when-to-use-it)
@@ -76,6 +80,52 @@ The native runtime may use multiple CPUs for its own work. That does not make
 a single JavaScript event loop parallel, remove Python interpreter constraints,
 or eliminate connector conversion costs. Language scheduling and application
 work still matter.
+
+## Native Baseline And Language Costs
+
+We treat native C/C++ measurements as a **baseline**, not a throughput promise
+for every language. They measure the shared HTTP path with a native handler
+under the recorded configuration; they are not a universal hardware ceiling.
+An application host adds its own cost, sometimes called a language “tax”.
+
+| Host | Costs to account for when measuring the application |
+| --- | --- |
+| C/C++ | Handler work, ownership and allocation; the baseline still includes HTTP parsing, scheduling, bounds and lifecycle. |
+| Go | Native-boundary crossings, request/response projection, goroutine scheduling and garbage collection. |
+| JVM: Java and Kotlin | Native-boundary crossings, managed objects and byte/string conversion, dispatcher scheduling, JIT warm-up and garbage collection. Both languages use the same connector. |
+| Python | Native-boundary crossings, Python objects/reference management, interpreter execution and scheduling; GIL constraints apply to the tested conventional CPython configuration. |
+| Node.js | Native-boundary crossings, JavaScript value conversion, event-loop scheduling, allocation and garbage collection. |
+| Bun | Native-boundary crossings, JavaScript value conversion, event-loop scheduling, allocation and garbage collection; its costs must be measured separately from Node.js. |
+
+These are cost categories, not measured percentages. They overlap and depend on
+payload, handler work, concurrency, versions, CPU budget and enabled features.
+Do not subtract two requests-per-second figures and call the difference a
+constant per-request tax, or transfer a ratio between unmatched benchmarks.
+
+The benefit is a more predictable **measured capacity envelope for each host**:
+keep the HTTP implementation and operational contract common, then characterize
+the host-specific part with the same workload and recorded effective settings.
+Use throughput at acceptable p95/p99 latency, CPU, RSS and overload behavior to
+choose replica counts and leave headroom. Revalidate with real business work
+and dependencies; a microbenchmark alone cannot predict production capacity
+or guarantee linear scaling. Shared mechanics reduce the number of independent
+HTTP stacks a team has to understand when making those decisions.
+
+## Monitoring Across Languages
+
+Monitoring is built in, optional and disabled by default. Core owns effective
+policy, resource reservations, generations, aggregates and bounded recent
+events; connectors expose those observations in their language. Applications
+do not need to invent a different HTTP-monitoring model for every host.
+
+Health and fresh-progress liveness are distinct from traffic statistics.
+Event notifications are coalesced wakeups, not a reliable event log: readers
+pull bounded pages and account for missed history. Exporter I/O, credentials,
+queues and retries remain application-owned, outside the HTTP event loop.
+Monitoring is not request-body capture or a built-in Prometheus endpoint.
+
+Start with the [monitoring recipe and language examples](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/monitoring.md),
+then read the [monitor contract](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/observability-and-monitoring.md).
 
 ## Supported Capabilities
 

@@ -14,6 +14,8 @@ target/envelope messaging model.
 - [Building a response](#building-a-response)
 - [Building an outbound request](#building-an-outbound-request)
 - [Lifecycle and configuration terms](#lifecycle-and-configuration-terms)
+- [Why generations are needed](#why-generations-are-needed)
+- [Drain, shutdown and reload are different](#drain-shutdown-and-reload-are-different)
 
 ## URL versus route pattern
 
@@ -205,6 +207,65 @@ Application idempotency and retry budgets remain application policy.
 | Monitor policy | Optional bounded collection; startup reservations constrain live changes. |
 | Graceful shutdown | Stop admission and complete the owned drain/cleanup contract. A timeout alone is not completion. |
 | Borrowed view / lease | Data valid only for the documented scope; release exactly once where required. |
+
+## Why generations are needed
+
+A generation is a version of one owner's accepted state, not a timestamp or
+a global version for the entire process. It prevents a delayed operator from
+silently overwriting a newer change made by another operator.
+
+For example, two controllers read monitor generation 10. Controller A applies
+its policy with expected generation 10 and Core accepts a newer generation.
+Controller B submits its older decision with expected generation 10: Core
+rejects it as stale and preserves the current effective policy. B must read
+the returned/current state and reconsider its intent, not blindly retry.
+
+```text
+read state + generation -> prepare intent -> apply(expected generation)
+                                            | accepted: use effective result
+                                            | stale: inspect and reconsider
+```
+
+| Version or identity | What it protects or identifies |
+| --- | --- |
+| Route structural generation | A coherent complete route-table publication; not a handler's source-code version. |
+| Per-route binding revision | A handler-only change for that route, checked alongside the structural generation. |
+| Handler binding ID | The prepared handler implementation captured by work; an identity, not a generation counter. |
+| Monitor policy generation | A live collection-policy compare-and-apply operation. |
+| Monitor collection epoch | The collection interval/context needed to interpret observations and resets; not interchangeable with policy generation. |
+| Credential generation | An explicitly declared credential-set identity for configuration/observation; not a certificate file watcher or a hot-reload instruction. |
+
+Core returns route and monitor effective versions. Do not guess their next
+value, reuse them across service instances, or compare numbers from different
+domains. Credential versions are deployment intent supplied with the
+credential material; changing the number alone does not rotate a live listener.
+A generation is neither an authorization credential nor a distributed lock.
+
+Handler replacement does not rewrite accepted work: already captured requests
+keep their binding until they finish. Similarly, a refused update must not
+partially publish a candidate. These rules make concurrent administration
+predictable without asking request handlers to coordinate each update.
+
+## Drain, shutdown and reload are different
+
+**Drain** stops new admission while already accepted work is given a bounded
+opportunity to finish. **Shutdown/close** additionally settles owned work,
+stops transport and service workers, and releases resources when safe.
+Removing an instance from a load balancer prevents future selection there;
+it is not proof that existing keep-alive connections or accepted work drained.
+
+Graceful shutdown trades extra deployment time and temporarily retained
+resources for fewer interrupted requests. It cannot promise that every request
+finishes: slow handlers, disconnected clients, dependencies, SSE and WebSockets
+may outlast a deadline. A timeout is a reported failure, not proof that memory
+or handler-owned resources can be released. Do not restart a retained owner
+before its shutdown contract has completed.
+
+**Hot reload** changes only a capability with an explicit live-update API.
+Handler changes and monitor policy changes do not imply that listener address,
+TLS material, CPU placement or storage reservations can be changed in place.
+See the [shutdown and hook guide](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/operations.md#shutdown)
+and [credential rotation guide](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/tls-and-mtls.md#credential-operations).
 
 Supported feature, example coverage, platform execution and performance
 evidence are distinct. Consult the

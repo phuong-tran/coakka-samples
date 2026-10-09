@@ -8,6 +8,15 @@ the features you need. The full sample remains the executable reference;
 this guide explains its reading order. Handlers stay host-inlined in your
 application language while Core owns HTTP transport and runtime policy.
 
+For monitor startup, policy changes, event retention and exporter ownership,
+see [Monitoring an HTTP service](../monitoring.md), including this language's
+complete source recipe.
+
+For the rationale and lifecycle behind the APIs, read
+[generations and drain](../glossary.md#why-generations-are-needed),
+[shutdown hooks and trade-offs](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/operations.md#application-hooks),
+and [certificate rotation versus hot reload](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/tls-and-mtls.md#what-can-be-hot-reloaded).
+
 ## Contents
 
 - [1. Install and prepare](#1-install-and-prepare)
@@ -23,6 +32,7 @@ application language while Core owns HTTP transport and runtime policy.
 - [6. Enable security and other protocols](#6-enable-security-and-other-protocols)
 - [7. Handle failures and shutdown](#7-handle-failures-and-shutdown)
 - [Troubleshooting and next steps](#troubleshooting-and-next-steps)
+- [Sendfile and upload are different](#sendfile-and-upload-are-different)
 
 ## 1. Install and prepare
 
@@ -234,6 +244,21 @@ bytes respectively. This does not install an authentication policy or a
 frontend development server. File snapshot/reload and deployment changes follow
 the package contract; do not assume a production directory behaves like hot
 module reload.
+
+## Sendfile and upload are different
+
+The file-response recipe above gives Core a confined file reference instead of
+reading the entire file into a host-owned response buffer. For eligible
+plaintext HTTP/1.1 delivery, Core can use sendfile to avoid the application
+buffer round trip. Other transports, including TLS, use their appropriate
+bounded delivery path; your handler keeps the same file-response API.
+
+This is **server-to-client download**, not client-to-server upload. Uploads
+still need bounded request consumption and application-owned validation and
+storage policy. Sendfile does not parse multipart or save incoming files.
+Do not assume every file response is zero-copy or turn off TLS to choose a
+fast path. See [file delivery, sendfile and uploads](../file-delivery.md) for
+the motivation, protocol conditions and responsibilities.
 
 ## Swap a handler without replacing routes
 

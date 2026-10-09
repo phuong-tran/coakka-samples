@@ -1,5 +1,13 @@
 # CoAkka HTTP Runtime Samples
 
+> Polyglot applications should not require polyglot HTTP infrastructure.
+
+Native is our measurement baseline, not a promise of identical language
+throughput. Each host has scheduling, conversion and memory-management costs;
+measuring those costs under matched conditions helps plan capacity and scaling.
+See [native baseline and language costs](../docs/coakka-http-runtime-introduction.md#native-baseline-and-language-costs)
+and the [monitoring guide](monitoring.md).
+
 These runnable applications show CoAkka HTTP Runtime from each supported
 language without hiding lifecycle, capacity, security, or failure handling.
 The JVM lane includes Kotlin recipes and a Java consumer; both languages use
@@ -37,10 +45,13 @@ HTTP server/client; the two products have different package coordinates.
 
 ## Contents
 
+- [Roadmap: distribution, certificates and connectors](roadmap.md)
+
 - [Why A Shared HTTP Runtime?](#why-a-shared-http-runtime)
 - [Distribution](#distribution)
 - [Languages](#languages)
 - [URL grammar, request/response and glossary](glossary.md)
+- [File delivery, sendfile and uploads](file-delivery.md)
 - [Feature Map](#feature-map)
 - [Run](#run)
 - [Verified Candidate Scope](#verified-candidate-scope)
