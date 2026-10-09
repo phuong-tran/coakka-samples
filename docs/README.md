@@ -15,6 +15,10 @@ and architecture-matched edge deployments.
 
 ## Start Here
 
+This index covers the ecosystem. Follow the Runtime sections for distributed
+application work, or jump to [Build And Operate HTTP Runtime](#build-and-operate-http-runtime)
+for HTTP services. Existing product directories remain separate.
+
 - [New to CoAkka](new-to-coakka.md)
 - [How CoAkka works](how-it-works.md)
 - [Ecosystem overview](ecosystem-overview.md)
@@ -34,9 +38,9 @@ For an introduction to HTTP Runtime, read
 [why it exists, the shared-runtime benefits and supported features](coakka-http-runtime-introduction.md),
 then use its [detailed guide](coakka-http-runtime/README.md).
 
-The sections below follow the Runtime learning path. For HTTP server/client
-configuration, TLS, monitoring and benchmarks, stay within the HTTP product
-guide; Runtime settings and install coordinates are not interchangeable.
+The Runtime learning path comes first below, followed by a dedicated HTTP
+Runtime path. Their configuration and installation coordinates are not
+interchangeable.
 
 ## Build And Integrate Runtime
 
@@ -74,6 +78,29 @@ guide; Runtime settings and install coordinates are not interchangeable.
 - [Production evidence](production-evidence.md)
 - [Runtime package and platform evidence](runtime-package-platform-evidence.md)
 - [Signing and platform trust](runtime-release-signing-and-platform-trust.md)
+
+## Build And Operate HTTP Runtime
+
+An independent HTTP server/client with one shared native implementation and
+idiomatic connectors. Start with its introduction, choose a language, then
+add features and operational policies as needed.
+
+| Task | Guide |
+| --- | --- |
+| Understand why it exists and where it fits | [Introduction and shared-Core benefits](coakka-http-runtime-introduction.md) |
+| Find the complete HTTP documentation | [HTTP documentation index](coakka-http-runtime/README.md) |
+| Install and run a first service | [C, C++, Go, Java/Kotlin, Python, Node/Bun guides](../coakka-http-runtime/README.md#languages) |
+| Learn routes, values and versioned configuration | [URL grammar and glossary](../coakka-http-runtime/glossary.md) |
+| Serve files or handle uploads | [File delivery and sendfile](../coakka-http-runtime/file-delivery.md), [feature examples](../coakka-http-runtime/FEATURES.md) |
+| Observe and export service state | [Monitoring and sinks](../coakka-http-runtime/monitoring.md) |
+| Plan drain, hooks and deployment | [Operations](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/operations.md), [deployment without Kubernetes](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/deployment-without-kubernetes.md) |
+| Configure TLS/mTLS and rotate certificates | [Transport security](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/tls-and-mtls.md) |
+| Explore routes and OpenAPI | [HTTP Runtime Inspect](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/inspect/metadata-and-openapi.md) |
+| Read performance evidence and planned work | [Benchmark results](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/benchmark-results-rpi5.md), [roadmap](../coakka-http-runtime/roadmap.md) |
+
+HTTP Runtime currently uses checksum-pinned repository archives. Its planned
+registry channels do not change CoAkka Runtime's existing package guidance.
+HTTP Runtime Inspect and the distributed Runtime Inspect are separate tools.
 
 ## Reference And Support
 
