@@ -1,5 +1,9 @@
 # Python Sample
 
+**Start here:** [Installation and integration guide](integration.md) — prerequisites,
+package setup, first HTTP request, feature walkthroughs and checked shutdown.
+This README records sample details, verification scope and benchmark results.
+
 The Python lane uses typed callables, immutable value objects, context-managed
 network responses, `threading.Event`, and normal exceptions. Static checks run
 with Ruff and strict mypy.

@@ -1,5 +1,9 @@
 # TypeScript Sample For Node.js And Bun
 
+**Start here:** [Installation and integration guide](integration.md) — prerequisites,
+package setup, first HTTP request, feature walkthroughs and checked shutdown.
+This README records sample details, verification scope and benchmark results.
+
 One strict TypeScript source set runs unchanged on Node.js and Bun. Handlers
 use normal functions, Web APIs, async stream writers, `bigint` identities, and
 promise-based close.

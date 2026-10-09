@@ -2,8 +2,13 @@
 
 These runnable applications show CoAkka HTTP Runtime from each supported
 language without hiding lifecycle, capacity, security, or failure handling.
-Kotlin is the JVM sample language. One TypeScript source set runs on both
+The JVM lane includes Kotlin recipes and a Java consumer; both languages use
+the same JVM connector. One TypeScript source set runs on both
 Node.js and Bun.
+
+**First time here?** Choose your language's **Start here** guide below. Run one
+server and send one request before exploring features or benchmark evidence.
+You do not need to run the all-language verification suite to get started.
 
 ## Why A Shared HTTP Runtime?
 
@@ -35,6 +40,7 @@ HTTP server/client; the two products have different package coordinates.
 - [Why A Shared HTTP Runtime?](#why-a-shared-http-runtime)
 - [Distribution](#distribution)
 - [Languages](#languages)
+- [URL grammar, request/response and glossary](glossary.md)
 - [Feature Map](#feature-map)
 - [Run](#run)
 - [Verified Candidate Scope](#verified-candidate-scope)
@@ -46,14 +52,14 @@ HTTP server/client; the two products have different package coordinates.
 
 ## Languages
 
-| Directory | Language and host | Guide |
+| Language and host | Start here | Details and evidence |
 | --- | --- | --- |
-| `c/` | C11 | [C sample](c/README.md) |
-| `cpp/` | C++20 | [C++ sample](cpp/README.md) |
-| `go/` | Go 1.23 or newer | [Go sample](go/README.md) |
-| `kotlin/` | Kotlin, Java 8 bytecode; JDK 17 sample compilation | [Kotlin sample](kotlin/README.md) |
-| `python/` | Python 3.11 or newer | [Python sample](python/README.md) |
-| `typescript/` | TypeScript on Node.js 22+ and Bun 1.2.22+ | [TypeScript sample](typescript/README.md) |
+| C11 | [C integration](c/integration.md) | [C sample](c/README.md) |
+| C++20 | [C++ integration](cpp/integration.md) | [C++ sample](cpp/README.md) |
+| Go 1.23 or newer | [Go integration](go/integration.md) | [Go sample](go/README.md) |
+| JVM: Kotlin and Java; Java 8 bytecode, JDK 17 sample compilation | [JVM integration](kotlin/integration.md) | [Kotlin and Java samples](kotlin/README.md) |
+| Python 3.11 or newer | [Python integration](python/integration.md) | [Python sample](python/README.md) |
+| TypeScript on Node.js 22+ and Bun 1.2.22+ | [Node/Bun integration](typescript/integration.md) | [TypeScript sample](typescript/README.md) |
 
 ## Feature Map
 

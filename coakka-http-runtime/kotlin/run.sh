@@ -35,7 +35,9 @@ if [[ "${command}" == "security-smoke" ]]; then
 fi
 
 case "${command}" in
-  check)
+  check|java-smoke)
+    task=check
+    [[ "${command}" == java-smoke ]] && task=javaSmoke
     GRADLE_USER_HOME="${gradle_user_home}" "${repo_root}/gradlew" --no-daemon \
       -p "${lane_root}" \
       --project-cache-dir "${work}/sample-project-cache" \
@@ -43,7 +45,8 @@ case "${command}" in
       -PcoakkaHttpHost="${host_library}" \
       -PcoakkaHttpBridge="${bridge_library}" \
       -PsampleBuildDir="${build_dir}" \
-      check
+      -PsampleAssets="${sample_root}/assets" \
+      "${task}"
     ;;
   smoke)
     GRADLE_USER_HOME="${gradle_user_home}" "${repo_root}/gradlew" --no-daemon \
@@ -102,5 +105,5 @@ case "${command}" in
         run --args="${args} --single-cpu"
     fi
     ;;
-  *) printf 'usage: bash kotlin/run.sh [check|smoke|tuning-smoke|adverse-smoke|security-smoke|http2|http3|run]\n' >&2; exit 2 ;;
+  *) printf 'usage: bash kotlin/run.sh [check|java-smoke|smoke|tuning-smoke|adverse-smoke|security-smoke|http2|http3|run]\n' >&2; exit 2 ;;
 esac

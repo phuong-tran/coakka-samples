@@ -1,5 +1,9 @@
 # Go Sample
 
+**Start here:** [Installation and integration guide](integration.md) — prerequisites,
+package setup, first HTTP request, feature walkthroughs and checked shutdown.
+This README records sample details, verification scope and benchmark results.
+
 The Go lane uses ordinary functions, structs, errors, contexts, and
 `signal.NotifyContext`. It imports the module from the pinned offline Go
 candidate rather than a private source checkout or module proxy.

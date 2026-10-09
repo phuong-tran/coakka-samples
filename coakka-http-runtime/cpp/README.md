@@ -1,5 +1,9 @@
 # C++20 Sample
 
+**Start here:** [Installation and integration guide](integration.md) — prerequisites,
+package setup, first HTTP request, feature walkthroughs and checked shutdown.
+This README records sample details, verification scope and benchmark results.
+
 The native application uses only installed `coakka/http/http.h` and
 `CoAkkaHttp::runtime`, with a non-copyable RAII server, explicit checked close, and exception containment at callbacks.
 The runtime schedules callbacks; this application does not build a connector

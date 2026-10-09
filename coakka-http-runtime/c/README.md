@@ -1,5 +1,9 @@
 # C11 Sample
 
+**Start here:** [Installation and integration guide](integration.md) — prerequisites,
+package setup, first HTTP request, feature walkthroughs and checked shutdown.
+This README records sample details, verification scope and benchmark results.
+
 The native application uses only installed `coakka/http/http.h` and
 `CoAkkaHttp::runtime`, with explicit checked create/start/stop/destroy.
 The runtime schedules callbacks; this application does not build a connector
@@ -153,8 +157,8 @@ capability and matching-host execution are separate claims.
 
 ## Native Startup Tuning And Parameters
 
-The pinned native candidate uses ABI11. Keep its header and library together;
-these operations are not available by mixing a new header with an ABI10 binary.
+The pinned r3 native candidate uses ABI12/runtime-info5. Keep its headers and
+library together; do not combine these examples with an older candidate binary.
 Normal startup leaves the optional tuning pointer NULL and uses the runtime defaults.
 After `run.sh check`, explicitly demonstrate advanced settings with:
 

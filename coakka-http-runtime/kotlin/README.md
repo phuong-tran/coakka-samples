@@ -1,8 +1,20 @@
-# Kotlin Sample
+# JVM Samples: Kotlin and Java
+
+**Start here:** [Installation and integration guide](integration.md) — prerequisites,
+package setup, first HTTP request, feature walkthroughs and checked shutdown.
+This README records sample details, verification scope and benchmark results.
 
 Kotlin is the JVM sample language. The application uses builders, data
 classes, lambdas, typed response producers, `use`-style stream ownership, and a
 JVM shutdown hook rather than translating a Java sample line by line.
+
+The connector also supports Java applications through the same JAR and public
+classes. Start with [Java equivalents](integration.md#java-uses-the-same-jvm-connector)
+and the runnable [JavaFeatures.java](src/main/java/sample/JavaFeatures.java).
+
+```sh
+bash coakka-http-runtime/kotlin/run.sh java-smoke
+```
 
 ## Contents
 

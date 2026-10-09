@@ -1,5 +1,9 @@
 # Feature Samples And Coverage
 
+For a first application, start with your language's
+[installation and integration guide](README.md#languages). This page is the
+cross-language feature and evidence index, not the first-run tutorial.
+
 This index separates a supported API from a runnable example and from a
 verified test. **Example** means source exists; it does not mean every failure
 path or every platform has been exercised. **Gap** is work still required, not
@@ -22,6 +26,7 @@ an unsupported-product claim. The current checks use exact offline candidates.
 | C++ | [server.cpp](cpp/server.cpp) | Same executable, security options | [C++](cpp/README.md) |
 | Go | [main.go](go/main.go) | [security.go](go/security.go) | [Go](go/README.md) |
 | Kotlin/JVM | [Main.kt](kotlin/src/main/kotlin/sample/Main.kt) | [Security.kt](kotlin/src/main/kotlin/sample/Security.kt) | [Kotlin](kotlin/README.md) |
+| Java/JVM | [JavaFeatures.java](kotlin/src/main/java/sample/JavaFeatures.java) | Shared JVM security contract; no separate Java TLS recipe here | [Java guide](kotlin/integration.md#java-uses-the-same-jvm-connector) |
 | Python | [main.py](python/main.py) | [security.py](python/security.py) | [Python](python/README.md) |
 | Node.js/Bun | [main.ts](typescript/main.ts) | [security.ts](typescript/security.ts) | [TypeScript](typescript/README.md) |
 
@@ -97,6 +102,13 @@ followed by service reuse. No low-level dispatch workaround is used.
 These results cover the named recipes, not every possible adverse combination.
 
 ### Kotlin Verification Update
+
+The Java8-compatible `java-smoke` consumer additionally verifies path capture,
+static assets, SPA HTML fallback, confined download/range, handler replacement
+and stale-revision refusal through the pinned r3 JAR on macOS ARM64/JDK17.
+Its source is compiled with `--release 8 -Xlint:all -Werror`; that is not new
+Java8 VM execution or other-platform evidence. Close must succeed before its
+pass marker. Kotlin implementation does not mean Kotlin-only application support.
 
 The [Kotlin recipes](kotlin/README.md#control-and-failure-recipes) consume the
 replacement JVM candidate with runtime-issued route snapshots, named outbound
