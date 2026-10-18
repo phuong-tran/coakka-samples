@@ -43,11 +43,14 @@ fi
 if [[ -f "${runtime_include}/coakka/v2/stream_lane.h" ]]; then
   sources+=(stream_lane_main.c)
 fi
+if [[ -f "${runtime_include}/coakka/v2/runtime_startup.h" ]]; then
+  sources+=(native_startup_main.c native_startup_contract.c native_startup_report.c native_startup_image.c)
+fi
 
 platform_definitions=()
 case "$(uname -s)" in
   Darwin) platform_definitions=(-D_POSIX_C_SOURCE=200809L -D_DARWIN_C_SOURCE) ;;
-  Linux) platform_definitions=(-D_POSIX_C_SOURCE=200809L) ;;
+  Linux) platform_definitions=(-D_POSIX_C_SOURCE=200809L -D_GNU_SOURCE) ;;
 esac
 
 for source in "${sources[@]}"; do

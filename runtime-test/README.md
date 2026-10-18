@@ -19,6 +19,7 @@ see [Troubleshooting](../docs/troubleshooting.md).
 - [Modes And Pass Invariants](#modes-and-pass-invariants)
 - [Concurrency And Snapshot Hot Reload](#concurrency-and-snapshot-hot-reload)
 - [Connection Strategy Contract](#connection-strategy-contract)
+- [Native Startup Candidate](#native-startup-candidate)
 - [Run](#run)
 - [Timing And Throughput](#timing-and-throughput)
 - [Output Contract](#output-contract)
@@ -202,6 +203,75 @@ cmake -S runtime-test -B build/native-connection-evidence \
 cmake --build build/native-connection-evidence --config Release
 ./build/native-connection-evidence/coakka_runtime_v2_connection_strategy_evidence
 ```
+
+## Native Startup Candidate
+
+`native-startup` is an opt-in source-candidate check, not a capability of a
+previously published package or prebuilt runner. It uses only an explicitly
+selected installed `CoAkkaV2` C package containing `runtime_startup.h`.
+It never downloads a package, changes a pin, builds Core implicitly or falls
+back to an older constructor.
+
+Create an external, caller-owned build directory first, then select the exact
+installed candidate:
+
+```sh
+mkdir -p /external/owned/native-startup-build
+COAKKA_NATIVE_EVIDENCE_RUNTIME_PREFIX=/exact/installed/native-candidate \
+COAKKA_NATIVE_EVIDENCE_BUILD_DIR=/external/owned/native-startup-build \
+  bash run.sh runtime-test native-startup
+```
+
+Both directories must already exist and must not contain each other. The build
+directory cannot be a source checkout or contain this sample repository.
+Bash resolves physical directory paths; PowerShell refuses reparse-point
+paths. The explicit reusable build and its evidence remain caller-owned.
+Temporary package-admission metadata is removed on success and failure.
+
+The runner checks CMake's selected config and imported Release runtime image
+beneath the resolved prefix, including the runtime image hash. After execution,
+it also checks the image path observed by the process loader and its content
+hash against that selection. A compatible library loaded from another prefix
+is a failure, even if the child itself passed its startup checks. A small
+metadata-only preflight rejects a missing header or foreign image before the
+existing build cache is changed. Each invocation clears a stale Core-source
+override and explicitly sets consumer sanitizer preferences. Sanitizer
+environment values accept only `0` or `1`; ASan/UBSan and TSan are separate
+builds. Windows candidates must supply their current import library rather
+than deriving it from the older compatibility export file.
+
+The four bounded cases cover omitted groups, explicit OFF values, monitor ON
+and optional I/O ON. They check copied startup intent, defaulted-group facts,
+invalid/short input refusal, unchanged getter output on failure, immutable
+connection and monitor settings, host-handle cleanup, and create/start/stop/
+destroy. Legacy constructor objects report unavailable startup facts; the
+harness does not fabricate AUTO, MULTIPLEXED or OFF values for them.
+
+Each case reports actual Core-issued configuration in CREATED, STARTED and
+STOPPED states. AUTO CPU selection is not a thread count or utilization
+measurement. The cases deliberately use EMBEDDED network policy: optional I/O
+may be requested and supported while effective remains zero because there is
+no TCP receiver. This is not active receiver, TLS or network-traffic evidence.
+
+Stdout contains one JSON document using
+`coakka.runtime.native.startup-evidence.v1`. Core supplies ABI, version, source
+commit, build identity, profile and capability facts; unchecked operations
+remain marked unchecked. The child execution has a 30-second ceiling. Raw
+stdout/stderr and the selected image/hash receipt remain in the explicit build
+directory, including after timeout or invalid JSON. Only loader-verified output
+is saved as `native-startup-validated.json`; each invocation removes that
+task-owned file first so a failed run cannot leave an older pass behind.
+No benchmark is produced.
+Sanitizer options instrument the consumer only unless an independently
+qualified instrumented Core artifact is deliberately supplied; a successful
+consumer run is not a whole-Core sanitizer claim.
+
+Direct CMake consumers can select the same boundary with
+`COAKKA_NATIVE_EVIDENCE_RUNTIME_PACKAGE=CoAkkaV2`, an explicit
+`COAKKA_NATIVE_EVIDENCE_RUNTIME_PREFIX`, and
+`COAKKA_NATIVE_EVIDENCE_REQUIRE_NATIVE_STARTUP=ON`. Missing startup headers fail
+that required gate. With the gate OFF, older published packages retain their
+existing workload and connection-strategy modes without the new target.
 
 ## Run
 

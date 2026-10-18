@@ -16,12 +16,110 @@ $RepositoryRoot = (Resolve-Path (Join-Path $ScriptDirectory "..")).Path
 $SystemTar = Join-Path $env:WINDIR "System32\tar.exe"
 $TemporaryRoot = Join-Path ([IO.Path]::GetTempPath()) (
   "coakka-native-evidence-{0}-{1}" -f $PID, [Guid]::NewGuid().ToString("N"))
+$CandidateAdmission = ""
 
 function Write-EvidenceStatus([string]$Message) {
   [Console]::Error.WriteLine("[coakka-sample] $Message")
 }
 
+function Resolve-CandidateDirectory([string]$Path) {
+  $Item = Get-Item -LiteralPath $Path -Force
+  if (-not $Item.PSIsContainer) { throw "candidate path must be an existing directory" }
+  $Resolved = [IO.Path]::GetFullPath($Item.FullName).TrimEnd('\', '/')
+  if ($Resolved -eq [IO.Path]::GetPathRoot($Item.FullName).TrimEnd('\', '/')) {
+    throw "native-startup does not accept filesystem roots"
+  }
+  $Current = $Item
+  for ($Depth = 0; $Depth -lt 128; $Depth++) {
+    if (($Current.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) {
+      throw "native-startup does not accept Windows reparse-point paths"
+    }
+    $Parent = Split-Path -Parent $Current.FullName
+    if (-not $Parent -or $Parent -eq $Current.FullName) { return $Resolved }
+    $Current = Get-Item -LiteralPath $Parent -Force
+  }
+  throw "native-startup directory depth exceeds its admission bound"
+}
+
+function Test-DirectoryContains([string]$Parent, [string]$Child) {
+  return ($Child + '\').StartsWith($Parent + '\', [StringComparison]::OrdinalIgnoreCase)
+}
+
 try {
+  if ($Mode -eq "native-startup") {
+    if ($EvidenceArguments.Count -ne 0) {
+      throw "native-startup accepts no arguments"
+    }
+    if ($env:COAKKA_NATIVE_EVIDENCE_USE_PREBUILT -eq "1" -or
+        $env:COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR) {
+      throw "native-startup requires an installed candidate; no published/prebuilt or Core source fallback"
+    }
+    $CandidatePrefix = $env:COAKKA_NATIVE_EVIDENCE_RUNTIME_PREFIX
+    $CandidateBuild = $env:COAKKA_NATIVE_EVIDENCE_BUILD_DIR
+    if (-not $CandidatePrefix -or -not $CandidateBuild) {
+      throw "native-startup requires COAKKA_NATIVE_EVIDENCE_RUNTIME_PREFIX and COAKKA_NATIVE_EVIDENCE_BUILD_DIR"
+    }
+    if ($CandidatePrefix -notmatch '^(?:[A-Za-z]:[\\/]|\\\\)' -or
+        $CandidateBuild -notmatch '^(?:[A-Za-z]:[\\/]|\\\\)' -or
+        $CandidateBuild -match '^[A-Za-z]:[\\/]?$') {
+      throw "native-startup prefix/build directory must be explicit absolute non-root paths"
+    }
+    $CandidatePrefix = Resolve-CandidateDirectory $CandidatePrefix
+    $CandidateBuild = Resolve-CandidateDirectory $CandidateBuild
+    $CandidateSourceRoot = Resolve-CandidateDirectory $RepositoryRoot
+    if ((Test-DirectoryContains $CandidatePrefix $CandidateBuild) -or
+        (Test-DirectoryContains $CandidateBuild $CandidatePrefix) -or
+        (Test-DirectoryContains $CandidateSourceRoot $CandidateBuild) -or
+        (Test-DirectoryContains $CandidateBuild $CandidateSourceRoot) -or
+        (Test-Path -LiteralPath (Join-Path $CandidateBuild '.git')) -or
+        (Test-Path -LiteralPath (Join-Path $CandidateBuild 'CMakeLists.txt'))) {
+      throw "native-startup prefix/build overlap or source build root is forbidden"
+    }
+    $CandidateSanitizer = if ($env:COAKKA_NATIVE_EVIDENCE_ENABLE_SANITIZERS) { $env:COAKKA_NATIVE_EVIDENCE_ENABLE_SANITIZERS } else { '0' }
+    $CandidateTsan = if ($env:COAKKA_NATIVE_EVIDENCE_ENABLE_TSAN) { $env:COAKKA_NATIVE_EVIDENCE_ENABLE_TSAN } else { '0' }
+    if ($CandidateSanitizer -notin @('0', '1') -or $CandidateTsan -notin @('0', '1')) {
+      throw "native-startup sanitizer preferences must be 0 or 1"
+    }
+    if ($CandidateSanitizer -eq '1' -and $CandidateTsan -eq '1') {
+      throw "native-startup ASan/UBSan and TSan require separate builds"
+    }
+    $CandidateAdmission = Join-Path $CandidateBuild ("native-startup-admission-" + [Guid]::NewGuid().ToString('N'))
+    New-Item -ItemType Directory -Path $CandidateAdmission | Out-Null
+    cmake -S (Join-Path $ScriptDirectory 'native-startup-preflight') -B $CandidateAdmission `
+      "-DCOAKKA_NATIVE_EVIDENCE_RUNTIME_PREFIX=$CandidatePrefix" |
+      ForEach-Object { [Console]::Error.WriteLine($_) }
+    if ($LASTEXITCODE -ne 0) { throw "native-startup candidate admission failed" }
+    $CandidateArguments = @("-S", $ScriptDirectory, "-B", $CandidateBuild,
+      "-DCMAKE_BUILD_TYPE=Release", "-DCMAKE_PREFIX_PATH=$CandidatePrefix",
+      "-DCOAKKA_NATIVE_EVIDENCE_RUNTIME_PACKAGE=CoAkkaV2",
+      "-DCOAKKA_NATIVE_EVIDENCE_RUNTIME_PREFIX=$CandidatePrefix",
+      "-DCOAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR=",
+      "-DCOAKKA_NATIVE_EVIDENCE_REQUIRE_NATIVE_STARTUP=ON",
+      "-DCOAKKA_NATIVE_EVIDENCE_ENABLE_SANITIZERS=OFF",
+      "-DCOAKKA_NATIVE_EVIDENCE_ENABLE_TSAN=OFF",
+      "-DCMAKE_SKIP_RPATH=OFF", "-DCMAKE_SKIP_BUILD_RPATH=OFF",
+      "-DCMAKE_BUILD_WITH_INSTALL_RPATH=OFF")
+    if ($CandidateSanitizer -eq "1") {
+      $CandidateArguments += "-DCOAKKA_NATIVE_EVIDENCE_ENABLE_SANITIZERS=ON"
+    }
+    if ($CandidateTsan -eq "1") {
+      $CandidateArguments += "-DCOAKKA_NATIVE_EVIDENCE_ENABLE_TSAN=ON"
+    }
+    cmake @CandidateArguments | ForEach-Object { [Console]::Error.WriteLine($_) }
+    if ($LASTEXITCODE -ne 0) { throw "failed to configure native-startup candidate" }
+    cmake --build $CandidateBuild --config Release --target coakka_runtime_v2_native_startup_evidence |
+      ForEach-Object { [Console]::Error.WriteLine($_) }
+    if ($LASTEXITCODE -ne 0) { throw "failed to build native-startup candidate" }
+    $CandidateExecutable = Join-Path $CandidateBuild "Release\coakka_runtime_v2_native_startup_evidence.exe"
+    if (-not (Test-Path $CandidateExecutable)) {
+      $CandidateExecutable = Join-Path $CandidateBuild "coakka_runtime_v2_native_startup_evidence.exe"
+    }
+    if (-not (Test-Path $CandidateExecutable)) { throw "native-startup executable missing" }
+    $env:PATH = "$(Join-Path $CandidatePrefix 'bin');$env:PATH"
+    $env:COAKKA_EVIDENCE_EXECUTION_PATH = "installed-source-candidate"
+    cmake -P (Join-Path $CandidateBuild 'native-startup-Release.cmake')
+    exit $LASTEXITCODE
+  }
   if ($Mode -eq "file-lane") {
     $Mode = "file-lane-simple"
   } elseif ($Mode -eq "stream-lane") {
@@ -202,6 +300,9 @@ try {
   [Console]::Error.WriteLine("[coakka-sample] $($_.Exception.Message)")
   exit 1
 } finally {
+  if ($CandidateAdmission -and (Test-Path -LiteralPath $CandidateAdmission)) {
+    Remove-Item -LiteralPath $CandidateAdmission -Recurse -Force
+  }
   for ($Attempt = 0; $Attempt -lt 5 -and (Test-Path $TemporaryRoot); $Attempt++) {
     try {
       Remove-Item -Recurse -Force $TemporaryRoot -ErrorAction Stop
