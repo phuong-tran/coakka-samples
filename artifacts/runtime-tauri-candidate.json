@@ -1,10 +1,17 @@
 {
   "schema": 1,
-  "state": "private-command-candidate",
+  "state": "private-sample-candidate",
   "aggregateVersion": "2.5.3",
   "rustCrateVersion": "2.5.3",
   "intentCrateVersion": "0.1.0",
   "rustMinimum": "1.77.2",
+  "desktop": {
+    "rustMinimum": "1.92.0",
+    "frameworkVersion": "2.11.5",
+    "buildVersion": "2.6.3",
+    "linuxBuildBaseline": "Debian 12 ARM64 / GLIBC 2.36",
+    "foregroundOnly": true
+  },
   "coreCommit": "f6b61768f60a08d81b1dc06625a211ffca8e89e2",
   "archive": {
     "file": "coakka-runtime-tauri-intents-2.5.3-source.tar.gz",

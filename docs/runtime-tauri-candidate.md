@@ -1,13 +1,14 @@
-# Tauri command sample candidate
+# Tauri sample candidate
 
-This is a private command-only workflow. It does not start a WebView or qualify
-the old desktop scaffold. There is no publication, signing or support promotion.
+These are separate private command and desktop sample workflows. There is no
+publication, signing or support promotion. The terminal command does not start
+a WebView; desktop qualification belongs to the actual app-host boundary.
 Use only the exact archive listed in `artifacts/runtime-tauri-candidate.json`
 from the trusted candidate channel. Archive generation 2.5.3 contains Rust
 crate 2.5.3 and intent crate 0.1.0; that latter Cargo coordinate is not a public
 registry selection. Do not substitute the obsolete public 2.5.2 aggregate.
 
-## Build
+## Command build
 
 Use Rust/Cargo 1.77.2, the matching native linker environment, Python 3.11 or
 later at build time, and an existing offline Cargo cache. Select fresh absolute
@@ -77,5 +78,49 @@ this generation, not propagated tracing/idempotency context.
 In a real GUI, synchronous waiting belongs on a bounded blocking executor,
 not the UI thread. Application admission/authorization, accepted-work joining,
 browser retirement, local assets/CSP and window/background policy require
-their own real-WebView qualification. The desktop sample remains a separate
-integration gate; do not transplant the synchronous CLI call into a UI command.
+their own real-WebView qualification. The desktop sample uses async commands
+and a bounded app owner; do not transplant the synchronous CLI call into a UI
+command.
+
+## Desktop build and application ownership
+
+In Samples use `runtime/tauri/desktop-intent`. It has a separate locked
+Tauri 2.11.5/build 2.6.3 application graph and requires stable Rust 1.92 or newer,
+including its real Clippy component, plus the native platform's prepared
+GUI/linker build tools. This does not raise the independent Rust SDK/command
+floor of 1.77.2. No Tauri CLI or runtime package download is part of the recipe.
+
+Select the same exact aggregate, explicit offline Cargo cache, existing target
+cache and fresh absolute work. The desktop producer reuses the shared bounded
+archive/path/child controls and admitted package helper; it owns only desktop
+source projection, compiler/release checks, normal app layout and cleanup. It
+never rebuilds Core or discovers runtime capabilities. Build/Clippy/library-test
+children each retain a 300-second bound. Source copies get destination-host
+timestamps, not earlier cross-host archive timestamps; dependency caches remain
+caller-owned and are not deleted. Failed cleanup is a failed transaction with
+a retained receipt, not successful promotion.
+
+Build portable Linux desktop artifacts on the prepared ARM64 Debian 12/
+GLIBC 2.36 environment and verify the final version requirements are <=2.36.
+A newer host can raise the app's libc requirement through link-time versioning
+even for weak standard-library symbols. Do not exempt those references from
+the gate. This app build baseline never selects or rebuilds Core. Matching
+target execution and the normal OS GUI stack are separate requirements.
+
+The Windows release app target explicitly disables CodeView at link time and
+retains its exact address map only in the private build cache. The map is not
+part of `installed/`; keep it privately when diagnosing that exact build.
+No binary metadata patch or scanner exception is used.
+
+The installed Mac output is an ordinary `.app`; Linux/Windows outputs are
+native executables with adjacent `native/<target>/` resources and legal files.
+Move the complete output, not only the executable. Python, Cargo, extracted
+SDK sources and the build tree are not installed runtime dependencies. Private
+candidate apps are unsigned; do not disable browser/OS protection to run them.
+
+The app owns command ACL, local CSP/assets/navigation, at most eight accepted
+blocking asks and orderly window/browser retirement. Core remains authoritative
+for AUTO/MULTIPLEX and accepted effective settings. Browser storage is an app
+resource, not a native cache or engine/capability probe. No default hidden-window
+JavaScript progress, whole-browser leak-freedom or desktop-throughput guarantee
+is implied by this sample.

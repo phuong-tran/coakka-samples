@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Default desktop window capability",
+  "description": "Local main window sample commands only",
   "windows": ["main"],
-  "permissions": ["core:default"]
+  "permissions": ["core:default", "allow-coakka-ask-intent", "allow-coakka-runtime-facts"]
 }

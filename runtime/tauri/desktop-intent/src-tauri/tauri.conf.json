@@ -8,15 +8,10 @@
   },
   "app": {
     "withGlobalTauri": true,
-    "windows": [
-      {
-        "title": "CoAkka Tauri Intent",
-        "width": 900,
-        "height": 680
-      }
-    ],
+    "windows": [],
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src ipc: http://ipc.localhost; frame-src 'none'; object-src 'none'; base-uri 'none'",
+      "capabilities": ["default"]
     }
   },
   "bundle": {
