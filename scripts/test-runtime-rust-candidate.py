@@ -5,13 +5,15 @@ import importlib.util
 import os
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
 
-SPEC = importlib.util.spec_from_file_location("rust_candidate", Path(__file__).with_name("runtime-rust-candidate.py"))
+SPEC = importlib.util.spec_from_file_location("cargo_candidate", Path(__file__).with_name("runtime-cargo-candidate.py"))
 assert SPEC is not None and SPEC.loader is not None
 MODULE = importlib.util.module_from_spec(SPEC)
+sys.modules[SPEC.name] = MODULE
 SPEC.loader.exec_module(MODULE)
 
 
@@ -117,6 +119,16 @@ class AdmissionTests(unittest.TestCase):
                     MODULE.build(self.args)
             path.write_bytes(before)
             self.assertFalse(self.work.exists())
+
+    def test_fixed_artifact_profiles_refuse_cross_identity_before_parsing(self):
+        self.assertNotEqual(MODULE.RUST.archive_sha, MODULE.TAURI.archive_sha)
+        self.assertFalse(MODULE.RUST.nested_rust)
+        self.assertTrue(MODULE.TAURI.nested_rust)
+        for profile in (MODULE.RUST, MODULE.TAURI):
+            with patch.object(MODULE.tarfile, "open") as opened:
+                with self.assertRaises(ValueError):
+                    MODULE.archive_tool(b"wrong candidate", profile)
+                opened.assert_not_called()
 
 
 if __name__ == "__main__":

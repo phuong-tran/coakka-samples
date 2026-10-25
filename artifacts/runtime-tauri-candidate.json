@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "state": "private-command-candidate",
+  "aggregateVersion": "2.5.3",
+  "rustCrateVersion": "2.5.3",
+  "intentCrateVersion": "0.1.0",
+  "rustMinimum": "1.77.2",
+  "coreCommit": "f6b61768f60a08d81b1dc06625a211ffca8e89e2",
+  "archive": {
+    "file": "coakka-runtime-tauri-intents-2.5.3-source.tar.gz",
+    "bytes": 2423263,
+    "sha256": "82013559fb8d9f402dedb5aa120ba6fe4152f013e12519505a88a60b3f2878c6"
+  },
+  "buildTool": {
+    "member": "coakka-runtime-tauri-intents-2.5.3-source/rust/tools/package_tools.py",
+    "sha256": "0a9ac6c65a95a929029a38515701eb5f6293b7f2d271d76a4b6d83cd3eaa707e"
+  }
+}
