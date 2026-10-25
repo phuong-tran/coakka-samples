@@ -176,7 +176,7 @@ credentials and live certificate rotation remain a separate future scenario.
 
 ## Connection Strategy Contract
 
-The second executable in this source directory exercises connection strategy
+In the default historical profile, the second executable exercises connection strategy
 configuration through the same published C ABI. It does not reach into private
 headers or infer support from an edition name. For each mode it reads the
 runtime capability snapshot, then proves the supported apply or the structured
@@ -298,10 +298,11 @@ cmake --build /external/owned/native-engine-controls --config Release \
            coakka_runtime_v2_native_ticket_window_tests \
            coakka_runtime_v2_native_ticket_publication_tests \
            coakka_runtime_v2_native_concurrency_fixture_tests \
+           coakka_runtime_v2_connection_strategy_evidence \
            coakka_runtime_v2_concurrency_evidence \
            coakka_runtime_v2_native_evidence
 ctest --test-dir /external/owned/native-engine-controls -C Release \
-  -R '^native-(engine|ticket)' --output-on-failure
+  -R '^native-(engine|ticket|concurrency|connection)' --output-on-failure
 ```
 
 The white-box control checks exact status/fact projection, partial startup,
@@ -376,6 +377,33 @@ the echo payload is wrong; `responseValidation` separately records that
 application check and Core's exact projection status. Unknown/unperformed Core
 states, counters and rejection checks are null. Final state is the Core stats
 snapshot before fixture close, not a local started/stopped flag.
+
+The explicit Native profile also selects a separate connection constructor
+contract, emitting `coakka.runtime.native.connection-strategy-evidence.v2`:
+
+```sh
+/external/owned/native-engine-controls/coakka_runtime_v2_connection_strategy_evidence
+```
+
+Seven finite cases exercise omitted connection intent, four explicit modes,
+explicit pool tuning and an invalid mode. Core capabilities decide expected
+availability; Core validation and constructor must agree with that contract.
+Omission passes NULL startup intent and verifies Core-issued AUTO/MULTIPLEXED
+defaults; no connector-side default table resolves them. Unsupported or invalid
+construction must return the exact typed refusal and no partial instance.
+Only successful getters make accepted startup/delivery/connection facts known;
+unperformed or failed observations are null, not zero-filled successful facts.
+Snapshots are accepted pre-start configuration, not live placement observations.
+
+Native connection intent is immutable from construction. Valid old setters
+must return BAD_STATE both in CREATED and STARTED; malformed setters preserve
+the original validation refusal. Both the atomic apply result and a separate
+getter must retain the actual accepted configuration, not an assumed default.
+The legacy profile keeps its original mutable-before-start contract. Both
+profiles retire exported descriptors through Core's close API, including native
+Windows where an executable's separate CRT cannot close DLL-owned descriptors.
+No business exchange, response pipe parser, certificate or TLS handshake is
+exercised by this connection configuration lane.
 
 ## Run
 

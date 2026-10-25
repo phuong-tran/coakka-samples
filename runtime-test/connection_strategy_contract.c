@@ -1,5 +1,5 @@
 #include "connection_strategy_evidence.h"
-#include "evidence_platform.h"
+#include "coakka/v2/transport.h"
 
 #include <string.h>
 
@@ -63,16 +63,9 @@ static void init_host_handles(coakka_v2_host_handles_t* handles) {
 }
 
 static void close_host_handles(coakka_v2_host_handles_t* handles) {
-  int* channels[] = {
-      &handles->request_write_fd,
-      &handles->response_read_fd,
-      &handles->deadletter_read_fd,
-      &handles->control_write_fd,
-      &handles->monitor_read_fd,
-      &handles->delivered_request_read_fd,
-  };
-  evidence_platform_close_channels(
-      channels, sizeof(channels) / sizeof(channels[0]));
+  /* Descriptors originate in Core. In particular, the consumer's static CRT
+   * cannot retire descriptors owned by the DLL's separate CRT on Windows. */
+  coakka_v2_host_handles_close(handles);
 }
 
 static int fail_case(connection_strategy_case_result_t* result,

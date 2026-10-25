@@ -368,12 +368,17 @@ find_path(
   NO_DEFAULT_PATH
 )
 if(COAKKA_NATIVE_EVIDENCE_TRANSPORT_INCLUDE_DIR)
+  if(COAKKA_NATIVE_EVIDENCE_REQUIRE_NATIVE_STARTUP)
+    set(_coakka_connection_sources native_connection_strategy.c
+        native_connection_strategy_report.c native_connection_strategy.h)
+  else()
+    set(_coakka_connection_sources connection_strategy_main.c
+        connection_strategy_contract.c connection_strategy_report.c
+        connection_strategy_evidence.h)
+  endif()
   add_executable(
     coakka_runtime_v2_connection_strategy_evidence
-    connection_strategy_main.c
-    connection_strategy_contract.c
-    connection_strategy_report.c
-    connection_strategy_evidence.h
+    ${_coakka_connection_sources}
     evidence_json.c
     evidence_json.h
     evidence_platform.c
@@ -386,6 +391,13 @@ if(COAKKA_NATIVE_EVIDENCE_TRANSPORT_INCLUDE_DIR)
     coakka_runtime_v2_connection_strategy_evidence
     PRIVATE ${_coakka_native_runtime_target}
   )
+  if(WIN32)
+    add_custom_command(TARGET coakka_runtime_v2_connection_strategy_evidence POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE:${_coakka_native_runtime_target}>"
+        "$<TARGET_FILE_DIR:coakka_runtime_v2_connection_strategy_evidence>"
+      VERBATIM)
+  endif()
 elseif(COAKKA_NATIVE_EVIDENCE_REQUIRE_CONNECTION_STRATEGY)
   message(FATAL_ERROR
           "The selected runtime artifact does not expose runtime_transport_config.h")
@@ -465,6 +477,11 @@ if(COAKKA_NATIVE_EVIDENCE_STARTUP_INCLUDE_DIR)
       endif()
     endforeach()
     enable_testing()
+    if(TARGET coakka_runtime_v2_connection_strategy_evidence)
+      add_test(NAME native-connection-constructor-sdk
+        COMMAND coakka_runtime_v2_connection_strategy_evidence)
+      set_tests_properties(native-connection-constructor-sdk PROPERTIES TIMEOUT 30)
+    endif()
     add_test(NAME native-engine-owner-unit
       COMMAND coakka_runtime_v2_native_engine_owner_tests)
     add_test(NAME native-engine-owner-sdk

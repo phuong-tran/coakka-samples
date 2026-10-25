@@ -49,6 +49,7 @@ if [[ -f "${runtime_include}/coakka/v2/runtime_startup.h" ]]; then
   sources+=(native_workload.c native_ticket_window_tests.c)
   sources+=(native_ticket_publication_tests.c)
   sources+=(native_concurrency_fixture.c native_concurrency_fixture_tests.c native_concurrency_workload.c native_concurrency_races.c)
+  sources+=(native_connection_strategy.c native_connection_strategy_report.c)
 fi
 
 platform_definitions=()
