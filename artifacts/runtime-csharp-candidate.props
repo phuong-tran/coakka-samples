@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <CoAkkaCandidateState>private-candidate</CoAkkaCandidateState>
+    <CoAkkaCandidateVersion>0.0.0-p452.1</CoAkkaCandidateVersion>
+    <CoAkkaCandidateFile>CoAkka.Runtime.0.0.0-p452.1.nupkg</CoAkkaCandidateFile>
+    <CoAkkaCandidateBytes>2443475</CoAkkaCandidateBytes>
+    <CoAkkaCandidateSha256>bd6560ee71d5c5a03c67a93b89a547a2d6e63be3b3c268cb99598015343291d1</CoAkkaCandidateSha256>
+    <CoAkkaCandidateCoreSource>f6b61768f60a08d81b1dc06625a211ffca8e89e2</CoAkkaCandidateCoreSource>
+  </PropertyGroup>
+</Project>
