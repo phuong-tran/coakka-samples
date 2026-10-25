@@ -1,139 +1,39 @@
 # Rust Runtime Samples
 
-Rust runtime samples document the published `coakka-runtime-rs` archive shape.
-This runtime lane consumes source version `2.5.2`, built against native runtime
-generation `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` from connector generation
-`3ae74f4`.
+This branch uses the exact private Rust 2.5.3 candidate over native Core 2.5.1,
+not the older public 2.5.2 archive. It is not a publication or support claim.
+See the [candidate guide](../../docs/runtime-rust-candidate.md) for artifact
+identity, Rust 1.77.2, matching-host tools, explicit offline build storage and
+the installed resource layout.
 
-## Run
-
-```sh
-bash run.sh runtime rust basic
-```
-
-Watch the Rust runtime walkthrough:
-
-![CoAkka Runtime Rust walkthrough](../../docs/assets/coakka-runtime-rust.gif)
-
-Full recording: [coakka-runtime-rust.mp4](../../docs/assets/coakka-runtime-rust.mp4)
-
-Rust samples expect a working Rust/Cargo toolchain.
-
-## Before: Backend HTTP
-
-A Rust CRUD service can expose a backend Axum/Actix endpoint just so another
-process can call a store capability:
-
-```rust
-async fn create_customer(
-    State(store): State<CustomerStore>,
-    Json(command): Json<CustomerDraft>,
-) -> Json<MutationResponse> {
-    Json(store.create(command))
-}
-```
-
-The caller then forwards business work through HTTP:
-
-```rust
-let customer = client
-    .post("http://customer-store/backend/customers")
-    .json(&command)
-    .send()
-    .await?
-    .json::<MutationResponse>()
-    .await?;
-```
-
-That works, but it adds URL wiring, HTTP parsing, headers, status/error
-mapping, timeout policy, and tests before there is a real product boundary.
-
-## After: Runtime Target
-
-Read the address change like this:
+The [basic application](basic/README.md) is a separate Cargo consumer, not the
+package's smoke executable. It owns a local customer capability, sends a typed
+request/reply and handles a typed route-miss deadletter. Core remains the source
+of truth for defaults, effective configuration and causal runtime outcomes.
 
 ```text
-Before backend HTTP:
-  POST /backend/customers -> Axum/Actix handler
-
-After CoAkka:
-  target = "samples.customer.store" -> registered handler
+caller -> target samples.customer.store -> Rust handler -> owned reply
 ```
 
-The target plays a similar addressing role to a backend HTTP path, but it is
-runtime routing vocabulary, not an HTTP URL.
+Choose the target to name an application capability. Keep the same target in
+route intent, handler registration and callers. HTTP can remain at a genuine
+external/legacy boundary; an internal runtime target is not an HTTP URL.
 
-`samples.customer.store` is the sample's capability target name. In your app,
-choose your own target name, then use the same value in the route table, the
-process-owned `register_handler(...)`, and every caller target. For example,
-`billing.invoice.create` is valid if that is the capability contract you want
-to expose.
+The sample leaves execution, connection, queues and monitor policy to Core.
+The normal defaults are AUTO/MULTIPLEX; the app reads accepted facts from Core
+rather than reconstructing them from its submitted intent. No OS probe,
+reflection, guessed fallback or separate native dependency installation is
+needed. The current engine uses Core-owned delivery resources; response-pipe
+handling belongs to the old generation and is not sample code to preserve.
 
-The same string appears again in the reply helper as `source`: the response is
-coming from the target handler that produced it.
+Rust's `RuntimeHost` is an RAII owner. A callback returns promptly and holds no
+strong reference to its host. A fallible app operation may use `?`: the owner
+retires and joins its reader on exit. Keep the installed executable and its
+`native/` resources/legal files together when relocating the app.
 
-This sample registers one handler to stay small. A real app-host can register
-multiple handlers if it owns multiple targets, such as
-`samples.customer.create`, `samples.customer.update`, and
-`samples.customer.list`. The route table and caller target must use the same
-names.
-
-With CoAkka, the store is a runtime target owned by the Rust process:
-
-```rust
-runtime.register_handler("samples.customer.store", |request| {
-    RuntimeHost::make_json_reply_from_request_identity(
-        &request,
-        "samples.customer.store",
-        store.create_json(request.payload_utf8()),
-    )
-    .ok()
-})?;
-```
-
-`ask_json(...)` below is a convenience helper for JSON samples. It is not the
-runtime saying that only JSON is supported. The runtime contract is an envelope
-with target, payload bytes, message type, schema version, and payload format.
-The Rust package currently ships as an archive package, so treat non-JSON
-helper ergonomics as connector API surface work rather than a runtime
-limitation.
-
-The caller sends one typed runtime request:
-
-```rust
-let response = runtime.ask_json(
-    "samples.customer.frontend",
-    "samples.customer.store",
-    command_json,
-    PayloadIdentity::json("samples.customer.create.request.v1", 1),
-    Duration::from_secs(5),
-    "create_customer",
-    DeliveryHint::RouterDefault,
-)?;
-```
-
-HTTP stays at real client-facing or legacy boundaries. Internal Rust work can
-stay as a runtime target with request/reply and deadletter semantics.
-
-## Production Notes
-
-- Treat `coakka-runtime-rs-2.5.2.tar.gz` as the pinned published Rust archive
-  line for this sample.
-- Keep one active `RuntimeHost` per process.
-- Keep queue sizes bounded.
-- Treat matched deadletters as route/delivery results.
-- Treat packaged Windows payloads separately from matching-host Rust execution
-  evidence.
-- Use Linux validation before presenting this lane as a deployment path.
-
-## Continue Integrating
-
-Use this lane's runnable sample as the source for package imports and basic
-lifecycle names. Before generating connection strategy, TLS/mTLS, File Lane, or
-Stream Lane code, follow [AI-Assisted Integration](../../docs/ai-assisted-integration.md).
-It links the canonical feature guides, exact package catalog, and platform
-evidence, and it defines when only workflow pseudocode is justified.
-
-The current public package train includes File Lane and Stream Lane. Use the
-exact connector names and lifecycle rules shipped by the `2.5.2` archive when
-integrating either lane.
+Only Mac ARM64, Linux ARM64 and Windows x64 are bundled in this candidate.
+Source/package evidence, matching-host application execution and broader
+ecosystem release readiness are separate gates. Follow
+[AI-Assisted Integration](../../docs/ai-assisted-integration.md) before using
+another feature; do not infer File/Stream/TLS APIs from a different connector
+or attach this unpublished candidate surface to an old published version.
