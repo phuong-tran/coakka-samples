@@ -69,4 +69,18 @@
     <AdmitRuntimeCandidate Version="$(CoAkkaCandidateVersion)" FileName="$(CoAkkaCandidateFile)"
                            Bytes="$(CoAkkaCandidateBytes)" Digest="$(CoAkkaCandidateSha256)"/>
   </Target>
+  <PropertyGroup>
+    <CoAkkaCandidateScriptsRoot>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../../scripts'))</CoAkkaCandidateScriptsRoot>
+    <CoAkkaArtifactPythonExe Condition="'$(CoAkkaArtifactPythonExe)' == '' and '$(COAKKA_ARTIFACT_PYTHON)' != ''">$(COAKKA_ARTIFACT_PYTHON)</CoAkkaArtifactPythonExe>
+    <CoAkkaArtifactPythonExe Condition="'$(CoAkkaArtifactPythonExe)' == ''">python</CoAkkaArtifactPythonExe>
+  </PropertyGroup>
+  <!-- Artifact policy is the generated Core utility, not connector/runtime code.
+       Its private original is outside PublishDir; only verified metadata is promoted. -->
+  <Target Name="FinalizeCoAkkaGeneratedApphost" AfterTargets="Publish"
+          Condition="'$(CoAkkaFinalizeGeneratedApphost)' == 'true' and '$(RuntimeIdentifier)' == 'win-x64'">
+    <PropertyGroup>
+      <CoAkkaPublishedApphost>$([System.IO.Path]::GetFullPath('$(PublishDir)$(AssemblyName).exe'))</CoAkkaPublishedApphost>
+    </PropertyGroup>
+    <Exec Timeout="15000" Command="&quot;$(CoAkkaArtifactPythonExe)&quot; -I -B &quot;$(CoAkkaCandidateScriptsRoot)/finalize-csharp-apphost.py&quot; --input &quot;$(CoAkkaPublishedApphost)&quot; --work-root &quot;$(COAKKA_SAMPLE_WORK_ROOT)&quot; --bytes &quot;$(CoAkkaCandidateWindowsApphostBytes)&quot; --raw-sha256 &quot;$(CoAkkaCandidateWindowsApphostRawSha256)&quot; --final-sha256 &quot;$(CoAkkaCandidateWindowsApphostFinalSha256)&quot; --tool-sha256 &quot;$(CoAkkaCandidateArtifactToolSha256)&quot;"/>
+  </Target>
 </Project>

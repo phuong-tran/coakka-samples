@@ -39,7 +39,13 @@ Trusted SDK/tool/cache trees are not a hostile-filesystem sandbox. Hashes prove
 integrity against the catalog, not a publisher signature; do not use an untrusted
 catalog or concurrently mutate caches.
 
-Native Windows uses native `dotnet.exe`, not WSL ELF. Set the same environment
+Native Windows uses native `dotnet.exe`, not WSL ELF. This candidate's generated
+Windows launcher is qualified with SDK8.0.426. A build-only Python3.11+ helper
+uses the exact Core-owned artifact utility to remove SDK debug-locator metadata
+from that unsigned launcher; unknown SDK/foreign/signed images fail closed.
+No Python/private-Core dependency is added to the installed app or NuGet.
+Set `COAKKA_ARTIFACT_PYTHON` to the native Python executable if `python` is not
+on the build PATH. Set the same environment
 variables in PowerShell to absolute Windows paths, choose `win-x64`, and set
 `TEMP`/`TMP` to a task-owned directory under the work root. Then:
 
@@ -52,6 +58,15 @@ dotnet publish basic/CoAkka.Runtime.Sample.csproj -c Release -r win-x64 -o "$env
 If Windows asks to allow a trusted test executable, allow it manually; do not
 disable app protection or signing/security policy. The Java8 ASCII native-cache
 limitation is not a C# filesystem limitation.
+
+Publish only the selected installed/published output, never the entire work
+root. Windows finalization keeps its hash-named original under
+`<work>/csharp/apphost-private` for private diagnosis; do not redistribute it.
+The temporary replacement is same-directory/atomic, with a bounded15s build
+step; an unadmitted stage after forced termination requires explicit inspection,
+not an automatic overwrite. A previously finalized exact hash is idempotent.
+`scripts/pe_release_metadata.py` is an exact generated Core artifact utility;
+do not edit it as a fork. It supplies build-file policy, not runtime/OS probes.
 
 ## Ownership and failure law
 

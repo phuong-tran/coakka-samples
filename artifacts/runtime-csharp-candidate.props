@@ -7,4 +7,10 @@
     <CoAkkaCandidateSha256>f3238732440d95f80443e7ed31165c7ce098f2998c66b08c90413ad090adc492</CoAkkaCandidateSha256>
     <CoAkkaCandidateCoreSource>f6b61768f60a08d81b1dc06625a211ffca8e89e2</CoAkkaCandidateCoreSource>
   </PropertyGroup>
+  <PropertyGroup Label="GeneratedWindowsApphost">
+    <CoAkkaCandidateWindowsApphostBytes>151552</CoAkkaCandidateWindowsApphostBytes>
+    <CoAkkaCandidateWindowsApphostRawSha256>b3406b2fb6bd799a7029e4d221b1325d7f72aab4a7931e9cebcb71a886b11a0a</CoAkkaCandidateWindowsApphostRawSha256>
+    <CoAkkaCandidateWindowsApphostFinalSha256>f30ce903188a9649652e6bb3da9611b22595319a15814a66a422d0eb72e8881b</CoAkkaCandidateWindowsApphostFinalSha256>
+    <CoAkkaCandidateArtifactToolSha256>2075d15c6b9c7b642318c2cdc1d98491046728ec1645703d331b2cc32b2101e1</CoAkkaCandidateArtifactToolSha256>
+  </PropertyGroup>
 </Project>

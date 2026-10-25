@@ -7,6 +7,7 @@
     <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
     <ILLinkTreatWarningsAsErrors>true</ILLinkTreatWarningsAsErrors><TrimmerSingleWarn>false</TrimmerSingleWarn>
     <DebugType>none</DebugType><DebugSymbols>false</DebugSymbols>
+    <CoAkkaFinalizeGeneratedApphost>true</CoAkkaFinalizeGeneratedApphost>
   </PropertyGroup>
   <ItemGroup><Compile Include="Program.cs"/><PackageReference Include="CoAkka.Runtime" Version="$(CoAkkaCandidateVersion)"/></ItemGroup>
 </Project>
