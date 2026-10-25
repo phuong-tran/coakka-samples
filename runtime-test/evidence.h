@@ -35,6 +35,23 @@ typedef struct evidence_config_t {
   uint64_t max_in_flight;
 } evidence_config_t;
 
+/* Harness-owned Native profile observations; not a public Core struct/default
+ * table. Facts become available only after the corresponding Core getters. */
+typedef struct evidence_native_result_t {
+  int enabled;
+  int info_known;
+  int facts_known;
+  uint32_t request_mode;
+  uint32_t response_mode;
+  uint32_t cpu_policy;
+  uint32_t connection_mode;
+  uint64_t synchronously_refused;
+  size_t ticket_capacity;
+  size_t ticket_high_watermark;
+  int status_observed;
+  coakka_v2_status_t last_status;
+} evidence_native_result_t;
+
 typedef struct evidence_result_t {
   uint64_t attempted;
   uint64_t submitted;
@@ -53,6 +70,7 @@ typedef struct evidence_result_t {
   size_t route_count;
   size_t ingress_queue_capacity;
   size_t ingress_queue_high_watermark;
+  evidence_native_result_t native;
 } evidence_result_t;
 
 const char* evidence_mode_name(evidence_mode_t mode);

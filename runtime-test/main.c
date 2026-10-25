@@ -22,6 +22,9 @@ int main(int argc, char** argv) {
   if (parse_status != EVIDENCE_PARSE_OK) {
     memset(&runtime_info, 0, sizeof(runtime_info));
     memset(&result, 0, sizeof(result));
+#ifdef COAKKA_EVIDENCE_NATIVE_ENGINE
+    result.native.enabled = 1;
+#endif
     evidence_print_result_json(&config,
                                &runtime_info,
                                &result,

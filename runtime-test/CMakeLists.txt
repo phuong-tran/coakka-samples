@@ -143,6 +143,13 @@ file(
   "${CoAkkaRuntimeNativeV2_PLATFORM}\n"
 )
 
+# The explicit candidate profile exercises the new engine; published historical
+# SDKs keep their unchanged v1 fixture, never a runtime capability fallback.
+if(COAKKA_NATIVE_EVIDENCE_REQUIRE_NATIVE_STARTUP)
+  set(_coakka_workload_sources native_workload.c native_engine_owner.c)
+else()
+  set(_coakka_workload_sources evidence_runtime.c)
+endif()
 add_executable(
   coakka_runtime_v2_native_evidence
   main.c
@@ -152,7 +159,7 @@ add_executable(
   evidence_json.h
   evidence_platform.c
   evidence_platform.h
-  evidence_runtime.c
+  ${_coakka_workload_sources}
   evidence_report.c
 )
 
@@ -214,6 +221,16 @@ function(coakka_configure_native_evidence_target target)
 endfunction()
 
 coakka_configure_native_evidence_target(coakka_runtime_v2_native_evidence)
+if(COAKKA_NATIVE_EVIDENCE_REQUIRE_NATIVE_STARTUP)
+  target_compile_definitions(coakka_runtime_v2_native_evidence PRIVATE COAKKA_EVIDENCE_NATIVE_ENGINE=1)
+  if(WIN32)
+    add_custom_command(TARGET coakka_runtime_v2_native_evidence POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE:${_coakka_native_runtime_target}>"
+        "$<TARGET_FILE_DIR:coakka_runtime_v2_native_evidence>"
+      VERBATIM)
+  endif()
+endif()
 target_compile_definitions(
   coakka_runtime_v2_native_evidence
   PRIVATE
@@ -386,6 +403,9 @@ if(COAKKA_NATIVE_EVIDENCE_STARTUP_INCLUDE_DIR)
       native_engine_owner.c native_engine_owner_tests.c)
     target_include_directories(coakka_runtime_v2_native_engine_owner_tests SYSTEM
       PRIVATE "${COAKKA_NATIVE_EVIDENCE_STARTUP_INCLUDE_DIR}")
+    add_executable(coakka_runtime_v2_native_ticket_window_tests native_ticket_window_tests.c)
+    target_include_directories(coakka_runtime_v2_native_ticket_window_tests SYSTEM
+      PRIVATE "${COAKKA_NATIVE_EVIDENCE_STARTUP_INCLUDE_DIR}")
     add_executable(coakka_runtime_v2_native_engine_owner_consumer
       native_engine_owner.c native_engine_owner_consumer.c)
     target_link_libraries(coakka_runtime_v2_native_engine_owner_consumer
@@ -398,7 +418,8 @@ if(COAKKA_NATIVE_EVIDENCE_STARTUP_INCLUDE_DIR)
         VERBATIM)
     endif()
     foreach(_engine_target IN ITEMS coakka_runtime_v2_native_engine_owner_tests
-                                    coakka_runtime_v2_native_engine_owner_consumer)
+                                    coakka_runtime_v2_native_engine_owner_consumer
+                                    coakka_runtime_v2_native_ticket_window_tests)
       coakka_configure_native_evidence_target(${_engine_target})
       # These controls use assert for executable checks, including Core calls.
       # A Release build must not erase them; sources also reject NDEBUG.
@@ -413,7 +434,8 @@ if(COAKKA_NATIVE_EVIDENCE_STARTUP_INCLUDE_DIR)
       COMMAND coakka_runtime_v2_native_engine_owner_tests)
     add_test(NAME native-engine-owner-sdk
       COMMAND coakka_runtime_v2_native_engine_owner_consumer)
-    set_tests_properties(native-engine-owner-unit native-engine-owner-sdk
+    add_test(NAME native-ticket-window-unit COMMAND coakka_runtime_v2_native_ticket_window_tests)
+    set_tests_properties(native-engine-owner-unit native-engine-owner-sdk native-ticket-window-unit
       PROPERTIES TIMEOUT 30)
   endif()
   if(CMAKE_SYSTEM_NAME STREQUAL "Linux")

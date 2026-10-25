@@ -100,7 +100,7 @@ void evidence_print_result_json(const evidence_config_t* config,
   }
 
   printf("{\n");
-  printf("  \"schema\": \"coakka.runtime.native.evidence.v1\",\n");
+  printf("  \"schema\": \"coakka.runtime.native.evidence.%s\",\n", result->native.enabled ? "v2" : "v1");
   printf("  \"status\": ");
   evidence_json_write_string(stdout, status);
   printf(",\n");
@@ -112,15 +112,19 @@ void evidence_print_result_json(const evidence_config_t* config,
     evidence_json_write_string(stdout, error);
     printf(",\n");
   }
-  printf("  \"runtime\": {\n");
-  printf("    \"abi\": %u,\n", info->abi_version);
-  printf("    \"version\": ");
-  evidence_json_write_string(stdout, info->runtime_version);
-  printf(",\n");
-  printf("    \"git\": ");
-  evidence_json_write_string(stdout, info->git_commit);
-  printf("\n");
-  printf("  },\n");
+  if (result->native.enabled && !result->native.info_known) {
+    printf("  \"runtime\": null,\n");
+  } else {
+    printf("  \"runtime\": {\n");
+    printf("    \"abi\": %u,\n", info->abi_version);
+    printf("    \"version\": ");
+    evidence_json_write_string(stdout, info->runtime_version);
+    printf(",\n");
+    printf("    \"git\": ");
+    evidence_json_write_string(stdout, info->git_commit);
+    printf("\n");
+    printf("  },\n");
+  }
   printf("  \"environment\": {\n");
   printf("    \"os\": ");
   evidence_json_write_string(stdout, operating_system_name());
@@ -139,12 +143,30 @@ void evidence_print_result_json(const evidence_config_t* config,
   evidence_json_write_string(stdout, execution_path_name());
   printf(",\n");
   printf("    \"readinessWaitBackend\": ");
-  evidence_json_write_string(stdout, evidence_platform_wait_backend());
+  evidence_json_write_string(stdout, result->native.enabled ? "Core-owned opaque wait" : evidence_platform_wait_backend());
   printf("\n");
   printf("  },\n");
+  if (result->native.enabled) {
+    printf("  \"nativeProfile\": {\n");
+    printf("    \"factsScope\": \"Core accepted configuration captured before start, not live phase\",\n");
+    printf("    \"factsKnown\": %s,\n", result->native.facts_known ? "true" : "false");
+    if (result->native.facts_known) {
+      printf("    \"requestMode\": %u,\n", result->native.request_mode);
+      printf("    \"responseMode\": %u,\n", result->native.response_mode);
+      printf("    \"cpuPolicy\": %u,\n", result->native.cpu_policy);
+      printf("    \"connectionMode\": %u,\n", result->native.connection_mode);
+    }
+    printf("    \"synchronouslyRefused\": %" PRIu64 ",\n", result->native.synchronously_refused);
+    printf("    \"ticketCapacity\": %zu,\n", result->native.ticket_capacity);
+    printf("    \"ticketHighWatermark\": %zu,\n", result->native.ticket_high_watermark);
+    printf("    \"lastRecordedCoreStatus\": ");
+    if (result->native.status_observed) printf("%d", (int)result->native.last_status);
+    else printf("null");
+    printf("\n  },\n");
+  }
   printf("  \"config\": {\n");
   printf("    \"submissionPath\": ");
-  evidence_json_write_string(stdout, evidence_submission_path_name(config->mode));
+  evidence_json_write_string(stdout, result->native.enabled ? "Core ask-ticket admission" : evidence_submission_path_name(config->mode));
   printf(",\n");
   printf("    \"payloadBytes\": %zu,\n", config->payload_bytes);
   printf("    \"requestLimit\": %" PRIu64 ",\n", config->request_limit);
@@ -158,10 +180,11 @@ void evidence_print_result_json(const evidence_config_t* config,
   printf("    \"routeStrategy\": \"single-owner\",\n");
   printf("    \"endpointKind\": \"local\",\n");
   printf("    \"requestPath\": \"caller-build-request -> %s -> bounded-ingress -> route-snapshot(generation=%d) -> target(%s) -> local-handler-handoff -> echo-handler\",\n",
-         evidence_submission_path_name(config->mode),
+         result->native.enabled ? "Core ask-ticket admission" : evidence_submission_path_name(config->mode),
          EVIDENCE_ROUTE_GENERATION,
          EVIDENCE_TARGET_NAME);
-  printf("    \"replyPath\": \"echo-handler -> build-reply -> native-submit -> terminal-response-routing -> caller-response-drain\"\n");
+  printf("    \"replyPath\": \"echo-handler -> build-reply -> native-submit -> terminal-response-routing -> %s\"\n",
+         result->native.enabled ? "Core matched ticket adoption" : "caller-response-drain");
   printf("  },\n");
   printf("  \"result\": {\n");
   printf("    \"attempted\": %" PRIu64 ",\n", result->attempted);
