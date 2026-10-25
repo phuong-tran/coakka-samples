@@ -1,33 +1,16 @@
-# Swift Runtime Samples
+# Swift runtime candidate sample
 
-Swift runtime samples consume
-`github.com/phuong-tran/coakka-runtime-swift@2.5.2`, built against native
-runtime generation `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`. The package contains native payloads for
-Linux ARM64/x86-64, macOS ARM64, and Windows ARM64/x86-64; matching-host Swift
-execution evidence is tracked separately from package contents.
-
-The runner pin above is distinct from the newer release listed in
-[Current Packages](../../docs/current-packages.md).
-
-## Run
+This private lane uses exactly `0.0.0-p453.1` and bundled Core2.5.1+f6b61768,
+not the historical public package train. Follow the
+[candidate guide](../../docs/runtime-swift-candidate.md) for admitted local inputs,
+standard SwiftPM, matching toolchain/deployment profiles and installed execution.
 
 ```sh
 bash run.sh runtime swift basic
 ```
 
-The [basic sample](basic/README.md) resolves the public SwiftPM tag, starts one
-runtime owner, registers a local target, performs request/reply, observes
-counters, and closes the runtime.
-
-## Continue Integrating
-
-Use the runnable sample as the source for package imports and basic lifecycle
-names. Before generating connection strategy, TLS/mTLS, File Lane, or Stream
-Lane code, follow
-[AI-Assisted Integration](../../docs/ai-assisted-integration.md). It links the
-canonical feature guides, exact package catalog, and platform evidence, and it
-defines when only workflow pseudocode is justified.
-
-The current SwiftPM package includes File Lane and Stream Lane. Use the exact
-connector names and lifecycle rules shipped by SwiftPM `2.5.2` when integrating
-either lane.
+The example owns one handler, asks for text, observes a typed route miss and
+closes explicitly on success or failure. Core owns accepted defaults, routing,
+capabilities and causal outcomes. The connector owns Swift value/ARC/borrow
+safety, not OS probes or an alternate response engine. Read the exact package
+API for File/Stream; do not translate names from other languages by analogy.

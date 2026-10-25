@@ -1,39 +1,20 @@
-# Swift Runtime Basic
+# Swift runtime basic candidate
 
-This public runtime sample installs `coakka-runtime-swift@2.5.2` from the
-public SwiftPM GitHub tag and runs one same-process request/reply echo through
-the CoAkka runtime v2 connector.
+Use the exact private source package in the
+[candidate guide](../../../docs/runtime-swift-candidate.md), not public2.5.2.
+Set explicit candidate/work/cache/deployment roots, then run `bash run.sh` here
+or `bash run.sh runtime swift basic` from repo root. Native Windows uses the
+guide's configured native developer shell, not WSL ELF.
 
-This sample covers:
+Ordinary SwiftPM builds the app and its dynamic runtime module with actual
+WMO/Osize/no-reflection/link stripping. Installed execution uses the bundled
+Core normally. The sample expects `echo-hello-runtime-swift`, checks Core-issued
+startup/queue/delivery facts and a matched route miss with the original target.
+Both asks keep two-second budgets. It omits queue/port/transport/default knobs;
+Core is the source of truth, not an example's copied defaults table.
 
-- public SwiftPM package resolution from `github.com/phuong-tran/coakka-runtime-swift`
-- automatic selection from the five embedded native runtime payloads
-- runtime version/git diagnostics
-- one process-owned route and handler
-- one request/reply round trip
-- basic client counters
-
-The exact package contains macOS ARM64, Linux ARM64 and x86-64, and Windows
-ARM64 and x86-64 payloads. This sample's Swift execution evidence is macOS
-ARM64; the other payloads have format, digest, and bridge-boundary verification
-without a matching Swift toolchain execution claim.
-
-Run from this directory:
-
-```sh
-bash run.sh
-```
-
-Or from the repository root:
-
-```sh
-bash run.sh runtime swift basic
-```
-
-Expected output shape:
-
-```text
-coakka_runtime_info abi=1 version=2.5.0 git=4b65d0b2
-coakka_runtime_response payload=echo-hello-runtime-swift
-coakka_runtime_stats delivered=1 matchedResponses=1
-```
+Swift defer cannot throw. AppScope therefore preserves both operation and
+shutdown errors; its four pure failure combinations are tested separately.
+A failed close is not rewritten as success, timeout or an automatic retry.
+This example does not claim whole-process leak freedom, a performance SLA or
+coordinated release completion.
