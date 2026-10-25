@@ -210,6 +210,35 @@ cmake --build build/native-connection-evidence --config Release
 ./build/native-connection-evidence/coakka_runtime_v2_connection_strategy_evidence
 ```
 
+## Standalone Lane Source Candidate
+
+The current source candidate also runs both standalone lane profiles against
+the exact selected SDK:
+
+```sh
+./build/coakka_runtime_v2_file_lane_evidence
+./build/coakka_runtime_v2_file_lane_evidence --owner-aware
+./build/coakka_runtime_v2_stream_lane_evidence
+./build/coakka_runtime_v2_stream_lane_evidence --owner-aware
+```
+
+Build the two lane targets in the configured external build directory. These
+APIs are independent of actor Runtime startup/response delivery; they do not
+use its old response pipe or need a Native fixture. Owner-aware preparation
+must return Core's copied exact owner endpoint and bound port. File grants
+retain their bounded resume/idempotency law; Stream grants are single-admission.
+The deterministic loopback tokens are test-only and never printed. Both simple
+and owner-aware paths require exact terminal/counter checks,9MiB+731-byte File
+digest/receipt and97 ordered Stream frames. File failure JSON emits null for
+unobserved Core snapshots, digests and statistics; a failed getter is not zero.
+
+These current sources require SDK headers exposing owner-grant APIs. Historical
+prebuilt runners remain unchanged; do not claim this candidate source was built
+against an older SDK because an old version appears elsewhere in this guide.
+Windows derives a consumer import library when the package contract supplies
+only a DLL; its checked-in list contains the harness's public C call closure,
+not private exports or an expanded Core ABI.
+
 ## Native Startup Candidate
 
 `native-startup` is an opt-in source-candidate check, not a capability of a

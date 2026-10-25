@@ -140,6 +140,7 @@ static int terminal_state(uint32_t state) {
 }
 
 typedef struct transfer_observation_t {
+  int snapshot_known;
   uint64_t initial_sequence;
   uint64_t last_sequence;
   uint64_t updates;
@@ -159,6 +160,7 @@ static int initialize_observation(
   if (status != COAKKA_V2_OK) {
     return 1;
   }
+  observation->snapshot_known = 1;
   observation->initial_sequence = out->update_sequence;
   observation->last_sequence = out->update_sequence;
   observation->saw_intermediate_progress =
@@ -259,6 +261,14 @@ static void remove_workspace(const char *workspace) {
 #endif
 }
 
+/* A zero-initialized output is not a Core observation. Keep numeric legacy
+ * success fields, but emit null on failures before the owning getter succeeds. */
+static void print_core_number(const char *name, int known, uint64_t value) {
+  printf(",\"%s\":", name);
+  if (known) printf("%" PRIu64, value);
+  else fputs("null", stdout);
+}
+
 int main(int argc, char **argv) {
   static const char *transfer_id = "public-file-lane-roundtrip";
   /* Deterministic evidence only. Service B must generate a cryptographically
@@ -295,6 +305,9 @@ int main(int argc, char **argv) {
   int receiver_started = 0;
   int sender_started = 0;
   int owner_aware = 0;
+  int source_digest_known = 0;
+  int sender_stats_known = 0;
+  int receiver_stats_known = 0;
   int passed = 0;
 
   if (argc == 2 && strcmp(argv[1], "--owner-aware") == 0) {
@@ -343,6 +356,7 @@ int main(int argc, char **argv) {
               COAKKA_V2_OK &&
           source_size == k_file_bytes,
           "source-digest");
+  source_digest_known = 1;
 
   /* Service B owns the receiver lane and prepared destination. The simple
    * profile publishes application-managed endpoint fields. The owner-aware
@@ -480,9 +494,11 @@ int main(int argc, char **argv) {
 
   sender_stats.struct_size = sizeof(sender_stats);
   receiver_stats.struct_size = sizeof(receiver_stats);
-  REQUIRE(coakka_v2_file_lane_get_stats(sender, &sender_stats) == COAKKA_V2_OK &&
-              coakka_v2_file_lane_get_stats(receiver, &receiver_stats) ==
-                  COAKKA_V2_OK &&
+  sender_stats_known =
+      coakka_v2_file_lane_get_stats(sender, &sender_stats) == COAKKA_V2_OK;
+  receiver_stats_known =
+      coakka_v2_file_lane_get_stats(receiver, &receiver_stats) == COAKKA_V2_OK;
+  REQUIRE(sender_stats_known && receiver_stats_known &&
               sender_stats.completed_sends == 1u &&
               sender_stats.completed_send_bytes == source_size &&
               receiver_stats.completed_receives == 1u &&
@@ -495,9 +511,11 @@ int main(int argc, char **argv) {
                   receiver, transfer_id,
                   COAKKA_V2_FILE_TRANSFER_DIRECTION_RECEIVE) == COAKKA_V2_OK,
           "lane-forget");
-  REQUIRE(coakka_v2_file_lane_get_stats(sender, &sender_stats) == COAKKA_V2_OK &&
-              coakka_v2_file_lane_get_stats(receiver, &receiver_stats) ==
-                  COAKKA_V2_OK &&
+  sender_stats_known =
+      coakka_v2_file_lane_get_stats(sender, &sender_stats) == COAKKA_V2_OK;
+  receiver_stats_known =
+      coakka_v2_file_lane_get_stats(receiver, &receiver_stats) == COAKKA_V2_OK;
+  REQUIRE(sender_stats_known && receiver_stats_known &&
               sender_stats.retained_records == 0u &&
               receiver_stats.retained_records == 0u &&
               receiver_stats.prepared_receives == 0u,
@@ -505,16 +523,17 @@ int main(int argc, char **argv) {
   passed = 1;
 
 cleanup:
-  if (sender != 0 && sent.struct_size == 0u) {
+  if (sender != 0 && !sender_observation.snapshot_known) {
     sent.struct_size = sizeof(sent);
-    (void)coakka_v2_file_lane_get_transfer(
-        sender, transfer_id, COAKKA_V2_FILE_TRANSFER_DIRECTION_SEND, &sent);
+    sender_observation.snapshot_known = coakka_v2_file_lane_get_transfer(
+        sender, transfer_id, COAKKA_V2_FILE_TRANSFER_DIRECTION_SEND, &sent) ==
+        COAKKA_V2_OK;
   }
-  if (receiver != 0 && received.struct_size == 0u) {
+  if (receiver != 0 && !receiver_observation.snapshot_known) {
     received.struct_size = sizeof(received);
-    (void)coakka_v2_file_lane_get_transfer(
+    receiver_observation.snapshot_known = coakka_v2_file_lane_get_transfer(
         receiver, transfer_id, COAKKA_V2_FILE_TRANSFER_DIRECTION_RECEIVE,
-        &received);
+        &received) == COAKKA_V2_OK;
   }
   if (sender_started) {
     (void)coakka_v2_file_lane_stop(sender);
@@ -530,36 +549,38 @@ cleanup:
   remove_path(source_path);
   remove_workspace(workspace);
   if (!passed) {
-    fprintf(stderr,
-            "file-lane detail failure=%s sender=%s state=%u result=%u "
-            "sequence=%" PRIu64 " receiver=%s state=%u result=%u sequence=%" PRIu64
-            "\n",
-            failure, sent.detail, sent.state, sent.result, sent.update_sequence,
-            received.detail, received.state, received.result,
-            received.update_sequence);
+    fprintf(stderr, "file-lane detail failure=%s", failure);
+    if (sender_observation.snapshot_known)
+      fprintf(stderr, " sender=%s state=%u result=%u sequence=%" PRIu64,
+              sent.detail, sent.state, sent.result, sent.update_sequence);
+    else fputs(" sender=unobserved", stderr);
+    if (receiver_observation.snapshot_known)
+      fprintf(stderr, " receiver=%s state=%u result=%u sequence=%" PRIu64,
+              received.detail, received.state, received.result, received.update_sequence);
+    else fputs(" receiver=unobserved", stderr);
+    fputc('\n', stderr);
   }
   printf("{\"schema\":\"coakka.runtime.file-lane.evidence.v1\","
          "\"profile\":\"%s\",\"passed\":%s,\"failure\":\"%s\","
-         "\"fileBytes\":%" PRIu64 ","
-         "\"senderState\":%u,\"senderResult\":%u,"
-         "\"receiverState\":%u,\"receiverResult\":%u,"
-         "\"senderUpdateSequence\":%" PRIu64 ","
-         "\"receiverUpdateSequence\":%" PRIu64 ","
          "\"senderObservedUpdates\":%" PRIu64 ","
          "\"receiverObservedUpdates\":%" PRIu64 ","
          "\"senderSawIntermediateProgress\":%s,"
-         "\"receiverSawIntermediateProgress\":%s,"
-         "\"senderCompletedBytes\":%" PRIu64 ","
-         "\"receiverCompletedBytes\":%" PRIu64 "}\n",
+         "\"receiverSawIntermediateProgress\":%s",
          owner_aware ? "owner-aware" : "simple",
-         passed ? "true" : "false", failure, source_size, sent.state,
-         sent.result, received.state, received.result, sent.update_sequence,
-         received.update_sequence, sender_observation.updates,
+         passed ? "true" : "false", failure, sender_observation.updates,
          receiver_observation.updates,
          sender_observation.saw_intermediate_progress ? "true" : "false",
-         receiver_observation.saw_intermediate_progress ? "true" : "false",
-         sender_stats.completed_send_bytes,
-         receiver_stats.completed_receive_bytes);
+         receiver_observation.saw_intermediate_progress ? "true" : "false");
+  print_core_number("fileBytes", source_digest_known, source_size);
+  print_core_number("senderState", sender_observation.snapshot_known, sent.state);
+  print_core_number("senderResult", sender_observation.snapshot_known, sent.result);
+  print_core_number("receiverState", receiver_observation.snapshot_known, received.state);
+  print_core_number("receiverResult", receiver_observation.snapshot_known, received.result);
+  print_core_number("senderUpdateSequence", sender_observation.snapshot_known, sent.update_sequence);
+  print_core_number("receiverUpdateSequence", receiver_observation.snapshot_known, received.update_sequence);
+  print_core_number("senderCompletedBytes", sender_stats_known, sender_stats.completed_send_bytes);
+  print_core_number("receiverCompletedBytes", receiver_stats_known, receiver_stats.completed_receive_bytes);
+  fputs("}\n", stdout);
   return passed ? 0 : 1;
 
 #undef REQUIRE

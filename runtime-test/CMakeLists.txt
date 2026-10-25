@@ -361,6 +361,19 @@ elseif(COAKKA_NATIVE_EVIDENCE_REQUIRE_STREAM_LANE)
           "The selected runtime artifact does not expose stream_lane.h")
 endif()
 
+if(WIN32)
+  foreach(_lane_target IN ITEMS coakka_runtime_v2_file_lane_evidence
+                                coakka_runtime_v2_stream_lane_evidence)
+    if(TARGET ${_lane_target})
+      add_custom_command(TARGET ${_lane_target} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+          "$<TARGET_FILE:${_coakka_native_runtime_target}>"
+          "$<TARGET_FILE_DIR:${_lane_target}>"
+        VERBATIM)
+    endif()
+  endforeach()
+endif()
+
 find_path(
   COAKKA_NATIVE_EVIDENCE_TRANSPORT_INCLUDE_DIR
   NAMES coakka/v2/runtime_transport_config.h
