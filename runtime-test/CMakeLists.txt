@@ -406,6 +406,14 @@ if(COAKKA_NATIVE_EVIDENCE_STARTUP_INCLUDE_DIR)
     add_executable(coakka_runtime_v2_native_ticket_window_tests native_ticket_window_tests.c)
     target_include_directories(coakka_runtime_v2_native_ticket_window_tests SYSTEM
       PRIVATE "${COAKKA_NATIVE_EVIDENCE_STARTUP_INCLUDE_DIR}")
+    add_executable(coakka_runtime_v2_native_ticket_publication_tests
+      native_ticket_publication_tests.c evidence_platform.c)
+    target_include_directories(coakka_runtime_v2_native_ticket_publication_tests SYSTEM
+      PRIVATE "${COAKKA_NATIVE_EVIDENCE_STARTUP_INCLUDE_DIR}")
+    target_link_libraries(coakka_runtime_v2_native_ticket_publication_tests PRIVATE Threads::Threads)
+    if(MSVC)
+      target_compile_options(coakka_runtime_v2_native_ticket_publication_tests PRIVATE /experimental:c11atomics)
+    endif()
     add_executable(coakka_runtime_v2_native_engine_owner_consumer
       native_engine_owner.c native_engine_owner_consumer.c)
     target_link_libraries(coakka_runtime_v2_native_engine_owner_consumer
@@ -419,7 +427,8 @@ if(COAKKA_NATIVE_EVIDENCE_STARTUP_INCLUDE_DIR)
     endif()
     foreach(_engine_target IN ITEMS coakka_runtime_v2_native_engine_owner_tests
                                     coakka_runtime_v2_native_engine_owner_consumer
-                                    coakka_runtime_v2_native_ticket_window_tests)
+                                    coakka_runtime_v2_native_ticket_window_tests
+                                    coakka_runtime_v2_native_ticket_publication_tests)
       coakka_configure_native_evidence_target(${_engine_target})
       # These controls use assert for executable checks, including Core calls.
       # A Release build must not erase them; sources also reject NDEBUG.
@@ -435,7 +444,8 @@ if(COAKKA_NATIVE_EVIDENCE_STARTUP_INCLUDE_DIR)
     add_test(NAME native-engine-owner-sdk
       COMMAND coakka_runtime_v2_native_engine_owner_consumer)
     add_test(NAME native-ticket-window-unit COMMAND coakka_runtime_v2_native_ticket_window_tests)
-    set_tests_properties(native-engine-owner-unit native-engine-owner-sdk native-ticket-window-unit
+    add_test(NAME native-ticket-publication-unit COMMAND coakka_runtime_v2_native_ticket_publication_tests)
+    set_tests_properties(native-engine-owner-unit native-engine-owner-sdk native-ticket-window-unit native-ticket-publication-unit
       PROPERTIES TIMEOUT 30)
   endif()
   if(CMAKE_SYSTEM_NAME STREQUAL "Linux")

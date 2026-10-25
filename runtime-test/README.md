@@ -296,6 +296,7 @@ cmake --build /external/owned/native-engine-controls --config Release \
   --target coakka_runtime_v2_native_engine_owner_tests \
            coakka_runtime_v2_native_engine_owner_consumer \
            coakka_runtime_v2_native_ticket_window_tests \
+           coakka_runtime_v2_native_ticket_publication_tests \
            coakka_runtime_v2_native_evidence
 ctest --test-dir /external/owned/native-engine-controls -C Release \
   -R '^native-(engine|ticket)' --output-on-failure
@@ -342,6 +343,11 @@ overflow refusal, single-slot/empty behavior and4096 wrap rounds without Core.
 Pre-start Core facts are marked known only after getters succeed; CLI refusal
 does not report a zero-filled runtime as an observed fact. This is source
 candidate evidence, not a newly published package or whole-train readiness.
+
+A separate pure publication control checks finite one-producer/controller
+ticket ownership with4×4096 transfers and no Core load. It uses release/acquire
+publication, not ticket-state inference. It is a prerequisite for concurrency
+migration, not proof that `race`/`hot-reload` already run the new engine.
 
 ## Run
 
