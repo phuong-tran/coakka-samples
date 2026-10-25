@@ -9,27 +9,24 @@ import {
 
 const target = "samples.runtime.node.echo";
 const requestIdentity = new PayloadIdentity("samples.runtime.node.echo.request.v1", 1, PayloadFormat.JSON);
-// Minimal single-process runtime configuration.
-//
-// systemName groups diagnostics for one logical runtime participant.
-// nodeId identifies this concrete process in logs and runtime snapshots.
-// queueCapacity=128 is bounded but roomy enough for a sample.
-// strictNoDrop=true makes overload visible instead of silently dropping messages.
-// The delivered-request lane is enabled by default for request/reply hosts.
-// generation=1 is the first route-table version; increment it for new route snapshots.
-// localRoute(...) hides host/port placeholders for same-process targets.
+// Only application identity and owned routes; Core resolves runtime defaults.
 const startSpec = {
   systemName: "node-runtime-sample",
   nodeId: "node-runtime-sample-node",
-  queueCapacity: 128,
-  strictNoDrop: true,
-  generation: 1,
-  routes: [localRoute(target, 19321)],
+  routes: [localRoute(target)],
 };
 
 const runtime = RuntimeHost.start(startSpec);
 try {
   const info = runtime.runtimeInfo();
+  const startup = runtime.runtimeStartupConfig();
+  console.log(`coakka_runtime_startup ${JSON.stringify({
+    requestedCpuPolicy: startup.requestedCpuPolicy,
+    connectionMode: startup.connection.mode,
+    monitorEnabled: startup.monitorEnabled,
+    requestMode: startup.delivery.requestMode,
+    responseMode: startup.delivery.responseMode,
+  })}`);
   console.log(
     `coakka_runtime_info abi=${info.abiVersion} ` +
       `version=${info.runtimeVersion} git=${info.gitCommit}`,
@@ -49,6 +46,7 @@ try {
     DeliveryHint.ROUTER_DEFAULT,
   );
 
+  if (response.echo !== "hello-runtime-node") throw new Error("echo payload differs");
   console.log(`coakka_runtime_response payload=${JSON.stringify(response)}`);
 
   const stats = runtime.stats();
@@ -59,5 +57,5 @@ try {
       `matchedResponses=${clientStats.matchedResponses}`,
   );
 } finally {
-  runtime.close();
+  await runtime.close();
 }

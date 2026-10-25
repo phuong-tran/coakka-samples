@@ -13,15 +13,20 @@ const requestIdentity = new PayloadIdentity("samples.runtime.bun.echo.request.v1
 const startSpec = {
   systemName: "bun-runtime-sample",
   nodeId: "bun-runtime-sample-node",
-  queueCapacity: 128,
-  strictNoDrop: true,
-  generation: 1,
-  routes: [localRoute(target, 19323)],
+  routes: [localRoute(target)],
 };
 
 const runtime = BunRuntimeHost.start(startSpec);
 try {
   const info = runtime.runtimeInfo();
+  const startup = runtime.runtimeStartupConfig();
+  console.log(`coakka_runtime_startup ${JSON.stringify({
+    requestedCpuPolicy: startup.requestedCpuPolicy,
+    connectionMode: startup.connection.mode,
+    monitorEnabled: startup.monitorEnabled,
+    requestMode: startup.delivery.requestMode,
+    responseMode: startup.delivery.responseMode,
+  })}`);
   console.log(
     `coakka_runtime_info abi=${info.abiVersion} ` +
       `version=${info.runtimeVersion} git=${info.gitCommit}`,
@@ -41,6 +46,7 @@ try {
     DeliveryHint.ROUTER_DEFAULT,
   );
 
+  if (response.echo !== "hello-runtime-bun") throw new Error("echo payload differs");
   console.log(`coakka_runtime_response payload=${JSON.stringify(response)}`);
 
   const stats = runtime.stats();
@@ -51,5 +57,5 @@ try {
       `matchedResponses=${clientStats.matchedResponses}`,
   );
 } finally {
-  runtime.close();
+  await runtime.close();
 }

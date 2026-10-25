@@ -1,18 +1,9 @@
 # Node Runtime Basic
 
-This public runtime sample runs a same-process request/reply echo through the Node
-runtime v2 package.
-
-This sample covers:
-
-- package install from npm
-- embedded native runtime loading
-- runtime version/git diagnostics
-- one process-owned route and one process-owned handler
-- one request/reply round trip
-- basic route/client counters
-
-Run from this directory:
+This private candidate sample uses the exact Node archive and bundled
+Core listed in the [candidate guide](../../../docs/runtime-js-candidate.md).
+Read that guide first and set the archive and work-directory variables.
+There is no registry fallback or separate native runtime installation.
 
 ```sh
 bash run.sh
@@ -21,13 +12,12 @@ bash run.sh
 Or from the repository root:
 
 ```sh
-bash run.sh runtime node basic
+node scripts/runtime-js-candidate.mjs node basic
 ```
 
-Expected output shape:
+The app owns one route and handler, checks one typed JSON echo with the original
+2s request deadline, prints Core-issued startup/runtime facts and route/client
+counters, and awaits shutdown. Incidental runtime tuning is omitted.
 
-```text
-coakka_runtime_info abi=1 version=2.1.0 git=60ddf70d
-coakka_runtime_response payload={"echo":"hello-runtime-node"}
-coakka_runtime_stats generation=1 routes=1 delivered=1 matchedResponses=1
-```
+Older public-package walkthroughs do not qualify this candidate. Publication
+and broader platform/resource gates remain separate.

@@ -1,19 +1,9 @@
 # Bun Runtime Basic
 
-This sample runs a same-process request/reply echo through the Bun runtime
-connector package.
-
-This sample covers:
-
-- install `coakka-v2-connector-bun@2.5.3` from npm
-- embedded native runtime loading
-- no runtime package dependency install beyond the published connector package
-- runtime version/git diagnostics
-- one process-owned route and one process-owned handler
-- one request/reply round trip
-- basic route/client counters
-
-Run from this directory:
+This private candidate sample uses the exact Bun archive and bundled
+Core listed in the [candidate guide](../../../docs/runtime-js-candidate.md).
+Read that guide first and set the archive and work-directory variables.
+There is no registry fallback or separate native runtime installation.
 
 ```sh
 bash run.sh
@@ -22,13 +12,12 @@ bash run.sh
 Or from the repository root:
 
 ```sh
-bash run.sh runtime bun basic
+bun scripts/runtime-js-candidate.mjs bun basic
 ```
 
-Expected output shape:
+The app owns one route and handler, checks one typed JSON echo with the original
+2s request deadline, prints Core-issued startup/runtime facts and route/client
+counters, and awaits shutdown. Incidental runtime tuning is omitted.
 
-```text
-coakka_runtime_info abi=1 version=2.5.1 git=26f7944d
-coakka_runtime_response payload={"echo":"hello-runtime-bun"}
-coakka_runtime_stats generation=1 routes=1 delivered=1 matchedResponses=1
-```
+Older public-package walkthroughs do not qualify this candidate. Publication
+and broader platform/resource gates remain separate.

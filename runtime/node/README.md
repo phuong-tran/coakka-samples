@@ -1,4 +1,11 @@
-# Node.js Runtime Samples
+# Node Runtime Samples
+
+This branch's runnable samples target the private candidate described in the
+[candidate guide](../../docs/runtime-js-candidate.md), not the historical npm
+train below. Use its exact local archive and explicit work directory. The apps
+omit incidental tuning, read Core-issued facts and await asynchronous shutdown.
+The recordings and integration snippets below remain historical reference,
+not copy-ready evidence for the candidate.
 
 Node.js runtime samples document the `coakka-v2-connector-node` package shape.
 This runtime lane consumes `coakka-v2-connector-node@2.5.3` from npm, built
@@ -108,9 +115,11 @@ const response = await runtime.askJson(
 Close the runtime host on process shutdown:
 
 ```js
-process.on("SIGTERM", () => {
-  runtime.close();
-  process.exit(0);
+process.once("SIGTERM", () => {
+  void runtime.close().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
 });
 ```
 

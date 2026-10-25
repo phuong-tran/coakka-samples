@@ -1,0 +1,69 @@
+# Private Node/Bun runtime candidate samples
+
+This branch validates a private candidate, not a registry release. Node and Bun
+use the exact archives in `artifacts/runtime-js-candidate.json`, version
+`2.5.5-dev.20261024`, with bundled Core
+`2.5.1+f6b61768f60a08d81b1dc06625a211ffca8e89e2` (ABI 1).
+Node 22.0.0 and Bun 1.3.14 are the tested minima. Current matching targets are
+macOS ARM64, Linux ARM64 and Windows x64; wider/minimum-OS claims remain gated.
+
+Obtain the matching archive from the private candidate owner. Do not substitute
+an npm version, unpacked source tree or separate native library.
+
+## Run
+
+Create an existing work directory on suitable storage. On the development Mac,
+use mounted external APFS storage, not the internal SSD or a default temp path.
+Set absolute paths; the runner never downloads a missing archive:
+
+```sh
+export COAKKA_SAMPLE_WORK_ROOT="/absolute/work"
+export COAKKA_RUNTIME_CANDIDATE_PACKAGE="/absolute/coakka-v2-connector-node-2.5.5-dev.20261024.tgz"
+node scripts/runtime-js-candidate.mjs node basic
+node scripts/runtime-js-candidate.mjs node deadletter
+# Select the Bun archive instead, then:
+bun scripts/runtime-js-candidate.mjs bun basic
+```
+
+The corresponding `runtime/{node,bun}/.../run.sh` wrappers invoke this runner.
+Windows may invoke the same JavaScript entrypoint with native Node/Bun and
+Windows absolute paths; WSL execution is not evidence for the Windows DLL.
+Node requires its standard npm CLI next to the runtime installation. Bun uses
+its own package manager. No separate Core install or native toolchain is needed.
+
+The runner verifies the archive hash/length before creating a unique task
+directory, disables install hooks, uses a task-owned cache and verifies every
+installed package member against the catalog before running the app. Node npm
+uses offline mode. Bun installs only the verified local archive with its
+dependency-free package metadata; this is not a network sandbox claim.
+It refuses native/source/loader environment overrides rather than hiding them.
+The catalog is a trusted repository input, not an authenticity signature.
+
+Only the unique child directory is removed, after its child process exits, on
+success, failure or handled SIGINT/SIGTERM. The caller's work directory remains.
+Install and app child deadlines are 60s and 30s; termination escalates after 1s.
+The app's request deadline remains 2s. SIGKILL, power loss and an OS process that
+cannot be reaped are outside graceful cleanup guarantees. Do not run hostile
+package managers or mutate inputs concurrently.
+
+Admission bounds: catalog 1MiB; archive 32MiB; 64 package files, each 8MiB,
+64MiB total; 256 tree entries and depth 8. Package links, missing/extra/changed
+files, dependency or install-hook drift are refused. This cold installation
+policy is sample-owned; it does not replace Core configuration or capability
+policy.
+
+## App ownership
+
+The application supplies its identity and owned route only. It reads accepted
+startup facts from Core; it does not probe the OS, repeat a default table or
+select a legacy response pipe. AUTO/MULTIPLEX and delivery modes are reported
+from the runtime, not reconstructed from the start input. Both basic apps check
+the JSON echo and await shutdown. The deadletter app checks the typed route-miss
+outcome and retires its bounded observation iterator before awaiting shutdown.
+
+Historical walkthrough recordings and older package guides are not evidence
+for this candidate. Exact installed sample evidence is tracked separately.
+Source/package/resource/shrink evidence remains attached to the unchanged
+candidate archives; this sample is not a new throughput or whole-host leak
+qualification. Other connectors, tools, Android/camera, coordinated release,
+legal/signing and publication gates are not closed by these three samples.

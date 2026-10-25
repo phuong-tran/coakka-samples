@@ -1,10 +1,9 @@
 # Node Runtime Deadletter
 
-This sample sends a request to a missing route, verifies the request fails with
-a matched route-miss deadletter, and observes the same deadletter through the
-language diagnostics lane.
-
-Run from this directory:
+This private candidate sample uses the exact Node archive and bundled
+Core listed in the [candidate guide](../../../docs/runtime-js-candidate.md).
+Read that guide first and set the archive and work-directory variables.
+There is no registry fallback or separate native runtime installation.
 
 ```sh
 bash run.sh
@@ -13,13 +12,12 @@ bash run.sh
 Or from the repository root:
 
 ```sh
-bash run.sh runtime node deadletter
+node scripts/runtime-js-candidate.mjs node deadletter
 ```
 
-Expected output shape:
+The app sends one 2s typed ask to a missing route, requires the typed route-miss
+failure and exact terminal counters, observes the matched deadletter through a
+one-item iterator, retires that iterator, and awaits runtime shutdown.
 
-```text
-coakka_runtime_deadletter reason=DEADLETTER_REASON_ROUTE_MISS target=samples.runtime.node.deadletter.missing generation=1
-coakka_runtime_deadletter_observed matchedPending=true target=samples.runtime.node.deadletter.missing
-coakka_runtime_stats routeMisses=1 deadletters=1 matchedDeadletters=1
-```
+Older public-package walkthroughs do not qualify this candidate. Publication
+and broader platform/resource gates remain separate.

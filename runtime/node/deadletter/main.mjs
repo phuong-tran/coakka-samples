@@ -14,15 +14,13 @@ const requestIdentity = new PayloadIdentity("samples.runtime.node.deadletter.req
 const startSpec = {
   systemName: "node-deadletter-sample",
   nodeId: "node-deadletter-sample-node",
-  queueCapacity: 128,
-  strictNoDrop: true,
-  generation: 1,
-  routes: [localRoute(liveTarget, 19421)],
+  routes: [localRoute(liveTarget)],
 };
 
 const runtime = RuntimeHost.start(startSpec);
+let observedDeadletters;
 try {
-  const observedDeadletters = runtime.deadletters({ bufferCapacity: 1 });
+  observedDeadletters = runtime.deadletters({ bufferCapacity: 1 });
   const observedPromise = observedDeadletters.next();
   let deadletter = null;
   try {
@@ -49,6 +47,7 @@ try {
   if (deadletter.reason !== ROUTE_MISS_REASON) {
     throw new Error(`expected route miss reason=${ROUTE_MISS_REASON}, got ${deadletter.reason}`);
   }
+  if (deadletter.original_envelope == null) throw new Error("missing original envelope");
   if (deadletter.original_envelope.target !== missingTarget) {
     throw new Error(`expected target=${missingTarget}, got ${deadletter.original_envelope.target}`);
   }
@@ -65,6 +64,7 @@ try {
   if (!observed.value.matchedPendingRequest) {
     throw new Error("expected observed deadletter to match pending request");
   }
+  if (observed.value.deadletter.original_envelope == null) throw new Error("missing observed envelope");
   if (observed.value.deadletter.original_envelope.target !== missingTarget) {
     throw new Error(`expected observed target=${missingTarget}, got ${observed.value.deadletter.original_envelope.target}`);
   }
@@ -82,5 +82,9 @@ try {
       `matchedDeadletters=${clientStats.matchedDeadletters}`,
   );
 } finally {
-  runtime.close();
+  try {
+    await observedDeadletters?.return?.();
+  } finally {
+    await runtime.close();
+  }
 }

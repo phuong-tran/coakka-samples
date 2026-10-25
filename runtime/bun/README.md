@@ -1,5 +1,12 @@
 # Bun Runtime Samples
 
+This branch's runnable samples target the private candidate described in the
+[candidate guide](../../docs/runtime-js-candidate.md), not the historical npm
+train below. Use its exact local archive and explicit work directory. The apps
+omit incidental tuning, read Core-issued facts and await asynchronous shutdown.
+The recordings and integration snippets below remain historical reference,
+not copy-ready evidence for the candidate.
+
 These samples exercise the Bun-facing CoAkka runtime connector lane.
 
 The current Bun lane consumes `coakka-v2-connector-bun@2.5.3` from npm and
