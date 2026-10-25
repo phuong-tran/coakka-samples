@@ -1,33 +1,32 @@
 # Python Runtime Basic
 
-This public runtime sample runs a same-process request/reply echo through the
-public Python runtime v2 wheel.
-
-This sample covers:
-
-- wheel install from the public artifact surface
-- embedded native runtime loading
-- runtime version/git diagnostics
-- one process-owned route and one process-owned handler
-- one request/reply round trip
-- basic route/client counters
-
-Run from this directory:
+One same-process typed echo through the
+[exact private platform wheel](../../../docs/runtime-python-candidate.md),
+not the historical public2.5.2 wheel. Select the exact wheel/work directory
+as that guide describes, then from the repository root:
 
 ```sh
-bash run.sh
+bash runtime/python/basic/run.sh
 ```
 
-Or from the repository root:
+The shared runner admits/installs offline, then uses the package's normal
+installed Core image with isolated imports. Native Windows uses the Python
+entrypoint in the guide, not WSL. No extra native library/source override.
 
-```sh
-bash run.sh runtime python basic
-```
+Only app identity/route is chosen. Core-issued startup facts and inspection
+errors are projected as returned; the sample does not infer defaults from
+input. It checks the JSON response, one delivered/matched request and pending0.
+The2s ask remains unchanged; host close executes before failure escapes and
+original worker diagnostics remain visible after close.
 
-Expected output shape:
+Output includes:
 
 ```text
-coakka_runtime_info abi=1 version=1.4.1 git=<git>
+coakka_runtime_info abi=1 version=2.5.1 git=f6b61768f60a08d81b1dc06625a211ffca8e89e2
+coakka_runtime_startup cpuPolicy=0 connectionMode=3 monitorEnabled=false requestMode=2 responseMode=2
 coakka_runtime_response payload={"echo":"hello-runtime-python"}
 coakka_runtime_stats generation=1 routes=1 delivered=1 matchedResponses=1
 ```
+
+The disposable stage is removed only after its direct child is reaped; caller
+roots/tools are retained. Forced termination is not graceful Core shutdown.

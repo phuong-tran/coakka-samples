@@ -1,5 +1,12 @@
 # Python Runtime Samples
 
+This branch's basic/deadletter/hot-reload apps use the
+[exact private candidate workflow](../../docs/runtime-python-candidate.md).
+They do not install the historical public wheel shown below. Core owns
+defaults/effective facts and typed refusal statuses; the apps scope observation
+and host lifetimes before reporting failure. The published snippets/recordings
+below are historical, not current candidate instructions or qualification.
+
 Python runtime samples document the `coakka_v2_connector` package shape. This
 runtime lane consumes `coakka-v2-connector==2.5.3` from PyPI, built against
 native runtime generation `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`

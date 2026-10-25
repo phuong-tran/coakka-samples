@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Callable
 
 from coakka_v2_connector import (
     ConnectorStartSpec,
+    CoakkaStatus,
+    CoreCallError,
     DeadletterError,
     DeliveryHint,
     EndpointSpec,
@@ -48,6 +51,8 @@ def expect_route_miss(runtime: RuntimeHost, target: str) -> dict:
 
     if deadletter.reason != 2:
         raise RuntimeError(f"expected route miss reason=2, got {deadletter.reason}")
+    if deadletter.original_envelope is None or deadletter.original_envelope.target != target:
+        raise RuntimeError("missing or mismatched original deadletter target")
     return {
         "target": deadletter.original_envelope.target,
         "generation": deadletter.active_generation,
@@ -55,13 +60,13 @@ def expect_route_miss(runtime: RuntimeHost, target: str) -> dict:
     }
 
 
-def expect_control_rejected(label: str, apply_fn) -> None:
+def expect_control_rejected(label: str, apply_fn: Callable[[], None], expected: CoakkaStatus) -> None:
     try:
         apply_fn()
-    except RuntimeError as exc:
-        if "apply_control_envelope failed" not in str(exc):
+    except CoreCallError as exc:
+        if exc.status != expected:
             raise
-        print(f"coakka_runtime_hot_reload_{label}_control_rejected error={str(exc)}")
+        print(f"coakka_runtime_hot_reload_{label}_control_rejected status={exc.status}")
         return
     raise RuntimeError(f"expected {label} control snapshot to be rejected")
 
@@ -70,18 +75,27 @@ def main() -> None:
     start_spec = ConnectorStartSpec(
         system_name="python-hot-reload-sample",
         node_id="python-hot-reload-sample-node",
-        queue_capacity=128,
-        strict_no_drop=True,
         generation=1,
-        routes=[local_route(V1_TARGET, 19511)],
+        routes=[local_route(V1_TARGET)],
     )
 
-    with RuntimeHost.start(start_spec=start_spec) as runtime:
+    runtime = RuntimeHost.start(start_spec=start_spec)
+    try:
+        run_hot_reload(runtime)
+    finally:
+        if (background_error := runtime.take_background_error()) is not None:
+            raise background_error
+
+
+def run_hot_reload(runtime: RuntimeHost) -> None:
+    with runtime:
         info = runtime.runtime_info()
         print(
             f"coakka_runtime_hot_reload_info version={info['runtimeVersion']} "
             f"git={info['gitCommit']}"
         )
+        startup = runtime.runtime_startup_config()
+        print(f"coakka_runtime_hot_reload_startup monitorEnabled={str(startup['monitor']['enabled']).lower()}")
 
         def v1_handler(request):
             return runtime.client.make_json_reply_from_request_identity(
@@ -101,6 +115,8 @@ def main() -> None:
         runtime.register_handler(V2_TARGET, v2_handler)
 
         initial = ask(runtime, V1_TARGET, "before-reload")
+        if initial != {"handledBy": "v1", "deliveryMode": "runtime"}:
+            raise RuntimeError("unexpected generation-1 response")
         print(f"coakka_runtime_hot_reload_before payload={json.dumps(initial, separators=(',', ':'))}")
 
         initial_miss = expect_route_miss(runtime, V2_TARGET)
@@ -114,10 +130,11 @@ def main() -> None:
             "stale",
             lambda: runtime.control.apply_snapshot(
                 generation=1,
-                routes=[local_route(V2_TARGET, 19512)],
+                routes=[local_route(V2_TARGET)],
                 source_connector="python-hot-reload-sample",
                 seq=2,
             ),
+            CoakkaStatus.ERR_STALE_GENERATION,
         )
         after_stale = runtime.stats()
         if after_stale["appliedGeneration"] != 1:
@@ -132,13 +149,15 @@ def main() -> None:
 
         runtime.control.apply_snapshot(
             generation=2,
-            routes=[local_route(V2_TARGET, 19511)],
+            routes=[local_route(V2_TARGET)],
             source_connector="python-hot-reload-sample",
             seq=3,
         )
+        # The helper first reads Core's already-applied health. This can succeed
+        # with monitor OFF; it is not evidence that a notification was received.
         monitor = runtime.monitor.await_applied_generation_at_least(2, timeout_ms=1000)
-        if monitor is None:
-            raise RuntimeError("generation 2 was not observed by monitor")
+        if monitor is None or monitor.health["appliedGeneration"] < 2:
+            raise RuntimeError("generation 2 was not observed in Core health")
         after_reload = runtime.stats()
         if after_reload["appliedGeneration"] != 2 or after_reload["routeCount"] != 1:
             raise RuntimeError(f"expected one generation-2 route, got {after_reload}")
@@ -148,6 +167,8 @@ def main() -> None:
         )
 
         after = ask(runtime, V2_TARGET, "after-reload")
+        if after != {"handledBy": "v2", "deliveryMode": "runtime"}:
+            raise RuntimeError("unexpected generation-2 response")
         print(f"coakka_runtime_hot_reload_after payload={json.dumps(after, separators=(',', ':'))}")
 
         old_target_miss = expect_route_miss(runtime, V1_TARGET)
@@ -165,6 +186,7 @@ def main() -> None:
                 source_connector="python-hot-reload-sample",
                 seq=4,
             ),
+            CoakkaStatus.ERR_INVALID_ARG,
         )
         after_invalid = runtime.stats()
         if after_invalid["appliedGeneration"] != 2:
@@ -180,6 +202,8 @@ def main() -> None:
         final_miss = expect_route_miss(runtime, MISSING_TARGET)
         final_stats = runtime.stats()
         client_stats = runtime.client_stats()
+        if (final_stats["routeMissCount"], final_stats["deadletterCount"], client_stats.matched_deadletters, client_stats.pending_requests) != (3, 3, 3, 0):
+            raise RuntimeError("unexpected final hot-reload counters")
         print(
             "coakka_runtime_hot_reload_final "
             f"generation={final_stats['appliedGeneration']} routes={final_stats['routeCount']} "

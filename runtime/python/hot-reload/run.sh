@@ -3,6 +3,6 @@ set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../../.." && pwd)"
-source "${repo_root}/scripts/sample-utils.sh"
-
-coakka_with_python_package_env "coakka-v2-connector==2.5.2" "${script_dir}/main.py"
+: "${COAKKA_SAMPLE_WORK_ROOT:?Set an existing absolute work directory}"
+: "${COAKKA_PYTHON_CANDIDATE_WHEEL:?Set the exact matching private wheel}"
+exec "${PYTHON:-python3}" -I -X utf8 -B -Werror "${repo_root}/scripts/runtime-python-candidate.py" --repo-root "${repo_root}" hot-reload
