@@ -379,6 +379,43 @@ if(COAKKA_NATIVE_EVIDENCE_STARTUP_INCLUDE_DIR)
   coakka_configure_native_evidence_target(coakka_runtime_v2_native_startup_evidence)
   target_link_libraries(coakka_runtime_v2_native_startup_evidence
     PRIVATE ${_coakka_native_runtime_target} Threads::Threads ${CMAKE_DL_LIBS})
+  if(COAKKA_NATIVE_EVIDENCE_REQUIRE_NATIVE_STARTUP)
+    # Preparatory current-engine fixture controls, not a legacy-mode fallback.
+    # The fake-public-API target deliberately does not load/link Core.
+    add_executable(coakka_runtime_v2_native_engine_owner_tests
+      native_engine_owner.c native_engine_owner_tests.c)
+    target_include_directories(coakka_runtime_v2_native_engine_owner_tests SYSTEM
+      PRIVATE "${COAKKA_NATIVE_EVIDENCE_STARTUP_INCLUDE_DIR}")
+    add_executable(coakka_runtime_v2_native_engine_owner_consumer
+      native_engine_owner.c native_engine_owner_consumer.c)
+    target_link_libraries(coakka_runtime_v2_native_engine_owner_consumer
+      PRIVATE ${_coakka_native_runtime_target})
+    if(WIN32)
+      add_custom_command(TARGET coakka_runtime_v2_native_engine_owner_consumer POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+          "$<TARGET_FILE:${_coakka_native_runtime_target}>"
+          "$<TARGET_FILE_DIR:coakka_runtime_v2_native_engine_owner_consumer>"
+        VERBATIM)
+    endif()
+    foreach(_engine_target IN ITEMS coakka_runtime_v2_native_engine_owner_tests
+                                    coakka_runtime_v2_native_engine_owner_consumer)
+      coakka_configure_native_evidence_target(${_engine_target})
+      # These controls use assert for executable checks, including Core calls.
+      # A Release build must not erase them; sources also reject NDEBUG.
+      if(MSVC)
+        target_compile_options(${_engine_target} PRIVATE /UNDEBUG)
+      else()
+        target_compile_options(${_engine_target} PRIVATE -UNDEBUG)
+      endif()
+    endforeach()
+    enable_testing()
+    add_test(NAME native-engine-owner-unit
+      COMMAND coakka_runtime_v2_native_engine_owner_tests)
+    add_test(NAME native-engine-owner-sdk
+      COMMAND coakka_runtime_v2_native_engine_owner_consumer)
+    set_tests_properties(native-engine-owner-unit native-engine-owner-sdk
+      PROPERTIES TIMEOUT 30)
+  endif()
   if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     target_compile_definitions(coakka_runtime_v2_native_startup_evidence PRIVATE _GNU_SOURCE)
   endif()

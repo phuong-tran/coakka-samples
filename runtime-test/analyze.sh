@@ -45,6 +45,7 @@ if [[ -f "${runtime_include}/coakka/v2/stream_lane.h" ]]; then
 fi
 if [[ -f "${runtime_include}/coakka/v2/runtime_startup.h" ]]; then
   sources+=(native_startup_main.c native_startup_contract.c native_startup_report.c native_startup_image.c)
+  sources+=(native_engine_owner.c native_engine_owner_tests.c native_engine_owner_consumer.c)
 fi
 
 platform_definitions=()

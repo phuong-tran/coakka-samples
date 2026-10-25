@@ -273,6 +273,40 @@ Direct CMake consumers can select the same boundary with
 that required gate. With the gate OFF, older published packages retain their
 existing workload and connection-strategy modes without the new target.
 
+## Current-Engine Fixture Controls — Source Candidate
+
+The private native candidate `2.5.1+f6b61768` additionally has focused C11
+fixture-owner controls. They use Core's opaque request reader and ask tickets,
+not framed response channels. From the repository root, configure an explicit
+installed `CoAkkaV2` prefix and external, caller-owned build directory:
+
+```sh
+cmake -S runtime-test -B /external/owned/native-engine-controls \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCOAKKA_NATIVE_EVIDENCE_RUNTIME_PACKAGE=CoAkkaV2 \
+  -DCOAKKA_NATIVE_EVIDENCE_RUNTIME_PREFIX=/exact/installed/native-candidate \
+  -DCOAKKA_NATIVE_EVIDENCE_REQUIRE_NATIVE_STARTUP=ON
+cmake --build /external/owned/native-engine-controls --config Release \
+  --target coakka_runtime_v2_native_engine_owner_tests \
+           coakka_runtime_v2_native_engine_owner_consumer
+ctest --test-dir /external/owned/native-engine-controls -C Release \
+  -R '^native-engine-owner-' --output-on-failure
+```
+
+The white-box control checks exact status/fact projection, partial startup,
+stop-refusal retention and cleanup order. The SDK-only consumer verifies16
+complete lifecycles, empty/binary roundtrips and Core-issued owned request and
+response modes. Assertions remain active in Release; disabling them is a
+compile error. The fixture's pre-start snapshots are not live applied-state
+observations. Stop refusal never permits destroying a still-borrowed Runtime.
+
+This is a preparatory source-candidate boundary, not a published coordinate or
+an implicit Core build. It does not certify migration of the ordinary legacy
+`smoke`, `pressure`, `race` or `hot-reload` modes. Those require their own
+current-engine traffic and accounting evidence; synchronous admission refusal
+must not be fabricated into an accepted-request deadletter. Historical
+compatibility runners remain unchanged.
+
 ## Run
 
 From the `coakka-samples` repository root:
