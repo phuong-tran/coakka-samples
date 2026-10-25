@@ -1,5 +1,11 @@
 # Go Runtime Samples
 
+This branch's basic/deadletter apps use the [private candidate workflow](../../docs/runtime-go-candidate.md)
+and exact local module, not the historical published train below. They propagate
+inspection/subscription errors, omit incidental tuning and retire owned resources
+before main reports failures. Replica/file-fanout and cross-language scenarios
+remain separate work; old recordings/snippets are not candidate qualification.
+
 Go runtime samples consume `github.com/phuong-tran/coakka-runtime-go@v1.8.2`.
 This is the sample runner pin, not the latest release. See
 [Current Packages](../../docs/current-packages.md) for the current catalog.

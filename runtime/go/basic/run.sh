@@ -3,25 +3,12 @@ set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../../.." && pwd)"
-module_path="github.com/phuong-tran/coakka-runtime-go"
-source "${repo_root}/scripts/sample-utils.sh"
-
-coakka_require_command go "Install Go 1.22 or newer, then retry."
-
-tmp_dir="$(mktemp -d)"
-trap 'rm -rf "${tmp_dir}"' EXIT
-cp "${script_dir}/main.go" "${tmp_dir}/main.go"
-
-cat > "${tmp_dir}/go.mod" <<EOF
-module coakka-runtime-go-basic-sample
-
-go 1.22
-
-require ${module_path} v1.8.2
-EOF
-
-(
-  cd "${tmp_dir}"
-  go mod tidy >/dev/null
-  go run .
-)
+: "${COAKKA_SAMPLE_WORK_ROOT:?Set an existing absolute work directory}"
+: "${COAKKA_GO_CANDIDATE_MODULE:?Set the exact private module directory}"
+[[ "${COAKKA_SAMPLE_WORK_ROOT}" == /* && -d "${COAKKA_SAMPLE_WORK_ROOT}" && ! -L "${COAKKA_SAMPLE_WORK_ROOT}" ]] || exit 2
+export GOCACHE="${GOCACHE:-${COAKKA_SAMPLE_WORK_ROOT}/go-build-cache}"
+export GOTMPDIR="${GOTMPDIR:-${COAKKA_SAMPLE_WORK_ROOT}/go-tool-temp}"
+[[ "${GOCACHE}" == /* && "${GOTMPDIR}" == /* ]] || exit 2
+mkdir -p "${GOCACHE}" "${GOTMPDIR}"
+export GOTOOLCHAIN=local GOWORK=off GOPROXY=off GOSUMDB=off GOENV=off
+exec go run "${repo_root}/scripts/runtime-go-candidate.go" --repo-root "${repo_root}" basic

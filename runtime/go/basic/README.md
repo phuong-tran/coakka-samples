@@ -1,18 +1,9 @@
 # Go Runtime Basic
 
-This public runtime sample runs a same-process request/reply echo through the Go
-runtime v2 package.
-
-This sample covers:
-
-- public Go module install from `github.com/phuong-tran/coakka-runtime-go`
-- embedded native runtime loading
-- runtime version/git diagnostics
-- one process-owned route and one process-owned handler
-- one request/reply round trip
-- basic route/client counters
-
-Run from this directory:
+This private candidate sample uses the exact module in the
+[candidate guide](../../../docs/runtime-go-candidate.md), not a historical
+public module version. Read that guide, set its module/work paths and select
+Go with a C11 cgo compiler. No separate native Core install is needed.
 
 ```sh
 bash run.sh
@@ -21,13 +12,12 @@ bash run.sh
 Or from the repository root:
 
 ```sh
-bash run.sh runtime go basic
+bash runtime/go/basic/run.sh
 ```
 
-Expected output shape:
+The app owns one route and typed handler, checks one JSON echo with the original
+2s deadline, reads Core-issued startup/runtime/counter facts and closes the
+runtime before main reports an error. Incidental runtime tuning is omitted.
 
-```text
-coakka_runtime_info abi=1 version=2.5.0 git=4b65d0b2
-coakka_runtime_response payload={"echo":"hello-runtime-go"}
-coakka_runtime_stats generation=1 routes=1 delivered=1 matchedResponses=1
-```
+Actual floor and real Garble consumers are qualified separately on Mac, Pi and
+native Windows. This small app does not close broader release/resource gates.

@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"time"
@@ -10,87 +11,89 @@ import (
 )
 
 func main() {
-	target := "samples.runtime.go.echo"
-	// Minimal single-process runtime configuration.
-	//
-	// SystemName groups diagnostics for one logical runtime participant.
-	// NodeID identifies this concrete process in logs and runtime snapshots.
-	// QueueCapacity=128 is bounded but roomy enough for a sample.
-	// StrictNoDrop=true makes overload visible instead of silently dropping messages.
-	// EnableMonitor=true exposes runtime snapshots for diagnostics.
-	// The delivered-request lane is enabled by default for request/reply hosts.
-	// Generation=1 is the first route-table version; increment it for new route snapshots.
-	// LocalRoute(...) hides host/port placeholders for same-process targets.
-	runtimeHost, err := connector.StartRuntimeHost(connector.ConnectorStartSpec{
-		SystemName:                   "go-runtime-sample",
-		NodeID:                       "go-runtime-sample-node",
-		StrictNoDrop:                 true,
-		QueueCapacity:                128,
-		EnableMonitor:                true,
-		Generation:                   1,
-		Routes:                       []connector.RouteSpec{connector.LocalRoute(target, 19331)},
+	if err := run(); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1) // run has already retired every owned resource.
+	}
+}
+
+func run() (result error) {
+	const target = "samples.runtime.go.echo"
+	// Application identity/routes only; Core owns runtime defaults.
+	host, err := connector.StartRuntimeHost(connector.ConnectorStartSpec{
+		SystemName: "go-runtime-sample",
+		NodeID:     "go-runtime-sample-node",
+		Routes:     []connector.RouteSpec{connector.LocalRouteDefault(target)},
 	}, "")
 	if err != nil {
-		fail("StartRuntimeHost failed: %v", err)
+		return fmt.Errorf("start: %w", err)
 	}
-	defer func() {
-		if err := runtimeHost.Close(); err != nil {
-			fail("Close failed: %v", err)
-		}
-	}()
+	defer func() { result = errors.Join(result, host.Close()) }()
 
-	info := runtimeHost.RuntimeInfo()
-	fmt.Printf(
-		"coakka_runtime_info abi=%d version=%s git=%s\n",
-		info.AbiVersion,
-		info.RuntimeVersion,
-		info.GitCommit,
-	)
-
-	if err := runtimeHost.RegisterHandler(target, func(request *connector.Envelope) *connector.Envelope {
-		reply, err := connector.MakeJSONReplyFromRequestIdentity(request, target, map[string]any{
-			"echo": "hello-runtime-go",
-		})
-		if err != nil {
-			fail("MakeJSONReplyFromRequestIdentity failed: %v", err)
-		}
-		return reply
-	}, true); err != nil {
-		fail("RegisterHandler failed: %v", err)
+	info, err := host.RuntimeInfo()
+	if err != nil {
+		return err
 	}
+	startup, err := host.StartupConfig()
+	if err != nil {
+		return err
+	}
+	fmt.Printf("coakka_runtime_info abi=%d version=%s git=%s\n", info.AbiVersion, info.RuntimeVersion, info.GitCommit)
+	fmt.Printf("coakka_runtime_startup cpuPolicy=%d connectionMode=%d monitorEnabled=%t\n",
+		startup.Execution.RequestedPolicy, startup.Connection.Mode, startup.Monitor.Enabled)
 
-	response, err := runtimeHost.AskJSON(
-		"samples-runtime-go-client",
-		target,
+	// Exactly one sample ask: this one-result handoff cannot block its callback.
+	handlerFailures := make(chan error, 1)
+	if err := host.RegisterHandler(target, echoHandler(target, handlerFailures), true); err != nil {
+		return err
+	}
+	response, askErr := host.AskJSON(
+		"samples-runtime-go-client", target,
 		map[string]any{"message": "hello-runtime-go"},
 		connector.NewPayloadIdentity("samples.runtime.go.echo.request.v1", 1, connector.PayloadFormatJSON),
-		2*time.Second,
-		"echo",
-		connector.DeliveryHintRouterDefault,
-		nil,
+		2*time.Second, "echo", connector.DeliveryHintRouterDefault, nil,
 	)
-	if err != nil {
-		fail("AskJSON failed: %v", err)
+	select {
+	case handlerErr := <-handlerFailures:
+		return errors.Join(handlerErr, askErr)
+	default:
 	}
-
+	if askErr != nil {
+		return askErr
+	}
+	if response["echo"] != "hello-runtime-go" {
+		return fmt.Errorf("echo payload differs")
+	}
 	payload, err := json.Marshal(response)
 	if err != nil {
-		fail("json.Marshal response failed: %v", err)
+		return err
 	}
 	fmt.Printf("coakka_runtime_response payload=%s\n", payload)
 
-	stats := runtimeHost.Stats()
-	clientStats := runtimeHost.ClientStats()
-	fmt.Printf(
-		"coakka_runtime_stats generation=%d routes=%d delivered=%d matchedResponses=%d\n",
-		stats.AppliedGeneration,
-		stats.RouteCount,
-		clientStats.DeliveredRequests,
-		clientStats.MatchedResponses,
-	)
+	stats, err := host.Stats()
+	if err != nil {
+		return err
+	}
+	client := host.ClientStats()
+	if stats.RouteCount != 1 || client.DeliveredRequests != 1 || client.MatchedResponses != 1 {
+		return fmt.Errorf("unexpected route/client counters: %+v %+v", stats, client)
+	}
+	fmt.Printf("coakka_runtime_stats generation=%d routes=%d delivered=%d matchedResponses=%d\n",
+		stats.AppliedGeneration, stats.RouteCount, client.DeliveredRequests, client.MatchedResponses)
+	return nil
 }
 
-func fail(format string, args ...any) {
-	fmt.Fprintf(os.Stderr, format+"\n", args...)
-	os.Exit(1)
+func echoHandler(target string, failures chan<- error) connector.HandlerFn {
+	return func(request *connector.Envelope) *connector.Envelope {
+		reply, err := connector.MakeJSONReplyFromRequestIdentity(request, target,
+			map[string]any{"echo": "hello-runtime-go"})
+		if err != nil {
+			select {
+			case failures <- err:
+			default:
+			}
+			return nil
+		}
+		return reply
+	}
 }

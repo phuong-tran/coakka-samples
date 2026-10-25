@@ -1,10 +1,9 @@
 # Go Runtime Deadletter
 
-This sample sends a request to a missing route, verifies the request fails with
-a matched route-miss deadletter, and observes the same deadletter through the
-language diagnostics lane.
-
-Run from this directory:
+This private candidate sample uses the exact module in the
+[candidate guide](../../../docs/runtime-go-candidate.md), not a historical
+public module version. Read that guide, set its module/work paths and select
+Go with a C11 cgo compiler. No separate native Core install is needed.
 
 ```sh
 bash run.sh
@@ -13,13 +12,12 @@ bash run.sh
 Or from the repository root:
 
 ```sh
-bash run.sh runtime go deadletter
+bash runtime/go/deadletter/run.sh
 ```
 
-Expected output shape:
+The app requires a typed route-miss cause, original target and exact terminal
+counters. It observes one bounded event using the original1s wait, cancels
+observation before host close and keeps the2s ask deadline unchanged.
 
-```text
-coakka_runtime_deadletter reason=DEADLETTER_REASON_ROUTE_MISS target=samples.runtime.go.deadletter.missing generation=1
-coakka_runtime_deadletter_observed matchedPending=true target=samples.runtime.go.deadletter.missing
-coakka_runtime_stats routeMisses=1 deadletters=1 matchedDeadletters=1
-```
+Actual floor and real Garble consumers are qualified separately on Mac, Pi and
+native Windows. This small app does not close broader release/resource gates.

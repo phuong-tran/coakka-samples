@@ -10,101 +10,85 @@ import (
 	connector "github.com/phuong-tran/coakka-runtime-go"
 )
 
-const deadletterReasonRouteMiss int32 = 2
-
 func main() {
-	liveTarget := "samples.runtime.go.deadletter.live"
-	missingTarget := "samples.runtime.go.deadletter.missing"
-	runtimeHost, err := connector.StartRuntimeHost(connector.ConnectorStartSpec{
-		SystemName:                   "go-deadletter-sample",
-		NodeID:                       "go-deadletter-sample-node",
-		StrictNoDrop:                 true,
-		QueueCapacity:                128,
-		EnableMonitor:                true,
-		Generation:                   1,
-		Routes:                       []connector.RouteSpec{connector.LocalRoute(liveTarget, 19431)},
+	if err := run(); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1) // run has already canceled observation and closed its host.
+	}
+}
+
+func run() (result error) {
+	const liveTarget = "samples.runtime.go.deadletter.live"
+	const missingTarget = "samples.runtime.go.deadletter.missing"
+	host, err := connector.StartRuntimeHost(connector.ConnectorStartSpec{
+		SystemName: "go-deadletter-sample",
+		NodeID:     "go-deadletter-sample-node",
+		Routes:     []connector.RouteSpec{connector.LocalRouteDefault(liveTarget)},
 	}, "")
 	if err != nil {
-		fail("StartRuntimeHost failed: %v", err)
+		return err
 	}
-	defer func() {
-		if err := runtimeHost.Close(); err != nil {
-			fail("Close failed: %v", err)
-		}
-	}()
+	defer func() { result = errors.Join(result, host.Close()) }()
 
-	deadletterCtx, cancelDeadletterObserve := context.WithCancel(context.Background())
-	defer cancelDeadletterObserve()
-	observedDeadletters := runtimeHost.Deadletters(deadletterCtx, 1)
-
-	_, err = runtimeHost.AskJSON(
-		"samples-runtime-go-deadletter-client",
-		missingTarget,
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel() // Retire the bounded observer before the host close defer.
+	observedDeadletters, err := host.Deadletters(ctx, 1)
+	if err != nil {
+		return err
+	}
+	_, err = host.AskJSON(
+		"samples-runtime-go-deadletter-client", missingTarget,
 		map[string]any{"message": "route-miss"},
 		connector.NewPayloadIdentity("samples.runtime.go.deadletter.request.v1", 1, connector.PayloadFormatJSON),
-		2*time.Second,
-		"route-miss",
-		connector.DeliveryHintRouterDefault,
-		nil,
+		2*time.Second, "route-miss", connector.DeliveryHintRouterDefault, nil,
 	)
-	if err == nil {
-		fail("expected route miss deadletter")
+	var terminal *connector.DeadletterError
+	if !errors.As(err, &terminal) || terminal == nil {
+		return fmt.Errorf("expected typed route-miss deadletter, got %T: %v", err, err)
 	}
-
-	var deadletterErr *connector.DeadletterError
-	if !errors.As(err, &deadletterErr) {
-		fail("expected DeadletterError, got %T: %v", err, err)
+	if err := validateDeadletter(terminal.Deadletter, missingTarget); err != nil {
+		return err
 	}
-	deadletter := deadletterErr.Deadletter
-
-	stats := runtimeHost.Stats()
-	clientStats := runtimeHost.ClientStats()
-
-	if int32(deadletter.GetReason()) != deadletterReasonRouteMiss {
-		fail("expected route miss reason, got %s", deadletter.GetReason().String())
+	deadletter := terminal.Deadletter
+	stats, err := host.Stats()
+	if err != nil {
+		return err
 	}
-	if deadletter.GetOriginalEnvelope().GetTarget() != missingTarget {
-		fail("expected target=%s, got %s", missingTarget, deadletter.GetOriginalEnvelope().GetTarget())
-	}
-	if stats.RouteMissCount != 1 || stats.DeadletterCount != 1 {
-		fail("expected routeMissCount=1 deadletterCount=1, got %+v", stats)
-	}
-	if clientStats.MatchedDeadletters != 1 {
-		fail("expected matchedDeadletters=1, got %d", clientStats.MatchedDeadletters)
+	client := host.ClientStats()
+	if stats.RouteMissCount != 1 || stats.DeadletterCount != 1 || client.MatchedDeadletters != 1 {
+		return fmt.Errorf("unexpected terminal counters: %+v %+v", stats, client)
 	}
 	var observed connector.ObservedDeadletter
 	select {
-	case observed = <-observedDeadletters:
+	case value, open := <-observedDeadletters:
+		if !open {
+			return fmt.Errorf("deadletter observation closed before the event")
+		}
+		observed = value
 	case <-time.After(time.Second):
-		fail("timed out waiting for observed deadletter")
+		return fmt.Errorf("timed out waiting for observed deadletter")
 	}
 	if !observed.MatchedPendingRequest {
-		fail("expected observed deadletter to match pending request")
+		return fmt.Errorf("expected observed deadletter to match pending request")
 	}
-	if observed.Deadletter == nil || observed.Deadletter.GetOriginalEnvelope().GetTarget() != missingTarget {
-		fail("expected observed target=%s, got %+v", missingTarget, observed.Deadletter)
+	if err := validateDeadletter(observed.Deadletter, missingTarget); err != nil {
+		return err
 	}
-
-	fmt.Printf(
-		"coakka_runtime_deadletter reason=%s target=%s generation=%d\n",
-		deadletter.GetReason().String(),
-		deadletter.GetOriginalEnvelope().GetTarget(),
-		deadletter.GetActiveGeneration(),
-	)
-	fmt.Printf(
-		"coakka_runtime_deadletter_observed matchedPending=%t target=%s\n",
-		observed.MatchedPendingRequest,
-		observed.Deadletter.GetOriginalEnvelope().GetTarget(),
-	)
-	fmt.Printf(
-		"coakka_runtime_stats routeMisses=%d deadletters=%d matchedDeadletters=%d\n",
-		stats.RouteMissCount,
-		stats.DeadletterCount,
-		clientStats.MatchedDeadletters,
-	)
+	fmt.Printf("coakka_runtime_deadletter reason=%s target=%s generation=%d\n",
+		deadletter.Reason.String(), deadletter.OriginalEnvelope.Target, deadletter.ActiveGeneration)
+	fmt.Printf("coakka_runtime_deadletter_observed matchedPending=%t target=%s\n",
+		observed.MatchedPendingRequest, observed.Deadletter.OriginalEnvelope.Target)
+	fmt.Printf("coakka_runtime_stats routeMisses=%d deadletters=%d matchedDeadletters=%d\n",
+		stats.RouteMissCount, stats.DeadletterCount, client.MatchedDeadletters)
+	return nil
 }
 
-func fail(format string, args ...any) {
-	fmt.Fprintf(os.Stderr, format+"\n", args...)
-	os.Exit(1)
+func validateDeadletter(value *connector.Deadletter, target string) error {
+	if value == nil || value.Reason != connector.DeadletterReasonRouteMiss {
+		return fmt.Errorf("expected route-miss deadletter, got %+v", value)
+	}
+	if value.OriginalEnvelope == nil || value.OriginalEnvelope.Target != target {
+		return fmt.Errorf("expected original envelope for target %q", target)
+	}
+	return nil
 }
