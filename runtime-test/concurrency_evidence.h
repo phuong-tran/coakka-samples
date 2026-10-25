@@ -28,6 +28,29 @@ typedef struct concurrency_evidence_config_t {
 } concurrency_evidence_config_t;
 
 typedef struct concurrency_evidence_result_t {
+  struct {
+    int enabled;
+    int info_known;
+    int facts_known;
+    int final_stats_known;
+    int stale_status_known;
+    int invalid_status_known;
+    uint32_t compiled;
+    uint32_t request_mode;
+    uint32_t response_mode;
+    uint32_t cpu_policy;
+    uint32_t connection_mode;
+    size_t producer_ticket_capacity;
+    uint64_t producer_tickets_published;
+    uint64_t producer_tickets_consumed;
+    uint64_t producer_tickets_discarded;
+    struct {
+      uint64_t payload_mismatches;
+      uint64_t projection_failures;
+      int status_known;
+      coakka_v2_status_t last_status;
+    } response_validation;
+  } native;
   uint64_t attempted;
   uint64_t admitted;
   uint64_t admission_backpressure;
@@ -62,6 +85,13 @@ typedef struct concurrency_evidence_result_t {
   uint64_t total_elapsed_ns;
   const char* failure_stage;
 } concurrency_evidence_result_t;
+
+/* Private Native case boundaries; each owns its threads through joined exit.
+ * No live Core owner is retained by the caller across these calls. */
+int native_concurrency_stop_case(const concurrency_evidence_config_t* config,
+    concurrency_evidence_result_t* result, const char** error);
+int native_concurrency_lifecycle_case(const concurrency_evidence_config_t* config,
+    concurrency_evidence_result_t* result, const char** error);
 
 const char* concurrency_evidence_mode_name(concurrency_evidence_mode_t mode);
 

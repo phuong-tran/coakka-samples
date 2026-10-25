@@ -297,6 +297,8 @@ cmake --build /external/owned/native-engine-controls --config Release \
            coakka_runtime_v2_native_engine_owner_consumer \
            coakka_runtime_v2_native_ticket_window_tests \
            coakka_runtime_v2_native_ticket_publication_tests \
+           coakka_runtime_v2_native_concurrency_fixture_tests \
+           coakka_runtime_v2_concurrency_evidence \
            coakka_runtime_v2_native_evidence
 ctest --test-dir /external/owned/native-engine-controls -C Release \
   -R '^native-(engine|ticket)' --output-on-failure
@@ -313,8 +315,9 @@ This explicit profile selects `native_workload.c` for `smoke`, `pressure`,
 `stress` and `soak`. Run `coakka_runtime_v2_native_evidence` in the build's
 configuration directory with one of those mode names. Historical SDK/profile
 still selects unchanged `evidence_runtime.c`; no runtime fallback or pipe-based
-response parser is used by the Native workload. `race`/`hot-reload` are still
-legacy and are NOT certified as migrated by these controls.
+response parser is used by the Native workload. The same explicit profile now
+selects Native `race`/`hot-reload` sources; historical/default SDK profiles keep
+their unchanged legacy adapters.
 
 The Native report schema is `coakka.runtime.native.evidence.v2`:
 
@@ -346,8 +349,33 @@ candidate evidence, not a newly published package or whole-train readiness.
 
 A separate pure publication control checks finite one-producer/controller
 ticket ownership with4×4096 transfers and no Core load. It uses release/acquire
-publication, not ticket-state inference. It is a prerequisite for concurrency
-migration, not proof that `race`/`hot-reload` already run the new engine.
+publication, not ticket-state inference. The Native concurrency adapter uses
+that handoff and Core's request reader/ask client, never a response pipe parser:
+
+```sh
+/external/owned/native-engine-controls/coakka_runtime_v2_concurrency_evidence race
+/external/owned/native-engine-controls/coakka_runtime_v2_concurrency_evidence hot-reload
+```
+
+Native concurrency emits `coakka.runtime.native.concurrency-evidence.v2`.
+`attempted` is logical request intent; `admissionBackpressure` counts actual
+synchronous refusals retried within the existing phase. Core-accepted requests
+must reach an actual response or matched deadletter. Full snapshot replacement,
+every-generation observation, stale/invalid preservation, active/inactive route
+probes, submit-versus-stop `CLOSED` and independent lifecycle checks remain.
+Request intent5000ms/default phase30000ms are unchanged. It does not claim TLS
+credential or connection-policy reload.
+
+One contiguous publication table is allocated once: default512 pointers/4KiB
+on64-bit, at most64×100000 pointers/51.2MB for advanced controls, excluding
+Core-owned ticket/result storage. Only the controller observes/destroys tickets;
+threads join before abort cleanup. `producerObservationsDiscarded` is local
+observation cleanup, not revoked Core execution. Admission remains recorded if
+Core accepts but fixture handoff fails. Core RESPONSE is not reclassified when
+the echo payload is wrong; `responseValidation` separately records that
+application check and Core's exact projection status. Unknown/unperformed Core
+states, counters and rejection checks are null. Final state is the Core stats
+snapshot before fixture close, not a local started/stopped flag.
 
 ## Run
 

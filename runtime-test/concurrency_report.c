@@ -12,6 +12,11 @@
 
 static const char* json_bool(int value) { return value ? "true" : "false"; }
 
+static void core_count(const concurrency_evidence_result_t* result, uint64_t value) {
+  if (!result->native.enabled || result->native.final_stats_known) printf("%" PRIu64, value);
+  else printf("null");
+}
+
 static const char* operating_system_name(void) {
 #if defined(__APPLE__)
   return "macos";
@@ -73,7 +78,7 @@ void concurrency_evidence_print_json(
     const char* status,
     const char* error) {
   printf("{\n");
-  printf("  \"schema\": \"coakka.runtime.native.concurrency-evidence.v1\",\n");
+  printf("  \"schema\": \"coakka.runtime.native.concurrency-evidence.%s\",\n", result->native.enabled ? "v2" : "v1");
   printf("  \"status\": ");
   evidence_json_write_string(stdout, status);
   printf(",\n");
@@ -90,12 +95,33 @@ void concurrency_evidence_print_json(
     evidence_json_write_string(stdout, result->failure_stage);
     printf(",\n");
   }
+  if (result->native.enabled && !result->native.info_known) {
+    printf("  \"runtime\": null,\n");
+  } else {
   printf("  \"runtime\": {\"abi\":%u,\"version\":",
          runtime_info->abi_version);
   evidence_json_write_string(stdout, runtime_info->runtime_version);
   printf(",\"git\":");
   evidence_json_write_string(stdout, runtime_info->git_commit);
   printf("},\n");
+  }
+  if (result->native.enabled) {
+    printf("  \"nativeProfile\": {\"factsKnown\":%s,\"factsScope\":\"Core accepted configuration before start, not live applied phase\",",
+        json_bool(result->native.facts_known));
+    if (result->native.facts_known) {
+      printf("\"compiled\":%u,\"requestMode\":%u,\"responseMode\":%u,\"cpuPolicy\":%u,\"connectionMode\":%u,",
+          result->native.compiled, result->native.request_mode, result->native.response_mode,
+          result->native.cpu_policy, result->native.connection_mode);
+    }
+    printf("\"producerTicketCapacity\":%zu,\"producerTicketsPublished\":%" PRIu64 ",\"producerTicketsAdopted\":%" PRIu64 ",",
+        result->native.producer_ticket_capacity, result->native.producer_tickets_published, result->native.producer_tickets_consumed);
+    printf("\"producerObservationsDiscarded\":%" PRIu64 ",", result->native.producer_tickets_discarded);
+    printf("\"responseValidation\":{\"payloadMismatches\":%" PRIu64 ",\"projectionFailures\":%" PRIu64 ",\"lastProjectionStatus\":",
+        result->native.response_validation.payload_mismatches, result->native.response_validation.projection_failures);
+    if (result->native.response_validation.status_known) printf("%d", (int)result->native.response_validation.last_status); else printf("null");
+    printf("},");
+    printf("\"finalCoreCountersKnown\":%s},\n", json_bool(result->native.final_stats_known));
+  }
   printf("  \"environment\": {\"os\":");
   evidence_json_write_string(stdout, operating_system_name());
   printf(",\"arch\":");
@@ -108,7 +134,7 @@ void concurrency_evidence_print_json(
   printf(",\"executionPath\":");
   evidence_json_write_string(stdout, execution_path_name());
   printf(",\"readinessWaitBackend\":");
-  evidence_json_write_string(stdout, evidence_platform_wait_backend());
+  evidence_json_write_string(stdout, result->native.enabled ? "Core-owned opaque wait" : evidence_platform_wait_backend());
   printf("},\n");
   printf("  \"sanitizer\": {\"consumerHarnessThreadSanitizer\":%s,",
          json_bool(COAKKA_EVIDENCE_TSAN_ENABLED));
@@ -125,7 +151,7 @@ void concurrency_evidence_print_json(
          config->queue_capacity,
          config->timeout_ms);
   printf("  \"scope\": {\n");
-  printf("    \"surface\": \"published native C ABI only\",\n");
+  printf("    \"surface\": \"%s\",\n", result->native.enabled ? "public Native C ABI source candidate" : "published native C ABI only");
   printf("    \"scheduler\": \"start-gate plus per-generation producer quotas\",\n");
   printf("    \"snapshotHotReload\": %s,\n",
          json_bool(config->mode == CONCURRENCY_EVIDENCE_MODE_HOT_RELOAD));
@@ -141,11 +167,7 @@ void concurrency_evidence_print_json(
          ",\"repliesSubmitted\":%" PRIu64
          ",\"replySubmitBackpressure\":%" PRIu64
          ",\"responses\":%" PRIu64
-         ",\"deadletters\":%" PRIu64
-         ",\"runtimeDeadletters\":%" PRIu64
-         ",\"queueRejected\":%" PRIu64
-         ",\"routeMisses\":%" PRIu64
-         ",\"deliveryFailed\":%" PRIu64 "},\n",
+         ",\"deadletters\":%" PRIu64,
          result->attempted,
          result->admitted,
          result->admission_backpressure,
@@ -154,27 +176,29 @@ void concurrency_evidence_print_json(
          result->replies_submitted,
          result->reply_submit_backpressure,
          result->response_count,
-         result->deadletter_count,
-         result->runtime_deadletter_count,
-         result->queue_rejected_count,
-         result->route_miss_count,
-         result->delivery_failed_count);
-  printf("  \"snapshot\": {\"successfulApplies\":%" PRIu64
-         ",\"successfulObservations\":%" PRIu64
-         ",\"staleApplyStatus\":%d,\"invalidApplyStatus\":%d"
-         ",\"finalGeneration\":%" PRIu64
-         ",\"finalRouteCount\":%zu,\"finalRuntimeState\":%u"
+         result->deadletter_count);
+  printf(",\"runtimeDeadletters\":"); core_count(result, result->runtime_deadletter_count);
+  printf(",\"queueRejected\":"); core_count(result, result->queue_rejected_count);
+  printf(",\"routeMisses\":"); core_count(result, result->route_miss_count);
+  printf(",\"deliveryFailed\":"); core_count(result, result->delivery_failed_count);
+  printf("},\n");
+  printf("  \"snapshot\": {\"successfulApplies\":");
+  if (!result->native.enabled || result->native.facts_known) printf("%" PRIu64, result->snapshot_apply_successes); else printf("null");
+  printf(",\"successfulObservations\":%" PRIu64
          ",\"activeTargetProbePassed\":%s"
-         ",\"inactiveTargetProbePassed\":%s},\n",
-         result->snapshot_apply_successes,
+         ",\"inactiveTargetProbePassed\":%s",
          result->snapshot_observation_successes,
-         result->stale_apply_status,
-         result->invalid_apply_status,
-         result->final_generation,
-         result->final_route_count,
-         result->final_runtime_state,
          json_bool(result->active_target_probe_passed),
          json_bool(result->inactive_target_probe_passed));
+  printf(",\"finalGeneration\":"); core_count(result, result->final_generation);
+  printf(",\"finalRouteCount\":"); core_count(result, (uint64_t)result->final_route_count);
+  printf(",\"staleApplyStatus\":");
+  if (!result->native.enabled || result->native.stale_status_known) printf("%d", result->stale_apply_status); else printf("null");
+  printf(",\"invalidApplyStatus\":");
+  if (!result->native.enabled || result->native.invalid_status_known) printf("%d", result->invalid_apply_status); else printf("null");
+  printf(",\"finalRuntimeState\":");
+  if (!result->native.enabled || result->native.final_stats_known) printf("%u", result->final_runtime_state); else printf("null");
+  printf("},\n");
   printf("  \"stopRace\": {\"attempted\":%" PRIu64
          ",\"admitted\":%" PRIu64
          ",\"backpressure\":%" PRIu64

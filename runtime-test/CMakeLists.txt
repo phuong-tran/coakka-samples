@@ -239,12 +239,18 @@ target_compile_definitions(
 )
 target_link_libraries(coakka_runtime_v2_native_evidence PRIVATE ${_coakka_native_runtime_target})
 
+if(COAKKA_NATIVE_EVIDENCE_REQUIRE_NATIVE_STARTUP)
+  set(_coakka_concurrency_sources native_concurrency_workload.c
+      native_concurrency_races.c native_concurrency_fixture.c native_engine_owner.c)
+else()
+  set(_coakka_concurrency_sources concurrency_runtime.c)
+endif()
 add_executable(
   coakka_runtime_v2_concurrency_evidence
   concurrency_main.c
   concurrency_config.c
   concurrency_evidence.h
-  concurrency_runtime.c
+  ${_coakka_concurrency_sources}
   concurrency_report.c
   evidence_json.c
   evidence_json.h
@@ -254,6 +260,16 @@ add_executable(
 coakka_configure_native_evidence_target(
   coakka_runtime_v2_concurrency_evidence
 )
+if(COAKKA_NATIVE_EVIDENCE_REQUIRE_NATIVE_STARTUP)
+  target_compile_definitions(coakka_runtime_v2_concurrency_evidence PRIVATE COAKKA_EVIDENCE_NATIVE_ENGINE=1)
+  if(WIN32)
+    add_custom_command(TARGET coakka_runtime_v2_concurrency_evidence POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE:${_coakka_native_runtime_target}>"
+        "$<TARGET_FILE_DIR:coakka_runtime_v2_concurrency_evidence>"
+      VERBATIM)
+  endif()
+endif()
 if(MSVC)
   target_compile_options(
     coakka_runtime_v2_concurrency_evidence
@@ -418,17 +434,27 @@ if(COAKKA_NATIVE_EVIDENCE_STARTUP_INCLUDE_DIR)
       native_engine_owner.c native_engine_owner_consumer.c)
     target_link_libraries(coakka_runtime_v2_native_engine_owner_consumer
       PRIVATE ${_coakka_native_runtime_target})
+    add_executable(coakka_runtime_v2_native_concurrency_fixture_tests
+      native_concurrency_fixture.c native_engine_owner.c native_concurrency_fixture_tests.c)
+    target_link_libraries(coakka_runtime_v2_native_concurrency_fixture_tests
+      PRIVATE ${_coakka_native_runtime_target})
     if(WIN32)
       add_custom_command(TARGET coakka_runtime_v2_native_engine_owner_consumer POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
           "$<TARGET_FILE:${_coakka_native_runtime_target}>"
           "$<TARGET_FILE_DIR:coakka_runtime_v2_native_engine_owner_consumer>"
         VERBATIM)
+      add_custom_command(TARGET coakka_runtime_v2_native_concurrency_fixture_tests POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+          "$<TARGET_FILE:${_coakka_native_runtime_target}>"
+          "$<TARGET_FILE_DIR:coakka_runtime_v2_native_concurrency_fixture_tests>"
+        VERBATIM)
     endif()
     foreach(_engine_target IN ITEMS coakka_runtime_v2_native_engine_owner_tests
                                     coakka_runtime_v2_native_engine_owner_consumer
                                     coakka_runtime_v2_native_ticket_window_tests
-                                    coakka_runtime_v2_native_ticket_publication_tests)
+                                    coakka_runtime_v2_native_ticket_publication_tests
+                                    coakka_runtime_v2_native_concurrency_fixture_tests)
       coakka_configure_native_evidence_target(${_engine_target})
       # These controls use assert for executable checks, including Core calls.
       # A Release build must not erase them; sources also reject NDEBUG.
@@ -445,7 +471,8 @@ if(COAKKA_NATIVE_EVIDENCE_STARTUP_INCLUDE_DIR)
       COMMAND coakka_runtime_v2_native_engine_owner_consumer)
     add_test(NAME native-ticket-window-unit COMMAND coakka_runtime_v2_native_ticket_window_tests)
     add_test(NAME native-ticket-publication-unit COMMAND coakka_runtime_v2_native_ticket_publication_tests)
-    set_tests_properties(native-engine-owner-unit native-engine-owner-sdk native-ticket-window-unit native-ticket-publication-unit
+    add_test(NAME native-concurrency-fixture-sdk COMMAND coakka_runtime_v2_native_concurrency_fixture_tests)
+    set_tests_properties(native-engine-owner-unit native-engine-owner-sdk native-ticket-window-unit native-ticket-publication-unit native-concurrency-fixture-sdk
       PROPERTIES TIMEOUT 30)
   endif()
   if(CMAKE_SYSTEM_NAME STREQUAL "Linux")

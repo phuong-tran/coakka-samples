@@ -13,6 +13,9 @@ int main(int argc, char** argv) {
 
   memset(&runtime_info, 0, sizeof(runtime_info));
   memset(&result, 0, sizeof(result));
+#ifdef COAKKA_EVIDENCE_NATIVE_ENGINE
+  result.native.enabled = 1;
+#endif
   if (parse_status == CONCURRENCY_EVIDENCE_PARSE_HELP) {
     concurrency_evidence_print_help_json();
     return 0;
