@@ -176,6 +176,19 @@ func TestCandidateMinimumUsesActualFloorAndPatch(t *testing.T) {
 	}
 }
 
+func TestCandidateSampleSelectorIsClosed(t *testing.T) {
+	for _, name := range []string{"basic", "deadletter", "replica-file-fanout"} {
+		if !sampleName(name) {
+			t.Fatal("concrete sample refused")
+		}
+	}
+	for _, name := range []string{"", "../basic", "go/basic", "replica", "replica-file-fanout/../basic"} {
+		if sampleName(name) {
+			t.Fatal("unknown sample admitted")
+		}
+	}
+}
+
 func TestStageRetiresOnSuccessFailureAndCancelledChild(t *testing.T) {
 	parent := controlDir(t)
 	for _, fail := range []bool{false, true} {

@@ -1,12 +1,15 @@
 # Go Runtime Samples
 
-This branch's basic/deadletter apps use the [private candidate workflow](../../docs/runtime-go-candidate.md)
+This branch's basic/deadletter/replica-file-fanout apps use the [private candidate workflow](../../docs/runtime-go-candidate.md)
 and exact local module, not the historical published train below. They propagate
 inspection/subscription errors, omit incidental tuning and retire owned resources
-before main reports failures. Replica/file-fanout and cross-language scenarios
-remain separate work; old recordings/snippets are not candidate qualification.
+before main reports failures. File fan-out observes all three exact owners,
+retires admitted transfers and retains files if native stop is unconfirmed.
+Other replica/cross-language scenarios remain separate work. The published
+train/recordings/snippets below are historical, not candidate instructions or
+qualification; use the linked candidate guide for the current runnable apps.
 
-Go runtime samples consume `github.com/phuong-tran/coakka-runtime-go@v1.8.2`.
+The historical Go sample train consumed `github.com/phuong-tran/coakka-runtime-go@v1.8.2`.
 This is the sample runner pin, not the latest release. See
 [Current Packages](../../docs/current-packages.md) for the current catalog.
 The package embeds native runtime generation `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` for Linux

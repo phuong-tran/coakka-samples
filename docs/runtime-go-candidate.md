@@ -1,6 +1,6 @@
 # Private Go runtime candidate samples
 
-The basic/deadletter samples on this branch use the exact 50-file private
+The basic/deadletter/replica-file-fanout samples on this branch use the exact 50-file private
 module in `artifacts/runtime-go-candidate.json`, label
 `2.5.5-dev.20261023`, bundled Core
 `2.5.1+f6b61768f60a08d81b1dc06625a211ffca8e89e2`, ABI 1.
@@ -22,6 +22,7 @@ export COAKKA_SAMPLE_WORK_ROOT="/absolute/work"
 export COAKKA_GO_CANDIDATE_MODULE="/absolute/private-module"
 bash runtime/go/basic/run.sh
 bash runtime/go/deadletter/run.sh
+bash runtime/go/replica-file-fanout/run.sh
 ```
 
 The wrappers require those paths and place Go build/temp caches under the work
@@ -37,6 +38,7 @@ native Go/cgo toolchain:
 ```text
 go run scripts/runtime-go-candidate.go --repo-root C:/path/to/samples basic
 go run scripts/runtime-go-candidate.go --repo-root C:/path/to/samples deadletter
+go run scripts/runtime-go-candidate.go --repo-root C:/path/to/samples replica-file-fanout
 ```
 
 Keep `GOTOOLCHAIN=local`, `GOWORK=off`, `GOPROXY=off` and `GOSUMDB=off`
@@ -74,9 +76,25 @@ Deadletter requires the typed route-miss reason and original target, observes
 one bounded event, cancels observation before host close and reports failures
 only after deferred cleanup. The one-ask callback never calls process exit.
 
+File fan-out enumerates three exact loopback owner incarnations. Its one
+immutable9MiB+731 source is generated through a64KiB application buffer;
+Core hashes files, issues actual endpoints/grants and reports both peers'
+terminal facts. All three outcomes are independent, including a refused
+prepare/control handoff/send. The application never substitutes a load-balanced
+service endpoint or guesses native state. It closes every opened lane after
+cancel/wait/forget retirement, and reports errors only after that cleanup.
+Failed native stop retains the app-owned file directory and reports its path;
+it does not delete beneath potentially active I/O. Successful joined shutdown
+removes only that unique file directory, not the caller's root or caches.
+The local JSON grant roundtrip is not authentication or TLS evidence.
+Normal and separate failure-cleanup observation each retain the existing
+64-update/30000ms native-wait bounds; cleanup cannot erase the original failure.
+The external app bound remains30s. Forced termination cannot promise those
+graceful application actions or removal of its file directory.
+
 This runner creates development executables and removes them. Private release
 qualification separately exercises real Garble output and artifact containment;
 a normal `go build` is not represented as obfuscation. Existing exact-package
 resource/shrink/native evidence is reused by identity, not replaced by an echo.
-Replica/file-fanout, cross-language scenarios, other connectors/tools/Android/
+Other replica/cross-language scenarios, other connectors/tools/Android/
 camera and legal/signing/coordinated-publication gates remain separate.

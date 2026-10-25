@@ -55,8 +55,8 @@ func entry(ctx context.Context, args []string) error {
 	if err := flags.Parse(args); err != nil {
 		return err
 	}
-	if flags.NArg() != 1 || (flags.Arg(0) != "basic" && flags.Arg(0) != "deadletter") || !filepath.IsAbs(*repo) {
-		return errors.New("usage: runtime-go-candidate --repo-root ABSOLUTE basic|deadletter")
+	if flags.NArg() != 1 || !sampleName(flags.Arg(0)) || !filepath.IsAbs(*repo) {
+		return errors.New("usage: runtime-go-candidate --repo-root ABSOLUTE basic|deadletter|replica-file-fanout")
 	}
 	for _, pair := range os.Environ() {
 		key, value, _ := strings.Cut(pair, "=")
@@ -151,6 +151,10 @@ func entry(ctx context.Context, args []string) error {
 		}
 		return runCommand(ctx, executable, nil, stage, append(environment, "COAKKA_RUNTIME_CACHE_DIR="+nativeCache), 30*time.Second)
 	})
+}
+
+func sampleName(value string) bool {
+	return value == "basic" || value == "deadletter" || value == "replica-file-fanout"
 }
 
 func withStage(stage string, action func() error) (result error) {
