@@ -1,6 +1,6 @@
 # Private C# runtime candidate sample
 
-The sample uses exactly `CoAkka.Runtime` `0.0.0-p452.1` from the trusted local
+The sample uses exactly `CoAkka.Runtime` `0.0.0-p454.1` from the trusted local
 feed described in `artifacts/runtime-csharp-candidate.props`. This is a private
 candidate, not a public NuGet release. It carries Core2.5.1+f6b61768/ABI1 for
 macOS ARM64, Linux ARM64 and native Windows x64. No separate native dependency
@@ -66,6 +66,9 @@ Queue, execution, connection, monitor and delivery choices are omitted from the
 business sample. The connector forwards omitted queue intent as0 and Core owns
 normalization; snapshots report its accepted capacity. A previously compiled
 C# optional argument remains an explicit value until the app is recompiled.
+This also applies to `ConnectorOrchestrator.StartLocal`: its omitted queue
+forwards0, `StartSpec` is submitted intent, and `RuntimeConfig()` is Core's
+accepted state. The facade does not probe the platform or supply a default table.
 The sample reads effective Core AUTO/MULTIPLEX/monitorOFF and request/response
 delivery2/2 facts without capability probes or a mirrored defaults table.
 
