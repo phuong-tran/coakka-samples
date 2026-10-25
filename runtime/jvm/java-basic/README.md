@@ -1,19 +1,22 @@
-# JVM Java Runtime Basic
+# JVM Runtime Basic (Java8)
 
-This sample shows the Java API for the runtime v2 request/reply path. It starts
-one same-process runtime participant, registers a plain-text Java handler, sends
-one text ask, and prints runtime/client counters.
-
-Run:
+The Java-facing consumer uses public overloads, text handlers and future
+shutdown; it does not call Kotlin synthetic defaults or use reflection.
+Select the [exact private ProGuard candidate workflow](../../../docs/runtime-jvm-candidate.md),
+then from the repository root:
 
 ```sh
-bash run.sh runtime jvm java-basic
+bash runtime/jvm/java-basic/run.sh
 ```
 
-Expected output shape:
+The standalone build uses--release8/strict warnings and a separate selected
+consumer Java executable, not the build JDK as the minimum. It admits five
+exact local JARs, no old public-coordinate or native-source override. The
+2s ask/3s shutdown budget is unchanged. Check the actual echo and one-request
+counters/pending0, report Core's startup/ABI/configuration facts rather than
+reconstructing them from input. Close runs before errors escape, with operation
+and cleanup failures preserved.
 
-```text
-coakka_runtime_info abi=1 version=2.1.0 git=60ddf70d language=java
-coakka_runtime_response payload=hello-runtime-java
-coakka_runtime_stats generation=1 routes=1 delivered=1 matchedResponses=1 language=java
-```
+See the candidate guide for native PowerShell Gradle invocation, intentional
+cache retention and Windows Java8's ASCII native-cache requirement. No Core
+library/provider install or whole-process memory/performance claim.

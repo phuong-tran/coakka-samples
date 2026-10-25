@@ -3,10 +3,6 @@ plugins {
     application
 }
 
-dependencies {
-    implementation("io.github.phuong-tran.coakka:runtime:2.5.2")
-}
-
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
@@ -15,4 +11,10 @@ java {
 
 application {
     mainClass.set("coakka.samples.runtime.jvm.javadeadletter.Main")
+}
+
+tasks.register<JavaExec>("sampleControls") {
+    dependsOn(tasks.named("testClasses"))
+    classpath = sourceSets.test.get().runtimeClasspath
+    mainClass.set("coakka.samples.runtime.jvm.javadeadletter.SampleControls")
 }

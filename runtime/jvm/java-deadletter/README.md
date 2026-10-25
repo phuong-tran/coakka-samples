@@ -1,18 +1,22 @@
-# JVM Java Runtime Deadletter
+# JVM Runtime Deadletter (Java8)
 
-This sample shows the Java 8-friendly deadletter observer API. It subscribes
-with a listener, sends one request to a missing route, and verifies that the
-observed deadletter matches the failed request.
-
-Run:
+One typed Core route miss, plus the actual registered callback observation.
+Use the [private ProGuard candidate workflow](../../../docs/runtime-jvm-candidate.md)
+and its explicit artifact/build/runtime/work/cache inputs:
 
 ```sh
-bash run.sh runtime jvm java-deadletter
+bash runtime/jvm/java-deadletter/run.sh
 ```
 
-Expected output shape:
+The old immediate AtomicReference read after ask was not a subscription receipt.
+Observe the authoritative callback through one bounded future; validate typed
+reason/nullable original target and matched counters/pending0. Register before
+the request, close the returned subscription before future shutdown and retain
+operation/cleanup causes. Do not guess native state from timing/error text or
+set incidental Core tuning. The request2s and Java future/shutdown3s budgets
+remain; observation has its explicit bounded language-side wait.
 
-```text
-coakka_runtime_deadletter_observed matchedPending=true target=samples.runtime.jvm.java.deadletter.missing
-coakka_runtime_stats matchedDeadletters=1
-```
+The isolated Gradle build targets Java8/major52 against exact shrunk local JARs,
+without private schema imports, native/source overrides or registry fallback.
+Native Windows runs PE Java, not WSL, with the approved ASCII native cache.
+See the guide for commands and the intentionally retained caller-owned caches.

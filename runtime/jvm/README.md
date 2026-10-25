@@ -1,5 +1,13 @@
 # JVM Runtime Samples
 
+This branch's four Kotlin/Java apps use the
+[exact private ProGuard candidate workflow](../../docs/runtime-jvm-candidate.md).
+Their dedicated Gradle build is runtime/jvm, separate from logger/framework
+projects. Build JDK17+ is not the consumer floor: owned bytecode/APIs remain
+Java8 and matching qualification uses actual Java8. No private state/reflection
+or separately installed Core library. The published train/recordings/old root
+Gradle task names below are historical, not current candidate instructions.
+
 JVM runtime samples consume the `coakka.runtime` Maven Central distribution at
 `io.github.phuong-tran.coakka:runtime:2.5.2`, built against native runtime
 generation `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a`.

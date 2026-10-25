@@ -10,6 +10,7 @@ fun main() = runBlocking {
         runtime.handler(target) { message -> "hello-$message" }
 
         val response = runtime.ask(target, "runtime-jvm")
+        check(response == "hello-runtime-jvm") { "unexpected echo response: $response" }
         println("coakka_runtime_response payload=$response")
     }
 }

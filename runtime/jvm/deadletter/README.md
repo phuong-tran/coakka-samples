@@ -1,34 +1,20 @@
-# JVM Runtime Deadletter
+# JVM Runtime Deadletter (Kotlin)
 
-This sample sends a request to a missing route, verifies the `ask(...)` fails
-with a matched route-miss deadletter, and observes the same deadletter through
-the Kotlin `Flow` diagnostics lane.
-
-Run:
+One absent-route request and one bounded observation through the actual
+public Kotlin APIs. Select the [private ProGuard candidate](../../../docs/runtime-jvm-candidate.md)
+and explicit build/work/cache inputs, then:
 
 ```sh
-bash run.sh
+bash runtime/jvm/deadletter/run.sh
 ```
 
-Or from the repository root:
+Keep the2s ask/1s observation, check the Core-issued typed route-miss reason,
+nullable original target, matched observation/counters/pending0. Cancel/join
+the collector before suspend shutdown even on caller cancellation; do not exit
+from a callback or guess delivery from timing. Core owns defaults and outcomes,
+so queue/port/monitor/generation choices are omitted.
 
-```sh
-bash run.sh runtime jvm deadletter
-```
-
-For IDE runs, open/import the `coakka-samples` repository root as the Gradle
-project.
-
-Direct Gradle run from the repository root:
-
-```sh
-./gradlew :runtime:jvm:deadletter:run
-```
-
-Expected output shape:
-
-```text
-coakka_runtime_deadletter reason=DEADLETTER_REASON_ROUTE_MISS target=samples.runtime.jvm.deadletter.missing generation=1
-coakka_runtime_deadletter_observed matchedPending=true target=samples.runtime.jvm.deadletter.missing
-coakka_runtime_stats routeMisses=1 deadletters=1 matchedDeadletters=1
-```
+The dedicated build emits Java8/major52 classes and uses the exact shrunk JAR
+and ordinary managed dependencies, no older coordinate/native/source fallback.
+See the guide for native Windows invocation and the Java8 ASCII native-cache
+constraint. Direct orchestrator.close is intentionally not the shutdown API.
