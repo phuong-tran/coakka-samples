@@ -4,9 +4,10 @@ Date: 2026-08-11
 
 ## Private P497 candidate addendum
 
-The private P497 candidate changes no camera algorithm, hot path, queue,
-thread, descriptor, transport, ownership, or public source boundary. It binds
-this sample to frozen Runtime native source
+The private P497 candidate changes no capture, Stream Lane, queue, thread,
+descriptor, transport, or device-ownership law. It replaces the general
+message/reflection dependency used only on the cold control path with a
+sample-owned bounded JSON boundary. It binds this sample to frozen Runtime native source
 `f6b61768f60a08d81b1dc06625a211ffca8e89e2`, ABI 1 with 160 exports, and
 packages the Pi publisher and macOS host separately with exact Runtime images.
 The packages remain private and unselected.
@@ -16,16 +17,20 @@ real V4L2 camera and ALSA microphone, plus a macOS ARM64 host. Two pre-package
 live runs cover authentication refusal, exclusive control, invalid command and
 unsupported-profile refusal, bounded slow-viewer pressure, profile switching,
 MJPEG delivery, audio/video recording, stop, disconnect, and natural cleanup.
-The final promotion gate additionally requires the exact freshly installed
-candidate archives to repeat that end-to-end path.
+The exact freshly installed candidate archives repeat that end-to-end path;
+the retained recording inspection reports MJPEG video plus AAC audio and both
+processes leave no listener or process residue.
 
-Senior systems review remains pass: existing bounded queues, monotonic waits,
+Senior systems review passes: existing bounded queues, monotonic waits,
 single-owner device and libuv loops, explicit cancellation, idempotent joined
-shutdown, and fail-closed admission are unchanged. Expert boundary review
-finds no justified NUMA, io_uring, DMA, IRQ, MMU, kernel-bypass, or hard
-realtime mechanism for this userspace sample. The large gateway and demo
-translation units remain cohesive at their existing web-gateway and process
-orchestration boundaries; P497 adds no feature to either file.
+shutdown, and fail-closed admission remain unchanged. The new parser performs
+at most 64 linear key comparisons on the cold control path, caps input,
+decoded strings and nesting, and makes no allocation proportional to anything
+larger than those bounds. Expert boundary review finds no justified NUMA,
+io_uring, DMA, IRQ, MMU, kernel-bypass, or hard realtime mechanism for this
+userspace sample. The parser is a cohesive 694-line syntax, projection and
+writer boundary with its own tests and fuzz harness; the gateway and demo
+translation units remain at their existing ownership boundaries.
 
 ## Architecture And Ownership
 
@@ -101,6 +106,22 @@ Authenticode, but SmartScreen or managed application-control policy may block
 it. Release checksums establish artifact integrity, not publisher identity.
 
 ## Evidence And Residual Risk
+
+Private P497 source-readiness evidence for the exact candidate includes:
+
+- Apple Clang 17 release build with strict warnings, thin LTO, dead stripping,
+  PIE, hidden visibility and an empty Mach-O export list: 4/4 tests pass;
+- Raspberry Pi 5 ARM64 Debian 13, GCC 14.2 release build with strict warnings,
+  LTO, PIE, RELRO/NOW, non-executable stack and stripped `.comment`: 2/2 tests
+  pass;
+- Cppcheck 2.20 on the parser and both control consumers: no finding;
+- Homebrew Clang 22.1.5 libFuzzer with ASan, UBSan and leak detection: 200,000
+  bounded inputs, no finding, 90 MiB peak RSS;
+- deterministic private archive generation repeated twice with identical
+  bytes, safe member verification and frozen Runtime digest verification;
+- installed-package execution across the physical Pi camera/microphone and
+  macOS host, including the refusal, pressure, profile, recording and cleanup
+  path described above.
 
 The release matrix distinguishes strict builds from matching-host runtime
 smokes. Raspberry Pi ARM64 and macOS ARM64 have the complete live workflow

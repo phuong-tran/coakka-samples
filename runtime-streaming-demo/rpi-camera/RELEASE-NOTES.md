@@ -13,6 +13,10 @@ capture, authentication refusal, exclusive control, unsupported-profile
 refusal, MJPEG viewing, slow-viewer pressure, profile change, audio/video
 recording, stop, disconnect, and residue-free shutdown.
 
+The private P497 pair now passes that installed-package gate. Its final receipt
+records real MJPEG plus AAC output, bounded slow-viewer pressure, profile
+confirmation, and no remaining process or listener; it remains unpublished.
+
 Release `v1.1.0` promotes the focused public camera sample after a systems
 audit. It supersedes the `v0.2.0` prerelease without changing the Stream Lane
 wire contract.
