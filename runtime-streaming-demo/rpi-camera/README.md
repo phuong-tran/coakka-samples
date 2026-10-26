@@ -98,20 +98,20 @@ Raspberry Pi OS or Debian:
 
 ```sh
 sudo apt update
-sudo apt install -y libasound2 libprotobuf32 libuv1 ffmpeg v4l-utils alsa-utils
+sudo apt install -y libasound2 libuv1 ffmpeg v4l-utils alsa-utils
 ```
 
 Ubuntu 24.04 host:
 
 ```sh
 sudo apt update
-sudo apt install -y libprotobuf32t64 libuv1t64 ffmpeg
+sudo apt install -y libuv1t64 ffmpeg
 ```
 
 macOS host:
 
 ```sh
-brew install protobuf libuv ffmpeg
+brew install libuv ffmpeg
 ```
 
 Windows host requires a recent `ffmpeg.exe` on `PATH`. Keep
@@ -307,7 +307,7 @@ cmake --build build/host --target coakka_camera_host -j4
 ctest --test-dir build/host --output-on-failure
 ```
 
-Windows source builds require target-matching Protobuf and libuv packages plus
+Windows source builds require a target-matching static libuv package plus
 `COAKKA_RUNTIME_IMPORT_LIBRARY`, an import library generated from the exact
 Runtime DLL in the native package. The prebuilt Windows archive is the normal
 evaluation path. It remains unsigned and must not be represented as natively
@@ -336,6 +336,7 @@ The public implementation files are under this directory's `src/` folder:
 - `v4l2_mjpeg_camera_source.c`: bounded V4L2 MMAP source;
 - `alsa_pcm_audio_source.c`: bounded ALSA PCM source;
 - `stream_lane_camera_control_server.cc`: Pi profile-control listener;
+- `camera_json.cc`: bounded flat control-object parser and status writer;
 - `stream_lane_camera_web_gateway.cc`: local libuv HTTP/MJPEG/WebSocket bridge;
 - `stream_lane_camera_recorder.cc`: bounded recorder and FFmpeg finalizer;
 - `stream_lane_camera_web_ui.cc`: embedded browser UI.

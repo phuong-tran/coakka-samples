@@ -5,6 +5,8 @@ include(CTest)
 
 option(COAKKA_CAMERA_BUILD_HOST "Build the desktop host application" ON)
 option(COAKKA_CAMERA_BUILD_PI "Build the Raspberry Pi publisher" OFF)
+option(COAKKA_CAMERA_BUILD_FUZZER
+  "Build the Clang bounded camera JSON fuzz target" OFF)
 set(COAKKA_CAMERA_SOURCE_COMMIT "development" CACHE STRING
   "Full public Samples commit embedded in release executables")
 string(LENGTH "${COAKKA_CAMERA_SOURCE_COMMIT}" COAKKA_CAMERA_SOURCE_COMMIT_LENGTH)
@@ -29,27 +31,6 @@ else()
   find_package(CoAkkaRuntimeNativeV2 CONFIG REQUIRED)
 endif()
 find_package(Threads REQUIRED)
-find_package(Protobuf CONFIG QUIET)
-if(NOT Protobuf_FOUND)
-  find_package(Protobuf REQUIRED)
-endif()
-
-# CMake 4.2+ expects an import-link location for Windows imported targets.
-# Older static Protobuf/Abseil package exports provide only IMPORTED_LOCATION.
-if(WIN32 AND CMAKE_VERSION VERSION_GREATER_EQUAL 4.2)
-  get_property(coakka_camera_imported_targets DIRECTORY PROPERTY IMPORTED_TARGETS)
-  foreach(imported_target IN LISTS coakka_camera_imported_targets)
-    get_target_property(imported_type "${imported_target}" TYPE)
-    if(imported_type STREQUAL "STATIC_LIBRARY")
-      get_target_property(imported_release_location "${imported_target}"
-        IMPORTED_LOCATION_RELEASE)
-      if(imported_release_location)
-        set_property(TARGET "${imported_target}" PROPERTY
-          IMPORTED_IMPLIB_RELEASE "${imported_release_location}")
-      endif()
-    endif()
-  endforeach()
-endif()
 
 if(NOT CMAKE_CROSSCOMPILING)
   find_package(PkgConfig QUIET)
@@ -59,6 +40,49 @@ if(PkgConfig_FOUND AND NOT CMAKE_CROSSCOMPILING)
 endif()
 if(WIN32)
   find_package(libuv CONFIG QUIET)
+endif()
+
+add_library(coakka_camera_json STATIC src/camera_json.cc)
+target_compile_features(coakka_camera_json PRIVATE cxx_std_20)
+target_include_directories(coakka_camera_json PUBLIC
+  "${CMAKE_CURRENT_SOURCE_DIR}/src")
+if(MSVC)
+  target_compile_options(coakka_camera_json PRIVATE /W4 /WX)
+else()
+  target_compile_options(coakka_camera_json PRIVATE
+    -Wall -Wextra -Wpedantic -Werror)
+endif()
+
+if(COAKKA_CAMERA_BUILD_FUZZER)
+  if(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    message(FATAL_ERROR "The camera JSON fuzz target requires Clang")
+  endif()
+  add_executable(coakka_camera_json_fuzz
+    src/camera_json_fuzz.cc
+    src/camera_json.cc)
+  target_compile_features(coakka_camera_json_fuzz PRIVATE cxx_std_20)
+  target_include_directories(coakka_camera_json_fuzz PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/src")
+  target_compile_options(coakka_camera_json_fuzz PRIVATE
+    -Wall -Wextra -Wpedantic -Werror
+    -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+  target_link_options(coakka_camera_json_fuzz PRIVATE
+    -fsanitize=fuzzer,address,undefined)
+endif()
+
+if(BUILD_TESTING)
+  add_executable(coakka_camera_json_tests src/camera_json_tests.cc)
+  target_compile_features(coakka_camera_json_tests PRIVATE cxx_std_20)
+  target_link_libraries(coakka_camera_json_tests PRIVATE coakka_camera_json)
+  if(MSVC)
+    target_compile_options(coakka_camera_json_tests PRIVATE /W4 /WX)
+  else()
+    target_compile_options(coakka_camera_json_tests PRIVATE
+      -Wall -Wextra -Wpedantic -Werror)
+  endif()
+  add_test(NAME coakka_camera_json_tests COMMAND coakka_camera_json_tests)
+  set_tests_properties(coakka_camera_json_tests PROPERTIES
+    LABELS "camera;parser;security" TIMEOUT 10)
 endif()
 if(TARGET PkgConfig::COAKKA_CAMERA_LIBUV)
   set(COAKKA_CAMERA_LIBUV_TARGET PkgConfig::COAKKA_CAMERA_LIBUV)
@@ -94,7 +118,7 @@ function(coakka_camera_target_defaults target)
   target_link_libraries(${target} PRIVATE
     CoAkkaRuntimeNativeV2::runtime_v2
     Threads::Threads
-    protobuf::libprotobuf
+    coakka_camera_json
     ${COAKKA_CAMERA_LIBUV_TARGET})
   if(MSVC)
     target_compile_options(${target} PRIVATE /W4 /WX)
@@ -196,6 +220,7 @@ if(COAKKA_CAMERA_BUILD_PI)
   set_tests_properties(coakka_camera_pi_cli_help PROPERTIES TIMEOUT 10)
 endif()
 
-if(NOT COAKKA_CAMERA_BUILD_HOST AND NOT COAKKA_CAMERA_BUILD_PI)
+if(NOT COAKKA_CAMERA_BUILD_HOST AND NOT COAKKA_CAMERA_BUILD_PI AND
+   NOT COAKKA_CAMERA_BUILD_FUZZER)
   message(FATAL_ERROR "Enable at least one camera application")
 endif()

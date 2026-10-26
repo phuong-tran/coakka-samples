@@ -1,11 +1,9 @@
 #include "stream_lane_camera_web_gateway.h"
 
+#include "camera_json.h"
 #include "runtime_addon_web_wire.h"
 #include "stream_lane_camera_recorder.h"
 #include "stream_lane_camera_web_ui.h"
-
-#include <google/protobuf/struct.pb.h>
-#include <google/protobuf/util/json_util.h>
 
 #include <uv.h>
 
@@ -452,47 +450,41 @@ struct Gateway {
       profile_status = profile_state;
       profile_error = last_profile_error;
     }
-    google::protobuf::Struct status;
-    auto &fields = *status.mutable_fields();
-    fields["type"].set_string_value("status");
-    fields["request_id"].set_string_value(std::string(request_id));
-    fields["ok"].set_bool_value(ok);
-    fields["error"].set_string_value(std::string(error));
-    fields["control"].set_string_value(
-        control_client != nullptr ? "connected" : "disconnected");
-    fields["transport"].set_string_value(transport_name());
-    fields["livestream_enabled"].set_bool_value(livestream_enabled);
-    fields["viewer_connected"].set_bool_value(stream_client != nullptr);
-    fields["audio_available"].set_bool_value(audio_available());
-    fields["profile_width"].set_number_value(width);
-    fields["profile_height"].set_number_value(height);
-    fields["profile_fps"].set_number_value(fps);
-    fields["profile_state"].set_string_value(profile_status);
-    fields["profile_error"].set_string_value(profile_error);
-    fields["received_frames"].set_number_value(received_frames);
-    fields["received_bytes"].set_number_value(received_bytes);
-    fields["source_drops"].set_number_value(source_drops);
-    fields["display_drops"].set_number_value(display_drops);
-    fields["browser_frames"].set_number_value(
-        browser_frames.load(std::memory_order_relaxed));
-    fields["browser_bytes"].set_number_value(
-        browser_bytes.load(std::memory_order_relaxed));
-    fields["recording_state"].set_string_value(recording.state);
-    fields["recording_path"].set_string_value(recording.path);
-    fields["recording_error"].set_string_value(recording.error);
-    fields["recording_frames"].set_number_value(recording.frames);
-    fields["recording_bytes"].set_number_value(recording.bytes);
-    fields["recording_drops"].set_number_value(recording.queue_drops);
-    fields["recording_with_audio"].set_bool_value(recording.with_audio);
-    fields["recording_audio_frames"].set_number_value(recording.audio_frames);
-    fields["recording_audio_bytes"].set_number_value(recording.audio_bytes);
-    fields["recording_audio_drops"].set_number_value(
-        recording.audio_queue_drops);
-    std::string json;
-    google::protobuf::util::JsonPrintOptions options;
-    options.preserve_proto_field_names = true;
-    (void)google::protobuf::util::MessageToJsonString(status, &json, options);
-    return json;
+    coakka::camera_json::object_writer_t status(768u);
+    status.add_string("type", "status");
+    status.add_string("request_id", request_id);
+    status.add_bool("ok", ok);
+    status.add_string("error", error);
+    status.add_string("control",
+                      control_client != nullptr ? "connected" : "disconnected");
+    status.add_string("transport", transport_name());
+    status.add_bool("livestream_enabled", livestream_enabled);
+    status.add_bool("viewer_connected", stream_client != nullptr);
+    status.add_bool("audio_available", audio_available());
+    status.add_uint64("profile_width", width);
+    status.add_uint64("profile_height", height);
+    status.add_uint64("profile_fps", fps);
+    status.add_string("profile_state", profile_status);
+    status.add_string("profile_error", profile_error);
+    status.add_uint64("received_frames", received_frames);
+    status.add_uint64("received_bytes", received_bytes);
+    status.add_uint64("source_drops", source_drops);
+    status.add_uint64("display_drops", display_drops);
+    status.add_uint64("browser_frames",
+                      browser_frames.load(std::memory_order_relaxed));
+    status.add_uint64("browser_bytes",
+                      browser_bytes.load(std::memory_order_relaxed));
+    status.add_string("recording_state", recording.state);
+    status.add_string("recording_path", recording.path);
+    status.add_string("recording_error", recording.error);
+    status.add_uint64("recording_frames", recording.frames);
+    status.add_uint64("recording_bytes", recording.bytes);
+    status.add_uint64("recording_drops", recording.queue_drops);
+    status.add_bool("recording_with_audio", recording.with_audio);
+    status.add_uint64("recording_audio_frames", recording.audio_frames);
+    status.add_uint64("recording_audio_bytes", recording.audio_bytes);
+    status.add_uint64("recording_audio_drops", recording.audio_queue_drops);
+    return status.finish();
   }
 
   void send_status(WebClient *client, std::string_view request_id = {},
@@ -504,20 +496,9 @@ struct Gateway {
     }
   }
 
-  static bool command_uint32(const google::protobuf::Struct &command,
+  static bool command_uint32(const coakka::camera_json::object_t &command,
                              const char *name, uint32_t *out) {
-    const auto found = command.fields().find(name);
-    if (found == command.fields().end() ||
-        found->second.kind_case() != google::protobuf::Value::kNumberValue) {
-      return false;
-    }
-    const double value = found->second.number_value();
-    if (value < 1.0 || value > static_cast<double>(UINT32_MAX) ||
-        value != static_cast<double>(static_cast<uint32_t>(value))) {
-      return false;
-    }
-    *out = static_cast<uint32_t>(value);
-    return true;
+    return coakka::camera_json::value_as_uint32(command.find(name), out);
   }
 
   static bool supported_profile(uint32_t width, uint32_t height, uint32_t fps) {
@@ -528,25 +509,19 @@ struct Gateway {
   }
 
   void handle_command(WebClient *client, std::string_view payload) {
-    google::protobuf::Struct command;
-    google::protobuf::util::JsonParseOptions options;
-    options.ignore_unknown_fields = false;
-    const auto parsed = google::protobuf::util::JsonStringToMessage(
-        std::string(payload), &command, options);
+    coakka::camera_json::object_t command;
+    std::string json_error;
+    const bool parsed =
+        coakka::camera_json::parse_object(payload, &command, &json_error);
     std::string id;
     std::string name;
-    const auto &fields = command.fields();
-    const auto id_it = fields.find("id");
-    const auto command_it = fields.find("command");
-    if (!parsed.ok() || id_it == fields.end() || command_it == fields.end() ||
-        id_it->second.kind_case() != google::protobuf::Value::kStringValue ||
-        command_it->second.kind_case() !=
-            google::protobuf::Value::kStringValue) {
+    if (!parsed ||
+        !coakka::camera_json::value_as_string(command.find("id"), &id) ||
+        !coakka::camera_json::value_as_string(command.find("command"),
+                                              &name)) {
       send_status(client, {}, false, "expected string id and command");
       return;
     }
-    id = id_it->second.string_value();
-    name = command_it->second.string_value();
     if (id.empty() || id.size() > 64u || name.empty() || name.size() > 64u) {
       send_status(client, id, false, "id or command is out of bounds");
       return;
@@ -562,13 +537,11 @@ struct Gateway {
       close_client(stream_client);
     } else if (name == "recording.start") {
       bool with_audio = false;
-      const auto audio = fields.find("audio");
-      if (audio != fields.end()) {
-        if (audio->second.kind_case() != google::protobuf::Value::kBoolValue) {
+      const auto *audio = command.find("audio");
+      if (audio != nullptr) {
+        if (!coakka::camera_json::value_as_bool(audio, &with_audio)) {
           ok = false;
           error = "audio must be a boolean";
-        } else {
-          with_audio = audio->second.bool_value();
         }
       }
       if (ok && with_audio && !audio_available()) {

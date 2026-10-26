@@ -1,9 +1,7 @@
 #include "stream_lane_camera_control_server.h"
 
+#include "camera_json.h"
 #include "runtime_addon_web_wire.h"
-
-#include <google/protobuf/struct.pb.h>
-#include <google/protobuf/util/json_util.h>
 
 #include <uv.h>
 
@@ -64,20 +62,9 @@ struct Write {
   std::string payload;
 };
 
-bool read_uint32(const google::protobuf::Struct &body, const char *name,
+bool read_uint32(const coakka::camera_json::object_t &body, const char *name,
                  uint32_t *out) {
-  const auto found = body.fields().find(name);
-  if (found == body.fields().end() ||
-      found->second.kind_case() != google::protobuf::Value::kNumberValue) {
-    return false;
-  }
-  const double value = found->second.number_value();
-  if (value < 1.0 || value > static_cast<double>(UINT32_MAX) ||
-      value != static_cast<double>(static_cast<uint32_t>(value))) {
-    return false;
-  }
-  *out = static_cast<uint32_t>(value);
-  return true;
+  return coakka::camera_json::value_as_uint32(body.find(name), out);
 }
 
 struct Server {
@@ -192,15 +179,14 @@ struct Server {
       respond(client, 404, "{\"ok\":false,\"error\":\"not found\"}");
       return;
     }
-    google::protobuf::Struct body;
-    google::protobuf::util::JsonParseOptions options;
-    options.ignore_unknown_fields = false;
-    const auto parsed = google::protobuf::util::JsonStringToMessage(
-        request.body, &body, options);
+    coakka::camera_json::object_t body;
+    std::string json_error;
+    const bool parsed =
+        coakka::camera_json::parse_object(request.body, &body, &json_error);
     uint32_t width = 0u;
     uint32_t height = 0u;
     uint32_t fps = 0u;
-    if (!parsed.ok() || !read_uint32(body, "width", &width) ||
+    if (!parsed || !read_uint32(body, "width", &width) ||
         !read_uint32(body, "height", &height) ||
         !read_uint32(body, "fps", &fps)) {
       respond(client, 400, "{\"ok\":false,\"error\":\"invalid profile\"}");
@@ -209,13 +195,10 @@ struct Server {
     std::array<char, 192u> handler_error{};
     if (!config.profile_handler(config.handler_context, width, height, fps,
                                 handler_error.data(), handler_error.size())) {
-      google::protobuf::Struct response;
-      (*response.mutable_fields())["ok"].set_bool_value(false);
-      (*response.mutable_fields())["error"].set_string_value(
-          handler_error.data());
-      std::string json;
-      (void)google::protobuf::util::MessageToJsonString(response, &json);
-      respond(client, 409, std::move(json));
+      coakka::camera_json::object_writer_t response;
+      response.add_bool("ok", false);
+      response.add_string("error", handler_error.data());
+      respond(client, 409, response.finish());
       return;
     }
     respond(client, 202, "{\"ok\":true}");

@@ -26,6 +26,9 @@ wire contract.
   explicit release/acquire handshake before stop may wake the loop.
 - Both applications retain bounded queues, one libuv owner thread per server,
   monotonic deadlines, and idempotent joined shutdown.
+- Control parsing now uses a sample-owned bounded JSON object boundary with
+  duplicate-key, UTF-8, nesting, integer, and overflow refusal tests. The camera
+  executables no longer require a separate message/reflection runtime.
 
 ## Operator Contract
 

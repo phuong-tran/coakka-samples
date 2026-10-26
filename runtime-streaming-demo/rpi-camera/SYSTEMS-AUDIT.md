@@ -54,11 +54,15 @@ cannot dereference a detached libuv handle.
 - The web gateway admits at most eight clients, one MJPEG viewer, one control
   WebSocket, eight pending control writes, 16 KiB HTTP input, and 4 KiB control
   payloads.
+- The control JSON boundary accepts at most 16 KiB, 64 fields or array entries,
+  eight nesting levels, and 8 KiB per decoded string. Duplicate top-level keys,
+  malformed UTF-8, invalid escapes, non-integral profile values, and overflow
+  fail closed before state changes.
 
 At the 4 MiB profile ceiling, host camera buffers reserve roughly 36 MiB before
-Runtime, Protobuf, libuv, socket, and FFmpeg process memory. The Pi additionally
-holds the negotiated V4L2 MMAP set and Runtime window. This is bounded but not
-small; operators should select 720p or below on memory-constrained devices.
+Runtime, libuv, socket, and FFmpeg process memory. The Pi additionally holds the
+negotiated V4L2 MMAP set and Runtime window. This is bounded but not small;
+operators should select 720p or below on memory-constrained devices.
 
 ## Device And Kernel Boundary
 
@@ -86,6 +90,11 @@ profile-control listeners use one bearer token read from an environment
 variable, but transport is plaintext. Use only a trusted private network or a
 separately secured tunnel. There is no TLS, Internet exposure, browser user
 authentication, multi-user authorization, or token rotation service.
+
+Control JSON is parsed by the sample-owned bounded flat-object boundary rather
+than a general reflection runtime. Unknown fields remain syntactically checked
+and ignored; duplicate top-level keys are rejected so no component can disagree
+about which command value wins.
 
 The Windows binary is unsigned. Windows does not universally require
 Authenticode, but SmartScreen or managed application-control policy may block
