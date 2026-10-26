@@ -310,6 +310,34 @@ existing workload and connection-strategy modes without the new target.
 
 ## Current-Engine Controls — Source Candidate
 
+On macOS/Linux, an explicit installed-candidate prefix and caller-owned build
+directory now select the current engine for every source mode, not only
+`native-startup`:
+
+```sh
+COAKKA_NATIVE_EVIDENCE_RUNTIME_PREFIX=/exact/installed/native-candidate \
+COAKKA_NATIVE_EVIDENCE_BUILD_DIR=/external/owned/native-engine-controls \
+  bash run.sh runtime-test smoke
+```
+
+Create that external build directory first; it must not overlap the SDK or
+source checkout. Replace `smoke` with `pressure`, `stress`, `soak`, `race`,
+`hot-reload`, `connection-strategies`, either lane's `-simple`/`-owner-aware`
+profile, or `native-startup`. Workload/concurrency arguments pass unchanged to
+their owning CLI. This selection refuses historical/prebuilt and Core-source
+build conflicts; it never falls back after admission/build/probe failure.
+Without explicit candidate intent, versioned historical runner behavior stays
+unchanged until coordinated promotion.
+
+Metadata admission precedes reusable-cache writes. The existing bounded startup
+driver verifies loader-observed Core image identity; every real candidate target
+uses the same selected image path. CMake supplies the executable's exact path,
+including custom/multi-config layouts, instead of probing guessed directories.
+The shell removes its temporary admission directory before direct exec, clears
+only its process's loader overrides and preserves workload exit/signal ownership
+and original deadlines. Native Windows uses the explicit CMake controls below;
+this paragraph does not claim a Windows Bash frontend.
+
 The private native candidate `2.5.1+f6b61768` additionally has focused C11
 fixture-owner controls. They use Core's opaque request reader and ask tickets,
 not framed response channels. From the repository root, configure an explicit

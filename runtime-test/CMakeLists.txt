@@ -29,6 +29,11 @@ if(COAKKA_NATIVE_EVIDENCE_ENABLE_SANITIZERS AND
   message(FATAL_ERROR "ASan/UBSan and ThreadSanitizer require separate builds")
 endif()
 
+if(COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR AND
+   COAKKA_NATIVE_EVIDENCE_RUNTIME_PREFIX)
+  message(FATAL_ERROR "An installed candidate prefix cannot also select a Core source build")
+endif()
+
 if(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
 endif()
@@ -510,16 +515,33 @@ if(COAKKA_NATIVE_EVIDENCE_STARTUP_INCLUDE_DIR)
   endif()
   if(COAKKA_NATIVE_EVIDENCE_RUNTIME_PACKAGE STREQUAL "CoAkkaV2" AND
      COAKKA_NATIVE_EVIDENCE_RUNTIME_PREFIX)
-    get_filename_component(_startup_image_directory "${_startup_image}" DIRECTORY)
-    # A reused consumer cache must not substitute an install RPATH or omit the
-    # exact selected image's build RPATH. Actual loader attribution is checked
-    # independently by the generated execution driver before it emits a pass.
-    set_target_properties(coakka_runtime_v2_native_startup_evidence PROPERTIES
-      BUILD_RPATH "${_startup_image_directory}" SKIP_BUILD_RPATH FALSE
-      BUILD_WITH_INSTALL_RPATH FALSE BUILD_RPATH_USE_ORIGIN FALSE INSTALL_RPATH "")
     file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/native-startup-$<CONFIG>.cmake"
       CONTENT "set(NATIVE_STARTUP_EXECUTABLE [==[$<TARGET_FILE:coakka_runtime_v2_native_startup_evidence>]==])\nset(NATIVE_STARTUP_IMAGE [==[${_startup_image}]==])\nset(NATIVE_STARTUP_IMAGE_SHA [==[${_startup_image_sha}]==])\ninclude([==[${CMAKE_CURRENT_SOURCE_DIR}/native_startup_run.cmake]==])\n")
   endif()
 elseif(COAKKA_NATIVE_EVIDENCE_REQUIRE_NATIVE_STARTUP)
   message(FATAL_ERROR "The selected runtime artifact does not expose runtime_startup.h")
+endif()
+
+# One selected-image boundary for every real installed-candidate consumer,
+# not only its startup probe. Reused install/build RPATH preferences must not
+# make the probe pass while ordinary traffic loads a different/missing image.
+# Pure fake-API and ticket units intentionally stay outside this Core list.
+if(COAKKA_NATIVE_EVIDENCE_RUNTIME_PACKAGE STREQUAL "CoAkkaV2" AND
+   COAKKA_NATIVE_EVIDENCE_RUNTIME_PREFIX AND
+   NOT COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR)
+  get_filename_component(_candidate_image_directory "${_startup_image}" DIRECTORY)
+  foreach(_candidate_consumer IN ITEMS
+      coakka_runtime_v2_native_evidence coakka_runtime_v2_concurrency_evidence
+      coakka_runtime_v2_file_lane_evidence coakka_runtime_v2_stream_lane_evidence
+      coakka_runtime_v2_connection_strategy_evidence coakka_runtime_v2_native_startup_evidence
+      coakka_runtime_v2_native_engine_owner_consumer coakka_runtime_v2_native_concurrency_fixture_tests)
+    if(TARGET ${_candidate_consumer})
+      set_target_properties(${_candidate_consumer} PROPERTIES
+        BUILD_RPATH "${_candidate_image_directory}" SKIP_BUILD_RPATH FALSE
+        BUILD_WITH_INSTALL_RPATH FALSE BUILD_RPATH_USE_ORIGIN FALSE INSTALL_RPATH "")
+      file(GENERATE
+        OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/native-candidate-${_candidate_consumer}-$<CONFIG>.path"
+        CONTENT "$<TARGET_FILE:${_candidate_consumer}>\n")
+    endif()
+  endforeach()
 endif()

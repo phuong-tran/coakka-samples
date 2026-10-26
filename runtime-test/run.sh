@@ -7,6 +7,7 @@ publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
 source "${repo_root}/scripts/resolve-artifact.sh"
 source "${repo_root}/scripts/sample-utils.sh"
 source "${repo_root}/scripts/sample-metadata.sh"
+source "${script_dir}/native_candidate.sh"
 COAKKA_PUBLISH_RAW_BASE="${COAKKA_PUBLISH_RAW_BASE:-${COAKKA_PUBLISH_RAW_BASE_DEFAULT}}"
 
 evidence_release="1.3.4+dc6ec284"
@@ -41,70 +42,10 @@ coakka_print_evidence_help() {
   "requestLimitMax": 500000,
   "concurrencyUsage": "bash run.sh runtime-test [race|hot-reload] [--threads 4] [--requests 128] [--generations 16] [--lifecycle-iterations 8] [--queue-capacity 1024] [--timeout 30s]",
   "nativeStartupUsage": "COAKKA_NATIVE_EVIDENCE_RUNTIME_PREFIX=/exact/installed/candidate COAKKA_NATIVE_EVIDENCE_BUILD_DIR=/external/owned/build bash run.sh runtime-test native-startup",
-  "nativeStartupScope": "source candidate only; no published package or prebuilt fallback"
+  "nativeStartupScope": "source candidate only; no published package or prebuilt fallback",
+  "installedCandidateScope": "An explicit runtime prefix/build selects the current engine for every mode; no historical package fallback."
 }
 EOF
-}
-
-run_native_startup_candidate() {
-  [[ "$#" == 1 ]] || coakka_die "native-startup accepts no arguments"
-  [[ "${COAKKA_NATIVE_EVIDENCE_USE_PREBUILT:-0}" != 1 ]] ||
-    coakka_die "native-startup has no published/prebuilt fallback"
-  [[ -z "${COAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR:-}" ]] ||
-    coakka_die "native-startup requires an installed candidate prefix, not a Core source build"
-  local prefix="${COAKKA_NATIVE_EVIDENCE_RUNTIME_PREFIX:-}"
-  local build="${COAKKA_NATIVE_EVIDENCE_BUILD_DIR:-}"
-  [[ -n "${prefix}" && -n "${build}" ]] ||
-    coakka_die "native-startup requires COAKKA_NATIVE_EVIDENCE_RUNTIME_PREFIX and COAKKA_NATIVE_EVIDENCE_BUILD_DIR"
-  [[ "${prefix}" == /* && "${build}" == /* && "${build}" != / ]] ||
-    coakka_die "native-startup prefix/build directory must be explicit absolute paths"
-  [[ -d "${prefix}" && -d "${build}" ]] ||
-    coakka_die "native-startup prefix/build directories must already exist"
-  prefix="$(cd -P "${prefix}" && pwd -P)"
-  build="$(cd -P "${build}" && pwd -P)"
-  local source_root
-  source_root="$(cd -P "${repo_root}" && pwd -P)"
-  [[ "${build}" != / && "${prefix}" != / &&
-      "${build}/" != "${prefix}/"* && "${prefix}/" != "${build}/"* &&
-      "${build}/" != "${source_root}/"* && "${source_root}/" != "${build}/"* &&
-      ! -e "${build}/.git" && ! -f "${build}/CMakeLists.txt" ]] ||
-    coakka_die "native-startup prefix/build overlap or source build root is forbidden"
-  local sanitizer="${COAKKA_NATIVE_EVIDENCE_ENABLE_SANITIZERS:-0}"
-  local thread_sanitizer="${COAKKA_NATIVE_EVIDENCE_ENABLE_TSAN:-0}"
-  [[ ( "${sanitizer}" == 0 || "${sanitizer}" == 1 ) &&
-      ( "${thread_sanitizer}" == 0 || "${thread_sanitizer}" == 1 ) ]] ||
-    coakka_die "native-startup sanitizer preferences must be 0 or 1"
-  [[ "${sanitizer}:${thread_sanitizer}" != 1:1 ]] ||
-    coakka_die "native-startup ASan/UBSan and TSan require separate builds"
-  coakka_require_command cmake "Install CMake to build native-startup evidence."
-  # A rejected package must not rewrite a caller's prior top-level CMake cache.
-  # This tiny metadata-only configure owns no compiler/dependency build graph.
-  coakka_evidence_tmp_dir="$(mktemp -d "${build}/native-startup-admission.XXXXXX")"
-  cmake -S "${script_dir}/native-startup-preflight" -B "${coakka_evidence_tmp_dir}" \
-    -DCOAKKA_NATIVE_EVIDENCE_RUNTIME_PREFIX="${prefix}" >&2
-  local args=( -S "${script_dir}" -B "${build}"
-    -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="${prefix}"
-    -DCOAKKA_NATIVE_EVIDENCE_RUNTIME_PACKAGE=CoAkkaV2
-    -DCOAKKA_NATIVE_EVIDENCE_RUNTIME_PREFIX="${prefix}"
-    -DCOAKKA_NATIVE_EVIDENCE_RUNTIME_SOURCE_DIR=
-    -DCOAKKA_NATIVE_EVIDENCE_REQUIRE_NATIVE_STARTUP=ON
-    -DCOAKKA_NATIVE_EVIDENCE_ENABLE_SANITIZERS=OFF
-    -DCOAKKA_NATIVE_EVIDENCE_ENABLE_TSAN=OFF
-    -DCMAKE_SKIP_RPATH=OFF -DCMAKE_SKIP_BUILD_RPATH=OFF
-    -DCMAKE_BUILD_WITH_INSTALL_RPATH=OFF )
-  if [[ "${sanitizer}" == 1 ]]; then
-    args+=( -DCOAKKA_NATIVE_EVIDENCE_ENABLE_SANITIZERS=ON )
-  fi
-  if [[ "${thread_sanitizer}" == 1 ]]; then
-    args+=( -DCOAKKA_NATIVE_EVIDENCE_ENABLE_TSAN=ON )
-  fi
-  # Caller owns this explicit reusable build directory; no package/dependency
-  # download or hidden temporary build is created by the candidate lane.
-  cmake "${args[@]}" >&2
-  cmake --build "${build}" --config Release \
-    --target coakka_runtime_v2_native_startup_evidence >&2
-  COAKKA_EVIDENCE_EXECUTION_PATH=installed-source-candidate \
-    cmake -P "${build}/native-startup-Release.cmake"
 }
 
 coakka_native_platform() {
@@ -290,8 +231,10 @@ run_from_prebuilt() {
 
 if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
   coakka_print_evidence_help
-elif [[ "$(coakka_evidence_mode "${1:-}")" == native-startup ]]; then
-  run_native_startup_candidate "$@"
+elif [[ "${1:-}" == native-startup ||
+        -n "${COAKKA_NATIVE_EVIDENCE_RUNTIME_PREFIX:-}" ||
+        -n "${COAKKA_NATIVE_EVIDENCE_BUILD_DIR:-}" ]]; then
+  run_installed_native_candidate "${script_dir}" "${repo_root}" "$@"
 elif [[ "${COAKKA_NATIVE_EVIDENCE_USE_PREBUILT:-0}" == "1" ]]; then
   run_from_prebuilt "$@"
 elif coakka_can_build_from_source; then
