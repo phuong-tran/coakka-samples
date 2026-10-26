@@ -12,8 +12,10 @@ This is an evaluation demo for Stream Lane publication, subscription, bounded
 backpressure, cancellation, and shutdown. Its executables are provided so users
 can test those runtime paths on their own hardware; they are not a separate
 CoAkka product or a production camera support promise. Source revision `1.1.2`
-builds against Runtime native
-`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`.
+on this private candidate branch builds against Runtime native
+`2.5.1+f6b61768f60a08d81b1dc06625a211ffca8e89e2`. The candidate is not a
+public release: its package and matching-host evidence remain private until
+the coordinated ecosystem promotion gate is opened explicitly.
 
 The web listener is intentionally restricted to `127.0.0.1`. The Pi listener
 uses a bearer token and is intended for a trusted private network. This sample
@@ -22,6 +24,11 @@ does not provide TLS, Internet exposure, or multi-user browser authentication.
 Release `v1.1.0` is the first audited stable sample line. Its detailed thread,
 memory, device, shutdown, and evidence boundaries are in
 [`SYSTEMS-AUDIT.md`](SYSTEMS-AUDIT.md).
+
+The private P497 candidate keeps that application contract unchanged and
+rebinds the demo to the frozen five-target enterprise-standard Runtime image.
+It is exercised from freshly installed candidate archives on Raspberry Pi 5
+ARM64 and macOS ARM64; this does not alter the public `v1.1.0` download lane.
 
 ## Contents
 

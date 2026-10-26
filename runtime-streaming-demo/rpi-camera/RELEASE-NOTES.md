@@ -1,5 +1,18 @@
 # CoAkka Raspberry Pi Camera Sample v1.1.0
 
+## Private P497 candidate
+
+The current private branch binds source revision `1.1.2` to Runtime native
+`2.5.1+f6b61768f60a08d81b1dc06625a211ffca8e89e2`. Candidate packaging and
+matching-host execution are coordinated privately; no public tag, release
+root, checksum catalog, or support claim is changed by this work.
+
+The candidate must execute the freshly installed Linux ARM64 Pi publisher and
+macOS ARM64 host gateway together. The retained run covers real V4L2 and ALSA
+capture, authentication refusal, exclusive control, unsupported-profile
+refusal, MJPEG viewing, slow-viewer pressure, profile change, audio/video
+recording, stop, disconnect, and residue-free shutdown.
+
 Release `v1.1.0` promotes the focused public camera sample after a systems
 audit. It supersedes the `v0.2.0` prerelease without changing the Stream Lane
 wire contract.

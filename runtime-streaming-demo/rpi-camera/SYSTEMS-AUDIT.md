@@ -2,6 +2,31 @@
 
 Date: 2026-08-11
 
+## Private P497 candidate addendum
+
+The private P497 candidate changes no camera algorithm, hot path, queue,
+thread, descriptor, transport, ownership, or public source boundary. It binds
+this sample to frozen Runtime native source
+`f6b61768f60a08d81b1dc06625a211ffca8e89e2`, ABI 1 with 160 exports, and
+packages the Pi publisher and macOS host separately with exact Runtime images.
+The packages remain private and unselected.
+
+Matching-host evidence uses a Raspberry Pi 5 running Debian 13 ARM64 with a
+real V4L2 camera and ALSA microphone, plus a macOS ARM64 host. Two pre-package
+live runs cover authentication refusal, exclusive control, invalid command and
+unsupported-profile refusal, bounded slow-viewer pressure, profile switching,
+MJPEG delivery, audio/video recording, stop, disconnect, and natural cleanup.
+The final promotion gate additionally requires the exact freshly installed
+candidate archives to repeat that end-to-end path.
+
+Senior systems review remains pass: existing bounded queues, monotonic waits,
+single-owner device and libuv loops, explicit cancellation, idempotent joined
+shutdown, and fail-closed admission are unchanged. Expert boundary review
+finds no justified NUMA, io_uring, DMA, IRQ, MMU, kernel-bypass, or hard
+realtime mechanism for this userspace sample. The large gateway and demo
+translation units remain cohesive at their existing web-gateway and process
+orchestration boundaries; P497 adds no feature to either file.
+
 ## Architecture And Ownership
 
 The Pi application owns V4L2, optional ALSA, one Stream Lane publisher per
