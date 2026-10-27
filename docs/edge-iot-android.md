@@ -9,10 +9,11 @@ supported native runtime package, route snapshots, handlers, and the normal
 platform services around it.
 
 Android industrial tablets are feasible. Android connector `1.2.0` now provides
-a four-ABI AAR and a release-minified API 36 ARM64 emulator gate. An Android app
-or background service can host the connector, load the native runtime through
-the Android NDK, register handlers, and call stable targets. Physical-device
-lifecycle and industrial soak evidence remain separate support gates.
+a private four-ABI AAR and a release-minified API 37 x86_64 emulator gate. An
+Android app or background service can host the connector, load the native
+runtime through the Android NDK, register handlers, and call stable targets.
+Physical-device lifecycle and industrial soak evidence remain separate support
+gates.
 
 Its native construction path leaves execution and connection intent absent, so
 Core owns the normal CPU `AUTO` and persistent `MULTIPLEXED` defaults. Android
@@ -120,9 +121,11 @@ stable targets.
 
 Connector `1.2.0` has an internal candidate AAR with `arm64-v8a`, `armeabi-v7a`,
 `x86`, and `x86_64` payloads, a thin JNI layer, and Android lifecycle guidance.
-The exact release-minified AAR passed Runtime, request/reply, File Lane, and
-Stream Lane on the named API 36 ARM64 emulator image. It remains an internal
-candidate; no Maven Central publication is planned.
+The exact release-minified AAR passed startup inspection, Core-owned Runtime
+request/reply, close interruption, File Lane, and Stream Lane on the Windows
+API 37 x86_64 AVD. That AVD also advertises translated ARM64 through
+`libndk_translation.so`, which is not physical ARM64 evidence. The AAR remains
+an internal candidate; no Maven Central publication is planned.
 
 A proper Android lane should include:
 
@@ -158,8 +161,8 @@ Treat this as the support boundary:
 - current public package lanes are the released artifact surface;
 - edge Linux is the first practical expansion target for device and gateway
   validation;
-- Android connector `1.2.0` is a tagged, signed, emulator-tested candidate, not
-  yet a supported public coordinate;
-- the basic API 36 ARM64 gate does not establish physical-tablet Activity or
-  service restart, process-death recovery, LAN behavior, thermal pressure, or
-  soak support.
+- Android connector `1.2.0` has a clean private source checkpoint and an
+  unsigned emulator-tested candidate, not a public tag or supported coordinate;
+- the API 37 x86_64 gate does not establish physical-tablet Activity or service
+  restart, process-death recovery, LAN behavior, thermal pressure, ARM64/32-bit
+  matching-device execution, or soak support.
