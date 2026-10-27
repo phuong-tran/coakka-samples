@@ -80,11 +80,11 @@ def digest(value: object) -> bool:
 def decode_catalog(content: bytes) -> dict:
     value = json.loads(content, object_pairs_hook=unique_object)
     fields = {"schema", "state", "distribution", "version", "minimumRuntime", "coreCommit", "wheels"}
-    targets = {"macos-aarch64", "linux-aarch64", "windows-x86_64"}
+    targets = {"macos-aarch64", "linux-aarch64", "linux-x86_64", "windows-aarch64", "windows-x86_64"}
     if not isinstance(value, dict) or value.keys() != fields:
         raise ValueError("unknown catalog shape")
     if (type(value["schema"]) is not int or value["schema"] != 1 or value["state"] != "private-candidate" or
-            value["distribution"] != "coakka-v2-connector" or value["version"] != "2.5.4.dev20261023" or
+            value["distribution"] != "coakka-v2-connector" or value["version"] != "3.0.0" or
             value["minimumRuntime"] != "3.11" or value["coreCommit"] != "f6b61768f60a08d81b1dc06625a211ffca8e89e2" or
             not isinstance(value["wheels"], dict) or value["wheels"].keys() != targets):
         raise ValueError("invalid private Python candidate")
@@ -93,7 +93,7 @@ def decode_catalog(content: bytes) -> dict:
             raise ValueError("invalid wheel row")
         name = row["filename"]
         if (not isinstance(name, str) or Path(name).name != name or "/" in name or "\\" in name or ":" in name or
-                not name.startswith("coakka_v2_connector-2.5.4.dev20261023-py3-none-") or not name.endswith(".whl") or
+                not name.startswith("coakka_v2_connector-3.0.0-py3-none-") or not name.endswith(".whl") or
                 type(row["bytes"]) is not int or not 0 < row["bytes"] <= 4 << 20 or not digest(row["sha256"]) or
                 not isinstance(row["members"], dict) or not 0 < len(row["members"]) <= 128):
             raise ValueError("invalid wheel identity/bounds")
@@ -195,6 +195,7 @@ def entry(arguments: list[str]) -> None:
     catalog = decode_catalog(bounded_file(args.repo_root / "artifacts/runtime-python-candidate.json", 256 << 10))
     # Installer artifact selection, never a connector capability/platform probe.
     target = {("darwin", "arm64"): "macos-aarch64", ("linux", "aarch64"): "linux-aarch64",
+              ("linux", "x86_64"): "linux-x86_64", ("win32", "arm64"): "windows-aarch64",
               ("win32", "amd64"): "windows-x86_64"}.get((sys.platform, platform.machine().lower()))
     if target is None:
         raise ValueError("no qualified candidate for this installer target")

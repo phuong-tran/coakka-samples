@@ -1,0 +1,146 @@
+syntax = "proto3";
+
+package coakka.v2.transport;
+
+option java_multiple_files = true;
+option java_package = "coakka.v2.transport";
+
+// Envelope is the main-channel message exchanged between app-host and runtime.
+// Business success and business failure both travel as Envelope replies.
+message Envelope {
+  // Unique identifier for this message instance.
+  string message_id = 1;
+
+  // Correlates a reply to the originating request message_id.
+  string correlation_id = 2;
+
+  // Logical source identity chosen by the connector or app-host.
+  string source = 3;
+
+  // Logical routing target resolved by the runtime using the active snapshot.
+  string target = 4;
+
+  // Optional reply target for request/reply patterns.
+  string reply_to = 5;
+
+  // Whether this is a request, response, or event-style message.
+  MessageKind kind = 6;
+
+  // Fire-and-forget if true. A one-way message must not expect a reply.
+  bool one_way = 7;
+
+  // Optional timeout hint from the host layer in milliseconds.
+  int32 timeout_ms = 8;
+
+  // Opaque application payload owned by the app-host contract.
+  bytes payload = 9;
+
+  // Extensible metadata bag for host-side concerns that do not justify
+  // first-class schema fields yet.
+  map<string, string> headers = 10;
+
+  // Reply outcome at the business layer.
+  // Runtime delivery failures must not use this field; they go to Deadletter.
+  BusinessStatus status = 11;
+
+  // Stable business/domain error code for response envelopes.
+  string error_code = 12;
+
+  // Human-readable business/domain error detail for response envelopes.
+  string error_message = 13;
+
+  // Optional routing preference from the app-host.
+  // The runtime may honor or reject this according to policy.
+  DeliveryHint delivery_hint = 14;
+
+  // Business / contract identity of the payload bytes.
+  // This is transport-visible metadata, not a runtime-owned business policy.
+  string message_type = 15;
+
+  // Version of the business payload schema described by message_type.
+  uint32 payload_schema_version = 16;
+
+  // Byte encoding or container format of payload.
+  PayloadFormat payload_format = 17;
+}
+
+enum MessageKind {
+  MESSAGE_KIND_UNSPECIFIED = 0;
+  MESSAGE_KIND_REQUEST = 1;
+  MESSAGE_KIND_RESPONSE = 2;
+  MESSAGE_KIND_EVENT = 3;
+}
+
+enum BusinessStatus {
+  BUSINESS_STATUS_UNSPECIFIED = 0;
+  BUSINESS_STATUS_OK = 1;
+  BUSINESS_STATUS_ERROR = 2;
+}
+
+enum DeliveryHint {
+  DELIVERY_HINT_UNSPECIFIED = 0;
+  DELIVERY_HINT_ROUTER_DEFAULT = 1;
+  DELIVERY_HINT_PREFER_LOCAL = 2;
+  DELIVERY_HINT_REQUIRE_LOCAL = 3;
+  DELIVERY_HINT_REQUIRE_REMOTE = 4;
+}
+
+enum PayloadFormat {
+  PAYLOAD_FORMAT_UNSPECIFIED = 0;
+  PAYLOAD_FORMAT_JSON = 1;
+  PAYLOAD_FORMAT_PROTOBUF = 2;
+  PAYLOAD_FORMAT_THRIFT = 3;
+  PAYLOAD_FORMAT_MSGPACK = 4;
+  PAYLOAD_FORMAT_PLAIN_TEXT = 5;
+  PAYLOAD_FORMAT_BINARY = 6;
+}
+
+// Deadletter is emitted only when runtime cannot deliver an envelope to the
+// next responsible hop. It is not a business-error channel.
+message Deadletter {
+  // The original request envelope that failed delivery.
+  Envelope original_envelope = 1;
+
+  // Why the runtime could not complete delivery.
+  DeadletterReason reason = 2;
+
+  // Extra implementation detail intended for logs, operator triage, or
+  // host-side application policy.
+  string detail = 3;
+
+  // Runtime control generation active at failure time.
+  uint64 active_generation = 4;
+
+  // Optional resolved destination information when the failure happened after
+  // route lookup but before successful handoff.
+  string resolved_host = 5;
+  uint32 resolved_port = 6;
+
+  // Number of endpoint delivery attempts that contributed to this terminal
+  // runtime outcome. This is core delivery evidence, not an app/user retry
+  // count.
+  uint32 endpoint_attempt_count = 7;
+
+  // Bounded, versioned facts about a terminal transport failure. Stable keys
+  // are interpreted by the runtime; unknown keys are preserved and ignored.
+  map<string, string> transport_failure_metadata = 8;
+}
+
+enum DeadletterReason {
+  DEADLETTER_REASON_UNSPECIFIED = 0;
+  DEADLETTER_REASON_NO_ACTIVE_SNAPSHOT = 1;
+  DEADLETTER_REASON_ROUTE_MISS = 2;
+  DEADLETTER_REASON_NO_RESPONSIBLE_HOST = 3;
+  DEADLETTER_REASON_QUEUE_REJECTED = 4;
+  DEADLETTER_REASON_LOCAL_HANDOFF_FAILED = 5;
+  DEADLETTER_REASON_DELIVERY_FAILED = 6;
+  DEADLETTER_REASON_REMOTE_TRANSPORT_FAILED = 7;
+  DEADLETTER_REASON_RUNTIME_STOPPED = 8;
+  DEADLETTER_REASON_INVALID_ENVELOPE = 9;
+  DEADLETTER_REASON_ENDPOINT_UNAVAILABLE = 10;
+  DEADLETTER_REASON_REMOTE_REPLY_TIMEOUT = 11;
+  DEADLETTER_REASON_LOCALITY_MISMATCH = 12;
+  DEADLETTER_REASON_EXPIRED_BEFORE_DELIVERY = 13;
+  DEADLETTER_REASON_ONE_WAY_DROPPED_BY_POLICY = 14;
+  DEADLETTER_REASON_REMOTE_TRANSPORT_SECURITY_FAILED = 15;
+}

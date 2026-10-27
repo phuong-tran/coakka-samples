@@ -52,7 +52,7 @@ repeat(5) { index -> for (field in listOf("name", "bytes", "sha256")) expectedKe
 require(properties.stringPropertyNames() == expectedKeys &&
     properties.getProperty("format") == "coakka.runtime.jvm-candidate.v1" &&
     properties.getProperty("state") == "private-candidate" &&
-    properties.getProperty("version") == "2.5.5-dev.20261023" &&
+    properties.getProperty("version") == "3.0.0" &&
     properties.getProperty("core.source") == "f6b61768f60a08d81b1dc06625a211ffca8e89e2" &&
     properties.getProperty("files") == "5") { "invalid private JVM candidate identity" }
 var totalBytes = 0L

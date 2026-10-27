@@ -1,17 +1,17 @@
 # Private JVM runtime candidate samples
 
 Four Kotlin/Java examples use the exact real ProGuard candidate
-`2.5.5-dev.20261023` in `artifacts/runtime-jvm-candidate.properties`, not the
+`3.0.0` in `artifacts/runtime-jvm-candidate.properties`, not the
 historical public2.5.2 artifact. The runtime JAR bundles Core2.5.1+f6b61768 /
-ABI1 and three admitted Core/JNI pairs. Four ordinary public managed runtime
+ABI1 and five admitted Core/JNI pairs. Four ordinary public managed runtime
 dependencies accompany it; no separate Core/provider library is installed.
-Candidate targets are macOS ARM64, Linux ARM64 and native Windows x64.
+Candidate targets are macOS ARM64, Linux ARM64/x64 and native Windows ARM64/x64.
 
 Java8 is the consumer baseline. Build JDK17+ runs Gradle/Kotlin2.3.10 only;
 Java sources use--release8, Kotlin targets1.8/Java8 APIs and owned classes must
-be major52. Qualification uses actual Java8u504 on the three matching hosts,
-not the build VM as a substitute. Wider targets/minimum OS and registry/main
-promotion remain separate gates.
+be major52. Qualification uses actual Java8u504 on four matching targets;
+native Windows ARM64 uses Microsoft ARM64 JDK11. Minimum OS execution and
+registry/main promotion are recorded separately.
 
 ## Exact local inputs / separate build
 

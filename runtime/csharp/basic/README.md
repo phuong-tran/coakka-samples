@@ -12,7 +12,7 @@ route miss with the original target and leaves no pending ask. Both requests
 keep their two-second budget. Core owns queue normalization and AUTO/MULTIPLEX
 selection; no queue size or delivery hint is repeated in business code.
 
-App-scope cleanup executes exactly once; an operation and cleanup failure are
+App-scope cleanup awaits `DisposeAsync` exactly once; an operation and cleanup failure are
 both retained. Focused tests exercise all four combinations without native
 resources. The normal consumer's diagnostics contain product facts, not private
 paths, schemas or dependency identities. This sample does not claim a benchmark,

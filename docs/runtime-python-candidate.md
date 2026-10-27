@@ -1,14 +1,14 @@
 # Private Python runtime candidate samples
 
 The basic/deadletter/hot-reload apps on this branch use the exact private
-`2.5.4.dev20261023` platform wheels pinned in
+`3.0.0` platform wheels pinned in
 `artifacts/runtime-python-candidate.json`, not historical public2.5.2.
 Each wheel contains22 genuinely minified language modules and one frozen
 Core2.5.1+f6b61768f60a08d81b1dc06625a211ffca8e89e2 image, ABI1.
-Candidate targets: macOS ARM64, Linux ARM64 and native Windows x64.
+Candidate targets: macOS ARM64, Linux ARM64/x64 and native Windows ARM64/x64.
 CPython3.11 is the baseline; existing matching package evidence uses3.11.15
-Mac/Pi and3.11.9 Windows. Earlier patches/minimum OS or wider targets are not
-inferred. No registry publication or source promotion is opened by this guide.
+Mac/Pi and3.11.9 Windows. Minimum OS execution is recorded independently from
+the language version. No registry publication is opened by this guide.
 
 ## Run the exact local candidate
 
@@ -20,7 +20,7 @@ mounted external APFS storage. From this repository:
 ```sh
 export PYTHON="/absolute/path/to/python3.11"
 export COAKKA_SAMPLE_WORK_ROOT="/absolute/work"
-export COAKKA_PYTHON_CANDIDATE_WHEEL="/absolute/coakka_v2_connector-2.5.4.dev20261023-py3-none-macosx_13_0_arm64.whl"
+export COAKKA_PYTHON_CANDIDATE_WHEEL="/absolute/coakka_v2_connector-3.0.0-py3-none-macosx_13_0_arm64.whl"
 bash runtime/python/basic/run.sh
 bash runtime/python/deadletter/run.sh
 bash runtime/python/hot-reload/run.sh

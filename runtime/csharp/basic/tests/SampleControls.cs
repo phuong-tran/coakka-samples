@@ -13,8 +13,10 @@ internal static class SampleControls
             Exception? observed = null;
             try
             {
-                await Program.WithCleanup(() => bodyFails ? Task.FromException(body) : Task.CompletedTask, () =>
+                await Program.WithCleanup(() => bodyFails ? Task.FromException(body) : Task.CompletedTask, async () =>
                 {
+                    // Exercise exceptions after asynchronous cleanup has yielded.
+                    await Task.Yield();
                     closes++;
                     if (closeFails) throw close;
                 });

@@ -9,14 +9,14 @@ internal static class Program
         if (!condition) throw new InvalidOperationException(message);
     }
 
-    internal static async Task WithCleanup(Func<Task> operation, Action cleanup)
+    internal static async Task WithCleanup(Func<Task> operation, Func<ValueTask> cleanup)
     {
         Exception? primary = null;
         try { await operation(); }
         catch (Exception error) { primary = error; throw; }
         finally
         {
-            try { cleanup(); }
+            try { await cleanup(); }
             catch (Exception error) when (primary is not null)
             {
                 // Neither the operation nor a failed shutdown may hide the other.
@@ -76,6 +76,6 @@ internal static class Program
             Console.WriteLine($"coakka_runtime_response payload={response}");
             Console.WriteLine($"coakka_runtime_startup auto={startup.Execution.RequestedPolicy} connection={startup.Connection.Mode} monitor={startup.MonitorEnabled} queueCapacity={startup.QueueCapacity}");
             Console.WriteLine($"coakka_runtime_client_stats delivered={client.DeliveredRequests} matchedResponses={client.MatchedResponses} matchedDeadletters={client.MatchedDeadletters} pending={client.PendingRequests}");
-        }, runtime.Dispose);
+        }, runtime.DisposeAsync);
     }
 }

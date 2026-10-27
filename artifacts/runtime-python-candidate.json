@@ -2,40 +2,40 @@
   "schema": 1,
   "state": "private-candidate",
   "distribution": "coakka-v2-connector",
-  "version": "2.5.4.dev20261023",
+  "version": "3.0.0",
   "minimumRuntime": "3.11",
   "coreCommit": "f6b61768f60a08d81b1dc06625a211ffca8e89e2",
   "wheels": {
     "macos-aarch64": {
-      "filename": "coakka_v2_connector-2.5.4.dev20261023-py3-none-macosx_13_0_arm64.whl",
-      "bytes": 495855,
-      "sha256": "042bc9b19c871ec56a3a0af932024da8a814d2dd0915bf5c5ada094c55c5dd66",
+      "filename": "coakka_v2_connector-3.0.0-py3-none-macosx_13_0_arm64.whl",
+      "bytes": 495835,
+      "sha256": "fae7c7180e095bd617d3014a50876e2cb074908bacd17ebc6a016aaa18912ef1",
       "members": {
-        "coakka_v2_connector-2.5.4.dev20261023.dist-info/METADATA": {
-          "bytes": 42764,
-          "sha256": "b6a7b72af309fe15a3bae3b96a8439eafaff45fe4274a437a1c56237193b6ce0"
+        "coakka_v2_connector-3.0.0.dist-info/METADATA": {
+          "bytes": 42948,
+          "sha256": "dedbc60bf648f622f81c79be1fc2ec22c2a9387d5dee476b3160e5f747df5014"
         },
-        "coakka_v2_connector-2.5.4.dev20261023.dist-info/RECORD": {
-          "bytes": 3048,
-          "sha256": "321c474a1884a5f428da2499a37787a656141eb8a23879e85f12aac0b20f0196"
+        "coakka_v2_connector-3.0.0.dist-info/RECORD": {
+          "bytes": 2964,
+          "sha256": "609aad69630baf84bc12994381481fdd9fbf7818bfd1ef78f980e5ed81cd5494"
         },
-        "coakka_v2_connector-2.5.4.dev20261023.dist-info/WHEEL": {
+        "coakka_v2_connector-3.0.0.dist-info/WHEEL": {
           "bytes": 117,
           "sha256": "221673c72471ebad932824ebe15ed4448d54e134ddb78b11f23e6e00969c8022"
         },
-        "coakka_v2_connector-2.5.4.dev20261023.dist-info/licenses/LICENSE": {
+        "coakka_v2_connector-3.0.0.dist-info/licenses/LICENSE": {
           "bytes": 11358,
           "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
         },
-        "coakka_v2_connector-2.5.4.dev20261023.dist-info/licenses/NATIVE-LICENSE.md": {
+        "coakka_v2_connector-3.0.0.dist-info/licenses/NATIVE-LICENSE.md": {
           "bytes": 6482,
           "sha256": "089ff94cf25b1707ae3e7d03bb81f0ddfb84e87fb7476f5fea7ebd2cd2f01925"
         },
-        "coakka_v2_connector-2.5.4.dev20261023.dist-info/licenses/NOTICE": {
+        "coakka_v2_connector-3.0.0.dist-info/licenses/NOTICE": {
           "bytes": 730,
           "sha256": "60dc12817965fc133ed0978119d9b8dc5238001dfcfce0e3005162b298cc5c98"
         },
-        "coakka_v2_connector-2.5.4.dev20261023.dist-info/licenses/PACKAGE-LICENSE.md": {
+        "coakka_v2_connector-3.0.0.dist-info/licenses/PACKAGE-LICENSE.md": {
           "bytes": 1384,
           "sha256": "32517109595798ad4b780117783e91aa0196b8d6d699e5d541b5f841c722e06e"
         },
@@ -68,16 +68,16 @@
           "sha256": "d6f100fc32f54b09b42d010cec913a9bc67efce1a35150e314a9fc5d9d66af16"
         },
         "coakka_v2_connector/_package.json": {
-          "bytes": 360,
-          "sha256": "7b83dc0277a8c8184a0ec59f34f382335abe91bce15d0b7448b109a7eee28389"
+          "bytes": 348,
+          "sha256": "9b97e42b0ecc42a3a414cc14261b0d6d8c8460a16ee79e1d3c405a0197694381"
         },
         "coakka_v2_connector/_package_image.py": {
           "bytes": 2966,
           "sha256": "7db6f0d6288b58ae2598f28ccd54dec52a8b024bc14f03bd11f15a968419a2e3"
         },
         "coakka_v2_connector/_packaging.py": {
-          "bytes": 613,
-          "sha256": "3fdcc2b95a5949c8b938068b05d969b0bb4cfdaeeea2a6345baef15eb4a2f05b"
+          "bytes": 841,
+          "sha256": "35313336a67f2053151b1714f8c9e263a19055b0f2f15af0ce46a4e7abcff6e9"
         },
         "coakka_v2_connector/_reader_worker.py": {
           "bytes": 1461,
@@ -138,35 +138,35 @@
       }
     },
     "linux-aarch64": {
-      "filename": "coakka_v2_connector-2.5.4.dev20261023-py3-none-manylinux_2_35_aarch64.whl",
-      "bytes": 1017440,
-      "sha256": "e2ed999c786f0f78205ff675e7c2c2e3590c1b165054e319421969567779e8cc",
+      "filename": "coakka_v2_connector-3.0.0-py3-none-manylinux_2_35_aarch64.whl",
+      "bytes": 1017416,
+      "sha256": "5ca6d2b9cbaf6825e98f5dc2147e4a46609a4b13784398c62cf0539f5e20d406",
       "members": {
-        "coakka_v2_connector-2.5.4.dev20261023.dist-info/METADATA": {
-          "bytes": 42764,
-          "sha256": "b6a7b72af309fe15a3bae3b96a8439eafaff45fe4274a437a1c56237193b6ce0"
+        "coakka_v2_connector-3.0.0.dist-info/METADATA": {
+          "bytes": 42948,
+          "sha256": "dedbc60bf648f622f81c79be1fc2ec22c2a9387d5dee476b3160e5f747df5014"
         },
-        "coakka_v2_connector-2.5.4.dev20261023.dist-info/RECORD": {
-          "bytes": 3046,
-          "sha256": "2f8f68b88b5407142f830e39a502682b43f9e3417e8e5738d2585e12b3631d44"
+        "coakka_v2_connector-3.0.0.dist-info/RECORD": {
+          "bytes": 2962,
+          "sha256": "b51f39d86693b798c860f3a201b923ab23a7c51ca1d2e3d94cb01d3a005826f3"
         },
-        "coakka_v2_connector-2.5.4.dev20261023.dist-info/WHEEL": {
+        "coakka_v2_connector-3.0.0.dist-info/WHEEL": {
           "bytes": 122,
           "sha256": "1003a92e8066d7c15affa360fe8fb49e7311b86c219c8f42dd2cb2559f042f74"
         },
-        "coakka_v2_connector-2.5.4.dev20261023.dist-info/licenses/LICENSE": {
+        "coakka_v2_connector-3.0.0.dist-info/licenses/LICENSE": {
           "bytes": 11358,
           "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
         },
-        "coakka_v2_connector-2.5.4.dev20261023.dist-info/licenses/NATIVE-LICENSE.md": {
+        "coakka_v2_connector-3.0.0.dist-info/licenses/NATIVE-LICENSE.md": {
           "bytes": 6482,
           "sha256": "089ff94cf25b1707ae3e7d03bb81f0ddfb84e87fb7476f5fea7ebd2cd2f01925"
         },
-        "coakka_v2_connector-2.5.4.dev20261023.dist-info/licenses/NOTICE": {
+        "coakka_v2_connector-3.0.0.dist-info/licenses/NOTICE": {
           "bytes": 730,
           "sha256": "60dc12817965fc133ed0978119d9b8dc5238001dfcfce0e3005162b298cc5c98"
         },
-        "coakka_v2_connector-2.5.4.dev20261023.dist-info/licenses/PACKAGE-LICENSE.md": {
+        "coakka_v2_connector-3.0.0.dist-info/licenses/PACKAGE-LICENSE.md": {
           "bytes": 1384,
           "sha256": "32517109595798ad4b780117783e91aa0196b8d6d699e5d541b5f841c722e06e"
         },
@@ -199,16 +199,16 @@
           "sha256": "d6f100fc32f54b09b42d010cec913a9bc67efce1a35150e314a9fc5d9d66af16"
         },
         "coakka_v2_connector/_package.json": {
-          "bytes": 358,
-          "sha256": "19c0189bdc6c1b28c77f28f57a4339c34feacf7c55da04ec07acc23400b1d5cc"
+          "bytes": 346,
+          "sha256": "8b7f9c6db4d2af1d6cb0d2d5d1d329a922e1277ab034724ecb93d31f46b9a2ac"
         },
         "coakka_v2_connector/_package_image.py": {
           "bytes": 2966,
           "sha256": "7db6f0d6288b58ae2598f28ccd54dec52a8b024bc14f03bd11f15a968419a2e3"
         },
         "coakka_v2_connector/_packaging.py": {
-          "bytes": 613,
-          "sha256": "3fdcc2b95a5949c8b938068b05d969b0bb4cfdaeeea2a6345baef15eb4a2f05b"
+          "bytes": 841,
+          "sha256": "35313336a67f2053151b1714f8c9e263a19055b0f2f15af0ce46a4e7abcff6e9"
         },
         "coakka_v2_connector/_reader_worker.py": {
           "bytes": 1461,
@@ -268,36 +268,36 @@
         }
       }
     },
-    "windows-x86_64": {
-      "filename": "coakka_v2_connector-2.5.4.dev20261023-py3-none-win_amd64.whl",
-      "bytes": 1039260,
-      "sha256": "ffb0338b52b3f726f9ba289b1f092aa79ba6ec9d56141fb6f804ad0e5188d35b",
+    "linux-x86_64": {
+      "filename": "coakka_v2_connector-3.0.0-py3-none-manylinux_2_36_x86_64.whl",
+      "bytes": 1415587,
+      "sha256": "1b29238cb306ae778c5dfd66bb711452576043be6141befad944ddfd7109db07",
       "members": {
-        "coakka_v2_connector-2.5.4.dev20261023.dist-info/METADATA": {
-          "bytes": 42764,
-          "sha256": "b6a7b72af309fe15a3bae3b96a8439eafaff45fe4274a437a1c56237193b6ce0"
+        "coakka_v2_connector-3.0.0.dist-info/METADATA": {
+          "bytes": 42948,
+          "sha256": "dedbc60bf648f622f81c79be1fc2ec22c2a9387d5dee476b3160e5f747df5014"
         },
-        "coakka_v2_connector-2.5.4.dev20261023.dist-info/RECORD": {
-          "bytes": 3047,
-          "sha256": "5977fd66661e1818d15c942b1b115cefa17e8642c236af2c8948bbc261ca773d"
+        "coakka_v2_connector-3.0.0.dist-info/RECORD": {
+          "bytes": 2962,
+          "sha256": "5b8905eb9eb7bea47c0ff93f3603b8fc315488d493c4819ced33d4a1a85f5c7f"
         },
-        "coakka_v2_connector-2.5.4.dev20261023.dist-info/WHEEL": {
-          "bytes": 109,
-          "sha256": "8f9bfa0f9b42948d21326f7730fd57a4e833b130090fcd095f7fe214a6db4868"
+        "coakka_v2_connector-3.0.0.dist-info/WHEEL": {
+          "bytes": 121,
+          "sha256": "b96ef9abcfb1a192918487978c099652f41b742407bd07b4fd9ad48089168c87"
         },
-        "coakka_v2_connector-2.5.4.dev20261023.dist-info/licenses/LICENSE": {
+        "coakka_v2_connector-3.0.0.dist-info/licenses/LICENSE": {
           "bytes": 11358,
           "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
         },
-        "coakka_v2_connector-2.5.4.dev20261023.dist-info/licenses/NATIVE-LICENSE.md": {
+        "coakka_v2_connector-3.0.0.dist-info/licenses/NATIVE-LICENSE.md": {
           "bytes": 6482,
           "sha256": "089ff94cf25b1707ae3e7d03bb81f0ddfb84e87fb7476f5fea7ebd2cd2f01925"
         },
-        "coakka_v2_connector-2.5.4.dev20261023.dist-info/licenses/NOTICE": {
+        "coakka_v2_connector-3.0.0.dist-info/licenses/NOTICE": {
           "bytes": 730,
           "sha256": "60dc12817965fc133ed0978119d9b8dc5238001dfcfce0e3005162b298cc5c98"
         },
-        "coakka_v2_connector-2.5.4.dev20261023.dist-info/licenses/PACKAGE-LICENSE.md": {
+        "coakka_v2_connector-3.0.0.dist-info/licenses/PACKAGE-LICENSE.md": {
           "bytes": 1384,
           "sha256": "32517109595798ad4b780117783e91aa0196b8d6d699e5d541b5f841c722e06e"
         },
@@ -330,16 +330,278 @@
           "sha256": "d6f100fc32f54b09b42d010cec913a9bc67efce1a35150e314a9fc5d9d66af16"
         },
         "coakka_v2_connector/_package.json": {
-          "bytes": 360,
-          "sha256": "8d21a9cba95bfc96addcdd587346a6b2bad57aecf4f42bb6240c1c1f4f69f7d3"
+          "bytes": 345,
+          "sha256": "26b2d029c5cf44d0434e112156fec5a4aec836999d8cc2e5c402d3eb0166ead2"
         },
         "coakka_v2_connector/_package_image.py": {
           "bytes": 2966,
           "sha256": "7db6f0d6288b58ae2598f28ccd54dec52a8b024bc14f03bd11f15a968419a2e3"
         },
         "coakka_v2_connector/_packaging.py": {
-          "bytes": 613,
-          "sha256": "3fdcc2b95a5949c8b938068b05d969b0bb4cfdaeeea2a6345baef15eb4a2f05b"
+          "bytes": 841,
+          "sha256": "35313336a67f2053151b1714f8c9e263a19055b0f2f15af0ce46a4e7abcff6e9"
+        },
+        "coakka_v2_connector/_reader_worker.py": {
+          "bytes": 1461,
+          "sha256": "fd392315b51390f80446b127828d82a8beaad89c0ef3ef85128738b5a40413eb"
+        },
+        "coakka_v2_connector/_representation_cache.py": {
+          "bytes": 2370,
+          "sha256": "48360f6e982029bbc57c868d7c37a6fba7da37717e831fbb045003b123e7664e"
+        },
+        "coakka_v2_connector/_runtime_native.py": {
+          "bytes": 23119,
+          "sha256": "3c50557ce9e45188ff977f617c8e36f6db5d6265809588c3f958371e8e2770bc"
+        },
+        "coakka_v2_connector/_runtime_observations.py": {
+          "bytes": 10107,
+          "sha256": "3c31bf8cac405f9c340d9d50b408ae08f722e25c7568806b4902af8960dca426"
+        },
+        "coakka_v2_connector/_stream_callbacks.py": {
+          "bytes": 2995,
+          "sha256": "14969e5db70607334a87048e669a3255fffd61006ff82e0ca2b5ff7e6c8ccaaa"
+        },
+        "coakka_v2_connector/_worker_group.py": {
+          "bytes": 1460,
+          "sha256": "3b026c3f187fe935353180e322a4e40f91bac2916f2c649e801c3ba335f629b3"
+        },
+        "coakka_v2_connector/file_lane.py": {
+          "bytes": 25569,
+          "sha256": "234acf5cf0a1bd0dd8a9734ed5d6128b0308f636887147b5205ea6560d746b8c"
+        },
+        "coakka_v2_connector/lane_owner_grant.py": {
+          "bytes": 1944,
+          "sha256": "e8ecbaa14678142a58611d1368266f75a15b9d085cf6045a921f34b41be4d423"
+        },
+        "coakka_v2_connector/models.py": {
+          "bytes": 9149,
+          "sha256": "d617eb1c4b221195810db93eb2ce282f463aaaf2102784a594857b3e29c92dba"
+        },
+        "coakka_v2_connector/native/libcoakka_runtime_v2.so": {
+          "bytes": 3188976,
+          "sha256": "514f7db498ab2f5afab9930f6868eaae95a3e867de426ee63a730d543f452cdc"
+        },
+        "coakka_v2_connector/orchestrator.py": {
+          "bytes": 13477,
+          "sha256": "df9c73fc8523ec2f71a4a95f0dc7749cabe45e84cdea5fb566c2725b8a273b45"
+        },
+        "coakka_v2_connector/runtime_client.py": {
+          "bytes": 47233,
+          "sha256": "4b73eaae867b40eb92558dbf204220b2fcdd2ad1577f389a5f09efb2cdaae2c2"
+        },
+        "coakka_v2_connector/stream_lane.py": {
+          "bytes": 33519,
+          "sha256": "acc6db636d95347fdeb4449bc4bd38fba4e81436b5b6ed0f8371d7c36c12b50a"
+        },
+        "coakka_v2_connector/transport_config.py": {
+          "bytes": 21682,
+          "sha256": "aa3322de9052f1838b310e2b286f15fb6c6fef3523070f430e7fc7677096dcf7"
+        }
+      }
+    },
+    "windows-aarch64": {
+      "filename": "coakka_v2_connector-3.0.0-py3-none-win_arm64.whl",
+      "bytes": 954027,
+      "sha256": "d3caa14002873b58587121212d168cd31017bcd62833163ae99344732d3b8651",
+      "members": {
+        "coakka_v2_connector-3.0.0.dist-info/METADATA": {
+          "bytes": 42948,
+          "sha256": "dedbc60bf648f622f81c79be1fc2ec22c2a9387d5dee476b3160e5f747df5014"
+        },
+        "coakka_v2_connector-3.0.0.dist-info/RECORD": {
+          "bytes": 2963,
+          "sha256": "8302941f5d74633c369ea552fac702dc0a6b930e6b13d5ae67becbebf6f1961e"
+        },
+        "coakka_v2_connector-3.0.0.dist-info/WHEEL": {
+          "bytes": 109,
+          "sha256": "60e36e531748b505298d6c9a19b6ce91b5223c4b7c9ef0b677be5dd6a0d9a8ca"
+        },
+        "coakka_v2_connector-3.0.0.dist-info/licenses/LICENSE": {
+          "bytes": 11358,
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        },
+        "coakka_v2_connector-3.0.0.dist-info/licenses/NATIVE-LICENSE.md": {
+          "bytes": 6482,
+          "sha256": "089ff94cf25b1707ae3e7d03bb81f0ddfb84e87fb7476f5fea7ebd2cd2f01925"
+        },
+        "coakka_v2_connector-3.0.0.dist-info/licenses/NOTICE": {
+          "bytes": 730,
+          "sha256": "60dc12817965fc133ed0978119d9b8dc5238001dfcfce0e3005162b298cc5c98"
+        },
+        "coakka_v2_connector-3.0.0.dist-info/licenses/PACKAGE-LICENSE.md": {
+          "bytes": 1384,
+          "sha256": "32517109595798ad4b780117783e91aa0196b8d6d699e5d541b5f841c722e06e"
+        },
+        "coakka_v2_connector/__init__.py": {
+          "bytes": 4664,
+          "sha256": "82b0e035e80d066b0e7fe00effcb3fa41e5c74f2d2289026b609f4abd829ab2d"
+        },
+        "coakka_v2_connector/_boundary_values.py": {
+          "bytes": 866,
+          "sha256": "fa753c432b9023767e7a1a19598463e950a72bd937064238aa04318f58782992"
+        },
+        "coakka_v2_connector/_control_values.py": {
+          "bytes": 3436,
+          "sha256": "325b31dcfd6c3f9049720072c8c35cf7a8b54c2b25ebea642272ed8b6bc156d1"
+        },
+        "coakka_v2_connector/_lane_startup.py": {
+          "bytes": 1131,
+          "sha256": "ddca892e2c240ccaf238f95c2b79fc3234a90c100554095e09ad1d4ceb936dc3"
+        },
+        "coakka_v2_connector/_lane_values.py": {
+          "bytes": 1210,
+          "sha256": "6961c5c2b51354b2d828adb43916b383d63f7ac28987925457138803cbdd6af0"
+        },
+        "coakka_v2_connector/_message_values.py": {
+          "bytes": 7482,
+          "sha256": "25f5d1395344de2a8e7a7c0101b5bfdd3d2210cf27551c84cec8401b6aa2a9b5"
+        },
+        "coakka_v2_connector/_observers.py": {
+          "bytes": 3657,
+          "sha256": "d6f100fc32f54b09b42d010cec913a9bc67efce1a35150e314a9fc5d9d66af16"
+        },
+        "coakka_v2_connector/_package.json": {
+          "bytes": 349,
+          "sha256": "5767cbf07bb0155e4ab35abcf3705cba59019b7f90a3dcd957b30d639071dff0"
+        },
+        "coakka_v2_connector/_package_image.py": {
+          "bytes": 2966,
+          "sha256": "7db6f0d6288b58ae2598f28ccd54dec52a8b024bc14f03bd11f15a968419a2e3"
+        },
+        "coakka_v2_connector/_packaging.py": {
+          "bytes": 841,
+          "sha256": "35313336a67f2053151b1714f8c9e263a19055b0f2f15af0ce46a4e7abcff6e9"
+        },
+        "coakka_v2_connector/_reader_worker.py": {
+          "bytes": 1461,
+          "sha256": "fd392315b51390f80446b127828d82a8beaad89c0ef3ef85128738b5a40413eb"
+        },
+        "coakka_v2_connector/_representation_cache.py": {
+          "bytes": 2370,
+          "sha256": "48360f6e982029bbc57c868d7c37a6fba7da37717e831fbb045003b123e7664e"
+        },
+        "coakka_v2_connector/_runtime_native.py": {
+          "bytes": 23119,
+          "sha256": "3c50557ce9e45188ff977f617c8e36f6db5d6265809588c3f958371e8e2770bc"
+        },
+        "coakka_v2_connector/_runtime_observations.py": {
+          "bytes": 10107,
+          "sha256": "3c31bf8cac405f9c340d9d50b408ae08f722e25c7568806b4902af8960dca426"
+        },
+        "coakka_v2_connector/_stream_callbacks.py": {
+          "bytes": 2995,
+          "sha256": "14969e5db70607334a87048e669a3255fffd61006ff82e0ca2b5ff7e6c8ccaaa"
+        },
+        "coakka_v2_connector/_worker_group.py": {
+          "bytes": 1460,
+          "sha256": "3b026c3f187fe935353180e322a4e40f91bac2916f2c649e801c3ba335f629b3"
+        },
+        "coakka_v2_connector/file_lane.py": {
+          "bytes": 25569,
+          "sha256": "234acf5cf0a1bd0dd8a9734ed5d6128b0308f636887147b5205ea6560d746b8c"
+        },
+        "coakka_v2_connector/lane_owner_grant.py": {
+          "bytes": 1944,
+          "sha256": "e8ecbaa14678142a58611d1368266f75a15b9d085cf6045a921f34b41be4d423"
+        },
+        "coakka_v2_connector/models.py": {
+          "bytes": 9149,
+          "sha256": "d617eb1c4b221195810db93eb2ce282f463aaaf2102784a594857b3e29c92dba"
+        },
+        "coakka_v2_connector/native/libcoakka_runtime_v2.dll": {
+          "bytes": 2071552,
+          "sha256": "b1a1ca4068878b1e4d6d9a0f9064b2927a75cd390e755c4b42ed0b530d997046"
+        },
+        "coakka_v2_connector/orchestrator.py": {
+          "bytes": 13477,
+          "sha256": "df9c73fc8523ec2f71a4a95f0dc7749cabe45e84cdea5fb566c2725b8a273b45"
+        },
+        "coakka_v2_connector/runtime_client.py": {
+          "bytes": 47233,
+          "sha256": "4b73eaae867b40eb92558dbf204220b2fcdd2ad1577f389a5f09efb2cdaae2c2"
+        },
+        "coakka_v2_connector/stream_lane.py": {
+          "bytes": 33519,
+          "sha256": "acc6db636d95347fdeb4449bc4bd38fba4e81436b5b6ed0f8371d7c36c12b50a"
+        },
+        "coakka_v2_connector/transport_config.py": {
+          "bytes": 21682,
+          "sha256": "aa3322de9052f1838b310e2b286f15fb6c6fef3523070f430e7fc7677096dcf7"
+        }
+      }
+    },
+    "windows-x86_64": {
+      "filename": "coakka_v2_connector-3.0.0-py3-none-win_amd64.whl",
+      "bytes": 1039241,
+      "sha256": "fad21af8504dcf5df36c64d5de4336b55e928821cc13cd98855611f8abccf2c3",
+      "members": {
+        "coakka_v2_connector-3.0.0.dist-info/METADATA": {
+          "bytes": 42948,
+          "sha256": "dedbc60bf648f622f81c79be1fc2ec22c2a9387d5dee476b3160e5f747df5014"
+        },
+        "coakka_v2_connector-3.0.0.dist-info/RECORD": {
+          "bytes": 2963,
+          "sha256": "e53cdcdf6f13652e285e91d155d3b05c2cea11f21b6b0c1a16a7beae8038bbb9"
+        },
+        "coakka_v2_connector-3.0.0.dist-info/WHEEL": {
+          "bytes": 109,
+          "sha256": "8f9bfa0f9b42948d21326f7730fd57a4e833b130090fcd095f7fe214a6db4868"
+        },
+        "coakka_v2_connector-3.0.0.dist-info/licenses/LICENSE": {
+          "bytes": 11358,
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        },
+        "coakka_v2_connector-3.0.0.dist-info/licenses/NATIVE-LICENSE.md": {
+          "bytes": 6482,
+          "sha256": "089ff94cf25b1707ae3e7d03bb81f0ddfb84e87fb7476f5fea7ebd2cd2f01925"
+        },
+        "coakka_v2_connector-3.0.0.dist-info/licenses/NOTICE": {
+          "bytes": 730,
+          "sha256": "60dc12817965fc133ed0978119d9b8dc5238001dfcfce0e3005162b298cc5c98"
+        },
+        "coakka_v2_connector-3.0.0.dist-info/licenses/PACKAGE-LICENSE.md": {
+          "bytes": 1384,
+          "sha256": "32517109595798ad4b780117783e91aa0196b8d6d699e5d541b5f841c722e06e"
+        },
+        "coakka_v2_connector/__init__.py": {
+          "bytes": 4664,
+          "sha256": "82b0e035e80d066b0e7fe00effcb3fa41e5c74f2d2289026b609f4abd829ab2d"
+        },
+        "coakka_v2_connector/_boundary_values.py": {
+          "bytes": 866,
+          "sha256": "fa753c432b9023767e7a1a19598463e950a72bd937064238aa04318f58782992"
+        },
+        "coakka_v2_connector/_control_values.py": {
+          "bytes": 3436,
+          "sha256": "325b31dcfd6c3f9049720072c8c35cf7a8b54c2b25ebea642272ed8b6bc156d1"
+        },
+        "coakka_v2_connector/_lane_startup.py": {
+          "bytes": 1131,
+          "sha256": "ddca892e2c240ccaf238f95c2b79fc3234a90c100554095e09ad1d4ceb936dc3"
+        },
+        "coakka_v2_connector/_lane_values.py": {
+          "bytes": 1210,
+          "sha256": "6961c5c2b51354b2d828adb43916b383d63f7ac28987925457138803cbdd6af0"
+        },
+        "coakka_v2_connector/_message_values.py": {
+          "bytes": 7482,
+          "sha256": "25f5d1395344de2a8e7a7c0101b5bfdd3d2210cf27551c84cec8401b6aa2a9b5"
+        },
+        "coakka_v2_connector/_observers.py": {
+          "bytes": 3657,
+          "sha256": "d6f100fc32f54b09b42d010cec913a9bc67efce1a35150e314a9fc5d9d66af16"
+        },
+        "coakka_v2_connector/_package.json": {
+          "bytes": 348,
+          "sha256": "07c99c7cf3a292bb3c70b15fc9219abe232f07b3ba9ed117353fad7afbd67509"
+        },
+        "coakka_v2_connector/_package_image.py": {
+          "bytes": 2966,
+          "sha256": "7db6f0d6288b58ae2598f28ccd54dec52a8b024bc14f03bd11f15a968419a2e3"
+        },
+        "coakka_v2_connector/_packaging.py": {
+          "bytes": 841,
+          "sha256": "35313336a67f2053151b1714f8c9e263a19055b0f2f15af0ce46a4e7abcff6e9"
         },
         "coakka_v2_connector/_reader_worker.py": {
           "bytes": 1461,

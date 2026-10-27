@@ -1,16 +1,18 @@
 # Private C# runtime candidate sample
 
-The sample uses exactly `CoAkka.Runtime` `0.0.0-p454.1` from the trusted local
+The sample uses exactly `CoAkka.Runtime` `3.0.0` from the trusted local
 feed described in `artifacts/runtime-csharp-candidate.props`. This is a private
 candidate, not a public NuGet release. It carries Core2.5.1+f6b61768/ABI1 for
-macOS ARM64, Linux ARM64 and native Windows x64. No separate native dependency
+macOS ARM64, Linux ARM64/x64 and native Windows ARM64/x64. No separate native dependency
 installation, source reference or native-library override is needed.
 
 Use .NET SDK8.0.4xx/C#12; `runtime/csharp/global.json` restricts the build to
 that feature band. The consumer targets .NET8 and is actually published with
 ILLink. The library is trim-compatible; a library package cannot discard public
-APIs that an unknown application may use. Wider architectures, minimum OS and
-coordinated publication are separate gates.
+APIs that an unknown application may use. The basic build wrapper retains its
+three launcher profiles: macOS ARM64, Linux ARM64 and Windows x64. Independent
+installed Runtime/File/Stream consumers qualify all five NuGet images. Minimum
+OS and publication are recorded separately from these basic sample profiles.
 
 ## Standard .NET build
 
@@ -73,7 +75,7 @@ do not edit it as a fork. It supplies build-file policy, not runtime/OS probes.
 The app owns its text handler, two-second request budgets, assertions and
 scoped shutdown. A typed matched route-miss is checked by its Core-issued reason
 code and original target, not error text or a historical reason-name string.
-Cleanup runs after success or failure; an operation and shutdown failure both
+The application awaits `DisposeAsync` after success or failure; an operation and shutdown failure both
 survive in an AggregateException. This is a cold application scope, not a new
 runtime retry policy.
 

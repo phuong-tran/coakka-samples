@@ -28,7 +28,7 @@ class CandidateTests(unittest.TestCase):
         self.root = Path(fixture.name)
 
     def fixture(self):
-        name = "coakka_v2_connector-2.5.4.dev20261023-py3-none-win_amd64.whl"
+        name = "coakka_v2_connector-3.0.0-py3-none-win_amd64.whl"
         path = self.root / name
         payloads = {"coakka_v2_connector/__init__.py": b"# fixture, never a native image\n"}
         with zipfile.ZipFile(path, "w") as output:
@@ -37,8 +37,8 @@ class CandidateTests(unittest.TestCase):
         row = dict(filename=name, bytes=path.stat().st_size, sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
                    members={name: dict(bytes=len(data), sha256=hashlib.sha256(data).hexdigest()) for name, data in payloads.items()})
         catalog = dict(schema=1, state="private-candidate", distribution="coakka-v2-connector",
-                       version="2.5.4.dev20261023", minimumRuntime="3.11", coreCommit="f6b61768f60a08d81b1dc06625a211ffca8e89e2",
-                       wheels={target: row for target in ("macos-aarch64", "linux-aarch64", "windows-x86_64")})
+                       version="3.0.0", minimumRuntime="3.11", coreCommit="f6b61768f60a08d81b1dc06625a211ffca8e89e2",
+                       wheels={target: dict(row) for target in ("macos-aarch64", "linux-aarch64", "linux-x86_64", "windows-aarch64", "windows-x86_64")})
         return path, row, catalog
 
     def test_catalog_identity_unknown_duplicate_and_bounds(self):
@@ -49,6 +49,9 @@ class CandidateTests(unittest.TestCase):
             lambda c: c.update(unknown=1), lambda c: c.update(state="published"),
             lambda c: c.update(schema=True), lambda c: c.update(wheels={}),
             lambda c: c.update(minimumRuntime="3.14"), lambda c: c.update(coreCommit="wrong"),
+            lambda c: c.update(version="2.5.4.dev20261023"),
+            lambda c: c["wheels"].pop("linux-x86_64"),
+            lambda c: c["wheels"].pop("windows-aarch64"),
             lambda c: c["wheels"]["macos-aarch64"].update(bytes=(4 << 20)+1),
             lambda c: c["wheels"]["macos-aarch64"].update(sha256="wrong"),
             lambda c: c["wheels"]["macos-aarch64"].update(members={"../outside": {"bytes": 1, "sha256": "0"*64}}),
