@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "state": "private-candidate",
-  "version": "0.0.0-p453.1",
+  "version": "3.0.0",
   "coreCommit": "f6b61768f60a08d81b1dc06625a211ffca8e89e2",
   "files": {
     "LICENSE": {
@@ -24,6 +24,18 @@
       "bytes": 443,
       "sha256": "bb1cc59804c472d666e256c737424c76c458087dac54a253ce94578b44f6e759"
     },
+    "README.md": {
+      "bytes": 4020,
+      "sha256": "3fdedff823a3a353a1460d727f10228f5e33c52b6591fd1c8043c9a5b26862bd"
+    },
+    "RELEASE.md": {
+      "bytes": 1642,
+      "sha256": "ad28eb3d44a5f4a19291bde7931581cad6ab25525eea4bded85cb5ea4c500b74"
+    },
+    "RELEASE_NOTES.md": {
+      "bytes": 1014,
+      "sha256": "b9355e04e969f8bb62c3409c185dac26226b43eccbdd2775428340b0869a51f0"
+    },
     "Sources/CoAkkaRuntime/FileLane.swift": {
       "bytes": 26592,
       "sha256": "8807a3ec15b4f722d0cbc18afcb575cffa32fb0875ebf9d9d85843edf52ca545"
@@ -33,16 +45,24 @@
       "sha256": "778bbeb6b3ce32e3b123020865c29ce84e472c3d1723a1fe5c0c78093040b0a5"
     },
     "Sources/CoAkkaRuntime/NativeRuntimeLibrary.swift": {
-      "bytes": 6716,
-      "sha256": "d53cb15dfd82b8cf1df186fa7ffdd74623213d05ef49edd602ca0bd1a687e9c1"
+      "bytes": 6939,
+      "sha256": "b7fa98bb600ee9e33ac29385741356b50227d1c9caf617cc2f65634126c757fa"
     },
     "Sources/CoAkkaRuntime/Resources/linux-aarch64/libcoakka_runtime_v2.so": {
       "bytes": 2103344,
       "sha256": "dbdba44a6c309f0e7eccbae7224bceae63313c199d68b93e408043674ada3579"
     },
+    "Sources/CoAkkaRuntime/Resources/linux-x86_64/libcoakka_runtime_v2.so": {
+      "bytes": 3188976,
+      "sha256": "514f7db498ab2f5afab9930f6868eaae95a3e867de426ee63a730d543f452cdc"
+    },
     "Sources/CoAkkaRuntime/Resources/macos-aarch64/libcoakka_runtime_v2.dylib": {
       "bytes": 860216,
       "sha256": "b3b0050db65e40da7d8d2dd54aaf9ee50975ecf1498e657c8896f6b98ccc8e12"
+    },
+    "Sources/CoAkkaRuntime/Resources/windows-aarch64/libcoakka_runtime_v2.dll": {
+      "bytes": 2071552,
+      "sha256": "b1a1ca4068878b1e4d6d9a0f9064b2927a75cd390e755c4b42ed0b530d997046"
     },
     "Sources/CoAkkaRuntime/Resources/windows-x86_64/libcoakka_runtime_v2.dll": {
       "bytes": 2283520,
@@ -90,7 +110,7 @@
     },
     "Sources/CoAkkaRuntimeC/coakka_runtime_bridge.c": {
       "bytes": 58599,
-      "sha256": "9fba245e8f629b9c9459c760e49d677bc1044c73283f5e94c669758c9115da1b"
+      "sha256": "7b957957877beb7ea0ed81765a829164522aa961fe74b1f936d571cb6e644fd1"
     },
     "Sources/CoAkkaRuntimeC/include/coakka/v2/client.h": {
       "bytes": 9604,
@@ -99,6 +119,42 @@
     "Sources/CoAkkaRuntimeC/include/coakka/v2/control.h": {
       "bytes": 7532,
       "sha256": "a099c8235c98c2a7d531d4a1fd6b47a983c2d5c01317d06762843701eeafd3e7"
+    },
+    "Sources/CoAkkaRuntimeC/include/coakka/v2/dubbing.h": {
+      "bytes": 4949,
+      "sha256": "9f87d35ac71efbd170b007e5a75e4d63b957809025ba8aebef74a3e2d7c9df5b"
+    },
+    "Sources/CoAkkaRuntimeC/include/coakka/v2/event_service.h": {
+      "bytes": 431,
+      "sha256": "4d5cb16ac075188519640f2c7d5075515de6f208538f41949c62180b27eebf84"
+    },
+    "Sources/CoAkkaRuntimeC/include/coakka/v2/event_service_admin_api.h": {
+      "bytes": 1775,
+      "sha256": "106e3eb1f4921b19975630f8a057c89ed397cd95ccd2cb8ef717452f794eb8f2"
+    },
+    "Sources/CoAkkaRuntimeC/include/coakka/v2/event_service_admin_types.h": {
+      "bytes": 3829,
+      "sha256": "9e567a8795767d7a51dd7240f0c72cd3de8f4909b6906c42a20038b47a19c4ae"
+    },
+    "Sources/CoAkkaRuntimeC/include/coakka/v2/event_service_api.h": {
+      "bytes": 1713,
+      "sha256": "cf4279cfcc1f7436d5a8b5e37a23f1d5880a6e85130741d60c4be45196cb4d70"
+    },
+    "Sources/CoAkkaRuntimeC/include/coakka/v2/event_service_auth_types.h": {
+      "bytes": 3504,
+      "sha256": "65271c3c7b371f29173691e051ae0dc238e1eca2498b4f26a894937cdcea112d"
+    },
+    "Sources/CoAkkaRuntimeC/include/coakka/v2/event_service_operator_api.h": {
+      "bytes": 1487,
+      "sha256": "1a94cad6c8c600d6669201294f167f5dcfdac78f3a1301dd083565fbe51b6150"
+    },
+    "Sources/CoAkkaRuntimeC/include/coakka/v2/event_service_operator_types.h": {
+      "bytes": 4215,
+      "sha256": "b56405694c2c317d551e1726b8812f6be7360941a51aa4fa1c132afb72b6dd50"
+    },
+    "Sources/CoAkkaRuntimeC/include/coakka/v2/event_service_types.h": {
+      "bytes": 6118,
+      "sha256": "a082b95dc75bf5df4576b77749ffcac619b895dedc1d7aba96baa0a05f8990dc"
     },
     "Sources/CoAkkaRuntimeC/include/coakka/v2/file_lane.h": {
       "bytes": 18311,
@@ -113,8 +169,8 @@
       "sha256": "f2973ba0ba91c8cea2659dc771a9bcc6e503cc747c3bd82a67bc08256c2c6f2b"
     },
     "Sources/CoAkkaRuntimeC/include/coakka/v2/runtime.h": {
-      "bytes": 33492,
-      "sha256": "48af862821e3a3c83e1d334dadb26c85e19aeb62d4eb951e841153bc3e25182f"
+      "bytes": 33509,
+      "sha256": "6213558c474269a77d4537ea6bbf6aa453c7d4c641353662b8601c7d97ff2a67"
     },
     "Sources/CoAkkaRuntimeC/include/coakka/v2/runtime_auth.h": {
       "bytes": 5644,
@@ -137,8 +193,8 @@
       "sha256": "876e839e5f4c53af624f63c99847091df60fb07ecde9c4c588739615e15b8dc5"
     },
     "Sources/CoAkkaRuntimeC/include/coakka/v2/runtime_topology.h": {
-      "bytes": 3924,
-      "sha256": "ee4d2f01d2115d908fd0587045ce3c6a7d5e97ec53f95d20b05b00e1fce4ec26"
+      "bytes": 3926,
+      "sha256": "922820f7cd8baf80317505ca631846e5d7f4133c3dab7fe5675443eefaddec29"
     },
     "Sources/CoAkkaRuntimeC/include/coakka/v2/runtime_transport_config.h": {
       "bytes": 17102,
@@ -164,18 +220,22 @@
       "bytes": 72,
       "sha256": "d0ab3d66419c64c29d784ed6189c6be7497ebb5291b222e34c97fba13fa83f48"
     },
+    "TRANSPORT_CONFIGURATION.md": {
+      "bytes": 8005,
+      "sha256": "84d6153d49cce280d315ffdb739d6ec7bb33780b92e603f90020610e1ebe78c6"
+    },
     "coakka-runtime-package.json": {
-      "bytes": 6717,
-      "sha256": "2188570e394c6d3d9eb42114621b1ce08304e7de0f56a9851767f89caa48bf1a"
+      "bytes": 9248,
+      "sha256": "eff172639e8c69686b7741e74bddd077995acbcfb477275ffc4f77d25bc7e627"
     },
     "core-abi-manifest.json": {
-      "bytes": 1797,
-      "sha256": "3e6e636ff140f4d54c5b14ef5421b4eebe9ea7fec72118c6b314f665bcb1f5b4"
+      "bytes": 2771,
+      "sha256": "499528289939037b415a01a9448d374d0b640096d131dddafe6e40539300495f"
     }
   },
   "languageFiles": {
-    "mac": {},
-    "pi": {
+    "macos-aarch64": {},
+    "linux-aarch64": {
       "lib/libBlocksRuntime.so": {
         "bytes": 71024,
         "sha256": "19daf2bc5f27dd0d532dc8c63304844b85eeeb0b74115aef1b02fe19bde59b76"
@@ -229,7 +289,61 @@
         "sha256": "e927ca73158b114d3c20ed6e3dfea8dfe3aee47ee9fb8215e713f01bffa5da0e"
       }
     },
-    "windows": {
+    "linux-x86_64": {
+      "lib/libBlocksRuntime.so": {
+        "bytes": 12888,
+        "sha256": "4a4361f49deb91f54fec76e9bb4e56cc5e76fd9260c13369b969cad9a95b39fe"
+      },
+      "lib/libFoundation.so": {
+        "bytes": 8654856,
+        "sha256": "5e01fb31061c1928cb56ca3c4a701f325a7f92b853827c45aea45c338c63d425"
+      },
+      "lib/libFoundationEssentials.so": {
+        "bytes": 8820224,
+        "sha256": "e742083079c660f6b49dd8f681bd47463a5bf319027f994d975a58ce95e7a13a"
+      },
+      "lib/libFoundationInternationalization.so": {
+        "bytes": 3721880,
+        "sha256": "e947278fd10eb5d7b0efce96077745735c6f2c63e6ad2c57fd6578418f442d25"
+      },
+      "lib/lib_FoundationICU.so": {
+        "bytes": 39676432,
+        "sha256": "94e4a50df738c2a8889c23b0065fa71b46e8b6a67e6eaed9a51379852a3bc0a9"
+      },
+      "lib/libdispatch.so": {
+        "bytes": 437040,
+        "sha256": "caa7425420e7008241dda72bce9bd3da0a46365049dc4e58c004e55036443be2"
+      },
+      "lib/libswiftCore.so": {
+        "bytes": 9551568,
+        "sha256": "357c1fe865bf6a7681c29a6058f03de10b964556e7da9b781f9b967997ed1cd5"
+      },
+      "lib/libswiftDispatch.so": {
+        "bytes": 332864,
+        "sha256": "c90222af93eaf50c49fa67ac26f116e5ad821db140f3cd05561835ee2130cf99"
+      },
+      "lib/libswiftGlibc.so": {
+        "bytes": 105776,
+        "sha256": "275ad9c6590ae5b923783f05f456a09d45d9b6f842dc7a62a473a3e4d1bbdbd2"
+      },
+      "lib/libswiftSynchronization.so": {
+        "bytes": 117568,
+        "sha256": "ce9bd1e9bdedd0bd1ddebf7f6c6c0cebb0e9572b9b8d73eee86be4be3b804a8d"
+      },
+      "lib/libswift_Concurrency.so": {
+        "bytes": 948240,
+        "sha256": "d069c4d1575d38f9a5c2167f20dde4160109f94b3a4d69e3a85de1600add3a5a"
+      },
+      "lib/libswift_RegexParser.so": {
+        "bytes": 1634784,
+        "sha256": "0aa793328a4afd92531ed23a99a834718def3828a2d0a8fe985800ca4a452fae"
+      },
+      "lib/libswift_StringProcessing.so": {
+        "bytes": 1363344,
+        "sha256": "6c6ca322c9ed89d64d5e7199633d7dfea03488238505fb9a5694a23eeef380dd"
+      }
+    },
+    "windows-x86_64": {
       "_FoundationICU.dll": {
         "bytes": 36658688,
         "sha256": "cb56b76f77d887dbac0dcc4620bbe9aafabf47940a7fbbe1ddca848b576f65a6"
@@ -357,6 +471,148 @@
       "vcruntime140_threads.dll": {
         "bytes": 38512,
         "sha256": "52890aa0ef3e8eee53684fcb7d1c1aa76ad0e03f5664d184b424402916f26715"
+      }
+    },
+    "windows-aarch64": {
+      "_FoundationICU.dll": {
+        "bytes": 37936640,
+        "sha256": "77f3b912196a70b52d5e82c036f7dfd5cd3438a8074497a144cabccb3721ebf1"
+      },
+      "BlocksRuntime.dll": {
+        "bytes": 11264,
+        "sha256": "0532432c27f310acc93e774d17ef1e9c1fc5a88dacdfa0e0cf03031539dd9fc5"
+      },
+      "concrt140.dll": {
+        "bytes": 736288,
+        "sha256": "250e9ac0bb682f8bcfda539a3b2f322983877da77e1df559b9400981d66d2a60"
+      },
+      "dispatch.dll": {
+        "bytes": 238080,
+        "sha256": "e4b28749ce1ff8e526dbfa529f0eb9dfe09fcda7cf32e00a4fe2aa809fbe1c99"
+      },
+      "Foundation.dll": {
+        "bytes": 4583936,
+        "sha256": "36dbf0fc6cf34a44d64c1554b918bc00438c3b638c210ac058dff0b0080ce889"
+      },
+      "FoundationEssentials.dll": {
+        "bytes": 5283328,
+        "sha256": "8e8919a312198a70c73357c146415aff5c66eca5ccccd9b053394bb8f26cfd6b"
+      },
+      "FoundationInternationalization.dll": {
+        "bytes": 1374720,
+        "sha256": "601d3131fa0f74bc51db78c43d709349b598a326b1e9a73f6da48591cef41114"
+      },
+      "FoundationNetworking.dll": {
+        "bytes": 1448960,
+        "sha256": "38cc13b35b84f83a9b5cfc48e7535a9766c7e5ddb90441e22cd18336188b063f"
+      },
+      "FoundationXML.dll": {
+        "bytes": 607744,
+        "sha256": "291bc086bd186c92195089f4a6ebbadb5f5a80c85f36444b759af764572bff9a"
+      },
+      "msvcp140.dll": {
+        "bytes": 1387592,
+        "sha256": "7aad287b2bd3597bc3e1f53bad79596df3b05e5faf67855034cbdaf9510a1c0a"
+      },
+      "msvcp140_1.dll": {
+        "bytes": 50728,
+        "sha256": "a96b54b4e20b0f12d1f4aaa7f31527c75c48a076a2b49a7f9338462525fdf3fc"
+      },
+      "msvcp140_2.dll": {
+        "bytes": 520776,
+        "sha256": "de80ce2cf064920fd1e29cba4e0efaa04fb4a8d0196ee508df5cb5beddcdbb49"
+      },
+      "msvcp140_atomic_wait.dll": {
+        "bytes": 86056,
+        "sha256": "7b42d186e3b5ad5150ad8e6b726f613cdb49b031d2802b617981cb1502093072"
+      },
+      "msvcp140_codecvt_ids.dll": {
+        "bytes": 41520,
+        "sha256": "00e1dcd8cc986d9f5a0c1c21be4b149aa972dad2efe265719f9e64dc996c2220"
+      },
+      "swift_Builtin_float.dll": {
+        "bytes": 21504,
+        "sha256": "7b35d00c796e64dbbae387f1d37ceb6eb5bac5dc26ace0d3c735777e9723b8e7"
+      },
+      "swift_Concurrency.dll": {
+        "bytes": 492032,
+        "sha256": "6b02cb2f1f2445ed55f03a260d34c04a7fe935f36102dbbee5d51a7c66c1d2c4"
+      },
+      "swift_Differentiation.dll": {
+        "bytes": 341504,
+        "sha256": "3401e377620572418b9c4866159b47aec09da8b1ab60bd4f02036cb7263dc537"
+      },
+      "swift_RegexParser.dll": {
+        "bytes": 790016,
+        "sha256": "c978e49b616c9c74ab888f9a46882cecf312132e71f5882df3ffde204e8a76cf"
+      },
+      "swift_StringProcessing.dll": {
+        "bytes": 651264,
+        "sha256": "99f0514933596152f68253797120ec8dd95cf39379baa7bad2a6ca89a52405a4"
+      },
+      "swift_Volatile.dll": {
+        "bytes": 22016,
+        "sha256": "12149ab49d9af0e38b438315252ffd138c2f0931b472d2beb04242103dc3e24f"
+      },
+      "swiftCore.dll": {
+        "bytes": 5432320,
+        "sha256": "67fc514bfdcf41ae9102dbb4dcd592f654999ed979efda876b83bcb67bc3fa01"
+      },
+      "swiftCRT.dll": {
+        "bytes": 35840,
+        "sha256": "bab2fa71e491b7c4200f1a9cb774f9ee505f4e85f5aa6d745dbe51f2518f2b84"
+      },
+      "swiftDispatch.dll": {
+        "bytes": 138752,
+        "sha256": "86be58c0b9d397027ad03eaea9d899abc877d6053b6829b3473cb58ee25f3062"
+      },
+      "swiftDistributed.dll": {
+        "bytes": 89600,
+        "sha256": "514eeb9db5e5c0555159887cc2bf1e0cecf6543448fb2d70fe0c267184059346"
+      },
+      "swiftObservation.dll": {
+        "bytes": 116224,
+        "sha256": "daffbe9f6f305ca11e87d0d2b11a6e57dec4a906d8b0d3a0d2b082a145622f1e"
+      },
+      "swiftRegexBuilder.dll": {
+        "bytes": 93696,
+        "sha256": "da12ca3593beaa1b0c95eb547a5455154948f8621e6a8972c43516a3cce133e4"
+      },
+      "swiftRemoteMirror.dll": {
+        "bytes": 777728,
+        "sha256": "5453bc740ea451a5429bea6ebff121c797d764ed4e0ee997f1fa4484ae0f0919"
+      },
+      "swiftRuntime.dll": {
+        "bytes": 1211392,
+        "sha256": "f4ffcb2938476f870b4db2dc4e1c5ff00e3544a4adb6eb6c1abf06f1a5eebe80"
+      },
+      "swiftSwiftOnoneSupport.dll": {
+        "bytes": 207360,
+        "sha256": "ac4dcff3a988b3717dff20ce955e7a1a3e74c17a181dc86b60df067dfecd4e01"
+      },
+      "swiftSynchronization.dll": {
+        "bytes": 75776,
+        "sha256": "d8c7d83f9bc3f5e9a13da416c7c51751b731778649cb60e1bb7d1617c31c9688"
+      },
+      "swiftWinSDK.dll": {
+        "bytes": 33280,
+        "sha256": "70ffd9df3e8b6a874966e11fd0c5901fd9ca94cbc3547c4435b5ceb6a41de494"
+      },
+      "vccorlib140.dll": {
+        "bytes": 898592,
+        "sha256": "06afdf30daada940c9e01c86c991a10883a1d74724d3fa27bd440d95e40a991e"
+      },
+      "vcruntime140.dll": {
+        "bytes": 203320,
+        "sha256": "107f071bf98f5bf8c54ce3d3f937644a14111a02e25a4ede127150d04ad82f20"
+      },
+      "vcruntime140_1.dll": {
+        "bytes": 53792,
+        "sha256": "b36942798417d86c3df32392709884cacc69839ce8f5b352874039685114e01b"
+      },
+      "vcruntime140_threads.dll": {
+        "bytes": 58928,
+        "sha256": "5d97fa894c0176c837bda064b00fe59bd3411855f7ec43ab0e7e200255450d3c"
       }
     }
   }

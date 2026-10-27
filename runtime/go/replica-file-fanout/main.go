@@ -10,7 +10,7 @@ import (
 	"os"
 	"path/filepath"
 
-	connector "github.com/phuong-tran/coakka-runtime-go"
+	connector "github.com/phuong-tran/coakka-runtime-go/v2"
 )
 
 const sourceBytes = 9*1024*1024 + 731

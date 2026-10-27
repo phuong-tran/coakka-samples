@@ -23,7 +23,7 @@ class AdmissionControls(unittest.TestCase):
         self.package = self.root / "candidate"
         self.package.mkdir()
         names = ["Package.swift", "coakka-runtime-package.json", "core-abi-manifest.json", "LICENSE", "NOTICE", "NATIVE-LICENSE.md", "PACKAGE-LICENSE.md"]
-        names += [f"Sources/owned-{index}.swift" for index in range(35)]
+        names += [f"Sources/owned-{index}.swift" for index in range(50)]
         self.rows = {}
         for name in names:
             content = name.encode()
@@ -31,9 +31,9 @@ class AdmissionControls(unittest.TestCase):
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(content)
             self.rows[name] = dict(bytes=len(content), sha256=hashlib.sha256(content).hexdigest())
-        self.value = dict(schema=1, state="private-candidate", version="0.0.0-p453.1",
+        self.value = dict(schema=1, state="private-candidate", version="3.0.0",
             coreCommit="f6b61768f60a08d81b1dc06625a211ffca8e89e2", files=self.rows,
-            languageFiles=dict(mac={}, pi={}, windows={}))
+            languageFiles={name: {} for name in ("macos-aarch64", "linux-aarch64", "linux-x86_64", "windows-aarch64", "windows-x86_64")})
 
     def test_exact_member_copy(self):
         actual = MODULE.catalog(json.dumps(self.value).encode())

@@ -3,7 +3,7 @@
 Send one immutable9MiB+731 file to three exact loopback File Lane owners.
 This is application-level `ALL`, not broadcast or a runtime default.
 Use the [private candidate workflow](../../../docs/runtime-go-candidate.md)
-and its exact local50-file module, not the older public module or a connector
+and its exact local66-file module, not the older public module or a connector
 source checkout. Core/native package bytes are unchanged.
 
 From the repository root, with Go1.22.12 or the qualified current Go toolchain

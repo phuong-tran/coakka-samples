@@ -1,12 +1,13 @@
 # Private Go runtime candidate samples
 
-The basic/deadletter/replica-file-fanout samples on this branch use the exact 50-file private
+The basic/deadletter/replica-file-fanout samples on this branch use the exact 66-file private
 module in `artifacts/runtime-go-candidate.json`, label
-`2.5.5-dev.20261023`, bundled Core
+`2.0.0`, bundled Core
 `2.5.1+f6b61768f60a08d81b1dc06625a211ffca8e89e2`, ABI 1.
 They do not use the older published `v1.8.3` module. Matching targets are
-macOS ARM64, Linux ARM64 and native Windows x64. The tested compatibility
-floor is Go 1.22.12; earlier patches or wider/minimum-OS support are not inferred.
+macOS ARM64, Linux ARM64/x64 and native Windows ARM64/x64. The tested compiler
+floor is Go 1.22.12, except native Windows ARM64 which requires Go 1.25.5
+for cgo. The module coordinate is `github.com/phuong-tran/coakka-runtime-go/v2`.
 
 ## Run
 
@@ -55,7 +56,7 @@ The runner rejects extra/missing/changed files, links, unknown catalog fields,
 native/source/loader overrides and foreign `GOFLAGS`. Catalog:1MiB; module:
 128files,8MiB each/64MiB total,256tree entries/depth12; app source:128KiB.
 Admission completes before unique staging. It copies verified bytes, builds
-offline through a local `v0.0.0` replacement (not a published coordinate), then
+offline through a local `v2.0.0` replacement (not a published coordinate), then
 moves those build inputs before executing the embedded-image consumer.
 The catalog is not an authenticity signature; obtain it through the trusted
 repository and do not mutate inputs concurrently.

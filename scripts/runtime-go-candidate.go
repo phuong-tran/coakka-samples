@@ -126,7 +126,7 @@ func entry(ctx context.Context, args []string) error {
 			}
 		}
 		quotedModule, _ := json.Marshal(filepath.ToSlash(stagedModule))
-		mod := "module coakka-runtime-sample\n\ngo 1.22\n\nrequire " + catalog.Module + " v0.0.0\nreplace " + catalog.Module + " => " + string(quotedModule) + "\n"
+		mod := "module coakka-runtime-sample\n\ngo 1.22\n\nrequire " + catalog.Module + " v2.0.0\nreplace " + catalog.Module + " => " + string(quotedModule) + "\n"
 		if err := os.WriteFile(filepath.Join(app, "go.mod"), []byte(mod), 0600); err != nil {
 			return err
 		}
@@ -235,13 +235,8 @@ func decodeCandidate(data []byte) (goCandidate, error) {
 		return result, errors.New("trailing catalog data")
 	}
 	core, coreErr := hex.DecodeString(result.CoreCommit)
-	version := strings.Split(result.Version, "-dev.")
-	validVersion := len(version) == 2 && len(version[1]) == 8 && strings.Trim(version[1], "0123456789") == ""
-	if validVersion {
-		validVersion = minimumGo("go"+version[0], version[0]) == nil
-	}
-	if result.Schema != 1 || result.State != "private-candidate" || result.Module != "github.com/phuong-tran/coakka-runtime-go" ||
-		!validVersion || coreErr != nil || len(core) != 20 || strings.ToLower(result.CoreCommit) != result.CoreCommit ||
+	if result.Schema != 1 || result.State != "private-candidate" || result.Module != "github.com/phuong-tran/coakka-runtime-go/v2" ||
+		result.Version != "2.0.0" || coreErr != nil || len(core) != 20 || strings.ToLower(result.CoreCommit) != result.CoreCommit ||
 		minimumGo("go"+result.MinimumRuntime, result.MinimumRuntime) != nil || !validDigest(result.ModuleManifestSHA256) || len(result.Members) == 0 || len(result.Members) > 128 {
 		return result, errors.New("invalid Go candidate identity")
 	}

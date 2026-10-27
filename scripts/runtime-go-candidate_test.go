@@ -15,6 +15,22 @@ import (
 	"time"
 )
 
+// The catalog is an untrusted cold input. Bound bytes before the standard JSON
+// parser; successful admission must retain the selected semantic-major pair.
+func FuzzCandidateCatalog(f *testing.F) {
+	f.Add([]byte(`{}`))
+	f.Add([]byte(`{"schema":1,"state":"private-candidate","module":"github.com/phuong-tran/coakka-runtime-go/v2","version":"2.0.0","minimumRuntime":"1.22.12","coreCommit":"f6b61768f60a08d81b1dc06625a211ffca8e89e2","moduleManifestSha256":"0000000000000000000000000000000000000000000000000000000000000000","members":{"go.mod":{"bytes":1,"sha256":"0000000000000000000000000000000000000000000000000000000000000000"}}}`))
+	f.Fuzz(func(t *testing.T, data []byte) {
+		if len(data) > 1<<20 {
+			return
+		}
+		value, err := decodeCandidate(data)
+		if err == nil && (value.Module != "github.com/phuong-tran/coakka-runtime-go/v2" || value.Version != "2.0.0") {
+			t.Fatal("admitted inconsistent semantic-major coordinate")
+		}
+	})
+}
+
 func controlDir(t *testing.T) string {
 	t.Helper()
 	root := os.Getenv("COAKKA_SAMPLE_WORK_ROOT")
@@ -41,8 +57,8 @@ func candidateFixture(t *testing.T) (string, goCandidate) {
 	if err := os.WriteFile(filepath.Join(dir, "go.mod"), content, 0600); err != nil {
 		t.Fatal(err)
 	}
-	return dir, goCandidate{Schema: 1, State: "private-candidate", Module: "github.com/phuong-tran/coakka-runtime-go",
-		Version: "2.5.5-dev.20261023", MinimumRuntime: "1.22.12", CoreCommit: "f6b61768f60a08d81b1dc06625a211ffca8e89e2",
+	return dir, goCandidate{Schema: 1, State: "private-candidate", Module: "github.com/phuong-tran/coakka-runtime-go/v2",
+		Version: "2.0.0", MinimumRuntime: "1.22.12", CoreCommit: "f6b61768f60a08d81b1dc06625a211ffca8e89e2",
 		ModuleManifestSHA256: hex.EncodeToString(digest[:]), Members: map[string]candidateMember{
 			"go.mod": {Bytes: int64(len(content)), SHA256: hex.EncodeToString(digest[:])}}}
 }

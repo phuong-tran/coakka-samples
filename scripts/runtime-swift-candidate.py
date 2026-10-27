@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import json
 import os
+import platform
 from pathlib import Path, PurePosixPath
 import shutil
 import stat
@@ -46,10 +47,11 @@ def catalog(content: bytes) -> dict:
     value = json.loads(content, object_pairs_hook=unique)
     if (not isinstance(value, dict) or value.keys() != {"schema", "state", "version", "coreCommit", "files", "languageFiles"}
         or type(value["schema"]) is not int or value["schema"] != 1 or value["state"] != "private-candidate"
-        or value["version"] != "0.0.0-p453.1" or value["coreCommit"] != "f6b61768f60a08d81b1dc06625a211ffca8e89e2"
-        or not isinstance(value["files"], dict) or len(value["files"]) != 42
+        or value["version"] != "3.0.0" or value["coreCommit"] != "f6b61768f60a08d81b1dc06625a211ffca8e89e2"
+        or not isinstance(value["files"], dict) or len(value["files"]) != 57
         or not {"Package.swift", "coakka-runtime-package.json", "core-abi-manifest.json", "LICENSE", "NOTICE", "NATIVE-LICENSE.md", "PACKAGE-LICENSE.md"} <= value["files"].keys()
-        or not isinstance(value["languageFiles"], dict) or value["languageFiles"].keys() != {"mac", "pi", "windows"}):
+        or not isinstance(value["languageFiles"], dict) or value["languageFiles"].keys() != {
+            "macos-aarch64", "linux-aarch64", "linux-x86_64", "windows-aarch64", "windows-x86_64"}):
         raise ValueError("invalid private Swift catalog")
     for rows in (value["files"], *value["languageFiles"].values()):
         if not isinstance(rows, dict) or len(rows) > 64:
@@ -106,7 +108,7 @@ def copy_package(source: Path, target: Path, rows: dict) -> None:
     directory(source)
     found = set()
     for count, path in enumerate(source.rglob("*"), 1):
-        if count > 96 or len(path.relative_to(source).parts) > 8 or path.is_symlink() or path.resolve() != path:
+        if count > 128 or len(path.relative_to(source).parts) > 8 or path.is_symlink() or path.resolve() != path:
             raise ValueError("source tree bound/link refused")
         if path.is_file():
             found.add(path.relative_to(source).as_posix())
@@ -153,7 +155,11 @@ def main() -> None:
             raise ValueError("candidate sample refuses native overrides")
     value = catalog(regular(repo / "artifacts/runtime-swift-candidate.json", 256 << 10))
     host = {"darwin": "mac", "linux": "pi", "win32": "windows"}.get(sys.platform)
-    if host is None:
+    cpu = {"arm64": "aarch64", "aarch64": "aarch64", "amd64": "x86_64", "x86_64": "x86_64"}.get(platform.machine().lower())
+    if host is None or cpu is None:
+        raise ValueError("no admitted installer platform")
+    platform_target = {"mac": "macos", "pi": "linux", "windows": "windows"}[host] + "-" + cpu
+    if platform_target not in value["languageFiles"]:
         raise ValueError("no admitted installer platform")
     swift = shutil.which("swift")
     if swift is None:
@@ -165,10 +171,10 @@ def main() -> None:
         temporary.mkdir()
         copy_package(candidate, stage / "runtime-candidate", value["files"])
         language = stage / "language"
-        if value["languageFiles"][host]:
+        if value["languageFiles"][platform_target]:
             runtime = Path(os.environ.get("COAKKA_SWIFT_LANGUAGE_HOME", ""))
             directory(runtime)
-            for name, row in value["languageFiles"][host].items():
+            for name, row in value["languageFiles"][platform_target].items():
                 copy_file(runtime / name, language / name, row)
         for name in ("Package.swift", "Sample.swift", "AppScope.swift", "README.md", "run.sh", "tests/ScopeControls.swift"):
             content = regular(repo / "runtime/swift/basic" / name, 128 << 10)
@@ -178,7 +184,9 @@ def main() -> None:
         environment = {key: val for key, val in os.environ.items() if not key.upper().startswith(("COAKKA_", "ASAN_", "LSAN_", "UBSAN_", "TSAN_", "DYLD_", "LD_"))}
         environment.update(TMPDIR=str(temporary), TMP=str(temporary), TEMP=str(temporary), CLANG_MODULE_CACHE_PATH=str(cache / "clang"))
         version = subprocess.run([swift, "--version"], env=environment, capture_output=True, text=True, timeout=15, check=True).stdout
-        if ("Swift version 6.2" if host == "mac" else "Swift version 6.0.3") not in version:
+        expected = "Swift version 6.4.1" if platform_target == "windows-aarch64" else (
+            "Swift version 6.2" if host == "mac" else "Swift version 6.0.3")
+        if expected not in version:
             raise ValueError("qualified candidate toolchain profile required")
         flags = ["-Xswiftc", "-warnings-as-errors", "-Xcc", "-Wall", "-Xcc", "-Wextra", "-Xcc", "-Werror", "-debug-info-format", "none",
             "-Xswiftc", "-Osize", "-Xswiftc", "-whole-module-optimization", "-Xswiftc", "-Xfrontend", "-Xswiftc", "-disable-reflection-metadata",
@@ -190,13 +198,17 @@ def main() -> None:
                 "-Xlinker", "--gc-sections", "-Xlinker", "--strip-all", "-Xlinker", "--fatal-warnings", "-Xlinker", "-z", "-Xlinker", "relro",
                 "-Xlinker", "-z", "-Xlinker", "now", "-Xlinker", "-rpath", "-Xlinker", "$ORIGIN/lib"]
         else:
-            overlay = Path(os.environ.get("COAKKA_SWIFT_VFS_OVERLAY", ""))
-            regular(overlay, 256 << 10)
-            flags += ["-Xswiftc", "-vfsoverlay", "-Xswiftc", str(overlay), "-Xcc", "-ivfsoverlay", "-Xcc", str(overlay),
-                "-Xlinker", "/WX", "-Xlinker", "/OPT:REF", "-Xlinker", "/OPT:ICF", "-Xlinker", "/INCREMENTAL:NO"]
+            if platform_target == "windows-x86_64":
+                overlay = Path(os.environ.get("COAKKA_SWIFT_VFS_OVERLAY", ""))
+                regular(overlay, 256 << 10)
+                flags += ["-Xswiftc", "-vfsoverlay", "-Xswiftc", str(overlay), "-Xcc", "-ivfsoverlay", "-Xcc", str(overlay)]
+            else:
+                flags += ["--build-system", "native"]
+            flags += ["-Xlinker", "/WX", "-Xlinker", "/OPT:REF", "-Xlinker", "/OPT:ICF", "-Xlinker", "/INCREMENTAL:NO"]
         run([swift, "build", "--package-path", str(app), "--scratch-path", str(stage / "build"), "--cache-path", str(cache / "swift"),
             "--config-path", str(cache / "config"), "--security-path", str(cache / "security"), "-j", "4", "-c", "release", *flags], stage, environment, 180)
-        triple = {"mac": "arm64-apple-macosx", "pi": "aarch64-unknown-linux-gnu", "windows": "x86_64-unknown-windows-msvc"}[host]
+        triple = "arm64-apple-macosx" if host == "mac" else (
+            ("aarch64" if cpu == "aarch64" else "x86_64") + ("-unknown-linux-gnu" if host == "pi" else "-unknown-windows-msvc"))
         output = stage / "build" / triple / "release"
         installed = stage / "installed"
         installed.mkdir()
@@ -206,8 +218,8 @@ def main() -> None:
         for name in (executable, module):
             shutil.copy2(output / name, installed / name)
         shutil.copytree(output / bundle, installed / bundle)
-        if value["languageFiles"][host]:
-            for name in value["languageFiles"][host]:
+        if value["languageFiles"][platform_target]:
+            for name in value["languageFiles"][platform_target]:
                 target = installed / name
                 target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(language / name, target)

@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	connector "github.com/phuong-tran/coakka-runtime-go"
+	connector "github.com/phuong-tran/coakka-runtime-go/v2"
 )
 
 func main() {

@@ -1,15 +1,16 @@
 # Private Swift runtime candidate sample
 
-This sample uses exactly the private `0.0.0-p453.1` source package and bundled
+This sample uses exactly the private `3.0.0` source package and bundled
 Core2.5.1+f6b61768/ABI1, not public2.5.2/2.5.3. The trusted
-`artifacts/runtime-swift-candidate.json` pins all42 package files and the
+`artifacts/runtime-swift-candidate.json` pins all57 package files and the
 qualified deployment copies of normal language runtime libraries. No separately
 installed Core/provider library or native-path override is needed. Targets are
-macOS ARM64, Linux ARM64 and native Windows x64; package presence is not a wider
+macOS ARM64, Linux ARM64/x64 and native Windows ARM64/x64; package presence is not a wider
 platform/minimum-OS/signing or publication claim.
 
-SwiftPM manifest/language floor remains6.0. Qualification profiles are Mac6.2
-and Linux/Windows6.0.3, not proof that Mac6.0/minimum OS has executed. Use a
+SwiftPM manifest/language floor remains6.0. Qualification profiles are Mac6.2,
+Linux/Windows x64 Swift6.0.3 and native Windows ARM64 Swift6.4.1. The manifest
+language floor is6.0; older Mac compiler and older ARM Windows OS are not inferred. Use a
 coherent supported compiler/SDK profile. The consumer's build is ordinary
 SwiftPM over a local admitted package; WMO/Osize/no-reflection/link stripping
 apply to the app and dynamic Swift module. Core native bytes are not rebuilt.
@@ -18,11 +19,11 @@ apply to the app and dynamic Swift module. Core native bytes are not rebuilt.
 
 Choose existing absolute candidate, work and cache roots. Large development-Mac
 staging/cache trees belong on mounted external APFS storage. The candidate root
-contains exactly the42 catalog members, with no Git/build/cache directories.
+contains exactly the57 catalog members, with no Git/build/cache directories.
 Keep trusted catalog/toolchain/input/cache trees stable during the build.
 
 ```sh
-export COAKKA_SWIFT_CANDIDATE_HOME="/absolute/package-p453.1"
+export COAKKA_SWIFT_CANDIDATE_HOME="/absolute/package-3.0.0"
 export COAKKA_SAMPLE_WORK_ROOT="/absolute/work"
 export COAKKA_SWIFT_CACHE_ROOT="/absolute/swift-cache"
 # Linux: an admitted Swift6.0.3 deployment directory containing lib/.
@@ -39,8 +40,10 @@ rather than silently linking an incompatible language deployment set.
 
 Native Windows runs native Swift/Python in its supported developer shell. Set
 the same variables to absolute Windows paths. `COAKKA_SWIFT_LANGUAGE_HOME`
-points to the qualified Swift6.0.3 runtime DLL directory; set
-`COAKKA_SWIFT_VFS_OVERLAY` to the coherent SDK22621 module-map profile. Then:
+points to the admitted deployment closure for the selected CPU. Windows x64
+uses Swift6.0.3 and `COAKKA_SWIFT_VFS_OVERLAY` for its SDK22621 module maps.
+Windows ARM64 uses Swift6.4.1, SDK26100 and SwiftPM's native build system;
+it does not use the x64 overlay. Then:
 
 ```text
 python -I -X utf8 -B scripts/runtime-swift-candidate.py --repo-root C:/path/to/samples
@@ -56,7 +59,7 @@ filesystem contract.
 The helper admits exact member sets, bounded regular files and streamed64KiB
 hash copies into its own stage before invoking SwiftPM. It refuses symlinks,
 wrong names/sizes/hashes and native overrides; no runtime registry fallback.
-Package count42/tree96/depth8 and64MiB per file/192MiB per input table are
+Package count57/tree128/depth8 and64MiB per file/192MiB per input table are
 bounded. Hashes are integrity against a trusted catalog, not signatures or a
 hostile-filesystem/toolchain sandbox. Build/cache/installed outputs are retained
 under the selected roots, including failed stages for diagnosis. No broad shell
@@ -78,5 +81,5 @@ both operation and cleanup failures. No automatic retry is added.
 These source/installed sample checks do not replace the owning memory/race,
 finite ARC-resource or cooled Pi cohort evidence. Residency need not be flat;
 weak nil is not whole-process leak proof. Remaining ecosystem samples/tools,
-Android/camera/legal/signing/minimum/wider/long-soak and coordinated release
+Android/camera/legal/signing/wider/long-soak and coordinated release
 gates remain separate. Nothing here promotes main or a public registry.

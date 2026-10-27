@@ -1,6 +1,6 @@
 # Swift runtime candidate sample
 
-This private lane uses exactly `0.0.0-p453.1` and bundled Core2.5.1+f6b61768,
+This private lane uses exactly `3.0.0` and bundled Core2.5.1+f6b61768,
 not the historical public package train. Follow the
 [candidate guide](../../docs/runtime-swift-candidate.md) for admitted local inputs,
 standard SwiftPM, matching toolchain/deployment profiles and installed execution.
