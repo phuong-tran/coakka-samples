@@ -90,7 +90,7 @@ device or product-clean sanitizer evidence.
 | Other ABI runtime execution | blocked | x86_64 now executes natively on the Windows AVD. `arm64-v8a` there is translated and `armeabi-v7a`/`x86` remain package-inspected only; none is relabelled as matching physical-device evidence. |
 | Sanitizers | blocked for publication | WSL/Linux x86_64 strict, ASan, and UBSan each pass all six host-JNI tests. LSan and TSan prove their runtimes but stop on unsuppressed HotSpot allocation/race diagnostics in `libjvm.so`; no matching Android sanitizer run is claimed. Preserve both limitations instead of treating host execution or strict compilation as device sanitizer evidence. |
 | Fault, pressure, and soak | blocked | Allocation failure, callback exception, and cleanup paths are code-reviewed, but device pressure, disconnect/reconnect, cancellation-at-state, process death, and long-running File/Stream soak remain unexecuted. |
-| Physical-device lifecycle | blocked | The exact-Core release-minified packaged-AAR path passes on the named API 36 ARM64 emulator. An emulator is not foreground-service, Activity recreation, LAN reachability, thermal, or process-kill evidence on physical hardware. |
+| Physical-device lifecycle | blocked | The exact-Core release-minified packaged-AAR path passes on the Windows API 37 x86_64 AVD. An emulator is not foreground-service, Activity recreation, LAN reachability, thermal, process-kill, or physical ARM64/32-bit evidence. |
 
 The private source, package, provenance, and native x86_64 emulator gates are
 complete. Public source/tag, Maven Central, and all publication actions remain
