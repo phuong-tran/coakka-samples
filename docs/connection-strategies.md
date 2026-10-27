@@ -18,8 +18,13 @@ proxy to supply those mechanics.
 | `PERSISTENT_SINGLE_FLIGHT` | Retain at most one connection per exact endpoint and serialize exchanges | 1 | `TCP_PERSISTENT_SINGLE_FLIGHT` |
 | `MULTIPLEXED` | Retain an endpoint connection and correlate bounded streams | Bounded, currently 16 | `TCP_MULTIPLEXING` |
 
-The default is `PER_EXCHANGE + PLAINTEXT`. Nothing silently enables pooling,
-persistence, multiplexing, TLS, or mTLS.
+The current native startup contract resolves omitted execution and connection
+groups inside Core to CPU `AUTO` and persistent `MULTIPLEXED`; omitted security
+remains `PLAINTEXT`. These are accepted Core facts, not connector-side default
+tables. The frozen legacy `coakka_v2_runtime_create` entrypoint retains
+`PER_EXCHANGE + PLAINTEXT` for compatibility. Nothing silently enables TLS or
+mTLS, and documentation for a legacy package must identify that constructor
+scope instead of presenting its connection mode as the universal default.
 
 ## Defaults And Tuning
 
@@ -39,13 +44,15 @@ are runtime-owned defaults, not public tuning fields.
 
 ## Lifecycle And Atomicity
 
-Validate a proposed option block without a runtime handle when early feedback
-is useful. Apply it only while the runtime is `CREATED`. Repeated successful
-applies in `CREATED` are allowed and the last published configuration wins.
-After `start`, connection strategy is immutable; changing it requires a new
-runtime instance and an application-owned cutover. `STOPPED` is terminal.
+Connectors on the current native startup contract pass nullable connection
+intent into construction. Omitting the group selects Core's `MULTIPLEXED`
+default; supplying it makes the chosen mode immutable from successful
+construction. Changing strategy requires a new runtime instance and an
+application-owned cutover. `STOPPED` is terminal.
 
-Use the `_ex` apply function in new connectors. It returns one coherent result:
+The legacy constructor alone permits the existing `_ex` apply function while
+the runtime is `CREATED`; repeated successful legacy applies publish the last
+complete configuration. It returns one coherent result:
 
 - `apply_status`: the same stable status returned by the function
 - `changed`: `1` only when a different effective configuration was published
@@ -60,10 +67,11 @@ multiple configuration writers.
 ## Use Your Language Connector
 
 Connection strategy is not a C-only feature. The C ABI below is the stable
-contract shared by the ecosystem; application developers normally select a
-strategy through their host-language connector. Every full runtime connector
-maps the same startup selection, effective-capability discovery, structured
-apply result, and effective-configuration snapshot.
+contract shared by the ecosystem; application developers normally submit
+optional strategy intent through their host-language connector. A current
+connector projects Core's accepted startup/effective snapshots and does not
+fabricate a structured apply result for constructor-owned intent. Historical
+connectors that still use the legacy constructor retain its real apply result.
 
 Current connector surfaces include native C/C++, JVM/Kotlin, Spring Boot,
 Quarkus, Node.js, Bun, Electron, Python, Go, C#, Rust, Swift, Zig, and Mojo.
@@ -96,29 +104,28 @@ ConnectorOrchestrator.start(
         connectionStrategy = strategy,
     ),
 ).use { runtime ->
-    val startup = requireNotNull(runtime.startupConnectionResult())
-    check(startup.applied()) {
-        "Connection strategy rejected: ${startup.reasonName}; " +
-            "active mode=${startup.activeConfig.mode}"
-    }
-    check(runtime.tcpConnectionConfig().mode == strategy.mode)
+    val accepted = runtime.startupConfig().connection
+    check(accepted.mode == strategy.mode)
 
     // Register handlers and send requests through the normal connector API.
 }
 ```
 
-`ConnectorOrchestrator.start(...)` applies the strategy while the runtime is
-still `CREATED` and throws `RuntimeTcpConnectionApplyException` if startup
-policy is rejected. Use `PER_EXCHANGE` without an optional capability check;
-check the matching capability before selecting any advanced mode. Add numeric
-pool tuning only when `TCP_POOL_TUNING` is effective and measurements justify
-overriding the runtime defaults.
+`ConnectorOrchestrator.start(...)` submits the strategy to Core construction
+and throws if Core rejects it; no partial runtime or synthetic apply result is
+published. Omit `connectionStrategy` for the normal Core `MULTIPLEXED` default.
+Use explicit `PER_EXCHANGE` without an optional capability check; check the
+matching capability before explicitly selecting another optional mode. Add
+numeric pool tuning only when `TCP_POOL_TUNING` is effective and measurements
+justify overriding the runtime defaults.
 
 ## C Example
 
-This lower-level example is for native hosts and connector authors. It shows
-the common ABI contract; it is not a requirement for Kotlin or other language
-applications.
+This lower-level example is for a host intentionally retaining the legacy
+constructor/setter contract. It is not the current native-construction default
+and is not a requirement for Kotlin or other language applications. New native
+hosts pass connection intent to `coakka_v2_runtime_create_native`, or pass NULL
+to select Core `AUTO`/`MULTIPLEXED` defaults.
 
 ```c
 static coakka_v2_status_t select_connection_mode(
@@ -196,15 +203,16 @@ ownership, lifecycle, error, and result semantics, see
 
 ## Operational Selection
 
-- Choose `PER_EXCHANGE` for the simplest lifecycle, short exchanges, or when
-  connection churn is acceptable.
+- Keep the Core `MULTIPLEXED` default for the normal concurrent request/reply
+  path when the selected artifact reports the required capability.
+- Choose explicit `PER_EXCHANGE` for short exchanges or when connection churn
+  is deliberately preferred.
 - Choose `BOUNDED_POOL` when connection setup is material and bounded reuse is
   useful without concurrent streams on one connection.
 - Choose `PERSISTENT_SINGLE_FLIGHT` when one retained endpoint connection and
   serialized exchanges match the workload.
-- Choose `MULTIPLEXED` only when concurrent calls per endpoint are required and
-  the application accepts connection-scoped fail-all after an ambiguous
-  transport failure.
+- An explicit `MULTIPLEXED` selection has the same bounded concurrency and
+  connection-scoped fail-all law as the omitted native default.
 
 CoAkka never automatically replays a request after business bytes may have
 been written. See [Troubleshooting](troubleshooting.md) for configuration and
