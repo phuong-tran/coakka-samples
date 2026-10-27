@@ -14,6 +14,16 @@ or background service can host the connector, load the native runtime through
 the Android NDK, register handlers, and call stable targets. Physical-device
 lifecycle and industrial soak evidence remain separate support gates.
 
+Its native construction path leaves execution and connection intent absent, so
+Core owns the normal CPU `AUTO` and persistent `MULTIPLEXED` defaults. Android
+projects Core's accepted startup facts instead of keeping a connector-side
+default table. Monitor collection is the one explicit construction option
+because the connector exposes a monitor doorbell; optional I/O remains OFF.
+Core also owns the message-delivery engine: Android consumes delivered requests
+through the opaque Core reader and reply-capable requests through Core ask
+tickets. It does not read legacy response/request pipes or infer whether Core
+selected its owned queue and doorbell engine.
+
 ## Edge Linux First
 
 The first practical edge lane should be Linux devices and gateways:
@@ -108,7 +118,7 @@ framework. An Android app or Android background service can host a connector,
 load a native runtime through the Android NDK, register handlers, and call
 stable targets.
 
-Connector `1.2.0` has a signed candidate AAR with `arm64-v8a`, `armeabi-v7a`,
+Connector `1.2.0` has an internal candidate AAR with `arm64-v8a`, `armeabi-v7a`,
 `x86`, and `x86_64` payloads, a thin JNI layer, and Android lifecycle guidance.
 The exact release-minified AAR passed Runtime, request/reply, File Lane, and
 Stream Lane on the named API 36 ARM64 emulator image. It remains an internal

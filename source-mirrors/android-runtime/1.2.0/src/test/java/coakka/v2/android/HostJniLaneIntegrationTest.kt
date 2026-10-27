@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.AfterClass
@@ -17,6 +18,32 @@ class HostJniLaneIntegrationTest {
     @Before
     fun requireExplicitHostJniRun() {
         assumeTrue(System.getProperty(HOST_JNI_PROPERTY) == "true")
+    }
+
+    @Test
+    fun nativeCreateUsesCoreDefaultsAndProjectsAcceptedStartupFacts() {
+        val handle = NativeRuntimeBridge.nativeCreate(
+            systemName = "android-host-startup",
+            nodeId = "android-host-startup-1",
+            queueCapacity = 128,
+            strictNoDrop = true,
+        )
+        assertTrue(handle != 0L)
+        try {
+            val startup = checkNotNull(NativeRuntimeBridge.nativeReadStartupConfig(handle))
+                .toAndroidRuntimeStartupConfig()
+            assertEquals(RuntimeState.CREATED, startup.runtimeState)
+            assertEquals(AndroidRuntimeStartupCpuPolicies.AUTO, startup.execution.requestedPolicy)
+            assertEquals(RuntimeTcpConnectionMode.MULTIPLEXED, startup.connection.mode)
+            assertTrue(startup.wasDefaulted(AndroidRuntimeStartupDefaultGroups.EXECUTION))
+            assertTrue(startup.wasDefaulted(AndroidRuntimeStartupDefaultGroups.CONNECTION))
+            assertTrue(startup.wasDefaulted(AndroidRuntimeStartupDefaultGroups.IO))
+            assertFalse(startup.wasDefaulted(AndroidRuntimeStartupDefaultGroups.MONITOR))
+            assertFalse(startup.io.requested)
+            assertTrue(startup.monitorEnabled)
+        } finally {
+            NativeRuntimeBridge.nativeDestroy(handle)
+        }
     }
 
     @Test

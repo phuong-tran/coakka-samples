@@ -17,6 +17,8 @@ internal object NativeRuntimeBridge {
         strictNoDrop: Boolean,
     ): Long
 
+    external fun nativeReadStartupConfig(handle: Long): LongArray?
+
     external fun nativeApplyNetwork(
         handle: Long,
         mode: Int,
@@ -33,6 +35,17 @@ internal object NativeRuntimeBridge {
     external fun nativeStart(handle: Long): Int
 
     external fun nativeStop(handle: Long): Int
+
+    external fun nativeSignalClose(handle: Long)
+
+    external fun nativeReadDeliveredRequest(handle: Long, outStatus: IntArray): ByteArray?
+
+    external fun nativeAsk(
+        handle: Long,
+        envelope: ByteArray,
+        timeoutMs: Int,
+        outStatusAndKind: IntArray,
+    ): ByteArray?
 
     external fun nativeConsumeMonitor(fd: Int): Long
 

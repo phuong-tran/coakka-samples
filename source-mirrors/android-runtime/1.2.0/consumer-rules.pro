@@ -1,4 +1,7 @@
-# The JNI entrypoints use stable class and method names.
+# The JNI entrypoints, including owned request read, ask, and close signaling,
+# use stable class and method names. Public ask result models are ordinary
+# managed values and remain shrinkable in one consumer APK; the independently
+# minified device fixture keeps those cross-APK types in its own exact rules.
 -keep class coakka.v2.android.NativeRuntimeBridge { *; }
 -keep class coakka.v2.android.NativeStreamCallbacks { *; }
 -keep interface coakka.v2.android.AndroidStreamSource { *; }

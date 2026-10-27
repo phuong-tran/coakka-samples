@@ -2,6 +2,7 @@ package coakka.v2.android
 
 import java.io.Closeable
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.locks.ReentrantLock
 
 /**
  * Owns one native runtime and every Android-side descriptor exported by it.
@@ -15,21 +16,60 @@ class CoAkkaAndroidRuntime private constructor(
 ) : Closeable {
     private val closing = AtomicBoolean(false)
     private val lifecycleLock = Any()
+    private val nativeCallLock = ReentrantLock()
+    private val nativeCallsDrained = nativeCallLock.newCondition()
+    private var activeNativeCalls = 0
 
+    /** Submits a handler reply or one-way envelope; use [ask] for request/reply. */
     fun submitEnvelope(envelope: ByteArray): Boolean =
         !closing.get() && lanes.request.write(envelope)
 
     fun applyControlEnvelope(envelope: ByteArray): Boolean =
         !closing.get() && lanes.control.write(envelope)
 
-    /** Blocks until one locally delivered request is available or the lane closes. */
-    fun readDeliveredRequest(): ByteArray? = lanes.deliveredRequest?.read()
+    /** Blocks until one locally delivered request is available or close begins. */
+    fun readDeliveredRequest(): ByteArray? {
+        val handle = enterBlockingNativeCall() ?: return null
+        try {
+            val status = IntArray(1)
+            val envelope = NativeRuntimeBridge.nativeReadDeliveredRequest(handle, status)
+            return when (status[0]) {
+                NativeStatus.OK -> checkNotNull(envelope) {
+                    "runtime request reader returned no envelope"
+                }
+                NativeStatus.CLOSED -> null
+                else -> throw CoAkkaNativeException("runtime_request_reader_read", status[0])
+            }
+        } finally {
+            leaveBlockingNativeCall()
+        }
+    }
 
-    /** Blocks until one response is available or the lane closes. */
-    fun readResponse(): ByteArray? = lanes.response.read()
-
-    /** Blocks until one deadletter is available or the lane closes. */
-    fun readDeadletter(): ByteArray? = lanes.deadletter.read()
+    /**
+     * Submits one reply-capable request and returns Core's matched terminal.
+     * The timeout is one monotonic deadline; close interrupts it within the
+     * connector's bounded native wait slice.
+     */
+    fun ask(envelope: ByteArray, timeoutMillis: Int): AndroidRuntimeAskResult {
+        require(timeoutMillis >= 0) { "timeoutMillis must be non-negative" }
+        val handle = checkNotNull(enterBlockingNativeCall()) { "runtime is closing" }
+        try {
+            val result = IntArray(2)
+            val terminal = NativeRuntimeBridge.nativeAsk(
+                handle,
+                envelope,
+                timeoutMillis,
+                result,
+            )
+            requireNativeOk(result[0], "ask_ticket_await")
+            return AndroidRuntimeAskResult(
+                kind = AndroidRuntimeAskResultKind.fromNative(result[1]),
+                envelope = checkNotNull(terminal) { "native ask returned no terminal envelope" },
+            )
+        } finally {
+            leaveBlockingNativeCall()
+        }
+    }
 
     /** Drains the monitor doorbell; the returned count may represent coalesced changes. */
     fun consumeMonitorDoorbell(): Long = synchronized(lifecycleLock) {
@@ -59,21 +99,77 @@ class CoAkkaAndroidRuntime private constructor(
         )
     }
 
+    /** Reads one owned copy of Core's accepted immutable startup facts. */
+    fun startupConfig(): AndroidRuntimeStartupConfig = synchronized(lifecycleLock) {
+        check(!closing.get()) { "runtime is closing" }
+        val handle = nativeHandle
+        check(handle != 0L) { "runtime is closed" }
+        checkNotNull(NativeRuntimeBridge.nativeReadStartupConfig(handle)) {
+            "runtime startup configuration read failed"
+        }.toAndroidRuntimeStartupConfig()
+    }
+
     override fun close() {
         if (!closing.compareAndSet(false, true)) {
             return
         }
+        val handle = nativeCallLock.run {
+            lock()
+            try {
+                nativeHandle
+            } finally {
+                unlock()
+            }
+        }
+        if (handle != 0L) {
+            NativeRuntimeBridge.nativeSignalClose(handle)
+        }
         lanes.cancelWaiters()
+        nativeCallLock.lock()
+        try {
+            while (activeNativeCalls != 0) {
+                nativeCallsDrained.awaitUninterruptibly()
+            }
+        } finally {
+            nativeCallLock.unlock()
+        }
         synchronized(lifecycleLock) {
-            val handle = nativeHandle
-            if (handle == 0L) {
+            val ownedHandle = nativeHandle
+            if (ownedHandle == 0L) {
                 return
             }
-            val stopStatus = NativeRuntimeBridge.nativeStop(handle)
+            val stopStatus = NativeRuntimeBridge.nativeStop(ownedHandle)
             lanes.close()
-            NativeRuntimeBridge.nativeDestroy(handle)
+            NativeRuntimeBridge.nativeDestroy(ownedHandle)
             nativeHandle = 0L
             requireNativeOk(stopStatus, "runtime_stop")
+        }
+    }
+
+    private fun enterBlockingNativeCall(): Long? {
+        nativeCallLock.lock()
+        return try {
+            if (closing.get() || nativeHandle == 0L) {
+                null
+            } else {
+                activeNativeCalls += 1
+                nativeHandle
+            }
+        } finally {
+            nativeCallLock.unlock()
+        }
+    }
+
+    private fun leaveBlockingNativeCall() {
+        nativeCallLock.lock()
+        try {
+            activeNativeCalls -= 1
+            check(activeNativeCalls >= 0) { "native call admission underflow" }
+            if (activeNativeCalls == 0) {
+                nativeCallsDrained.signalAll()
+            }
+        } finally {
+            nativeCallLock.unlock()
         }
     }
 

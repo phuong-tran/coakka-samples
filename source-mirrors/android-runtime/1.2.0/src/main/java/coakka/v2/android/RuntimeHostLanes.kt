@@ -6,11 +6,8 @@ import java.io.Closeable
 internal class RuntimeHostLanes private constructor(
     private val cancellation: LaneCancellation,
     val request: WriteFrameLane,
-    val response: ReadFrameLane,
-    val deadletter: ReadFrameLane,
     val control: WriteFrameLane,
     val monitor: MonitorLane?,
-    val deliveredRequest: ReadFrameLane?,
 ) : Closeable {
     fun cancelWaiters() {
         cancellation.cancel()
@@ -20,9 +17,6 @@ internal class RuntimeHostLanes private constructor(
         cancelWaiters()
         request.close()
         control.close()
-        deliveredRequest?.close()
-        response.close()
-        deadletter.close()
         monitor?.close()
         cancellation.close()
     }
@@ -53,24 +47,16 @@ internal class RuntimeHostLanes private constructor(
                         ?.also(adopted::add)
 
                 val request = WriteFrameLane(required(REQUEST_INDEX), cancellation)
-                val response = ReadFrameLane(required(RESPONSE_INDEX), cancellation)
-                val deadletter = ReadFrameLane(required(DEADLETTER_INDEX), cancellation)
                 val control = WriteFrameLane(required(CONTROL_INDEX), cancellation)
                 val monitor = optional(MONITOR_INDEX)?.let {
                     MonitorLane(it, cancellation)
-                }
-                val delivered = optional(DELIVERED_REQUEST_INDEX)?.let {
-                    ReadFrameLane(it, cancellation)
                 }
                 adopted.clear()
                 return RuntimeHostLanes(
                     cancellation = cancellation,
                     request = request,
-                    response = response,
-                    deadletter = deadletter,
                     control = control,
                     monitor = monitor,
-                    deliveredRequest = delivered,
                 )
             } catch (failure: Throwable) {
                 cancellation.close()
@@ -85,13 +71,10 @@ internal class RuntimeHostLanes private constructor(
             }
         }
 
-        private const val HOST_HANDLE_LAYOUT_VERSION = 1
-        private const val HOST_HANDLE_VALUE_COUNT = 7
+        private const val HOST_HANDLE_LAYOUT_VERSION = 2
+        private const val HOST_HANDLE_VALUE_COUNT = 4
         private const val REQUEST_INDEX = 1
-        private const val RESPONSE_INDEX = 2
-        private const val DEADLETTER_INDEX = 3
-        private const val CONTROL_INDEX = 4
-        private const val MONITOR_INDEX = 5
-        private const val DELIVERED_REQUEST_INDEX = 6
+        private const val CONTROL_INDEX = 2
+        private const val MONITOR_INDEX = 3
     }
 }

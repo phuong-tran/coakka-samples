@@ -45,6 +45,13 @@ checkout's rolling working tree. It cross-compiles and packages
 `libcoakka_runtime_v2.so` plus `libcoakka_android_jni.so` for `arm64-v8a`,
 `armeabi-v7a`, `x86`, and `x86_64`.
 
+JNI uses Core's native constructor. Execution and connection groups are absent,
+so Core owns the normal CPU `AUTO` and persistent `MULTIPLEXED` defaults;
+optional I/O remains absent and OFF. Monitor collection is explicitly enabled
+because Android exports the monitor doorbell. Kotlin's `startupConfig()`
+projects Core's accepted immutable facts and default provenance instead of
+maintaining a connector-side default table.
+
 To execute the installed-artifact gate on an online ARM64 device or emulator:
 
 ```sh
@@ -56,11 +63,12 @@ scripts/run-device-smoke.sh \
 That release-minified app consumes the exact AAR file, verifies its four-ABI
 inventory and metadata schema 2, and requires clean public-connector and
 exact-Core provenance. The R8 gate checks four exact JNI/callback class
-identities in the mapping and 34 native plus two callback members and
-descriptors in the final APK DEX. Instrumentation then checks native
+identities plus four cross-APK startup types in the mapping, and 35 native plus
+two callback members and descriptors in the final APK DEX. Instrumentation then checks native
 identity/capabilities, one request outcome, one owner-pinned File transfer, and
-one owner-pinned Stream delivery. The clean public-tag candidate passes this
-path on the named API 36 ARM64 emulator.
+one owner-pinned Stream delivery. The internal candidate passes this path on
+the named API 36 ARM64 emulator; no public source tag or registry artifact is
+inferred from that private evidence.
 
 The unsigned Central publication shape is independently checkable from the
 mirror and needs no release credential:

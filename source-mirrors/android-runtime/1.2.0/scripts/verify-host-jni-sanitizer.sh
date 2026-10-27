@@ -14,6 +14,9 @@ case "${PROFILE}" in
     RUNTIME_STEM=asan
     OPTIONS_NAME=ASAN_OPTIONS
     OPTIONS_VALUE=halt_on_error=1:abort_on_error=1:symbolize=1
+    # HotSpot retains process-lifetime allocations. Leak ownership is exercised
+    # separately by the LSan profile; this probe only proves ASan JVM startup.
+    JAVA_OPTIONS_VALUE=detect_leaks=0:halt_on_error=1:abort_on_error=1:symbolize=1
     MARKER='ERROR: AddressSanitizer'
     PROBE_SOURCE=$'#include <stdlib.h>\n\
 __attribute__((noinline)) static int read_value(int *value) { return *value; }\n\

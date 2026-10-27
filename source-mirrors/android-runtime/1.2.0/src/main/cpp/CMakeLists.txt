@@ -30,7 +30,27 @@ target_compile_options(coakka_android_jni PRIVATE
     -Wpedantic
     -Werror
     -fvisibility=hidden
-    -fvisibility-inlines-hidden)
+    -fvisibility-inlines-hidden
+    "-ffile-prefix-map=${COAKKA_RUNTIME_ROOT}=coakka/runtime"
+    "-fmacro-prefix-map=${COAKKA_RUNTIME_ROOT}=coakka/runtime"
+    "-fdebug-prefix-map=${COAKKA_RUNTIME_ROOT}=coakka/runtime"
+    "-ffile-prefix-map=${CMAKE_CURRENT_SOURCE_DIR}=coakka/android"
+    "-fmacro-prefix-map=${CMAKE_CURRENT_SOURCE_DIR}=coakka/android"
+    "-fdebug-prefix-map=${CMAKE_CURRENT_SOURCE_DIR}=coakka/android")
 target_include_directories(coakka_android_jni PRIVATE
     "${COAKKA_RUNTIME_ROOT}/include")
 target_link_libraries(coakka_android_jni PRIVATE coakka_runtime_v2 log)
+set(COAKKA_ANDROID_JNI_EXPORTS
+    "${CMAKE_CURRENT_SOURCE_DIR}/coakka_android_jni.exports.map")
+set_property(TARGET coakka_android_jni APPEND PROPERTY LINK_DEPENDS
+    "${COAKKA_ANDROID_JNI_EXPORTS}")
+target_link_options(coakka_android_jni PRIVATE
+    "LINKER:--version-script=${COAKKA_ANDROID_JNI_EXPORTS}"
+    "LINKER:--exclude-libs,ALL"
+    "LINKER:-z,start-stop-visibility=hidden")
+add_custom_command(TARGET coakka_android_jni POST_BUILD
+    COMMAND "${CMAKE_STRIP}" --strip-unneeded
+            "$<TARGET_FILE:coakka_android_jni>"
+    COMMAND "${CMAKE_OBJCOPY}" --remove-section=.comment
+            "$<TARGET_FILE:coakka_android_jni>"
+    VERBATIM)

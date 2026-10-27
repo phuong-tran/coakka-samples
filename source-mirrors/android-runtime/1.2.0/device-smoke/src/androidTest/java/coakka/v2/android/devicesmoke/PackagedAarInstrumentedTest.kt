@@ -4,14 +4,18 @@ import android.os.Build
 import android.os.SystemClock
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import coakka.v2.android.AndroidRuntimeAskResultKind
 import coakka.v2.android.AndroidRuntimeConfig
 import coakka.v2.android.AndroidRuntimeFeatures
 import coakka.v2.android.AndroidRuntimeRoute
+import coakka.v2.android.AndroidRuntimeStartupCpuPolicies
+import coakka.v2.android.AndroidRuntimeStartupDefaultGroups
 import coakka.v2.android.AndroidStreamConsumer
 import coakka.v2.android.AndroidStreamConsumerDecision
 import coakka.v2.android.AndroidStreamSource
 import coakka.v2.android.AndroidStreamSourceResult
 import coakka.v2.android.CoAkkaAndroidRuntime
+import coakka.v2.android.CoAkkaNativeException
 import coakka.v2.android.FileLane
 import coakka.v2.android.FileLaneConfig
 import coakka.v2.android.FileLaneFlags
@@ -19,6 +23,8 @@ import coakka.v2.android.FileReceiveSpec
 import coakka.v2.android.FileTransferDirection
 import coakka.v2.android.FileTransferSnapshot
 import coakka.v2.android.LaneOwnerConfig
+import coakka.v2.android.RuntimeState
+import coakka.v2.android.RuntimeTcpConnectionMode
 import coakka.v2.android.StreamDirection
 import coakka.v2.android.StreamFrameFlags
 import coakka.v2.android.StreamLane
@@ -59,6 +65,7 @@ class PackagedAarInstrumentedTest {
         )
         assertPackagedIdentityAndLibraries()
         assertRuntimeIdentityAndMessageOutcome()
+        assertBlockedAskIsInterruptedByClose()
         assertOwnerPinnedFileTransfer()
         assertOwnerPinnedStreamDelivery()
     }
@@ -146,25 +153,72 @@ class PackagedAarInstrumentedTest {
                 config = AndroidRuntimeConfig("android-device-smoke", "android-${BuildConfig.EXPECTED_ABI}"),
                 routes = listOf(AndroidRuntimeRoute.local("svc.echo", "android-${BuildConfig.EXPECTED_ABI}")),
             ).use { runtime ->
+                val startup = runtime.startupConfig()
+                assertEquals(RuntimeState.STARTED, startup.runtimeState)
+                assertEquals(
+                    AndroidRuntimeStartupCpuPolicies.AUTO,
+                    startup.execution.requestedPolicy,
+                )
+                assertEquals(RuntimeTcpConnectionMode.MULTIPLEXED, startup.connection.mode)
+                assertTrue(
+                    startup.wasDefaulted(AndroidRuntimeStartupDefaultGroups.EXECUTION),
+                )
+                assertTrue(
+                    startup.wasDefaulted(AndroidRuntimeStartupDefaultGroups.CONNECTION),
+                )
+                assertTrue(startup.wasDefaulted(AndroidRuntimeStartupDefaultGroups.IO))
+                assertFalse(startup.wasDefaulted(AndroidRuntimeStartupDefaultGroups.MONITOR))
+                assertFalse(startup.io.requested)
+                assertTrue(startup.monitorEnabled)
+
                 val request = requestEnvelope()
                 val deliveredFuture = executor.submit<Envelope> {
-                    Envelope.parseFrom(checkNotNull(runtime.readDeliveredRequest()))
+                    val delivered = Envelope.parseFrom(checkNotNull(runtime.readDeliveredRequest()))
+                    assertTrue(runtime.submitEnvelope(responseEnvelope(delivered).toByteArray()))
+                    delivered
                 }
-                assertTrue(runtime.submitEnvelope(request.toByteArray()))
+                val askResult = runtime.ask(request.toByteArray(), 5_000)
                 val delivered = deliveredFuture.get(TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 assertEquals(MessageKind.MESSAGE_KIND_REQUEST, delivered.kind)
                 assertEquals(request.messageId, delivered.messageId)
 
-                val responseFuture = executor.submit<Envelope> {
-                    Envelope.parseFrom(checkNotNull(runtime.readResponse()))
-                }
-                assertTrue(runtime.submitEnvelope(responseEnvelope(delivered).toByteArray()))
-                val response = responseFuture.get(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                assertEquals(AndroidRuntimeAskResultKind.RESPONSE, askResult.kind)
+                val response = Envelope.parseFrom(askResult.envelope)
                 assertEquals(MessageKind.MESSAGE_KIND_RESPONSE, response.kind)
                 assertEquals(request.messageId, response.correlationId)
                 assertEquals("reply-from-android", response.payload.toStringUtf8())
             }
         } finally {
+            executor.shutdownNow()
+            assertTrue(executor.awaitTermination(TIMEOUT_SECONDS, TimeUnit.SECONDS))
+        }
+    }
+
+    private fun assertBlockedAskIsInterruptedByClose() {
+        val executor = Executors.newSingleThreadExecutor()
+        val runtime = CoAkkaAndroidRuntime.open(
+            config = AndroidRuntimeConfig("android-close-smoke", "android-close-node"),
+            routes = listOf(AndroidRuntimeRoute.local("svc.echo", "android-close-node")),
+        )
+        try {
+            val request = requestEnvelope("android-close-request")
+            val askFailure = executor.submit<Int> {
+                try {
+                    runtime.ask(request.toByteArray(), 15_000)
+                    error("blocked ask unexpectedly completed")
+                } catch (expected: CoAkkaNativeException) {
+                    expected.status
+                }
+            }
+            val delivered = Envelope.parseFrom(checkNotNull(runtime.readDeliveredRequest()))
+            assertEquals(request.messageId, delivered.messageId)
+            runtime.close()
+            assertEquals(
+                NATIVE_CLOSED,
+                askFailure.get(TIMEOUT_SECONDS, TimeUnit.SECONDS),
+            )
+        } finally {
+            runtime.close()
             executor.shutdownNow()
             assertTrue(executor.awaitTermination(TIMEOUT_SECONDS, TimeUnit.SECONDS))
         }
@@ -303,9 +357,9 @@ class PackagedAarInstrumentedTest {
         return snapshot
     }
 
-    private fun requestEnvelope(): Envelope = Envelope.newBuilder()
-        .setMessageId("android-request-1")
-        .setCorrelationId("android-request-1")
+    private fun requestEnvelope(messageId: String = "android-request-1"): Envelope = Envelope.newBuilder()
+        .setMessageId(messageId)
+        .setCorrelationId(messageId)
         .setSource("android-device-smoke")
         .setTarget("svc.echo")
         .setReplyTo("android-device-smoke/replies")
@@ -337,6 +391,7 @@ class PackagedAarInstrumentedTest {
         .build()
 
     private companion object {
+        const val NATIVE_CLOSED = -7
         const val TIMEOUT_SECONDS = 15L
     }
 }

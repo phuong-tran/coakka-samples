@@ -18,10 +18,147 @@ enum class RuntimeState(internal val nativeValue: Int) {
     }
 }
 
+/** Stable Core connection-mode values; these map ABI values, not defaults. */
+enum class RuntimeTcpConnectionMode(internal val nativeValue: Int) {
+    PER_EXCHANGE(0),
+    BOUNDED_POOL(1),
+    PERSISTENT_SINGLE_FLIGHT(2),
+    MULTIPLEXED(3);
+
+    companion object {
+        internal fun fromNative(value: Int): RuntimeTcpConnectionMode =
+            entries.firstOrNull { it.nativeValue == value }
+                ?: error("unknown native TCP connection mode=$value")
+    }
+}
+
+/** Core-owned construction-default provenance bits. */
+object AndroidRuntimeStartupDefaultGroups {
+    const val EXECUTION = 1L shl 0
+    const val CONNECTION = 1L shl 1
+    const val IO = 1L shl 2
+    const val MONITOR = 1L shl 3
+}
+
+/** Stable Core CPU-policy values; these map ABI values, not defaults. */
+object AndroidRuntimeStartupCpuPolicies {
+    const val AUTO = 0
+    const val SINGLE = 1
+}
+
+data class AndroidRuntimeStartupExecution(
+    val requestedPolicy: Int,
+    val supported: Boolean,
+    val availableCpuCount: Int,
+    val selectedCpuIds: List<Long>,
+    val startupApplied: Boolean,
+)
+
+data class AndroidRuntimeTcpConnectionConfig(
+    val defaultsRevision: Int,
+    val mode: RuntimeTcpConnectionMode,
+    val applicableFields: Long,
+    val explicitlyConfiguredFields: Long,
+    val defaultedFields: Long,
+    val configurableFields: Long,
+    val maxConnections: Int,
+    val maxRequestsPerConnection: Long,
+    val idleTimeoutMillis: Long,
+)
+
+data class AndroidRuntimeStartupIo(
+    val requested: Boolean,
+    val compiled: Boolean,
+    val probed: Boolean,
+    val supported: Boolean,
+    val effective: Boolean,
+    val probeError: Int,
+)
+
+/** Copy-safe Core facts for the accepted immutable startup configuration. */
+data class AndroidRuntimeStartupConfig(
+    val defaultsRevision: Int,
+    val defaultedGroups: Long,
+    val strictNoDrop: Boolean,
+    val queueCapacity: Int,
+    val requestMaxFrameSize: Long,
+    val runtimeState: RuntimeState,
+    val execution: AndroidRuntimeStartupExecution,
+    val connection: AndroidRuntimeTcpConnectionConfig,
+    val io: AndroidRuntimeStartupIo,
+    val monitorEnabled: Boolean,
+) {
+    fun wasDefaulted(group: Long): Boolean = (defaultedGroups and group) == group
+}
+
+internal const val RUNTIME_STARTUP_VALUE_COUNT = 29
+
+internal fun LongArray.toAndroidRuntimeStartupConfig(): AndroidRuntimeStartupConfig {
+    require(size == RUNTIME_STARTUP_VALUE_COUNT) {
+        "unexpected runtime startup field count=$size"
+    }
+    val selectedCpuCount = this[9].toInt()
+    require(selectedCpuCount in 0..2) {
+        "invalid selected CPU count=$selectedCpuCount"
+    }
+    return AndroidRuntimeStartupConfig(
+        defaultsRevision = this[0].toInt(),
+        defaultedGroups = this[1],
+        strictNoDrop = this[2] != 0L,
+        queueCapacity = this[3].toInt(),
+        requestMaxFrameSize = this[4],
+        runtimeState = RuntimeState.fromNative(this[5].toInt()),
+        execution = AndroidRuntimeStartupExecution(
+            requestedPolicy = this[6].toInt(),
+            supported = this[7] != 0L,
+            availableCpuCount = this[8].toInt(),
+            selectedCpuIds = (0 until selectedCpuCount).map { this[10 + it] },
+            startupApplied = this[12] != 0L,
+        ),
+        connection = AndroidRuntimeTcpConnectionConfig(
+            defaultsRevision = this[13].toInt(),
+            mode = RuntimeTcpConnectionMode.fromNative(this[14].toInt()),
+            applicableFields = this[15],
+            explicitlyConfiguredFields = this[16],
+            defaultedFields = this[17],
+            configurableFields = this[18],
+            maxConnections = this[19].toInt(),
+            maxRequestsPerConnection = this[20],
+            idleTimeoutMillis = this[21],
+        ),
+        io = AndroidRuntimeStartupIo(
+            requested = this[22] != 0L,
+            compiled = this[23] != 0L,
+            probed = this[24] != 0L,
+            supported = this[25] != 0L,
+            effective = this[26] != 0L,
+            probeError = this[27].toInt(),
+        ),
+        monitorEnabled = this[28] != 0L,
+    )
+}
+
 data class AndroidRuntimeHealth(
     val state: RuntimeState,
     val flags: Long,
     val appliedGeneration: Long,
+)
+
+enum class AndroidRuntimeAskResultKind(internal val nativeValue: Int) {
+    RESPONSE(1),
+    DEADLETTER(2);
+
+    companion object {
+        internal fun fromNative(value: Int): AndroidRuntimeAskResultKind =
+            entries.firstOrNull { it.nativeValue == value }
+                ?: error("unknown native ask result kind=$value")
+    }
+}
+
+/** One Core-matched terminal envelope copied out of its native owner. */
+data class AndroidRuntimeAskResult(
+    val kind: AndroidRuntimeAskResultKind,
+    val envelope: ByteArray,
 )
 
 object AndroidRuntimeFeatures {

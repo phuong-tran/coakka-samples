@@ -12,7 +12,7 @@ choose for a consuming app.
 - [Android Manifest](#android-manifest)
 - [Embedded Lifecycle](#embedded-lifecycle)
 - [Network Modes](#network-modes)
-- [Pipe And Worker Ownership](#pipe-and-worker-ownership)
+- [Core-Owned Delivery And Worker Ownership](#core-owned-delivery-and-worker-ownership)
 - [File And Stream Owner Grants](#file-and-stream-owner-grants)
 - [Device Evaluation Checklist](#device-evaluation-checklist)
 - [Troubleshooting](#troubleshooting)
@@ -105,9 +105,10 @@ libraries separately.
 
 The AAR also carries consumer R8 rules for the name-based JNI bridge. Keep those
 rules enabled in minified applications; do not replace them with a blanket
-`-dontobfuscate`. The release evidence app checks four exact JNI/callback class
-identities in the R8 mapping and 34 native plus two callback members in the
-final APK DEX before executing Runtime, request/reply, File Lane, and Stream Lane.
+`-dontobfuscate`. The release evidence app checks four exact JNI/callback and
+seven cross-APK startup/ask/error class identities in the R8 mapping, plus 38 native
+and two callback members in the final APK DEX, before executing Runtime,
+request/reply, File Lane, and Stream Lane.
 
 ## Android Manifest
 
@@ -240,36 +241,39 @@ foreground service and implement the notification, service type, permission,
 and start restrictions required by the target Android version. Those policies
 belong to the consuming application and are not hidden by the connector.
 
-## Pipe And Worker Ownership
+## Core-Owned Delivery And Worker Ownership
 
-Connector `1.2.0` is a low-level host bridge. It exposes framed request,
-delivered-request, response, deadletter, control, and monitor lanes. It does
-not yet expose the higher-level Android `handler` or `ask` helpers available in
-some other connectors. It now also exposes Simple and owner-aware File and
-Stream Lane APIs; those lanes are separate bounded native resources rather
-than runtime message pipes.
+Connector `1.2.0` uses the current Core-owned delivery engine. The app retains
+request/control writers and the monitor doorbell, but it never reads a Runtime
+response, deadletter, or delivered-request FD directly. Use:
 
-Use one blocking reader per output lane that the app consumes:
-
-- `readDeliveredRequest()`;
-- `readResponse()`;
-- `readDeadletter()`;
+- `readDeliveredRequest()` on one bounded application worker for local handler
+  input;
+- `submitEnvelope(...)` for a handler reply or one-way envelope;
+- `ask(envelope, timeoutMillis)` for a reply-capable outbound request; Core
+  returns either a `RESPONSE` or `DEADLETTER` terminal;
 - `waitForMonitorDoorbell()`, followed by `readHealth()`.
+
+Core chooses its owned queue/doorbell engine or framed fallback and retains all
+credit, matching, and terminal policy. Android does not probe that choice or
+keep a duplicated delivery-mode table. File and Stream Lane APIs remain
+separate bounded native resources.
 
 `waitForMonitorDoorbell()` sleeps in `poll(2)` without a periodic timeout and
 returns `null` when `close()` cancels the lane. `consumeMonitorDoorbell()`
 remains an immediate nonblocking drain for callers that already own a readiness
 signal.
 
-Do not read one lane from multiple workers. On shutdown:
+Do not call `readDeliveredRequest()` concurrently. On shutdown:
 
 1. stop admitting new app work;
 2. signal workers to stop;
-3. call `runtime.close()` so blocked descriptor reads can return;
+3. call `runtime.close()` so blocked Core reader/ask calls return within the
+   bounded native close slice;
 4. join the workers.
 
-Do not retain raw file descriptor integers, adopt a descriptor twice, or wait
-for blocked readers before closing the runtime.
+Do not retain raw file descriptor integers or wait for blocked calls before
+closing the runtime.
 
 The exact tagged AAR now owns the basic release-minified emulator evidence.
 Build envelope serialization from the exact `coakka.v2.transport` classes in

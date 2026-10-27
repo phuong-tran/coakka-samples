@@ -592,6 +592,56 @@ tasks.matching { it.name.startsWith("configureCMake") }.configureEach {
     dependsOn(stageNativeRuntime, verifyPinnedNativeSource)
 }
 
+val verifyReleaseAarHardening by tasks.registering(Exec::class) {
+    group = "verification"
+    description = "Verifies the exact release AAR ABI, exports, dependencies, and disclosure policy."
+    dependsOn("bundleReleaseAar")
+    inputs.files(
+        "scripts/verify-release-aar.py",
+        "src/main/cpp/coakka_android_jni.exports.map",
+        releaseIdentityFile,
+    )
+    inputs.file(layout.buildDirectory.file("outputs/aar/coakka-runtime-android-release.aar"))
+    workingDir = projectDir
+    val verifyArguments = mutableListOf(
+        "python3",
+        "-B",
+        "scripts/verify-release-aar.py",
+        "--aar",
+        layout.buildDirectory.file("outputs/aar/coakka-runtime-android-release.aar").get().asFile.absolutePath,
+        "--connector-root",
+        projectDir.absolutePath,
+    )
+    val allowDirtyPreflight = System.getenv("COAKKA_ANDROID_ALLOW_DIRTY_RELEASE_AAR") == "1"
+    inputs.property("allowDirtyPreflight", allowDirtyPreflight)
+    if (allowDirtyPreflight) {
+        verifyArguments.add("--allow-dirty")
+    }
+    commandLine(verifyArguments)
+}
+
+val verifyReleaseAarHardeningNegativeControls by tasks.registering(Exec::class) {
+    group = "verification"
+    description = "Proves the AAR hardening gate refuses dirty metadata and unexpected native entries."
+    dependsOn("bundleReleaseAar")
+    inputs.files("scripts/verify-release-aar.py", "scripts/test-verify-release-aar.py")
+    inputs.file(layout.buildDirectory.file("outputs/aar/coakka-runtime-android-release.aar"))
+    workingDir = projectDir
+    commandLine(
+        "python3",
+        "-B",
+        "scripts/test-verify-release-aar.py",
+        "--aar",
+        layout.buildDirectory.file("outputs/aar/coakka-runtime-android-release.aar").get().asFile.absolutePath,
+        "--connector-root",
+        projectDir.absolutePath,
+    )
+}
+
+tasks.matching { it.name == "assembleRelease" }.configureEach {
+    dependsOn(verifyReleaseAarHardening, verifyReleaseAarHardeningNegativeControls)
+}
+
 val androidConnectorSourcesJar by tasks.registering(Jar::class) {
     dependsOn(generateCoAkkaProto)
     archiveClassifier.set("sources")

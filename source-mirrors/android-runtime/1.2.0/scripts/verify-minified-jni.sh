@@ -39,6 +39,24 @@ for class_name in "${jni_classes[@]}"; do
   }
 done
 
+# The target and instrumentation APKs are minified independently. These public
+# public types cross that APK boundary in the installed-candidate assertions.
+cross_apk_classes=(
+  coakka.v2.android.AndroidRuntimeAskResult
+  coakka.v2.android.AndroidRuntimeAskResultKind
+  coakka.v2.android.CoAkkaNativeException
+  coakka.v2.android.AndroidRuntimeStartupCpuPolicies
+  coakka.v2.android.AndroidRuntimeStartupDefaultGroups
+  coakka.v2.android.RuntimeState
+  coakka.v2.android.RuntimeTcpConnectionMode
+)
+for class_name in "${cross_apk_classes[@]}"; do
+  grep -Fxq "${class_name} -> ${class_name}:" "${mapping_file}" || {
+    echo "R8 renamed or removed cross-APK class ${class_name}" >&2
+    exit 1
+  }
+done
+
 dex_inventory=$(mktemp "${TMPDIR:-/tmp}/coakka-android-dex.XXXXXX")
 trap 'rm -f "${dex_inventory}"' EXIT
 "${apkanalyzer_bin}" dex packages --defined-only "${apk_file}" >"${dex_inventory}"
@@ -47,11 +65,15 @@ required_dex_members=(
   'coakka.v2.android.NativeRuntimeBridge int nativeAbiVersion()'
   'coakka.v2.android.NativeRuntimeBridge int nativeReadRuntimeInfo(long[],java.lang.String[])'
   'coakka.v2.android.NativeRuntimeBridge long nativeCreate(java.lang.String,java.lang.String,int,boolean)'
+  'coakka.v2.android.NativeRuntimeBridge long[] nativeReadStartupConfig(long)'
   'coakka.v2.android.NativeRuntimeBridge int nativeApplyNetwork(long,int,java.lang.String,int,java.lang.String,int)'
   'coakka.v2.android.NativeRuntimeBridge int nativeApplyInitialControl(long,byte[])'
   'coakka.v2.android.NativeRuntimeBridge int[] nativeOpenHostHandles(long,int)'
   'coakka.v2.android.NativeRuntimeBridge int nativeStart(long)'
   'coakka.v2.android.NativeRuntimeBridge int nativeStop(long)'
+  'coakka.v2.android.NativeRuntimeBridge void nativeSignalClose(long)'
+  'coakka.v2.android.NativeRuntimeBridge byte[] nativeReadDeliveredRequest(long,int[])'
+  'coakka.v2.android.NativeRuntimeBridge byte[] nativeAsk(long,byte[],int,int[])'
   'coakka.v2.android.NativeRuntimeBridge long nativeConsumeMonitor(int)'
   'coakka.v2.android.NativeRuntimeBridge long[] nativeReadHealth(long)'
   'coakka.v2.android.NativeRuntimeBridge void nativeDestroy(long)'
@@ -80,6 +102,10 @@ required_dex_members=(
   'coakka.v2.android.NativeRuntimeBridge int nativeStreamLaneStats(long,long[])'
   'coakka.v2.android.NativeStreamCallbacks int sourceNext(coakka.v2.android.AndroidStreamSource,java.nio.ByteBuffer,long[],long)'
   'coakka.v2.android.NativeStreamCallbacks int consume(coakka.v2.android.AndroidStreamConsumer,java.nio.ByteBuffer,long[],long)'
+  'coakka.v2.android.AndroidRuntimeAskResult coakka.v2.android.AndroidRuntimeAskResultKind getKind()'
+  'coakka.v2.android.AndroidRuntimeAskResult byte[] getEnvelope()'
+  'coakka.v2.android.AndroidRuntimeAskResultKind coakka.v2.android.AndroidRuntimeAskResultKind RESPONSE'
+  'coakka.v2.android.CoAkkaNativeException int getStatus()'
 )
 for member in "${required_dex_members[@]}"; do
   grep -Fq "${member}" "${dex_inventory}" || {
@@ -88,4 +114,4 @@ for member in "${required_dex_members[@]}"; do
   }
 done
 
-echo "[coakka-android-r8] exact JNI classes and members verified in minified APK"
+echo "[coakka-android-r8] exact JNI members and cross-APK public classes verified in minified APK"

@@ -112,35 +112,21 @@ if [[ ! -f "${NDK_ROOT}/build/cmake/android.toolchain.cmake" ]]; then
   printf 'Android NDK toolchain not found: %s\n' "${NDK_ROOT}" >&2
   exit 1
 fi
-HOST_PROTOC=${COAKKA_V2_PROTOC_EXECUTABLE:-}
-if [[ -z "${HOST_PROTOC}" ]]; then
-  case "$(uname -s)" in
-    Darwin)
-      protobuf_prefix=$(bash "${NATIVE_V2_ROOT}/scripts/prepare_public_protobuf_cache_macos.sh")
-      ;;
-    Linux)
-      protobuf_prefix=$(bash "${NATIVE_V2_ROOT}/scripts/prepare_public_protobuf_cache_linux.sh")
-      ;;
-    *)
-      printf 'Set COAKKA_V2_PROTOC_EXECUTABLE on this host OS.\n' >&2
-      exit 1
-      ;;
-  esac
-  HOST_PROTOC="${protobuf_prefix}/bin/protoc"
-fi
-if [[ -z "${HOST_PROTOC}" || ! -x "${HOST_PROTOC}" ]]; then
-  printf 'Set COAKKA_V2_PROTOC_EXECUTABLE to an executable host protoc.\n' >&2
+ndk_prebuilt_candidates=("${NDK_ROOT}"/toolchains/llvm/prebuilt/*)
+if [[ ${#ndk_prebuilt_candidates[@]} -ne 1 ||
+      ! -x "${ndk_prebuilt_candidates[0]}/bin/llvm-objcopy" ||
+      ! -x "${ndk_prebuilt_candidates[0]}/bin/llvm-strip" ]]; then
+  printf 'Android NDK must expose qualified llvm-objcopy and llvm-strip tools.\n' >&2
   exit 1
 fi
-PROTOC_VERSION=$("${HOST_PROTOC}" --version 2>/dev/null || true)
-case "${PROTOC_VERSION}" in
-  "libprotoc 34.0-dev") ;;
-  *)
-    printf 'Host protoc (%s) does not match vendored protobuf 34.0-dev.\n' \
-      "${PROTOC_VERSION:-unknown}" >&2
-    exit 1
-    ;;
-esac
+NDK_OBJCOPY="${ndk_prebuilt_candidates[0]}/bin/llvm-objcopy"
+NDK_STRIP="${ndk_prebuilt_candidates[0]}/bin/llvm-strip"
+PRIVATE_MESSAGE_ROOT=${COAKKA_ANDROID_PRIVATE_MESSAGE_ROOT:-}
+if [[ -z "${PRIVATE_MESSAGE_ROOT}" || ! -d "${PRIVATE_MESSAGE_ROOT}" ]]; then
+  printf 'Set COAKKA_ANDROID_PRIVATE_MESSAGE_ROOT to the sealed per-ABI provider root.\n' >&2
+  exit 1
+fi
+PRIVATE_MESSAGE_ROOT=$(cd -- "${PRIVATE_MESSAGE_ROOT}" && pwd)
 
 for abi in ${ABIS}; do
   case "${abi}" in
@@ -154,24 +140,57 @@ for abi in ${ABIS}; do
       ;;
   esac
 
-  build_dir="${CONNECTOR_ROOT}/.native-build/${NATIVE_GIT_COMMIT}/${abi}"
+  build_dir="${CONNECTOR_ROOT}/.native-build/${NATIVE_GIT_COMMIT}/private-message-3/${abi}"
   output_dir="${CONNECTOR_ROOT}/src/main/jniLibs/${abi}"
+  provider_root="${PRIVATE_MESSAGE_ROOT}/${abi}/provider-install"
+  message_prefix="${PRIVATE_MESSAGE_ROOT}/${abi}/message-prefix"
+  host_protoc="${message_prefix}/private-tools/runtime-message-codegen"
+  if [[ ! -f "${provider_root}/lib/cmake/protobuf/protobuf-config.cmake" ||
+        ! -f "${provider_root}/lib/cmake/absl/abslConfig.cmake" ||
+        ! -x "${host_protoc}" ]]; then
+    printf 'Incomplete sealed Android message provider for %s under %s.\n' \
+      "${abi}" "${PRIVATE_MESSAGE_ROOT}" >&2
+    exit 1
+  fi
+  python3 "${NATIVE_V2_ROOT}/scripts/prepare_private_message_profile.py" \
+    verify-prefix --prefix "${message_prefix}" \
+    --schema-root "${NATIVE_V2_ROOT}/proto" >/dev/null
+  protoc_version=$("${host_protoc}" --version 2>/dev/null || true)
+  if [[ "${protoc_version}" != "libprotoc 34.0-dev" ]]; then
+    printf 'Private message code generator for %s has unexpected version %s.\n' \
+      "${abi}" "${protoc_version:-unknown}" >&2
+    exit 1
+  fi
+  native_path_flags="-g0 -ffile-prefix-map=${PINNED_SOURCE_ROOT}=coakka/runtime -fmacro-prefix-map=${PINNED_SOURCE_ROOT}=coakka/runtime -fdebug-prefix-map=${PINNED_SOURCE_ROOT}=coakka/runtime -ffile-prefix-map=${build_dir}=coakka/runtime-build -fmacro-prefix-map=${build_dir}=coakka/runtime-build -fdebug-prefix-map=${build_dir}=coakka/runtime-build"
   cmake -S "${NATIVE_V2_ROOT}" -B "${build_dir}" -G Ninja \
     -DCMAKE_TOOLCHAIN_FILE="${NDK_ROOT}/build/cmake/android.toolchain.cmake" \
     -DANDROID_ABI="${abi}" \
     -DANDROID_PLATFORM="${ANDROID_PLATFORM}" \
     -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" \
-    -DCOAKKA_V2_USE_BUNDLED_PROTOBUF=ON \
-    -DCOAKKA_V2_PROTOC_EXECUTABLE="${HOST_PROTOC}" \
+    -DCMAKE_PREFIX_PATH="${provider_root}" \
+    -DProtobuf_DIR="${provider_root}/lib/cmake/protobuf" \
+    -Dabsl_DIR="${provider_root}/lib/cmake/absl" \
+    -Dutf8_range_DIR="${provider_root}/lib/cmake/utf8_range" \
+    -DCMAKE_C_FLAGS="${native_path_flags}" \
+    -DCMAKE_CXX_FLAGS="${native_path_flags}" \
+    -DCMAKE_SHARED_LINKER_FLAGS="-Wl,-z,start-stop-visibility=hidden" \
+    -DCOAKKA_V2_USE_BUNDLED_PROTOBUF=OFF \
+    -DCOAKKA_V2_PRIVATE_MESSAGE_PREFIX="${message_prefix}" \
+    -DCOAKKA_V2_PROTOC_EXECUTABLE="${host_protoc}" \
     -DCOAKKA_V2_GIT_COMMIT_OVERRIDE="${NATIVE_GIT_COMMIT}" \
     -DCOAKKA_V2_RUNTIME_TARGET_PROCESSOR="${processor}" \
-    -DCOAKKA_V2_RUNTIME_EDITION=COMMUNITY \
-    -DCOAKKA_V2_RUNTIME_PROFILE=community-default \
+    -DCOAKKA_V2_RUNTIME_EDITION=ENTERPRISE \
+    -DCOAKKA_V2_RUNTIME_PROFILE=enterprise-standard \
     -DCOAKKA_V2_PUBLIC_ARTIFACT_SURFACE=ON \
+    -DCOAKKA_V2_REQUIRE_SELF_CONTAINED_RUNTIME_DEPS=ON \
     -DCOAKKA_V2_ENABLE_INTERNAL_TEST_SEAMS=OFF \
     -DCOAKKA_V2_ENABLE_PUBLIC_TCP_TRANSPORT=ON \
     -DCOAKKA_V2_BUILD_TRANSPORT_PROTO_SHARED=OFF
   cmake --build "${build_dir}" --target coakka_runtime_v2 --parallel
+  "${NDK_STRIP}" --strip-unneeded \
+    "${build_dir}/libcoakka_runtime_v2.so"
+  "${NDK_OBJCOPY}" --remove-section=.comment \
+    "${build_dir}/libcoakka_runtime_v2.so"
   cmake -E make_directory "${output_dir}"
   cmake -E copy_if_different \
     "${build_dir}/libcoakka_runtime_v2.so" \

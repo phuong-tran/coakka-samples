@@ -1,12 +1,16 @@
 # The smoke app has no production entrypoint; its release instrumentation APK is
 # the only consumer of these public APIs. Keep that fixture surface while the
 # AAR's consumer-rules.pro remains solely responsible for name-based JNI types.
+-keep class coakka.v2.android.AndroidRuntimeAskResult { *; }
+-keep class coakka.v2.android.AndroidRuntimeAskResultKind { *; }
+-keep class coakka.v2.android.CoAkkaNativeException { *; }
 -keep class coakka.v2.android.AndroidRuntime** { *; }
 -keep class coakka.v2.android.AndroidStreamConsumerDecision { *; }
 -keep class coakka.v2.android.AndroidStreamSourceResult { *; }
 -keep class coakka.v2.android.AndroidStreamSourceResult$* { *; }
 -keep class coakka.v2.android.CoAkkaAndroidRuntime { *; }
 -keep class coakka.v2.android.CoAkkaAndroidRuntime$* { *; }
+-keep class coakka.v2.android.Runtime** { *; }
 -keep class coakka.v2.android.File** { *; }
 -keep class coakka.v2.android.LaneOwner** { *; }
 -keep class coakka.v2.android.Stream** { *; }
