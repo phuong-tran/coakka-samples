@@ -42,10 +42,15 @@ export function admitCatalog(catalog, role) {
       !/^\d+\.\d+\.\d+$/.test(catalog.core.version) ||
       !/^[a-f0-9]{40}$/.test(catalog.core.gitCommit)) fail("invalid candidate catalog");
   if (role !== "node" && role !== "bun") fail("unknown sample runtime");
-  const entry = catalog.packages[role];
+  return admitPackage(catalog.packages[role], role);
+}
+
+// Shared cold package-map mechanics; each runner admits its own closure.
+export function admitPackage(entry, role) {
+  if (!["node", "bun", "electron"].includes(role)) fail("unknown package role");
   if (!keys(entry, ["name", "version", "minimumRuntime", "archive", "bytes", "sha256", "members"]) ||
       entry.name !== `coakka-v2-connector-${role}` ||
-      !/^\d+\.\d+\.\d+-dev\.\d{8}$/.test(entry.version) ||
+      !/^\d+\.\d+\.\d+(?:-dev\.\d{8})?(?![\s\S])/.test(entry.version) ||
       !/^\d+\.\d+\.\d+$/.test(entry.minimumRuntime) ||
       entry.archive !== `${entry.name}-${entry.version}.tgz` ||
       !size(entry.bytes, 32 * 1024 * 1024) || !digest(entry.sha256) || !plain(entry.members)) {
@@ -78,7 +83,7 @@ export function verifyArchive(bytes, entry) {
   if (bytes.length !== entry.bytes || hash(bytes) !== entry.sha256) fail("candidate archive identity differs");
 }
 
-export function verifyInstalled(root, entry) {
+export function verifyMemberTree(root, entry) {
   if (!lstatSync(root).isDirectory() || lstatSync(root).isSymbolicLink()) fail("package root must be real");
   const found = new Set();
   let count = 0;
@@ -98,6 +103,10 @@ export function verifyInstalled(root, entry) {
   }
   walk(root, 0);
   if (found.size !== Object.keys(entry.members).length) fail("installed package is incomplete");
+}
+
+export function verifyInstalled(root, entry) {
+  verifyMemberTree(root, entry);
   const metadata = JSON.parse(readRegular(join(root, "package.json"), 64 * 1024).toString("utf8"));
   if (metadata.name !== entry.name || metadata.version !== entry.version ||
       ["dependencies", "optionalDependencies", "peerDependencies", "scripts"].some((key) =>

@@ -1,111 +1,32 @@
-# Electron Runtime Samples
+# Electron runtime candidate samples
 
-Electron runtime samples document the `coakka-v2-connector-electron` package
-shape. The renderer sends one intent through preload and IPC; the Electron main
-process owns the CoAkka runtime host and returns the projected result.
+The renderer sends intent through an isolated, sandboxed preload; Electron main
+owns the runtime, local route, application handler and awaited shutdown. Core is
+the source of effective startup/capability/delivery facts, including the normal
+AUTO/multiplex path. No response-pipe choice or OS capability probe is made here.
 
-The desktop sample requires Node.js 22 and Electron 42 or newer. Set
-`COAKKA_ELECTRON_VERSION` to exercise another supported Electron release.
-
-- [Story](#story)
-- [Before And After](#before-and-after)
-- [Run](#run)
-- [Renderer](#renderer)
-- [Main Process](#main-process)
-- [Boundary](#boundary)
-
-## Story
-
-Electron apps often let renderer code call application endpoints directly. That
-works for a browser edge, but it is a weak desktop boundary. In this sample the
-renderer only emits intent. The main process owns runtime lifecycle, handler
-registration, timeout behavior, and result projection.
-
-Watch the Electron runtime walkthrough:
-
-![CoAkka Runtime Electron walkthrough](../../docs/assets/coakka-runtime-electron.gif)
-
-Full recording: [coakka-runtime-electron.mp4](../../docs/assets/coakka-runtime-electron.mp4)
-
-## Before And After
-
-Before:
-
-```text
-renderer JS -> fetch/fake local REST -> main/backend code
-```
-
-After:
-
-```text
-renderer intent -> preload/IPC -> Electron main process -> CoAkka runtime target -> projected result
-```
-
-The renderer remains easy to write, but it no longer owns the runtime path.
-
-## Run
+This branch uses the exact private Node/Electron archives in
+[the candidate catalog](../../../artifacts/runtime-electron-candidate.json),
+not old registry coordinates. See the [candidate guide](../../../docs/runtime-electron-candidate.md)
+for both archives, explicit Electron42/Node22/esbuild build tools, fresh external
+output and native Windows commands.
 
 ```sh
 bash run.sh runtime electron basic
+# The same entrypoint:
+bash run.sh runtime electron desktop-intent
 ```
 
-Renderer code does not import the runtime connector and does not own runtime
-lifecycle. It only calls the preload API exposed by the app:
+Set the absolute candidate/tool/output paths from the guide first. The app opens
+one visible window, verifies a typed Unicode echo, prints Core-issued startup
+facts and retires IPC/Core before normal close. Renderer has no Node/native
+resource access. Preload exposes only intent and the sample report, never raw IPC.
+Main authorizes its exact window/current main frame/local URL and denies
+navigation/new windows. The app admits at most8active IPC calls, retaining2s
+asks/10s renderer completion. The optional absolute browser-data argument owns
+only browser storage, not native loading.
 
-## Renderer
-
-```js
-const result = await window.coakka.intent({
-  intentId: "intent-1",
-  source: "electron-renderer",
-  target: "samples.electron.intent.echo",
-  operation: "echo",
-  payload: { message: "hello-electron-runtime" },
-  payloadIdentity: {
-    messageType: "samples.electron.intent.echo.request.v1",
-    payloadSchemaVersion: 1,
-    payloadFormat: "json",
-  },
-});
-```
-
-The main process registers the IPC handler and the runtime target:
-
-## Main Process
-
-```js
-const bridge = ElectronRuntimeIntentBridge.start({
-  systemName: "electron-runtime-sample",
-  nodeId: "electron-runtime-sample-main",
-  defaultTarget: "samples.electron.intent.echo",
-});
-
-bridge.registerJsonIntentHandler("samples.electron.intent.echo", async (intent) => ({
-  handledBy: "electron-main",
-  echo: intent.payload,
-}));
-
-registerElectronIntentIpcHandler(ipcMain, bridge);
-```
-
-Keep HTTP at a real browser/API or legacy edge. This sample is a desktop app
-boundary: renderer intent in, main-process runtime execution out.
-
-## Boundary
-
-- Renderer JavaScript sends intent only.
-- Preload exposes the smallest IPC surface.
-- The Electron main process starts and closes the runtime host.
-- The main process registers the handler and projects the result.
-- Runtime envelopes stay out of renderer code.
-
-## Continue Integrating
-
-Use this lane's runnable sample as the source for package imports and the
-renderer-to-main boundary. Before generating connection strategy, TLS/mTLS,
-File Lane, or Stream Lane code, follow
-[AI-Assisted Integration](../../docs/ai-assisted-integration.md).
-
-Connection policy and native lanes belong to Electron main, never the renderer.
-The current `2.5.3` package train includes typed replica-owner File and Stream
-Lane grants; keep both lane lifecycles in the main process.
+Historical recordings and the published2.5.3 lane are not evidence for this
+candidate. Source, actual matching-host installed execution, artifact privacy/
+shrink and finite resource controls are independently tracked. No wider OS,
+background scheduling, whole-browser leak or publication claim follows.

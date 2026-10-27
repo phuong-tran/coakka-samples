@@ -48,6 +48,23 @@ test("baseline comparisons distinguish runtimes and patch versions", () => {
   for (const [role, minimum, versions] of refusals) assert.throws(() => admitRuntime(role, minimum, versions));
 });
 
+test("private candidate admits stable and dated dev identities without accepting version ranges", () => {
+  for (const version of ["2.5.5", "2.5.5-dev.20261024"]) {
+    const changed = structuredClone(catalog);
+    changed.packages.node.version = version;
+    changed.packages.node.archive = `coakka-v2-connector-node-${version}.tgz`;
+    assert.equal(admitCatalog(changed, "node").version, version);
+    changed.state = "published";
+    assert.throws(() => admitCatalog(changed, "node"));
+  }
+  for (const version of ["^2.5.5", "2.5", "2.5.5-dev", "2.5.5-dev.2026102", "2.5.5-rc.1", "2.5.5+other", "2.5.5\n"]) {
+    const changed = structuredClone(catalog);
+    changed.packages.node.version = version;
+    changed.packages.node.archive = `coakka-v2-connector-node-${version}.tgz`;
+    assert.throws(() => admitCatalog(changed, "node"));
+  }
+});
+
 test("archive length and digest both gate admission", () => {
   const bytes = Buffer.from("archive"), entry = { bytes: bytes.length, sha256: sha(bytes) };
   verifyArchive(bytes, entry);

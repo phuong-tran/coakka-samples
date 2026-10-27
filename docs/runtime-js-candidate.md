@@ -2,10 +2,17 @@
 
 This branch validates a private candidate, not a registry release. Node and Bun
 use the exact archives in `artifacts/runtime-js-candidate.json`, version
-`2.5.5-dev.20261024`, with bundled Core
+`2.5.5`, with bundled Core
 `2.5.1+f6b61768f60a08d81b1dc06625a211ffca8e89e2` (ABI 1).
-Node 22.0.0 and Bun 1.3.14 are the tested minima. Current matching targets are
-macOS ARM64, Linux ARM64 and Windows x64; wider/minimum-OS claims remain gated.
+Node 22.0.0 and Bun 1.3.14 are the tested minima. The Node candidate includes
+macOS ARM64, Linux ARM64/x64 and Windows ARM64/x64. Bun includes macOS ARM64,
+Linux ARM64 and Windows x64. These exact packages have matching-host installed
+execution; minimum-OS and publication claims remain separate gates.
+
+Node, Bun and Electron share one candidate release train. Electron consumes
+the exact Node version and archive recorded in its own candidate catalog.
+Tauri follows its separate Rust release train. Match the full catalog identity,
+not only the version string, when obtaining a candidate archive.
 
 Obtain the matching archive from the private candidate owner. Do not substitute
 an npm version, unpacked source tree or separate native library.
@@ -18,7 +25,7 @@ Set absolute paths; the runner never downloads a missing archive:
 
 ```sh
 export COAKKA_SAMPLE_WORK_ROOT="/absolute/work"
-export COAKKA_RUNTIME_CANDIDATE_PACKAGE="/absolute/coakka-v2-connector-node-2.5.5-dev.20261024.tgz"
+export COAKKA_RUNTIME_CANDIDATE_PACKAGE="/absolute/coakka-v2-connector-node-2.5.5.tgz"
 node scripts/runtime-js-candidate.mjs node basic
 node scripts/runtime-js-candidate.mjs node deadletter
 # Select the Bun archive instead, then:
@@ -63,7 +70,7 @@ outcome and retires its bounded observation iterator before awaiting shutdown.
 
 Historical walkthrough recordings and older package guides are not evidence
 for this candidate. Exact installed sample evidence is tracked separately.
-Source/package/resource/shrink evidence remains attached to the unchanged
-candidate archives; this sample is not a new throughput or whole-host leak
-qualification. Other connectors, tools, Android/camera, coordinated release,
+Source/package/resource/shrink evidence remains attached to each exact archive;
+this sample is not a new throughput or whole-host leak qualification.
+Other connectors, tools, Android/camera, coordinated release,
 legal/signing and publication gates are not closed by these three samples.

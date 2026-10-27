@@ -9,153 +9,133 @@
   "packages": {
     "node": {
       "name": "coakka-v2-connector-node",
-      "version": "2.5.5-dev.20261024",
+      "version": "2.5.5",
       "minimumRuntime": "22.0.0",
-      "archive": "coakka-v2-connector-node-2.5.5-dev.20261024.tgz",
-      "bytes": 3521013,
-      "sha256": "2437c2050fa115f5ec1e736604c6b7128a763962482d5f6e7132b7f1a0f101fa",
+      "archive": "coakka-v2-connector-node-2.5.5.tgz",
+      "bytes": 6603293,
+      "sha256": "a449099b7ed89e41e4d801aedeb020dca27e94d44024314792a873a25a58de4d",
       "members": {
-        "CONSUMING.md": {
-          "bytes": 9986,
-          "sha256": "23f7eb220a672854017f240f80b5c6de7ab15648b28546d62e614da8112d21fc"
-        },
-        "dist/index.d.ts": {
-          "bytes": 53755,
-          "sha256": "765b345fc3abe4bf085ed3ee28770f0d65dd9791712ae9f7d2372d8e4702c513"
-        },
-        "dist/index.js": {
-          "bytes": 131760,
-          "sha256": "c64455bdd0950f8415d2c302f87f2dd7c85176391a85c6ddb041bc074144152f"
-        },
         "LICENSE": {
           "bytes": 11358,
           "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
-        },
-        "native/linux-aarch64/libcoakka_runtime_node_v2.node": {
-          "bytes": 199568,
-          "sha256": "3f52f12b9e596eadce1eea1668e024b556d571721f682a707247fbf8519ef254"
-        },
-        "native/linux-aarch64/libcoakka_runtime_v2.so": {
-          "bytes": 2103344,
-          "sha256": "dbdba44a6c309f0e7eccbae7224bceae63313c199d68b93e408043674ada3579"
-        },
-        "native/linux-aarch64/libcoakka_runtime_values.node": {
-          "bytes": 789040,
-          "sha256": "236c0694885e939fd81dba12b4148b931a56d06ca89ef52a02c9b7ae084f4291"
-        },
-        "native/macos-aarch64/libcoakka_runtime_node_v2.node": {
-          "bytes": 72384,
-          "sha256": "cff518f8bea7b5c2e8c73cc20e50df596ab9dca60eaa494ace4137c073ab7f83"
-        },
-        "native/macos-aarch64/libcoakka_runtime_v2.dylib": {
-          "bytes": 860216,
-          "sha256": "b3b0050db65e40da7d8d2dd54aaf9ee50975ecf1498e657c8896f6b98ccc8e12"
-        },
-        "native/macos-aarch64/libcoakka_runtime_values.node": {
-          "bytes": 449136,
-          "sha256": "142c462a467a77205abd912771e2f860292d6082589997a72f6fff66c6fb97cb"
-        },
-        "native/windows-x86_64/libcoakka_runtime_node_v2.node": {
-          "bytes": 152576,
-          "sha256": "92f977fa75a70ac08b85df726531f8838623c32c229470e052e4bae788de1fde"
-        },
-        "native/windows-x86_64/libcoakka_runtime_v2.dll": {
-          "bytes": 2283520,
-          "sha256": "901cb6e63a17bdcaadfc0aff2c3a082d9272dcb18ba94d7aaa6424665753a8fb"
-        },
-        "native/windows-x86_64/libcoakka_runtime_values.node": {
-          "bytes": 1589760,
-          "sha256": "c9b78b226aca8ce643cc6bda94f63357224ae988797d09a665156ef05882bd9f"
-        },
-        "NATIVE-LICENSE.md": {
-          "bytes": 6482,
-          "sha256": "089ff94cf25b1707ae3e7d03bb81f0ddfb84e87fb7476f5fea7ebd2cd2f01925"
-        },
-        "native-manifest.json": {
-          "bytes": 1906,
-          "sha256": "cdb09b9225ee14355f85ec4d462c250172c87faa4e3584f99e0e3b7180808394"
         },
         "NOTICE": {
           "bytes": 4305,
           "sha256": "1b0e11185092f853be1b075f7ef92998dd82ecd903c51563553d95a77a0d4d73"
         },
-        "PACKAGE-LICENSE.md": {
-          "bytes": 1384,
-          "sha256": "32517109595798ad4b780117783e91aa0196b8d6d699e5d541b5f841c722e06e"
+        "native/windows-aarch64/libcoakka_runtime_v2.dll": {
+          "bytes": 2071552,
+          "sha256": "b1a1ca4068878b1e4d6d9a0f9064b2927a75cd390e755c4b42ed0b530d997046"
         },
-        "package.json": {
-          "bytes": 1151,
-          "sha256": "e7482cd4e9414b0e5ded505d38f8661ab37eba8daa6ab9c3edbbe5323fea3a04"
-        },
-        "README.md": {
-          "bytes": 15445,
-          "sha256": "6ffe9344ff4b62ecc88b2fde2183eb226f91fc5e4fb58b322933a4d3ff703fed"
-        }
-      }
-    },
-    "bun": {
-      "name": "coakka-v2-connector-bun",
-      "version": "2.5.5-dev.20261024",
-      "minimumRuntime": "1.3.14",
-      "archive": "coakka-v2-connector-bun-2.5.5-dev.20261024.tgz",
-      "bytes": 2727928,
-      "sha256": "30b201f23c0f877c684a7d55beae81fe883e929293836eda50c6ddabb778ca58",
-      "members": {
-        "CONSUMING.md": {
-          "bytes": 9552,
-          "sha256": "b29bdeb433dff1de76d7f80c206affafd38555cf9fe07bd7ebfa4a051584cf5d"
-        },
-        "dist/index.d.ts": {
-          "bytes": 51280,
-          "sha256": "1d34509b90ae208432d73f71a9bcd6c1423e85f60d8e55bb1a2cc593fc249d7a"
-        },
-        "dist/index.js": {
-          "bytes": 99257,
-          "sha256": "e112cdcd3a5f6e1b015e396f3dddfce79be35edc0893c306c28b07c811382562"
-        },
-        "LICENSE": {
-          "bytes": 11358,
-          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
-        },
-        "native/linux-aarch64/libcoakka_runtime_bun_stream_lane.so": {
-          "bytes": 67168,
-          "sha256": "800755ef750ca86470cf5af942ccbeee0f70c33ea327009c63a430e15eb80d60"
-        },
-        "native/linux-aarch64/libcoakka_runtime_bun_v2.node": {
-          "bytes": 199568,
-          "sha256": "3f52f12b9e596eadce1eea1668e024b556d571721f682a707247fbf8519ef254"
-        },
-        "native/linux-aarch64/libcoakka_runtime_bun_values.so": {
-          "bytes": 66368,
-          "sha256": "8159a768e063a64a194cfd594dc5d11091a0a655fc6cb42d384a1156fe98364a"
-        },
-        "native/linux-aarch64/libcoakka_runtime_v2.so": {
-          "bytes": 2103344,
-          "sha256": "dbdba44a6c309f0e7eccbae7224bceae63313c199d68b93e408043674ada3579"
-        },
-        "native/macos-aarch64/libcoakka_runtime_bun_stream_lane.dylib": {
-          "bytes": 37128,
-          "sha256": "bed763b09934efd96c9c3226c00d968cc0bf8dd91a522b8406d66688b55dcf4f"
-        },
-        "native/macos-aarch64/libcoakka_runtime_bun_v2.node": {
-          "bytes": 72384,
-          "sha256": "cff518f8bea7b5c2e8c73cc20e50df596ab9dca60eaa494ace4137c073ab7f83"
-        },
-        "native/macos-aarch64/libcoakka_runtime_bun_values.dylib": {
-          "bytes": 16848,
-          "sha256": "14c8f64828859c06d2a07336f1fb19343b552312bc67e3e4eb1a41ddc2d8feeb"
+        "native/windows-x86_64/libcoakka_runtime_v2.dll": {
+          "bytes": 2283520,
+          "sha256": "901cb6e63a17bdcaadfc0aff2c3a082d9272dcb18ba94d7aaa6424665753a8fb"
         },
         "native/macos-aarch64/libcoakka_runtime_v2.dylib": {
           "bytes": 860216,
           "sha256": "b3b0050db65e40da7d8d2dd54aaf9ee50975ecf1498e657c8896f6b98ccc8e12"
         },
+        "dist/index.js": {
+          "bytes": 133778,
+          "sha256": "8b44790a81ff45db0edfcd70ca05f9c67ace338b57b33491cd23063242a5441b"
+        },
+        "native-manifest.json": {
+          "bytes": 3063,
+          "sha256": "991f7201781383a124e31135ca55340015fe2187a0cf9bba7d32ffe8db63b947"
+        },
+        "package.json": {
+          "bytes": 1138,
+          "sha256": "bbdedf0d1dfe125f511509f7ac2be5d042336173875104790d3d22a392999b76"
+        },
+        "CONSUMING.md": {
+          "bytes": 10948,
+          "sha256": "0b0c49bbaefaccfd149f71a3c1ab2fb8e882fffa0384a03ed42527958e79a939"
+        },
+        "NATIVE-LICENSE.md": {
+          "bytes": 6482,
+          "sha256": "089ff94cf25b1707ae3e7d03bb81f0ddfb84e87fb7476f5fea7ebd2cd2f01925"
+        },
+        "PACKAGE-LICENSE.md": {
+          "bytes": 1384,
+          "sha256": "32517109595798ad4b780117783e91aa0196b8d6d699e5d541b5f841c722e06e"
+        },
+        "README.md": {
+          "bytes": 16062,
+          "sha256": "192cbdcbc9a98dc6d2f9994f62bbe53e0ce406975e5541867ac10e9f73c7d82c"
+        },
+        "native/linux-aarch64/libcoakka_runtime_node_v2.node": {
+          "bytes": 199064,
+          "sha256": "da6bee91e6fd731bc4f925ae4b976fb0c35d57815ea2b4343c2c4fb72e82be54"
+        },
+        "native/linux-x86_64/libcoakka_runtime_node_v2.node": {
+          "bytes": 158192,
+          "sha256": "cb72c7e7f802d901ca4124ac1f50406d71457549d517ff9d446e770f239604a0"
+        },
+        "native/macos-aarch64/libcoakka_runtime_node_v2.node": {
+          "bytes": 92112,
+          "sha256": "e97f22b04d7b40dd53a556a547bd2901cd413f766a301f75a78acd27ba32c34e"
+        },
+        "native/windows-aarch64/libcoakka_runtime_node_v2.node": {
+          "bytes": 229888,
+          "sha256": "db5fa0fddd2738ac0304f47203cc45f82517d9ec04d0056e6b38665ae9d25e11"
+        },
+        "native/windows-x86_64/libcoakka_runtime_node_v2.node": {
+          "bytes": 183296,
+          "sha256": "d98fea8c69b7990e0c5132b60c529f88af6e0407bccbae377df36a3b4590cb31"
+        },
+        "native/linux-aarch64/libcoakka_runtime_values.node": {
+          "bytes": 789040,
+          "sha256": "05acf4ac242eb1f27a6cbf5e4aea13b21e8fb893ce63904cc8d4eb89d766785a"
+        },
+        "native/linux-x86_64/libcoakka_runtime_values.node": {
+          "bytes": 817704,
+          "sha256": "7fcefe9bed0d9843a7e5e0992d8cdd1bfb9e1d8e424d67ce3a0927bdabe4835b"
+        },
+        "native/macos-aarch64/libcoakka_runtime_values.node": {
+          "bytes": 449136,
+          "sha256": "00f7f36f262422219a3523d35fa02147f9cbf1fb2805f51eeff0157ba36de328"
+        },
+        "native/windows-aarch64/libcoakka_runtime_values.node": {
+          "bytes": 907776,
+          "sha256": "e9d34043a93452be185a3810bd99832794c2fa4fa6fd3bd3f649312236b81825"
+        },
+        "native/windows-x86_64/libcoakka_runtime_values.node": {
+          "bytes": 1592320,
+          "sha256": "5f4e8f88ce7f811d28724a0ac6781d3bbd00637b4d694b05fb74fcd74dc29ef1"
+        },
+        "native/linux-aarch64/libcoakka_runtime_v2.so": {
+          "bytes": 2103344,
+          "sha256": "dbdba44a6c309f0e7eccbae7224bceae63313c199d68b93e408043674ada3579"
+        },
+        "native/linux-x86_64/libcoakka_runtime_v2.so": {
+          "bytes": 3188976,
+          "sha256": "514f7db498ab2f5afab9930f6868eaae95a3e867de426ee63a730d543f452cdc"
+        },
+        "dist/index.d.ts": {
+          "bytes": 53713,
+          "sha256": "a4e6e43bbcc2b960c2176771eec79091ba04ca626700936f881e0bba2e471c6c"
+        }
+      }
+    },
+    "bun": {
+      "name": "coakka-v2-connector-bun",
+      "version": "2.5.5",
+      "minimumRuntime": "1.3.14",
+      "archive": "coakka-v2-connector-bun-2.5.5.tgz",
+      "bytes": 2737740,
+      "sha256": "68ce0f134443b560459a22a834b28faf9e69913b9d9edf8db138cc4dfdf03de1",
+      "members": {
+        "LICENSE": {
+          "bytes": 11358,
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        },
+        "NOTICE": {
+          "bytes": 1814,
+          "sha256": "904ef5b9e27a72550e43f2c626676d978263acad35ac0356b395811d422460cc"
+        },
         "native/windows-x86_64/libcoakka_runtime_bun_stream_lane.dll": {
           "bytes": 117248,
           "sha256": "d65bff86f1b669a0329b9e2a9ba8522759dee4613c02bdf905b30e174d08f43b"
-        },
-        "native/windows-x86_64/libcoakka_runtime_bun_v2.node": {
-          "bytes": 152576,
-          "sha256": "92f977fa75a70ac08b85df726531f8838623c32c229470e052e4bae788de1fde"
         },
         "native/windows-x86_64/libcoakka_runtime_bun_values.dll": {
           "bytes": 107520,
@@ -165,29 +145,73 @@
           "bytes": 2283520,
           "sha256": "901cb6e63a17bdcaadfc0aff2c3a082d9272dcb18ba94d7aaa6424665753a8fb"
         },
+        "native/macos-aarch64/libcoakka_runtime_bun_stream_lane.dylib": {
+          "bytes": 37128,
+          "sha256": "bed763b09934efd96c9c3226c00d968cc0bf8dd91a522b8406d66688b55dcf4f"
+        },
+        "native/macos-aarch64/libcoakka_runtime_bun_values.dylib": {
+          "bytes": 16848,
+          "sha256": "14c8f64828859c06d2a07336f1fb19343b552312bc67e3e4eb1a41ddc2d8feeb"
+        },
+        "native/macos-aarch64/libcoakka_runtime_v2.dylib": {
+          "bytes": 860216,
+          "sha256": "b3b0050db65e40da7d8d2dd54aaf9ee50975ecf1498e657c8896f6b98ccc8e12"
+        },
+        "dist/index.js": {
+          "bytes": 101262,
+          "sha256": "0f504b1a4646366af7f2a8e1e646458db5dd7628eadc9b813798ecd086e5244a"
+        },
+        "native-manifest.json": {
+          "bytes": 2477,
+          "sha256": "c504b62ececeb8a353cf0b297ef2c81f7e3c6df9f23c27325998ef9b056c0921"
+        },
+        "package.json": {
+          "bytes": 1131,
+          "sha256": "5a3d84020b1e32682ca43338845b9a5807d591aaf8084188d4b362af81eec10f"
+        },
+        "CONSUMING.md": {
+          "bytes": 10348,
+          "sha256": "2cebdd9501f72ba84ed9798bb1b39aca5b3d134f45592f22347fd9bc1ddf6658"
+        },
         "NATIVE-LICENSE.md": {
           "bytes": 6482,
           "sha256": "089ff94cf25b1707ae3e7d03bb81f0ddfb84e87fb7476f5fea7ebd2cd2f01925"
-        },
-        "native-manifest.json": {
-          "bytes": 2490,
-          "sha256": "e77543bdf7861c53f7874bf8e984b915a4bbc8a34ca2863e2602e474de353de3"
-        },
-        "NOTICE": {
-          "bytes": 1814,
-          "sha256": "904ef5b9e27a72550e43f2c626676d978263acad35ac0356b395811d422460cc"
         },
         "PACKAGE-LICENSE.md": {
           "bytes": 1384,
           "sha256": "32517109595798ad4b780117783e91aa0196b8d6d699e5d541b5f841c722e06e"
         },
-        "package.json": {
-          "bytes": 1144,
-          "sha256": "cd5d0ae7e78514b4c1517d0c2255019c4fb698ad19f7c45622b892dfb8085f00"
-        },
         "README.md": {
-          "bytes": 12918,
-          "sha256": "e162127b9715064963a3aeaf44779b7adc1836c5cc1d5cd8bc6fb25f1cdd0142"
+          "bytes": 13394,
+          "sha256": "8b210bec26fbf25d7657494bcb5522fbfee2f0b52978d6e49a9174e2099e9f77"
+        },
+        "native/linux-aarch64/libcoakka_runtime_bun_v2.node": {
+          "bytes": 199064,
+          "sha256": "da6bee91e6fd731bc4f925ae4b976fb0c35d57815ea2b4343c2c4fb72e82be54"
+        },
+        "native/macos-aarch64/libcoakka_runtime_bun_v2.node": {
+          "bytes": 92112,
+          "sha256": "e97f22b04d7b40dd53a556a547bd2901cd413f766a301f75a78acd27ba32c34e"
+        },
+        "native/windows-x86_64/libcoakka_runtime_bun_v2.node": {
+          "bytes": 183296,
+          "sha256": "d98fea8c69b7990e0c5132b60c529f88af6e0407bccbae377df36a3b4590cb31"
+        },
+        "native/linux-aarch64/libcoakka_runtime_bun_stream_lane.so": {
+          "bytes": 67168,
+          "sha256": "800755ef750ca86470cf5af942ccbeee0f70c33ea327009c63a430e15eb80d60"
+        },
+        "native/linux-aarch64/libcoakka_runtime_bun_values.so": {
+          "bytes": 66368,
+          "sha256": "8159a768e063a64a194cfd594dc5d11091a0a655fc6cb42d384a1156fe98364a"
+        },
+        "native/linux-aarch64/libcoakka_runtime_v2.so": {
+          "bytes": 2103344,
+          "sha256": "dbdba44a6c309f0e7eccbae7224bceae63313c199d68b93e408043674ada3579"
+        },
+        "dist/index.d.ts": {
+          "bytes": 51225,
+          "sha256": "9881cae07f18acf5f603430b4b02463b17dca56490ef87e87b2a13f99ba7dd36"
         }
       }
     }
