@@ -142,3 +142,14 @@ for AUTO/MULTIPLEX and accepted effective settings. Browser storage is an app
 resource, not a native cache or engine/capability probe. No default hidden-window
 JavaScript progress, whole-browser leak-freedom or desktop-throughput guarantee
 is implied by this sample.
+
+Mac sample builds target macOS 13.0 during compilation and linking. A newer
+development Mac therefore does not silently raise the application requirement.
+The build checks the resulting application/adapter and bundled Core together;
+an incompatible component refuses before the sample runs. These are application
+packaging settings, not runtime tuning or a replacement for Core's accepted configuration.
+
+On Mac, both Quit (`Command-Q`) and closing the main window finish accepted
+application work before the runtime is released and the process exits. A framework
+exit before that cleanup completes is an application failure. This belongs to the
+desktop application; it does not change Core request or shutdown rules.

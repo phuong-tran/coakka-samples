@@ -106,8 +106,10 @@ The exact release-minified AAR passed on
 the mapping and 34 native plus two callback members in the final APK DEX before
 executing Runtime, request/reply, File Lane, and Stream Lane. The signed bundle
 is retained as internal reproducibility evidence. It is separate from the
-newer private native-startup candidate, which uses Core-owned readers/tickets
-and has API 37 x86_64 emulator evidence. See
+newer private native-startup candidates. The current private candidate adds
+library obfuscation and product message helpers over frozen Core f6; its
+qualification uses native Mac ARM64 emulators at API 24 and API 36. Earlier
+API 37 x86_64 execution belongs to a distinct older AAR. See
 [Android and industrial tablets](edge-iot-android.md#android-and-industrial-tablets)
 for that candidate's scope. Neither candidate is a Maven Central publication,
 and no Android registry coordinate is claimed below.

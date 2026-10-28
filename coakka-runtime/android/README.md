@@ -25,23 +25,25 @@ Use these identities together for the current private API:
 | Identity | Value |
 | --- | --- |
 | Android connector | `1.2.0` private candidate |
-| Connector source checkpoint | `655fcf27dd84eaeb25d654371568084b79a69427` |
+| Connector source checkpoint | `3a046e6c9ebd67934c954e07255ce1fdc5078656` |
 | Native runtime package | Core `2.5.1+f6b61768f60a08d81b1dc06625a211ffca8e89e2` |
 | Android ABIs | `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64` |
 | Minimum Android API | `24` |
 | Compile SDK | Android API `36.1` or newer |
-| Exact AAR | SHA-256 `1ec164434373b378071c46e9040807889149b15ea59c9c2f283a8f6081c296c3`, 3,026,710 bytes |
+| Exact AAR | SHA-256 `a839037be3683649e306cdbef1b780a25b5267598c0172c58e0cc2663bb33ee1`, 3,000,839 bytes |
 | Publication state | unsigned private candidate; no public Maven coordinate |
 
-The exact AAR was consumed by a real R8-minified application and independently
-minified instrumentation APKs on Windows API 37 native x86_64 and macOS API 36
-native ARM64 emulators, using separate ABI-filtered APKs from the same AAR. It verifies accepted startup settings, monitoring absent/OFF/ON,
-network intent and accepted facts, request/reply, close interruption, and
-owner-pinned File and Stream delivery.
-The Windows emulator also advertises translated ARM64; the ARM64 proof comes
-from the separate native ARM64 Mac guest. `armeabi-v7a` and `x86` have
-package/architecture checks only. Neither emulator establishes physical-device
-lifecycle, minimum-API execution or industrial-soak support.
+This exact AAR passes native ARM64 Mac emulators on API 24 and API 36.
+The app and instrumentation are independently minified;
+normal message creation, delivery, correlated replies and payload reads use
+only product APIs. The fixture also checks accepted startup settings,
+monitoring absent/OFF/ON, network intent and accepted facts, close interruption,
+and owner-pinned File and Stream delivery.
+All four ABI payloads receive architecture, export, dependency and disclosure
+checks. Android 32-bit execution and physical-device execution are excluded
+from this acceptance by explicit user direction; no such execution is claimed.
+Earlier Windows API 37 evidence belongs to its distinct older AAR. Bounded
+emulator campaigns do not establish industrial-tablet field-soak support.
 
 The historical `android-runtime-1.2.0` tag at
 `53d39fd9b6dd417374662a25437af106198aff7a` and signed AAR SHA-256
@@ -52,7 +54,7 @@ remain necessary before publication. Do not replace that old tag or mirror.
 
 ## Gradle And Local AAR
 
-Use normal repositories for the AAR's Kotlin and protobuf dependencies:
+Use normal repositories for the AAR's Kotlin dependency:
 
 ```kotlin
 dependencyResolutionManagement {
@@ -70,7 +72,6 @@ Place the exact candidate AAR under `app/libs` and pin its dependencies in
 dependencies {
     implementation(files("libs/coakka-runtime-android-1.2.0.aar"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.2.10")
-    implementation("com.google.protobuf:protobuf-javalite:4.31.1")
 }
 ```
 
@@ -113,15 +114,12 @@ The AAR carries both `libcoakka_runtime_v2.so` and
 `libcoakka_android_jni.so` for each declared ABI. Do not copy or load those
 libraries separately.
 
-The library AAR's managed classes are not pre-obfuscated. It carries consumer
-R8 rules for the name-based JNI bridge; the tested shrink/obfuscation step is
-applied to the consuming application and instrumentation APKs. Library-level
-managed hardening remains a publication gate. Keep those
-rules enabled in minified applications; do not replace them with a blanket
-`-dontobfuscate`. The release evidence app checks exact JNI/callback/exception class and
-constructor identities, cross-APK startup/ask/error/monitor types, 39 native
-methods and two callbacks in the final APK DEX, before executing Runtime,
-request/reply, File Lane, and Stream Lane.
+The library AAR is shrunk and obfuscated before distribution. Its public
+Kotlin/Java API and required native callbacks retain their names. Keep its
+consumer R8 rules enabled when the app is minified as well; do not replace them
+with a blanket `-dontobfuscate`. Both processing steps are checked through real
+installed applications. Build and read messages with the product APIs below;
+the AAR supplies its private implementation without another app dependency.
 
 ## Android Manifest
 
@@ -321,9 +319,66 @@ Do not call `readDeliveredRequest()` concurrently. On shutdown:
 3. call `runtime.close()` to wake pending request/ask calls;
 4. join the workers.
 
-Do not wait for blocked calls before closing the runtime. Build messages from
-the selected AAR's included message classes so they match its Core version.
-File and Stream APIs remain separate bounded resources.
+Do not wait for blocked calls before closing the runtime. Use
+`AndroidRuntimeMessages` to create and read messages. Core performs encoding,
+validation and reply matching; the app supplies its own payload and business
+handler. File and Stream APIs remain separate bounded resources.
+
+On the app's request worker:
+
+```kotlin
+import coakka.v2.android.AndroidRuntimeMessages
+
+val delivered = runtime.readDeliveredRequest()
+if (delivered != null) {
+    val request = AndroidRuntimeMessages.decodeRequest(delivered)
+    val response = handleDeviceRequest(request.target, request.payload)
+    if (!request.oneWay) {
+        val reply = AndroidRuntimeMessages.reply(
+            deliveredRequest = delivered,
+            source = "device.scan",
+            payload = response,
+        )
+        check(runtime.submitEnvelope(reply))
+    }
+}
+```
+
+`handleDeviceRequest` represents the application's business handler. Keep the
+delivered message until `reply` returns so Core can preserve the request's reply
+identity. Neither call retains a native view of the app's arrays.
+
+On a separate app caller worker:
+
+```kotlin
+import coakka.v2.android.AndroidRuntimeAskResultKind
+
+val request = AndroidRuntimeMessages.request(
+    messageId = "scan-17",
+    source = "tablet-17",
+    target = "device.scan",
+    replyTo = "tablet-17/replies",
+    payload = "scan".encodeToByteArray(),
+    timeoutMillis = 1_000,
+)
+val result = runtime.ask(request, timeoutMillis = 1_000)
+when (result.kind) {
+    AndroidRuntimeAskResultKind.RESPONSE -> {
+        val payload = AndroidRuntimeMessages.responsePayload(result.envelope)
+        // Interpret payload using the application's own format.
+    }
+    AndroidRuntimeAskResultKind.DEADLETTER -> {
+        // Record the deadletter outcome; apply app retry policy.
+    }
+}
+```
+
+Use a distinct message ID for each simultaneously outstanding request. Returned
+arrays belong to the app and remain valid after runtime close. Do not mutate an
+input array during a call. Text conversion preserves standard UTF-8 and refuses
+unpaired Unicode surrogates; a zero character is refused where the native
+string boundary cannot represent it. Malformed messages and semantic field
+refusals retain Core's status through `CoAkkaNativeException`.
 
 ## File And Stream Owner Grants
 
@@ -424,11 +479,17 @@ Record all of these against the exact AAR digest:
 - inbound reachability for network-node mode;
 - queue pressure, resident memory, and long-running behavior.
 
-The exact-AAR instrumentation apps passed API 37 native x86_64 and API 36
-native ARM64 startup, monitor/network intent, Runtime request/reply, close,
-File and Stream checks. Physical device behavior,
-Activity/service restart, process death, LAN paths, pressure, and soak remain
-explicit support gates rather than inferred evidence.
+The exact-AAR apps pass API 24 and API 36 native ARM64 startup, monitor/network
+intent, public message creation and values, request/reply, deadletter, close,
+File and Stream checks. Each target also passes 23 lifecycle cycles, a
+30-second concurrent correlation workload, bounded stop under queue pressure
+and force-stop followed by a fresh process. Installed APK hashes are checked.
+These workloads verify correctness and resource retirement; their work counts
+are not throughput benchmarks. A separate diagnostic build checks the four
+native adapter files with Android's supported memory tool on API 36.
+Physical Activity/service behavior, industrial LAN/thermal behavior and field
+soak require application-specific evaluation. Neither physical-device nor
+Android 32-bit execution is claimed for this acceptance.
 
 ## Troubleshooting
 

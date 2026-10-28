@@ -89,3 +89,9 @@ Core stop diagnostics remain diagnostics, not a fabricated successful close.
 Qualification results and remaining ecosystem/signing/soak gates are recorded
 separately. This guide does not promote older public versions or infer targets
 not present in the exact candidate.
+
+Mac sample builds target macOS 13.0 during compilation and linking. A newer
+development Mac therefore does not silently raise the application requirement.
+The build checks the resulting application/adapter and bundled Core together;
+an incompatible component refuses before the sample runs. These are application
+packaging settings, not runtime tuning or a replacement for Core's accepted configuration.

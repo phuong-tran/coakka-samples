@@ -48,3 +48,10 @@ claim of Zig compiler or application execution on every listed OS.
 Matching compiler/OS execution and remaining release gates are recorded in the
 candidate audit. No registry release, public tag, signing or support promotion
 occurs in this workflow.
+
+Mac sample builds target macOS 13.0 during compilation and linking. A newer
+development Mac therefore does not silently raise the application requirement.
+The build checks the resulting application/adapter and bundled Core together;
+an incompatible component refuses before the sample runs. The Zig sample also
+uses a portable ARM64 CPU target. These are application packaging settings,
+not runtime tuning or a replacement for Core's accepted configuration.
