@@ -4,6 +4,8 @@ mod admission;
 mod browser;
 #[cfg(target_os = "windows")]
 mod browser_gate;
+#[cfg(target_os = "macos")]
+mod mac_menu;
 
 use admission::Owner;
 use coakka_runtime::{ConnectorStartSpec, RouteSpec};
@@ -23,7 +25,14 @@ const TARGET: &str = "samples.tauri.desktop.echo";
 
 struct Shutdown {
     started: AtomicBool,
+    retired: AtomicBool,
     failed: AtomicBool,
+}
+
+impl Shutdown {
+    fn is_retired(&self) -> bool {
+        self.retired.load(Ordering::Acquire)
+    }
 }
 
 struct AppState {
@@ -129,6 +138,7 @@ fn create_state() -> Result<AppState, Box<dyn Error>> {
         facts,
         shutdown: Arc::new(Shutdown {
             started: AtomicBool::new(false),
+            retired: AtomicBool::new(false),
             failed: AtomicBool::new(false),
         }),
     })
@@ -179,7 +189,7 @@ pub(crate) fn app_failed(app: &tauri::AppHandle, error: impl std::fmt::Display) 
         .shutdown
         .failed
         .store(true, Ordering::Release);
-    if app.state::<AppState>().owner.snapshot().3 {
+    if app.state::<AppState>().shutdown.is_retired() {
         // No accepted work remains to join after a late browser/close failure.
         app.exit(1);
     } else {
@@ -193,11 +203,13 @@ fn begin_shutdown(app: tauri::AppHandle) {
         return;
     }
     let owner = state.owner.clone();
+    let shutdown = state.shutdown.clone();
     tauri::async_runtime::spawn_blocking(move || {
         // Close joins every accepted lease before the final dispatcher Drop.
         // A vanished UI future does not cancel an accepted Core operation.
-        owner.close();
-        println!("coakka sample owned work retired");
+        retire_application_work(&owner, &shutdown, || {
+            println!("coakka sample owned work retired");
+        });
         #[cfg(target_os = "windows")]
         browser::owner_retired(&app);
         let close_app = app.clone();
@@ -218,6 +230,14 @@ fn begin_shutdown(app: tauri::AppHandle) {
             app_failed(&app, error);
         }
     });
+}
+
+fn retire_application_work<T: Clone>(owner: &Owner<T>, shutdown: &Shutdown, record: impl FnOnce()) {
+    owner.close();
+    record();
+    // Owner.closed precedes this continuation. Only this later publication
+    // admits framework exit, so a repeated close cannot cut cleanup short.
+    shutdown.retired.store(true, Ordering::Release);
 }
 
 fn allow_navigation(url: &tauri::Url) -> bool {
@@ -308,6 +328,12 @@ pub fn run() -> Result<(), Box<dyn Error>> {
     // a dispatcher. Some platform event loops return zero despite exit(1).
     let shutdown = state.shutdown.clone();
     let builder = tauri::Builder::default().manage(state);
+    #[cfg(target_os = "macos")]
+    let builder = builder.menu(mac_menu::menu).on_menu_event(|app, event| {
+        if event.id().as_ref() == mac_menu::QUIT {
+            begin_shutdown(app.clone());
+        }
+    });
     #[cfg(target_os = "windows")]
     let builder = builder.manage(browser_gate::Gate::new(1));
     let app = builder
@@ -319,7 +345,7 @@ pub fn run() -> Result<(), Box<dyn Error>> {
             if window.label() == "main" && matches!(event, tauri::WindowEvent::Destroyed) {
                 let app = window.app_handle();
                 begin_shutdown(app.clone());
-                if app.state::<AppState>().owner.snapshot().3 {
+                if app.state::<AppState>().shutdown.is_retired() {
                     #[cfg(not(target_os = "windows"))]
                     app.exit(exit_code(app));
                     #[cfg(target_os = "windows")]
@@ -347,7 +373,7 @@ pub fn run() -> Result<(), Box<dyn Error>> {
                     .failed
                     .store(true, Ordering::Release);
             }
-            if !app.state::<AppState>().owner.snapshot().3 {
+            if !app.state::<AppState>().shutdown.is_retired() {
                 api.prevent_exit();
                 begin_shutdown(app.clone());
             }
@@ -367,6 +393,9 @@ fn application_result(shutdown: &Shutdown, framework_code: i32) -> Result<(), Bo
     if framework_code != 0 {
         return Err(format!("desktop event loop exited with code {framework_code}").into());
     }
+    if !shutdown.is_retired() {
+        return Err("desktop event loop ended before application work retired".into());
+    }
     Ok(())
 }
 
@@ -378,8 +407,12 @@ mod application_exit_tests {
     fn app_failure_survives_zero_framework_exit_and_teardown() {
         let shutdown = Arc::new(Shutdown {
             started: AtomicBool::new(false),
+            retired: AtomicBool::new(false),
             failed: AtomicBool::new(false),
         });
+        assert!(application_result(&shutdown, 0).is_err());
+        shutdown.started.store(true, Ordering::Release);
+        shutdown.retired.store(true, Ordering::Release);
         assert!(application_result(&shutdown, 0).is_ok());
         assert!(application_result(&shutdown, 1).is_err());
         assert!(application_result(&shutdown, -1).is_err());
@@ -387,6 +420,37 @@ mod application_exit_tests {
         shutdown.failed.store(true, Ordering::Release);
         drop(shutdown);
         assert!(application_result(&retained, 0).is_err());
+    }
+
+    #[test]
+    fn owner_closed_does_not_admit_exit_before_retirement_continuation() {
+        use std::{sync::mpsc, thread, time::Duration};
+        let owner = Owner::new(Arc::new(17), 1);
+        let shutdown = Arc::new(Shutdown {
+            started: AtomicBool::new(true),
+            retired: AtomicBool::new(false),
+            failed: AtomicBool::new(false),
+        });
+        let (closed, observed) = mpsc::channel();
+        let (resume, proceed) = mpsc::channel();
+        let worker_owner = owner.clone();
+        let worker_shutdown = shutdown.clone();
+        let worker = thread::spawn(move || {
+            retire_application_work(&worker_owner, &worker_shutdown, || {
+                closed.send(()).unwrap();
+                proceed.recv_timeout(Duration::from_secs(2)).unwrap();
+            });
+        });
+        observed.recv_timeout(Duration::from_secs(2)).unwrap();
+        assert!(owner.snapshot().3);
+        // These are the same admission fact and final-result check used by
+        // repeated framework exit, window destruction and failure callbacks.
+        assert!(!shutdown.is_retired());
+        assert!(application_result(&shutdown, 0).is_err());
+        resume.send(()).unwrap();
+        worker.join().unwrap();
+        assert!(shutdown.is_retired());
+        assert!(application_result(&shutdown, 0).is_ok());
     }
 
     #[cfg(target_os = "macos")]

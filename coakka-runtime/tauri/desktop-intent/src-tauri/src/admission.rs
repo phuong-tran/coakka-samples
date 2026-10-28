@@ -62,6 +62,7 @@ impl<T: Clone> Owner<T> {
         })
     }
 
+    #[cfg(test)]
     pub fn snapshot(&self) -> (usize, u64, bool, bool) {
         let state = self.state.lock().expect("application admission lock");
         (state.active, state.completed, state.closing, state.closed)

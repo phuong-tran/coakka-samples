@@ -27,6 +27,7 @@ SOURCES = (
     "src-tauri/icons/icon.png", "src-tauri/icons/icon.ico",
     "src-tauri/src/main.rs", "src-tauri/src/lib.rs", "src-tauri/src/admission.rs",
     "src-tauri/src/browser_gate.rs", "src-tauri/src/browser.rs",
+    "src-tauri/src/mac_menu.rs",
 )
 BINARY = "coakka-sample-tauri-desktop-intent"
 PLATFORMS = {"macos-aarch64": "darwin", "linux-aarch64": "linux", "windows-x86_64": "win32"}
