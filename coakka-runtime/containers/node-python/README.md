@@ -1,0 +1,118 @@
+# Node.js Web To Python Store
+
+This is the first container runtime sample. It runs two containers:
+
+- `node-web`: browser UI and HTTP API on `http://localhost:8080`.
+- `python-store`: runtime-owned customer store plus read-only UI on
+  `http://localhost:8081`.
+
+Business traffic crosses the runtime path:
+
+```text
+Browser -> Node HTTP edge -> CoAkka runtime -> Python store -> CoAkka runtime reply -> Node UI
+```
+
+The Python UI is observation-only. There is no Node-to-Python REST fallback.
+Committed screenshots for this path live in
+[Production Evidence](../../../docs/production-evidence.md#visual-evidence).
+
+Run through the repository entrypoint. The default path uses published
+multi-arch images that already contain the native runtime:
+
+```sh
+bash run.sh coakka-runtime containers node-python
+```
+
+Published remote image tags for this sample lane:
+
+```text
+docker.io/gabrielgun1983/sample-node-web:1.3.2-caff6d6d-b46f705-remote
+docker.io/gabrielgun1983/sample-python-store:1.3.2-caff6d6d-6d5ea58-remote
+```
+
+Those tags are published sample images, not the canonical artifact download
+location. They install the pinned public Node.js connector artifact set
+`1.3.2+caff6d6d-b46f705` and Python connector artifact set
+`1.3.2+caff6d6d-6d5ea58` from
+[`coakka-publish`](https://github.com/phuong-tran/coakka-publish) and load the
+native runtime base from
+`docker.io/gabrielgun1983/runtime-base:1.3.2-caff6d6d-remote` through
+`COAKKA_RUNTIME_LIB`.
+
+Then open:
+
+```text
+http://localhost:8080
+http://localhost:8081
+```
+
+Smoke a running stack:
+
+```sh
+bash run.sh coakka-runtime containers node-python smoke
+```
+
+Stop this stack:
+
+```sh
+bash run.sh coakka-runtime containers node-python down
+```
+
+Run Docker Compose directly:
+
+```sh
+docker compose -f coakka-runtime/containers/node-python/compose.yaml up
+docker-compose -f coakka-runtime/containers/node-python/compose.yaml up
+```
+
+Run Podman Compose directly:
+
+```sh
+podman compose -f coakka-runtime/containers/node-python/compose.yaml up
+podman-compose -f coakka-runtime/containers/node-python/compose.yaml up
+```
+
+The Dockerfiles are the image-source path for maintainers. They download the
+public Node.js and Python runtime connector artifacts, verify them through the
+public artifact manifest before install, then load the native runtime from the
+pinned runtime-base image. Use `coakka-publish` when the user needs direct
+package/archive downloads or checksums outside the container sample.
+
+The Linux ARM64 local rebuild path uses native `1.4.1+9e02a51d` and the Node.js
+and Python `1.4.1` connector artifacts. The default zero-build path continues
+to use the separately published multi-arch Docker Hub image tags listed above.
+
+If the selected runtime artifact cannot complete cross-process delivery, the
+Node web UI shows the runtime error. The sample intentionally has no REST
+fallback; a successful customer update must cross the runtime path.
+
+Build the local image line from the repository root:
+
+```sh
+bash run.sh coakka-runtime containers node-python build
+```
+
+The published remote image line is the fastest first run. The local image line
+is the repo-side rebuild path for this pinned connector generation.
+
+Current Linux ARM64 source-build commands:
+
+```sh
+docker buildx build \
+  --platform linux/arm64 \
+  -f coakka-runtime/containers/node-python/Dockerfile.python \
+  --build-arg COAKKA_RUNTIME_BASE_IMAGE=coakka/runtime-base:1.4.1-2cee86bf-local \
+  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=d8a35276cf9f014bb57c535cc5651d61c84aaaa731266f0bb4ad3aedb548f8cb \
+  -t coakka/sample-python-store:1.4.1-2cee86bf-ec4902c-local \
+  --load \
+  .
+
+docker buildx build \
+  --platform linux/arm64 \
+  -f coakka-runtime/containers/node-python/Dockerfile.node \
+  --build-arg COAKKA_RUNTIME_BASE_IMAGE=coakka/runtime-base:1.4.1-2cee86bf-local \
+  --build-arg COAKKA_ARTIFACT_MANIFEST_SHA256=d8a35276cf9f014bb57c535cc5651d61c84aaaa731266f0bb4ad3aedb548f8cb \
+  -t coakka/sample-node-web:1.4.1-2cee86bf-ec4902c-local \
+  --load \
+  .
+```

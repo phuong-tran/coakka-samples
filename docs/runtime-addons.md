@@ -226,9 +226,9 @@ to S3, Hugging Face, SFTP, or another external provider.
 
 | Addon | Workflow | Public status |
 | --- | --- | --- |
-| HTTPS, S3/MinIO, Azure Blob, GCS, WebDAV, OCI Distribution, Hugging Face Hub, GitHub Release, Google Drive, Dropbox | Acquire one immutable remote identity, verify size/SHA-256, stage without replacement, and distribute through File Lane. | Public native `1.1.0+d1032f6d`; [native C11 samples](https://github.com/phuong-tran/coakka-samples/tree/main/runtime-addons). |
+| HTTPS, S3/MinIO, Azure Blob, GCS, WebDAV, OCI Distribution, Hugging Face Hub, GitHub Release, Google Drive, Dropbox | Acquire one immutable remote identity, verify size/SHA-256, stage without replacement, and distribute through File Lane. | Public native `1.1.0+d1032f6d`; [native C11 samples](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/addons). |
 | Local Drop | Acquire one stable file below an anchored POSIX drop root and distribute through File Lane. | Public native `1.1.0+d1032f6d` for Linux ARM64/x86-64 and macOS ARM64; native C11 sample. |
-| [SFTP artifact publisher](https://github.com/phuong-tran/coakka-publish/tree/main/runtime-addons/artifact-publisher-sftp) | Acquire one host-key-pinned SFTP file and distribute through File Lane. | Replacement native `1.2.0+88b9a047` for five targets; [native C11 sample](https://github.com/phuong-tran/coakka-samples/tree/main/runtime-addons/artifact-publisher-sftp/native). |
+| [SFTP artifact publisher](https://github.com/phuong-tran/coakka-publish/tree/main/runtime-addons/artifact-publisher-sftp) | Acquire one host-key-pinned SFTP file and distribute through File Lane. | Replacement native `1.2.0+88b9a047` for five targets; [native C11 sample](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/addons/artifact-publisher-sftp/native). |
 
 The SFTP workflow composes existing boundaries:
 

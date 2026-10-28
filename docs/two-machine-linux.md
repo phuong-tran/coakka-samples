@@ -53,7 +53,7 @@ export WEB_HOST=10.0.0.11
 
 SAMPLE_CONNECTOR_LOCAL_HOST="$STORE_HOST" \
 SAMPLE_CONNECTOR_PEER_HOST="$WEB_HOST" \
-bash run.sh runtime/scenarios/customer-crud/spring-boot-spring-boot store
+bash run.sh coakka-runtime/scenarios/customer-crud/spring-boot-spring-boot store
 ```
 
 Keep this process running. It owns the `samples.customer.store` runtime target.
@@ -69,7 +69,7 @@ export WEB_HOST=10.0.0.11
 SAMPLE_CONNECTOR_LOCAL_HOST="$WEB_HOST" \
 SAMPLE_CONNECTOR_PEER_HOST="$STORE_HOST" \
 SERVER_PORT=8081 \
-bash run.sh runtime/scenarios/customer-crud/spring-boot-spring-boot web
+bash run.sh coakka-runtime/scenarios/customer-crud/spring-boot-spring-boot web
 ```
 
 Open the UI from a browser that can reach machine B:
@@ -83,7 +83,7 @@ http://10.0.0.11:8081
 Run on machine B while both processes are up:
 
 ```sh
-bash run.sh runtime/scenarios/customer-crud/spring-boot-spring-boot smoke
+bash run.sh coakka-runtime/scenarios/customer-crud/spring-boot-spring-boot smoke
 ```
 
 The smoke command should return customer business responses with runtime
@@ -112,7 +112,7 @@ Stop the foreground Java processes with `Ctrl-C`.
 If a previous local run left ports open, run this on the relevant machine:
 
 ```sh
-bash run.sh runtime/scenarios/customer-crud/spring-boot-spring-boot stop
+bash run.sh coakka-runtime/scenarios/customer-crud/spring-boot-spring-boot stop
 ```
 
 ## Troubleshooting

@@ -73,7 +73,7 @@ RuntimeStartSpec
 | `nodeId` | Which concrete instance/process am I? | Concrete process identity. Include instance/host/pod identity when multiple instances run. |
 | `queueCapacity` | How much work can runtime buffer before applying pressure? | Bounded queue size. Start conservative, measure pressure, then tune. |
 | `strictNoDrop` | Should overload be visible instead of silently dropping work? | Prefer `true` while integrating so overload becomes visible. |
-| delivered-request lane | Should runtime keep delivered requests on their own runtime lane? | Enabled by default in current connectors; keep the default for request/reply services so inbound handler work does not delay reply/deadletter matching. |
+| delivered-request lane | Should runtime keep delivered requests on their own runtime lane? | Enabled by Core default on the current native construction path; normally omit this option and inspect Core's effective settings. This keeps inbound handler work separate from reply/deadletter matching. |
 | `network` | Does this runtime accept inbound network traffic? | Choose `EMBEDDED`, `OUTBOUND_ONLY`, or explicit `NETWORK_NODE`; do not infer it from route metadata. |
 | `generation` | Which version of the route table is this? | Start with `1`; keep it stable for a stable Service DNS route, and increment only when the CoAkka route snapshot changes. |
 | `routes` | What targets does this runtime know how to route? | Target-to-endpoint map. Local targets are owned here; peer targets point elsewhere. |
@@ -585,10 +585,10 @@ this into the host framework lifecycle:
 
 Start from the language closest to your service:
 
-- [JVM runtime samples](https://github.com/phuong-tran/coakka-samples/tree/main/runtime/jvm)
-- [Python runtime samples](https://github.com/phuong-tran/coakka-samples/tree/main/runtime/python)
-- [Node.js runtime samples](https://github.com/phuong-tran/coakka-samples/tree/main/runtime/node)
-- [Go runtime samples](https://github.com/phuong-tran/coakka-samples/tree/main/runtime/go)
+- [JVM runtime samples](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/jvm)
+- [Python runtime samples](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/python)
+- [Node.js runtime samples](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/node)
+- [Go runtime samples](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/go)
 
 Then inspect the customer scenarios for cross-process wiring:
 

@@ -218,7 +218,7 @@ the replies, deadletters, or timeouts needed to finish work already in flight.
 | payload | Business command, query, reply, or event bytes. |
 | payload identity | Message type, schema version, and payload format. |
 | deadletter | Structured terminal delivery failure result. |
-| timeout | Caller wait budget enforced by runtime/connector ask matching. |
+| timeout | Caller wait budget enforced by Core ask matching. |
 | retry | Caller/application decision to submit again. |
 
 ## RuntimeStartSpec
@@ -300,9 +300,11 @@ flowchart LR
     pending -->|complete caller result| handler
 ```
 
-With CoAkka, the connector/runtime owns the ask completion mechanics: pending
-ask matching, timeout completion, and deadletter completion. App code still owns
-the handler and the business decision after a result arrives.
+With CoAkka, Core owns ask admission, pending matching, monotonic timeout
+completion and matched deadletter completion. The connector projects Core
+tickets and terminal facts into language-specific await/callback values and
+manages their host lifetime. App code owns the handler and the business
+decision after a result arrives.
 
 With `separateDeliveredRequestLane = true`, inbound requests and ask completion
 use separate runtime lanes:
@@ -316,8 +318,8 @@ flowchart LR
         connector[Connector API]
         inboundLane[Delivered request lane<br/>new billing.charge work]
         completionLane[Ask completion lane<br/>reply, deadletter, timeout]
-        pending[Runtime/connector pending asks]
-        timeout[Runtime/connector timeout]
+        pending[Core pending asks]
+        timeout[Core timeout]
         handler[Billing handler]
     end
 
@@ -344,8 +346,8 @@ flowchart LR
     subgraph host[billing-1 runtime host]
         connector[Connector API]
         sharedLane[Shared runtime lane<br/>delivered requests plus ask completion]
-        pending[Runtime/connector pending asks]
-        timeout[Runtime/connector timeout]
+        pending[Core pending asks]
+        timeout[Core timeout]
         handler[Billing handler]
     end
 
@@ -431,7 +433,7 @@ the runtime wrapper around it.
 | `payload` | Business body bytes. | `{ "id": "cust-001", "name": "Ada" }` |
 | headers / metadata / extra params | Small request context. | tenant, request id, trace id, idempotency key |
 | operation | Human-readable operation label. | `create_customer` |
-| timeout | Ask wait budget enforced by runtime/connector matching. | `timeoutMs = 5000` |
+| timeout | Ask wait budget enforced by Core matching. | `timeoutMs = 5000` |
 | `status` / business error fields | Domain outcome on a response. | `OK`, or `ERROR` with stable business code/message. |
 
 Use this split:
@@ -478,12 +480,12 @@ sequenceDiagram
 
 | Shape | Runtime behavior | Caller expectation |
 | --- | --- | --- |
-| ask | Runtime/connector matches reply, matched deadletter, or timeout back to the pending caller. | Caller waits up to timeout. |
+| ask | Core matches reply, matched deadletter, or timeout back to the pending caller. | Caller waits up to timeout. |
 | reply | Handler sends a response envelope with payload identity and payload. | Completes the ask when matched. |
 | one-way request | `kind=REQUEST`, `one_way=true`; no pending ask or business response. | Handle synchronous admission failure and observe later deadletters/stats separately. |
 | event | Normally `kind=EVENT`, `one_way=true`. | No reply wait; delivery failures remain observable through deadletter/diagnostic surfaces. |
 
-Timeout belongs to asks because runtime/connector code is tracking a pending
+Timeout belongs to asks because Core is tracking a pending
 reply/deadletter match for that caller. `one_way` means no response is expected;
 it does not mean silent failure or guaranteed delivery. One-way traffic should
 use explicit deadletter/stats handling rather than pretending there is a reply
@@ -580,18 +582,18 @@ fallback, compensate, or return an error.
 
 ## Timeout Is A Wait Budget
 
-| Concept | Runtime/connector responsibility | Not this |
+| Concept | Core responsibility | Not this |
 | --- | --- | --- |
 | timeout | Track a pending ask and return timeout to the caller when no reply or matched deadletter arrives before the wait budget. | Automatic retry. |
 | deadletter | Produce terminal delivery failure evidence and match it to the pending ask when possible. | Generic timeout. |
 | retry | Expose the outcome so caller/app policy can decide whether to submit another envelope. | Runtime default behavior. |
 
-The app-host does not implement pending-ask matching itself. Runtime/connector
-mechanics track the ask, match a reply or matched deadletter, and surface a
-timeout when the wait budget expires. The app-host owns what to do after that
-outcome.
+The app-host does not implement pending-ask matching itself. Core tracks the
+ask, matches a reply or matched deadletter, and issues a timeout when the wait
+budget expires. The connector presents that terminal outcome through the host
+language API. The app-host owns what to do after that outcome.
 
-A timeout answers one narrow question: "did runtime/connector match a reply or
+A timeout answers one narrow question: "did Core match a reply or
 matched deadletter for this caller before the wait budget expired?"
 
 It does not prove the handler never ran. A request may have reached a handler
@@ -606,7 +608,7 @@ evidence.
 ## Retry Is Caller Policy
 
 CoAkka samples do not make business retry decisions inside the runtime.
-Runtime/connector code handles timeout and deadletter mechanics. Retry policy
+Core handles timeout and deadletter mechanics. Retry policy
 belongs to the caller or application layer unless a specific sample explicitly
 documents a retry behavior.
 
@@ -667,7 +669,7 @@ Start with visible, conservative behavior. Tune from stats and failure evidence.
 
 | Parameter | Start with | Increase when | Decrease when |
 | --- | --- | --- | --- |
-| `timeoutMs` / `timeout_ms` | Caller-specific wait budget enforced by runtime/connector pending-ask matching. | Normal handler latency exceeds budget and retry would be worse. | Caller needs fast fallback or overload protection. |
+| `timeoutMs` / `timeout_ms` | Caller-specific wait budget enforced by Core pending-ask matching. | Normal handler latency exceeds budget and retry would be worse. | Caller needs fast fallback or overload protection. |
 | `queueCapacity` | Bounded and conservative. | Legitimate bursts are rejected and memory budget allows more buffering. | Latency grows, memory is tight, or pressure should surface earlier. |
 | `strictNoDrop` | `true` while integrating. | Usually keep true. | Only for a measured fire-and-forget path that can drop safely. |
 | `separateDeliveredRequestLane` | `true` for request/reply hosts. | Inbound delivered requests delay reply/deadletter matching for outgoing asks. | Only for tiny one-way-only hosts after measurement. |

@@ -263,7 +263,7 @@ Before calling a WebSocket composition production-ready, verify:
 
 ## Existing Reference
 
-The public [Raspberry Pi camera sample](https://github.com/phuong-tran/coakka-samples/tree/main/runtime-streaming-demo/rpi-camera)
+The public [Raspberry Pi camera sample](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/demos/rpi-camera)
 shows a concrete native app-host that subscribes to bounded MJPEG and PCM
 Stream Lane sessions and owns a loopback HTTP/MJPEG/WebSocket gateway.
 Its listener is intentionally restricted to `127.0.0.1`; it does not claim

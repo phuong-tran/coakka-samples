@@ -75,8 +75,8 @@ If you changed a runnable sample, also run the narrowest relevant sample smoke.
 Examples:
 
 ```sh
-bash run.sh runtime jvm basic
-bash run.sh containers node-python smoke
+bash run.sh coakka-runtime jvm basic
+bash run.sh coakka-runtime containers node-python smoke
 ```
 
 ## PR Notes

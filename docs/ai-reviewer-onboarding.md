@@ -109,7 +109,7 @@ Do not collapse different generation concepts:
 
 - route generation: version of the active route snapshot used for delivery
   evidence
-- native generation: released native runtime/logger build identity
+- native generation: released native coakka-runtime/logger build identity
 - package version: package-manager version consumed by users
 - release tag: repository release coordinate
 

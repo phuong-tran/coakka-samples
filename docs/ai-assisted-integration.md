@@ -155,19 +155,19 @@ terminal outcomes.
 
 | Host lane | First runnable path | Boundary to preserve |
 | --- | --- | --- |
-| JVM/Kotlin or Java | `runtime/jvm/basic` or `runtime/jvm/java-basic` | One runtime owner per process; framework adapters may own startup for the app. |
-| Python | `runtime/python/basic` | Use the context manager or close explicitly during app shutdown. |
-| Node.js | `runtime/node/basic` | The Node process owns runtime lifecycle; do not move blocking control work onto request callbacks. |
-| Bun | `runtime/bun/basic` | Use the Bun package and its exported surface; do not substitute Node-only loader assumptions. |
-| Go | `runtime/go/basic` | Start one runtime host per process and defer close. |
-| C# | `runtime/csharp/basic` | Dispose the runtime owner and keep asynchronous waits off synchronous request paths. |
-| Rust | `runtime/rust/basic` | Use the exact archive package and retain explicit result handling. |
-| Swift | `runtime/swift/basic` | Use the exact SwiftPM tag and check the platform evidence separately. |
-| Zig | `runtime/zig/basic` | Follow the source package smoke and explicit lifecycle. |
-| Mojo | `runtime/mojo/basic` | Follow the source package smoke; do not invent a higher-level wrapper surface. |
-| Native C/C++ | `runtime/native/basic` and `runtime-test` | Follow the public C contract and explicit create/start/stop/destroy ordering. |
-| Electron | `runtime/electron/basic` | Renderer sends intent; Electron main owns the runtime and native resources. |
-| Tauri | `runtime/tauri/intent-command` | WebView sends intent; the Rust app host owns runtime integration. |
+| JVM/Kotlin or Java | `coakka-runtime/jvm/basic` or `coakka-runtime/jvm/java-basic` | One runtime owner per process; framework adapters may own startup for the app. |
+| Python | `coakka-runtime/python/basic` | Use the context manager or close explicitly during app shutdown. |
+| Node.js | `coakka-runtime/node/basic` | The Node process owns runtime lifecycle; do not move blocking control work onto request callbacks. |
+| Bun | `coakka-runtime/bun/basic` | Use the Bun package and its exported surface; do not substitute Node-only loader assumptions. |
+| Go | `coakka-runtime/go/basic` | Start one runtime host per process and defer close. |
+| C# | `coakka-runtime/csharp/basic` | Dispose the runtime owner and keep asynchronous waits off synchronous request paths. |
+| Rust | `coakka-runtime/rust/basic` | Use the exact archive package and retain explicit result handling. |
+| Swift | `coakka-runtime/swift/basic` | Use the exact SwiftPM tag and check the platform evidence separately. |
+| Zig | `coakka-runtime/zig/basic` | Follow the source package smoke and explicit lifecycle. |
+| Mojo | `coakka-runtime/mojo/basic` | Follow the source package smoke; do not invent a higher-level wrapper surface. |
+| Native C/C++ | `coakka-runtime/native/basic` and `runtime-test` | Follow the public C contract and explicit create/start/stop/destroy ordering. |
+| Electron | `coakka-runtime/electron/basic` | Renderer sends intent; Electron main owns the runtime and native resources. |
+| Tauri | `coakka-runtime/tauri/intent-command` | WebView sends intent; the Rust app host owns runtime integration. |
 
 ## Generated Answer Checklist
 

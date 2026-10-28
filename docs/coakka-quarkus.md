@@ -140,7 +140,7 @@ compatible.
 The runnable Quarkus sample is:
 
 ```text
-runtime/scenarios/customer-crud/quarkus-local
+coakka-runtime/scenarios/customer-crud/quarkus-local
 ```
 
 It shows a Quarkus HTTP edge, CDI-backed `@CoAkkaHandler` runtime target, and a

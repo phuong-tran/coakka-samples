@@ -41,9 +41,12 @@ flags = LOCAL
 ```
 
 `port = 0` does not allocate a port, start a listener, connect through
-loopback, or move local messages through TCP. The app host and runtime exchange
-framed data through the connector-owned native ABI/fd boundary; the runtime
-dispatches local work through its bounded local queue.
+loopback, or move local messages through TCP. Current native connectors use
+Core-owned request readers and ask tickets. Core owns delivery, terminal
+matching, queues and doorbell wakeups; connectors project those operations into
+the host language. Descriptor-based framed request/response I/O belongs to the
+legacy construction path. A monitor doorbell descriptor is a separate
+notification surface, not a legacy message transport.
 
 Do not reserve a free loopback port for an embedded runtime. Port reservation
 has a race between closing the reservation socket and opening the real

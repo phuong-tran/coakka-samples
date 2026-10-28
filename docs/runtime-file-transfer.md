@@ -94,8 +94,8 @@ Kubernetes addressing, explicit one/all distribution, and owner-loss contract.
 
 | Choose | When it is the clearer contract | Runnable C11 profile |
 | --- | --- | --- |
-| Simple | One receiver instance has a stable endpoint, or application control state already keeps the ID, token, endpoint, size, and digest together. | `bash run.sh runtime-test file-lane-simple` |
-| Owner-aware | A prepare command may select one of several replicas, or pod/process replacement must invalidate the prior endpoint capability. | `bash run.sh runtime-test file-lane-owner-aware` |
+| Simple | One receiver instance has a stable endpoint, or application control state already keeps the ID, token, endpoint, size, and digest together. | `bash run.sh coakka-runtime runtime-test file-lane-simple` |
+| Owner-aware | A prepare command may select one of several replicas, or pod/process replacement must invalidate the prior endpoint capability. | `bash run.sh coakka-runtime runtime-test file-lane-owner-aware` |
 
 Simple uses `coakka_v2_file_lane_create()` and
 `coakka_v2_file_lane_prepare_receive()`. Owner-aware feature-detects

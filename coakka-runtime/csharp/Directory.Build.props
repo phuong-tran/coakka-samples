@@ -1,0 +1,9 @@
+<Project>
+  <Import Project="../artifacts/runtime-csharp-candidate.props"/>
+  <PropertyGroup>
+    <UseArtifactsOutput>true</UseArtifactsOutput>
+    <ArtifactsPath>$(COAKKA_SAMPLE_WORK_ROOT)/csharp/artifacts</ArtifactsPath>
+    <RestoreConfigFile>$(MSBuildThisFileDirectory)NuGet.Config</RestoreConfigFile>
+    <UseSharedCompilation>false</UseSharedCompilation>
+  </PropertyGroup>
+</Project>

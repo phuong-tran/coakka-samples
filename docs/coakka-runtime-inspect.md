@@ -81,12 +81,12 @@ matching-host execution is not claimed for the other four archive targets.
 In `coakka-samples`, use:
 
 ```sh
-bash run.sh runtime-inspect check
-bash run.sh runtime-inspect published-smoke
-bash run.sh runtime-inspect serve
-bash run.sh runtime-inspect docker-smoke
-bash run.sh runtime-inspect docker-serve
-bash run.sh runtime-inspect dockerhub-smoke
+bash run.sh coakka-runtime inspect check
+bash run.sh coakka-runtime inspect published-smoke
+bash run.sh coakka-runtime inspect serve
+bash run.sh coakka-runtime inspect docker-smoke
+bash run.sh coakka-runtime inspect docker-serve
+bash run.sh coakka-runtime inspect dockerhub-smoke
 ```
 
 For the Docker Hub zero-install path:

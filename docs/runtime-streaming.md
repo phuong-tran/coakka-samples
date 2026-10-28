@@ -212,8 +212,8 @@ provide fan-out.
 
 | Choose | When it is the clearer contract | Runnable C11 profile |
 | --- | --- | --- |
-| Simple | One publisher instance has a stable endpoint, or application control state already keeps session identity, token, format, frame bound, and endpoint together. | `bash run.sh runtime-test stream-lane-simple` |
-| Owner-aware | A prepare command may select one of several replicas, or publisher replacement must invalidate the prior endpoint capability. | `bash run.sh runtime-test stream-lane-owner-aware` |
+| Simple | One publisher instance has a stable endpoint, or application control state already keeps session identity, token, format, frame bound, and endpoint together. | `bash run.sh coakka-runtime runtime-test stream-lane-simple` |
+| Owner-aware | A prepare command may select one of several replicas, or publisher replacement must invalidate the prior endpoint capability. | `bash run.sh coakka-runtime runtime-test stream-lane-owner-aware` |
 
 The Owner-aware profile checks
 `COAKKA_V2_RUNTIME_FEATURE_LANE_OWNER_GRANTS`, creates the publisher with

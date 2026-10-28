@@ -14,3 +14,18 @@ include("runtime:scenarios:customer-crud:spring-boot-single-process:customer-app
 include("runtime:scenarios:customer-crud:spring-boot-starter-local:customer-app")
 include("runtime:scenarios:customer-crud:quarkus-local:customer-app")
 include("runtime:scenarios:customer-crud:kotlin-desktop-local:customer-desktop")
+
+// Logical build IDs remain stable; product directories own the physical samples.
+fun mapProductDirectory(project: org.gradle.api.initialization.ProjectDescriptor) {
+    val path = project.path.removePrefix(":").split(":")
+    val product = when (path.first()) {
+        "runtime" -> "coakka-runtime"
+        "logger" -> "coakka-logger"
+        else -> null
+    }
+    if (product != null) {
+        project.projectDir = file((listOf(product) + path.drop(1)).joinToString("/"))
+    }
+    project.children.forEach(::mapProductDirectory)
+}
+rootProject.children.forEach(::mapProductDirectory)

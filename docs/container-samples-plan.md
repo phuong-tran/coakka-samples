@@ -68,7 +68,7 @@ approved by their environment.
 
 | Wave | Sample | Purpose |
 | --- | --- | --- |
-| 1 | Node.js web -> Python store | smallest visible cross-language, cross-process runtime path; sample lives in `containers/node-python` |
+| 1 | Node.js web -> Python store | smallest visible cross-language, cross-process runtime path; sample lives in `coakka-runtime/containers/node-python` |
 | 1b | Spring Boot JVM web -> Go store | visible framework web edge plus Go store UI; compose skeleton exists, refreshed image-source path pending |
 | 2 | Python -> Node.js or Go variant | show the pattern is not tied to one caller |
 | 3 | Optional native-image research | only if a concrete deployment case makes it useful |
@@ -79,7 +79,7 @@ more useful than many heavy examples that are hard to run.
 Current wave 1 command:
 
 ```sh
-bash run.sh containers node-python
+bash run.sh coakka-runtime containers node-python
 ```
 
 ## Image Strategy
@@ -115,7 +115,7 @@ The image strategy should have two layers:
 docker.io/gabrielgun1983/runtime-base:<runtime-generation>
   -> public native runtime artifacts
   -> required native runtime dependencies
-  -> wire runtime/build bits when needed by samples
+  -> wire coakka-runtime/build bits when needed by samples
   -> runtime transport dependencies when needed by the selected runtime flavor
   -> CA certificates
   -> version/diagnostic metadata
@@ -171,15 +171,15 @@ Release rules:
 This lets the first public container path become:
 
 ```sh
-docker compose -f containers/node-python/compose.yaml up
-docker compose -f containers/spring-go/compose.yaml up
+docker compose -f coakka-runtime/containers/node-python/compose.yaml up
+docker compose -f coakka-runtime/containers/spring-go/compose.yaml up
 ```
 
 or:
 
 ```sh
-podman-compose -f containers/node-python/compose.yaml up
-podman-compose -f containers/spring-go/compose.yaml up
+podman-compose -f coakka-runtime/containers/node-python/compose.yaml up
+podman-compose -f coakka-runtime/containers/spring-go/compose.yaml up
 ```
 
 The two-container view is the public path for wave 1. Prebuilt images remove
@@ -226,16 +226,16 @@ The final command shape can be decided during implementation, but the target UX
 should be close to:
 
 ```sh
-bash run.sh containers node-python
+bash run.sh coakka-runtime containers node-python
 ```
 
 with direct runtime equivalents documented:
 
 ```sh
-docker compose -f containers/node-python/compose.yaml up
-podman compose -f containers/node-python/compose.yaml up
-docker compose -f containers/spring-go/compose.yaml up
-podman compose -f containers/spring-go/compose.yaml up
+docker compose -f coakka-runtime/containers/node-python/compose.yaml up
+podman compose -f coakka-runtime/containers/node-python/compose.yaml up
+docker compose -f coakka-runtime/containers/spring-go/compose.yaml up
+podman compose -f coakka-runtime/containers/spring-go/compose.yaml up
 ```
 
 If the local environment uses `podman-compose`, document that alternative too.

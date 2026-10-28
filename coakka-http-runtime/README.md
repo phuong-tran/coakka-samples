@@ -40,7 +40,7 @@ Build tools may download their own dependencies; CoAkka comes only from the
 explicit warehouse checkout. Nothing is uploaded to a registry.
 
 For the distributed target/message runtime, start with
-[CoAkka Runtime samples](../runtime/README.md). HTTP Runtime is an independent
+[CoAkka Runtime samples](../coakka-runtime/README.md). HTTP Runtime is an independent
 HTTP server/client; the two products have different package coordinates.
 
 ## Contents

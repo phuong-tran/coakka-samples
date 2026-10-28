@@ -79,14 +79,14 @@ required when prepare may land on one replica while a later data connection
 could otherwise land on another.
 
 For an executable connector example, run the
-[`runtime/go/replica-file-fanout`](https://github.com/phuong-tran/coakka-samples/tree/main/runtime/go/replica-file-fanout)
+[`coakka-runtime/go/replica-file-fanout`](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/go/replica-file-fanout)
 sample. It resolves public Go module `v1.8.2`, prepares three exact owners,
 round-trips every grant through JSON, sends one immutable source independently
 to all three replicas, and verifies sender terminal state, receiver terminal
 state, and destination digest per owner:
 
 ```sh
-cd runtime/go/replica-file-fanout
+cd coakka-runtime/go/replica-file-fanout
 bash run.sh
 ```
 
@@ -629,8 +629,8 @@ remain available for Simple deployments. Release evidence exercises both
 profiles:
 
 ```sh
-bash run.sh runtime-test file-lane-simple
-bash run.sh runtime-test file-lane-owner-aware
-bash run.sh runtime-test stream-lane-simple
-bash run.sh runtime-test stream-lane-owner-aware
+bash run.sh coakka-runtime runtime-test file-lane-simple
+bash run.sh coakka-runtime runtime-test file-lane-owner-aware
+bash run.sh coakka-runtime runtime-test stream-lane-simple
+bash run.sh coakka-runtime runtime-test stream-lane-owner-aware
 ```

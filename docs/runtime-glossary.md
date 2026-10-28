@@ -82,8 +82,11 @@ load.
 
 ## Delivered-Request Lane
 
-Current connectors enable the delivered-request lane by default. Most samples
-do not set it explicitly anymore.
+The current native construction path enables the delivered-request lane by
+Core default. Connectors submit application intent and report Core's accepted
+effective settings. Most samples leave this option omitted. Legacy construction
+is a separate explicit contract; its defaults must not be inferred from the
+current native path.
 
 ```mermaid
 flowchart TB

@@ -28,7 +28,7 @@ If you are evaluating CoAkka for the first time, read it in this order:
 | --- | --- | --- |
 | 1 | This page | Understand the problem and repository map. |
 | 2 | [Build The Product Before The Infrastructure](startup-development-path.md) | Start with a modular monolith or locally debugged polyglot processes, then split only when evidence justifies it. |
-| 3 | `bash run.sh containers node-python` | See two real processes, two languages, browser-visible state, and no backend HTTP fallback. |
+| 3 | `bash run.sh coakka-runtime containers node-python` | See two real processes, two languages, browser-visible state, and no backend HTTP fallback. |
 | 4 | [Runtime Field Guide](runtime-field-guide.md) | Connect the sample to the normal Kubernetes Service DNS shape, queues, overload, Nginx, and mTLS boundaries. |
 | 5 | [How It Works](how-it-works.md) | Understand app-host, connector, runtime, route snapshot, and handler ownership. |
 | 6 | [Runtime Integration Guide](runtime-integration-guide.md) | Map an existing service into `RuntimeStartSpec`, routes, handlers, and shutdown. |
@@ -111,7 +111,7 @@ to the application architecture around CoAkka.
    ```sh
    git clone https://github.com/phuong-tran/coakka-samples.git
    cd coakka-samples
-   bash run.sh containers node-python
+   bash run.sh coakka-runtime containers node-python
    ```
 
    This path uses the published container images to show two runtime
@@ -121,13 +121,13 @@ to the application architecture around CoAkka.
 2. If Docker is not available, run the smallest local Runtime package check:
 
    ```sh
-   bash run.sh runtime node basic
+   bash run.sh coakka-runtime node basic
    ```
 
 3. Optionally run the smallest local Logger package check:
 
    ```sh
-   bash run.sh logger node basic
+   bash run.sh coakka-logger node basic
    ```
 
 4. Try the no-checkout npm smoke if you want to start from package-manager

@@ -48,9 +48,10 @@ manifest, and per-file checksums.
 Both Linux payloads fail closed above the glibc 2.36 baseline. The archive and
 all five libraries pass architecture, dependency, exact 139-export, public
 header, legal-bundle, checksum, and embedded build-identity verification. The
-separately versioned public tool train remains at `2.4.0` below.
+separately versioned public tool train is recorded below. These published
+identities are distinct from the newer private native-startup candidates.
 
-## Runtime Tool 2.4.0 Matrix
+## Published Runtime Tool 2.5.1 Matrix
 
 `coakka-client` and `coakka-runtime-inspect` are published for the same five
 platforms under native generation
@@ -61,13 +62,16 @@ walkthrough or inspect smoke.
 
 | Tool | Matching-host execution | Additional verified payloads |
 | --- | --- | --- |
-| `coakka-client` | Command execution passes on macOS ARM64. Linux ARM64/x86-64 pass matching-architecture Docker build and dependency gates. | All five archives pass dependency, architecture, archive, and checksum gates. |
-| `coakka-runtime-inspect` | Command and `serve` smokes pass on macOS ARM64 and Linux ARM64/x86-64. | All five archives pass dependency, architecture, archive, and checksum gates. |
+| `coakka-client` | Command execution passes on macOS ARM64. The exact published Linux amd64/arm64 Docker image digests pass the Client walkthrough. | All five archives pass dependency, architecture, archive, and checksum gates. |
+| `coakka-runtime-inspect` | Command and `serve` smokes pass on macOS ARM64; exact published Linux amd64/arm64 Docker image digests pass the Inspect smoke. | All five archives pass dependency, architecture, archive, and checksum gates. |
 
-Matching-host Linux command execution is not recorded for `coakka-client`, and
-matching-host Windows execution is not recorded for either tool. Windows
-ARM64/x86-64 pass Zig cross-build, PE architecture, native dependency, archive,
-and checksum gates.
+The image execution and five-archive verification scopes are distinct. This
+published receipt does not claim native matching-host execution for every
+archive target. Windows ARM64/x86-64 have cross-build, PE architecture, native
+dependency, archive and checksum evidence in this published train. See the
+[exact 2.5.1 tool receipt](releases/2026-08-21-runtime-tools-2.5.1.md) for the
+immutable paths and image digests; newer private target qualification does not
+retroactively broaden this receipt.
 
 ## Connector Artifact Matrix
 
@@ -75,7 +79,7 @@ and checksum gates.
 | --- | --- | --- | --- |
 | JVM | `io.github.phuong-tran.coakka:runtime:2.5.3` | All five | Maven Central signed publication, native identity gate, Java package checks, and clean consumers pass. |
 | Node.js, Bun, Electron, Python, Go, C#, Rust, Swift, Mojo, Zig, Tauri | `runtime/<lane>/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e/` | All five where supported | Frozen connector packages pass the public artifact-surface verifier against the exact C1 native archive. Registry versions remain independently listed below. |
-| Android | signed internal `1.2.0` candidate; not published | `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64` | Exact tagged AAR passed clean build, package/ABI checks, R8 name verification, and the release-minified API 36 ARM64 Runtime/request/File/Stream smoke. |
+| Android | historical signed internal `1.2.0` candidate; not published | `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64` | Exact tagged AAR passed clean build, package/ABI checks, R8 name verification, and the release-minified API 36 ARM64 Runtime/request/File/Stream smoke. |
 
 Every release directory has a manifest and `SHA256SUMS`. The manifest records
 the five-platform matrix, native source generation, connector source
@@ -88,21 +92,25 @@ grants admit one valid OPEN. A multi-replica fan-out enumerates owners and
 uses one independently observable grant per owner; a load-balancing Service
 is not a substitute for owner enumeration.
 
-## Android Candidate Evidence
+## Historical Android Candidate Evidence
 
-Android connector `1.2.0` is frozen at annotated Samples tag
+This historical Android connector `1.2.0` snapshot is frozen at annotated Samples tag
 `android-runtime-1.2.0` (`53d39fd9b6dd417374662a25437af106198aff7a`)
 over Core `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`. The AAR
 SHA-256 is `edadc38b61a47ad70de6e0a52afeec14cdac467b3cac1c7a15c1d6aa9fd4ad29`
-and it contains matching runtime/JNI libraries for all four Android ABIs.
+and it contains matching coakka-runtime/JNI libraries for all four Android ABIs.
 
 The exact release-minified AAR passed on
 `google/sdk_gphone64_arm64/emu64a:16/BE2A.250530.026.D1/13818094:user/release-keys`
 (API 36, `arm64-v8a`). R8 evidence checks four exact JNI/callback class names in
 the mapping and 34 native plus two callback members in the final APK DEX before
 executing Runtime, request/reply, File Lane, and Stream Lane. The signed bundle
-is retained as internal reproducibility evidence. No Maven Central publication
-is planned, so no Android coordinate is claimed or listed below.
+is retained as internal reproducibility evidence. It is separate from the
+newer private native-startup candidate, which uses Core-owned readers/tickets
+and has API 37 x86_64 emulator evidence. See
+[Android and industrial tablets](edge-iot-android.md#android-and-industrial-tablets)
+for that candidate's scope. Neither candidate is a Maven Central publication,
+and no Android registry coordinate is claimed below.
 
 ## Registry Coordinates
 

@@ -9,7 +9,7 @@ the runtime boundary without opening every sample at once.
 Start with a container sample:
 
 ```sh
-bash run.sh containers node-python
+bash run.sh coakka-runtime containers node-python
 ```
 
 Look for the visible shape:
@@ -32,10 +32,10 @@ for the web service. Business traffic crosses the runtime path.
 Run the smallest runtime sample in a language you know:
 
 ```sh
-bash run.sh runtime jvm basic
-bash run.sh runtime python basic
-bash run.sh runtime node basic
-bash run.sh runtime go basic
+bash run.sh coakka-runtime jvm basic
+bash run.sh coakka-runtime python basic
+bash run.sh coakka-runtime node basic
+bash run.sh coakka-runtime go basic
 ```
 
 In the code, find these five pieces:
@@ -55,8 +55,8 @@ That is the smallest useful CoAkka model.
 Run one deadletter sample:
 
 ```sh
-bash run.sh runtime jvm deadletter
-bash run.sh runtime python deadletter
+bash run.sh coakka-runtime jvm deadletter
+bash run.sh coakka-runtime python deadletter
 ```
 
 The point is not to make failure disappear. The point is to make delivery
@@ -68,7 +68,7 @@ pending request.
 Run the route reload sample when you want to see the apply semantics directly:
 
 ```sh
-bash run.sh runtime python hot-reload
+bash run.sh coakka-runtime python hot-reload
 ```
 
 Most applications can start with one route snapshot from platform config and
@@ -95,7 +95,7 @@ If you want explicit route and handler wiring instead of annotation-based
 adapter help, read:
 
 ```text
-runtime/scenarios/customer-crud/spring-boot-single-process
+coakka-runtime/scenarios/customer-crud/spring-boot-single-process
 ```
 
 ## Step 6: Cross A Process Or Language Boundary
@@ -127,8 +127,8 @@ demonstrated demand justifies their platform, packaging, testing, and
 maintenance cost; they are not part of the current release contract:
 
 ```sh
-bash run.sh runtime-addons https
-bash run.sh runtime-addons sftp
+bash run.sh coakka-runtime addons https
+bash run.sh coakka-runtime addons sftp
 ```
 
 Contributors can still run `bash run.sh source-candidate` to build the current

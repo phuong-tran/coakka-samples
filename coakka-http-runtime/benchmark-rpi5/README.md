@@ -172,7 +172,7 @@ documented execution profile; language connectors retain their own tuning.
 
 Preparation explicitly selects the current native CMake package directory;
 changing only a prefix does not override an older cached package lookup.
-Before timed load, the runner also hashes the runtime/bridge files actually
+Before timed load, the runner also hashes the coakka-runtime/bridge files actually
 mapped in the server process group and matches them to the independently
 pinned package. Framework processes must not map a CoAkka library. Receipt
 intent alone is not proof of which library a consumer loaded.

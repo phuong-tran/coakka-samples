@@ -94,11 +94,13 @@ jobs:
         run: |
           bash run.sh list
           bash -n run.sh
-          bash -n logger/run-all.sh
-          bash -n runtime/run-all.sh
-          bash -n runtime-test/run.sh
-          bash -n runtime/evidence/native/run.sh
-          bash -n runtime-client/run.sh
+          bash -n coakka-runtime/run.sh
+          bash -n coakka-logger/run.sh
+          bash -n coakka-logger/run-all.sh
+          bash -n coakka-runtime/run-all.sh
+          bash -n coakka-runtime/runtime-test/run.sh
+          bash -n coakka-runtime/evidence/native/run.sh
+          bash -n coakka-runtime/tools/coakka-client/run.sh
           bash -n scripts/check-artifact-pins.sh
           bash -n scripts/doctor.sh
           bash -n scripts/resolve-artifact.sh
@@ -106,35 +108,41 @@ jobs:
           bash -n scripts/test-resolve-artifact.sh
           bash -n scripts/sample-metadata.sh
           bash -n scripts/sample-utils.sh
-          bash -n scripts/smoke-customer-runtime.sh
-          bash -n scripts/smoke-quarkus-local.sh
-          bash -n scripts/smoke-spring-boot-starter-local.sh
-          bash -n logger/csharp/basic/run.sh
-          bash -n logger/csharp/pressure/run.sh
-          bash -n logger/rust/basic/run.sh
-          bash -n logger/rust/pressure/run.sh
-          bash -n logger/swift/basic/run.sh
-          bash -n runtime/swift/basic/run.sh
+          bash -n coakka-runtime/scripts/smoke-customer-runtime.sh
+          bash -n coakka-runtime/scripts/smoke-quarkus-local.sh
+          bash -n coakka-runtime/scripts/smoke-spring-boot-starter-local.sh
+          bash -n coakka-logger/csharp/basic/run.sh
+          bash -n coakka-logger/csharp/pressure/run.sh
+          bash -n coakka-logger/rust/basic/run.sh
+          bash -n coakka-logger/rust/pressure/run.sh
+          bash -n coakka-logger/swift/basic/run.sh
+          bash -n coakka-runtime/swift/basic/run.sh
+
+      - name: Check product dispatch and directory ownership
+        run: |
+          layout_work="$(mktemp -d "${RUNNER_TEMP}/coakka-product-layout.XXXXXX")"
+          trap 'rm -rf "${layout_work}"' EXIT
+          COAKKA_DOC_TEST_ROOT="${layout_work}" python3 -B scripts/test-product-layout.py
 
       - name: Check script syntax
         run: |
           python3 -m py_compile \
-            runtime/python/basic/main.py \
-            runtime/python/deadletter/main.py \
-            runtime/python/hot-reload/main.py \
-            runtime/scenarios/customer-crud/python-desktop-local/app.py \
-            logger/python/basic/main.py \
-            logger/python/pressure/main.py
-          node --check runtime/node/basic/main.mjs
-          node --check runtime/node/deadletter/main.mjs
-          node --check runtime/scenarios/customer-crud/spring-boot-node/store.mjs
-          node --check runtime/scenarios/customer-crud/spring-boot-nodes/audit.mjs
-          node --check runtime/scenarios/customer-crud/spring-boot-nodes/store.mjs
-          node --check logger/node/basic/main.mjs
-          node --check logger/node/pressure/main.mjs
-          node --check logger/bun/basic/main.mjs
-          node --check logger/bun/pressure/main.mjs
-          node --check logger/electron/basic/main.mjs
+            coakka-runtime/python/basic/main.py \
+            coakka-runtime/python/deadletter/main.py \
+            coakka-runtime/python/hot-reload/main.py \
+            coakka-runtime/scenarios/customer-crud/python-desktop-local/app.py \
+            coakka-logger/python/basic/main.py \
+            coakka-logger/python/pressure/main.py
+          node --check coakka-runtime/node/basic/main.mjs
+          node --check coakka-runtime/node/deadletter/main.mjs
+          node --check coakka-runtime/scenarios/customer-crud/spring-boot-node/store.mjs
+          node --check coakka-runtime/scenarios/customer-crud/spring-boot-nodes/audit.mjs
+          node --check coakka-runtime/scenarios/customer-crud/spring-boot-nodes/store.mjs
+          node --check coakka-logger/node/basic/main.mjs
+          node --check coakka-logger/node/pressure/main.mjs
+          node --check coakka-logger/bun/basic/main.mjs
+          node --check coakka-logger/bun/pressure/main.mjs
+          node --check coakka-logger/electron/basic/main.mjs
 
       - name: Check public artifact pins
         run: |
@@ -181,17 +189,17 @@ jobs:
       - name: Run native evidence smoke
         shell: pwsh
         run: |
-          ./runtime-test/run.ps1 smoke --payload 64K --requests 128
+          ./coakka-runtime/runtime-test/run.ps1 smoke --payload 64K --requests 128
 
       - name: Run native evidence pressure
         shell: pwsh
         run: |
-          ./runtime-test/run.ps1 pressure --requests 512 --queue-capacity 2
+          ./coakka-runtime/runtime-test/run.ps1 pressure --requests 512 --queue-capacity 2
 
       - name: Run current native concurrency evidence
         shell: pwsh
         run: |
-          ./runtime-test/run.ps1 race --threads 2 --requests 32 --lifecycle-iterations 2 --queue-capacity 64
+          ./coakka-runtime/runtime-test/run.ps1 race --threads 2 --requests 32 --lifecycle-iterations 2 --queue-capacity 64
 
   native-evidence-macos:
     name: native evidence / macos-aarch64

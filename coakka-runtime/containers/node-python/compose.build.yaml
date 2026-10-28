@@ -1,0 +1,49 @@
+services:
+  python-store:
+    build:
+      context: ../../..
+      dockerfile: coakka-runtime/containers/node-python/Dockerfile.python
+      args:
+        COAKKA_RUNTIME_BASE_IMAGE: ${COAKKA_RUNTIME_BASE_IMAGE:-coakka/runtime-base:1.4.1-2cee86bf-local}
+        COAKKA_PUBLISH_RAW_BASE: ${COAKKA_PUBLISH_RAW_BASE:-https://raw.githubusercontent.com/phuong-tran/coakka-publish/main}
+    image: coakka/sample-python-store:1.4.1-2cee86bf-ec4902c-local
+    hostname: python-store
+    environment:
+      COAKKA_SAMPLE_STORE_WEB_HOST: 0.0.0.0
+      COAKKA_SAMPLE_STORE_WEB_PORT: "8081"
+      COAKKA_SAMPLE_STORE_RUNTIME_BIND_HOST: auto
+      COAKKA_SAMPLE_STORE_RUNTIME_HOST: python-store
+      COAKKA_SAMPLE_STORE_RUNTIME_PORT: "19232"
+      COAKKA_SAMPLE_NODE_RUNTIME_HOST: node-web
+      COAKKA_SAMPLE_NODE_RUNTIME_PORT: "19231"
+    ports:
+      - "8081:8081"
+    networks:
+      - coakka-node-python
+
+  node-web:
+    build:
+      context: ../../..
+      dockerfile: coakka-runtime/containers/node-python/Dockerfile.node
+      args:
+        COAKKA_RUNTIME_BASE_IMAGE: ${COAKKA_RUNTIME_BASE_IMAGE:-coakka/runtime-base:1.4.1-2cee86bf-local}
+        COAKKA_PUBLISH_RAW_BASE: ${COAKKA_PUBLISH_RAW_BASE:-https://raw.githubusercontent.com/phuong-tran/coakka-publish/main}
+    image: coakka/sample-node-web:1.4.1-2cee86bf-ec4902c-local
+    hostname: node-web
+    depends_on:
+      - python-store
+    environment:
+      COAKKA_SAMPLE_WEB_HOST: 0.0.0.0
+      COAKKA_SAMPLE_WEB_PORT: "8080"
+      COAKKA_SAMPLE_NODE_RUNTIME_BIND_HOST: auto
+      COAKKA_SAMPLE_NODE_RUNTIME_HOST: node-web
+      COAKKA_SAMPLE_NODE_RUNTIME_PORT: "19231"
+      COAKKA_SAMPLE_STORE_RUNTIME_HOST: python-store
+      COAKKA_SAMPLE_STORE_RUNTIME_PORT: "19232"
+    ports:
+      - "8080:8080"
+    networks:
+      - coakka-node-python
+
+networks:
+  coakka-node-python:

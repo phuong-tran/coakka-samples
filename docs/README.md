@@ -29,9 +29,9 @@ for HTTP services. Existing product directories remain separate.
 
 | Product | Runnable examples | Package guidance |
 | --- | --- | --- |
-| CoAkka Runtime | [Language samples](../runtime/README.md), [multi-process containers](../containers/README.md) | [Published packages](current-packages.md) |
-| CoAkka Logger | [Logging and pressure samples](../logger/README.md) | [Independent Logger coordinates](current-packages.md#package-and-source-entrypoints) |
-| Runtime Addons | [Native integration samples](../runtime-addons/README.md) | [Addon capabilities and distribution](runtime-addons.md) |
+| CoAkka Runtime | [Language samples](../coakka-runtime/README.md), [multi-process containers](../coakka-runtime/containers/README.md) | [Published packages](current-packages.md) |
+| CoAkka Logger | [Logging and pressure samples](../coakka-logger/README.md) | [Independent Logger coordinates](current-packages.md#package-and-source-entrypoints) |
+| Runtime Addons | [Native integration samples](../coakka-runtime/addons/README.md) | [Addon capabilities and distribution](runtime-addons.md) |
 | CoAkka HTTP Runtime | [HTTP language samples](../coakka-http-runtime/README.md), [feature index](../coakka-http-runtime/FEATURES.md) | [HTTP guide](coakka-http-runtime/README.md); repository archives, not registry packages |
 
 For an introduction to HTTP Runtime, read
@@ -72,7 +72,7 @@ interchangeable.
 - [Logging and observability](runtime-logging-observability.md)
 - [CoAkka client](coakka-runtime-client.md)
 - [Runtime inspect](coakka-runtime-inspect.md)
-- [Native Runtime test harness](../runtime-test/README.md)
+- [Native Runtime test harness](../coakka-runtime/runtime-test/README.md)
 - [Troubleshooting](troubleshooting.md)
 - [Production readiness](production-readiness.md)
 - [Production evidence](production-evidence.md)
@@ -115,3 +115,5 @@ HTTP Runtime Inspect and the distributed Runtime Inspect are separate tools.
 
 For exact package, OS, CPU, and native-generation evidence, use the public
 [compatibility matrix](https://github.com/phuong-tran/coakka-publish/blob/main/docs/compatibility-matrix.md).
+
+See [Product Layout](product-layout.md) for stable product entrypoints and retained warehouse paths.

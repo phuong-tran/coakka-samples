@@ -42,17 +42,17 @@ jobs:
 
       - name: Run smoke-load profile
         run: |
-          python3 bench/run_smoke_load.py \
+          python3 coakka-runtime/bench/run_smoke_load.py \
             --profile "${{ inputs.profile }}" \
             --result-class linux-ci \
             --warmup-runs 1 \
             --repetitions "${{ inputs.repetitions }}" \
-            --output "bench/linux-ci/${{ github.sha }}-${{ inputs.profile }}.json"
-          python3 bench/validate_smoke_load.py \
-            "bench/linux-ci/${{ github.sha }}-${{ inputs.profile }}.json"
+            --output "coakka-runtime/bench/linux-ci/${{ github.sha }}-${{ inputs.profile }}.json"
+          python3 coakka-runtime/bench/validate_smoke_load.py \
+            "coakka-runtime/bench/linux-ci/${{ github.sha }}-${{ inputs.profile }}.json"
 
       - name: Upload JSON result
         uses: actions/upload-artifact@v7.0.1
         with:
           name: "coakka-${{ inputs.profile }}-${{ github.sha }}"
-          path: "bench/linux-ci/${{ github.sha }}-${{ inputs.profile }}.json"
+          path: "coakka-runtime/bench/linux-ci/${{ github.sha }}-${{ inputs.profile }}.json"

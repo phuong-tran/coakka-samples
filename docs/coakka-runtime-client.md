@@ -121,10 +121,10 @@ its full walkthrough passed on Linux amd64 and arm64.
 In `coakka-samples`, use:
 
 ```sh
-bash run.sh runtime-client
-bash run.sh runtime-client docker-bundle
-bash run.sh runtime-client docker-walkthrough
-bash run.sh runtime-client dockerhub-demo
+bash run.sh coakka-runtime client
+bash run.sh coakka-runtime client docker-bundle
+bash run.sh coakka-runtime client docker-walkthrough
+bash run.sh coakka-runtime client dockerhub-demo
 ```
 
 The Docker bundle and Docker Hub paths run published native services and drive

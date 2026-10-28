@@ -136,7 +136,7 @@ compatible.
 The runnable Spring Boot starter sample is:
 
 ```text
-runtime/scenarios/customer-crud/spring-boot-starter-local
+coakka-runtime/scenarios/customer-crud/spring-boot-starter-local
 ```
 
 It shows a Spring Boot web edge, same-process `@CoAkkaHandler` targets, and a
@@ -146,7 +146,7 @@ For a lower-level JVM/Spring shape without the starter's annotation support,
 read:
 
 ```text
-runtime/scenarios/customer-crud/spring-boot-single-process
+coakka-runtime/scenarios/customer-crud/spring-boot-single-process
 ```
 
 For a real cross-process handoff from Spring Boot to another runtime host, read

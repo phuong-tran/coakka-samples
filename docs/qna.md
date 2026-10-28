@@ -250,8 +250,8 @@ request buffering, timeouts, and failure responses for that boundary.
 
 CoAkka applies the same kind of discipline at a different boundary. It routes
 runtime envelopes to named targets. If several handlers or service instances
-can serve the same target, the runtime or connector can choose a route policy
-for that target.
+can serve the same target, the application submits routing intent through its
+connector. Core validates and applies the supported route policy for that target.
 
 In the common Kubernetes Service DNS shape, CoAkka may see only one route
 endpoint:
@@ -995,7 +995,7 @@ CoAkka is useful when the team wants:
 - less network plumbing than backend HTTP/gRPC created only for application-owned work
 - explicit route, queue, timeout, and deadletter vocabulary
 - same-process-first design with a later peer-runtime path
-- connector-owned startup config and runtime-owned data plane
+- application startup intent projected by connectors, with Core-owned validation, defaults, effective settings and data plane
 - shared native runtime ABI for multiple host-language connectors
 
 The important point is not that CoAkka replaces the layers in front of it. In a

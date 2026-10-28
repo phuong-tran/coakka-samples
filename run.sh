@@ -1,350 +1,45 @@
 #!/usr/bin/env bash
 set -euo pipefail
-
-script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "${script_dir}/scripts/sample-utils.sh"
-source "${script_dir}/scripts/sample-metadata.sh"
-
-print_usage() {
-  cat <<'EOF'
-coakka-samples
-
-Usage:
-  bash run.sh
-  bash run.sh quickstart
-  bash run.sh list
-  bash run.sh doctor
-  bash run.sh all
-  bash run.sh logger
-  bash run.sh runtime
-  bash run.sh runtime-client
-  bash run.sh runtime-inspect
-  bash run.sh runtime-addons
-  bash run.sh coakka-http-runtime [verify|all|c|cpp|go|kotlin|python|typescript] [command]
-  bash run.sh containers
-  bash run.sh scenarios
-  bash run.sh scenarios check
-  bash run.sh <lane> <sample>
-  bash run.sh <lane> <language> <sample>
-  bash run.sh containers down
-  bash run.sh containers <sample> [command]
-  bash run.sh scenario <track> <topology> [command]
-  bash run.sh <lane>/<language>/<sample>
-  bash run.sh containers/<sample> [command]
-  bash run.sh runtime/scenarios/<track>/<topology> <command>
-  bash run.sh runtime-client [check|version|doctor|docker-bundle|docker-walkthrough|dockerhub-demo]
-  bash run.sh runtime-inspect [check|published-smoke|local-smoke|serve|docker-smoke|docker-serve|dockerhub-smoke]
-  bash run.sh runtime-test [smoke|pressure|stress|soak|connection-strategies|file-lane-simple|file-lane-owner-aware|stream-lane-simple|stream-lane-owner-aware|race|hot-reload|native-startup]
-  bash run.sh runtime-addons [all|<addon>] [published|check]
-
-Examples:
-  bash run.sh
-  bash run.sh logger basic
-  bash run.sh logger/python/pressure
-  bash run.sh containers node-python
-  bash run.sh containers down
-  bash run.sh scenarios
-  bash run.sh scenarios check
-
-Lanes:
-  logger
-  runtime
-  runtime-client
-  runtime-inspect
-  runtime-addons
-  coakka-http-runtime
-  containers
-
-Logger languages:
-  jvm
-  python
-  node
-  bun
-  electron
-  tauri
-  go
-  csharp
-  rust
-  swift
-  zig
-  mojo
-  native
-
-Runtime languages:
-  jvm
-  python
-  node
-  bun
-  electron
-  tauri
-  go
-  csharp
-  rust
-  swift
-  zig
-  mojo
-  native
-
-Runtime test:
-  runtime-test
-EOF
-}
-
-print_samples() {
-  coakka_print_samples
-}
-
-run_sample_path() {
-  local sample_path="$1"
-  shift || true
-  local sample_script="${script_dir}/${sample_path}/run.sh"
-  coakka_require_file "${sample_script}" "Use 'bash run.sh list' to see available samples."
-  coakka_note "running ${sample_path}"
-  bash "${sample_script}" "$@"
-}
-
-run_container_quickstart_smoke() {
-  local status
-  set +e
-  run_sample_path "containers/node-python" smoke
-  status="$?"
-  set -e
-  run_sample_path "containers/node-python" down >/dev/null 2>&1 || true
-  return "${status}"
-}
-
-run_quickstart() {
-  echo "coakka-samples quickstart"
-  echo
-  bash "${script_dir}/scripts/doctor.sh"
-  echo
-  if command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
-    echo "[quickstart] containers node-python smoke"
-    run_container_quickstart_smoke
-  elif command -v podman >/dev/null 2>&1 && podman info >/dev/null 2>&1; then
-    echo "[quickstart] containers node-python smoke"
-    run_container_quickstart_smoke
-  else
-    echo "[quickstart] Docker/Podman daemon not available; using local runtime fallback"
-    echo "[quickstart] runtime node basic"
-    run_sample_path "runtime/node/basic"
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${repo_root}/scripts/sample-utils.sh"
+source "${repo_root}/scripts/sample-metadata.sh"
+quickstart() {
+  bash "${repo_root}/scripts/doctor.sh"
+  if { command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; } ||
+     { command -v podman >/dev/null 2>&1 && podman info >/dev/null 2>&1; }; then
+    local status=0
+    bash "${repo_root}/coakka-runtime/run.sh" containers node-python smoke || status=$?
+    bash "${repo_root}/coakka-runtime/run.sh" containers node-python down >/dev/null 2>&1 || true
+    return "${status}"
   fi
+  bash "${repo_root}/coakka-runtime/run.sh" node basic
 }
-
-run_scenario() {
-  if [[ "$#" -lt 2 ]]; then
-    coakka_die "Usage: bash run.sh scenario <track> <topology> [command]"
-  fi
-
-  local track="$1"
-  local topology="$2"
-  shift 2
-  run_sample_path "runtime/scenarios/${track}/${topology}" "$@"
-}
-
-run_scenario_checks() {
-  local scenario_path
-  for scenario_path in \
-    "runtime/scenarios/customer-crud/spring-boot-single-process" \
-    "runtime/scenarios/customer-crud/spring-boot-starter-local" \
-    "runtime/scenarios/customer-crud/quarkus-local" \
-    "runtime/scenarios/customer-crud/kotlin-desktop-local" \
-    "runtime/scenarios/customer-crud/python-desktop-local" \
-    "runtime/scenarios/customer-crud/spring-boot-spring-boot" \
-    "runtime/scenarios/customer-crud/spring-boot-node" \
-    "runtime/scenarios/customer-crud/spring-boot-go" \
-    "runtime/scenarios/customer-crud/spring-boot-csharp" \
-    "runtime/scenarios/customer-crud/spring-boot-nodes"; do
-    echo "[scenarios/check] ${scenario_path}"
-    run_sample_path "${scenario_path}" check
-  done
-}
-
-run_container() {
-  if [[ "$#" -lt 1 ]]; then
-    coakka_die "Usage: bash run.sh containers <sample> [command]"
-  fi
-
-  local sample="$1"
-  shift
-  run_sample_path "containers/${sample}" "$@"
-}
-
-run_all_containers() {
-  local command="$1"
-  local row sample summary sample_script
-  for row in "${COAKKA_CONTAINER_ROWS[@]}"; do
-    IFS='|' read -r sample summary <<<"${row}"
-    sample_script="${script_dir}/containers/${sample}/run.sh"
-    coakka_require_file "${sample_script}" "Use 'bash run.sh list' to see available samples."
-    if bash "${sample_script}" "${command}" >/dev/null 2>&1; then
-      coakka_note "containers/${sample}: ${command} ok"
-    else
-      coakka_note "containers/${sample}: already stopped or not present"
-    fi
-  done
-}
-
-run_runtime_addon() {
-  local addon="$1"
-  local command="${2:-published}"
-  local sample_script="${script_dir}/runtime-addons/artifact-publisher-${addon}/native/run.sh"
-  coakka_require_file "${sample_script}" "Use 'bash run.sh runtime-addons' to list addons."
-  bash "${sample_script}" "${command}"
-}
-
-print_runtime_addons() {
-  local row addon summary
-  for row in "${COAKKA_ADDON_ROWS[@]}"; do
-    IFS='|' read -r addon summary <<<"${row}"
-    printf '  %-31s %s\n' "runtime-addons/${addon}" "${summary}"
-  done
-}
-
-run_all_runtime_addons() {
-  local command="$1"
-  local row addon summary
-  for row in "${COAKKA_ADDON_ROWS[@]}"; do
-    IFS='|' read -r addon summary <<<"${row}"
-    coakka_note "running runtime-addons/${addon} ${command}"
-    run_runtime_addon "${addon}" "${command}"
-  done
-}
-
-if [[ "$#" -eq 0 ]]; then
-  run_quickstart
-  exit 0
-fi
-
-case "$1" in
-  quickstart|start|try)
-    run_quickstart
-    exit 0
-    ;;
-  list)
-    print_samples
-    exit 0
-    ;;
-  scenarios)
-    if [[ "$#" -eq 1 ]]; then
-      echo "Available scenarios:"
-      coakka_print_scenarios
-    elif [[ "$#" -eq 2 && "$2" == "check" ]]; then
-      run_scenario_checks
-    else
-      coakka_die "Usage: bash run.sh scenarios [check]"
-    fi
-    exit 0
-    ;;
-  containers)
-    if [[ "$#" -eq 1 ]]; then
-      echo "Available container samples:"
-      coakka_print_containers
-    elif [[ "$#" -eq 2 && ( "$2" == "down" || "$2" == "stop" ) ]]; then
-      run_all_containers down
-    else
-      shift
-      run_container "$@"
-    fi
-    exit 0
-    ;;
-  doctor)
-    bash "${script_dir}/scripts/doctor.sh"
-    exit 0
-    ;;
-  help|-h|--help)
-    print_usage
-    exit 0
-    ;;
+case "${1:-quickstart}" in
+  quickstart|start|try) quickstart ;;
+  list) coakka_print_samples ;;
+  doctor) exec bash "${repo_root}/scripts/doctor.sh" ;;
   all)
-    bash "${script_dir}/logger/run-all.sh"
-    bash "${script_dir}/runtime/run-all.sh"
-    exit 0
-    ;;
-  logger)
-    if [[ "$#" -eq 1 || "${2:-}" == "all" ]]; then
-      bash "${script_dir}/logger/run-all.sh"
-    elif [[ "$#" -eq 2 ]]; then
-      run_sample_path "logger/jvm/$2"
-    elif [[ "$#" -eq 3 ]]; then
-      run_sample_path "logger/$2/$3"
-    else
-      coakka_die "Usage: bash run.sh logger [<jvm|python|node|bun|electron|tauri|go|csharp|rust|zig|mojo|native>] <sample>"
-    fi
-    ;;
-  runtime)
-    if [[ "$#" -eq 1 || "${2:-}" == "all" ]]; then
-      bash "${script_dir}/runtime/run-all.sh"
-    elif [[ "$#" -eq 2 ]]; then
-      run_sample_path "runtime/jvm/$2"
-    elif [[ "$#" -eq 3 ]]; then
-      run_sample_path "runtime/$2/$3"
-    else
-      coakka_die "Usage: bash run.sh runtime [<jvm|python|node|bun|electron|tauri|go|csharp|rust|zig|mojo|native>] <sample>"
-    fi
-    ;;
-  runtime-client)
-    shift
-    bash "${script_dir}/runtime-client/run.sh" "$@"
-    ;;
-  runtime-inspect)
-    shift
-    bash "${script_dir}/runtime-inspect/run.sh" "$@"
-    ;;
-  runtime-test)
-    shift
-    bash "${script_dir}/runtime-test/run.sh" "$@"
-    ;;
-  runtime-addons)
-    if [[ "$#" -eq 1 ]]; then
-      echo "Available runtime addon samples:"
-      print_runtime_addons
-    elif [[ "${2}" == all ]]; then
-      run_all_runtime_addons "${3:-published}"
-    else
-      run_runtime_addon "${2}" "${3:-published}"
-    fi
-    ;;
-  coakka-http-runtime)
-    shift
-    bash "${script_dir}/coakka-http-runtime/run.sh" "$@"
-    ;;
-  scenario)
-    shift
-    run_scenario "$@"
-    ;;
-  logger/*|runtime/*|runtime-addons/*|runtime-client|runtime-client/*|runtime-inspect|runtime-inspect/*|coakka-http-runtime/*|containers/*)
-    sample_path="$1"
-    shift
-    if [[ "${sample_path}" == runtime-client ]]; then
-      bash "${script_dir}/runtime-client/run.sh" "$@"
-      exit 0
-    fi
-    if [[ "${sample_path}" == runtime-client/* ]]; then
-      bash "${script_dir}/runtime-client/run.sh" "${sample_path#runtime-client/}" "$@"
-      exit 0
-    fi
-    if [[ "${sample_path}" == runtime-inspect ]]; then
-      bash "${script_dir}/runtime-inspect/run.sh" "$@"
-      exit 0
-    fi
-    if [[ "${sample_path}" == runtime-inspect/* ]]; then
-      bash "${script_dir}/runtime-inspect/run.sh" "${sample_path#runtime-inspect/}" "$@"
-      exit 0
-    fi
-    if [[ "${sample_path}" == runtime-addons/* ]]; then
-      run_runtime_addon "${sample_path#runtime-addons/}" "${1:-published}"
-      exit 0
-    fi
-    if [[ "${sample_path}" == coakka-http-runtime/* ]]; then
-      bash "${script_dir}/coakka-http-runtime/run.sh" \
-        "${sample_path#coakka-http-runtime/}" "$@"
-      exit 0
-    fi
-    run_sample_path "${sample_path}" "$@"
-    ;;
-  *)
-    print_usage
-    coakka_die "Unknown command or sample path: $1"
-    ;;
+    bash "${repo_root}/coakka-logger/run.sh" all
+    exec bash "${repo_root}/coakka-runtime/run.sh" all ;;
+  coakka-runtime|runtime) shift; exec bash "${repo_root}/coakka-runtime/run.sh" "$@" ;;
+  coakka-logger|logger) shift; exec bash "${repo_root}/coakka-logger/run.sh" "$@" ;;
+  coakka-http-runtime) shift; exec bash "${repo_root}/coakka-http-runtime/run.sh" "$@" ;;
+  coakka-runtime/*|runtime/*)
+    selected="${1#*/}"; shift
+    exec bash "${repo_root}/coakka-runtime/run.sh" "${selected}" "$@" ;;
+  coakka-logger/*|logger/*)
+    selected="${1#*/}"; shift
+    exec bash "${repo_root}/coakka-logger/run.sh" "${selected}" "$@" ;;
+  coakka-http-runtime/*)
+    selected="${1#*/}"; shift
+    exec bash "${repo_root}/coakka-http-runtime/run.sh" "${selected}" "$@" ;;
+  runtime-test|runtime-client|runtime-inspect|runtime-addons|containers|scenarios|scenario|runtime-addons/*|runtime-client/*|runtime-inspect/*|containers/*)
+    exec bash "${repo_root}/coakka-runtime/run.sh" "$@" ;;
+  help|-h|--help)
+    printf '%s\n' 'Usage: bash run.sh [list|doctor|quickstart|all]' \
+      '  bash run.sh coakka-runtime <language> <sample>' \
+      '  bash run.sh coakka-runtime [runtime-test|client|inspect|addons|containers|scenarios|scenario] ...' \
+      '  bash run.sh coakka-logger <language> <sample>' \
+      '  bash run.sh coakka-http-runtime [verify|all|<language>] ...' ;;
+  *) coakka_die "Unknown product or command: $1" ;;
 esac

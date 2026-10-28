@@ -8,67 +8,67 @@ expected output details.
 
 | Goal | Command | What it proves |
 | --- | --- | --- |
-| Verify the published CLI lane | `bash run.sh runtime-client` | Resolves the public `coakka-client` archive, checks its SHA256, and runs the CLI diagnostics. |
-| Run a browser-visible container path | `bash run.sh containers node-python` | Starts a Node.js web surface and Python store through the runtime path. |
-| Run a same-process JVM runtime path | `bash run.sh runtime jvm basic` | Sends one typed request/reply through a JVM-owned runtime target. |
-| Run a Bun runtime path | `bash run.sh runtime bun basic` | Uses the public Bun runtime package with no separate native install. |
-| Run a desktop intent path | `bash run.sh runtime tauri intent-command` | Sends an intent-shaped request through the Rust-side command boundary. |
-| Run a logger smoke | `bash run.sh logger node basic` | Writes one bounded logger record through a public logger package. |
+| Verify the published CLI lane | `bash run.sh coakka-runtime client` | Resolves the public `coakka-client` archive, checks its SHA256, and runs the CLI diagnostics. |
+| Run a browser-visible container path | `bash run.sh coakka-runtime containers node-python` | Starts a Node.js web surface and Python store through the runtime path. |
+| Run a same-process JVM runtime path | `bash run.sh coakka-runtime jvm basic` | Sends one typed request/reply through a JVM-owned runtime target. |
+| Run a Bun runtime path | `bash run.sh coakka-runtime bun basic` | Uses the public Bun runtime package with no separate native install. |
+| Run a desktop intent path | `bash run.sh coakka-runtime tauri intent-command` | Sends an intent-shaped request through the Rust-side command boundary. |
+| Run a logger smoke | `bash run.sh coakka-logger node basic` | Writes one bounded logger record through a public logger package. |
 
 ## Runtime Lanes
 
 | Lane | Status | First command | Notes |
 | --- | --- | --- | --- |
-| JVM | public | `bash run.sh runtime jvm basic` | Kotlin and Java samples cover basic request/reply and deadletter paths. |
-| Python | public | `bash run.sh runtime python basic` | Includes basic, deadletter, and hot-reload samples. |
-| Node.js | public | `bash run.sh runtime node basic` | Includes basic and deadletter samples. |
-| Bun | public | `bash run.sh runtime bun basic` | Uses the published Bun package. |
-| Electron | public | `bash run.sh runtime electron basic` | Renderer sends intent through preload/IPC; Electron main owns runtime execution. |
-| Tauri | public source sample | `bash run.sh runtime tauri intent-command` | WebView JavaScript sends intent; Rust owns runtime execution. |
-| Go | public | `bash run.sh runtime go basic` | Includes basic and deadletter samples. |
-| C# | public | `bash run.sh runtime csharp basic` | Uses the public .NET package. |
-| Rust | public artifact | `bash run.sh runtime rust basic` | The runner pins a source archive; see the Rust guide for its exact version and platform evidence. |
-| Swift | public | `bash run.sh runtime swift basic` | The SwiftPM tag contains all five native payloads; Swift execution is verified on macOS ARM64. |
-| Mojo | source sample | `bash run.sh runtime mojo basic` | Source connector package over the public native runtime. |
-| Zig | source sample | `bash run.sh runtime zig basic` | Source connector package over the public native runtime. |
-| Native C/C++ | public | `bash run.sh runtime native basic` | Uses the public C ABI archive. |
+| JVM | public | `bash run.sh coakka-runtime jvm basic` | Kotlin and Java samples cover basic request/reply and deadletter paths. |
+| Python | public | `bash run.sh coakka-runtime python basic` | Includes basic, deadletter, and hot-reload samples. |
+| Node.js | public | `bash run.sh coakka-runtime node basic` | Includes basic and deadletter samples. |
+| Bun | public | `bash run.sh coakka-runtime bun basic` | Uses the published Bun package. |
+| Electron | public | `bash run.sh coakka-runtime electron basic` | Renderer sends intent through preload/IPC; Electron main owns runtime execution. |
+| Tauri | public source sample | `bash run.sh coakka-runtime tauri intent-command` | WebView JavaScript sends intent; Rust owns runtime execution. |
+| Go | public | `bash run.sh coakka-runtime go basic` | Includes basic and deadletter samples. |
+| C# | public | `bash run.sh coakka-runtime csharp basic` | Uses the public .NET package. |
+| Rust | public artifact | `bash run.sh coakka-runtime rust basic` | The runner pins a source archive; see the Rust guide for its exact version and platform evidence. |
+| Swift | public | `bash run.sh coakka-runtime swift basic` | The SwiftPM tag contains all five native payloads; Swift execution is verified on macOS ARM64. |
+| Mojo | source sample | `bash run.sh coakka-runtime mojo basic` | Source connector package over the public native runtime. |
+| Zig | source sample | `bash run.sh coakka-runtime zig basic` | Source connector package over the public native runtime. |
+| Native C/C++ | public | `bash run.sh coakka-runtime native basic` | Uses the public C ABI archive. |
 
 ## Logger Lanes
 
 | Lane | Status | First command | Notes |
 | --- | --- | --- | --- |
-| JVM | public | `bash run.sh logger jvm basic` | Kotlin and Java samples cover basic and pressure paths. |
-| Python | public | `bash run.sh logger python basic` | Includes basic and pressure samples. |
-| Node.js | public | `bash run.sh logger node basic` | Includes basic and pressure samples. |
-| Bun | public | `bash run.sh logger bun basic` | Uses the published Bun logger package. |
-| Electron | public | `bash run.sh logger electron basic` | Renderer sends log intent through preload/IPC; Electron main owns logging. |
-| Tauri | public source sample | `bash run.sh logger tauri basic` | Proves the Rust command boundary used by a Tauri app. |
-| Go | public | `bash run.sh logger go basic` | Includes basic and pressure samples. |
-| C# | public | `bash run.sh logger csharp basic` | Uses the public .NET logger package. |
-| Rust | public | `bash run.sh logger rust basic` | Uses the public Rust logger package shape. |
-| Swift | public | `bash run.sh logger swift basic` | Uses the public SwiftPM tag for macOS ARM64. |
-| Mojo | source sample | `bash run.sh logger mojo basic` | Source connector package over the public logger native package. |
-| Zig | source sample | `bash run.sh logger zig basic` | Source connector package over the public logger native package. |
-| Native C/C++ | public | `bash run.sh logger native basic` | Uses the public native logger archive. |
+| JVM | public | `bash run.sh coakka-logger jvm basic` | Kotlin and Java samples cover basic and pressure paths. |
+| Python | public | `bash run.sh coakka-logger python basic` | Includes basic and pressure samples. |
+| Node.js | public | `bash run.sh coakka-logger node basic` | Includes basic and pressure samples. |
+| Bun | public | `bash run.sh coakka-logger bun basic` | Uses the published Bun logger package. |
+| Electron | public | `bash run.sh coakka-logger electron basic` | Renderer sends log intent through preload/IPC; Electron main owns logging. |
+| Tauri | public source sample | `bash run.sh coakka-logger tauri basic` | Proves the Rust command boundary used by a Tauri app. |
+| Go | public | `bash run.sh coakka-logger go basic` | Includes basic and pressure samples. |
+| C# | public | `bash run.sh coakka-logger csharp basic` | Uses the public .NET logger package. |
+| Rust | public | `bash run.sh coakka-logger rust basic` | Uses the public Rust logger package shape. |
+| Swift | public | `bash run.sh coakka-logger swift basic` | Uses the public SwiftPM tag for macOS ARM64. |
+| Mojo | source sample | `bash run.sh coakka-logger mojo basic` | Source connector package over the public logger native package. |
+| Zig | source sample | `bash run.sh coakka-logger zig basic` | Source connector package over the public logger native package. |
+| Native C/C++ | public | `bash run.sh coakka-logger native basic` | Uses the public native logger archive. |
 
 ## Tool Lanes
 
 | Lane | Status | First command | Notes |
 | --- | --- | --- | --- |
-| Runtime client | public | `bash run.sh runtime-client` | Native CLI diagnostics and request/reply command surface. |
-| Runtime client Docker bundle | public | `bash run.sh runtime-client docker-bundle` | Runs the published Docker Linux bundle path. |
-| Runtime client Docker Hub image | public sample image | `bash run.sh runtime-client dockerhub-demo` | Pulls the prebuilt public sample image. |
-| Runtime inspect | public | `bash run.sh runtime-inspect check` | Verifies the published inspect archive path for the host. |
-| Runtime inspect Docker wrapper | public sample wrapper | `bash run.sh runtime-inspect docker-smoke` | Runs the inspect sample wrapper path. |
+| Runtime client | public | `bash run.sh coakka-runtime client` | Native CLI diagnostics and request/reply command surface. |
+| Runtime client Docker bundle | public | `bash run.sh coakka-runtime client docker-bundle` | Runs the published Docker Linux bundle path. |
+| Runtime client Docker Hub image | public sample image | `bash run.sh coakka-runtime client dockerhub-demo` | Pulls the prebuilt public sample image. |
+| Runtime inspect | public | `bash run.sh coakka-runtime inspect check` | Verifies the published inspect archive path for the host. |
+| Runtime inspect Docker wrapper | public sample wrapper | `bash run.sh coakka-runtime inspect docker-smoke` | Runs the inspect sample wrapper path. |
 
 ## Scenario Lanes
 
 | Lane | Status | First command | Notes |
 | --- | --- | --- | --- |
-| Node.js -> Python container | public Docker Hub images | `bash run.sh containers node-python` | Browser-visible cross-process runtime sample. |
+| Node.js -> Python container | public Docker Hub images | `bash run.sh coakka-runtime containers node-python` | Browser-visible cross-process runtime sample. |
 | Customer CRUD scenarios | public | `bash run.sh scenarios check` | Framework and desktop-local workflow shapes. |
 | Two-machine Linux | manual docs | `docs/two-machine-linux.md` | Manual setup path; live two-host capture is still pending. |
-| Benchmark smoke | manual workflow | `python3 bench/run_smoke_load.py --profile runtime-native-pressure` | Regression evidence, not the primary product claim. |
+| Benchmark smoke | manual workflow | `python3 coakka-runtime/bench/run_smoke_load.py --profile runtime-native-pressure` | Regression evidence, not the primary product claim. |
 
 ## HTTP Runtime: Separate Archive-Backed Samples
 
@@ -90,7 +90,7 @@ sample directory, not the Runtime message benchmark lane.
 ## Artifact Rule
 
 Public samples consume current public distribution surfaces. JavaScript
-runtime/logger samples install registry-verified npm coordinates. Other
+coakka-runtime/logger samples install registry-verified npm coordinates. Other
 artifact-backed samples consume artifacts from
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish); the runner
 uses a sibling `coakka-publish` checkout when available, then falls back to the
@@ -101,7 +101,7 @@ Runtime/Logger archive-backed sample inputs are checked against
 installs it.
 
 The npm package-manager lane is current for Node.js, Bun, and Electron
-runtime/logger packages, so those JavaScript samples install registry
+coakka-runtime/logger packages, so those JavaScript samples install registry
 coordinates. The Go sample runners currently pin
 `github.com/phuong-tran/coakka-runtime-go@v1.8.2` and
 `github.com/phuong-tran/coakka-logger-go@v1.2.6`. The Swift Runtime sample pins

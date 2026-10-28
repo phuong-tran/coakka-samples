@@ -197,6 +197,6 @@ Run the maintained samples after this smoke passes:
 ```sh
 git clone https://github.com/phuong-tran/coakka-samples.git
 cd coakka-samples
-bash run.sh runtime node basic
-bash run.sh logger node basic
+bash run.sh coakka-runtime node basic
+bash run.sh coakka-logger node basic
 ```

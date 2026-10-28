@@ -64,6 +64,12 @@ for product-specific limits; Android support is never inferred from Linux.
 - Explicit lifecycle ownership and bounded resources.
 - Idiomatic connectors that expose the owning product's effective configuration,
   capabilities and failures rather than guessing them.
+- Core owns each product's shared datapath, runtime policy and authoritative facts.
+  Connectors keep the thinnest practical responsibility boundary and an idiomatic
+  app-host API. Language-specific native adapters may reduce measured copies,
+  allocations, FFI, GIL/GC and completion costs while preserving ownership,
+  correlation and Core communication semantics. They do not duplicate transport,
+  routing, matching or timeout engines.
 - Business routing policy, authorization and retry decisions remain application-owned.
 - Product-specific contracts stay distinct: Runtime targets/envelopes are not
   HTTP routes/requests, and Runtime File/Stream Lane grants are not HTTP streams.

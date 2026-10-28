@@ -1,0 +1,18 @@
+# Python Logger Samples
+
+Python samples consume `coakka-logger==1.2.2` from PyPI. The immutable
+`coakka-publish` lane remains the checksum-tracked artifact mirror.
+
+Current samples:
+
+- `basic`: install the PyPI package into a temporary environment, load the
+  embedded native logger, emit one record, drain it, and print counters
+- `pressure`: install the PyPI package, fill a queue with capacity `2`, observe
+  rejected writes, drain the accepted records, and print dropped counters
+
+Run:
+
+```sh
+bash coakka-logger/python/basic/run.sh
+bash coakka-logger/python/pressure/run.sh
+```

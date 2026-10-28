@@ -24,7 +24,7 @@ error.
 | Boundary | What happened | Caller-visible result |
 | --- | --- | --- |
 | Before admission | Runtime is not started or is closed, arguments cannot be copied, or the bounded ingress queue cannot accept work. | Synchronous connector/native submit failure. No automatic deadletter exists because runtime did not admit the envelope. |
-| After admission | Routing, queue handoff, locality policy, remote transport, or runtime lifecycle prevents completion. | A `Deadletter` on the runtime deadletter lane; an ask connector normally matches it to the pending caller. |
+| After admission | Routing, queue handoff, locality policy, remote transport, or runtime lifecycle prevents completion. | A `Deadletter` on the runtime deadletter lane; Core matches an ask terminal to its ticket and the connector presents it to the caller. |
 | After business ownership | The target handler ran and returned a domain result or error. | `Envelope(kind=RESPONSE)` with business `status`, `error_code`, and `error_message`; this is not a deadletter. |
 
 The practical rule is:
@@ -80,7 +80,7 @@ an overload policy, or permission to hide failures.
 
 | Shape | `kind` | `one_way` | Correlation/reply expectation |
 | --- | --- | --- | --- |
-| Ask/query/command with a reply | `REQUEST` | `false` | Requires `correlation_id`; connector tracks a response, matched deadletter, or caller timeout. |
+| Ask/query/command with a reply | `REQUEST` | `false` | Requires `correlation_id`; Core tracks the response, matched deadletter or timeout, and the connector projects the terminal outcome. |
 | Fire-and-observe command | `REQUEST` | `true` | No `reply_to` and no business response is expected. Admission failure remains synchronous; later failure remains observable. |
 | Domain event | `EVENT` | normally `true` | No pending ask. Use deadletter observation, stats, and monitor events for delivery evidence. |
 | Business reply | `RESPONSE` | `false` | Requires `correlation_id`; carries business status and must not override routing intent. |
