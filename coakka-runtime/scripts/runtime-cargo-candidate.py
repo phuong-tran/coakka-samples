@@ -23,6 +23,7 @@ TOOL_SHA = "0a9ac6c65a95a929029a38515701eb5f6293b7f2d271d76a4b6d83cd3eaa707e"
 TOOL_MEMBER = "coakka-runtime-rs-2.5.3/tools/package_tools.py"
 SOURCES = ("Cargo.toml", "Cargo.lock", "src/main.rs")
 MACOS_TOOLS = {"strip": Path("/usr/bin/strip"), "codesign": Path("/usr/bin/codesign")}
+MACOS_FLOOR_CHECK = Path(__file__).with_name("runtime-macos-floor.py")
 
 
 @dataclass(frozen=True)
@@ -143,6 +144,7 @@ def build(args: argparse.Namespace, candidate: Candidate = RUST) -> Path:
     if args.target == "macos-aarch64":
         for platform_tool in MACOS_TOOLS.values():
             regular(platform_tool, 64 << 20)
+        regular(MACOS_FLOOR_CHECK, 65536)
     args.work.mkdir()  # This exclusive reservation is the cleanup ownership fence.
     build_root = args.work / "build"
     build_root.mkdir()
@@ -178,7 +180,7 @@ def build(args: argparse.Namespace, candidate: Candidate = RUST) -> Path:
             # This Cargo floor's generic stripping removes Mach-O signatures,
             # including executable build tools. Preserve linker output until
             # Apple's strip/sign tools finalize only the owned application.
-            env.update(CARGO_PROFILE_RELEASE_STRIP="none",
+            env.update(MACOSX_DEPLOYMENT_TARGET="13.0", CARGO_PROFILE_RELEASE_STRIP="none",
                        CARGO_PROFILE_RELEASE_BUILD_OVERRIDE_STRIP="none")
         flags = ["-Dwarnings", "--remap-path-prefix=" + str(args.work) + "=coakka-app",
                  "--remap-path-prefix=" + str(args.cargo_home) + "=coakka-language-cache"]
@@ -209,7 +211,10 @@ def build(args: argparse.Namespace, candidate: Candidate = RUST) -> Path:
             ]
             for label, command in commands:
                 rows.append(child(command, project, env, args.work / (label + ".log"), 30))
-        module.deploy(package / "rust" if candidate.nested_rust else package, installed, args.target)
+        native = module.deploy(package / "rust" if candidate.nested_rust else package, installed, args.target)
+        if args.target == "macos-aarch64":
+            rows.append(child([sys.executable, "-I", "-B", str(MACOS_FLOOR_CHECK), str(installed), str(native)],
+                              project, env, args.work / "minimum-os.log", 15))
         receipt.update(state="built", target=args.target, executable_sha256=digest(installed.read_bytes()))
         return installed
     except BaseException:

@@ -33,7 +33,8 @@ cp "${script_dir}/main.mojo" "${work_root}/installed/main.mojo"
 case "$(uname -s)" in
  Darwin)
   shim="${work_root}/installed/libcoakka_mojo_basic.dylib"
-  cc -std=c11 -Wall -Wextra -Werror -fvisibility=hidden -dynamiclib "${package_root}/src/runtime_connector_shim.c" "${runtime_lib}" -o "${shim}"
+  cc -std=c11 -Wall -Wextra -Werror -fvisibility=hidden -mmacosx-version-min=13.0 -dynamiclib "${package_root}/src/runtime_connector_shim.c" "${runtime_lib}" -o "${shim}"
+  python3 -I -B "${repo_root}/coakka-runtime/scripts/runtime-macos-floor.py" "${shim}" "${runtime_lib}"
   DYLD_LIBRARY_PATH="${work_root}/installed/native" mojo "${work_root}/installed/main.mojo" "${shim}"
   ;;
  Linux)

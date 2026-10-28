@@ -31,8 +31,15 @@ esac
 mkdir "${work_root}/installed/native"
 cp "${package_root}/native/${platform}/${name}" "${work_root}/installed/native/${name}"
 runtime_lib="${work_root}/installed/native/${name}"
+compiler=(zig build-exe)
+if [[ "${platform}" == macos-aarch64 ]]; then
+  compiler+=(-target aarch64-macos.13.0 -mcpu=baseline)
+fi
 cp "${package_root}/src/"*.zig "${work_root}/build/"
 cp "${package_root}/src/platform_bridge.c" "${package_root}/src/platform_bridge.h" "${work_root}/build/"
 cp "${script_dir}/main.zig" "${work_root}/build/main.zig"
-zig build-exe "${work_root}/build/main.zig" -cflags -std=c11 -Wall -Wextra -Werror -- "${work_root}/build/platform_bridge.c" -I "${work_root}/build" -lc -O ReleaseSafe --cache-dir "${work_root}/build/zig-cache" --global-cache-dir "${COAKKA_ZIG_GLOBAL_CACHE_ROOT}" -femit-bin="${work_root}/installed/basic"
+"${compiler[@]}" "${work_root}/build/main.zig" -cflags -std=c11 -Wall -Wextra -Werror -- "${work_root}/build/platform_bridge.c" -I "${work_root}/build" -lc -O ReleaseSafe --cache-dir "${work_root}/build/zig-cache" --global-cache-dir "${COAKKA_ZIG_GLOBAL_CACHE_ROOT}" -femit-bin="${work_root}/installed/basic"
+if [[ "${platform}" == macos-aarch64 ]]; then
+  python3 -I -B "${repo_root}/coakka-runtime/scripts/runtime-macos-floor.py" "${work_root}/installed/basic" "${runtime_lib}"
+fi
 COAKKA_RUNTIME_LIB="${runtime_lib}" "${work_root}/installed/basic"
