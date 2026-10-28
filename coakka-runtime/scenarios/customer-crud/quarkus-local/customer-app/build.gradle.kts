@@ -6,12 +6,12 @@ plugins {
 
 val quarkusPlatformGroupId = "io.quarkus.platform"
 val quarkusPlatformArtifactId = "quarkus-bom"
-val quarkusPlatformVersion = "3.35.2"
+val quarkusPlatformVersion = System.getenv("COAKKA_SAMPLE_QUARKUS_VERSION") ?: "3.35.2"
 
 dependencies {
     implementation(platform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
     implementation(project(":runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-contract"))
-    implementation("io.github.phuong-tran.coakka:quarkus-extension:2.4.1")
+    implementation("io.github.phuong-tran.coakka:quarkus-extension:3.0.0")
     implementation("io.quarkus:quarkus-arc")
     implementation("io.quarkus:quarkus-kotlin")
     implementation("io.quarkus:quarkus-rest-jackson")
@@ -32,4 +32,8 @@ allOpen {
     annotation("jakarta.enterprise.context.ApplicationScoped")
     annotation("jakarta.ws.rs.Path")
     annotation("jakarta.ws.rs.ext.Provider")
+}
+
+kotlin.sourceSets.named("main") {
+    kotlin.srcDir(projectDir.resolve("../../framework-candidate/diagnostics"))
 }

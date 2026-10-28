@@ -3,7 +3,7 @@ package coakka.samples.runtime.scenarios.customer.quarkuslocal
 import coakka.quarkus.CoAkkaRuntime
 import coakka.quarkus.CoAkkaRuntimeClient
 import coakka.samples.runtime.scenarios.customer.contract.CustomerDraft
-import coakka.samples.runtime.scenarios.customer.contract.DeadletterView
+import coakka.samples.runtime.scenarios.customer.diagnostics.DeadletterView
 import coakka.samples.runtime.scenarios.customer.contract.DeleteCustomerRequest
 import coakka.samples.runtime.scenarios.customer.contract.ListCustomersRequest
 import coakka.samples.runtime.scenarios.customer.contract.ListResponse
@@ -102,8 +102,8 @@ class CustomerResource(
             error("expected route-miss deadletter")
         } catch (error: DeadletterException) {
             return DeadletterView(
-                reason = error.deadletter.reason,
-                target = error.deadletter.originalEnvelope.target,
+                reason = error.deadletter.reason.value,
+                target = error.deadletter.originalEnvelope?.target,
                 generation = error.deadletter.activeGeneration,
             )
         }
@@ -115,6 +115,7 @@ class CustomerResource(
         val runtimeInfo = runtime.runtimeInfo()
         val runtimeConfig = runtime.runtimeConfig()
         val clientStats = runtime.clientStats()
+        val startup = runtime.startupConfig()
         return RuntimeDiagnosticsView(
             runtimeInfo = mapOf(
                 "abiVersion" to runtimeInfo.abiVersion,
@@ -128,6 +129,13 @@ class CustomerResource(
                 "runtimeStateName" to runtimeConfig.runtimeStateName,
                 "appliedGeneration" to runtimeConfig.appliedGeneration,
                 "routeCount" to runtimeConfig.routeCount,
+                "requestedCpuPolicy" to startup.execution.requestedPolicy,
+                "cpuPlacementSupported" to startup.execution.supported,
+                "cpuPlacementApplied" to startup.execution.startupApplied,
+                "selectedCpuIds" to startup.execution.selectedCpuIds,
+                "connectionMode" to startup.connection.mode.value,
+                "monitorEnabled" to startup.monitorEnabled,
+                "defaultedStartupGroups" to startup.defaultedGroups,
             ),
             clientStats = mapOf(
                 "pendingRequests" to clientStats.pendingRequests,
@@ -144,8 +152,6 @@ class CustomerResource(
                 "remoteTransport" to "not-exercised",
                 "frontendTarget" to CustomerTargets.FRONTEND,
                 "storeTarget" to CustomerTargets.STORE,
-                "configuredGeneration" to 1,
-                "storeEndpoint" to "127.0.0.1:19182",
             ),
         )
     }

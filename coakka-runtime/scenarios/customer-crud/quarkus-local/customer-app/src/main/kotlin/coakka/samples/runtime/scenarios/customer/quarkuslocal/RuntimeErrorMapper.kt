@@ -1,6 +1,6 @@
 package coakka.samples.runtime.scenarios.customer.quarkuslocal
 
-import coakka.samples.runtime.scenarios.customer.contract.RuntimeDeliveryFailureView
+import coakka.samples.runtime.scenarios.customer.diagnostics.RuntimeDeliveryFailureView
 import coakka.v2.connector.DeadletterException
 import jakarta.ws.rs.core.Response
 import jakarta.ws.rs.ext.ExceptionMapper
@@ -13,11 +13,11 @@ class RuntimeErrorMapper : ExceptionMapper<DeadletterException> {
         return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(
             RuntimeDeliveryFailureView(
                 status = "RUNTIME_DELIVERY_FAILED",
-                reason = deadletter.reason,
+                reason = deadletter.reason.value,
                 detail = deadletter.detail,
-                target = deadletter.originalEnvelope.target,
+                target = deadletter.originalEnvelope?.target,
                 resolvedEndpoint = "${deadletter.resolvedHost}:${deadletter.resolvedPort}",
-                hint = "This Quarkus-local scenario expects local runtime delivery. A delivery failure here means the route table or local handler registration is wrong.",
+                hint = "Inspect the reported reason and target. This sample uses local application handlers.",
             ),
         ).build()
     }

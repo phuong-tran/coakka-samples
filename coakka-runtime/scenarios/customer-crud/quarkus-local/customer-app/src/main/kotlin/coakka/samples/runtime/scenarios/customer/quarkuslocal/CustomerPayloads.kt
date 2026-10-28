@@ -15,7 +15,7 @@ object CustomerPayloads {
 
     private fun identity(messageType: String) = ConnectorPayloadIdentity(
         messageType = messageType,
-        payloadSchemaVersion = CustomerPayloadContract.SCHEMA_VERSION,
+        payloadSchemaVersion = CustomerPayloadContract.SCHEMA_VERSION.toLong(),
         payloadFormat = payloadFormat(),
     )
 

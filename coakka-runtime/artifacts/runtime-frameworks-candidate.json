@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "state": "private-candidate",
+  "runtimeVersion": "3.0.0",
+  "adapterVersion": "3.0.0",
+  "coreCommit": "f6b61768f60a08d81b1dc06625a211ffca8e89e2",
+  "artifacts": [
+    {
+      "path": "io/github/phuong-tran/coakka/quarkus-extension/3.0.0/quarkus-extension-3.0.0.jar",
+      "bytes": 19345,
+      "sha256": "10ae079d1eab9eb7eeae1d8e1979bc467e96134416f3bea928bc1dd71a008181"
+    },
+    {
+      "path": "io/github/phuong-tran/coakka/quarkus-extension/3.0.0/quarkus-extension-3.0.0.module",
+      "bytes": 3946,
+      "sha256": "d1f768aa07b45c93c02cc2adcfa842c12415fe5dd06905c6d78fc3ca71dd2fdc"
+    },
+    {
+      "path": "io/github/phuong-tran/coakka/quarkus-extension/3.0.0/quarkus-extension-3.0.0.pom",
+      "bytes": 2771,
+      "sha256": "526df460ceda5952834202742ffde4bc471ff3cfcce1e19b6cf95eeffe9a7150"
+    },
+    {
+      "path": "io/github/phuong-tran/coakka/runtime/3.0.0/runtime-3.0.0.jar",
+      "bytes": 5416616,
+      "sha256": "ab0e3e6e16a694819588dad18bab627e4a19f9b995b56d65446b10dd94e4fc7d"
+    },
+    {
+      "path": "io/github/phuong-tran/coakka/runtime/3.0.0/runtime-3.0.0.module",
+      "bytes": 3329,
+      "sha256": "dd7ab88ea89656ab543c199520df6f3e868d4aa14e891ccd5361da132af19c91"
+    },
+    {
+      "path": "io/github/phuong-tran/coakka/runtime/3.0.0/runtime-3.0.0.pom",
+      "bytes": 3436,
+      "sha256": "259cbab2a9d28c3a10009f51ad8d8c46b7d201d985b4312112130e5f8eb17ea1"
+    },
+    {
+      "path": "io/github/phuong-tran/coakka/spring-boot-starter/3.0.0/spring-boot-starter-3.0.0.jar",
+      "bytes": 19900,
+      "sha256": "3f5ad6bc353e59de9f9faae189abea73dee57f8a98c5ce706792d56ea33fe924"
+    },
+    {
+      "path": "io/github/phuong-tran/coakka/spring-boot-starter/3.0.0/spring-boot-starter-3.0.0.module",
+      "bytes": 3964,
+      "sha256": "b83d87e46bbff93a0829777903bf64a4575c883363b51f1bb358e93db928beee"
+    },
+    {
+      "path": "io/github/phuong-tran/coakka/spring-boot-starter/3.0.0/spring-boot-starter-3.0.0.pom",
+      "bytes": 2797,
+      "sha256": "70400392aee481aeba2dfb642ca65b29325c470940208bec792d0800aeaad7d1"
+    },
+    {
+      "path": "org/jetbrains/annotations/23.0.0/annotations-23.0.0.jar",
+      "bytes": 29371,
+      "sha256": "7b0f19724082cbfcbc66e5abea2b9bc92cf08a1ea11e191933ed43801eb3cd05"
+    },
+    {
+      "path": "org/jetbrains/kotlin/kotlin-stdlib/2.3.10/kotlin-stdlib-2.3.10.jar",
+      "bytes": 1797000,
+      "sha256": "f61662c6d3a2f8ef5bd34362a02d877772c39f393cd394feb259dfaf7f4d8437"
+    },
+    {
+      "path": "org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.10.2/kotlinx-coroutines-core-jvm-1.10.2.jar",
+      "bytes": 1479317,
+      "sha256": "5ca175b38df331fd64155b35cd8cae1251fa9ee369709b36d42e0a288ccce3fd"
+    },
+    {
+      "path": "org/jetbrains/kotlinx/kotlinx-coroutines-jdk8/1.10.2/kotlinx-coroutines-jdk8-1.10.2.jar",
+      "bytes": 954,
+      "sha256": "f861f9fa3b3088e6f7c59bc92a91adacf687b5bdeb081cf3608c5454f7739625"
+    }
+  ]
+}

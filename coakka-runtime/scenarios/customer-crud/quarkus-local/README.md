@@ -1,123 +1,56 @@
 # Quarkus Same-Process Customer CRUD
 
-This scenario is the Quarkus/Kotlin counterpart to the Spring Boot
-single-process sample.
+This Java 17/Kotlin application keeps HTTP and CDI lifecycle in Quarkus while
+customer work uses the local CoAkka target `samples.customer.store`.
+A CDI handler owns the store operation; the extension starts and closes the
+runtime for the application.
 
-It keeps HTTP at the browser/API boundary and sends customer work
-through the Quarkus adapter shape:
+This sample uses the **unpublished extension 3.0.0 and JVM Runtime 3.0.0 candidate**.
+The released packages remain at 2.5.3; see
+[Current Packages](../../../../docs/current-packages.md).
+Prepare the exact local packages, Gradle cache and work directory using the
+[framework candidate guide](../../../docs/runtime-frameworks-candidate.md).
 
-```kotlin
-coakka.askBlocking(
-    "samples.customer.store",
-    command,
-    CustomerPayloads.CREATE,
-    MutationResponse::class.java,
-    operation = "create_customer",
-    timeoutMs = 5_000,
-)
+## Run
+
+From this directory:
+
+```sh
+bash run.sh check
+bash run.sh smoke
+bash run.sh dev
 ```
 
-The app consumes the public
-`io.github.phuong-tran.coakka:quarkus-extension` artifact from Maven Central.
-Quarkus owns HTTP/CDI lifecycle, and the adapter starts the CoAkka runtime with
-process-owned routes for CDI `CoAkkaLocalHandler` beans.
+`check` builds the packaged Quarkus JVM application. `smoke` builds and starts
+its own application on a test port, checks its runtime settings, performs CRUD
+and a route-miss request, then closes only that application.
 
-## Before: Backend HTTP
+`dev` runs in the foreground at `http://localhost:8083`. Stop it with Ctrl-C.
+The sample does not kill processes that happen to own a port. There is no
+separate runtime TCP listener in this same-process example.
 
-A Quarkus team that wants to separate “web” from “store” usually creates an
-backend HTTP resource and calls it with a REST client, even when the store is
-not a real external HTTP boundary:
+## Application Configuration
 
-```kotlin
-dependencies {
-    implementation("io.quarkus:quarkus-rest-jackson")
-    implementation("io.quarkus:quarkus-rest-client-jackson")
-}
-```
-
-The store side becomes another HTTP resource:
-
-```kotlin
-@Path("/backend/customers")
-@ApplicationScoped
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
-class CustomerStoreBackendResource(private val store: InMemoryCustomerStore) {
-    @POST
-    fun create(request: CustomerDraft): MutationResponse {
-        return store.create(request)
-    }
-
-    @GET
-    fun list(): ListResponse {
-        return store.list()
-    }
-}
-```
-
-The web resource then needs a REST client for a runtime call:
-
-```kotlin
-@RegisterRestClient(configKey = "customer-store")
-@Path("/backend/customers")
-interface CustomerStoreRestClient {
-    @POST
-    fun create(request: CustomerDraft): MutationResponse
-
-    @GET
-    fun list(): ListResponse
-}
-```
-
-And the public HTTP resource forwards browser/API traffic to that backend HTTP
-surface:
-
-```kotlin
-@Path("/api/customers")
-class CustomerResource(
-    @RestClient private val storeClient: CustomerStoreRestClient,
-) {
-    @POST
-    fun createCustomer(request: CustomerDraft): Response {
-        val reply = storeClient.create(request)
-        return Response.status(Response.Status.CREATED).entity(reply).build()
-    }
-}
-```
-
-That works, but it turns application work into an extra HTTP surface. The
-app now carries REST-client config, URL wiring, HTTP serialization,
-timeout/error mapping, and test setup before it has a real network boundary.
-
-That is the adapter's target problem. The old shape expresses the store through
-a Quarkus REST resource and REST client even when the store is just a runtime
-capability.
-CoAkka keeps the public resource as the real HTTP edge and moves application work
-onto a typed runtime target with request/reply, counters, and deadletters.
-
-## After: Same-Process Runtime Capability
-
-With the adapter, Quarkus config owns same-process runtime defaults:
-
-```kotlin
-dependencies {
-    implementation("io.github.phuong-tran.coakka:quarkus-extension:2.5.2")
-    implementation("io.quarkus:quarkus-rest-jackson")
-}
-```
+The app names its runtime participant and source:
 
 ```properties
-coakka.runtime.enabled=true
-coakka.runtime.mode=local
 coakka.runtime.system-name=customer-quarkus-local
 coakka.runtime.node-id=customer-quarkus-local-node
 coakka.runtime.source-target=samples.customer.frontend
-coakka.runtime.local-endpoint-host=127.0.0.1
-coakka.runtime.local-endpoint-port=19182
 ```
 
-The runtime capability is a CDI bean. It still exposes the real runtime boundary,
-but no longer owns route table creation or shutdown:
+CPU, connection and monitor choices stay absent so Core selects its normal
+AUTO, MULTIPLEXED and monitor OFF settings. The `/api/customers/runtime`
+endpoint reads accepted settings from the runtime. It also reports build
+identity, routes and request/reply counters. CPU placement support and selected
+IDs are shown as reported by the platform, without guessing two CPUs from AUTO.
+
+For optional monitoring, see
+[Runtime Monitoring](../../../../docs/runtime-monitoring.md).
+
+## Customer Work
+
+The application declares one CDI handler:
 
 ```kotlin
 @ApplicationScoped
@@ -127,11 +60,11 @@ class CustomerCapabilityHandler(
     private val customerStore: InMemoryCustomerStore,
 ) : CoAkkaLocalHandler {
     override fun handle(request: ConnectorEnvelope, objectMapper: ObjectMapper): ConnectorEnvelope {
-        val customer = objectMapper.readValue(request.payload, CustomerDraft::class.java)
+        val command = objectMapper.readValue(request.payload, CustomerDraft::class.java)
         return CoAkkaReplies.json(
             request,
             CustomerTargets.STORE,
-            customerStore.create(customer),
+            customerStore.create(command),
             CustomerPayloads.MUTATION_RESPONSE,
             objectMapper,
         )
@@ -139,67 +72,49 @@ class CustomerCapabilityHandler(
 }
 ```
 
-The resource stays focused on HTTP and typed runtime asks:
+The resource sends a typed request:
 
 ```kotlin
-@POST
-fun createCustomer(request: CustomerDraft): Response {
-    val reply = coakka.askBlocking(
-        CustomerTargets.STORE,
-        request,
-        CustomerPayloads.CREATE,
-        MutationResponse::class.java,
-        operation = "create_customer",
-        timeoutMs = 5_000,
-    )
-    return Response.status(Response.Status.CREATED).entity(reply).build()
-}
+return coakka.askBlocking(
+    CustomerTargets.STORE,
+    request,
+    CustomerPayloads.CREATE,
+    MutationResponse::class.java,
+    "create_customer",
+    5_000,
+)
 ```
 
-That is the Quarkus adapter value: Quarkus keeps CDI and HTTP lifecycle, while
-CoAkka remains the runtime boundary instead of becoming another
-backend HTTP hop.
+The sample's full handler selects create, update, delete or list from the
+application payload identity. The HTTP resource and store remain application
+code. Core owns delivery, replies, timeouts and deadletters; the sample does
+not automatically retry business work after a failure.
 
-## Run
+## Code Map
 
-```sh
-bash run.sh check
-bash run.sh dev
-```
+- `CustomerResource.kt` owns HTTP operations and runtime diagnostics.
+- `CustomerCapabilityHandler.kt` adapts customer requests to store operations.
+- `CustomerPayloads.kt` declares application payload identities.
+- `InMemoryCustomerStore.kt` owns the sample's data.
+- `RuntimeErrorMapper.kt` maps a delivery failure into an explicit HTTP error.
+- Shared customer business types remain in the customer-contract project.
+  Candidate-only diagnostic views preserve numeric reasons and a missing
+  original request.
 
-Open:
+The dedicated candidate build configures only these applications and their
+customer contract. It checks actual local package/library files before
+compilation and packaging. Quarkus uses a normal platform BOM so required
+runtime libraries are not silently replaced.
 
-```text
-http://localhost:8083
-```
+## Scope
 
-Smoke:
+Customer data stays in an in-memory demo store and is lost when the app exits.
+Production storage, data limits and retention remain application choices.
 
-```sh
-bash run.sh smoke
-```
+This is a normal JVM application packaged as a Quarkus fast-jar. The CoAkka
+artifact supplies CDI/runtime integration; it does not establish a full
+Quarkus build-time extension or native-image support. Remote transport and
+Kubernetes deployment are outside this same-process sample.
 
-Ports:
-
-- HTTP: `8083`
-- runtime diagnostic endpoint: `19182`
-
-## Boundary Shape
-
-The Quarkus resource owns real HTTP ingress at `/api/customers`. It calls the
-runtime target `samples.customer.store`.
-
-The customer store remains an ordinary CDI bean. The process-owned runtime handler is a
-small `@CoAkkaHandler` CDI bean:
-
-```kotlin
-@ApplicationScoped
-@CoAkkaHandler("samples.customer.store")
-class CustomerCapabilityHandler(...) : CoAkkaLocalHandler
-```
-
-The adapter registers that handler during application startup and shuts the
-runtime down through Quarkus lifecycle callbacks.
-
-Remote transport, Kubernetes bind/advertise config, service discovery, and
-business retry policy are deliberately out of scope for this same-process slice.
+For the integration model, read
+[CoAkka Quarkus](../../../../docs/coakka-quarkus.md).

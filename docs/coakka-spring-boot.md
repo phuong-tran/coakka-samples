@@ -116,7 +116,7 @@ Current public coordinates are listed in the
 The Spring Boot starter lane is published to Maven Central:
 
 ```kotlin
-implementation("io.github.phuong-tran.coakka:spring-boot-starter:2.5.2")
+implementation("io.github.phuong-tran.coakka:spring-boot-starter:2.5.3")
 ```
 
 Only Maven Central is required:
@@ -131,9 +131,25 @@ Do not mix Spring Boot starter versions with an unrelated CoAkka runtime
 generation unless a release note explicitly declares that combination
 compatible.
 
+## JVM 3.0.0 Candidate
+
+The current sample sources use the unpublished 3.0.0
+starter and JVM Runtime together. That candidate is separate from the
+published 2.5.3 coordinate above. Use the
+[framework candidate guide](../coakka-runtime/docs/runtime-frameworks-candidate.md)
+for the exact local package checks and commands.
+
+Core chooses CPU placement. Connection and monitor settings keep Core's
+defaults until the application supplies a documented option. Read accepted settings through
+`startupConfig()`; do not reconstruct them from application properties.
+Monitor is OFF by default. To request collection for a new runtime instance,
+set `coakka.runtime.monitor-enabled=true` in the framework's configuration.
+Changing that setting requires a new instance. See
+[Runtime Monitoring](runtime-monitoring.md) for the reasons and usage model.
+
 ## Sample Path
 
-The runnable Spring Boot starter sample is:
+The current candidate sample is:
 
 ```text
 coakka-runtime/scenarios/customer-crud/spring-boot-starter-local

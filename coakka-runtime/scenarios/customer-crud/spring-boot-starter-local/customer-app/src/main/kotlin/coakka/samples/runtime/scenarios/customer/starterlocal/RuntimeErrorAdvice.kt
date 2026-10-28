@@ -1,6 +1,6 @@
 package coakka.samples.runtime.scenarios.customer.starterlocal
 
-import coakka.samples.runtime.scenarios.customer.contract.RuntimeDeliveryFailureView
+import coakka.samples.runtime.scenarios.customer.diagnostics.RuntimeDeliveryFailureView
 import coakka.v2.connector.DeadletterException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -15,9 +15,9 @@ class RuntimeErrorAdvice {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(
             RuntimeDeliveryFailureView(
                 status = "RUNTIME_DELIVERY_FAILED",
-                reason = deadletter.reason,
+                reason = deadletter.reason.value,
                 detail = deadletter.detail,
-                target = deadletter.originalEnvelope.target,
+                target = deadletter.originalEnvelope?.target,
                 resolvedEndpoint = "${deadletter.resolvedHost}:${deadletter.resolvedPort}",
                 hint = "This starter-local scenario expects @CoAkkaHandler local capability routes.",
             ),

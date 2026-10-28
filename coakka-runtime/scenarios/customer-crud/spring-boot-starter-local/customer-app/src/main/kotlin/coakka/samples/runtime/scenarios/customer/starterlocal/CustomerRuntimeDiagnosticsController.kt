@@ -1,6 +1,6 @@
 package coakka.samples.runtime.scenarios.customer.starterlocal
 
-import coakka.samples.runtime.scenarios.customer.contract.DeadletterView
+import coakka.samples.runtime.scenarios.customer.diagnostics.DeadletterView
 import coakka.samples.runtime.scenarios.customer.contract.ListCustomersRequest
 import coakka.samples.runtime.scenarios.customer.contract.ListResponse
 import coakka.samples.runtime.scenarios.customer.contract.RuntimeDiagnosticsView
@@ -27,8 +27,8 @@ class CustomerRuntimeDiagnosticsController(private val runtimeClient: CoAkkaRunt
             error("expected route-miss deadletter")
         } catch (error: DeadletterException) {
             return DeadletterView(
-                reason = error.deadletter.reason,
-                target = error.deadletter.originalEnvelope.target,
+                reason = error.deadletter.reason.value,
+                target = error.deadletter.originalEnvelope?.target,
                 generation = error.deadletter.activeGeneration,
             )
         }
@@ -39,6 +39,7 @@ class CustomerRuntimeDiagnosticsController(private val runtimeClient: CoAkkaRunt
         val runtimeInfo = runtimeClient.runtimeInfo()
         val runtimeConfig = runtimeClient.runtimeConfig()
         val clientStats = runtimeClient.clientStats()
+        val startup = runtimeClient.startupConfig()
         return RuntimeDiagnosticsView(
             runtimeInfo = mapOf(
                 "abiVersion" to runtimeInfo.abiVersion,
@@ -52,6 +53,13 @@ class CustomerRuntimeDiagnosticsController(private val runtimeClient: CoAkkaRunt
                 "runtimeStateName" to runtimeConfig.runtimeStateName,
                 "appliedGeneration" to runtimeConfig.appliedGeneration,
                 "routeCount" to runtimeConfig.routeCount,
+                "requestedCpuPolicy" to startup.execution.requestedPolicy,
+                "cpuPlacementSupported" to startup.execution.supported,
+                "cpuPlacementApplied" to startup.execution.startupApplied,
+                "selectedCpuIds" to startup.execution.selectedCpuIds,
+                "connectionMode" to startup.connection.mode.value,
+                "monitorEnabled" to startup.monitorEnabled,
+                "defaultedStartupGroups" to startup.defaultedGroups,
             ),
             clientStats = mapOf(
                 "pendingRequests" to clientStats.pendingRequests,
@@ -73,7 +81,6 @@ class CustomerRuntimeDiagnosticsController(private val runtimeClient: CoAkkaRunt
                     CustomerTargets.DELETE,
                     CustomerTargets.LIST,
                 ),
-                "configuredGeneration" to 1,
             ),
         )
     }
