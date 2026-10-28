@@ -26,6 +26,11 @@ tables. The frozen legacy `coakka_v2_runtime_create` entrypoint retains
 mTLS, and documentation for a legacy package must identify that constructor
 scope instead of presenting its connection mode as the universal default.
 
+`AUTO` selects CPU execution policy; it is independent of connection strategy.
+For why `AUTO` and `MULTIPLEXED` are the normal defaults, why optional monitor
+collection defaults to OFF, and how to opt in and observe accepted settings,
+see [Runtime Monitoring](runtime-monitoring.md).
+
 ## Defaults And Tuning
 
 Bounded-pool defaults revision 1 uses:

@@ -68,6 +68,7 @@ interchangeable.
 
 ## Operate And Verify Runtime
 
+- [Runtime defaults and monitoring](runtime-monitoring.md)
 - [Runtime field guide](runtime-field-guide.md)
 - [Logging and observability](runtime-logging-observability.md)
 - [CoAkka client](coakka-runtime-client.md)

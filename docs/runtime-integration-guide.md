@@ -81,6 +81,13 @@ RuntimeStartSpec
 The app host or connector maps deployment configuration into these fields and
 passes the start spec to the runtime.
 
+Execution, connection strategy and monitoring are independent startup choices.
+The current native construction contract defaults to CPU `AUTO`, persistent
+`MULTIPLEXED` connections and monitor collection OFF. Read accepted settings
+from Core rather than reconstructing them from the start spec. See
+[Runtime Monitoring](runtime-monitoring.md) for the reasons, opt-in lifecycle
+and a Kotlin example of the shared cross-language model.
+
 ### Reading The Runtime Types
 
 The nested types are route-table vocabulary, not business domain objects.

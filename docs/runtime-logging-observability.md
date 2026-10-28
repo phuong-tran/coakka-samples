@@ -43,6 +43,12 @@ whether that means "payment declined", "retry later", "show a user message",
 
 ## Runtime Evidence
 
+For the Core `AUTO` CPU and `MULTIPLEXED` connection defaults, why monitor
+collection is OFF by default, and an opt-in Kotlin example that applies across
+host languages, see [Runtime Monitoring](runtime-monitoring.md). That guide
+also distinguishes ordinary health/stats reads from monitor notifications and
+explains when a new runtime instance is required to change collection.
+
 Runtime evidence should explain delivery:
 
 - which source submitted the work;
