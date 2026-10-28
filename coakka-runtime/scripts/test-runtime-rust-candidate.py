@@ -34,7 +34,7 @@ class AdmissionTests(unittest.TestCase):
         self.cache.mkdir()
         self.work = self.root / "work"
         self.args = argparse.Namespace(source=self.source, work=self.work, cargo=self.cargo,
-                                       archive=self.archive, cargo_home=self.cache, target="macos-aarch64")
+                                       archive=self.archive, cargo_home=self.cache, target="linux-aarch64")
 
     def test_changed_or_oversized_archive_never_reaches_tar(self):
         for content in (b"not an archive", b"x" * ((16 << 20) + 1)):
@@ -129,6 +129,25 @@ class AdmissionTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     MODULE.archive_tool(b"wrong candidate", profile)
                 opened.assert_not_called()
+
+    def test_silent_build_tool_success_and_failure_keep_bounded_logs(self):
+        log = self.root / "silent.log"
+        result = MODULE.child([sys.executable, "-c", "pass"], self.root,
+                              dict(os.environ), log, 5)
+        self.assertEqual(result["exit_code"], 0)
+        self.assertEqual(result["log_sha256"], MODULE.digest(b""))
+        with self.assertRaisesRegex(RuntimeError, "Rust build failed"):
+            MODULE.child([sys.executable, "-c", "raise SystemExit(7)"], self.root,
+                         dict(os.environ), self.root / "failed.log", 5)
+        self.assertEqual((self.root / "failed.log").read_bytes(), b"")
+
+    def test_missing_platform_finalizer_refuses_before_reserving_work(self):
+        self.args.target = "macos-aarch64"
+        with patch.object(MODULE, "archive_tool", return_value=b"unused"), \
+                patch.object(MODULE, "MACOS_TOOLS", {"strip": self.root / "missing-tool"}):
+            with self.assertRaises(FileNotFoundError):
+                MODULE.build(self.args)
+        self.assertFalse(self.work.exists())
 
 
 if __name__ == "__main__":

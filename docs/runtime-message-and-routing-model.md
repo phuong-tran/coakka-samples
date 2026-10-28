@@ -194,8 +194,8 @@ ad-hoc message wrappers, route snapshots instead of caller-owned topology, and
 structured reply/deadletter/timeout completion instead of each integration
 inventing its own convention.
 
-`separateDeliveredRequestLane` matters in the many-request shape because a
-service often plays both roles at once. `billing-service` receives
+Separating incoming handler work from reply/deadletter matching matters in the
+many-request shape because a service often plays both roles at once. `billing-service` receives
 `billing.charge` from `order-api`, then asks `fraud.check` or `tax.calculate`
 before it can reply. The same runtime host is receiving new business work while
 also waiting for replies that complete earlier work. Keeping delivered requests
@@ -230,22 +230,20 @@ and what route table should it start with?"
 | --- | --- | --- |
 | `systemName` | Which logical service or app role do I belong to? | Stable service role, such as `customer-store` or `billing-worker`. |
 | `nodeId` | Which concrete process/replica am I? | Unique process identity from hostname, pod name, env, or platform metadata. |
-| `queueCapacity` | How much runtime work can this process buffer? | Start bounded and conservative; tune from pressure counters. |
+| `queueCapacity` | How much runtime work can this process buffer? | Normally omit it so Core resolves its bounded default; tune from pressure counters. |
 | `strictNoDrop` | Should overload become visible? | Prefer `true` while integrating so rejection is observable. |
-| `separateDeliveredRequestLane` | Should runtime keep delivered requests on their own runtime lane? | Prefer `true` for request/reply hosts. |
+| delivered-request separation | Does incoming handler work stay separate from reply/deadletter matching? | Core enables this on the current native construction path; normally omit the older `separateDeliveredRequestLane` option. |
 | `network` | Does this process own an inbound runtime listener? | Use `EMBEDDED` for local-only, `OUTBOUND_ONLY` for client-only, or explicit `NETWORK_NODE` bind/advertise settings. |
 | `generation` | Which route snapshot version is active at startup? | Start at `1`; keep it stable for a stable Service DNS route, and increment only when the CoAkka route snapshot changes. |
 | `routes` | Which targets can this process route? | Map target names to local or peer endpoints. |
 
-Example shape:
+Conceptual example shape; use the names supplied by the installed connector:
 
 ```text
 RuntimeStartSpec
   systemName = customer-store
   nodeId = customer-store-pod-7
-  queueCapacity = 128
   strictNoDrop = true
-  separateDeliveredRequestLane = true
   network = EMBEDDED
   generation = 1
   routes:
@@ -259,18 +257,21 @@ the peer endpoint can be a stable Service DNS name and `generation = 1` can
 remain valid while Kubernetes changes the pod list underneath. Use deployment
 config or platform metadata when the CoAkka route snapshot itself must change.
 
-`separateDeliveredRequestLane` protects the ask/reply path from inbound handler
-work. A runtime host can receive requests for local handlers while it is also
-waiting for replies or deadletters for asks it has sent. With `true`, delivered
-requests use a separate runtime lane from reply/deadletter matching. With
-`false`, both flows share one lane. Use `true` as the default for services that
-send asks or expose request/reply handlers; consider `false` only for tiny
-one-way hosts after measuring that lane sharing is harmless.
+The current native construction path separates incoming handler work from
+reply/deadletter matching in Core. Normally omit a manual setting and inspect
+Core's accepted configuration. CPU `AUTO`, persistent `MULTIPLEXED` connections
+and monitor collection OFF are also Core defaults on that path. See
+[Runtime Monitoring](runtime-monitoring.md) for their purpose and monitor
+examples.
 
 ## Delivered Request Lane
 
-`separateDeliveredRequestLane` is easiest to understand with a concrete billing
-host. Assume `billing-1` owns the local target `billing.charge`. `order-api`
+The diagrams compare separation with the shared-lane shape exposed by older
+APIs through `separateDeliveredRequestLane`. They explain the behavior; they
+are not instructions to enable an extra option on the current native path.
+
+This separation is easiest to understand with a concrete billing host.
+Assume `billing-1` owns the local target `billing.charge`. `order-api`
 sends requests to that target. While handling a charge, `billing-1` may also ask
 `fraud.check` and wait for a reply or deadletter.
 
@@ -364,11 +365,11 @@ flowchart LR
     pending -->|complete fraud.check ask| handler
 ```
 
-The practical difference is queue interference. With `true`, a burst of inbound
+The practical difference is queue interference. With separation, a burst of inbound
 `billing.charge` work is less likely to delay reply/deadletter matching for the
 asks `billing-1` already sent. With `false`, the same burst shares the lane with
 ask completion. That can be acceptable for a tiny one-way host, but it is not
-the recommended default for request/reply services.
+the shape chosen by the current native construction path.
 
 ## Route Snapshot
 
@@ -670,9 +671,9 @@ Start with visible, conservative behavior. Tune from stats and failure evidence.
 | Parameter | Start with | Increase when | Decrease when |
 | --- | --- | --- | --- |
 | `timeoutMs` / `timeout_ms` | Caller-specific wait budget enforced by Core pending-ask matching. | Normal handler latency exceeds budget and retry would be worse. | Caller needs fast fallback or overload protection. |
-| `queueCapacity` | Bounded and conservative. | Legitimate bursts are rejected and memory budget allows more buffering. | Latency grows, memory is tight, or pressure should surface earlier. |
+| `queueCapacity` | Core's bounded default; inspect accepted settings. | Legitimate bursts are rejected and memory budget allows more buffering. | Latency grows, memory is tight, or pressure should surface earlier. |
 | `strictNoDrop` | `true` while integrating. | Usually keep true. | Only for a measured fire-and-forget path that can drop safely. |
-| `separateDeliveredRequestLane` | `true` for request/reply hosts. | Inbound delivered requests delay reply/deadletter matching for outgoing asks. | Only for tiny one-way-only hosts after measurement. |
+| delivered-request separation | Core enables it on the current native path. | Follow the installed connector's contract; normally no manual option is needed. | Older APIs may expose an override; this guide does not recommend changing it. |
 | route `generation` | Start at `1`; keep it stable for a stable Service DNS route. | Applying a newer CoAkka route snapshot. | Never reuse old generations for new topology. |
 | endpoint flags | `LOCAL` only where this process owns the handler; `NONE` as `PEER` for ordinary eligible peer endpoints. | This process begins owning a target. | Endpoint is draining or temporarily unavailable. |
 | headers / metadata | Minimal request context. | Diagnostics need tenant, request id, trace id, or idempotency key. | Data is actually business payload. |

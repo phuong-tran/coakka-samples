@@ -7,10 +7,12 @@ channel. The runner refuses different bytes; it does not download or silently
 fall back to an older public package. Checksums establish exact-copy integrity,
 not publisher authentication.
 
-The minimum is Rust/Cargo 1.77.2 (edition 2021). This candidate bundles native
-Core 2.5.1 for Mac ARM64, Linux ARM64 and Windows x64 only. Compiler target
-selection is a build/deployment choice, not a runtime capability probe. The
-source archive and installed application are different artifacts.
+The sample uses Rust/Cargo 1.77.2 (edition 2021). Its selected private archive
+bundles Core 2.5.1 for five targets: Mac ARM64, Linux ARM64/x64 and Windows
+ARM64/x64. This sample runner remains qualified for Mac ARM64, Linux ARM64 and
+Windows x64 only. More bundled files do not extend that sample execution scope.
+Compiler target selection is a build/deployment choice, not a runtime capability
+probe. The source archive and installed application are different artifacts.
 
 ## Build and run
 
@@ -32,7 +34,7 @@ Use `linux-aarch64` on Pi. On Windows x64, run native Python in an x64 MSVC
 developer environment and invoke `coakka-runtime/scripts/runtime-rust-candidate.py` directly:
 
 ```powershell
-python -B coakka-runtime/scripts/runtime-rust-candidate.py --archive D:/candidate/coakka-runtime-rs-2.5.3.tar.gz --source D:/samples/runtime/rust/basic --work D:/build-storage/rust-basic-new --cargo D:/rust/bin/cargo.exe --cargo-home D:/offline-cargo-cache --target windows-x86_64
+python -B coakka-runtime/scripts/runtime-rust-candidate.py --archive D:/candidate/coakka-runtime-rs-2.5.3.tar.gz --source D:/samples/coakka-runtime/rust/basic --work D:/build-storage/rust-basic-new --cargo D:/rust/bin/cargo.exe --cargo-home D:/offline-cargo-cache --target windows-x86_64
 & D:/build-storage/rust-basic-new/installed/coakka-runtime-sample.exe
 ```
 
@@ -50,7 +52,14 @@ retain the default platform linker's POGO debug payload. Missing tools refuse
 before output; no post-link byte patch or metadata waiver is used. No native rebuild,
 lock regeneration, runtime extraction or global native cache is performed.
 
-Only `installed/`, `build.log` and `receipt.json` remain in the fresh work root.
+On Mac the prepared Apple strip/sign tools finalize the copied application;
+compiler build tools keep their local signatures while building. This local
+ad-hoc application signature enables normal development execution; it is not
+publisher authentication, notarization or a release signature. The bundled
+Core image is copied byte-for-byte and is never re-signed by this sample.
+
+Only `installed/`, the bounded build/platform-tool logs and `receipt.json`
+remain in the fresh work root.
 The entire installed directory may move together: the executable resolves
 `native/<target>/<product image>` beside itself, not from source or current
 working directory. Keep the copied legal files and native manifest with it.

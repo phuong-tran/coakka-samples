@@ -9,8 +9,9 @@ fn cstr(value: ?[*:0]const u8) []const u8 {
 fn takeStarted(result: runtime.StartHostResult) !runtime.RuntimeHost {
     return switch (result) {
         .started => |host| host,
-        .connection_rejected => error.ConnectionConfigurationRejected,
+        .startup_rejected => error.StartupConfigurationRejected,
         .security_rejected => error.SecurityConfigurationRejected,
+        .network_rejected => error.NetworkConfigurationRejected,
     };
 }
 
@@ -28,6 +29,8 @@ pub fn main(init: std.process.Init) !void {
     var host = try takeStarted(try native.startHost(spec));
     defer host.deinit();
 
+    const accepted = try host.startupConfig();
+    const accepted_network = try host.networkConfig();
     const stats = try host.stats();
     if (!runtime.isStarted(stats, spec.generation, 1)) {
         std.debug.print(
@@ -41,7 +44,7 @@ pub fn main(init: std.process.Init) !void {
     try host.smokeRouteMissDeadletter();
 
     std.debug.print(
-        "coakka_runtime_zig_basic abi={d} runtime={s} git={s} system={s} node={s} generation={d} routes={d} state={d} rawRoundTrip=ok routeMissDeadletter=ok\n",
+        "coakka_runtime_zig_basic abi={d} runtime={s} git={s} system={s} node={s} generation={d} routes={d} state={d} connectionMode={d} cpuPolicy={d} selectedCpuCount={d} cpuApplied={d} monitor={d} networkMode={d} explicitNetwork={} rawRoundTrip=ok routeMissDeadletter=ok\n",
         .{
             info.abi_version,
             cstr(info.runtime_version),
@@ -51,6 +54,13 @@ pub fn main(init: std.process.Init) !void {
             stats.applied_generation,
             stats.route_count,
             stats.runtime_state,
+            accepted.connection.mode,
+            accepted.execution.requested_policy,
+            accepted.execution.selected_cpu_count,
+            accepted.execution.startup_applied,
+            accepted.monitor.enabled,
+            accepted_network.mode,
+            accepted_network.explicit_policy,
         },
     );
 }
@@ -61,9 +71,8 @@ fn sampleSpec() runtime.StartSpec {
         .node_id = "zig-runtime-basic-node",
         .target = "svc.echo",
         .host = "127.0.0.1",
-        .port = 9041,
+        .port = 0,
         .generation = 1,
         .strict_no_drop = true,
-        .queue_capacity = 32,
     };
 }

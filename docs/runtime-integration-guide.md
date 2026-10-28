@@ -181,13 +181,12 @@ budget. Do not treat sample values as production sizing.
 missing routes, and rejected work should become explicit failures or
 deadletters instead of silent message loss.
 
-`separateDeliveredRequestLane` should usually be `true` for request/reply
-services. A process may receive new requests for local handlers while it is also
-waiting for replies or deadletters for asks it sent to another target. With
-`true`, delivered requests use a separate runtime lane from ask completion.
-With `false`, incoming handler work and reply/deadletter matching share one
-lane. Treat `true` as the default; use `false` only for very small one-way
-hosts after measurement.
+The current native construction path separates incoming handler work from
+reply/deadletter matching in Core. Normally omit this setting and inspect
+Core's accepted configuration. This lets a process receive new requests while
+it waits for replies to earlier requests. Older connector APIs may expose
+`separateDeliveredRequestLane`; follow that installed version's contract rather
+than copying an old explicit setting into a current sample.
 
 `generation` is the route snapshot version. The first snapshot commonly starts
 at `1`. For ordinary Kubernetes deployments that route to a stable Service DNS
@@ -561,15 +560,11 @@ failure budgets, not from the sample defaults.
 
 ## Queue And Failure Policy
 
-The samples use:
-
-```text
-queueCapacity = 128
-strictNoDrop = true
-```
-
-That is a conservative integration default. It makes queue pressure visible
-instead of hiding it behind unbounded memory growth or silent drops.
+Normally leave queue capacity unset so Core resolves its bounded default, then
+inspect the accepted configuration. An explicit `queueCapacity = 128` in an
+older or capacity-focused example is that example's choice, not the ecosystem
+default. Make overload and rejection visible through the installed API's
+failure results and diagnostics.
 
 For production:
 

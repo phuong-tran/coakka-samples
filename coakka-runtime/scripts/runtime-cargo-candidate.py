@@ -18,10 +18,11 @@ import sys
 import tarfile
 import time
 
-ARCHIVE_SHA = "df7093947077b9da46311d544e27495b992ee781f0db5d8355a4d9137235a038"
+ARCHIVE_SHA = "7a34346a3e0b98c3b45b9dab75dc43d6458da03f6fd466ff79207d2cf447aa5e"
 TOOL_SHA = "0a9ac6c65a95a929029a38515701eb5f6293b7f2d271d76a4b6d83cd3eaa707e"
 TOOL_MEMBER = "coakka-runtime-rs-2.5.3/tools/package_tools.py"
 SOURCES = ("Cargo.toml", "Cargo.lock", "src/main.rs")
+MACOS_TOOLS = {"strip": Path("/usr/bin/strip"), "codesign": Path("/usr/bin/codesign")}
 
 
 @dataclass(frozen=True)
@@ -34,7 +35,7 @@ class Candidate:
 
 
 RUST = Candidate(ARCHIVE_SHA, TOOL_MEMBER, "coakka-runtime-sample")
-TAURI = Candidate("82013559fb8d9f402dedb5aa120ba6fe4152f013e12519505a88a60b3f2878c6",
+TAURI = Candidate("cb617d7cbbffb0c3808debaaaedb0716115e35a6c2e84ba71f4b39eca8858816",
                   "coakka-runtime-tauri-intents-2.5.3-source/rust/tools/package_tools.py",
                   "coakka-sample-tauri-intent-command", True)
 TARGETS = {
@@ -53,11 +54,11 @@ def directory(path: Path) -> None:
             raise ValueError("reparse directory refused")
 
 
-def regular(path: Path, maximum: int) -> bytes:
+def regular(path: Path, maximum: int, *, allow_empty: bool = False) -> bytes:
     directory(path.parent)
     before = path.lstat()
     if (not stat.S_ISREG(before.st_mode) or getattr(before, "st_file_attributes", 0) & 0x400
-            or not 0 < before.st_size <= maximum):
+            or not (0 if allow_empty else 1) <= before.st_size <= maximum):
         raise ValueError("bounded regular file required")
     with path.open("rb") as stream:
         opened = os.fstat(stream.fileno())
@@ -119,7 +120,7 @@ def child(command: list[str], cwd: Path, env: dict[str, str], log: Path, bound: 
             process.wait(timeout=10)
             raise
     result = {"command": command, "exit_code": code, "seconds": time.monotonic() - started,
-              "log_sha256": digest(regular(log, 4 << 20))}
+              "log_sha256": digest(regular(log, 4 << 20, allow_empty=True))}
     if code:
         raise RuntimeError("Rust build failed; retained log: " + str(log))
     return result
@@ -139,6 +140,9 @@ def build(args: argparse.Namespace, candidate: Candidate = RUST) -> Path:
     linker = args.cargo.parent.parent / "lib/rustlib/x86_64-pc-windows-msvc/bin/rust-lld.exe"
     if args.target == "windows-x86_64":
         regular(linker, 128 << 20)
+    if args.target == "macos-aarch64":
+        for platform_tool in MACOS_TOOLS.values():
+            regular(platform_tool, 64 << 20)
     args.work.mkdir()  # This exclusive reservation is the cleanup ownership fence.
     build_root = args.work / "build"
     build_root.mkdir()
@@ -170,6 +174,12 @@ def build(args: argparse.Namespace, candidate: Candidate = RUST) -> Path:
         env.update(PATH=str(args.cargo.parent) + os.pathsep + env.get("PATH", ""),
                    CARGO_HOME=str(args.cargo_home), CARGO_TARGET_DIR=str(build_root / "target"),
                    CARGO_NET_OFFLINE="true", TMPDIR=str(temporary), TMP=str(temporary), TEMP=str(temporary))
+        if args.target == "macos-aarch64":
+            # This Cargo floor's generic stripping removes Mach-O signatures,
+            # including executable build tools. Preserve linker output until
+            # Apple's strip/sign tools finalize only the owned application.
+            env.update(CARGO_PROFILE_RELEASE_STRIP="none",
+                       CARGO_PROFILE_RELEASE_BUILD_OVERRIDE_STRIP="none")
         flags = ["-Dwarnings", "--remap-path-prefix=" + str(args.work) + "=coakka-app",
                  "--remap-path-prefix=" + str(args.cargo_home) + "=coakka-language-cache"]
         if args.target == "windows-x86_64":
@@ -189,6 +199,16 @@ def build(args: argparse.Namespace, candidate: Candidate = RUST) -> Path:
         installed = app / executable_name
         write_new(installed, regular(binary, 8 << 20))
         installed.chmod(0o755)
+        if args.target == "macos-aarch64":
+            identifier = "io.github.phuong-tran.coakka.samples." + candidate.binary
+            commands = [
+                ("strip", [str(MACOS_TOOLS["strip"]), "-S", "-x", str(installed)]),
+                ("sign", [str(MACOS_TOOLS["codesign"]), "--force", "--sign", "-",
+                          "--identifier", identifier, "--timestamp=none", str(installed)]),
+                ("verify-signature", [str(MACOS_TOOLS["codesign"]), "--verify", "--strict", str(installed)]),
+            ]
+            for label, command in commands:
+                rows.append(child(command, project, env, args.work / (label + ".log"), 30))
         module.deploy(package / "rust" if candidate.nested_rust else package, installed, args.target)
         receipt.update(state="built", target=args.target, executable_sha256=digest(installed.read_bytes()))
         return installed

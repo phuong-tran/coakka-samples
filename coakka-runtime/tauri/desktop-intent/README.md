@@ -36,15 +36,18 @@ target. A successful local build on a newer Linux host is not ABI-baseline
 evidence. The prebuilt Core resource is unchanged, not rebuilt by this app.
 
 ```powershell
-python -B coakka-runtime/scripts/runtime-tauri-desktop-candidate.py --archive D:/candidate/coakka-runtime-tauri-intents-2.5.3-source.tar.gz --source D:/samples/runtime/tauri/desktop-intent --work D:/build-storage/desktop-new --cargo D:/rust/bin/cargo.exe --cargo-home D:/offline-cargo-cache --target-cache D:/desktop-build-cache --target windows-x86_64
+python -B coakka-runtime/scripts/runtime-tauri-desktop-candidate.py --archive D:/candidate/coakka-runtime-tauri-intents-2.5.3-source.tar.gz --source D:/samples/coakka-runtime/tauri/desktop-intent --work D:/build-storage/desktop-new --cargo D:/rust/bin/cargo.exe --cargo-home D:/offline-cargo-cache --target-cache D:/desktop-build-cache --target windows-x86_64
 & D:/build-storage/desktop-new/installed/coakka-sample-tauri-desktop-intent.exe
 ```
 
 The producer builds release code, runs strict Clippy and library tests, and
 installs only the app, native resources and legal material. Move the complete
-`installed/` tree. Mac has `CoAkka Tauri Intent.app`; native resources remain
-beside its executable inside the bundle. No Python/Cargo/build tree or separate
-private Core dependency installation is needed to run the app. Normal OS GUI
+`installed/` tree. Mac has `CoAkka Tauri Intent.app`, declaring macOS 13.0 or
+later to match its bundled runtime image. The image is under
+`Contents/Frameworks/`; original component metadata and all legal texts are
+under `Contents/Resources/`. Its local private signature is not publisher
+signing or qualification on every older OS. No Python/Cargo/build tree or
+separate Core dependency installation is needed to run the app. Normal OS GUI
 services remain platform prerequisites. A candidate signing warning must not
 be bypassed by disabling protection.
 

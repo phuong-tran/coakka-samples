@@ -40,3 +40,8 @@ A small set of older sample directories retain only a README pointing to the
 current product location. These pages preserve links from published package
 and release documentation. They contain no executable copy, archive or symlink;
 current code and instructions live under the product root.
+
+Rolling sample code may retire an obsolete implementation when its replacement
+uses the owning package. The layout audit records the exact old Git identity,
+the replacement file and the reason; an unrecorded deletion fails the audit.
+This exception cannot remove or alter a released artifact or source mirror.

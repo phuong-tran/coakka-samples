@@ -47,6 +47,8 @@ def admit(args: argparse.Namespace) -> tuple[bytes, bytes, dict[str, bytes]]:
     CARGO.regular(args.cargo.with_name("rustc" + suffix), 128 << 20)
     CARGO.regular(args.cargo.with_name("cargo-clippy" + suffix), 64 << 20)
     CARGO.regular(args.cargo.with_name("clippy-driver" + suffix), 128 << 20)
+    if args.target == "macos-aarch64":
+        CARGO.regular(CARGO.MACOS_TOOLS["codesign"], 32 << 20)
     content = CARGO.regular(args.archive, 16 << 20)
     tool = CARGO.archive_tool(content, CARGO.TAURI)
     sources = {name: CARGO.regular(args.source / name, 256 << 10) for name in SOURCES}
@@ -84,8 +86,59 @@ def bundle_info() -> bytes:
         "CFBundleIdentifier": "dev.coakka.samples.tauri.intent", "CFBundleExecutable": BINARY,
         "CFBundlePackageType": "APPL", "CFBundleInfoDictionaryVersion": "6.0",
         "CFBundleVersion": "0.1.0", "CFBundleShortVersionString": "0.1.0",
-        "LSMinimumSystemVersion": "11.0", "NSHighResolutionCapable": True,
+        "LSMinimumSystemVersion": "13.0", "NSHighResolutionCapable": True,
     }, sort_keys=True)
+
+
+def relocate_macos_payload(app: Path, image: Path, legal: tuple[str, ...]) -> dict[str, object]:
+    """Place code and resource data in their normal bundle-owned locations."""
+    source = image.parent
+    expected = {image.name, "native-manifest.json", *legal}
+    if {path.name for path in source.iterdir()} != expected:
+        raise ValueError("unexpected deployed bundle component")
+    contents = app.parent
+    frameworks = contents / "Frameworks"
+    resources = contents / "Resources/native/macos-aarch64"
+    frameworks.mkdir()
+    resources.mkdir(parents=True)
+    mappings = {}
+    for name in sorted(expected):
+        original = source / name
+        data = CARGO.regular(original, 64 << 20 if original == image else 1 << 20)
+        destination = frameworks / name if original == image else resources / name
+        original.rename(destination)
+        if CARGO.digest(CARGO.regular(destination, 64 << 20)) != CARGO.digest(data):
+            raise ValueError("bundle component changed during placement")
+        source_name = "native/macos-aarch64/" + name if original == image else name
+        mappings["rust/" + source_name] = {
+            "installed_path": destination.relative_to(contents.parent).as_posix(),
+            "bytes": len(data), "sha256": CARGO.digest(data),
+        }
+    source.rmdir()
+    source.parent.rmdir()
+    return {"source_archive_sha256": CARGO.TAURI.archive_sha,
+            "native_manifest_role": "original dependency component provenance, not installed paths",
+            "files": mappings}
+
+
+def finalize_macos_bundle(args: argparse.Namespace, app: Path, project: Path,
+                          env: dict[str, str]) -> list[dict[str, object]]:
+    """Seal the owned app bundle without re-signing its frozen native image."""
+    native = app.parent / "Frameworks/libcoakka_runtime_v2.dylib"
+    before = CARGO.digest(CARGO.regular(native, 64 << 20))
+    bundle = app.parent.parent
+    identifier = plistlib.loads(bundle_info())["CFBundleIdentifier"]
+    tool = str(CARGO.MACOS_TOOLS["codesign"])
+    commands = (
+        ("sign", [tool, "--force", "--sign", "-", "--identifier", identifier,
+                  "--timestamp=none", str(bundle)]),
+        ("verify-signature", [tool, "--verify", "--strict", str(bundle)]),
+    )
+    rows = [CARGO.child(command, project, env, args.work / (name + ".log"), 30)
+            for name, command in commands]
+    if CARGO.digest(CARGO.regular(native, 64 << 20)) != before:
+        raise ValueError("native image changed during app finalization")
+    return rows
 
 
 def build(args: argparse.Namespace) -> Path:
@@ -161,9 +214,19 @@ def build(args: argparse.Namespace) -> Path:
         executable = app / filename
         CARGO.write_new(executable, CARGO.regular(binary, 32 << 20))
         executable.chmod(0o755)
-        package_tools.deploy(package / "rust", executable, args.target)
+        deployed_image = package_tools.deploy(package / "rust", executable, args.target)
         if args.target == "macos-aarch64":
             CARGO.write_new(app.parent / "Info.plist", bundle_info())
+            # deploy's selected-target projection describes its temporary CLI
+            # staging. Keep the exact source component provenance in Resources;
+            # the separate deployment receipt describes this app's real paths.
+            component_manifest = CARGO.regular(package / "rust/native-manifest.json", 1 << 20)
+            deployed_manifest = deployed_image.with_name("native-manifest.json")
+            deployed_manifest.unlink()
+            CARGO.write_new(deployed_manifest, component_manifest)
+            receipt["bundle_deployment"] = relocate_macos_payload(
+                app, deployed_image, tuple(package_tools.LEGAL))
+            rows.extend(finalize_macos_bundle(args, app, project, env))
         receipt.update(state="built-not-executed", executable=executable.relative_to(args.work).as_posix(),
                        executable_sha256=CARGO.digest(executable.read_bytes()), flags=flags(args, root))
         return executable

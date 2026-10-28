@@ -101,12 +101,139 @@ class Admission(unittest.TestCase):
         info = plistlib.loads(DESKTOP.bundle_info())
         self.assertEqual(info["CFBundleExecutable"], DESKTOP.BINARY)
         self.assertEqual(info["CFBundlePackageType"], "APPL")
+        self.assertEqual(info["LSMinimumSystemVersion"], "13.0")
         flags = DESKTOP.flags(self.args, self.args.work / "build")
         remaps = [flag.split("=", 1)[1].rsplit("=", 1) for flag in flags if flag.startswith("--remap-path-prefix=")]
         self.assertEqual(remaps[0][1], "coakka")
         for name in ("coakka-desktop", "coakka-runtime", "coakka-intents"):
             self.assertIn(name, [right for _, right in remaps])
         self.assertFalse(any("build" in right or "RuntimeCandidate" in right for _, right in remaps))
+
+    def test_missing_bundle_signer_refuses_before_archive_or_work(self):
+        if self.args.target != "macos-aarch64":
+            self.skipTest("Mac bundle tool admission only")
+        with patch.dict(DESKTOP.CARGO.MACOS_TOOLS, {"codesign": self.root / "missing-signer"}), \
+                patch.object(DESKTOP.CARGO, "archive_tool", return_value=b"unit-helper") as archive:
+            with self.assertRaises(FileNotFoundError):
+                DESKTOP.admit(self.args)
+            archive.assert_not_called()
+        self.assertFalse(self.args.work.exists())
+
+    def bundle_fixture(self):
+        self.args.work.mkdir()
+        app = self.args.work / "installed/Intent.app/Contents/MacOS"
+        native = app.parent / "Frameworks/libcoakka_runtime_v2.dylib"
+        native.parent.mkdir(parents=True)
+        native.write_bytes(b"frozen-native-image")
+        return app, native
+
+    def test_bundle_code_and_component_provenance_have_distinct_layouts(self):
+        app = self.args.work / "installed/Intent.app/Contents/MacOS"
+        source = app / "native/macos-aarch64"
+        source.mkdir(parents=True)
+        legal = ("LICENSE", "NOTICE", "PACKAGE-LICENSE.md", "NATIVE-LICENSE.md")
+        payload = {name: ("unit-only " + name).encode()
+                   for name in (*legal, "native-manifest.json", "libcoakka_runtime_v2.dylib")}
+        for name, data in payload.items():
+            (source / name).write_bytes(data)
+        receipt = DESKTOP.relocate_macos_payload(
+            app, source / "libcoakka_runtime_v2.dylib", legal)
+        self.assertEqual(len(receipt["files"]), 6)
+        self.assertFalse((app / "native").exists())
+        for name, data in payload.items():
+            destination = app.parent / (
+                "Frameworks/" + name if name.endswith(".dylib")
+                else "Resources/native/macos-aarch64/" + name)
+            self.assertEqual(destination.read_bytes(), data)
+        self.assertIn("provenance", receipt["native_manifest_role"])
+
+    def test_unexpected_bundle_component_refuses_before_moves(self):
+        app = self.args.work / "installed/Intent.app/Contents/MacOS"
+        source = app / "native/macos-aarch64"
+        source.mkdir(parents=True)
+        image = source / "libcoakka_runtime_v2.dylib"
+        image.write_bytes(b"unit-only-image")
+        (source / "unexpected").write_bytes(b"keep")
+        with self.assertRaisesRegex(ValueError, "unexpected deployed"):
+            DESKTOP.relocate_macos_payload(app, image, ())
+        self.assertEqual(image.read_bytes(), b"unit-only-image")
+        self.assertFalse((app.parent / "Frameworks").exists())
+
+    def test_bundle_finalization_signs_only_bundle_and_keeps_native(self):
+        app, native = self.bundle_fixture()
+        with patch.object(DESKTOP.CARGO, "child", return_value={"unitOnly": True}) as child:
+            rows = DESKTOP.finalize_macos_bundle(self.args, app, self.source, {})
+        self.assertEqual(len(rows), 2)
+        commands = [call.args[0] for call in child.call_args_list]
+        self.assertEqual(commands[0][-1], str(app.parent.parent))
+        self.assertIn("--timestamp=none", commands[0])
+        self.assertEqual(commands[1][1:3], ["--verify", "--strict"])
+        self.assertFalse(any("--deep" in command or str(native) in command for command in commands))
+        self.assertEqual(native.read_bytes(), b"frozen-native-image")
+
+    def test_bundle_finalization_failure_and_native_mutation_refuse(self):
+        app, native = self.bundle_fixture()
+        with patch.object(DESKTOP.CARGO, "child", side_effect=RuntimeError("signing refused")):
+            with self.assertRaisesRegex(RuntimeError, "signing refused"):
+                DESKTOP.finalize_macos_bundle(self.args, app, self.source, {})
+
+        self.assertEqual(native.read_bytes(), b"frozen-native-image")
+
+        def mutate_native(*args, **kwargs):
+            native.write_bytes(b"changed")
+            return {"unitOnly": True}
+
+        with patch.object(DESKTOP.CARGO, "child", side_effect=mutate_native):
+            with self.assertRaisesRegex(ValueError, "native image changed"):
+                DESKTOP.finalize_macos_bundle(self.args, app, self.source, {})
+
+    def test_build_places_complete_bundle_before_finalizer(self):
+        if self.args.target != "macos-aarch64":
+            self.skipTest("Mac bundle composition only")
+        helper = b'''LEGAL = ("LICENSE", "NOTICE", "PACKAGE-LICENSE.md", "NATIVE-LICENSE.md")
+def unpack(snapshot, digest, destination):
+    destination.mkdir()
+    (destination / "rust").mkdir()
+    (destination / "rust/native-manifest.json").write_bytes(b"unit-original-component-provenance")
+def deploy(package, executable, target):
+    directory = executable.parent / "native" / target
+    directory.mkdir(parents=True)
+    for name in (*LEGAL, "native-manifest.json", "libcoakka_runtime_v2.dylib"):
+        (directory / name).write_bytes(b"unit-only-placement-fixture")
+    return directory / "libcoakka_runtime_v2.dylib"
+'''
+        files = {name: (self.source / name).read_bytes() for name in DESKTOP.SOURCES}
+        binary = self.args.target_cache / DESKTOP.CARGO.TARGETS[self.args.target] / "release" / DESKTOP.BINARY
+
+        def child(command, cwd, env, log, bound):
+            if command[1] == "-vV":
+                log.write_text("release: 1.92.0\nhost: " + DESKTOP.CARGO.TARGETS[self.args.target] + "\n")
+            elif command[-1] == "-V":
+                log.write_text("clippy unit-only\n")
+            else:
+                log.write_text("unit-only\n")
+                if command[1] == "build":
+                    binary.parent.mkdir(parents=True)
+                    binary.write_bytes(b"unit-only-application-fixture")
+            return {"unitOnly": True}
+
+        def finalize(args, app, project, env):
+            self.assertTrue((app.parent / "Info.plist").is_file())
+            self.assertTrue((app.parent / "Frameworks/libcoakka_runtime_v2.dylib").is_file())
+            self.assertTrue((app.parent / "Resources/native/macos-aarch64/NOTICE").is_file())
+            self.assertFalse((app / "native").exists())
+            return [{"unitOnly": True}]
+
+        with patch.object(DESKTOP, "admit", return_value=(b"archive", helper, files)), \
+                patch.object(DESKTOP.CARGO, "child", side_effect=child), \
+                patch.object(DESKTOP, "finalize_macos_bundle", side_effect=finalize) as seal:
+            DESKTOP.build(self.args)
+        seal.assert_called_once()
+        receipt = json.loads((self.args.work / "receipt.json").read_text())
+        self.assertEqual(len(receipt["bundle_deployment"]["files"]), 6)
+        self.assertEqual(receipt["bundle_deployment"]["files"]["rust/native-manifest.json"]["sha256"],
+                         DESKTOP.CARGO.digest(b"unit-original-component-provenance"))
+        self.assertFalse((self.args.work / "build").exists())
 
     def transaction(self, fail_build, expect_cleanup=True):
         helper = b'''def unpack(snapshot, digest, destination):

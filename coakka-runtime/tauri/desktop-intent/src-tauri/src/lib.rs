@@ -98,6 +98,21 @@ fn coakka_runtime_facts(state: State<'_, AppState>) -> Value {
 fn create_state() -> Result<AppState, Box<dyn Error>> {
     let mut intent = ConnectorStartSpec::new("tauri-desktop-sample", "tauri-desktop-node");
     intent.routes = vec![RouteSpec::single_local(TARGET, "local", 0)];
+    #[cfg(target_os = "macos")]
+    let dispatcher = {
+        // The app packager owns this bundle location. Any present override,
+        // including empty/non-Unicode input, stays entirely SDK-authoritative.
+        let path =
+            macos_runtime_library_intent(std::env::var_os("COAKKA_RUNTIME_LIB").is_some(), || {
+                Ok(std::env::current_exe()?.canonicalize()?)
+            })?;
+        let runtime = match path {
+            None => coakka_runtime::RuntimeHost::start(intent)?,
+            Some(path) => coakka_runtime::RuntimeHost::start_with_runtime_lib(intent, path)?,
+        };
+        RuntimeIntentDispatcher::new(runtime)
+    };
+    #[cfg(not(target_os = "macos"))]
     let dispatcher = RuntimeIntentDispatcher::start(intent)?;
     dispatcher.register_json_handler(TARGET, |request| {
         Ok(json!({"handledBy": "tauri-rust-host", "operation": request.operation, "echo": request.payload}))
@@ -117,6 +132,35 @@ fn create_state() -> Result<AppState, Box<dyn Error>> {
             failed: AtomicBool::new(false),
         }),
     })
+}
+
+#[cfg(target_os = "macos")]
+fn macos_runtime_library_intent(
+    override_present: bool,
+    executable: impl FnOnce() -> Result<PathBuf, Box<dyn Error>>,
+) -> Result<Option<String>, Box<dyn Error>> {
+    if override_present {
+        return Ok(None);
+    }
+    Ok(Some(macos_bundle_runtime_path(&executable()?)?))
+}
+
+#[cfg(target_os = "macos")]
+fn macos_bundle_runtime_path(executable: &std::path::Path) -> Result<String, Box<dyn Error>> {
+    let directory = executable.parent().ok_or("missing application directory")?;
+    let contents = directory.parent().ok_or("missing application contents")?;
+    let bundle = contents.parent().ok_or("missing application bundle")?;
+    if directory.file_name() != Some(std::ffi::OsStr::new("MacOS"))
+        || contents.file_name() != Some(std::ffi::OsStr::new("Contents"))
+        || bundle.extension() != Some(std::ffi::OsStr::new("app"))
+    {
+        return Err("expected the packaged application bundle layout".into());
+    }
+    Ok(contents
+        .join("Frameworks/libcoakka_runtime_v2.dylib")
+        .to_str()
+        .ok_or("application bundle path is not valid text")?
+        .to_owned())
 }
 
 pub(crate) fn exit_code(app: &tauri::AppHandle) -> i32 {
@@ -343,5 +387,37 @@ mod application_exit_tests {
         shutdown.failed.store(true, Ordering::Release);
         drop(shutdown);
         assert!(application_result(&retained, 0).is_err());
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn packaged_runtime_path_is_exact_without_probing_or_fallback() {
+        use std::path::Path;
+        assert_eq!(
+            macos_bundle_runtime_path(Path::new(
+                "/app có dấu 测试/Intent.app/Contents/MacOS/application"
+            ))
+            .unwrap(),
+            "/app có dấu 测试/Intent.app/Contents/Frameworks/libcoakka_runtime_v2.dylib"
+        );
+        for path in [
+            "/app/application",
+            "/app/Intent.app/Contents/application",
+            "/app/Intent/Contents/MacOS/application",
+        ] {
+            assert!(macos_bundle_runtime_path(Path::new(path)).is_err());
+        }
+        assert!(
+            macos_runtime_library_intent(true, || panic!("override must stay with SDK"))
+                .unwrap()
+                .is_none()
+        );
+        assert_eq!(
+            macos_runtime_library_intent(false, || Ok(PathBuf::from(
+                "/app/Intent.app/Contents/MacOS/application"
+            )))
+            .unwrap(),
+            Some("/app/Intent.app/Contents/Frameworks/libcoakka_runtime_v2.dylib".to_owned())
+        );
     }
 }

@@ -1,7 +1,8 @@
 # Rust Runtime Basic
 
 A standalone Cargo application consumes the exact frozen Rust 2.5.3 candidate
-and native Core 2.5.1. It does not run a packaged smoke binary or download an
+and native Core 2.5.1. The selected archive carries five native targets; this
+basic runner remains qualified for Mac ARM64, Linux ARM64 and Windows x64. It does not run a packaged smoke binary or download an
 older public archive. Read the [candidate guide](../../docs/runtime-rust-candidate.md)
 and select explicit artifact, toolchain, offline cache and fresh external work
 paths before running:

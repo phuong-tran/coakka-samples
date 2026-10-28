@@ -1,7 +1,7 @@
 # Tauri sample candidate
 
 These are separate private command and desktop sample workflows. There is no
-publication, signing or support promotion. The terminal command does not start
+publication, publisher-signing or support promotion. The terminal command does not start
 a WebView; desktop qualification belongs to the actual app-host boundary.
 Use only the exact archive listed in `artifacts/runtime-tauri-candidate.json`
 from the trusted candidate channel. Archive generation 2.5.3 contains Rust
@@ -28,7 +28,7 @@ Select `linux-aarch64` on Pi. For Windows x64 use native Python in a prepared
 x64 compiler environment:
 
 ```powershell
-python -B coakka-runtime/scripts/runtime-tauri-candidate.py --archive D:/candidate/coakka-runtime-tauri-intents-2.5.3-source.tar.gz --source D:/samples/runtime/tauri/intent-command --work D:/build-storage/tauri-command-new --cargo D:/rust/bin/cargo.exe --cargo-home D:/offline-cargo-cache --target windows-x86_64
+python -B coakka-runtime/scripts/runtime-tauri-candidate.py --archive D:/candidate/coakka-runtime-tauri-intents-2.5.3-source.tar.gz --source D:/samples/coakka-runtime/tauri/intent-command --work D:/build-storage/tauri-command-new --cargo D:/rust/bin/cargo.exe --cargo-home D:/offline-cargo-cache --target windows-x86_64
 & D:/build-storage/tauri-command-new/installed/coakka-sample-tauri-intent-command.exe
 ```
 
@@ -55,7 +55,12 @@ Cargo runs offline/locked with size optimization, thin LTO, one codegen unit,
 stripped symbols and path remapping. Windows uses static CRT and the compatible
 linker bundled with the selected minimum toolchain, without debug-metadata
 patching or a release-scanner waiver. Eleven registry dependencies keep the
-exact package lock versions/checksums. No helper executes in the installed app.
+exact package lock versions/checksums. Mac command builds preserve compiler-tool
+signatures, then use the prepared Apple tools to strip and locally sign only
+the copied application. That ad-hoc signature is not publisher authentication,
+notarization or release signing; the bundled Core bytes remain unchanged.
+Build/platform-tool logs and the receipt remain beside `installed/`.
+No helper executes in the installed app.
 
 Move the complete `installed/` directory, including `native/<target>/`, its
 native manifest and legal files. The app needs neither Python/Cargo/source
@@ -112,11 +117,24 @@ retains its exact address map only in the private build cache. The map is not
 part of `installed/`; keep it privately when diagnosing that exact build.
 No binary metadata patch or scanner exception is used.
 
-The installed Mac output is an ordinary `.app`; Linux/Windows outputs are
-native executables with adjacent `native/<target>/` resources and legal files.
-Move the complete output, not only the executable. Python, Cargo, extracted
+The installed Mac output is an ordinary `.app` with a declared macOS 13.0
+minimum, matching the bundled Core image; this is an artifact requirement, not
+proof of execution on every older OS. Its native image lives in
+`Contents/Frameworks/`, with the original dependency manifest and all legal
+texts in `Contents/Resources/native/macos-aarch64/`. That original manifest is
+source-component provenance; the build receipt maps those files to their
+installed bundle locations. The app selects this fixed bundle resource only
+when no native override is present; any present override remains entirely
+SDK-validated, including empty or invalid values. The producer locally signs
+and verifies the complete app bundle while preserving the native image bytes.
+
+Linux/Windows outputs are native executables with adjacent
+`native/<target>/` resources and legal files. Move the complete output, not only
+the executable. Python, Cargo, extracted
 SDK sources and the build tree are not installed runtime dependencies. Private
-candidate apps are unsigned; do not disable browser/OS protection to run them.
+candidate apps have no publisher signature or notarization; compiler or local
+build signatures do not authenticate a publisher. Preserve normal browser/OS
+protection when qualifying these private apps.
 
 The app owns command ACL, local CSP/assets/navigation, at most eight accepted
 blocking asks and orderly window/browser retirement. Core remains authoritative

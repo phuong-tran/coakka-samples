@@ -15,8 +15,8 @@
   "coreCommit": "f6b61768f60a08d81b1dc06625a211ffca8e89e2",
   "archive": {
     "file": "coakka-runtime-tauri-intents-2.5.3-source.tar.gz",
-    "bytes": 2423263,
-    "sha256": "82013559fb8d9f402dedb5aa120ba6fe4152f013e12519505a88a60b3f2878c6"
+    "bytes": 2424023,
+    "sha256": "cb617d7cbbffb0c3808debaaaedb0716115e35a6c2e84ba71f4b39eca8858816"
   },
   "buildTool": {
     "member": "coakka-runtime-tauri-intents-2.5.3-source/rust/tools/package_tools.py",

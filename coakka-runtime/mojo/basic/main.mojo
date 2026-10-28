@@ -10,7 +10,7 @@ def main() raises:
 
     print("coakka_runtime_mojo_basic starting")
     var lib = OwnedDLHandle(String(args[1]))
-    var status = lib.call["coakka_mojo_runtime_basic", c_int](0)
+    var status = lib.call["coakka_mojo_runtime_connector_smoke", c_int](0)
     if status != 0:
-        raise Error("coakka_mojo_runtime_basic failed")
+        raise Error("coakka_mojo_runtime_connector_smoke failed")
     print("coakka_runtime_mojo_basic done")

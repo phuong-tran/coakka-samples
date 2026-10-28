@@ -1,57 +1,46 @@
 #!/usr/bin/env bash
 set -euo pipefail
-
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../../.." && pwd)"
-publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
-source "${repo_root}/scripts/resolve-artifact.sh"
-source "${repo_root}/scripts/sample-utils.sh"
-
-coakka_require_command mojo "Install Mojo, then retry."
-coakka_require_command cc "Install a C compiler, then retry."
-coakka_require_command tar "Install tar, then retry."
-
-tmp_dir="$(mktemp -d)"
-trap 'rm -rf "${tmp_dir}"' EXIT
-artifact_rel="runtime/mojo/releases/2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a-3ae74f4/coakka-runtime-mojo-2.5.2-source.tar.gz"
-package_path="$(coakka_resolve_artifact "${publish_root}" "${artifact_rel}" "${tmp_dir}/artifacts/coakka-runtime-mojo-2.5.2-source.tar.gz")"
-mkdir -p "${tmp_dir}/package"
-tar -C "${tmp_dir}/package" --strip-components 1 -xzf "${package_path}"
-
-package_root="${tmp_dir}/package"
-
-runtime_lib="${COAKKA_RUNTIME_LIB:-}"
-if [[ -z "${runtime_lib}" ]]; then
-  case "$(uname -s)" in
-    Darwin) runtime_lib="${package_root}/native/macos-aarch64/libcoakka_runtime_v2.dylib" ;;
-    Linux)
-      case "$(uname -m)" in
-        x86_64) runtime_lib="${package_root}/native/linux-x86_64/libcoakka_runtime_v2.so" ;;
-        aarch64|arm64) runtime_lib="${package_root}/native/linux-aarch64/libcoakka_runtime_v2.so" ;;
-        *) coakka_die "Unsupported runtime Mojo sample arch: $(uname -m)" ;;
-      esac
-      ;;
-    *) coakka_die "Unsupported runtime Mojo sample OS: $(uname -s)" ;;
-  esac
-fi
-
+: "${COAKKA_SAMPLE_WORK_ROOT:?set a fresh absolute work path with an existing parent}"
+for name in COAKKA_RUNTIME_LIB COAKKA_FILE_LANE_RUNTIME_LIB COAKKA_STREAM_LANE_RUNTIME_LIB LD_PRELOAD LD_LIBRARY_PATH DYLD_LIBRARY_PATH DYLD_INSERT_LIBRARIES; do
+  if declare -p "${name}" >/dev/null 2>&1; then
+    echo "remove native override: ${name}" >&2
+    exit 2
+  fi
+done
+: "${COAKKA_MOJO_ARCHIVE:?select the exact private3.0.0-source archive}"
+[[ "$(mojo --version)" == "Mojo 1.0.0b2.dev2026052115 (cb8874f5)" ]] || { echo "use qualified Mojo1.0.0b2.dev2026052115" >&2; exit 2; }
+admission="$(python3 -I -B "${repo_root}/coakka-runtime/scripts/runtime-source-candidate.py" --language mojo --archive "${COAKKA_MOJO_ARCHIVE}" --work "${COAKKA_SAMPLE_WORK_ROOT}")"
+package_root="$(printf '%s' "${admission}" | python3 -I -B -c 'import json,sys;print(json.load(sys.stdin)["packageRoot"])')"
+work_root="${COAKKA_SAMPLE_WORK_ROOT}"
+cleanup() { rm -rf "${work_root}/build" "${work_root}/package"; }
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+mkdir "${work_root}/build" "${work_root}/installed"
+export TMPDIR="${work_root}/build"
+case "$(uname -s):$(uname -m)" in
+ Darwin:arm64) platform=macos-aarch64; name=libcoakka_runtime_v2.dylib ;;
+ Linux:aarch64|Linux:arm64) platform=linux-aarch64; name=libcoakka_runtime_v2.so ;;
+ Linux:x86_64) platform=linux-x86_64; name=libcoakka_runtime_v2.so ;;
+ *) echo "unsupported sample host" >&2; exit 64 ;;
+esac
+mkdir "${work_root}/installed/native"
+cp "${package_root}/native/${platform}/${name}" "${work_root}/installed/native/${name}"
+runtime_lib="${work_root}/installed/native/${name}"
+cp "${script_dir}/main.mojo" "${work_root}/installed/main.mojo"
 case "$(uname -s)" in
-  Darwin)
-    shim="${tmp_dir}/libcoakka_mojo_runtime_basic.dylib"
-    cc -dynamiclib \
-      "${script_dir}/runtime_shim.c" \
-      "${runtime_lib}" \
-      -o "${shim}"
-    DYLD_LIBRARY_PATH="$(dirname "${runtime_lib}"):${tmp_dir}" \
-      mojo "${script_dir}/main.mojo" "${shim}"
-    ;;
-  Linux)
-    shim="${tmp_dir}/libcoakka_mojo_runtime_basic.so"
-    cc -shared -fPIC \
-      "${script_dir}/runtime_shim.c" \
-      "${runtime_lib}" \
-      -o "${shim}"
-    LD_LIBRARY_PATH="$(dirname "${runtime_lib}"):${tmp_dir}" \
-      mojo "${script_dir}/main.mojo" "${shim}"
-    ;;
+ Darwin)
+  shim="${work_root}/installed/libcoakka_mojo_basic.dylib"
+  cc -std=c11 -Wall -Wextra -Werror -fvisibility=hidden -dynamiclib "${package_root}/src/runtime_connector_shim.c" "${runtime_lib}" -o "${shim}"
+  DYLD_LIBRARY_PATH="${work_root}/installed/native" mojo "${work_root}/installed/main.mojo" "${shim}"
+  ;;
+ Linux)
+  shim="${work_root}/installed/libcoakka_mojo_basic.so"
+  # The loader expands ORIGIN relative to the installed shim.
+  # shellcheck disable=SC2016
+  cc -std=c11 -Wall -Wextra -Werror -fvisibility=hidden -shared -fPIC "${package_root}/src/runtime_connector_shim.c" "${runtime_lib}" -Wl,-rpath,'$ORIGIN/native' -o "${shim}"
+  LD_LIBRARY_PATH="${work_root}/installed/native" mojo "${work_root}/installed/main.mojo" "${shim}"
+  ;;
 esac

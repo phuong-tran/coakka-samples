@@ -6,8 +6,8 @@
   "coreCommit": "f6b61768f60a08d81b1dc06625a211ffca8e89e2",
   "archive": {
     "file": "coakka-runtime-rs-2.5.3.tar.gz",
-    "bytes": 2387685,
-    "sha256": "df7093947077b9da46311d544e27495b992ee781f0db5d8355a4d9137235a038"
+    "bytes": 4584567,
+    "sha256": "7a34346a3e0b98c3b45b9dab75dc43d6458da03f6fd466ff79207d2cf447aa5e"
   },
   "buildTool": {
     "member": "coakka-runtime-rs-2.5.3/tools/package_tools.py",

@@ -9,21 +9,23 @@ supported native runtime package, route snapshots, handlers, and the normal
 platform services around it.
 
 Android industrial tablets are feasible. Android connector `1.2.0` now provides
-a private four-ABI AAR and a release-minified API 37 x86_64 emulator gate. An
+a private four-ABI AAR tested through a real R8-minified app on the API 37
+native x86_64 emulator and API 36 native ARM64 emulator. An
 Android app or background service can host the connector, load the native
 runtime through the Android NDK, register handlers, and call stable targets.
 Physical-device lifecycle and industrial soak evidence remain separate support
 gates.
 
-Its native construction path leaves execution and connection intent absent, so
-Core owns the normal CPU `AUTO` and persistent `MULTIPLEXED` defaults. Android
-projects Core's accepted startup facts instead of keeping a connector-side
-default table. Monitor collection is the one explicit construction option
-because the connector exposes a monitor doorbell; optional I/O remains OFF.
-Core also owns the message-delivery engine: Android consumes delivered requests
-through the opaque Core reader and reply-capable requests through Core ask
-tickets. It does not read legacy response/request pipes or infer whether Core
-selected its owned queue and doorbell engine.
+Its normal construction leaves CPU and connection choices to Core: `AUTO`
+and `MULTIPLEXED` are the defaults. Monitoring is OFF unless the application
+requests it at startup. Android reports Core's accepted settings rather than
+keeping its own default table. Optional network intent preserves absent versus explicit fields;
+`networkSnapshot()` reports Core-accepted mode, endpoints and provenance.
+An optional grouped monitor choice distinguishes
+absence from explicit OFF or ON; health remains available without extra
+collection. See [Runtime Defaults And Monitoring](runtime-monitoring.md) for
+when to enable it. Core owns request delivery and reply matching; Android
+adapts values and application lifecycle without duplicating that work.
 
 ## Edge Linux First
 
@@ -121,10 +123,12 @@ stable targets.
 
 Connector `1.2.0` has an internal candidate AAR with `arm64-v8a`, `armeabi-v7a`,
 `x86`, and `x86_64` payloads, a thin JNI layer, and Android lifecycle guidance.
-The exact release-minified AAR passed startup inspection, Core-owned Runtime
+The exact AAR was consumed by a real R8-minified app and instrumentation APK
+for startup inspection, Core-owned Runtime
 request/reply, close interruption, File Lane, and Stream Lane on the Windows
-API 37 x86_64 AVD. That AVD also advertises translated ARM64 through
-`libndk_translation.so`, which is not physical ARM64 evidence. The AAR remains
+API 37 native x86_64 AVD and a separate API 36 native ARM64 Mac emulator.
+The Windows AVD also advertises translated ARM64, which is not that ARM64
+execution proof or physical-device evidence. The AAR remains
 an internal candidate; no Maven Central publication is planned.
 
 A proper Android lane should include:
@@ -162,7 +166,9 @@ Treat this as the support boundary:
 - edge Linux is the first practical expansion target for device and gateway
   validation;
 - Android connector `1.2.0` has a clean private source checkpoint and an
-  unsigned emulator-tested candidate, not a public tag or supported coordinate;
-- the API 37 x86_64 gate does not establish physical-tablet Activity or service
-  restart, process-death recovery, LAN behavior, thermal pressure, ARM64/32-bit
-  matching-device execution, or soak support.
+  unsigned emulator-tested candidate; its current API has no public source tag
+  or supported coordinate. The older public 1.2.0 tag is a different immutable
+  artifact and must not be used as its source;
+- the two native emulator gates do not establish physical-tablet Activity or service
+  restart, process-death recovery, LAN behavior, thermal pressure, physical ARM64/32-bit
+  execution, or soak support.
