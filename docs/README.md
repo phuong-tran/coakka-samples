@@ -17,3 +17,14 @@ product directories; their READMEs link back to these guides. Read
 Older documentation addresses retain short forwarding pages for existing links.
 Versioned release records remain historical evidence at their original paths.
 No unreleased candidate becomes available merely because its guide is present.
+
+<!-- Retain section identifiers used by incoming documentation links. -->
+<a id="build-and-integrate-runtime"></a>
+<a id="build-and-operate-http-runtime"></a>
+<a id="choose-a-product"></a>
+<a id="operate-and-verify-runtime"></a>
+<a id="other-ecosystem-guides"></a>
+<a id="reference-and-support"></a>
+<a id="runtime-transport-and-security"></a>
+<a id="start-here"></a>
+<a id="start-with-coakka-runtime"></a>
