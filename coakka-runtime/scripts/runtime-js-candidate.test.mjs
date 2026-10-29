@@ -4,7 +4,7 @@ import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
-import { admitCatalog, admitRuntime, readRegular, runChild, runSample, verifyArchive, verifyInstalled } from "./runtime-js-candidate.mjs";
+import { admitCatalog, admitRuntime, minimumRuntimeForTarget, readRegular, runChild, runSample, verifyArchive, verifyInstalled } from "./runtime-js-candidate.mjs";
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const catalog = JSON.parse(readFileSync(join(repo, "coakka-runtime/artifacts/runtime-js-candidate.json"), "utf8"));
@@ -46,6 +46,25 @@ test("baseline comparisons distinguish runtimes and patch versions", () => {
     ["bun", "1.3.14", { node: "22.0.0" }], ["node", "22.0.0", { node: "22.0.0-dev" }],
   ];
   for (const [role, minimum, versions] of refusals) assert.throws(() => admitRuntime(role, minimum, versions));
+});
+
+test("Bun Windows ARM requires its functioning native-library runtime", () => {
+  const entry = admitCatalog(catalog, "bun");
+  assert.equal(minimumRuntimeForTarget(entry, "win32", "arm64"), "1.4.0");
+  for (const [os, cpu] of [["darwin", "arm64"], ["linux", "arm64"], ["linux", "x64"], ["win32", "x64"]]) {
+    assert.equal(minimumRuntimeForTarget(entry, os, cpu), "1.3.14");
+  }
+  assert.throws(() => admitRuntime("bun", minimumRuntimeForTarget(entry, "win32", "arm64"), { bun: "1.3.14" }), /1\.4\.0/);
+  assert.equal(admitRuntime("bun", minimumRuntimeForTarget(entry, "win32", "arm64"), { bun: "1.4.0" }), "1.4.0");
+  assert.throws(() => minimumRuntimeForTarget(entry, "darwin", "x64"), /unsupported candidate runtime target/);
+  for (const mutate of [
+    c => { delete c.packages.bun.minimumRuntimeByTarget["windows-aarch64"]; },
+    c => { c.packages.bun.minimumRuntimeByTarget["windows-aarch64"] = "^1.4.0"; },
+    c => { c.packages.bun.minimumRuntimeByTarget["windows-x86"] = "1.4.0"; },
+  ]) {
+    const changed = structuredClone(catalog); mutate(changed);
+    assert.throws(() => admitCatalog(changed, "bun"), /runtime target requirements/);
+  }
 });
 
 test("private candidate admits stable and dated dev identities without accepting version ranges", () => {

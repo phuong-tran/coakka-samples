@@ -48,13 +48,21 @@ export function admitCatalog(catalog, role) {
 // Shared cold package-map mechanics; each runner admits its own closure.
 export function admitPackage(entry, role) {
   if (!["node", "bun", "electron"].includes(role)) fail("unknown package role");
-  if (!keys(entry, ["name", "version", "minimumRuntime", "archive", "bytes", "sha256", "members"]) ||
+  if (!keys(entry, ["name", "version", "minimumRuntime", "archive", "bytes", "sha256", "members",
+        ...(role === "bun" ? ["minimumRuntimeByTarget"] : [])]) ||
       entry.name !== `coakka-v2-connector-${role}` ||
       !/^\d+\.\d+\.\d+(?:-dev\.\d{8})?(?![\s\S])/.test(entry.version) ||
       !/^\d+\.\d+\.\d+$/.test(entry.minimumRuntime) ||
       entry.archive !== `${entry.name}-${entry.version}.tgz` ||
       !size(entry.bytes, 32 * 1024 * 1024) || !digest(entry.sha256) || !plain(entry.members)) {
     fail("invalid candidate package role or identity");
+  }
+  if (role === "bun") {
+    const targets = ["macos-aarch64", "linux-aarch64", "linux-x86_64", "windows-aarch64", "windows-x86_64"];
+    if (!keys(entry.minimumRuntimeByTarget, targets) ||
+        Object.values(entry.minimumRuntimeByTarget).some(value => typeof value !== "string" || !/^\d+\.\d+\.\d+$/.test(value))) {
+      fail("invalid candidate runtime target requirements");
+    }
   }
   const members = Object.entries(entry.members);
   if (members.length === 0 || members.length > 64) fail("invalid member count");
@@ -67,6 +75,16 @@ export function admitPackage(entry, role) {
   }
   if (bytes > 64 * 1024 * 1024 || !entry.members["package.json"]) fail("invalid package extent");
   return entry;
+}
+
+// Package/runtime compatibility only; no Core capabilities or defaults are inferred.
+export function minimumRuntimeForTarget(entry, platform = process.platform, architecture = process.arch) {
+  if (!entry.minimumRuntimeByTarget) return entry.minimumRuntime;
+  const os = { darwin: "macos", linux: "linux", win32: "windows" }[platform];
+  const cpu = { arm64: "aarch64", x64: "x86_64" }[architecture];
+  const minimum = entry.minimumRuntimeByTarget[`${os}-${cpu}`];
+  if (!minimum) fail("unsupported candidate runtime target");
+  return minimum;
 }
 
 /** @param {{node?: string, bun?: string}} [versions] */
@@ -153,7 +171,7 @@ export async function runSample(role, sample, environment = process.env, signal 
   }
   const catalog = JSON.parse(readRegular(join(repository, "coakka-runtime/artifacts/runtime-js-candidate.json"), 1024 * 1024).toString("utf8"));
   const entry = admitCatalog(catalog, role);
-  const version = admitRuntime(role, entry.minimumRuntime);
+  const version = admitRuntime(role, minimumRuntimeForTarget(entry));
   const archive = environment.COAKKA_RUNTIME_CANDIDATE_PACKAGE;
   const work = environment.COAKKA_SAMPLE_WORK_ROOT;
   if (!archive || !work || !isAbsolute(archive) || !isAbsolute(work)) {

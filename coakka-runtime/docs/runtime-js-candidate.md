@@ -4,11 +4,10 @@ This branch validates a private candidate, not a registry release. Node and Bun
 use the exact archives in `artifacts/runtime-js-candidate.json`, version
 `3.0.0`, with bundled Core
 `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` (ABI 1).
-Node 22.0.0 and Bun 1.3.14 are the tested minima. The Node candidate includes
-macOS ARM64, Linux ARM64/x64 and Windows ARM64/x64. Bun includes macOS ARM64,
-Linux ARM64 and Windows x64. Final3.0.0 installed execution is recorded on
-macOS ARM64, physical Windows11 x64 and Raspberry Pi Linux ARM64 for Node and
-Bun. Node's final3.0.0 Linux x64 and native Windows ARM64 smokes remain pending;
+Node 22.0.0 and Bun 1.3.14 are the required minima, except Bun on Windows
+ARM64 requires 1.4.0. The catalog records each Bun target requirement. Both candidates include
+macOS ARM64, Linux ARM64/x64 and Windows ARM64/x64. Each host requires its own
+installed default-path execution on all five targets before promotion;
 minimum-OS and publication claims remain separate gates. Earlier long resource
 and lifecycle campaigns remain historical evidence for the unchanged processing
 source, not execution evidence for these new archive identities.
