@@ -1,30 +1,17 @@
 # CoAkka Documentation
 
-Choose a product, then follow its installation, integration and operations guides.
-Each product has its own configuration, packages and release version.
+Choose the product you are using. Each product has its own packages, version
+and configuration.
 
-| Documentation | Start here |
-| --- | --- |
-| CoAkka Runtime | [Distributed applications, connectors, tools and monitoring](coakka-runtime/README.md) |
-| CoAkka HTTP Runtime | [HTTP services, integrations and operations](coakka-http-runtime/README.md) |
-| CoAkka Logger | [Application logging, bounded admission and output](coakka-logger/README.md) |
-| Common | [Ecosystem introduction, package channels, licensing and support](common/README.md) |
+| Product | What you can do | Start here |
+| --- | --- | --- |
+| CoAkka Runtime | Connect application work across processes and languages. | [Run and integrate](coakka-runtime/README.md) |
+| CoAkka HTTP Runtime | Build HTTP services using your application's language. | [Build a service](coakka-http-runtime/README.md) |
+| CoAkka Logger | Submit, read and observe application logs with bounded memory. | [Use Logger](coakka-logger/README.md) |
 
-The long-term layout is `docs/<product>/`. Runnable projects stay under their
-product directories; their READMEs link back to these guides. Read
-[Product Layout](common/product-layout.md) for the directory and versioning rules.
+Need to choose a product? Read the [ecosystem map](common/ecosystem-overview.md).
+For package versions, licensing or help, use the [common guides](common/README.md).
 
-Older documentation addresses retain short forwarding pages for existing links.
-Versioned release records remain historical evidence at their original paths.
-No unreleased candidate becomes available merely because its guide is present.
-
-<!-- Retain section identifiers used by incoming documentation links. -->
-<a id="build-and-integrate-runtime"></a>
-<a id="build-and-operate-http-runtime"></a>
-<a id="choose-a-product"></a>
-<a id="operate-and-verify-runtime"></a>
-<a id="other-ecosystem-guides"></a>
-<a id="reference-and-support"></a>
-<a id="runtime-transport-and-security"></a>
-<a id="start-here"></a>
-<a id="start-with-coakka-runtime"></a>
+Runnable examples live in [Samples](https://github.com/phuong-tran/coakka-samples).
+Installable packages and downloads live in [Publish](https://github.com/phuong-tran/coakka-publish).
+A guide for a release candidate does not mean that package is available on a registry.

@@ -153,7 +153,7 @@ runtime features, native platforms, owned dependencies, exports, checksums, and
 matching-host evidence. A package template is not a release; samples may consume
 an addon only after its archive is listed in `artifacts/public-artifacts.tsv`.
 
-See [Runtime Addons](../coakka-runtime/runtime-addons.md) for the current lane status and the SFTP
+See [Runtime Addons](../coakka-runtime/guides/runtime-addons.md) for the current lane status and the SFTP
 artifact-publisher composition with File Lane.
 
 ## Public Wording Rule

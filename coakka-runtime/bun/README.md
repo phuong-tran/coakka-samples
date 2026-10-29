@@ -1,7 +1,7 @@
 # Bun Runtime Samples
 
 This branch's runnable samples target the private candidate described in the
-[candidate guide](../../docs/coakka-runtime/runtime-js-candidate.md), not the historical npm
+[candidate guide](../../docs/coakka-runtime/previews/3.0.0/runtime-js-candidate.md), not the historical npm
 train below. Use its exact local archive and explicit work directory. The apps
 omit incidental tuning, read Core-issued facts and await asynchronous shutdown.
 The recordings and integration snippets below remain historical reference,
@@ -19,9 +19,9 @@ runtime install step.
 
 Watch the Bun runtime walkthrough:
 
-![CoAkka Runtime Bun walkthrough](../../docs/assets/coakka-runtime-bun.gif)
+![CoAkka Runtime Bun walkthrough](../../docs/coakka-runtime/assets/coakka-runtime-bun.gif)
 
-Full recording: [coakka-runtime-bun.mp4](../../docs/assets/coakka-runtime-bun.mp4)
+Full recording: [coakka-runtime-bun.mp4](../../docs/coakka-runtime/assets/coakka-runtime-bun.mp4)
 
 ## Samples
 
@@ -50,7 +50,7 @@ by that process, and send typed asks/events to target names rather than URLs.
 
 Use this lane's runnable sample as the source for package imports and basic
 lifecycle names. Before generating connection strategy, TLS/mTLS, File Lane, or
-Stream Lane code, follow [AI-Assisted Integration](../../docs/common/ai-assisted-integration.md).
+Stream Lane code, follow [AI-Assisted Integration](../../docs/coakka-runtime/guides/ai-assisted-integration.md).
 It links the canonical feature guides, exact package catalog, and platform
 evidence, and it defines when only workflow pseudocode is justified.
 

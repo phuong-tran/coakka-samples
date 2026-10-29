@@ -14,7 +14,7 @@ It does not choose an engine, probe the OS, or own native handles.
 Use stable Rust 1.92 or newer with Clippy, Python 3.11+ at build time, prepared
 native GUI/linker tools, and existing offline Cargo/build caches. The framework
 graph is pinned independently of the Rust SDK's 1.77.2 minimum. Consult the
-[candidate guide](../../../docs/coakka-runtime/runtime-tauri-candidate.md) for archive identity
+[candidate guide](../../../docs/coakka-runtime/previews/3.0.0/runtime-tauri-candidate.md) for archive identity
 and the trust/cleanup contract. No registry or native rebuild is performed.
 
 ```sh

@@ -2,7 +2,7 @@
 
 This private lane uses exactly `3.0.0` and bundled Core3.0.0+1522b4a9,
 not the historical public package train. Follow the
-[candidate guide](../../docs/coakka-runtime/runtime-swift-candidate.md) for admitted local inputs,
+[candidate guide](../../docs/coakka-runtime/previews/3.0.0/runtime-swift-candidate.md) for admitted local inputs,
 standard SwiftPM, matching toolchain/deployment profiles and installed execution.
 
 ```sh

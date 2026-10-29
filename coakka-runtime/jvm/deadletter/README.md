@@ -1,7 +1,7 @@
 # JVM Runtime Deadletter (Kotlin)
 
 One absent-route request and one bounded observation through the actual
-public Kotlin APIs. Select the [private ProGuard candidate](../../../docs/coakka-runtime/runtime-jvm-candidate.md)
+public Kotlin APIs. Select the [private ProGuard candidate](../../../docs/coakka-runtime/previews/3.0.0/runtime-jvm-candidate.md)
 and explicit build/work/cache inputs, then:
 
 ```sh

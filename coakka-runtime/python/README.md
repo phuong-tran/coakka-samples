@@ -1,7 +1,7 @@
 # Python Runtime Samples
 
 This branch's basic/deadletter/hot-reload apps use the
-[exact private candidate workflow](../../docs/coakka-runtime/runtime-python-candidate.md).
+[exact private candidate workflow](../../docs/coakka-runtime/previews/3.0.0/runtime-python-candidate.md).
 They do not install the historical public wheel shown below. Core owns
 defaults/effective facts and typed refusal statuses; the apps scope observation
 and host lifetimes before reporting failure. The published snippets/recordings
@@ -31,9 +31,9 @@ bash run.sh coakka-runtime python hot-reload
 
 Watch the Python runtime walkthrough:
 
-![CoAkka Runtime Python walkthrough](../../docs/assets/coakka-runtime-python.gif)
+![CoAkka Runtime Python walkthrough](../../docs/coakka-runtime/assets/coakka-runtime-python.gif)
 
-Full recording: [coakka-runtime-python.mp4](../../docs/assets/coakka-runtime-python.mp4)
+Full recording: [coakka-runtime-python.mp4](../../docs/coakka-runtime/assets/coakka-runtime-python.mp4)
 
 The Python samples run from disposable virtual environments. They install the
 published PyPI package into a temporary venv, run the sample, and remove the
@@ -231,7 +231,7 @@ samples use `RuntimeHost.start(...)`.
 
 Use this lane's runnable sample as the source for package imports and basic
 lifecycle names. Before generating connection strategy, TLS/mTLS, File Lane, or
-Stream Lane code, follow [AI-Assisted Integration](../../docs/common/ai-assisted-integration.md).
+Stream Lane code, follow [AI-Assisted Integration](../../docs/coakka-runtime/guides/ai-assisted-integration.md).
 It links the canonical feature guides, exact package catalog, and platform
 evidence, and it defines when only workflow pseudocode is justified.
 

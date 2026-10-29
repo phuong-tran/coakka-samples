@@ -1,21 +1,14 @@
-# Common CoAkka Guides
+# CoAkka Ecosystem Guides
 
-These pages cover the ecosystem rather than one product's settings or API.
-For product instructions, return to the [documentation index](../README.md).
+These pages apply across products. For a product's API, examples or operations,
+use the [product documentation index](../README.md).
 
-- [New to CoAkka](new-to-coakka.md)
-- [Ecosystem overview](ecosystem-overview.md)
-- [Integration path](integration-path.md) and [incremental adoption](incremental-adoption.md)
-- [Startup and development path](startup-development-path.md)
-- [Current published packages](current-packages.md)
-- [AI-assisted integration](ai-assisted-integration.md)
-- [Architecture review](architecture-review-guide.md) and [reviewer onboarding](ai-reviewer-onboarding.md)
-- [Naming](coakka-ecosystem-naming.md), [repository boundaries](repository-boundaries.md) and [product layout](product-layout.md)
-- [Questions and answers](qna.md)
-- [Package licensing](package-licensing.md)
-- [Brand assets](brand-assets.md)
-- [Contact and support](contact-and-support.md)
+- [Choose a product](ecosystem-overview.md) or [start with the ecosystem introduction](new-to-coakka.md).
+- [Find published packages and versions](current-packages.md).
+- [Understand repository roles](repository-boundaries.md) and [the product layout](product-layout.md).
+- [Check licensing](package-licensing.md), [naming](coakka-ecosystem-naming.md) or [brand assets](brand-assets.md).
+- [Get support](contact-and-support.md).
 
-A product's guide is the authority for its own capabilities and platforms.
-The common package ledger describes published versions; private release
-candidates remain separate until a release is explicitly opened.
+Runtime-specific adoption, integration and architecture guides belong to
+[Runtime documentation](../coakka-runtime/README.md), even when they are shared
+between Samples and Publish.

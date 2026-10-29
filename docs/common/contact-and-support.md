@@ -33,4 +33,4 @@ reproduction, impact, and whether the issue may span source, publish, and
 sample repositories. Remove secrets and customer data unless a secure exchange
 method has been agreed.
 
-For common diagnostic steps, see [Troubleshooting](../coakka-runtime/troubleshooting.md).
+For common diagnostic steps, see [Troubleshooting](../coakka-runtime/operations/troubleshooting.md).

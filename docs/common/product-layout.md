@@ -52,11 +52,16 @@ one way into Samples and Publish. Documentation synchronization does not
 publish packages, admit private candidates, alter released checksums or grant
 new platform support.
 
-Older sample directories retain only a README pointing to the current product
-location. Older documentation URLs retain short forwarding pages, including
-existing section anchors, leading to their new product or common guide. These pages preserve links from published package
-and release documentation. They contain no executable copy, archive or symlink;
-current code and instructions live under the product root.
+Current docs contain no forwarding files at the root. Each product owns its
+release notes and media; only shared brand assets and ecosystem records live
+under common. Runtime-specific guides remain Runtime-owned even when copied
+to several repositories.
+
+Retired documentation URLs are recorded in the internal migration inventory.
+Existing released archives and source snapshots retain exact bytes and URLs;
+old links inside them that used rolling main branches may describe the old
+layout. New package documentation must use an appropriate version/commit
+permalink for reproducible instructions.
 
 Rolling sample code may retire an obsolete implementation when its replacement
 uses the owning package. The layout audit records the exact old Git identity,

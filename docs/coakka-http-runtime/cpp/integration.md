@@ -5,13 +5,13 @@ artifact-backed sample before adapting callbacks or resource ownership.
 C and C++ share the installed C contract; C++ adds application RAII, not a second HTTP engine.
 
 For monitor startup, policy changes, event retention and exporter ownership,
-see [Monitoring an HTTP service](../monitoring.md), including this language's
+see [Monitoring an HTTP service](../operations/monitoring.md), including this language's
 complete source recipe.
 
 For the rationale and lifecycle behind the APIs, read
-[generations and drain](../glossary.md#why-generations-are-needed),
-[shutdown hooks and trade-offs](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/operations.md#application-hooks),
-and [certificate rotation versus hot reload](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/tls-and-mtls.md#what-can-be-hot-reloaded).
+[generations and drain](../reference/glossary.md#why-generations-are-needed),
+[shutdown hooks and trade-offs](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/operations/operations.md#application-hooks),
+and [certificate rotation versus hot reload](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/operations/tls-and-mtls.md#what-can-be-hot-reloaded).
 
 ## Contents
 
@@ -21,7 +21,7 @@ and [certificate rotation versus hot reload](https://github.com/phuong-tran/coak
 - [2. Run your first server](#2-run-your-first-server)
 - [3. Adapt the native application](#3-adapt-the-native-application)
 - [Native request and response values](#native-request-and-response-values)
-- [URL grammar and glossary](../glossary.md)
+- [URL grammar and glossary](../reference/glossary.md)
 - [4. Try upload, files and WebSocket](#4-try-upload-files-and-websocket)
 - [Static files and an SPA frontend](#static-files-and-an-spa-frontend)
 - [Swap a native handler](#swap-a-native-handler)
@@ -65,7 +65,7 @@ different archives.
 These shell commands support macOS ARM64 and Linux ARM64/x86-64. Windows
 package use is documented in the linked package guide; these POSIX commands
 are not a Windows walkthrough. Package availability and matching-host execution
-are separate facts; see [coverage](../FEATURES.md#final-r3-package-checkpoint).
+are separate facts; see [coverage](../reference/FEATURES.md#final-r3-package-checkpoint).
 
 **Tools for this lane:** a C++20 compiler, CMake 3.24+,
 Python 3.11+, curl and OpenSSL CLI for the security recipe.
@@ -126,7 +126,7 @@ the callback, within an explicit bound.
 
 ## Native request and response values
 
-Read the [URL grammar and glossary](../glossary.md). Initialize a route,
+Read the [URL grammar and glossary](../reference/glossary.md). Initialize a route,
 set `method` to `GET` and `path` to `/items/{id}`, then attach its
 callback and application context as shown in `server.cpp`.
 The route path is not a full URL or a query expression.
@@ -260,7 +260,7 @@ This is **server-to-client download**, not client-to-server upload. Uploads
 still need bounded request consumption and application-owned validation and
 storage policy. Sendfile does not parse multipart or save incoming files.
 Do not assume every file response is zero-copy or turn off TLS to choose a
-fast path. See [file delivery, sendfile and uploads](../file-delivery.md) for
+fast path. See [file delivery, sendfile and uploads](../guides/file-delivery.md) for
 the motivation, protocol conditions and responsibilities.
 
 ## Swap a native handler
@@ -428,7 +428,7 @@ or imagined builder calls into your application.
 | Stop/destroy refuses | Retain ownership, finish application work and inspect the typed result. |
 
 See [README](../../../coakka-http-runtime/cpp/README.md) for detailed contracts and benchmark observations,
-[feature coverage](../FEATURES.md) for evidence boundaries, and
+[feature coverage](../reference/FEATURES.md) for evidence boundaries, and
 [benchmark methodology](../../../coakka-http-runtime/benchmark-rpi5/README.md) for performance work.
 C++ uses the native C benchmark reference, not an independently measured C++
 number. No new execution or sanitizer result is claimed by this guide.

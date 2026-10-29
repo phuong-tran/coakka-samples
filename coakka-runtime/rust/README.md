@@ -2,7 +2,7 @@
 
 This branch uses the exact private Rust 3.0.0 candidate over native Core 3.0.0,
 not the older public 2.5.2 archive. It is not a publication or support claim.
-See the [candidate guide](../../docs/coakka-runtime/runtime-rust-candidate.md) for artifact
+See the [candidate guide](../../docs/coakka-runtime/previews/3.0.0/runtime-rust-candidate.md) for artifact
 identity, Rust 1.77.2, matching-host tools, explicit offline build storage and
 the installed resource layout.
 
@@ -34,6 +34,6 @@ retires and joins its reader on exit. Keep the installed executable and its
 Only Mac ARM64, Linux ARM64 and Windows x64 are bundled in this candidate.
 Source/package evidence, matching-host application execution and broader
 ecosystem release readiness are separate gates. Follow
-[AI-Assisted Integration](../../docs/common/ai-assisted-integration.md) before using
+[AI-Assisted Integration](../../docs/coakka-runtime/guides/ai-assisted-integration.md) before using
 another feature; do not infer File/Stream/TLS APIs from a different connector
 or attach this unpublished candidate surface to an old published version.

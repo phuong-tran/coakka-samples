@@ -1,7 +1,7 @@
 # Swift runtime basic candidate
 
 Use the exact private source package in the
-[candidate guide](../../../docs/coakka-runtime/runtime-swift-candidate.md), not public2.5.2.
+[candidate guide](../../../docs/coakka-runtime/previews/3.0.0/runtime-swift-candidate.md), not public2.5.2.
 Set explicit candidate/work/cache/deployment roots, then run `bash run.sh` here
 or `bash run.sh coakka-runtime swift basic` from repo root. Native Windows uses the
 guide's configured native developer shell, not WSL ELF.

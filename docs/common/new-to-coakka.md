@@ -27,13 +27,13 @@ If you are evaluating CoAkka for the first time, read it in this order:
 | Step | Read or run | Why |
 | --- | --- | --- |
 | 1 | This page | Understand the problem and repository map. |
-| 2 | [Build The Product Before The Infrastructure](startup-development-path.md) | Start with a modular monolith or locally debugged polyglot processes, then split only when evidence justifies it. |
+| 2 | [Build The Product Before The Infrastructure](../coakka-runtime/explanation/startup-development-path.md) | Start with a modular monolith or locally debugged polyglot processes, then split only when evidence justifies it. |
 | 3 | `bash run.sh coakka-runtime containers node-python` | See two real processes, two languages, browser-visible state, and no backend HTTP fallback. |
-| 4 | [Runtime Field Guide](../coakka-runtime/runtime-field-guide.md) | Connect the sample to the normal Kubernetes Service DNS shape, queues, overload, Nginx, and mTLS boundaries. |
-| 5 | [How It Works](../coakka-runtime/how-it-works.md) | Understand app-host, connector, runtime, route snapshot, and handler ownership. |
-| 6 | [Runtime Integration Guide](../coakka-runtime/runtime-integration-guide.md) | Map an existing service into `RuntimeStartSpec`, routes, handlers, and shutdown. |
-| 7 | [Runtime Addons](../coakka-runtime/runtime-addons.md) | See how optional protocol or integration capabilities compose with Runtime without entering core. |
-| 8 | [Questions And Answers](qna.md) | Check the common objections: gRPC, Feign, Istio, sockets, load balancing, generations, and Saga. |
+| 4 | [Runtime Field Guide](../coakka-runtime/reference/runtime-field-guide.md) | Connect the sample to the normal Kubernetes Service DNS shape, queues, overload, Nginx, and mTLS boundaries. |
+| 5 | [How It Works](../coakka-runtime/explanation/how-it-works.md) | Understand app-host, connector, runtime, route snapshot, and handler ownership. |
+| 6 | [Runtime Integration Guide](../coakka-runtime/guides/runtime-integration-guide.md) | Map an existing service into `RuntimeStartSpec`, routes, handlers, and shutdown. |
+| 7 | [Runtime Addons](../coakka-runtime/guides/runtime-addons.md) | See how optional protocol or integration capabilities compose with Runtime without entering core. |
+| 8 | [Questions And Answers](../coakka-runtime/reference/qna.md) | Check the common objections: gRPC, Feign, Istio, sockets, load balancing, generations, and Saga. |
 
 ## Two Main Public Repositories
 
@@ -133,9 +133,9 @@ to the application architecture around CoAkka.
 4. Try the no-checkout npm smoke if you want to start from package-manager
    install commands:
 
-   https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/first-npm-smoke.md
+   https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/guides/first-npm-smoke.md
 
-5. Read [Runtime Field Guide](../coakka-runtime/runtime-field-guide.md) before jumping into
+5. Read [Runtime Field Guide](../coakka-runtime/reference/runtime-field-guide.md) before jumping into
    advanced routing details. Its first pass explains the practical path from a
    local runtime to Kubernetes Service DNS, stable targets, route snapshots,
    bounded queues, overload signals, Nginx, mTLS placement, and logger
@@ -149,20 +149,20 @@ to the application architecture around CoAkka.
 7. Check released artifacts, checksums, and compatibility status:
 
    https://github.com/phuong-tran/coakka-publish
-   https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-runtime/compatibility-matrix.md
+   https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-runtime/reference/compatibility-matrix.md
 
 ## How The Main Docs Fit Together
 
 | Doc | Use it when |
 | --- | --- |
-| [Build The Product Before The Infrastructure](startup-development-path.md) | You need to ship before choosing a final service, container, or scaling topology. |
-| [Runtime Field Guide](../coakka-runtime/runtime-field-guide.md) | You understand the basic idea and want to know how a real topology should be shaped. |
-| [How It Works](../coakka-runtime/how-it-works.md) | You want the runtime lifecycle and ownership model. |
-| [Runtime Message And Routing Model](../coakka-runtime/runtime-message-and-routing-model.md) | You need the vocabulary: start spec, route snapshot, envelope, ask, reply, timeout, and deadletter. |
-| [Runtime Integration Guide](../coakka-runtime/runtime-integration-guide.md) | You are wiring CoAkka into an existing service or framework. |
-| [Runtime Addons](../coakka-runtime/runtime-addons.md) | You need an optional external protocol or integration capability and want the package, ownership, and evidence boundaries. |
-| [Runtime Logging And Observability](../coakka-runtime/runtime-logging-observability.md) | You need to separate runtime evidence, business logs, CoAkka Logger, and observability export. |
-| [Runtime Cluster Routing](../coakka-runtime/runtime-cluster-routing.md) | You are past the simple Service DNS shape and need expanded endpoints, route policies, or generation discipline. |
-| [Edge, IoT, And Industrial Android](../coakka-runtime/edge-iot-android.md) | You want to understand edge Linux, Raspberry Pi, BeagleBone, and Android industrial tablet fit. |
-| [Questions And Answers](qna.md) | You want direct answers to architecture objections and boundary questions. |
+| [Build The Product Before The Infrastructure](../coakka-runtime/explanation/startup-development-path.md) | You need to ship before choosing a final service, container, or scaling topology. |
+| [Runtime Field Guide](../coakka-runtime/reference/runtime-field-guide.md) | You understand the basic idea and want to know how a real topology should be shaped. |
+| [How It Works](../coakka-runtime/explanation/how-it-works.md) | You want the runtime lifecycle and ownership model. |
+| [Runtime Message And Routing Model](../coakka-runtime/explanation/runtime-message-and-routing-model.md) | You need the vocabulary: start spec, route snapshot, envelope, ask, reply, timeout, and deadletter. |
+| [Runtime Integration Guide](../coakka-runtime/guides/runtime-integration-guide.md) | You are wiring CoAkka into an existing service or framework. |
+| [Runtime Addons](../coakka-runtime/guides/runtime-addons.md) | You need an optional external protocol or integration capability and want the package, ownership, and evidence boundaries. |
+| [Runtime Logging And Observability](../coakka-runtime/operations/runtime-logging-observability.md) | You need to separate runtime evidence, business logs, CoAkka Logger, and observability export. |
+| [Runtime Cluster Routing](../coakka-runtime/guides/runtime-cluster-routing.md) | You are past the simple Service DNS shape and need expanded endpoints, route policies, or generation discipline. |
+| [Edge, IoT, And Industrial Android](../coakka-runtime/previews/edge-iot-android.md) | You want to understand edge Linux, Raspberry Pi, BeagleBone, and Android industrial tablet fit. |
+| [Questions And Answers](../coakka-runtime/reference/qna.md) | You want direct answers to architecture objections and boundary questions. |
 | [Current Packages](current-packages.md) | You need current package-manager entrypoints and version notes. |

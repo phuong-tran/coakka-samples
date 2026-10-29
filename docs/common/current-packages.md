@@ -38,11 +38,11 @@ pressure state per replica; it is not repeated submission through a
 load-balancing Service.
 
 For exact package contents, matching-host execution, and known platform gaps,
-use [Runtime Package And Platform Evidence](../coakka-runtime/runtime-package-platform-evidence.md).
+use [Runtime Package And Platform Evidence](../coakka-runtime/reference/runtime-package-platform-evidence.md).
 
 ## Runtime Addons
 
-[`runtime-addons/`](../coakka-runtime/runtime-addons.md) is the independent release family for
+[`runtime-addons/`](../coakka-runtime/guides/runtime-addons.md) is the independent release family for
 optional native capabilities that compose with Runtime without entering the
 default runtime package. Addons carry their own versions, compatibility
 manifests, native dependency closure, and matching-host evidence.
@@ -83,7 +83,7 @@ complete matrix with `bash run.sh coakka-runtime addons all published`.
 | Go modules | [`coakka-runtime-go` v1.8.3](https://github.com/phuong-tran/coakka-runtime-go/tree/v1.8.3) | [`coakka-logger-go` v1.2.6](https://pkg.go.dev/github.com/phuong-tran/coakka-logger-go@v1.2.6) | `bash run.sh coakka-runtime go basic` |
 | SwiftPM | [`coakka-runtime-swift` v2.5.3](https://github.com/phuong-tran/coakka-runtime-swift/tree/v2.5.3) | [`coakka-logger-swift` v1.2.2](https://github.com/phuong-tran/coakka-logger-swift/releases/tag/v1.2.2) | `bash run.sh coakka-runtime swift basic` |
 | Tauri source archive | [`coakka-runtime-tauri-intents` 2.5.3 source](https://github.com/phuong-tran/coakka-publish/tree/main/runtime/tauri/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e) | [`coakka-logger-tauri-intents` 1.2.2 source](https://github.com/phuong-tran/coakka-publish/tree/main/logger/tauri/releases/1.2.1+f50756ebff0d-7718ce6) | [Tauri integration guide](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/tauri/README.md) |
-| Android preview | [`coakka-runtime-android` 1.2.0 signed preview AAR](../coakka-runtime/edge-iot-android.md#android-and-industrial-tablets) | Use the app's Android logging policy | Integration guide only; no public Maven coordinate |
+| Android preview | [`coakka-runtime-android` 1.2.0 signed preview AAR](../coakka-runtime/previews/edge-iot-android.md#android-and-industrial-tablets) | Use the app's Android logging policy | Integration guide only; no public Maven coordinate |
 
 Node.js, Bun, and Electron are three distinct npm packages. Tauri is a
 checksum-pinned source archive rather than an npm or crates.io package. Android

@@ -28,9 +28,9 @@ bash run.sh coakka-runtime native basic
 
 Watch the Native C/C++ runtime walkthrough:
 
-![CoAkka Runtime Native C/C++ walkthrough](../../docs/assets/coakka-runtime-native.gif)
+![CoAkka Runtime Native C/C++ walkthrough](../../docs/coakka-runtime/assets/coakka-runtime-native.gif)
 
-Full recording: [coakka-runtime-native.mp4](../../docs/assets/coakka-runtime-native.mp4)
+Full recording: [coakka-runtime-native.mp4](../../docs/coakka-runtime/assets/coakka-runtime-native.mp4)
 
 The basic sample uses the public C ABI directly from both C and C++. It starts
 a runtime, applies a route snapshot, submits a one-way request to a missing
@@ -60,7 +60,7 @@ connector boundary as well as the native runtime boundary.
 
 Use this lane's runnable sample as the source for package imports and basic
 lifecycle names. Before generating connection strategy, TLS/mTLS, File Lane, or
-Stream Lane code, follow [AI-Assisted Integration](../../docs/common/ai-assisted-integration.md).
+Stream Lane code, follow [AI-Assisted Integration](../../docs/coakka-runtime/guides/ai-assisted-integration.md).
 It links the canonical feature guides, exact package catalog, and platform
 evidence, and it defines when only workflow pseudocode is justified.
 

@@ -1,7 +1,7 @@
 # JVM Runtime Deadletter (Java8)
 
 One typed Core route miss, plus the actual registered callback observation.
-Use the [private ProGuard candidate workflow](../../../docs/coakka-runtime/runtime-jvm-candidate.md)
+Use the [private ProGuard candidate workflow](../../../docs/coakka-runtime/previews/3.0.0/runtime-jvm-candidate.md)
 and its explicit artifact/build/runtime/work/cache inputs:
 
 ```sh

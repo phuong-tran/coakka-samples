@@ -3,9 +3,9 @@
 `coakka-runtime-inspect` is the browser-facing runtime explorer lane for
 CoAkka Runtime.
 
-![CoAkka Runtime Inspect browser walkthrough](../../../assets/coakka-runtime-inspect.gif)
+![CoAkka Runtime Inspect browser walkthrough](../../assets/coakka-runtime-inspect.gif)
 
-Full recording: [coakka-runtime-inspect.mp4](../../../assets/coakka-runtime-inspect.mp4)
+Full recording: [coakka-runtime-inspect.mp4](../../assets/coakka-runtime-inspect.mp4)
 
 - [Introduction](introduction.md)
 - [Usage Guide](usage.md)

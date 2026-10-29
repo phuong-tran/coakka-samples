@@ -21,9 +21,9 @@ This docs set is for users who want more than the short sample README:
 
 Start with the CLI walkthrough when you want to see the command flow:
 
-![CoAkka Runtime Client CLI walkthrough](../../../assets/coakka-runtime-client.gif)
+![CoAkka Runtime Client CLI walkthrough](../../assets/coakka-runtime-client.gif)
 
-Full recording: [coakka-runtime-client.mp4](../../../assets/coakka-runtime-client.mp4)
+Full recording: [coakka-runtime-client.mp4](../../assets/coakka-runtime-client.mp4)
 
 Then run the local smoke:
 

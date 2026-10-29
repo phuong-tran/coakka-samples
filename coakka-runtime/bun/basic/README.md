@@ -1,7 +1,7 @@
 # Bun Runtime Basic
 
 This private candidate sample uses the exact Bun archive and bundled
-Core listed in the [candidate guide](../../../docs/coakka-runtime/runtime-js-candidate.md).
+Core listed in the [candidate guide](../../../docs/coakka-runtime/previews/3.0.0/runtime-js-candidate.md).
 Read that guide first and set the archive and work-directory variables.
 There is no registry fallback or separate native runtime installation.
 

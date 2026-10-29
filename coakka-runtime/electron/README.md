@@ -7,7 +7,7 @@ AUTO/multiplex path. No response-pipe choice or OS capability probe is made here
 
 This branch uses the exact private Node/Electron archives in
 [the candidate catalog](../artifacts/runtime-electron-candidate.json),
-not old registry coordinates. See the [candidate guide](../../docs/coakka-runtime/runtime-electron-candidate.md)
+not old registry coordinates. See the [candidate guide](../../docs/coakka-runtime/previews/3.0.0/runtime-electron-candidate.md)
 for both archives, explicit Electron42/Node22/esbuild build tools, fresh external
 output and native Windows commands.
 

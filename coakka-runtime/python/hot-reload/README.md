@@ -2,7 +2,7 @@
 
 One process demonstrates route-snapshot control, not a requirement to reload
 every deployment. Many deployments can use one startup snapshot and rollout.
-Use the [exact private wheel workflow](../../../docs/coakka-runtime/runtime-python-candidate.md),
+Use the [exact private wheel workflow](../../../docs/coakka-runtime/previews/3.0.0/runtime-python-candidate.md),
 then from the repository root:
 
 ```sh

@@ -139,5 +139,5 @@ also adds integration and lifecycle work that should earn its place.
 
 These examples demonstrate their named paths; the table does not expand their
 OS/CPU or production-support evidence. See [Product Layout](../docs/common/product-layout.md)
-for repository navigation and [Runtime Logging And Observability](../docs/coakka-runtime/runtime-logging-observability.md)
+for repository navigation and [Runtime Logging And Observability](../docs/coakka-runtime/operations/runtime-logging-observability.md)
 for composing logging with Runtime's separate delivery facts.

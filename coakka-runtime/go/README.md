@@ -1,6 +1,6 @@
 # Go Runtime Samples
 
-This branch's basic/deadletter/replica-file-fanout apps use the [private candidate workflow](../../docs/coakka-runtime/runtime-go-candidate.md)
+This branch's basic/deadletter/replica-file-fanout apps use the [private candidate workflow](../../docs/coakka-runtime/previews/3.0.0/runtime-go-candidate.md)
 and exact local module, not the historical published train below. They propagate
 inspection/subscription errors, omit incidental tuning and retire owned resources
 before main reports failures. File fan-out observes all three exact owners,
@@ -49,9 +49,9 @@ bash run.sh coakka-runtime go deadletter
 
 Watch the Go runtime walkthrough:
 
-![CoAkka Runtime Go walkthrough](../../docs/assets/coakka-runtime-go.gif)
+![CoAkka Runtime Go walkthrough](../../docs/coakka-runtime/assets/coakka-runtime-go.gif)
 
-Full recording: [coakka-runtime-go.mp4](../../docs/assets/coakka-runtime-go.mp4)
+Full recording: [coakka-runtime-go.mp4](../../docs/coakka-runtime/assets/coakka-runtime-go.mp4)
 
 Go runtime v3 samples have a Go 1.22 compatibility floor. Use a currently
 supported Go release for production builds.
@@ -237,7 +237,7 @@ compatibility name; new samples use `StartRuntimeHost(...)`.
 
 Use this lane's runnable sample as the source for package imports and basic
 lifecycle names. Before generating connection strategy, TLS/mTLS, File Lane, or
-Stream Lane code, follow [AI-Assisted Integration](../../docs/common/ai-assisted-integration.md).
+Stream Lane code, follow [AI-Assisted Integration](../../docs/coakka-runtime/guides/ai-assisted-integration.md).
 It links the canonical feature guides, exact package catalog, and platform
 evidence, and it defines when only workflow pseudocode is justified.
 

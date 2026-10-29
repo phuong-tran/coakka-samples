@@ -2,7 +2,7 @@
 
 This is a separate Cargo app, not a packaged smoke and not a desktop WebView.
 It consumes the exact private 3.0.0 aggregate and Core 3.0.0. See the
-[candidate guide](../../../docs/coakka-runtime/runtime-tauri-candidate.md) for artifact/tool/
+[candidate guide](../../../docs/coakka-runtime/previews/3.0.0/runtime-tauri-candidate.md) for artifact/tool/
 offline-cache/fresh external work selections, then run from the repo root:
 
 ```sh

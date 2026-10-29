@@ -39,6 +39,6 @@ application latency and shutdown. A larger capacity uses more memory and can
 delay visibility; it is not a substitute for sufficient output capacity.
 The language guide defines that integration's exact API and close behavior.
 
-Logger configuration is separate from [Runtime monitoring](../coakka-runtime/runtime-monitoring.md)
+Logger configuration is separate from [Runtime monitoring](../coakka-runtime/operations/runtime-monitoring.md)
 and [HTTP Runtime observation](../coakka-http-runtime/README.md).
 Return to the [documentation index](../README.md).

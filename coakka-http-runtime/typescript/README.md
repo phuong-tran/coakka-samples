@@ -21,7 +21,7 @@ promise-based close.
 
 The streamed-upload collector releases retained chunks on the typed `dispose`
 notification, including peer cancellation. Read the
-[cleanup contract](../../docs/coakka-http-runtime/FEATURES.md#upload-cleanup); keep both byte limits and
+[cleanup contract](../../docs/coakka-http-runtime/reference/FEATURES.md#upload-cleanup); keep both byte limits and
 admission limits bounded when adapting this collector.
 
 - runtime-parsed encoded path/query values, duplicate ordered headers, buffered echo,
@@ -70,7 +70,7 @@ Windows sample execution.
 
 ## Feature Recipes And Coverage
 
-Use the [feature index](../../docs/coakka-http-runtime/FEATURES.md) for source links, route commands,
+Use the [feature index](../../docs/coakka-http-runtime/reference/FEATURES.md) for source links, route commands,
 expected responses and outstanding test coverage. Sample presence, package
 capability and matching-host execution are separate claims.
 
@@ -104,7 +104,7 @@ replace those causes. These finite scenarios are not throughput measurements.
 
 The main sample announces shutdown success only after both services close;
 failure closing one does not prevent attempting to close the other. See the
-[shared upload cleanup contract](../../docs/coakka-http-runtime/FEATURES.md#upload-cleanup).
+[shared upload cleanup contract](../../docs/coakka-http-runtime/reference/FEATURES.md#upload-cleanup).
 
 ## HTTP2 And HTTP3 Listeners
 

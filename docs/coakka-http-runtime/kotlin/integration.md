@@ -9,13 +9,13 @@ this guide explains its reading order. Handlers stay host-inlined in your
 application language while Core owns HTTP transport and runtime policy.
 
 For monitor startup, policy changes, event retention and exporter ownership,
-see [Monitoring an HTTP service](../monitoring.md), including this language's
+see [Monitoring an HTTP service](../operations/monitoring.md), including this language's
 complete source recipe.
 
 For the rationale and lifecycle behind the APIs, read
-[generations and drain](../glossary.md#why-generations-are-needed),
-[shutdown hooks and trade-offs](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/operations.md#application-hooks),
-and [certificate rotation versus hot reload](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/tls-and-mtls.md#what-can-be-hot-reloaded).
+[generations and drain](../reference/glossary.md#why-generations-are-needed),
+[shutdown hooks and trade-offs](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/operations/operations.md#application-hooks),
+and [certificate rotation versus hot reload](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/operations/tls-and-mtls.md#what-can-be-hot-reloaded).
 
 ## Contents
 
@@ -25,7 +25,7 @@ and [certificate rotation versus hot reload](https://github.com/phuong-tran/coak
 - [2. Run your first server](#2-run-your-first-server)
 - [3. Read and adapt the application](#3-read-and-adapt-the-application)
 - [Request and response on the JVM](#request-and-response-on-the-jvm)
-- [URL grammar and glossary](../glossary.md)
+- [URL grammar and glossary](../reference/glossary.md)
 - [4. Try the HTTP features](#4-try-the-http-features)
 - [5. Configure and observe the service](#5-configure-and-observe-the-service)
 - [Static files, frontend and downloads](#static-files-frontend-and-downloads)
@@ -69,7 +69,7 @@ different archives.
 These shell commands support macOS ARM64 and Linux ARM64/x86-64. Windows
 package use is documented in the linked package guide; these POSIX commands
 are not a Windows walkthrough. Package availability and matching-host execution
-are separate facts; see [coverage](../FEATURES.md#final-r3-package-checkpoint).
+are separate facts; see [coverage](../reference/FEATURES.md#final-r3-package-checkpoint).
 
 **Tools for this lane:** JDK 17 to run this sample's Gradle build, Python 3.11+ for package resolution, and curl. Use the repository Gradle wrapper; it downloads its pinned build dependencies. Security recipes also need OpenSSL CLI. The connector's consumer floor remains Java 8; sample bytecode and JDK API references target Java 8. A newer build JDK is not a higher consumer requirement.
 
@@ -127,7 +127,7 @@ in your handlers; protocol parsing and effective runtime settings stay in Core.
 
 ## Request and response on the JVM
 
-Read the [URL grammar and glossary](../glossary.md). Use
+Read the [URL grammar and glossary](../reference/glossary.md). Use
 `.get("/hello/{name}", Handler { ... })`; query fields do not belong in
 the route pattern. Parameters are not Kotlin template interpolation.
 
@@ -197,7 +197,7 @@ For WebSocket, connect to `ws://127.0.0.1:$PORT/socket` with subprotocol
 `coakka.sample` using a WebSocket client, then send a text or binary message.
 The sample echoes it. Plain `curl GET` is not a WebSocket handshake.
 Use `smoke` for the lane's automated checks and the
-[feature index](../FEATURES.md) for the exact wire/adverse coverage.
+[feature index](../reference/FEATURES.md) for the exact wire/adverse coverage.
 
 Static/file responses also support validators: copy the returned `ETag` into
 `If-None-Match` to observe a bodyless 304. An out-of-file range returns 416.
@@ -259,7 +259,7 @@ This is **server-to-client download**, not client-to-server upload. Uploads
 still need bounded request consumption and application-owned validation and
 storage policy. Sendfile does not parse multipart or save incoming files.
 Do not assume every file response is zero-copy or turn off TLS to choose a
-fast path. See [file delivery, sendfile and uploads](../file-delivery.md) for
+fast path. See [file delivery, sendfile and uploads](../guides/file-delivery.md) for
 the motivation, protocol conditions and responsibilities.
 
 ## Swap a handler without replacing routes
@@ -497,7 +497,7 @@ or imagined builder calls into your application.
 | Shutdown refuses or times out | Finish/cancel application work, retain ownership, inspect the typed failure and retry cleanup safely. |
 
 See [README](../../../coakka-http-runtime/kotlin/README.md) for this lane's evidence and benchmark table,
-[feature coverage](../FEATURES.md) for known limits, and
+[feature coverage](../reference/FEATURES.md) for known limits, and
 [benchmark methodology](../../../coakka-http-runtime/benchmark-rpi5/README.md) for the separate performance
 workflow. No benchmark or new platform qualification is implied by this guide.
 After all sample processes exit, remove only the dedicated work directory you

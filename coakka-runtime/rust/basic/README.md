@@ -3,7 +3,7 @@
 A standalone Cargo application consumes the exact frozen Rust 3.0.0 candidate
 and native Core 3.0.0. The selected archive carries five native targets; this
 basic runner remains qualified for Mac ARM64, Linux ARM64 and Windows x64. It does not run a packaged smoke binary or download an
-older public archive. Read the [candidate guide](../../../docs/coakka-runtime/runtime-rust-candidate.md)
+older public archive. Read the [candidate guide](../../../docs/coakka-runtime/previews/3.0.0/runtime-rust-candidate.md)
 and select explicit artifact, toolchain, offline cache and fresh external work
 paths before running:
 

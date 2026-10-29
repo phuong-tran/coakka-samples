@@ -151,7 +151,7 @@ explicit precondition on this isolated fresh service, not an observed snapshot.
 Mac/Pi and consumer sanitizer checks pass. This is not an injected ambiguous
 delivery, replay-expiry or in-flight-old-handler retention test.
 
-Use the [feature index](../../docs/coakka-http-runtime/FEATURES.md) for source links, route commands,
+Use the [feature index](../../docs/coakka-http-runtime/reference/FEATURES.md) for source links, route commands,
 expected responses and outstanding test coverage. Sample presence, package
 capability and matching-host execution are separate claims.
 

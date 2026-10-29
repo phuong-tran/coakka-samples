@@ -1,7 +1,7 @@
 # Python Runtime Basic
 
 One same-process typed echo through the
-[exact private platform wheel](../../../docs/coakka-runtime/runtime-python-candidate.md),
+[exact private platform wheel](../../../docs/coakka-runtime/previews/3.0.0/runtime-python-candidate.md),
 not the historical public2.5.2 wheel. Select the exact wheel/work directory
 as that guide describes, then from the repository root:
 

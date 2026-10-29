@@ -145,7 +145,7 @@ until service destruction. Mac/Pi and consumer sanitizer checks pass; ambiguous
 delivery, replay expiry and retention of already-running old handlers are not
 covered by this finite demonstration.
 
-Use the [feature index](../../docs/coakka-http-runtime/FEATURES.md) for source links, route commands,
+Use the [feature index](../../docs/coakka-http-runtime/reference/FEATURES.md) for source links, route commands,
 expected responses and outstanding test coverage. Sample presence, package
 capability and matching-host execution are separate claims.
 

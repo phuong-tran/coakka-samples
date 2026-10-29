@@ -10,9 +10,9 @@ diagnostics through idiomatic host-language connectors.
 
 | Product | Owns | Start here |
 | --- | --- | --- |
-| CoAkka Runtime | Distributed target-based delivery, replies, deadletters, File Lane and Stream Lane. | [Runtime integration](../coakka-runtime/runtime-integration-guide.md), [published packages](current-packages.md) |
-| CoAkka Logger | Bounded logging with explicit admission, delivery and pressure outcomes. | [Logging and observability](../coakka-runtime/runtime-logging-observability.md) |
-| Runtime Addons | Optional integration capabilities composed with Runtime, such as acquiring a file before File Lane delivery. | [Runtime addons](../coakka-runtime/runtime-addons.md) |
+| CoAkka Runtime | Distributed target-based delivery, replies, deadletters, File Lane and Stream Lane. | [Runtime integration](../coakka-runtime/guides/runtime-integration-guide.md), [published packages](current-packages.md) |
+| CoAkka Logger | Bounded logging with explicit admission, delivery and pressure outcomes. | [Logging and observability](../coakka-runtime/operations/runtime-logging-observability.md) |
+| Runtime Addons | Optional integration capabilities composed with Runtime, such as acquiring a file before File Lane delivery. | [Runtime addons](../coakka-runtime/guides/runtime-addons.md) |
 | CoAkka HTTP Runtime | Independent HTTP server/client: routing, static files, streaming, SSE, WebSocket, TLS/mTLS, monitoring and graceful shutdown. | [HTTP samples](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-http-runtime), [archive catalog](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime) |
 
 HTTP Runtime is not a new name for CoAkka Runtime or a required layer around
@@ -56,7 +56,7 @@ execution evidence. A packaged binary alone does not prove connector execution.
 
 Kubernetes is a first-class deployment lane, not a prerequisite. Runtime also
 operates on standalone services, containers, VMs, bare-metal hosts and supported
-edge devices. See [Runtime package and platform evidence](../coakka-runtime/runtime-package-platform-evidence.md)
+edge devices. See [Runtime package and platform evidence](../coakka-runtime/reference/runtime-package-platform-evidence.md)
 for product-specific limits; Android support is never inferred from Linux.
 
 ## Shared Design Principles
@@ -76,6 +76,6 @@ for product-specific limits; Android support is never inferred from Linux.
 - Availability and performance claims follow exact artifact and workload evidence.
 
 Start with [New to CoAkka](new-to-coakka.md), then the
-[Runtime learning path](integration-path.md). For an HTTP-only task, go
+[Runtime learning path](../coakka-runtime/guides/integration-path.md). For an HTTP-only task, go
 directly to the HTTP sample guide above. Operational help is in
-[Troubleshooting](../coakka-runtime/troubleshooting.md) and [Contact and Support](contact-and-support.md).
+[Troubleshooting](../coakka-runtime/operations/troubleshooting.md) and [Contact and Support](contact-and-support.md).

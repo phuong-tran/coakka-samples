@@ -2,7 +2,7 @@
 
 This lane is a private candidate using exactly CoAkka.Runtime `3.0.0`
 and Core3.0.0+1522b4a9/ABI1, not the historical public package train. Use the
-[admitted candidate guide](../../docs/coakka-runtime/runtime-csharp-candidate.md) for the
+[admitted candidate guide](../../docs/coakka-runtime/previews/3.0.0/runtime-csharp-candidate.md) for the
 standard .NET8/C#12/ILLink build and matching-host scope.
 
 ```sh

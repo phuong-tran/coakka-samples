@@ -12,11 +12,11 @@ one runtime contract without depicting a literal deity or religious figure.
 
 | Asset | Use |
 | --- | --- |
-| [`coakka-logo.png`](../assets/brand/coakka-logo.png) | Universal README and registry image on a fixed ivory background. |
-| [`coakka-logo-light.svg`](../assets/brand/coakka-logo-light.svg) | Transparent horizontal lockup for light surfaces. |
-| [`coakka-logo-dark.svg`](../assets/brand/coakka-logo-dark.svg) | Transparent horizontal lockup for dark surfaces. |
-| [`coakka-mark.svg`](../assets/brand/coakka-mark.svg) | Transparent standalone mark for light surfaces. |
-| [`coakka-icon-dark.svg`](../assets/brand/coakka-icon-dark.svg) | Square repository, package, application, and social icon. |
+| [`coakka-logo.png`](assets/brand/coakka-logo.png) | Universal README and registry image on a fixed ivory background. |
+| [`coakka-logo-light.svg`](assets/brand/coakka-logo-light.svg) | Transparent horizontal lockup for light surfaces. |
+| [`coakka-logo-dark.svg`](assets/brand/coakka-logo-dark.svg) | Transparent horizontal lockup for dark surfaces. |
+| [`coakka-mark.svg`](assets/brand/coakka-mark.svg) | Transparent standalone mark for light surfaces. |
+| [`coakka-icon-dark.svg`](assets/brand/coakka-icon-dark.svg) | Square repository, package, application, and social icon. |
 
 PNG equivalents are provided for registries and renderers that do not accept
 SVG. The universal PNG is the default for package README files because its

@@ -12,9 +12,9 @@ This sample lane can verify the published macOS ARM64, Linux x86_64, Linux
 ARM64, Windows x86_64, and Windows ARM64 inspect archives from
 `coakka-publish`.
 
-![CoAkka Runtime Inspect browser walkthrough](../../../docs/assets/coakka-runtime-inspect.gif)
+![CoAkka Runtime Inspect browser walkthrough](../../../docs/coakka-runtime/assets/coakka-runtime-inspect.gif)
 
-Full recording: [coakka-runtime-inspect.mp4](../../../docs/assets/coakka-runtime-inspect.mp4)
+Full recording: [coakka-runtime-inspect.mp4](../../../docs/coakka-runtime/assets/coakka-runtime-inspect.mp4)
 
 Detailed docs live under [docs/](../../../docs/coakka-runtime/tools/coakka-runtime-inspect/):
 

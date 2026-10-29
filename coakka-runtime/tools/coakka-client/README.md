@@ -31,14 +31,14 @@ stay in CoAkka Runtime. Sample payloads stay owned by the sample workflow.
 
 ## CLI Walkthrough
 
-![CoAkka Runtime Client CLI walkthrough](../../../docs/assets/coakka-runtime-client.gif)
+![CoAkka Runtime Client CLI walkthrough](../../../docs/coakka-runtime/assets/coakka-runtime-client.gif)
 
 The walkthrough shows the packaged `coakka-client` driving a native runtime
 host over the TCP frame profile. It opens with CLI help for discoverability,
 then runs `version`, `doctor`, `call`, `ask`, a JSON payload-file request, and
 `shell --script`.
 
-Full recording: [coakka-runtime-client.mp4](../../../docs/assets/coakka-runtime-client.mp4)
+Full recording: [coakka-runtime-client.mp4](../../../docs/coakka-runtime/assets/coakka-runtime-client.mp4)
 
 ## Quick Check
 

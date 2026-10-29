@@ -2,7 +2,7 @@
 
 The Java-facing consumer uses public overloads, text handlers and future
 shutdown; it does not call Kotlin synthetic defaults or use reflection.
-Select the [exact private ProGuard candidate workflow](../../../docs/coakka-runtime/runtime-jvm-candidate.md),
+Select the [exact private ProGuard candidate workflow](../../../docs/coakka-runtime/previews/3.0.0/runtime-jvm-candidate.md),
 then from the repository root:
 
 ```sh

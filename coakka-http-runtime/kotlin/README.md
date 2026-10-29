@@ -73,7 +73,7 @@ outputs still remain in `COAKKA_HTTP_SAMPLE_WORK_ROOT`.
 
 ## Feature Recipes And Coverage
 
-Use the [feature index](../../docs/coakka-http-runtime/FEATURES.md) for source links, route commands,
+Use the [feature index](../../docs/coakka-http-runtime/reference/FEATURES.md) for source links, route commands,
 expected responses and outstanding test coverage. Sample presence, package
 capability and matching-host execution are separate claims.
 

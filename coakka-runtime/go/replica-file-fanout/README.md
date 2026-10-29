@@ -2,7 +2,7 @@
 
 Send one immutable9MiB+731 file to three exact loopback File Lane owners.
 This is application-level `ALL`, not broadcast or a runtime default.
-Use the [private candidate workflow](../../../docs/coakka-runtime/runtime-go-candidate.md)
+Use the [private candidate workflow](../../../docs/coakka-runtime/previews/3.0.0/runtime-go-candidate.md)
 and its exact local66-file module, not the older public module or a connector
 source checkout. Core/native package bytes are unchanged.
 
@@ -54,6 +54,6 @@ threads, OS capability checks, transport fallback or benchmark claim.
 The JSON roundtrip only stands in for an authenticated application control
 plane. Tokens are secrets; do not log grants. This protected loopback plaintext
 demo is not TLS or untrusted-network qualification. Read
-[Runtime Lane Owner Grants](../../../docs/coakka-runtime/runtime-lane-owner-grants.md) before
+[Runtime Lane Owner Grants](../../../docs/coakka-runtime/reference/runtime-lane-owner-grants.md) before
 adapting it to deployment: `ALL` must enumerate exact process/pod owners;
 calling a load-balancing Service three times is not equivalent.

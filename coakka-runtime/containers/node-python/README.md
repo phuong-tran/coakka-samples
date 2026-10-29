@@ -14,7 +14,7 @@ Browser -> Node HTTP edge -> CoAkka runtime -> Python store -> CoAkka runtime re
 
 The Python UI is observation-only. There is no Node-to-Python REST fallback.
 Committed screenshots for this path live in
-[Production Evidence](../../../docs/coakka-runtime/production-evidence.md#visual-evidence).
+[Production Evidence](../../../docs/coakka-runtime/operations/production-evidence.md#visual-evidence).
 
 Run through the repository entrypoint. The default path uses published
 multi-arch images that already contain the native runtime:

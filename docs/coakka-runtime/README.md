@@ -1,54 +1,39 @@
 # CoAkka Runtime Documentation
 
-CoAkka Runtime connects distributed application targets across host languages.
-Start with a normal request/reply example, then add only the features your
-application needs. [Runnable projects](../../coakka-runtime/README.md) stay
-beside their code; this directory contains the product guides.
+CoAkka Runtime carries application-owned work between processes and languages.
+The application supplies its handlers; Runtime manages delivery and outcomes.
 
-## Start and integrate
+## Start
 
-- [How it works](how-it-works.md) and [Runtime story](coakka-story.md)
-- [Integration guide](runtime-integration-guide.md)
-- [Network modes](runtime-network-modes.md) and [connection strategies](connection-strategies.md)
-- [Message and routing model](runtime-message-and-routing-model.md)
-- [Envelope and deadletter outcomes](envelope-deadletter-map.md)
-- [Spring Boot](coakka-spring-boot.md) and [Quarkus](coakka-quarkus.md)
-- [Python configuration](python-configuration.md)
+[Choose a language and run one example](getting-started.md). The guide separates
+published packages from the unpublished 3.0.0 candidate so code and packages match.
+Then [integrate Runtime into an application](guides/runtime-integration-guide.md).
 
-## Operate and monitor
+## Add a capability
 
-- [Defaults and monitoring](runtime-monitoring.md): AUTO and MULTIPLEXED are the defaults; monitoring is off until enabled.
-- [Field guide](runtime-field-guide.md)
-- [Logging and observability](runtime-logging-observability.md)
-- [Client](coakka-runtime-client.md) and [Inspect](coakka-runtime-inspect.md)
-- [TLS and mTLS](tls-and-mtls.md)
-- [Troubleshooting](troubleshooting.md)
-- [Production readiness](production-readiness.md) and [evidence](production-evidence.md)
-- [Package and platform evidence](runtime-package-platform-evidence.md)
-- [Signing and platform trust](runtime-release-signing-and-platform-trust.md)
+| Task | Guide |
+| --- | --- |
+| Exchange messages and understand delivery outcomes | [Messages and routing](explanation/runtime-message-and-routing-model.md) |
+| Transfer files or stream data | [Files](guides/runtime-file-transfer.md) · [Streams](guides/runtime-streaming.md) |
+| Integrate a JVM application framework | [Spring Boot](guides/coakka-spring-boot.md) · [Quarkus](guides/coakka-quarkus.md) |
+| Connect browser-facing or optional integrations | [WebSocket](guides/runtime-websocket-integration.md) · [Addons](guides/runtime-addons.md) |
 
-## Extend an application
+## Operate
 
-- [File transfer](runtime-file-transfer.md)
-- [Streaming](runtime-streaming.md) and [WebSocket integration](runtime-websocket-integration.md)
-- [Replica-owner grants](runtime-lane-owner-grants.md) and [cluster routing](runtime-cluster-routing.md)
-- [Addons](runtime-addons.md)
-- [Containers](containerized-runtime.md)
-- [Edge and Android preview](edge-iot-android.md)
-- [Glossary](runtime-glossary.md)
+Start with [defaults and monitoring](operations/runtime-monitoring.md): AUTO and
+MULTIPLEXED are the current defaults; extra monitor collection starts OFF.
+The guide explains why, when to enable it and how, using Kotlin as one example
+of the same model available through other languages.
 
-## Private 3.0.0 release candidate
+Use [Client and Inspect](operations/README.md) to inspect a participant, or
+[troubleshoot a problem](operations/troubleshooting.md).
 
-These guides describe a prepared candidate, not an already published release.
-[Published coordinates](../common/current-packages.md) remain the installation
-reference until the release is opened.
+## Learn or look up details
 
-- [Node.js and Bun](runtime-js-candidate.md), [Electron](runtime-electron-candidate.md)
-- [Python](runtime-python-candidate.md), [C#](runtime-csharp-candidate.md)
-- [JVM](runtime-jvm-candidate.md), [Spring Boot and Quarkus](runtime-frameworks-candidate.md)
-- [Go](runtime-go-candidate.md), [Swift](runtime-swift-candidate.md)
-- [Rust](runtime-rust-candidate.md), [Tauri](runtime-tauri-candidate.md), [Zig](runtime-zig-candidate.md)
-- [Mojo preview](runtime-mojo-candidate.md)
+- [Understand the model and adoption choices](explanation/README.md).
+- [Find configuration, platforms and vocabulary](reference/README.md).
+- [Browse all task guides](guides/README.md).
+- [Read release history](releases/README.md) or [evaluate the 3.0.0 candidate](previews/README.md).
 
 Runtime versions independently from [HTTP Runtime](../coakka-http-runtime/README.md)
-and [Logger](../coakka-logger/README.md). Return to the [ecosystem docs](../README.md).
+and [Logger](../coakka-logger/README.md). [All product documentation](../README.md).

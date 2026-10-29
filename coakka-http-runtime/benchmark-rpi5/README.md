@@ -206,7 +206,7 @@ clustering. Jetty uses a nonblocking handler, one acceptor and one/two selectors
 Undertow uses one/two I/O threads; Vert.x Web deploys one router verticle per
 assigned CPU; WebFlux uses one/two workers. Spring MVC uses Tomcat's servlet/NIO
 path with 8–64 workers. These are framework comparisons, not bare transport
-rows. See the [sample coverage](../../docs/coakka-http-runtime/FEATURES.md) before scheduling measurements.
+rows. See the [sample coverage](../../docs/coakka-http-runtime/reference/FEATURES.md) before scheduling measurements.
 
 ## Preparation
 

@@ -1,7 +1,7 @@
 # JVM Runtime Samples
 
 This branch's four Kotlin/Java apps use the
-[exact private ProGuard candidate workflow](../../docs/coakka-runtime/runtime-jvm-candidate.md).
+[exact private ProGuard candidate workflow](../../docs/coakka-runtime/previews/3.0.0/runtime-jvm-candidate.md).
 Their dedicated Gradle build is coakka-runtime/jvm, separate from coakka-logger/framework
 projects. Build JDK17+ is not the consumer floor: owned bytecode/APIs remain
 Java8 and matching qualification uses actual Java8. No private state/reflection
@@ -33,9 +33,9 @@ bash run.sh coakka-runtime jvm java-deadletter
 
 Watch the JVM runtime walkthrough:
 
-![CoAkka Runtime JVM walkthrough](../../docs/assets/coakka-runtime-jvm.gif)
+![CoAkka Runtime JVM walkthrough](../../docs/coakka-runtime/assets/coakka-runtime-jvm.gif)
 
-Full recording: [coakka-runtime-jvm.mp4](../../docs/assets/coakka-runtime-jvm.mp4)
+Full recording: [coakka-runtime-jvm.mp4](../../docs/coakka-runtime/assets/coakka-runtime-jvm.mp4)
 
 Direct Gradle runs:
 
@@ -292,7 +292,7 @@ semantics.
 
 Use this lane's runnable sample as the source for package imports and basic
 lifecycle names. Before generating connection strategy, TLS/mTLS, File Lane, or
-Stream Lane code, follow [AI-Assisted Integration](../../docs/common/ai-assisted-integration.md).
+Stream Lane code, follow [AI-Assisted Integration](../../docs/coakka-runtime/guides/ai-assisted-integration.md).
 It links the canonical feature guides, exact package catalog, and platform
 evidence, and it defines when only workflow pseudocode is justified.
 

@@ -9,7 +9,7 @@ This sample uses the **unpublished starter 3.0.0 and JVM Runtime 3.0.0 candidate
 The released packages remain at 2.5.3; see
 [Current Packages](../../../../docs/common/current-packages.md).
 Prepare the exact local packages, Gradle cache and work directory using the
-[framework candidate guide](../../../../docs/coakka-runtime/runtime-frameworks-candidate.md).
+[framework candidate guide](../../../../docs/coakka-runtime/previews/3.0.0/runtime-frameworks-candidate.md).
 
 ## Run
 
@@ -49,7 +49,7 @@ IDs are shown as reported by the current platform, without guessing two CPUs
 from the AUTO setting.
 
 For optional monitoring, see
-[Runtime Monitoring](../../../../docs/coakka-runtime/runtime-monitoring.md).
+[Runtime Monitoring](../../../../docs/coakka-runtime/operations/runtime-monitoring.md).
 
 ## Customer Work
 
@@ -108,4 +108,4 @@ application's normal context restart. Remote transport and Kubernetes
 deployment are outside this same-process sample.
 
 For the integration model, read
-[CoAkka Spring Boot](../../../../docs/coakka-runtime/coakka-spring-boot.md).
+[CoAkka Spring Boot](../../../../docs/coakka-runtime/guides/coakka-spring-boot.md).
