@@ -1,0 +1,6 @@
+<Project>
+  <!-- Use this example's public feed independently of sibling candidate policy. -->
+  <PropertyGroup>
+    <RestoreConfigFile>$(MSBuildThisFileDirectory)NuGet.Config</RestoreConfigFile>
+  </PropertyGroup>
+</Project>
