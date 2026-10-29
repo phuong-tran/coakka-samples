@@ -38,12 +38,12 @@ gate. No Maven Central publication is planned, so use the
 [Android integration recipe](android/README.md) for exact local-AAR evaluation
 without treating any coordinate as live.
 
-This `runtime/` directory is the app-host connector sample lane. Artifact
+This `coakka-runtime/` directory is the app-host connector sample lane. Artifact
 generations advance independently: current static connector mirrors use
 `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e`, while package-manager
 samples use the exact version published on their registry. The separate
 `coakka-runtime-client` CLI sample lane lives under
-[`../runtime-client`](tools/coakka-client/README.md).
+[`tools/coakka-client`](tools/coakka-client/README.md).
 
 Swift runtime is published at
 `github.com/phuong-tran/coakka-runtime-swift@2.5.3` with native runtime
