@@ -1,5 +1,23 @@
 # CoAkka HTTP Runtime Samples
 
+**Polyglot applications should not require polyglot HTTP infrastructure.**
+
+A team may build an API in Go, an image endpoint in Python and a web service
+in TypeScript. Maintaining a separate HTTP stack for each language repeats
+decisions about request limits, timeouts, streaming and shutdown.
+
+CoAkka HTTP Runtime supplies a shared HTTP engine through language-specific
+packages. Each service runs its own instance, and handlers stay ordinary
+application functions in the language the team already uses. Teams can reuse
+their understanding of HTTP behavior and adopt shared fixes through package
+updates.
+
+Use it for HTTP APIs, web frontends, file delivery, streams and WebSocket
+sessions. CoAkka Runtime's named application work is a separate product; a
+handler can use both when the application needs them. Read the
+[HTTP Runtime introduction](../docs/coakka-http-runtime/explanation/introduction.md)
+for the fuller story.
+
 Choose one language below, run its server and send one request. Each Start here
 page gives the tools you need, the package archive and the run command. You do
 not need all language toolchains to try one example.

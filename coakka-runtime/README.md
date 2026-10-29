@@ -1,5 +1,22 @@
 # CoAkka Runtime Samples
 
+An API needs an image processed, a customer stored or a device reading fetched.
+These are pieces of application work, even when the code that handles them
+lives in another language or process. As the application grows, connecting
+those pieces can mean maintaining separate endpoints, client wrappers and
+delivery conventions for every handoff.
+
+CoAkka Runtime makes that work callable by a stable target name. For example,
+a Node.js API can ask a Python handler to process an image. The application
+chooses which process owns the handler; Runtime delivers the request, matches
+its reply and reports delivery failures. Business rules remain application code.
+
+Use it to connect existing services, introduce another language for a specific
+job or move work into a separate process gradually. The examples below start
+with one local exchange and lead to larger application shapes. Read
+[The CoAkka Story](../docs/coakka-runtime/explanation/coakka-story.md) for the
+reasoning behind this model.
+
 Run one request/reply example in your language, then add the capabilities you need.
 
 **Version choice comes first.** Main-branch examples use unpublished 3.0.0

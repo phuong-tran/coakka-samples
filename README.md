@@ -2,14 +2,20 @@
 
 <p align="center"><img src="docs/common/assets/brand/coakka-logo.png" alt="CoAkka" width="480"></p>
 
-CoAkka is a polyglot runtime ecosystem. Select the product whose boundary fits
-your application; products have independent lifecycles, versions and evidence.
+An application can bring together a web API, a Python worker and an existing
+JVM service. CoAkka gives teams shared building blocks for calling application
+work, serving HTTP and handling logs across languages. Business logic stays
+in the application's own code.
 
-| Product | Start here | First command |
-| --- | --- | --- |
-| CoAkka Runtime | [Language samples, tools, addons and demos](coakka-runtime/README.md) | `bash run.sh coakka-runtime list` |
-| CoAkka HTTP Runtime | [HTTP server/client examples](coakka-http-runtime/README.md) | `bash coakka-http-runtime/go/run.sh run` |
-| CoAkka Logger | [Logging and pressure examples](coakka-logger/README.md) | `bash run.sh coakka-logger node basic` |
+This repository shows those products in small, runnable examples. Choose the
+problem you want to solve, then try one example in your language. Each product
+can be used independently and has its own packages and version.
+
+| Product | What it helps you do | Start here | First command |
+| --- | --- | --- | --- |
+| CoAkka Runtime | Call application work across languages and processes. | [Language samples, tools, addons and demos](coakka-runtime/README.md) | `bash run.sh coakka-runtime list` |
+| CoAkka HTTP Runtime | Build HTTP services with shared behavior across languages. | [HTTP server/client examples](coakka-http-runtime/README.md) | `bash coakka-http-runtime/go/run.sh run` |
+| CoAkka Logger | Read application logs and observe pressure with bounded storage. | [Logging and pressure examples](coakka-logger/README.md) | `bash run.sh coakka-logger node basic` |
 
 For a two-process Runtime example with Docker, run
 `bash run.sh coakka-runtime containers node-python`.

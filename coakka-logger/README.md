@@ -1,11 +1,16 @@
 # CoAkka Logger Samples
 
-Read the [product documentation](../docs/coakka-logger/README.md) for the full guide.
+Logs help explain what an application is doing, but producing and writing them
+also uses the application's resources. A burst of messages or a slow output
+destination can turn logging into part of the performance problem.
 
-CoAkka Logger gives applications a bounded logging queue, explicit admission
-outcomes and observable counters across host languages. These examples show
-what is accepted, refused, read and counted. Logger has its own packages and
-lifecycle; it can be used without CoAkka Runtime or CoAkka HTTP Runtime.
+CoAkka Logger gives applications bounded log storage, explicit acceptance or
+refusal and counters for observing pressure across host languages. These
+examples show how to submit, read and count records, then test what happens
+when producers get ahead of the consumer. Logger can be used independently
+of CoAkka Runtime and CoAkka HTTP Runtime.
+
+Read the [product documentation](../docs/coakka-logger/README.md) for the full guide.
 
 ## Start With One Consumer
 
