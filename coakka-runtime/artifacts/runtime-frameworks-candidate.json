@@ -3,17 +3,17 @@
   "state": "private-candidate",
   "runtimeVersion": "3.0.0",
   "adapterVersion": "3.0.0",
-  "coreCommit": "f6b61768f60a08d81b1dc06625a211ffca8e89e2",
+  "coreCommit": "1522b4a9f30da1039ef8c7d198bbecfc749a2456",
   "artifacts": [
     {
       "path": "io/github/phuong-tran/coakka/quarkus-extension/3.0.0/quarkus-extension-3.0.0.jar",
-      "bytes": 19345,
-      "sha256": "10ae079d1eab9eb7eeae1d8e1979bc467e96134416f3bea928bc1dd71a008181"
+      "bytes": 19344,
+      "sha256": "abc6747f098a646fc444d6fa342b05c86205e5b747cad3628858cab972c215bb"
     },
     {
       "path": "io/github/phuong-tran/coakka/quarkus-extension/3.0.0/quarkus-extension-3.0.0.module",
       "bytes": 3946,
-      "sha256": "d1f768aa07b45c93c02cc2adcfa842c12415fe5dd06905c6d78fc3ca71dd2fdc"
+      "sha256": "25ff2b9f6cfb0e2deff81520f95be154b833910845867c03f181c3e93ffbd342"
     },
     {
       "path": "io/github/phuong-tran/coakka/quarkus-extension/3.0.0/quarkus-extension-3.0.0.pom",
@@ -22,13 +22,13 @@
     },
     {
       "path": "io/github/phuong-tran/coakka/runtime/3.0.0/runtime-3.0.0.jar",
-      "bytes": 5416358,
-      "sha256": "e4700cf9b1006f8a850c6321114d0b2263032adfea6f18859f3265c794550b46"
+      "bytes": 4928847,
+      "sha256": "8a63a5d76210737fb075123399f1d308ddefb1102c6039495873eba37f620c35"
     },
     {
       "path": "io/github/phuong-tran/coakka/runtime/3.0.0/runtime-3.0.0.module",
       "bytes": 3329,
-      "sha256": "399fe1924db985680b06f6467a293f808694e485151792159975f355b17dd128"
+      "sha256": "619c0662e1f1d7013846e32de461dfeb6e803ffaac287210dec0edbd1cf41f76"
     },
     {
       "path": "io/github/phuong-tran/coakka/runtime/3.0.0/runtime-3.0.0.pom",
@@ -38,12 +38,12 @@
     {
       "path": "io/github/phuong-tran/coakka/spring-boot-starter/3.0.0/spring-boot-starter-3.0.0.jar",
       "bytes": 19900,
-      "sha256": "3f5ad6bc353e59de9f9faae189abea73dee57f8a98c5ce706792d56ea33fe924"
+      "sha256": "8f5cd86f1bc3062585ba8eaa4d079c5ed91d12b45754e78bf40de0e958e980f2"
     },
     {
       "path": "io/github/phuong-tran/coakka/spring-boot-starter/3.0.0/spring-boot-starter-3.0.0.module",
       "bytes": 3964,
-      "sha256": "b83d87e46bbff93a0829777903bf64a4575c883363b51f1bb358e93db928beee"
+      "sha256": "4abc70d129550cc8ea37e3f933546efe5d49bdbb0fcbe385c4e3c372818cb1eb"
     },
     {
       "path": "io/github/phuong-tran/coakka/spring-boot-starter/3.0.0/spring-boot-starter-3.0.0.pom",

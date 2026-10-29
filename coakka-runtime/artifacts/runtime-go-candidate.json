@@ -1,15 +1,15 @@
 {
   "schema": 1,
   "state": "private-candidate",
-  "module": "github.com/phuong-tran/coakka-runtime-go/v2",
-  "version": "2.0.0",
+  "module": "github.com/phuong-tran/coakka-runtime-go/v3",
+  "version": "3.0.0",
   "minimumRuntime": "1.22.12",
-  "coreCommit": "f6b61768f60a08d81b1dc06625a211ffca8e89e2",
-  "moduleManifestSha256": "131a4afdb256f1db54fcdec99e2ef3a63d077c059e7522a9ba5f965b365f519c",
+  "coreCommit": "1522b4a9f30da1039ef8c7d198bbecfc749a2456",
+  "moduleManifestSha256": "d1f0ff748cb3dd2881a97762c7b57baa1324aef9e136064cf495d3cd053ce187",
   "members": {
     "CONSUMING.md": {
       "bytes": 2226,
-      "sha256": "f51b2f27cf49140c2aac139dbae4b675c98ac4946d6271d7048fde98cc16588f"
+      "sha256": "0bd6930248f2e848f32427e453086327380fbdd40e0814781faca35d1cd580ee"
     },
     "LICENSE": {
       "bytes": 11358,
@@ -28,16 +28,16 @@
       "sha256": "32517109595798ad4b780117783e91aa0196b8d6d699e5d541b5f841c722e06e"
     },
     "README.md": {
-      "bytes": 4048,
-      "sha256": "952002885118c19188c2334978bea509944b170b0115e8e28583887a5cb93799"
+      "bytes": 4051,
+      "sha256": "8bc69c61954117e3b7b4d5366baf012569a7ebe0be06c1e55a35c734b4688fa4"
     },
     "RELEASE.md": {
       "bytes": 1543,
-      "sha256": "3f768e23924224cc0ac2942d40ae939203477f7d2c4ad08ed3887ff93ccaaf92"
+      "sha256": "3f1c128cb757a7dab269b938dc95b06302e955dfad163b3cb2c7ef34f089aada"
     },
     "RELEASE_NOTES.md": {
       "bytes": 961,
-      "sha256": "7075176f07d205cc9de9c5b7910a95c305f234097c2f3698de6afdd03b2db29c"
+      "sha256": "83635a9e6327462ef6695b8d710793a3d1835f2530ac4364f927550f91de85de"
     },
     "TRANSPORT_CONFIGURATION.md": {
       "bytes": 11444,
@@ -45,23 +45,23 @@
     },
     "bundled_runtime_darwin_arm64.go": {
       "bytes": 430,
-      "sha256": "2d13ccc6d5951336515c169499078c0f196d2738139c29ae8a2e2681eed2d0bf"
+      "sha256": "a063591136d93b12bd8bfb4488c5f611a7355e8863ff5da9af81473c54de6b8a"
     },
     "bundled_runtime_linux_amd64.go": {
       "bytes": 422,
-      "sha256": "80ee5007989aee487ddcece80bbec42136a4f74e5debcbb8a55f556972dc1a3c"
+      "sha256": "04f499876e70faeeb7546cc1aaac31e5e01b832c97cc62ff80825d81913cc316"
     },
     "bundled_runtime_linux_arm64.go": {
       "bytes": 423,
-      "sha256": "79d100f367912e6ce60570226fe58d8a9118dc88bda02564c6e371d2666394e4"
+      "sha256": "cdb1bdfbe6decd1f14cb730492230c1a1118aa0bc77020f00fdcfbec681d87db"
     },
     "bundled_runtime_windows_amd64.go": {
       "bytes": 428,
-      "sha256": "bb2caddc39e0c2d24aaf68121f940d45bd5366501dbc7b535e7d98e604581967"
+      "sha256": "8881c36b47943fd8a1eb4552bcce97ba12f4a7c40a0a5f2f79dc7e32c87556c0"
     },
     "bundled_runtime_windows_arm64.go": {
       "bytes": 429,
-      "sha256": "c53411354930569b0b5b68d087c834a7fc38df85a9d678dce6ff71aa03293df9"
+      "sha256": "e2a5357bbf3d0aea913e9c0e071d370bd3f0e9cd0f50544d085a7f8932241faf"
     },
     "core_errors.go": {
       "bytes": 1693,
@@ -69,7 +69,7 @@
     },
     "doc.go": {
       "bytes": 2108,
-      "sha256": "3253e3e3253aca6082ab5daa1d98101bdda019d6458fbd43baf520fb011cc088"
+      "sha256": "e6a8701cb84d6cd5d786ba9418376a55d645a54a222729e2b82d2225ca24a4d3"
     },
     "file_lane.go": {
       "bytes": 13745,
@@ -77,7 +77,7 @@
     },
     "go.mod": {
       "bytes": 60,
-      "sha256": "18d0a1e4842fa0a8e0d6c1943c0b3c733767ba7f208653353a9a1f69df5dca7b"
+      "sha256": "572e5e1d7328b4bba7dd5ca5b116c865c992909b87f1dd688c12e5492449e54d"
     },
     "internal/coreabi/include/coakka/v2/client.h": {
       "bytes": 9604,
@@ -189,23 +189,23 @@
     },
     "native/linux-aarch64/libcoakka_runtime_v2.so": {
       "bytes": 2103344,
-      "sha256": "dbdba44a6c309f0e7eccbae7224bceae63313c199d68b93e408043674ada3579"
+      "sha256": "9092c59320f2aa8d3431e01ac10f292c82b545c23d74f51dcde4855741966de8"
     },
     "native/linux-x86_64/libcoakka_runtime_v2.so": {
-      "bytes": 3188976,
-      "sha256": "514f7db498ab2f5afab9930f6868eaae95a3e867de426ee63a730d543f452cdc"
+      "bytes": 1902480,
+      "sha256": "4736f09d4a68073c6b9f7043f6418ab5a316ee0ec06a11b92510c65c1247ba81"
     },
     "native/macos-aarch64/libcoakka_runtime_v2.dylib": {
-      "bytes": 860216,
-      "sha256": "b3b0050db65e40da7d8d2dd54aaf9ee50975ecf1498e657c8896f6b98ccc8e12"
+      "bytes": 873360,
+      "sha256": "5ef45ad964a43c3e91c6c69bd731dbc5ac30348721ebffa7d384a7ce05bc4dd2"
     },
     "native/windows-aarch64/libcoakka_runtime_v2.dll": {
       "bytes": 2071552,
-      "sha256": "b1a1ca4068878b1e4d6d9a0f9064b2927a75cd390e755c4b42ed0b530d997046"
+      "sha256": "720a73215b4cbee231cbaadb766704d60ff999b11d52411819484e738f91bacd"
     },
     "native/windows-x86_64/libcoakka_runtime_v2.dll": {
       "bytes": 2283520,
-      "sha256": "901cb6e63a17bdcaadfc0aff2c3a082d9272dcb18ba94d7aaa6424665753a8fb"
+      "sha256": "dba531e09359f270a22543ec3b1a4a4bf9750e965c2b5920966871faaff88e4d"
     },
     "native_asset.go": {
       "bytes": 5535,
@@ -221,7 +221,7 @@
     },
     "packaging.go": {
       "bytes": 275,
-      "sha256": "3965326cce8e4daa2c90df6b336aa7778fbf2eebe48cc82b7dccfff9f4f29268"
+      "sha256": "0201e6f16ad7f159f54762cb42019599245a057a4767a3a3f9bdbd7b3ecf4cd4"
     },
     "runtime_bridge.c": {
       "bytes": 57558,

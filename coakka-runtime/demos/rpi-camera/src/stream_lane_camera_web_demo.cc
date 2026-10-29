@@ -795,8 +795,6 @@ bool subscribe_web(const char *remote_host, uint16_t remote_port,
   gateway_config.bind_host = web_host;
   gateway_config.bind_port = web_port;
   gateway_config.max_frame_bytes = max_frame_bytes;
-  gateway_config.initial_width = 1280u;
-  gateway_config.initial_height = 720u;
   gateway_config.fps = 30u;
   gateway_config.recording_directory = recording_directory;
   gateway_config.ffmpeg_binary = ffmpeg_binary;

@@ -47,7 +47,7 @@ def catalog(content: bytes) -> dict:
     value = json.loads(content, object_pairs_hook=unique)
     if (not isinstance(value, dict) or value.keys() != {"schema", "state", "version", "coreCommit", "files", "languageFiles"}
         or type(value["schema"]) is not int or value["schema"] != 1 or value["state"] != "private-candidate"
-        or value["version"] != "3.0.0" or value["coreCommit"] != "f6b61768f60a08d81b1dc06625a211ffca8e89e2"
+        or value["version"] != "3.0.0" or value["coreCommit"] != "1522b4a9f30da1039ef8c7d198bbecfc749a2456"
         or not isinstance(value["files"], dict) or len(value["files"]) != 57
         or not {"Package.swift", "coakka-runtime-package.json", "core-abi-manifest.json", "LICENSE", "NOTICE", "NATIVE-LICENSE.md", "PACKAGE-LICENSE.md"} <= value["files"].keys()
         or not isinstance(value["languageFiles"], dict) or value["languageFiles"].keys() != {

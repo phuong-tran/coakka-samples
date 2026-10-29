@@ -22,7 +22,7 @@ original worker diagnostics remain visible after close.
 Output includes:
 
 ```text
-coakka_runtime_info abi=1 version=2.5.1 git=f6b61768f60a08d81b1dc06625a211ffca8e89e2
+coakka_runtime_info abi=1 version=3.0.0 git=1522b4a9f30da1039ef8c7d198bbecfc749a2456
 coakka_runtime_startup cpuPolicy=0 connectionMode=3 monitorEnabled=false requestMode=2 responseMode=2
 coakka_runtime_response payload={"echo":"hello-runtime-python"}
 coakka_runtime_stats generation=1 routes=1 delivered=1 matchedResponses=1

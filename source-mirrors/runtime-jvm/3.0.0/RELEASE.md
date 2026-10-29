@@ -4,7 +4,7 @@
 `io.github.phuong-tran.coakka:runtime`. Historical2.x artifacts remain immutable;
 migrate and recompile callers. In particular, Core uint32 fields use Long,
 startup/delivery facts use grouped Core-issued snapshots, and retired startup
-accessors are removed. Core remains2.5.1/f6b61768, ABI1.
+accessors are removed. Core remains3.0.0/1522b4a9, ABI1.
 
 Freeze one connector source, complete five-target Core/JNI pair set and public
 runtime dependencies. Use the real ProGuard shrinker, narrow JNI/callback keep

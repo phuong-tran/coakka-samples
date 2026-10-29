@@ -10,7 +10,7 @@ from pathlib import Path
 import stat
 import sys
 
-CORE_COMMIT = "f6b61768f60a08d81b1dc06625a211ffca8e89e2"
+CORE_COMMIT = "1522b4a9f30da1039ef8c7d198bbecfc749a2456"
 VERSION = "3.0.0"
 GROUP_PATH = "io/github/phuong-tran/coakka"
 RUNTIME_LIBRARIES = {

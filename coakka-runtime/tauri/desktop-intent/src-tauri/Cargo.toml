@@ -17,8 +17,8 @@ path = "src/main.rs"
 tauri-build = { version = "=2.6.3", features = [] }
 
 [dependencies]
-coakka-runtime-rs = { path = "../../RuntimeCandidate/rust", version = "=2.5.3" }
-coakka-tauri-intents = { path = "../../RuntimeCandidate/tauri-intents", version = "=0.1.0" }
+coakka-runtime-rs = { path = "../../RuntimeCandidate/rust", version = "=3.0.0" }
+coakka-tauri-intents = { path = "../../RuntimeCandidate/tauri-intents", version = "=3.0.0" }
 log = "=0.4.33"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"

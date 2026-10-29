@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "state": "private-candidate",
-  "version": "2.5.3",
+  "version": "3.0.0",
   "rustMinimum": "1.77.2",
-  "coreCommit": "f6b61768f60a08d81b1dc06625a211ffca8e89e2",
+  "coreCommit": "1522b4a9f30da1039ef8c7d198bbecfc749a2456",
   "archive": {
-    "file": "coakka-runtime-rs-2.5.3.tar.gz",
-    "bytes": 4584567,
-    "sha256": "7a34346a3e0b98c3b45b9dab75dc43d6458da03f6fd466ff79207d2cf447aa5e"
+    "file": "coakka-runtime-rs-3.0.0.tar.gz",
+    "bytes": 4098546,
+    "sha256": "b1cc812577d62e18465f3ead914efd3defa4602ff36ea4a7fb86a47fd40714b0"
   },
   "buildTool": {
-    "member": "coakka-runtime-rs-2.5.3/tools/package_tools.py",
+    "member": "coakka-runtime-rs-3.0.0/tools/package_tools.py",
     "sha256": "0a9ac6c65a95a929029a38515701eb5f6293b7f2d271d76a4b6d83cd3eaa707e"
   }
 }

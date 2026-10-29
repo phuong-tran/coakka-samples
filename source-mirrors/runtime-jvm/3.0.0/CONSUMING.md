@@ -5,8 +5,8 @@ requires source migration/recompilation from2.x. Older published coordinates
 remain immutable. Source version does not establish registry availability;
 use the complete artifact selected for the release channel.
 
-The shrunk JAR embeds Core `2.5.1`, commit
-`f6b61768f60a08d81b1dc06625a211ffca8e89e2`, ABI1 and five host bridge pairs.
+The shrunk JAR embeds Core `3.0.0`, commit
+`1522b4a9f30da1039ef8c7d198bbecfc749a2456`, ABI1 and five host bridge pairs.
 The managed minimum is Java8/major52. Native Windows ARM64 uses ARM64 JDK11
 or newer; x64 Java8 on an ARM machine uses the x64 pair. Exact archive and
 member checksums belong to the selected candidate catalog, independently of

@@ -29,7 +29,7 @@ class SourceAdmissionTests(unittest.TestCase):
         self.catalog = self.root / "catalog.json"
         self.work = self.root / "fresh work-é"
         self.prefix = "coakka-runtime-mojo-3.0.0-source"
-        self.metadata = dict(artifact_name="coakka-runtime-mojo", artifact_version="3.0.0-source",
+        self.metadata = dict(artifact_name="coakka-runtime-mojo", artifact_version="3.0.0",
                              bundled_native_git_commit="f" * 40, supported_platforms=list(MODULE.NATIVE_FILES))
 
     def normal_members(self):
@@ -51,7 +51,7 @@ class SourceAdmissionTests(unittest.TestCase):
                 bundle.addfile(item, io.BytesIO(content) if kind == tarfile.REGTYPE else None)
         body = data.getvalue()
         self.archive.write_bytes(body)
-        value = dict(schema=1, state="private-candidate", language="mojo", version="3.0.0-source",
+        value = dict(schema=1, state="private-candidate", language="mojo", version="3.0.0",
                      coreCommit="f" * 40, archive=dict(file=self.prefix + ".tar.gz", prefix=self.prefix,
                      bytes=len(body), sha256=hashlib.sha256(body).hexdigest()))
         self.catalog.write_text(json.dumps(value))
@@ -82,6 +82,21 @@ class SourceAdmissionTests(unittest.TestCase):
             with patch.object(MODULE.tarfile, "open") as opened:
                 self.refused()
                 opened.assert_not_called()
+
+    def test_product_version_and_source_archive_suffix_are_distinct_facts(self):
+        value = self.fixture()
+        selected = MODULE.profile(self.catalog, "mojo")
+        self.assertEqual(selected["version"], "3.0.0")
+        self.assertEqual(selected["archive"]["prefix"], self.prefix)
+        for wrong in ("3.0.0-source", "03.0.0", "3.00.0", "3.0", "3.0.0+build"):
+            changed = dict(value, version=wrong)
+            self.catalog.write_text(json.dumps(changed))
+            self.refused()
+        self.metadata["artifact_version"] = "3.0.1"
+        self.fixture()
+        with self.assertRaisesRegex(ValueError, "metadata differs from catalog"):
+            self.admit()
+        self.assertFalse(self.work.exists())
 
     def test_decompression_is_bounded_before_extension_header_parsing(self):
         self.fixture()

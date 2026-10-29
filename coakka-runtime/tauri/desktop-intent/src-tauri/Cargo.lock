@@ -323,7 +323,7 @@ dependencies = [
 
 [[package]]
 name = "coakka-runtime-rs"
-version = "2.5.3"
+version = "3.0.0"
 
 [[package]]
 name = "coakka-sample-tauri-desktop-intent"
@@ -342,7 +342,7 @@ dependencies = [
 
 [[package]]
 name = "coakka-tauri-intents"
-version = "0.1.0"
+version = "3.0.0"
 dependencies = [
  "coakka-runtime-rs",
  "serde",

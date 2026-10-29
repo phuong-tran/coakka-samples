@@ -8,7 +8,7 @@ fall back to an older public package. Checksums establish exact-copy integrity,
 not publisher authentication.
 
 The sample uses Rust/Cargo 1.77.2 (edition 2021). Its selected private archive
-bundles Core 2.5.1 for five targets: Mac ARM64, Linux ARM64/x64 and Windows
+bundles Core 3.0.0 for five targets: Mac ARM64, Linux ARM64/x64 and Windows
 ARM64/x64. This sample runner remains qualified for Mac ARM64, Linux ARM64 and
 Windows x64 only. More bundled files do not extend that sample execution scope.
 Compiler target selection is a build/deployment choice, not a runtime capability
@@ -22,7 +22,7 @@ build storage; there is no default temporary build or dependency download.
 The application itself needs neither Python, Cargo nor a separate Core install.
 
 ```sh
-export COAKKA_RUST_ARCHIVE=/absolute/candidate/coakka-runtime-rs-2.5.3.tar.gz
+export COAKKA_RUST_ARCHIVE=/absolute/candidate/coakka-runtime-rs-3.0.0.tar.gz
 export COAKKA_SAMPLE_WORK_ROOT=/absolute/build-storage/rust-basic-new
 export COAKKA_RUST_CARGO=/absolute/toolchain/bin/cargo
 export COAKKA_RUST_CARGO_HOME=/absolute/offline-cargo-cache
@@ -34,7 +34,7 @@ Use `linux-aarch64` on Pi. On Windows x64, run native Python in an x64 MSVC
 developer environment and invoke `coakka-runtime/scripts/runtime-rust-candidate.py` directly:
 
 ```powershell
-python -B coakka-runtime/scripts/runtime-rust-candidate.py --archive D:/candidate/coakka-runtime-rs-2.5.3.tar.gz --source D:/samples/coakka-runtime/rust/basic --work D:/build-storage/rust-basic-new --cargo D:/rust/bin/cargo.exe --cargo-home D:/offline-cargo-cache --target windows-x86_64
+python -B coakka-runtime/scripts/runtime-rust-candidate.py --archive D:/candidate/coakka-runtime-rs-3.0.0.tar.gz --source D:/samples/coakka-runtime/rust/basic --work D:/build-storage/rust-basic-new --cargo D:/rust/bin/cargo.exe --cargo-home D:/offline-cargo-cache --target windows-x86_64
 & D:/build-storage/rust-basic-new/installed/coakka-runtime-sample.exe
 ```
 

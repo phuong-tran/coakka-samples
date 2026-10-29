@@ -178,6 +178,21 @@ if(COAKKA_CAMERA_BUILD_HOST)
   set_tests_properties(coakka_camera_gateway_lifecycle_tests PROPERTIES
     LABELS "camera;concurrency;lifecycle" TIMEOUT 15)
 
+  add_executable(coakka_camera_profile_status_tests
+    src/stream_lane_camera_profile_status_tests.cc
+    src/stream_lane_camera_recorder.cc
+    src/stream_lane_camera_web_ui.cc
+    src/runtime_addon_web_wire.cc)
+  coakka_camera_target_defaults(coakka_camera_profile_status_tests)
+  if(WIN32)
+    target_link_libraries(coakka_camera_profile_status_tests
+      PRIVATE dbghelp ws2_32)
+  endif()
+  add_test(NAME coakka_camera_profile_status_tests
+    COMMAND coakka_camera_profile_status_tests)
+  set_tests_properties(coakka_camera_profile_status_tests PROPERTIES
+    LABELS "camera;status;ownership" TIMEOUT 10)
+
   add_executable(coakka_camera_lane_owner_lifecycle_tests
     src/stream_lane_camera_lane_owner_tests.cc)
   target_compile_features(coakka_camera_lane_owner_lifecycle_tests PRIVATE

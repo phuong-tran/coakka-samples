@@ -2,7 +2,7 @@
   "schema": 1,
   "state": "private-candidate",
   "version": "3.0.0",
-  "coreCommit": "f6b61768f60a08d81b1dc06625a211ffca8e89e2",
+  "coreCommit": "1522b4a9f30da1039ef8c7d198bbecfc749a2456",
   "files": {
     "LICENSE": {
       "bytes": 11358,
@@ -25,16 +25,16 @@
       "sha256": "bb1cc59804c472d666e256c737424c76c458087dac54a253ce94578b44f6e759"
     },
     "README.md": {
-      "bytes": 4020,
-      "sha256": "3fdedff823a3a353a1460d727f10228f5e33c52b6591fd1c8043c9a5b26862bd"
+      "bytes": 4256,
+      "sha256": "49a714e7057dcc0ced69db9bdba2ce36a20601a2ef1c847df5640aa17f9061f5"
     },
     "RELEASE.md": {
-      "bytes": 1642,
-      "sha256": "ad28eb3d44a5f4a19291bde7931581cad6ab25525eea4bded85cb5ea4c500b74"
+      "bytes": 2057,
+      "sha256": "abf1c25a41bb5de19d7d8b3c981ecadb8ebbadc20a8f24141c58b47a64baa830"
     },
     "RELEASE_NOTES.md": {
-      "bytes": 1014,
-      "sha256": "b9355e04e969f8bb62c3409c185dac26226b43eccbdd2775428340b0869a51f0"
+      "bytes": 1268,
+      "sha256": "f9abb65a4d07465a8ce8568639d3cc93c85a3837398bbf6a6e595e9afaca4267"
     },
     "Sources/CoAkkaRuntime/FileLane.swift": {
       "bytes": 26592,
@@ -50,23 +50,23 @@
     },
     "Sources/CoAkkaRuntime/Resources/linux-aarch64/libcoakka_runtime_v2.so": {
       "bytes": 2103344,
-      "sha256": "dbdba44a6c309f0e7eccbae7224bceae63313c199d68b93e408043674ada3579"
+      "sha256": "9092c59320f2aa8d3431e01ac10f292c82b545c23d74f51dcde4855741966de8"
     },
     "Sources/CoAkkaRuntime/Resources/linux-x86_64/libcoakka_runtime_v2.so": {
-      "bytes": 3188976,
-      "sha256": "514f7db498ab2f5afab9930f6868eaae95a3e867de426ee63a730d543f452cdc"
+      "bytes": 1902480,
+      "sha256": "4736f09d4a68073c6b9f7043f6418ab5a316ee0ec06a11b92510c65c1247ba81"
     },
     "Sources/CoAkkaRuntime/Resources/macos-aarch64/libcoakka_runtime_v2.dylib": {
-      "bytes": 860216,
-      "sha256": "b3b0050db65e40da7d8d2dd54aaf9ee50975ecf1498e657c8896f6b98ccc8e12"
+      "bytes": 873360,
+      "sha256": "5ef45ad964a43c3e91c6c69bd731dbc5ac30348721ebffa7d384a7ce05bc4dd2"
     },
     "Sources/CoAkkaRuntime/Resources/windows-aarch64/libcoakka_runtime_v2.dll": {
       "bytes": 2071552,
-      "sha256": "b1a1ca4068878b1e4d6d9a0f9064b2927a75cd390e755c4b42ed0b530d997046"
+      "sha256": "720a73215b4cbee231cbaadb766704d60ff999b11d52411819484e738f91bacd"
     },
     "Sources/CoAkkaRuntime/Resources/windows-x86_64/libcoakka_runtime_v2.dll": {
       "bytes": 2283520,
-      "sha256": "901cb6e63a17bdcaadfc0aff2c3a082d9272dcb18ba94d7aaa6424665753a8fb"
+      "sha256": "dba531e09359f270a22543ec3b1a4a4bf9750e965c2b5920966871faaff88e4d"
     },
     "Sources/CoAkkaRuntime/RuntimeAskExecutor.swift": {
       "bytes": 1085,
@@ -221,16 +221,16 @@
       "sha256": "d0ab3d66419c64c29d784ed6189c6be7497ebb5291b222e34c97fba13fa83f48"
     },
     "TRANSPORT_CONFIGURATION.md": {
-      "bytes": 8005,
-      "sha256": "84d6153d49cce280d315ffdb739d6ec7bb33780b92e603f90020610e1ebe78c6"
+      "bytes": 8166,
+      "sha256": "36bf68517526eb0f914c65ebdcd98901e2900e9cc0c446868e32e7b976f5bdd7"
     },
     "coakka-runtime-package.json": {
       "bytes": 9248,
-      "sha256": "eff172639e8c69686b7741e74bddd077995acbcfb477275ffc4f77d25bc7e627"
+      "sha256": "b1ff82615fc7850e5f2a940258a92adc0753151e5c35eaca7f29a7f317044d6d"
     },
     "core-abi-manifest.json": {
       "bytes": 2771,
-      "sha256": "499528289939037b415a01a9448d374d0b640096d131dddafe6e40539300495f"
+      "sha256": "c38bc2864a1d1673c54ad9d01c3224745394a675359cf36b3ca0dbc536511de5"
     }
   },
   "languageFiles": {

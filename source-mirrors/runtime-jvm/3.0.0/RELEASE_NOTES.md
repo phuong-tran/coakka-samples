@@ -3,7 +3,7 @@
 ## 3.0.0 — candidate awaiting publication
 
 Current source delegates configuration, probes, delivery, matching and causal
-results to Core `f6b61768f60a08d81b1dc06625a211ffca8e89e2`/ABI1. JVM code owns
+results to Core `1522b4a9f30da1039ef8c7d198bbecfc749a2456`/ABI1. JVM code owns
 language values, required boundary checks, loading and callback lifetimes. A
 fixed private bridge replaces the old binding path without reflection or a
 separate native implementation installation.

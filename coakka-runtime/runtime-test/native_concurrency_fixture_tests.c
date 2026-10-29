@@ -48,7 +48,7 @@ int main(void) {
   coakka_v2_runtime_info_t info = {0};
   info.struct_size = sizeof(info);
   assert(coakka_v2_runtime_get_info(&info) == COAKKA_V2_OK && info.abi_version == 1);
-  assert(strcmp(info.git_commit, "f6b61768f60a08d81b1dc06625a211ffca8e89e2") == 0);
+  assert(strcmp(info.git_commit, "1522b4a9f30da1039ef8c7d198bbecfc749a2456") == 0);
   native_concurrency_fixture_t fixture;
   native_engine_failure_t failure;
   native_concurrency_fixture_init(&fixture);

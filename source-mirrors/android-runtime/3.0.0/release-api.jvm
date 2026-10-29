@@ -1,0 +1,1036 @@
+coakka.v2.android.AndroidRuntimeAskResult | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.AndroidRuntimeAskResult | public byte[] component2(); | descriptor: ()[B
+coakka.v2.android.AndroidRuntimeAskResult | public byte[] getEnvelope(); | descriptor: ()[B
+coakka.v2.android.AndroidRuntimeAskResult | public coakka.v2.android.AndroidRuntimeAskResult copy(coakka.v2.android.AndroidRuntimeAskResultKind, byte[]); | descriptor: (Lcoakka/v2/android/AndroidRuntimeAskResultKind;[B)Lcoakka/v2/android/AndroidRuntimeAskResult;
+coakka.v2.android.AndroidRuntimeAskResult | public coakka.v2.android.AndroidRuntimeAskResult(coakka.v2.android.AndroidRuntimeAskResultKind, byte[]); | descriptor: (Lcoakka/v2/android/AndroidRuntimeAskResultKind;[B)V
+coakka.v2.android.AndroidRuntimeAskResult | public coakka.v2.android.AndroidRuntimeAskResultKind component1(); | descriptor: ()Lcoakka/v2/android/AndroidRuntimeAskResultKind;
+coakka.v2.android.AndroidRuntimeAskResult | public coakka.v2.android.AndroidRuntimeAskResultKind getKind(); | descriptor: ()Lcoakka/v2/android/AndroidRuntimeAskResultKind;
+coakka.v2.android.AndroidRuntimeAskResult | public final class coakka.v2.android.AndroidRuntimeAskResult {
+coakka.v2.android.AndroidRuntimeAskResult | public int hashCode(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeAskResult | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeAskResult | public static coakka.v2.android.AndroidRuntimeAskResult copy$default(coakka.v2.android.AndroidRuntimeAskResult, coakka.v2.android.AndroidRuntimeAskResultKind, byte[], int, java.lang.Object); | descriptor: (Lcoakka/v2/android/AndroidRuntimeAskResult;Lcoakka/v2/android/AndroidRuntimeAskResultKind;[BILjava/lang/Object;)Lcoakka/v2/android/AndroidRuntimeAskResult;
+coakka.v2.android.AndroidRuntimeAskResultKind | public final class coakka.v2.android.AndroidRuntimeAskResultKind extends java.lang.Enum<coakka.v2.android.AndroidRuntimeAskResultKind> {
+coakka.v2.android.AndroidRuntimeAskResultKind | public static coakka.v2.android.AndroidRuntimeAskResultKind valueOf(java.lang.String); | descriptor: (Ljava/lang/String;)Lcoakka/v2/android/AndroidRuntimeAskResultKind;
+coakka.v2.android.AndroidRuntimeAskResultKind | public static coakka.v2.android.AndroidRuntimeAskResultKind[] values(); | descriptor: ()[Lcoakka/v2/android/AndroidRuntimeAskResultKind;
+coakka.v2.android.AndroidRuntimeAskResultKind | public static final coakka.v2.android.AndroidRuntimeAskResultKind DEADLETTER; | descriptor: Lcoakka/v2/android/AndroidRuntimeAskResultKind;
+coakka.v2.android.AndroidRuntimeAskResultKind | public static final coakka.v2.android.AndroidRuntimeAskResultKind RESPONSE; | descriptor: Lcoakka/v2/android/AndroidRuntimeAskResultKind;
+coakka.v2.android.AndroidRuntimeAskResultKind | public static final coakka.v2.android.AndroidRuntimeAskResultKind$Companion Companion; | descriptor: Lcoakka/v2/android/AndroidRuntimeAskResultKind$Companion;
+coakka.v2.android.AndroidRuntimeAskResultKind | public static kotlin.enums.EnumEntries<coakka.v2.android.AndroidRuntimeAskResultKind> getEntries(); | descriptor: ()Lkotlin/enums/EnumEntries;
+coakka.v2.android.AndroidRuntimeAskResultKind$Companion | public coakka.v2.android.AndroidRuntimeAskResultKind$Companion(kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.AndroidRuntimeAskResultKind$Companion | public final class coakka.v2.android.AndroidRuntimeAskResultKind$Companion {
+coakka.v2.android.AndroidRuntimeConfig | public boolean component5(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeConfig | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.AndroidRuntimeConfig | public boolean getStrictNoDrop(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeConfig | public coakka.v2.android.AndroidRuntimeConfig copy(java.lang.String, java.lang.String, coakka.v2.android.RuntimeNetworkConfig, int, boolean, coakka.v2.android.AndroidRuntimeMonitorOptions); | descriptor: (Ljava/lang/String;Ljava/lang/String;Lcoakka/v2/android/RuntimeNetworkConfig;IZLcoakka/v2/android/AndroidRuntimeMonitorOptions;)Lcoakka/v2/android/AndroidRuntimeConfig;
+coakka.v2.android.AndroidRuntimeConfig | public coakka.v2.android.AndroidRuntimeConfig(java.lang.String, java.lang.String); | descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+coakka.v2.android.AndroidRuntimeConfig | public coakka.v2.android.AndroidRuntimeConfig(java.lang.String, java.lang.String, coakka.v2.android.RuntimeNetworkConfig); | descriptor: (Ljava/lang/String;Ljava/lang/String;Lcoakka/v2/android/RuntimeNetworkConfig;)V
+coakka.v2.android.AndroidRuntimeConfig | public coakka.v2.android.AndroidRuntimeConfig(java.lang.String, java.lang.String, coakka.v2.android.RuntimeNetworkConfig, int); | descriptor: (Ljava/lang/String;Ljava/lang/String;Lcoakka/v2/android/RuntimeNetworkConfig;I)V
+coakka.v2.android.AndroidRuntimeConfig | public coakka.v2.android.AndroidRuntimeConfig(java.lang.String, java.lang.String, coakka.v2.android.RuntimeNetworkConfig, int, boolean); | descriptor: (Ljava/lang/String;Ljava/lang/String;Lcoakka/v2/android/RuntimeNetworkConfig;IZ)V
+coakka.v2.android.AndroidRuntimeConfig | public coakka.v2.android.AndroidRuntimeConfig(java.lang.String, java.lang.String, coakka.v2.android.RuntimeNetworkConfig, int, boolean, coakka.v2.android.AndroidRuntimeMonitorOptions); | descriptor: (Ljava/lang/String;Ljava/lang/String;Lcoakka/v2/android/RuntimeNetworkConfig;IZLcoakka/v2/android/AndroidRuntimeMonitorOptions;)V
+coakka.v2.android.AndroidRuntimeConfig | public coakka.v2.android.AndroidRuntimeConfig(java.lang.String, java.lang.String, coakka.v2.android.RuntimeNetworkConfig, int, boolean, coakka.v2.android.AndroidRuntimeMonitorOptions, int, kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Ljava/lang/String;Ljava/lang/String;Lcoakka/v2/android/RuntimeNetworkConfig;IZLcoakka/v2/android/AndroidRuntimeMonitorOptions;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.AndroidRuntimeConfig | public coakka.v2.android.AndroidRuntimeMonitorOptions component6(); | descriptor: ()Lcoakka/v2/android/AndroidRuntimeMonitorOptions;
+coakka.v2.android.AndroidRuntimeConfig | public coakka.v2.android.AndroidRuntimeMonitorOptions getMonitor(); | descriptor: ()Lcoakka/v2/android/AndroidRuntimeMonitorOptions;
+coakka.v2.android.AndroidRuntimeConfig | public coakka.v2.android.RuntimeNetworkConfig component3(); | descriptor: ()Lcoakka/v2/android/RuntimeNetworkConfig;
+coakka.v2.android.AndroidRuntimeConfig | public coakka.v2.android.RuntimeNetworkConfig getNetwork(); | descriptor: ()Lcoakka/v2/android/RuntimeNetworkConfig;
+coakka.v2.android.AndroidRuntimeConfig | public final class coakka.v2.android.AndroidRuntimeConfig {
+coakka.v2.android.AndroidRuntimeConfig | public int component4(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeConfig | public int getQueueCapacity(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeConfig | public int hashCode(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeConfig | public java.lang.String component1(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeConfig | public java.lang.String component2(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeConfig | public java.lang.String getNodeId(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeConfig | public java.lang.String getSystemName(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeConfig | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeConfig | public static coakka.v2.android.AndroidRuntimeConfig copy$default(coakka.v2.android.AndroidRuntimeConfig, java.lang.String, java.lang.String, coakka.v2.android.RuntimeNetworkConfig, int, boolean, coakka.v2.android.AndroidRuntimeMonitorOptions, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/AndroidRuntimeConfig;Ljava/lang/String;Ljava/lang/String;Lcoakka/v2/android/RuntimeNetworkConfig;IZLcoakka/v2/android/AndroidRuntimeMonitorOptions;ILjava/lang/Object;)Lcoakka/v2/android/AndroidRuntimeConfig;
+coakka.v2.android.AndroidRuntimeEndpoint | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.AndroidRuntimeEndpoint | public coakka.v2.android.AndroidRuntimeEndpoint copy(java.lang.String, int, int, int); | descriptor: (Ljava/lang/String;III)Lcoakka/v2/android/AndroidRuntimeEndpoint;
+coakka.v2.android.AndroidRuntimeEndpoint | public coakka.v2.android.AndroidRuntimeEndpoint(java.lang.String, int, int, int); | descriptor: (Ljava/lang/String;III)V
+coakka.v2.android.AndroidRuntimeEndpoint | public coakka.v2.android.AndroidRuntimeEndpoint(java.lang.String, int, int, int, int, kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Ljava/lang/String;IIIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.AndroidRuntimeEndpoint | public final class coakka.v2.android.AndroidRuntimeEndpoint {
+coakka.v2.android.AndroidRuntimeEndpoint | public int component2(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeEndpoint | public int component3(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeEndpoint | public int component4(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeEndpoint | public int getFlags(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeEndpoint | public int getPort(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeEndpoint | public int getWeight(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeEndpoint | public int hashCode(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeEndpoint | public java.lang.String component1(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeEndpoint | public java.lang.String getHost(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeEndpoint | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeEndpoint | public static coakka.v2.android.AndroidRuntimeEndpoint copy$default(coakka.v2.android.AndroidRuntimeEndpoint, java.lang.String, int, int, int, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/AndroidRuntimeEndpoint;Ljava/lang/String;IIIILjava/lang/Object;)Lcoakka/v2/android/AndroidRuntimeEndpoint;
+coakka.v2.android.AndroidRuntimeFeatures | public final class coakka.v2.android.AndroidRuntimeFeatures {
+coakka.v2.android.AndroidRuntimeFeatures | public static final coakka.v2.android.AndroidRuntimeFeatures INSTANCE; | descriptor: Lcoakka/v2/android/AndroidRuntimeFeatures;
+coakka.v2.android.AndroidRuntimeFeatures | public static final int FILE_LANE = 8388608; | descriptor: I
+coakka.v2.android.AndroidRuntimeFeatures | public static final int LANE_OWNER_GRANTS = 33554432; | descriptor: I
+coakka.v2.android.AndroidRuntimeFeatures | public static final int STREAM_LANE = 16777216; | descriptor: I
+coakka.v2.android.AndroidRuntimeHealth | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.AndroidRuntimeHealth | public coakka.v2.android.AndroidRuntimeHealth copy(coakka.v2.android.RuntimeState, long, long); | descriptor: (Lcoakka/v2/android/RuntimeState;JJ)Lcoakka/v2/android/AndroidRuntimeHealth;
+coakka.v2.android.AndroidRuntimeHealth | public coakka.v2.android.AndroidRuntimeHealth(coakka.v2.android.RuntimeState, long, long); | descriptor: (Lcoakka/v2/android/RuntimeState;JJ)V
+coakka.v2.android.AndroidRuntimeHealth | public coakka.v2.android.RuntimeState component1(); | descriptor: ()Lcoakka/v2/android/RuntimeState;
+coakka.v2.android.AndroidRuntimeHealth | public coakka.v2.android.RuntimeState getState(); | descriptor: ()Lcoakka/v2/android/RuntimeState;
+coakka.v2.android.AndroidRuntimeHealth | public final class coakka.v2.android.AndroidRuntimeHealth {
+coakka.v2.android.AndroidRuntimeHealth | public int hashCode(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeHealth | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeHealth | public long component2(); | descriptor: ()J
+coakka.v2.android.AndroidRuntimeHealth | public long component3(); | descriptor: ()J
+coakka.v2.android.AndroidRuntimeHealth | public long getAppliedGeneration(); | descriptor: ()J
+coakka.v2.android.AndroidRuntimeHealth | public long getFlags(); | descriptor: ()J
+coakka.v2.android.AndroidRuntimeHealth | public static coakka.v2.android.AndroidRuntimeHealth copy$default(coakka.v2.android.AndroidRuntimeHealth, coakka.v2.android.RuntimeState, long, long, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/AndroidRuntimeHealth;Lcoakka/v2/android/RuntimeState;JJILjava/lang/Object;)Lcoakka/v2/android/AndroidRuntimeHealth;
+coakka.v2.android.AndroidRuntimeInfo | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.AndroidRuntimeInfo | public boolean supports(int); | descriptor: (I)Z
+coakka.v2.android.AndroidRuntimeInfo | public coakka.v2.android.AndroidRuntimeInfo copy(int, int, int, java.lang.String, java.lang.String, java.lang.String, java.lang.String); | descriptor: (IIILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcoakka/v2/android/AndroidRuntimeInfo;
+coakka.v2.android.AndroidRuntimeInfo | public coakka.v2.android.AndroidRuntimeInfo(int, int, int, java.lang.String, java.lang.String, java.lang.String, java.lang.String); | descriptor: (IIILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+coakka.v2.android.AndroidRuntimeInfo | public final class coakka.v2.android.AndroidRuntimeInfo {
+coakka.v2.android.AndroidRuntimeInfo | public int component1(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeInfo | public int component2(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeInfo | public int component3(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeInfo | public int getAbiVersion(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeInfo | public int getFeatureFlags(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeInfo | public int getRemoteWireProfileVersion(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeInfo | public int hashCode(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeInfo | public java.lang.String component4(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeInfo | public java.lang.String component5(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeInfo | public java.lang.String component6(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeInfo | public java.lang.String component7(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeInfo | public java.lang.String getBuildId(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeInfo | public java.lang.String getGitCommit(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeInfo | public java.lang.String getRuntimeVersion(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeInfo | public java.lang.String getSouthboundBackend(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeInfo | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeInfo | public static coakka.v2.android.AndroidRuntimeInfo copy$default(coakka.v2.android.AndroidRuntimeInfo, int, int, int, java.lang.String, java.lang.String, java.lang.String, java.lang.String, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/AndroidRuntimeInfo;IIILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcoakka/v2/android/AndroidRuntimeInfo;
+coakka.v2.android.AndroidRuntimeMessages | public final class coakka.v2.android.AndroidRuntimeMessages {
+coakka.v2.android.AndroidRuntimeMessages | public static byte[] reply(byte[], java.lang.String, byte[]); | descriptor: ([BLjava/lang/String;[B)[B
+coakka.v2.android.AndroidRuntimeMessages | public static byte[] request$default(java.lang.String, java.lang.String, java.lang.String, java.lang.String, byte[], int, boolean, int, java.lang.Object); | descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[BIZILjava/lang/Object;)[B
+coakka.v2.android.AndroidRuntimeMessages | public static byte[] request(java.lang.String, java.lang.String, java.lang.String, java.lang.String, byte[], int); | descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[BI)[B
+coakka.v2.android.AndroidRuntimeMessages | public static byte[] request(java.lang.String, java.lang.String, java.lang.String, java.lang.String, byte[], int, boolean); | descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[BIZ)[B
+coakka.v2.android.AndroidRuntimeMessages | public static byte[] responsePayload(byte[]); | descriptor: ([B)[B
+coakka.v2.android.AndroidRuntimeMessages | public static coakka.v2.android.AndroidRuntimeRequest decodeRequest(byte[]); | descriptor: ([B)Lcoakka/v2/android/AndroidRuntimeRequest;
+coakka.v2.android.AndroidRuntimeMessages | public static final coakka.v2.android.AndroidRuntimeMessages INSTANCE; | descriptor: Lcoakka/v2/android/AndroidRuntimeMessages;
+coakka.v2.android.AndroidRuntimeMonitorOptions | public boolean component1(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeMonitorOptions | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.AndroidRuntimeMonitorOptions | public boolean getEnabled(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeMonitorOptions | public coakka.v2.android.AndroidRuntimeMonitorOptions copy(boolean); | descriptor: (Z)Lcoakka/v2/android/AndroidRuntimeMonitorOptions;
+coakka.v2.android.AndroidRuntimeMonitorOptions | public coakka.v2.android.AndroidRuntimeMonitorOptions(boolean); | descriptor: (Z)V
+coakka.v2.android.AndroidRuntimeMonitorOptions | public final class coakka.v2.android.AndroidRuntimeMonitorOptions {
+coakka.v2.android.AndroidRuntimeMonitorOptions | public int hashCode(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeMonitorOptions | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeMonitorOptions | public static coakka.v2.android.AndroidRuntimeMonitorOptions copy$default(coakka.v2.android.AndroidRuntimeMonitorOptions, boolean, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/AndroidRuntimeMonitorOptions;ZILjava/lang/Object;)Lcoakka/v2/android/AndroidRuntimeMonitorOptions;
+coakka.v2.android.AndroidRuntimeRequest | public boolean component3(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeRequest | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.AndroidRuntimeRequest | public boolean getOneWay(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeRequest | public byte[] component2(); | descriptor: ()[B
+coakka.v2.android.AndroidRuntimeRequest | public byte[] getPayload(); | descriptor: ()[B
+coakka.v2.android.AndroidRuntimeRequest | public coakka.v2.android.AndroidRuntimeRequest copy(java.lang.String, byte[], boolean); | descriptor: (Ljava/lang/String;[BZ)Lcoakka/v2/android/AndroidRuntimeRequest;
+coakka.v2.android.AndroidRuntimeRequest | public coakka.v2.android.AndroidRuntimeRequest(java.lang.String, byte[], boolean); | descriptor: (Ljava/lang/String;[BZ)V
+coakka.v2.android.AndroidRuntimeRequest | public final class coakka.v2.android.AndroidRuntimeRequest {
+coakka.v2.android.AndroidRuntimeRequest | public int hashCode(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeRequest | public java.lang.String component1(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeRequest | public java.lang.String getTarget(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeRequest | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeRequest | public static coakka.v2.android.AndroidRuntimeRequest copy$default(coakka.v2.android.AndroidRuntimeRequest, java.lang.String, byte[], boolean, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/AndroidRuntimeRequest;Ljava/lang/String;[BZILjava/lang/Object;)Lcoakka/v2/android/AndroidRuntimeRequest;
+coakka.v2.android.AndroidRuntimeRoute | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.AndroidRuntimeRoute | public coakka.v2.android.AndroidRuntimeRoute copy(java.lang.String, java.util.List<coakka.v2.android.AndroidRuntimeEndpoint>, int, java.lang.String, int); | descriptor: (Ljava/lang/String;Ljava/util/List;ILjava/lang/String;I)Lcoakka/v2/android/AndroidRuntimeRoute;
+coakka.v2.android.AndroidRuntimeRoute | public coakka.v2.android.AndroidRuntimeRoute(java.lang.String, java.util.List, int, java.lang.String, int, int, kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Ljava/lang/String;Ljava/util/List;ILjava/lang/String;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.AndroidRuntimeRoute | public coakka.v2.android.AndroidRuntimeRoute(java.lang.String, java.util.List<coakka.v2.android.AndroidRuntimeEndpoint>, int, java.lang.String, int); | descriptor: (Ljava/lang/String;Ljava/util/List;ILjava/lang/String;I)V
+coakka.v2.android.AndroidRuntimeRoute | public final class coakka.v2.android.AndroidRuntimeRoute {
+coakka.v2.android.AndroidRuntimeRoute | public int component3(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeRoute | public int component5(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeRoute | public int getFlags(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeRoute | public int getStrategy(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeRoute | public int hashCode(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeRoute | public java.lang.String component1(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeRoute | public java.lang.String component4(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeRoute | public java.lang.String getRouteKeyHint(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeRoute | public java.lang.String getTarget(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeRoute | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeRoute | public java.util.List<coakka.v2.android.AndroidRuntimeEndpoint> component2(); | descriptor: ()Ljava/util/List;
+coakka.v2.android.AndroidRuntimeRoute | public java.util.List<coakka.v2.android.AndroidRuntimeEndpoint> getEndpoints(); | descriptor: ()Ljava/util/List;
+coakka.v2.android.AndroidRuntimeRoute | public static coakka.v2.android.AndroidRuntimeRoute copy$default(coakka.v2.android.AndroidRuntimeRoute, java.lang.String, java.util.List, int, java.lang.String, int, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/AndroidRuntimeRoute;Ljava/lang/String;Ljava/util/List;ILjava/lang/String;IILjava/lang/Object;)Lcoakka/v2/android/AndroidRuntimeRoute;
+coakka.v2.android.AndroidRuntimeRoute | public static coakka.v2.android.AndroidRuntimeRoute local(java.lang.String, java.lang.String); | descriptor: (Ljava/lang/String;Ljava/lang/String;)Lcoakka/v2/android/AndroidRuntimeRoute;
+coakka.v2.android.AndroidRuntimeRoute | public static final coakka.v2.android.AndroidRuntimeRoute$Companion Companion; | descriptor: Lcoakka/v2/android/AndroidRuntimeRoute$Companion;
+coakka.v2.android.AndroidRuntimeRoute$Companion | public coakka.v2.android.AndroidRuntimeRoute local(java.lang.String, java.lang.String); | descriptor: (Ljava/lang/String;Ljava/lang/String;)Lcoakka/v2/android/AndroidRuntimeRoute;
+coakka.v2.android.AndroidRuntimeRoute$Companion | public coakka.v2.android.AndroidRuntimeRoute$Companion(kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.AndroidRuntimeRoute$Companion | public final class coakka.v2.android.AndroidRuntimeRoute$Companion {
+coakka.v2.android.AndroidRuntimeStartupConfig | public boolean component10(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeStartupConfig | public boolean component3(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeStartupConfig | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.AndroidRuntimeStartupConfig | public boolean getMonitorEnabled(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeStartupConfig | public boolean getStrictNoDrop(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeStartupConfig | public boolean wasDefaulted(long); | descriptor: (J)Z
+coakka.v2.android.AndroidRuntimeStartupConfig | public coakka.v2.android.AndroidRuntimeStartupConfig copy(int, long, boolean, int, long, coakka.v2.android.RuntimeState, coakka.v2.android.AndroidRuntimeStartupExecution, coakka.v2.android.AndroidRuntimeTcpConnectionConfig, coakka.v2.android.AndroidRuntimeStartupIo, boolean); | descriptor: (IJZIJLcoakka/v2/android/RuntimeState;Lcoakka/v2/android/AndroidRuntimeStartupExecution;Lcoakka/v2/android/AndroidRuntimeTcpConnectionConfig;Lcoakka/v2/android/AndroidRuntimeStartupIo;Z)Lcoakka/v2/android/AndroidRuntimeStartupConfig;
+coakka.v2.android.AndroidRuntimeStartupConfig | public coakka.v2.android.AndroidRuntimeStartupConfig(int, long, boolean, int, long, coakka.v2.android.RuntimeState, coakka.v2.android.AndroidRuntimeStartupExecution, coakka.v2.android.AndroidRuntimeTcpConnectionConfig, coakka.v2.android.AndroidRuntimeStartupIo, boolean); | descriptor: (IJZIJLcoakka/v2/android/RuntimeState;Lcoakka/v2/android/AndroidRuntimeStartupExecution;Lcoakka/v2/android/AndroidRuntimeTcpConnectionConfig;Lcoakka/v2/android/AndroidRuntimeStartupIo;Z)V
+coakka.v2.android.AndroidRuntimeStartupConfig | public coakka.v2.android.AndroidRuntimeStartupExecution component7(); | descriptor: ()Lcoakka/v2/android/AndroidRuntimeStartupExecution;
+coakka.v2.android.AndroidRuntimeStartupConfig | public coakka.v2.android.AndroidRuntimeStartupExecution getExecution(); | descriptor: ()Lcoakka/v2/android/AndroidRuntimeStartupExecution;
+coakka.v2.android.AndroidRuntimeStartupConfig | public coakka.v2.android.AndroidRuntimeStartupIo component9(); | descriptor: ()Lcoakka/v2/android/AndroidRuntimeStartupIo;
+coakka.v2.android.AndroidRuntimeStartupConfig | public coakka.v2.android.AndroidRuntimeStartupIo getIo(); | descriptor: ()Lcoakka/v2/android/AndroidRuntimeStartupIo;
+coakka.v2.android.AndroidRuntimeStartupConfig | public coakka.v2.android.AndroidRuntimeTcpConnectionConfig component8(); | descriptor: ()Lcoakka/v2/android/AndroidRuntimeTcpConnectionConfig;
+coakka.v2.android.AndroidRuntimeStartupConfig | public coakka.v2.android.AndroidRuntimeTcpConnectionConfig getConnection(); | descriptor: ()Lcoakka/v2/android/AndroidRuntimeTcpConnectionConfig;
+coakka.v2.android.AndroidRuntimeStartupConfig | public coakka.v2.android.RuntimeState component6(); | descriptor: ()Lcoakka/v2/android/RuntimeState;
+coakka.v2.android.AndroidRuntimeStartupConfig | public coakka.v2.android.RuntimeState getRuntimeState(); | descriptor: ()Lcoakka/v2/android/RuntimeState;
+coakka.v2.android.AndroidRuntimeStartupConfig | public final class coakka.v2.android.AndroidRuntimeStartupConfig {
+coakka.v2.android.AndroidRuntimeStartupConfig | public int component1(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeStartupConfig | public int component4(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeStartupConfig | public int getDefaultsRevision(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeStartupConfig | public int getQueueCapacity(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeStartupConfig | public int hashCode(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeStartupConfig | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeStartupConfig | public long component2(); | descriptor: ()J
+coakka.v2.android.AndroidRuntimeStartupConfig | public long component5(); | descriptor: ()J
+coakka.v2.android.AndroidRuntimeStartupConfig | public long getDefaultedGroups(); | descriptor: ()J
+coakka.v2.android.AndroidRuntimeStartupConfig | public long getRequestMaxFrameSize(); | descriptor: ()J
+coakka.v2.android.AndroidRuntimeStartupConfig | public static coakka.v2.android.AndroidRuntimeStartupConfig copy$default(coakka.v2.android.AndroidRuntimeStartupConfig, int, long, boolean, int, long, coakka.v2.android.RuntimeState, coakka.v2.android.AndroidRuntimeStartupExecution, coakka.v2.android.AndroidRuntimeTcpConnectionConfig, coakka.v2.android.AndroidRuntimeStartupIo, boolean, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/AndroidRuntimeStartupConfig;IJZIJLcoakka/v2/android/RuntimeState;Lcoakka/v2/android/AndroidRuntimeStartupExecution;Lcoakka/v2/android/AndroidRuntimeTcpConnectionConfig;Lcoakka/v2/android/AndroidRuntimeStartupIo;ZILjava/lang/Object;)Lcoakka/v2/android/AndroidRuntimeStartupConfig;
+coakka.v2.android.AndroidRuntimeStartupCpuPolicies | public final class coakka.v2.android.AndroidRuntimeStartupCpuPolicies {
+coakka.v2.android.AndroidRuntimeStartupCpuPolicies | public static final coakka.v2.android.AndroidRuntimeStartupCpuPolicies INSTANCE; | descriptor: Lcoakka/v2/android/AndroidRuntimeStartupCpuPolicies;
+coakka.v2.android.AndroidRuntimeStartupCpuPolicies | public static final int AUTO = 0; | descriptor: I
+coakka.v2.android.AndroidRuntimeStartupCpuPolicies | public static final int SINGLE = 1; | descriptor: I
+coakka.v2.android.AndroidRuntimeStartupDefaultGroups | public final class coakka.v2.android.AndroidRuntimeStartupDefaultGroups {
+coakka.v2.android.AndroidRuntimeStartupDefaultGroups | public static final coakka.v2.android.AndroidRuntimeStartupDefaultGroups INSTANCE; | descriptor: Lcoakka/v2/android/AndroidRuntimeStartupDefaultGroups;
+coakka.v2.android.AndroidRuntimeStartupDefaultGroups | public static final long CONNECTION = 2l; | descriptor: J
+coakka.v2.android.AndroidRuntimeStartupDefaultGroups | public static final long EXECUTION = 1l; | descriptor: J
+coakka.v2.android.AndroidRuntimeStartupDefaultGroups | public static final long IO = 4l; | descriptor: J
+coakka.v2.android.AndroidRuntimeStartupDefaultGroups | public static final long MONITOR = 8l; | descriptor: J
+coakka.v2.android.AndroidRuntimeStartupExecution | public boolean component2(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeStartupExecution | public boolean component5(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeStartupExecution | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.AndroidRuntimeStartupExecution | public boolean getStartupApplied(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeStartupExecution | public boolean getSupported(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeStartupExecution | public coakka.v2.android.AndroidRuntimeStartupExecution copy(int, boolean, int, java.util.List<java.lang.Long>, boolean); | descriptor: (IZILjava/util/List;Z)Lcoakka/v2/android/AndroidRuntimeStartupExecution;
+coakka.v2.android.AndroidRuntimeStartupExecution | public coakka.v2.android.AndroidRuntimeStartupExecution(int, boolean, int, java.util.List<java.lang.Long>, boolean); | descriptor: (IZILjava/util/List;Z)V
+coakka.v2.android.AndroidRuntimeStartupExecution | public final class coakka.v2.android.AndroidRuntimeStartupExecution {
+coakka.v2.android.AndroidRuntimeStartupExecution | public int component1(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeStartupExecution | public int component3(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeStartupExecution | public int getAvailableCpuCount(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeStartupExecution | public int getRequestedPolicy(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeStartupExecution | public int hashCode(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeStartupExecution | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeStartupExecution | public java.util.List<java.lang.Long> component4(); | descriptor: ()Ljava/util/List;
+coakka.v2.android.AndroidRuntimeStartupExecution | public java.util.List<java.lang.Long> getSelectedCpuIds(); | descriptor: ()Ljava/util/List;
+coakka.v2.android.AndroidRuntimeStartupExecution | public static coakka.v2.android.AndroidRuntimeStartupExecution copy$default(coakka.v2.android.AndroidRuntimeStartupExecution, int, boolean, int, java.util.List, boolean, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/AndroidRuntimeStartupExecution;IZILjava/util/List;ZILjava/lang/Object;)Lcoakka/v2/android/AndroidRuntimeStartupExecution;
+coakka.v2.android.AndroidRuntimeStartupIo | public boolean component1(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeStartupIo | public boolean component2(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeStartupIo | public boolean component3(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeStartupIo | public boolean component4(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeStartupIo | public boolean component5(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeStartupIo | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.AndroidRuntimeStartupIo | public boolean getCompiled(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeStartupIo | public boolean getEffective(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeStartupIo | public boolean getProbed(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeStartupIo | public boolean getRequested(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeStartupIo | public boolean getSupported(); | descriptor: ()Z
+coakka.v2.android.AndroidRuntimeStartupIo | public coakka.v2.android.AndroidRuntimeStartupIo copy(boolean, boolean, boolean, boolean, boolean, int); | descriptor: (ZZZZZI)Lcoakka/v2/android/AndroidRuntimeStartupIo;
+coakka.v2.android.AndroidRuntimeStartupIo | public coakka.v2.android.AndroidRuntimeStartupIo(boolean, boolean, boolean, boolean, boolean, int); | descriptor: (ZZZZZI)V
+coakka.v2.android.AndroidRuntimeStartupIo | public final class coakka.v2.android.AndroidRuntimeStartupIo {
+coakka.v2.android.AndroidRuntimeStartupIo | public int component6(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeStartupIo | public int getProbeError(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeStartupIo | public int hashCode(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeStartupIo | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeStartupIo | public static coakka.v2.android.AndroidRuntimeStartupIo copy$default(coakka.v2.android.AndroidRuntimeStartupIo, boolean, boolean, boolean, boolean, boolean, int, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/AndroidRuntimeStartupIo;ZZZZZIILjava/lang/Object;)Lcoakka/v2/android/AndroidRuntimeStartupIo;
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public coakka.v2.android.AndroidRuntimeTcpConnectionConfig copy(int, coakka.v2.android.RuntimeTcpConnectionMode, long, long, long, long, int, long, long); | descriptor: (ILcoakka/v2/android/RuntimeTcpConnectionMode;JJJJIJJ)Lcoakka/v2/android/AndroidRuntimeTcpConnectionConfig;
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public coakka.v2.android.AndroidRuntimeTcpConnectionConfig(int, coakka.v2.android.RuntimeTcpConnectionMode, long, long, long, long, int, long, long); | descriptor: (ILcoakka/v2/android/RuntimeTcpConnectionMode;JJJJIJJ)V
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public coakka.v2.android.RuntimeTcpConnectionMode component2(); | descriptor: ()Lcoakka/v2/android/RuntimeTcpConnectionMode;
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public coakka.v2.android.RuntimeTcpConnectionMode getMode(); | descriptor: ()Lcoakka/v2/android/RuntimeTcpConnectionMode;
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public final class coakka.v2.android.AndroidRuntimeTcpConnectionConfig {
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public int component1(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public int component7(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public int getDefaultsRevision(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public int getMaxConnections(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public int hashCode(); | descriptor: ()I
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public long component3(); | descriptor: ()J
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public long component4(); | descriptor: ()J
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public long component5(); | descriptor: ()J
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public long component6(); | descriptor: ()J
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public long component8(); | descriptor: ()J
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public long component9(); | descriptor: ()J
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public long getApplicableFields(); | descriptor: ()J
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public long getConfigurableFields(); | descriptor: ()J
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public long getDefaultedFields(); | descriptor: ()J
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public long getExplicitlyConfiguredFields(); | descriptor: ()J
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public long getIdleTimeoutMillis(); | descriptor: ()J
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public long getMaxRequestsPerConnection(); | descriptor: ()J
+coakka.v2.android.AndroidRuntimeTcpConnectionConfig | public static coakka.v2.android.AndroidRuntimeTcpConnectionConfig copy$default(coakka.v2.android.AndroidRuntimeTcpConnectionConfig, int, coakka.v2.android.RuntimeTcpConnectionMode, long, long, long, long, int, long, long, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/AndroidRuntimeTcpConnectionConfig;ILcoakka/v2/android/RuntimeTcpConnectionMode;JJJJIJJILjava/lang/Object;)Lcoakka/v2/android/AndroidRuntimeTcpConnectionConfig;
+coakka.v2.android.AndroidStreamConsumer | public abstract coakka.v2.android.AndroidStreamConsumerDecision consume(java.nio.ByteBuffer, coakka.v2.android.StreamFrameMetadata); | descriptor: (Ljava/nio/ByteBuffer;Lcoakka/v2/android/StreamFrameMetadata;)Lcoakka/v2/android/AndroidStreamConsumerDecision;
+coakka.v2.android.AndroidStreamConsumer | public interface coakka.v2.android.AndroidStreamConsumer {
+coakka.v2.android.AndroidStreamConsumerDecision | public final class coakka.v2.android.AndroidStreamConsumerDecision extends java.lang.Enum<coakka.v2.android.AndroidStreamConsumerDecision> {
+coakka.v2.android.AndroidStreamConsumerDecision | public static coakka.v2.android.AndroidStreamConsumerDecision valueOf(java.lang.String); | descriptor: (Ljava/lang/String;)Lcoakka/v2/android/AndroidStreamConsumerDecision;
+coakka.v2.android.AndroidStreamConsumerDecision | public static coakka.v2.android.AndroidStreamConsumerDecision[] values(); | descriptor: ()[Lcoakka/v2/android/AndroidStreamConsumerDecision;
+coakka.v2.android.AndroidStreamConsumerDecision | public static final coakka.v2.android.AndroidStreamConsumerDecision CONTINUE; | descriptor: Lcoakka/v2/android/AndroidStreamConsumerDecision;
+coakka.v2.android.AndroidStreamConsumerDecision | public static final coakka.v2.android.AndroidStreamConsumerDecision STOP; | descriptor: Lcoakka/v2/android/AndroidStreamConsumerDecision;
+coakka.v2.android.AndroidStreamConsumerDecision | public static kotlin.enums.EnumEntries<coakka.v2.android.AndroidStreamConsumerDecision> getEntries(); | descriptor: ()Lkotlin/enums/EnumEntries;
+coakka.v2.android.AndroidStreamSource | public abstract coakka.v2.android.AndroidStreamSourceResult next(java.nio.ByteBuffer); | descriptor: (Ljava/nio/ByteBuffer;)Lcoakka/v2/android/AndroidStreamSourceResult;
+coakka.v2.android.AndroidStreamSource | public interface coakka.v2.android.AndroidStreamSource {
+coakka.v2.android.AndroidStreamSourceResult | public interface coakka.v2.android.AndroidStreamSourceResult {
+coakka.v2.android.AndroidStreamSourceResult$End | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.AndroidStreamSourceResult$End | public final class coakka.v2.android.AndroidStreamSourceResult$End implements coakka.v2.android.AndroidStreamSourceResult {
+coakka.v2.android.AndroidStreamSourceResult$End | public int hashCode(); | descriptor: ()I
+coakka.v2.android.AndroidStreamSourceResult$End | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidStreamSourceResult$End | public static final coakka.v2.android.AndroidStreamSourceResult$End INSTANCE; | descriptor: Lcoakka/v2/android/AndroidStreamSourceResult$End;
+coakka.v2.android.AndroidStreamSourceResult$Frame | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.AndroidStreamSourceResult$Frame | public coakka.v2.android.AndroidStreamSourceResult$Frame copy(int, long, long, int); | descriptor: (IJJI)Lcoakka/v2/android/AndroidStreamSourceResult$Frame;
+coakka.v2.android.AndroidStreamSourceResult$Frame | public coakka.v2.android.AndroidStreamSourceResult$Frame(int, long, long, int); | descriptor: (IJJI)V
+coakka.v2.android.AndroidStreamSourceResult$Frame | public coakka.v2.android.AndroidStreamSourceResult$Frame(int, long, long, int, int, kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (IJJIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.AndroidStreamSourceResult$Frame | public final class coakka.v2.android.AndroidStreamSourceResult$Frame implements coakka.v2.android.AndroidStreamSourceResult {
+coakka.v2.android.AndroidStreamSourceResult$Frame | public int component1(); | descriptor: ()I
+coakka.v2.android.AndroidStreamSourceResult$Frame | public int component4(); | descriptor: ()I
+coakka.v2.android.AndroidStreamSourceResult$Frame | public int getFlags(); | descriptor: ()I
+coakka.v2.android.AndroidStreamSourceResult$Frame | public int getSize(); | descriptor: ()I
+coakka.v2.android.AndroidStreamSourceResult$Frame | public int hashCode(); | descriptor: ()I
+coakka.v2.android.AndroidStreamSourceResult$Frame | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidStreamSourceResult$Frame | public long component2(); | descriptor: ()J
+coakka.v2.android.AndroidStreamSourceResult$Frame | public long component3(); | descriptor: ()J
+coakka.v2.android.AndroidStreamSourceResult$Frame | public long getCapturedMonoNs(); | descriptor: ()J
+coakka.v2.android.AndroidStreamSourceResult$Frame | public long getDroppedBefore(); | descriptor: ()J
+coakka.v2.android.AndroidStreamSourceResult$Frame | public static coakka.v2.android.AndroidStreamSourceResult$Frame copy$default(coakka.v2.android.AndroidStreamSourceResult$Frame, int, long, long, int, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/AndroidStreamSourceResult$Frame;IJJIILjava/lang/Object;)Lcoakka/v2/android/AndroidStreamSourceResult$Frame;
+coakka.v2.android.AndroidStreamSourceResult$WouldBlock | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.AndroidStreamSourceResult$WouldBlock | public final class coakka.v2.android.AndroidStreamSourceResult$WouldBlock implements coakka.v2.android.AndroidStreamSourceResult {
+coakka.v2.android.AndroidStreamSourceResult$WouldBlock | public int hashCode(); | descriptor: ()I
+coakka.v2.android.AndroidStreamSourceResult$WouldBlock | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.AndroidStreamSourceResult$WouldBlock | public static final coakka.v2.android.AndroidStreamSourceResult$WouldBlock INSTANCE; | descriptor: Lcoakka/v2/android/AndroidStreamSourceResult$WouldBlock;
+coakka.v2.android.CoAkkaAndroidRuntime | public boolean applyControlEnvelope(byte[]); | descriptor: ([B)Z
+coakka.v2.android.CoAkkaAndroidRuntime | public boolean submitEnvelope(byte[]); | descriptor: ([B)Z
+coakka.v2.android.CoAkkaAndroidRuntime | public byte[] readDeliveredRequest(); | descriptor: ()[B
+coakka.v2.android.CoAkkaAndroidRuntime | public coakka.v2.android.AndroidRuntimeAskResult ask(byte[], int); | descriptor: ([BI)Lcoakka/v2/android/AndroidRuntimeAskResult;
+coakka.v2.android.CoAkkaAndroidRuntime | public coakka.v2.android.AndroidRuntimeHealth readHealth(); | descriptor: ()Lcoakka/v2/android/AndroidRuntimeHealth;
+coakka.v2.android.CoAkkaAndroidRuntime | public coakka.v2.android.AndroidRuntimeStartupConfig startupConfig(); | descriptor: ()Lcoakka/v2/android/AndroidRuntimeStartupConfig;
+coakka.v2.android.CoAkkaAndroidRuntime | public coakka.v2.android.RuntimeNetworkSnapshot networkSnapshot(); | descriptor: ()Lcoakka/v2/android/RuntimeNetworkSnapshot;
+coakka.v2.android.CoAkkaAndroidRuntime | public final class coakka.v2.android.CoAkkaAndroidRuntime implements java.io.Closeable {
+coakka.v2.android.CoAkkaAndroidRuntime | public java.lang.Long waitForMonitorDoorbell(); | descriptor: ()Ljava/lang/Long;
+coakka.v2.android.CoAkkaAndroidRuntime | public long consumeMonitorDoorbell(); | descriptor: ()J
+coakka.v2.android.CoAkkaAndroidRuntime | public static coakka.v2.android.AndroidRuntimeInfo runtimeInfo(); | descriptor: ()Lcoakka/v2/android/AndroidRuntimeInfo;
+coakka.v2.android.CoAkkaAndroidRuntime | public static coakka.v2.android.CoAkkaAndroidRuntime open(coakka.v2.android.AndroidRuntimeConfig, java.util.List<coakka.v2.android.AndroidRuntimeRoute>); | descriptor: (Lcoakka/v2/android/AndroidRuntimeConfig;Ljava/util/List;)Lcoakka/v2/android/CoAkkaAndroidRuntime;
+coakka.v2.android.CoAkkaAndroidRuntime | public static coakka.v2.android.CoAkkaAndroidRuntime open(coakka.v2.android.AndroidRuntimeConfig, java.util.List<coakka.v2.android.AndroidRuntimeRoute>, long); | descriptor: (Lcoakka/v2/android/AndroidRuntimeConfig;Ljava/util/List;J)Lcoakka/v2/android/CoAkkaAndroidRuntime;
+coakka.v2.android.CoAkkaAndroidRuntime | public static final coakka.v2.android.CoAkkaAndroidRuntime$Companion Companion; | descriptor: Lcoakka/v2/android/CoAkkaAndroidRuntime$Companion;
+coakka.v2.android.CoAkkaAndroidRuntime | public static final int ABI_VERSION = 1; | descriptor: I
+coakka.v2.android.CoAkkaAndroidRuntime | public void close(); | descriptor: ()V
+coakka.v2.android.CoAkkaAndroidRuntime$Companion | public coakka.v2.android.AndroidRuntimeInfo runtimeInfo(); | descriptor: ()Lcoakka/v2/android/AndroidRuntimeInfo;
+coakka.v2.android.CoAkkaAndroidRuntime$Companion | public coakka.v2.android.CoAkkaAndroidRuntime open(coakka.v2.android.AndroidRuntimeConfig, java.util.List<coakka.v2.android.AndroidRuntimeRoute>); | descriptor: (Lcoakka/v2/android/AndroidRuntimeConfig;Ljava/util/List;)Lcoakka/v2/android/CoAkkaAndroidRuntime;
+coakka.v2.android.CoAkkaAndroidRuntime$Companion | public coakka.v2.android.CoAkkaAndroidRuntime open(coakka.v2.android.AndroidRuntimeConfig, java.util.List<coakka.v2.android.AndroidRuntimeRoute>, long); | descriptor: (Lcoakka/v2/android/AndroidRuntimeConfig;Ljava/util/List;J)Lcoakka/v2/android/CoAkkaAndroidRuntime;
+coakka.v2.android.CoAkkaAndroidRuntime$Companion | public coakka.v2.android.CoAkkaAndroidRuntime$Companion(kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.CoAkkaAndroidRuntime$Companion | public final class coakka.v2.android.CoAkkaAndroidRuntime$Companion {
+coakka.v2.android.CoAkkaAndroidRuntime$Companion | public static coakka.v2.android.CoAkkaAndroidRuntime open$default(coakka.v2.android.CoAkkaAndroidRuntime$Companion, coakka.v2.android.AndroidRuntimeConfig, java.util.List, long, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/CoAkkaAndroidRuntime$Companion;Lcoakka/v2/android/AndroidRuntimeConfig;Ljava/util/List;JILjava/lang/Object;)Lcoakka/v2/android/CoAkkaAndroidRuntime;
+coakka.v2.android.CoAkkaNativeException | public coakka.v2.android.CoAkkaNativeException(java.lang.String, int); | descriptor: (Ljava/lang/String;I)V
+coakka.v2.android.CoAkkaNativeException | public final class coakka.v2.android.CoAkkaNativeException extends java.lang.IllegalStateException {
+coakka.v2.android.CoAkkaNativeException | public int getStatus(); | descriptor: ()I
+coakka.v2.android.FileDigest | public byte[] getSha256(); | descriptor: ()[B
+coakka.v2.android.FileDigest | public coakka.v2.android.FileDigest(byte[], long); | descriptor: ([BJ)V
+coakka.v2.android.FileDigest | public final class coakka.v2.android.FileDigest {
+coakka.v2.android.FileDigest | public long getSize(); | descriptor: ()J
+coakka.v2.android.FileLane | public coakka.v2.android.FileLane(long, boolean, kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (JZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.FileLane | public coakka.v2.android.FileLaneStats stats(); | descriptor: ()Lcoakka/v2/android/FileLaneStats;
+coakka.v2.android.FileLane | public coakka.v2.android.FileReceiveGrant prepareReceiveGrant(coakka.v2.android.FileReceiveSpec); | descriptor: (Lcoakka/v2/android/FileReceiveSpec;)Lcoakka/v2/android/FileReceiveGrant;
+coakka.v2.android.FileLane | public coakka.v2.android.FileTransferSnapshot transfer(java.lang.String, coakka.v2.android.FileTransferDirection); | descriptor: (Ljava/lang/String;Lcoakka/v2/android/FileTransferDirection;)Lcoakka/v2/android/FileTransferSnapshot;
+coakka.v2.android.FileLane | public coakka.v2.android.FileTransferSnapshot waitTransfer(java.lang.String, coakka.v2.android.FileTransferDirection, long, int); | descriptor: (Ljava/lang/String;Lcoakka/v2/android/FileTransferDirection;JI)Lcoakka/v2/android/FileTransferSnapshot;
+coakka.v2.android.FileLane | public final class coakka.v2.android.FileLane implements java.io.Closeable {
+coakka.v2.android.FileLane | public int getBoundPort(); | descriptor: ()I
+coakka.v2.android.FileLane | public static coakka.v2.android.FileDigest sha256(java.io.File); | descriptor: (Ljava/io/File;)Lcoakka/v2/android/FileDigest;
+coakka.v2.android.FileLane | public static coakka.v2.android.FileLane open(coakka.v2.android.FileLaneConfig); | descriptor: (Lcoakka/v2/android/FileLaneConfig;)Lcoakka/v2/android/FileLane;
+coakka.v2.android.FileLane | public static coakka.v2.android.FileLane openOwned(coakka.v2.android.FileLaneConfig, coakka.v2.android.LaneOwnerConfig); | descriptor: (Lcoakka/v2/android/FileLaneConfig;Lcoakka/v2/android/LaneOwnerConfig;)Lcoakka/v2/android/FileLane;
+coakka.v2.android.FileLane | public static coakka.v2.android.FileTransferSnapshot waitTransfer$default(coakka.v2.android.FileLane, java.lang.String, coakka.v2.android.FileTransferDirection, long, int, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/FileLane;Ljava/lang/String;Lcoakka/v2/android/FileTransferDirection;JIILjava/lang/Object;)Lcoakka/v2/android/FileTransferSnapshot;
+coakka.v2.android.FileLane | public static final coakka.v2.android.FileLane$Companion Companion; | descriptor: Lcoakka/v2/android/FileLane$Companion;
+coakka.v2.android.FileLane | public void cancel(java.lang.String, coakka.v2.android.FileTransferDirection); | descriptor: (Ljava/lang/String;Lcoakka/v2/android/FileTransferDirection;)V
+coakka.v2.android.FileLane | public void close(); | descriptor: ()V
+coakka.v2.android.FileLane | public void forget(java.lang.String, coakka.v2.android.FileTransferDirection); | descriptor: (Ljava/lang/String;Lcoakka/v2/android/FileTransferDirection;)V
+coakka.v2.android.FileLane | public void prepareReceive(coakka.v2.android.FileReceiveSpec); | descriptor: (Lcoakka/v2/android/FileReceiveSpec;)V
+coakka.v2.android.FileLane | public void submitSend(coakka.v2.android.FileSendSpec); | descriptor: (Lcoakka/v2/android/FileSendSpec;)V
+coakka.v2.android.FileLane$Companion | public coakka.v2.android.FileDigest sha256(java.io.File); | descriptor: (Ljava/io/File;)Lcoakka/v2/android/FileDigest;
+coakka.v2.android.FileLane$Companion | public coakka.v2.android.FileLane open(coakka.v2.android.FileLaneConfig); | descriptor: (Lcoakka/v2/android/FileLaneConfig;)Lcoakka/v2/android/FileLane;
+coakka.v2.android.FileLane$Companion | public coakka.v2.android.FileLane openOwned(coakka.v2.android.FileLaneConfig, coakka.v2.android.LaneOwnerConfig); | descriptor: (Lcoakka/v2/android/FileLaneConfig;Lcoakka/v2/android/LaneOwnerConfig;)Lcoakka/v2/android/FileLane;
+coakka.v2.android.FileLane$Companion | public coakka.v2.android.FileLane$Companion(kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.FileLane$Companion | public final class coakka.v2.android.FileLane$Companion {
+coakka.v2.android.FileLane$Companion | public static coakka.v2.android.FileLane open$default(coakka.v2.android.FileLane$Companion, coakka.v2.android.FileLaneConfig, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/FileLane$Companion;Lcoakka/v2/android/FileLaneConfig;ILjava/lang/Object;)Lcoakka/v2/android/FileLane;
+coakka.v2.android.FileLaneConfig | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.FileLaneConfig | public coakka.v2.android.FileLaneConfig copy(int, java.lang.String, int, long, long, int, long, long, int, int, int, coakka.v2.android.FileLaneSecurityConfig); | descriptor: (ILjava/lang/String;IJJIJJIIILcoakka/v2/android/FileLaneSecurityConfig;)Lcoakka/v2/android/FileLaneConfig;
+coakka.v2.android.FileLaneConfig | public coakka.v2.android.FileLaneConfig(); | descriptor: ()V
+coakka.v2.android.FileLaneConfig | public coakka.v2.android.FileLaneConfig(int, java.lang.String, int, long, long, int, long, long, int, int, int, coakka.v2.android.FileLaneSecurityConfig); | descriptor: (ILjava/lang/String;IJJIJJIIILcoakka/v2/android/FileLaneSecurityConfig;)V
+coakka.v2.android.FileLaneConfig | public coakka.v2.android.FileLaneConfig(int, java.lang.String, int, long, long, int, long, long, int, int, int, coakka.v2.android.FileLaneSecurityConfig, int, kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (ILjava/lang/String;IJJIJJIIILcoakka/v2/android/FileLaneSecurityConfig;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.FileLaneConfig | public coakka.v2.android.FileLaneSecurityConfig component12(); | descriptor: ()Lcoakka/v2/android/FileLaneSecurityConfig;
+coakka.v2.android.FileLaneConfig | public coakka.v2.android.FileLaneSecurityConfig getSecurity(); | descriptor: ()Lcoakka/v2/android/FileLaneSecurityConfig;
+coakka.v2.android.FileLaneConfig | public final class coakka.v2.android.FileLaneConfig {
+coakka.v2.android.FileLaneConfig | public int component1(); | descriptor: ()I
+coakka.v2.android.FileLaneConfig | public int component10(); | descriptor: ()I
+coakka.v2.android.FileLaneConfig | public int component11(); | descriptor: ()I
+coakka.v2.android.FileLaneConfig | public int component3(); | descriptor: ()I
+coakka.v2.android.FileLaneConfig | public int component6(); | descriptor: ()I
+coakka.v2.android.FileLaneConfig | public int component9(); | descriptor: ()I
+coakka.v2.android.FileLaneConfig | public int getBindPort(); | descriptor: ()I
+coakka.v2.android.FileLaneConfig | public int getFlags(); | descriptor: ()I
+coakka.v2.android.FileLaneConfig | public int getIoTimeoutMs(); | descriptor: ()I
+coakka.v2.android.FileLaneConfig | public int getProgressIntervalMs(); | descriptor: ()I
+coakka.v2.android.FileLaneConfig | public int getReceiverWorkerCount(); | descriptor: ()I
+coakka.v2.android.FileLaneConfig | public int getSenderWorkerCount(); | descriptor: ()I
+coakka.v2.android.FileLaneConfig | public int hashCode(); | descriptor: ()I
+coakka.v2.android.FileLaneConfig | public java.lang.String component2(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileLaneConfig | public java.lang.String getBindHost(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileLaneConfig | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileLaneConfig | public long component4(); | descriptor: ()J
+coakka.v2.android.FileLaneConfig | public long component5(); | descriptor: ()J
+coakka.v2.android.FileLaneConfig | public long component7(); | descriptor: ()J
+coakka.v2.android.FileLaneConfig | public long component8(); | descriptor: ()J
+coakka.v2.android.FileLaneConfig | public long getCheckpointBytes(); | descriptor: ()J
+coakka.v2.android.FileLaneConfig | public long getMaxFileSize(); | descriptor: ()J
+coakka.v2.android.FileLaneConfig | public long getProgressBytes(); | descriptor: ()J
+coakka.v2.android.FileLaneConfig | public long getQueueCapacity(); | descriptor: ()J
+coakka.v2.android.FileLaneConfig | public static coakka.v2.android.FileLaneConfig copy$default(coakka.v2.android.FileLaneConfig, int, java.lang.String, int, long, long, int, long, long, int, int, int, coakka.v2.android.FileLaneSecurityConfig, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/FileLaneConfig;ILjava/lang/String;IJJIJJIIILcoakka/v2/android/FileLaneSecurityConfig;ILjava/lang/Object;)Lcoakka/v2/android/FileLaneConfig;
+coakka.v2.android.FileLaneException | public coakka.v2.android.FileLaneException(java.lang.String, int); | descriptor: (Ljava/lang/String;I)V
+coakka.v2.android.FileLaneException | public final class coakka.v2.android.FileLaneException extends java.lang.IllegalStateException {
+coakka.v2.android.FileLaneException | public int getStatus(); | descriptor: ()I
+coakka.v2.android.FileLaneFlags | public final class coakka.v2.android.FileLaneFlags {
+coakka.v2.android.FileLaneFlags | public static final coakka.v2.android.FileLaneFlags INSTANCE; | descriptor: Lcoakka/v2/android/FileLaneFlags;
+coakka.v2.android.FileLaneFlags | public static final int RECEIVER = 2; | descriptor: I
+coakka.v2.android.FileLaneFlags | public static final int SENDER = 1; | descriptor: I
+coakka.v2.android.FileLaneSecurityConfig | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.FileLaneSecurityConfig | public coakka.v2.android.FileLaneSecurityConfig copy(coakka.v2.android.FileLaneSecurityMode, long, java.lang.String, java.lang.String, java.lang.String, java.lang.String); | descriptor: (Lcoakka/v2/android/FileLaneSecurityMode;JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcoakka/v2/android/FileLaneSecurityConfig;
+coakka.v2.android.FileLaneSecurityConfig | public coakka.v2.android.FileLaneSecurityConfig(); | descriptor: ()V
+coakka.v2.android.FileLaneSecurityConfig | public coakka.v2.android.FileLaneSecurityConfig(coakka.v2.android.FileLaneSecurityMode, long, java.lang.String, java.lang.String, java.lang.String, java.lang.String); | descriptor: (Lcoakka/v2/android/FileLaneSecurityMode;JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+coakka.v2.android.FileLaneSecurityConfig | public coakka.v2.android.FileLaneSecurityConfig(coakka.v2.android.FileLaneSecurityMode, long, java.lang.String, java.lang.String, java.lang.String, java.lang.String, int, kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Lcoakka/v2/android/FileLaneSecurityMode;JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.FileLaneSecurityConfig | public coakka.v2.android.FileLaneSecurityMode component1(); | descriptor: ()Lcoakka/v2/android/FileLaneSecurityMode;
+coakka.v2.android.FileLaneSecurityConfig | public coakka.v2.android.FileLaneSecurityMode getMode(); | descriptor: ()Lcoakka/v2/android/FileLaneSecurityMode;
+coakka.v2.android.FileLaneSecurityConfig | public final class coakka.v2.android.FileLaneSecurityConfig {
+coakka.v2.android.FileLaneSecurityConfig | public int hashCode(); | descriptor: ()I
+coakka.v2.android.FileLaneSecurityConfig | public java.lang.String component3(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileLaneSecurityConfig | public java.lang.String component4(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileLaneSecurityConfig | public java.lang.String component5(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileLaneSecurityConfig | public java.lang.String component6(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileLaneSecurityConfig | public java.lang.String getCaCertificateFile(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileLaneSecurityConfig | public java.lang.String getCredentialId(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileLaneSecurityConfig | public java.lang.String getIdentityCertificateFile(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileLaneSecurityConfig | public java.lang.String getPrivateKeyFile(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileLaneSecurityConfig | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileLaneSecurityConfig | public long component2(); | descriptor: ()J
+coakka.v2.android.FileLaneSecurityConfig | public long getCredentialGeneration(); | descriptor: ()J
+coakka.v2.android.FileLaneSecurityConfig | public static coakka.v2.android.FileLaneSecurityConfig copy$default(coakka.v2.android.FileLaneSecurityConfig, coakka.v2.android.FileLaneSecurityMode, long, java.lang.String, java.lang.String, java.lang.String, java.lang.String, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/FileLaneSecurityConfig;Lcoakka/v2/android/FileLaneSecurityMode;JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcoakka/v2/android/FileLaneSecurityConfig;
+coakka.v2.android.FileLaneSecurityMode | public final class coakka.v2.android.FileLaneSecurityMode extends java.lang.Enum<coakka.v2.android.FileLaneSecurityMode> {
+coakka.v2.android.FileLaneSecurityMode | public static coakka.v2.android.FileLaneSecurityMode valueOf(java.lang.String); | descriptor: (Ljava/lang/String;)Lcoakka/v2/android/FileLaneSecurityMode;
+coakka.v2.android.FileLaneSecurityMode | public static coakka.v2.android.FileLaneSecurityMode[] values(); | descriptor: ()[Lcoakka/v2/android/FileLaneSecurityMode;
+coakka.v2.android.FileLaneSecurityMode | public static final coakka.v2.android.FileLaneSecurityMode DIRECT; | descriptor: Lcoakka/v2/android/FileLaneSecurityMode;
+coakka.v2.android.FileLaneSecurityMode | public static final coakka.v2.android.FileLaneSecurityMode MUTUAL_TLS; | descriptor: Lcoakka/v2/android/FileLaneSecurityMode;
+coakka.v2.android.FileLaneSecurityMode | public static final coakka.v2.android.FileLaneSecurityMode TLS; | descriptor: Lcoakka/v2/android/FileLaneSecurityMode;
+coakka.v2.android.FileLaneSecurityMode | public static kotlin.enums.EnumEntries<coakka.v2.android.FileLaneSecurityMode> getEntries(); | descriptor: ()Lkotlin/enums/EnumEntries;
+coakka.v2.android.FileLaneStats | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.FileLaneStats | public coakka.v2.android.FileLaneStats copy(long, long, long, long, long, long, long, long, long, long, long, long, long, long, long); | descriptor: (JJJJJJJJJJJJJJJ)Lcoakka/v2/android/FileLaneStats;
+coakka.v2.android.FileLaneStats | public coakka.v2.android.FileLaneStats(long, long, long, long, long, long, long, long, long, long, long, long, long, long, long); | descriptor: (JJJJJJJJJJJJJJJ)V
+coakka.v2.android.FileLaneStats | public final class coakka.v2.android.FileLaneStats {
+coakka.v2.android.FileLaneStats | public int hashCode(); | descriptor: ()I
+coakka.v2.android.FileLaneStats | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileLaneStats | public long component1(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long component10(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long component11(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long component12(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long component13(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long component14(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long component15(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long component2(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long component3(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long component4(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long component5(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long component6(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long component7(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long component8(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long component9(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long getActiveReceives(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long getActiveSends(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long getCanceledTransfers(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long getCompletedReceiveBytes(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long getCompletedReceives(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long getCompletedSendBytes(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long getCompletedSends(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long getFailedReceives(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long getFailedSends(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long getPreparedReceiveCount(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long getPreparedReceives(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long getQueueCapacity(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long getQueuedSends(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long getRetainedRecords(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public long getSubmittedSends(); | descriptor: ()J
+coakka.v2.android.FileLaneStats | public static coakka.v2.android.FileLaneStats copy$default(coakka.v2.android.FileLaneStats, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/FileLaneStats;JJJJJJJJJJJJJJJILjava/lang/Object;)Lcoakka/v2/android/FileLaneStats;
+coakka.v2.android.FileReceiveGrant | public byte[] getExpectedSha256(); | descriptor: ()[B
+coakka.v2.android.FileReceiveGrant | public coakka.v2.android.FileReceiveGrant(coakka.v2.android.LaneOwnerEndpoint, java.lang.String, java.lang.String, long, byte[]); | descriptor: (Lcoakka/v2/android/LaneOwnerEndpoint;Ljava/lang/String;Ljava/lang/String;J[B)V
+coakka.v2.android.FileReceiveGrant | public coakka.v2.android.FileSendSpec toSendSpec(java.io.File, int); | descriptor: (Ljava/io/File;I)Lcoakka/v2/android/FileSendSpec;
+coakka.v2.android.FileReceiveGrant | public coakka.v2.android.LaneOwnerEndpoint getOwner(); | descriptor: ()Lcoakka/v2/android/LaneOwnerEndpoint;
+coakka.v2.android.FileReceiveGrant | public final class coakka.v2.android.FileReceiveGrant {
+coakka.v2.android.FileReceiveGrant | public java.lang.String getAuthorizationToken(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileReceiveGrant | public java.lang.String getTransferId(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileReceiveGrant | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileReceiveGrant | public long getExpectedSize(); | descriptor: ()J
+coakka.v2.android.FileReceiveGrant | public static coakka.v2.android.FileSendSpec toSendSpec$default(coakka.v2.android.FileReceiveGrant, java.io.File, int, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/FileReceiveGrant;Ljava/io/File;IILjava/lang/Object;)Lcoakka/v2/android/FileSendSpec;
+coakka.v2.android.FileReceiveSpec | public byte[] getExpectedSha256(); | descriptor: ()[B
+coakka.v2.android.FileReceiveSpec | public coakka.v2.android.FileReceiveSpec(java.lang.String, java.lang.String, java.io.File, long, byte[]); | descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/io/File;J[B)V
+coakka.v2.android.FileReceiveSpec | public final class coakka.v2.android.FileReceiveSpec {
+coakka.v2.android.FileReceiveSpec | public java.io.File getDestinationFile(); | descriptor: ()Ljava/io/File;
+coakka.v2.android.FileReceiveSpec | public java.lang.String getAuthorizationToken(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileReceiveSpec | public java.lang.String getTransferId(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileReceiveSpec | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileReceiveSpec | public long getExpectedSize(); | descriptor: ()J
+coakka.v2.android.FileSendSpec | public byte[] getExpectedSha256(); | descriptor: ()[B
+coakka.v2.android.FileSendSpec | public coakka.v2.android.FileSendSpec(java.lang.String, java.lang.String, java.lang.String, int, java.io.File, long, byte[], int); | descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/io/File;J[BI)V
+coakka.v2.android.FileSendSpec | public coakka.v2.android.FileSendSpec(java.lang.String, java.lang.String, java.lang.String, int, java.io.File, long, byte[], int, int, kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/io/File;J[BIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.FileSendSpec | public final class coakka.v2.android.FileSendSpec {
+coakka.v2.android.FileSendSpec | public int getRemotePort(); | descriptor: ()I
+coakka.v2.android.FileSendSpec | public int getTimeoutMs(); | descriptor: ()I
+coakka.v2.android.FileSendSpec | public java.io.File getSourceFile(); | descriptor: ()Ljava/io/File;
+coakka.v2.android.FileSendSpec | public java.lang.String getAuthorizationToken(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileSendSpec | public java.lang.String getRemoteHost(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileSendSpec | public java.lang.String getTransferId(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileSendSpec | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileSendSpec | public long getExpectedSize(); | descriptor: ()J
+coakka.v2.android.FileTransferDirection | public final class coakka.v2.android.FileTransferDirection extends java.lang.Enum<coakka.v2.android.FileTransferDirection> {
+coakka.v2.android.FileTransferDirection | public static coakka.v2.android.FileTransferDirection valueOf(java.lang.String); | descriptor: (Ljava/lang/String;)Lcoakka/v2/android/FileTransferDirection;
+coakka.v2.android.FileTransferDirection | public static coakka.v2.android.FileTransferDirection[] values(); | descriptor: ()[Lcoakka/v2/android/FileTransferDirection;
+coakka.v2.android.FileTransferDirection | public static final coakka.v2.android.FileTransferDirection RECEIVE; | descriptor: Lcoakka/v2/android/FileTransferDirection;
+coakka.v2.android.FileTransferDirection | public static final coakka.v2.android.FileTransferDirection SEND; | descriptor: Lcoakka/v2/android/FileTransferDirection;
+coakka.v2.android.FileTransferDirection | public static final coakka.v2.android.FileTransferDirection$Companion Companion; | descriptor: Lcoakka/v2/android/FileTransferDirection$Companion;
+coakka.v2.android.FileTransferDirection | public static kotlin.enums.EnumEntries<coakka.v2.android.FileTransferDirection> getEntries(); | descriptor: ()Lkotlin/enums/EnumEntries;
+coakka.v2.android.FileTransferDirection$Companion | public coakka.v2.android.FileTransferDirection$Companion(kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.FileTransferDirection$Companion | public final class coakka.v2.android.FileTransferDirection$Companion {
+coakka.v2.android.FileTransferResult | public final class coakka.v2.android.FileTransferResult extends java.lang.Enum<coakka.v2.android.FileTransferResult> {
+coakka.v2.android.FileTransferResult | public static coakka.v2.android.FileTransferResult valueOf(java.lang.String); | descriptor: (Ljava/lang/String;)Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferResult | public static coakka.v2.android.FileTransferResult[] values(); | descriptor: ()[Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferResult | public static final coakka.v2.android.FileTransferResult CANCELED_BY_HOST; | descriptor: Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferResult | public static final coakka.v2.android.FileTransferResult CLIENT_CERT_REQUIRED; | descriptor: Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferResult | public static final coakka.v2.android.FileTransferResult INTEGRITY_MISMATCH; | descriptor: Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferResult | public static final coakka.v2.android.FileTransferResult INTERNAL_ERROR; | descriptor: Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferResult | public static final coakka.v2.android.FileTransferResult METADATA_MISMATCH; | descriptor: Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferResult | public static final coakka.v2.android.FileTransferResult NETWORK_IO; | descriptor: Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferResult | public static final coakka.v2.android.FileTransferResult NONE; | descriptor: Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferResult | public static final coakka.v2.android.FileTransferResult NOT_PREPARED; | descriptor: Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferResult | public static final coakka.v2.android.FileTransferResult OK; | descriptor: Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferResult | public static final coakka.v2.android.FileTransferResult PEER_CERT_EXPIRED; | descriptor: Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferResult | public static final coakka.v2.android.FileTransferResult PEER_CERT_UNTRUSTED; | descriptor: Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferResult | public static final coakka.v2.android.FileTransferResult PEER_IDENTITY_MISMATCH; | descriptor: Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferResult | public static final coakka.v2.android.FileTransferResult PROTOCOL_ERROR; | descriptor: Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferResult | public static final coakka.v2.android.FileTransferResult QUEUE_FULL; | descriptor: Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferResult | public static final coakka.v2.android.FileTransferResult SIZE_LIMIT; | descriptor: Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferResult | public static final coakka.v2.android.FileTransferResult SOURCE_CHANGED; | descriptor: Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferResult | public static final coakka.v2.android.FileTransferResult STORAGE_IO; | descriptor: Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferResult | public static final coakka.v2.android.FileTransferResult TIMEOUT; | descriptor: Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferResult | public static final coakka.v2.android.FileTransferResult TLS_CONFIG_INVALID; | descriptor: Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferResult | public static final coakka.v2.android.FileTransferResult TLS_HANDSHAKE_FAILED; | descriptor: Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferResult | public static final coakka.v2.android.FileTransferResult TOKEN_MISMATCH; | descriptor: Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferResult | public static final coakka.v2.android.FileTransferResult$Companion Companion; | descriptor: Lcoakka/v2/android/FileTransferResult$Companion;
+coakka.v2.android.FileTransferResult | public static kotlin.enums.EnumEntries<coakka.v2.android.FileTransferResult> getEntries(); | descriptor: ()Lkotlin/enums/EnumEntries;
+coakka.v2.android.FileTransferResult$Companion | public coakka.v2.android.FileTransferResult$Companion(kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.FileTransferResult$Companion | public final class coakka.v2.android.FileTransferResult$Companion {
+coakka.v2.android.FileTransferSnapshot | public boolean component8(); | descriptor: ()Z
+coakka.v2.android.FileTransferSnapshot | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.FileTransferSnapshot | public boolean getCancelRequested(); | descriptor: ()Z
+coakka.v2.android.FileTransferSnapshot | public boolean getCompleted(); | descriptor: ()Z
+coakka.v2.android.FileTransferSnapshot | public boolean getTerminal(); | descriptor: ()Z
+coakka.v2.android.FileTransferSnapshot | public coakka.v2.android.FileTransferDirection component1(); | descriptor: ()Lcoakka/v2/android/FileTransferDirection;
+coakka.v2.android.FileTransferSnapshot | public coakka.v2.android.FileTransferDirection getDirection(); | descriptor: ()Lcoakka/v2/android/FileTransferDirection;
+coakka.v2.android.FileTransferSnapshot | public coakka.v2.android.FileTransferResult component3(); | descriptor: ()Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferSnapshot | public coakka.v2.android.FileTransferResult getResult(); | descriptor: ()Lcoakka/v2/android/FileTransferResult;
+coakka.v2.android.FileTransferSnapshot | public coakka.v2.android.FileTransferSnapshot copy(coakka.v2.android.FileTransferDirection, coakka.v2.android.FileTransferState, coakka.v2.android.FileTransferResult, long, long, long, int, boolean, long, long, long, long, long, java.lang.String); | descriptor: (Lcoakka/v2/android/FileTransferDirection;Lcoakka/v2/android/FileTransferState;Lcoakka/v2/android/FileTransferResult;JJJIZJJJJJLjava/lang/String;)Lcoakka/v2/android/FileTransferSnapshot;
+coakka.v2.android.FileTransferSnapshot | public coakka.v2.android.FileTransferSnapshot(coakka.v2.android.FileTransferDirection, coakka.v2.android.FileTransferState, coakka.v2.android.FileTransferResult, long, long, long, int, boolean, long, long, long, long, long, java.lang.String); | descriptor: (Lcoakka/v2/android/FileTransferDirection;Lcoakka/v2/android/FileTransferState;Lcoakka/v2/android/FileTransferResult;JJJIZJJJJJLjava/lang/String;)V
+coakka.v2.android.FileTransferSnapshot | public coakka.v2.android.FileTransferState component2(); | descriptor: ()Lcoakka/v2/android/FileTransferState;
+coakka.v2.android.FileTransferSnapshot | public coakka.v2.android.FileTransferState getState(); | descriptor: ()Lcoakka/v2/android/FileTransferState;
+coakka.v2.android.FileTransferSnapshot | public final class coakka.v2.android.FileTransferSnapshot {
+coakka.v2.android.FileTransferSnapshot | public int component7(); | descriptor: ()I
+coakka.v2.android.FileTransferSnapshot | public int getProgressMilli(); | descriptor: ()I
+coakka.v2.android.FileTransferSnapshot | public int hashCode(); | descriptor: ()I
+coakka.v2.android.FileTransferSnapshot | public java.lang.String component14(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileTransferSnapshot | public java.lang.String getDetail(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileTransferSnapshot | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.FileTransferSnapshot | public long component10(); | descriptor: ()J
+coakka.v2.android.FileTransferSnapshot | public long component11(); | descriptor: ()J
+coakka.v2.android.FileTransferSnapshot | public long component12(); | descriptor: ()J
+coakka.v2.android.FileTransferSnapshot | public long component13(); | descriptor: ()J
+coakka.v2.android.FileTransferSnapshot | public long component4(); | descriptor: ()J
+coakka.v2.android.FileTransferSnapshot | public long component5(); | descriptor: ()J
+coakka.v2.android.FileTransferSnapshot | public long component6(); | descriptor: ()J
+coakka.v2.android.FileTransferSnapshot | public long component9(); | descriptor: ()J
+coakka.v2.android.FileTransferSnapshot | public long getCommittedOffset(); | descriptor: ()J
+coakka.v2.android.FileTransferSnapshot | public long getExpectedSize(); | descriptor: ()J
+coakka.v2.android.FileTransferSnapshot | public long getStartedMonoNs(); | descriptor: ()J
+coakka.v2.android.FileTransferSnapshot | public long getSubmittedMonoNs(); | descriptor: ()J
+coakka.v2.android.FileTransferSnapshot | public long getTerminalMonoNs(); | descriptor: ()J
+coakka.v2.android.FileTransferSnapshot | public long getTransferredBytes(); | descriptor: ()J
+coakka.v2.android.FileTransferSnapshot | public long getUpdateSequence(); | descriptor: ()J
+coakka.v2.android.FileTransferSnapshot | public long getUpdatedMonoNs(); | descriptor: ()J
+coakka.v2.android.FileTransferSnapshot | public static coakka.v2.android.FileTransferSnapshot copy$default(coakka.v2.android.FileTransferSnapshot, coakka.v2.android.FileTransferDirection, coakka.v2.android.FileTransferState, coakka.v2.android.FileTransferResult, long, long, long, int, boolean, long, long, long, long, long, java.lang.String, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/FileTransferSnapshot;Lcoakka/v2/android/FileTransferDirection;Lcoakka/v2/android/FileTransferState;Lcoakka/v2/android/FileTransferResult;JJJIZJJJJJLjava/lang/String;ILjava/lang/Object;)Lcoakka/v2/android/FileTransferSnapshot;
+coakka.v2.android.FileTransferState | public boolean getTerminal(); | descriptor: ()Z
+coakka.v2.android.FileTransferState | public final class coakka.v2.android.FileTransferState extends java.lang.Enum<coakka.v2.android.FileTransferState> {
+coakka.v2.android.FileTransferState | public static coakka.v2.android.FileTransferState valueOf(java.lang.String); | descriptor: (Ljava/lang/String;)Lcoakka/v2/android/FileTransferState;
+coakka.v2.android.FileTransferState | public static coakka.v2.android.FileTransferState[] values(); | descriptor: ()[Lcoakka/v2/android/FileTransferState;
+coakka.v2.android.FileTransferState | public static final coakka.v2.android.FileTransferState CANCELED; | descriptor: Lcoakka/v2/android/FileTransferState;
+coakka.v2.android.FileTransferState | public static final coakka.v2.android.FileTransferState COMPLETED; | descriptor: Lcoakka/v2/android/FileTransferState;
+coakka.v2.android.FileTransferState | public static final coakka.v2.android.FileTransferState CONNECTING; | descriptor: Lcoakka/v2/android/FileTransferState;
+coakka.v2.android.FileTransferState | public static final coakka.v2.android.FileTransferState FAILED; | descriptor: Lcoakka/v2/android/FileTransferState;
+coakka.v2.android.FileTransferState | public static final coakka.v2.android.FileTransferState PAUSED; | descriptor: Lcoakka/v2/android/FileTransferState;
+coakka.v2.android.FileTransferState | public static final coakka.v2.android.FileTransferState PREPARED; | descriptor: Lcoakka/v2/android/FileTransferState;
+coakka.v2.android.FileTransferState | public static final coakka.v2.android.FileTransferState QUEUED; | descriptor: Lcoakka/v2/android/FileTransferState;
+coakka.v2.android.FileTransferState | public static final coakka.v2.android.FileTransferState REJECTED; | descriptor: Lcoakka/v2/android/FileTransferState;
+coakka.v2.android.FileTransferState | public static final coakka.v2.android.FileTransferState TRANSFERRING; | descriptor: Lcoakka/v2/android/FileTransferState;
+coakka.v2.android.FileTransferState | public static final coakka.v2.android.FileTransferState VERIFYING; | descriptor: Lcoakka/v2/android/FileTransferState;
+coakka.v2.android.FileTransferState | public static final coakka.v2.android.FileTransferState$Companion Companion; | descriptor: Lcoakka/v2/android/FileTransferState$Companion;
+coakka.v2.android.FileTransferState | public static kotlin.enums.EnumEntries<coakka.v2.android.FileTransferState> getEntries(); | descriptor: ()Lkotlin/enums/EnumEntries;
+coakka.v2.android.FileTransferState$Companion | public coakka.v2.android.FileTransferState$Companion(kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.FileTransferState$Companion | public final class coakka.v2.android.FileTransferState$Companion {
+coakka.v2.android.LaneOwnerConfig | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.LaneOwnerConfig | public coakka.v2.android.LaneOwnerConfig copy(java.lang.String, java.lang.String); | descriptor: (Ljava/lang/String;Ljava/lang/String;)Lcoakka/v2/android/LaneOwnerConfig;
+coakka.v2.android.LaneOwnerConfig | public coakka.v2.android.LaneOwnerConfig(java.lang.String, java.lang.String); | descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+coakka.v2.android.LaneOwnerConfig | public final class coakka.v2.android.LaneOwnerConfig {
+coakka.v2.android.LaneOwnerConfig | public int hashCode(); | descriptor: ()I
+coakka.v2.android.LaneOwnerConfig | public java.lang.String component1(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.LaneOwnerConfig | public java.lang.String component2(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.LaneOwnerConfig | public java.lang.String getAdvertisedHost(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.LaneOwnerConfig | public java.lang.String getOwnerInstanceId(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.LaneOwnerConfig | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.LaneOwnerConfig | public static coakka.v2.android.LaneOwnerConfig copy$default(coakka.v2.android.LaneOwnerConfig, java.lang.String, java.lang.String, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/LaneOwnerConfig;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcoakka/v2/android/LaneOwnerConfig;
+coakka.v2.android.LaneOwnerEndpoint | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.LaneOwnerEndpoint | public coakka.v2.android.LaneOwnerEndpoint copy(java.lang.String, java.lang.String, int); | descriptor: (Ljava/lang/String;Ljava/lang/String;I)Lcoakka/v2/android/LaneOwnerEndpoint;
+coakka.v2.android.LaneOwnerEndpoint | public coakka.v2.android.LaneOwnerEndpoint(java.lang.String, java.lang.String, int); | descriptor: (Ljava/lang/String;Ljava/lang/String;I)V
+coakka.v2.android.LaneOwnerEndpoint | public final class coakka.v2.android.LaneOwnerEndpoint {
+coakka.v2.android.LaneOwnerEndpoint | public int component3(); | descriptor: ()I
+coakka.v2.android.LaneOwnerEndpoint | public int getPort(); | descriptor: ()I
+coakka.v2.android.LaneOwnerEndpoint | public int hashCode(); | descriptor: ()I
+coakka.v2.android.LaneOwnerEndpoint | public java.lang.String component1(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.LaneOwnerEndpoint | public java.lang.String component2(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.LaneOwnerEndpoint | public java.lang.String getAdvertisedHost(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.LaneOwnerEndpoint | public java.lang.String getOwnerInstanceId(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.LaneOwnerEndpoint | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.LaneOwnerEndpoint | public static coakka.v2.android.LaneOwnerEndpoint copy$default(coakka.v2.android.LaneOwnerEndpoint, java.lang.String, java.lang.String, int, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/LaneOwnerEndpoint;Ljava/lang/String;Ljava/lang/String;IILjava/lang/Object;)Lcoakka/v2/android/LaneOwnerEndpoint;
+coakka.v2.android.RuntimeControlEncoder | public final class coakka.v2.android.RuntimeControlEncoder {
+coakka.v2.android.RuntimeControlEncoder | public static byte[] encodeSnapshot$default(long, java.util.List, long, java.lang.String, int, java.lang.Object); | descriptor: (JLjava/util/List;JLjava/lang/String;ILjava/lang/Object;)[B
+coakka.v2.android.RuntimeControlEncoder | public static byte[] encodeSnapshot(long, java.util.List<coakka.v2.android.AndroidRuntimeRoute>, long, java.lang.String); | descriptor: (JLjava/util/List;JLjava/lang/String;)[B
+coakka.v2.android.RuntimeControlEncoder | public static final coakka.v2.android.RuntimeControlEncoder INSTANCE; | descriptor: Lcoakka/v2/android/RuntimeControlEncoder;
+coakka.v2.android.RuntimeEndpointFlags | public final class coakka.v2.android.RuntimeEndpointFlags {
+coakka.v2.android.RuntimeEndpointFlags | public static final coakka.v2.android.RuntimeEndpointFlags INSTANCE; | descriptor: Lcoakka/v2/android/RuntimeEndpointFlags;
+coakka.v2.android.RuntimeEndpointFlags | public static final int LOCAL = 1; | descriptor: I
+coakka.v2.android.RuntimeEndpointFlags | public static final int NONE = 0; | descriptor: I
+coakka.v2.android.RuntimeEndpointFlags | public static final int UNAVAILABLE = 2; | descriptor: I
+coakka.v2.android.RuntimeNetworkConfig | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.RuntimeNetworkConfig | public coakka.v2.android.RuntimeNetworkConfig copy(coakka.v2.android.RuntimeNetworkMode, java.lang.String, java.lang.Integer, java.lang.String, java.lang.Integer); | descriptor: (Lcoakka/v2/android/RuntimeNetworkMode;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/Integer;)Lcoakka/v2/android/RuntimeNetworkConfig;
+coakka.v2.android.RuntimeNetworkConfig | public coakka.v2.android.RuntimeNetworkConfig(coakka.v2.android.RuntimeNetworkMode); | descriptor: (Lcoakka/v2/android/RuntimeNetworkMode;)V
+coakka.v2.android.RuntimeNetworkConfig | public coakka.v2.android.RuntimeNetworkConfig(coakka.v2.android.RuntimeNetworkMode, java.lang.String); | descriptor: (Lcoakka/v2/android/RuntimeNetworkMode;Ljava/lang/String;)V
+coakka.v2.android.RuntimeNetworkConfig | public coakka.v2.android.RuntimeNetworkConfig(coakka.v2.android.RuntimeNetworkMode, java.lang.String, java.lang.Integer); | descriptor: (Lcoakka/v2/android/RuntimeNetworkMode;Ljava/lang/String;Ljava/lang/Integer;)V
+coakka.v2.android.RuntimeNetworkConfig | public coakka.v2.android.RuntimeNetworkConfig(coakka.v2.android.RuntimeNetworkMode, java.lang.String, java.lang.Integer, java.lang.String); | descriptor: (Lcoakka/v2/android/RuntimeNetworkMode;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/String;)V
+coakka.v2.android.RuntimeNetworkConfig | public coakka.v2.android.RuntimeNetworkConfig(coakka.v2.android.RuntimeNetworkMode, java.lang.String, java.lang.Integer, java.lang.String, java.lang.Integer); | descriptor: (Lcoakka/v2/android/RuntimeNetworkMode;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/Integer;)V
+coakka.v2.android.RuntimeNetworkConfig | public coakka.v2.android.RuntimeNetworkConfig(coakka.v2.android.RuntimeNetworkMode, java.lang.String, java.lang.Integer, java.lang.String, java.lang.Integer, int, kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Lcoakka/v2/android/RuntimeNetworkMode;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/Integer;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.RuntimeNetworkConfig | public coakka.v2.android.RuntimeNetworkMode component1(); | descriptor: ()Lcoakka/v2/android/RuntimeNetworkMode;
+coakka.v2.android.RuntimeNetworkConfig | public coakka.v2.android.RuntimeNetworkMode getMode(); | descriptor: ()Lcoakka/v2/android/RuntimeNetworkMode;
+coakka.v2.android.RuntimeNetworkConfig | public final class coakka.v2.android.RuntimeNetworkConfig {
+coakka.v2.android.RuntimeNetworkConfig | public int hashCode(); | descriptor: ()I
+coakka.v2.android.RuntimeNetworkConfig | public java.lang.Integer component3(); | descriptor: ()Ljava/lang/Integer;
+coakka.v2.android.RuntimeNetworkConfig | public java.lang.Integer component5(); | descriptor: ()Ljava/lang/Integer;
+coakka.v2.android.RuntimeNetworkConfig | public java.lang.Integer getAdvertisePort(); | descriptor: ()Ljava/lang/Integer;
+coakka.v2.android.RuntimeNetworkConfig | public java.lang.Integer getBindPort(); | descriptor: ()Ljava/lang/Integer;
+coakka.v2.android.RuntimeNetworkConfig | public java.lang.String component2(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.RuntimeNetworkConfig | public java.lang.String component4(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.RuntimeNetworkConfig | public java.lang.String getAdvertiseHost(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.RuntimeNetworkConfig | public java.lang.String getBindHost(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.RuntimeNetworkConfig | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.RuntimeNetworkConfig | public static coakka.v2.android.RuntimeNetworkConfig copy$default(coakka.v2.android.RuntimeNetworkConfig, coakka.v2.android.RuntimeNetworkMode, java.lang.String, java.lang.Integer, java.lang.String, java.lang.Integer, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/RuntimeNetworkConfig;Lcoakka/v2/android/RuntimeNetworkMode;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/Integer;ILjava/lang/Object;)Lcoakka/v2/android/RuntimeNetworkConfig;
+coakka.v2.android.RuntimeNetworkConfig | public static coakka.v2.android.RuntimeNetworkConfig embedded(); | descriptor: ()Lcoakka/v2/android/RuntimeNetworkConfig;
+coakka.v2.android.RuntimeNetworkConfig | public static coakka.v2.android.RuntimeNetworkConfig networkNode(java.lang.String, int, java.lang.String, int); | descriptor: (Ljava/lang/String;ILjava/lang/String;I)Lcoakka/v2/android/RuntimeNetworkConfig;
+coakka.v2.android.RuntimeNetworkConfig | public static coakka.v2.android.RuntimeNetworkConfig outboundOnly(); | descriptor: ()Lcoakka/v2/android/RuntimeNetworkConfig;
+coakka.v2.android.RuntimeNetworkConfig | public static final coakka.v2.android.RuntimeNetworkConfig$Companion Companion; | descriptor: Lcoakka/v2/android/RuntimeNetworkConfig$Companion;
+coakka.v2.android.RuntimeNetworkConfig$Companion | public coakka.v2.android.RuntimeNetworkConfig embedded(); | descriptor: ()Lcoakka/v2/android/RuntimeNetworkConfig;
+coakka.v2.android.RuntimeNetworkConfig$Companion | public coakka.v2.android.RuntimeNetworkConfig networkNode(java.lang.String, int, java.lang.String, int); | descriptor: (Ljava/lang/String;ILjava/lang/String;I)Lcoakka/v2/android/RuntimeNetworkConfig;
+coakka.v2.android.RuntimeNetworkConfig$Companion | public coakka.v2.android.RuntimeNetworkConfig outboundOnly(); | descriptor: ()Lcoakka/v2/android/RuntimeNetworkConfig;
+coakka.v2.android.RuntimeNetworkConfig$Companion | public coakka.v2.android.RuntimeNetworkConfig$Companion(kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.RuntimeNetworkConfig$Companion | public final class coakka.v2.android.RuntimeNetworkConfig$Companion {
+coakka.v2.android.RuntimeNetworkMode | public final class coakka.v2.android.RuntimeNetworkMode extends java.lang.Enum<coakka.v2.android.RuntimeNetworkMode> {
+coakka.v2.android.RuntimeNetworkMode | public static coakka.v2.android.RuntimeNetworkMode valueOf(java.lang.String); | descriptor: (Ljava/lang/String;)Lcoakka/v2/android/RuntimeNetworkMode;
+coakka.v2.android.RuntimeNetworkMode | public static coakka.v2.android.RuntimeNetworkMode[] values(); | descriptor: ()[Lcoakka/v2/android/RuntimeNetworkMode;
+coakka.v2.android.RuntimeNetworkMode | public static final coakka.v2.android.RuntimeNetworkMode EMBEDDED; | descriptor: Lcoakka/v2/android/RuntimeNetworkMode;
+coakka.v2.android.RuntimeNetworkMode | public static final coakka.v2.android.RuntimeNetworkMode LEGACY_ROUTE_DERIVED; | descriptor: Lcoakka/v2/android/RuntimeNetworkMode;
+coakka.v2.android.RuntimeNetworkMode | public static final coakka.v2.android.RuntimeNetworkMode NETWORK_NODE; | descriptor: Lcoakka/v2/android/RuntimeNetworkMode;
+coakka.v2.android.RuntimeNetworkMode | public static final coakka.v2.android.RuntimeNetworkMode OUTBOUND_ONLY; | descriptor: Lcoakka/v2/android/RuntimeNetworkMode;
+coakka.v2.android.RuntimeNetworkMode | public static final coakka.v2.android.RuntimeNetworkMode$Companion Companion; | descriptor: Lcoakka/v2/android/RuntimeNetworkMode$Companion;
+coakka.v2.android.RuntimeNetworkMode | public static kotlin.enums.EnumEntries<coakka.v2.android.RuntimeNetworkMode> getEntries(); | descriptor: ()Lkotlin/enums/EnumEntries;
+coakka.v2.android.RuntimeNetworkMode$Companion | public coakka.v2.android.RuntimeNetworkMode$Companion(kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.RuntimeNetworkMode$Companion | public final class coakka.v2.android.RuntimeNetworkMode$Companion {
+coakka.v2.android.RuntimeNetworkSnapshot | public boolean component2(); | descriptor: ()Z
+coakka.v2.android.RuntimeNetworkSnapshot | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.RuntimeNetworkSnapshot | public boolean getExplicitPolicy(); | descriptor: ()Z
+coakka.v2.android.RuntimeNetworkSnapshot | public coakka.v2.android.RuntimeNetworkMode component1(); | descriptor: ()Lcoakka/v2/android/RuntimeNetworkMode;
+coakka.v2.android.RuntimeNetworkSnapshot | public coakka.v2.android.RuntimeNetworkMode getMode(); | descriptor: ()Lcoakka/v2/android/RuntimeNetworkMode;
+coakka.v2.android.RuntimeNetworkSnapshot | public coakka.v2.android.RuntimeNetworkSnapshot copy(coakka.v2.android.RuntimeNetworkMode, boolean, java.lang.String, int, java.lang.String, int); | descriptor: (Lcoakka/v2/android/RuntimeNetworkMode;ZLjava/lang/String;ILjava/lang/String;I)Lcoakka/v2/android/RuntimeNetworkSnapshot;
+coakka.v2.android.RuntimeNetworkSnapshot | public coakka.v2.android.RuntimeNetworkSnapshot(coakka.v2.android.RuntimeNetworkMode, boolean, java.lang.String, int, java.lang.String, int); | descriptor: (Lcoakka/v2/android/RuntimeNetworkMode;ZLjava/lang/String;ILjava/lang/String;I)V
+coakka.v2.android.RuntimeNetworkSnapshot | public final class coakka.v2.android.RuntimeNetworkSnapshot {
+coakka.v2.android.RuntimeNetworkSnapshot | public int component4(); | descriptor: ()I
+coakka.v2.android.RuntimeNetworkSnapshot | public int component6(); | descriptor: ()I
+coakka.v2.android.RuntimeNetworkSnapshot | public int getAdvertisePort(); | descriptor: ()I
+coakka.v2.android.RuntimeNetworkSnapshot | public int getBindPort(); | descriptor: ()I
+coakka.v2.android.RuntimeNetworkSnapshot | public int hashCode(); | descriptor: ()I
+coakka.v2.android.RuntimeNetworkSnapshot | public java.lang.String component3(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.RuntimeNetworkSnapshot | public java.lang.String component5(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.RuntimeNetworkSnapshot | public java.lang.String getAdvertiseHost(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.RuntimeNetworkSnapshot | public java.lang.String getBindHost(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.RuntimeNetworkSnapshot | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.RuntimeNetworkSnapshot | public static coakka.v2.android.RuntimeNetworkSnapshot copy$default(coakka.v2.android.RuntimeNetworkSnapshot, coakka.v2.android.RuntimeNetworkMode, boolean, java.lang.String, int, java.lang.String, int, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/RuntimeNetworkSnapshot;Lcoakka/v2/android/RuntimeNetworkMode;ZLjava/lang/String;ILjava/lang/String;IILjava/lang/Object;)Lcoakka/v2/android/RuntimeNetworkSnapshot;
+coakka.v2.android.RuntimeRouteFlags | public final class coakka.v2.android.RuntimeRouteFlags {
+coakka.v2.android.RuntimeRouteFlags | public static final coakka.v2.android.RuntimeRouteFlags INSTANCE; | descriptor: Lcoakka/v2/android/RuntimeRouteFlags;
+coakka.v2.android.RuntimeRouteFlags | public static final int NONE = 0; | descriptor: I
+coakka.v2.android.RuntimeRouteFlags | public static final int PREFER_LOCAL = 1; | descriptor: I
+coakka.v2.android.RuntimeState | public final class coakka.v2.android.RuntimeState extends java.lang.Enum<coakka.v2.android.RuntimeState> {
+coakka.v2.android.RuntimeState | public static coakka.v2.android.RuntimeState valueOf(java.lang.String); | descriptor: (Ljava/lang/String;)Lcoakka/v2/android/RuntimeState;
+coakka.v2.android.RuntimeState | public static coakka.v2.android.RuntimeState[] values(); | descriptor: ()[Lcoakka/v2/android/RuntimeState;
+coakka.v2.android.RuntimeState | public static final coakka.v2.android.RuntimeState CREATED; | descriptor: Lcoakka/v2/android/RuntimeState;
+coakka.v2.android.RuntimeState | public static final coakka.v2.android.RuntimeState STARTED; | descriptor: Lcoakka/v2/android/RuntimeState;
+coakka.v2.android.RuntimeState | public static final coakka.v2.android.RuntimeState STOPPED; | descriptor: Lcoakka/v2/android/RuntimeState;
+coakka.v2.android.RuntimeState | public static final coakka.v2.android.RuntimeState$Companion Companion; | descriptor: Lcoakka/v2/android/RuntimeState$Companion;
+coakka.v2.android.RuntimeState | public static kotlin.enums.EnumEntries<coakka.v2.android.RuntimeState> getEntries(); | descriptor: ()Lkotlin/enums/EnumEntries;
+coakka.v2.android.RuntimeState$Companion | public coakka.v2.android.RuntimeState$Companion(kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.RuntimeState$Companion | public final class coakka.v2.android.RuntimeState$Companion {
+coakka.v2.android.RuntimeTcpConnectionMode | public final class coakka.v2.android.RuntimeTcpConnectionMode extends java.lang.Enum<coakka.v2.android.RuntimeTcpConnectionMode> {
+coakka.v2.android.RuntimeTcpConnectionMode | public static coakka.v2.android.RuntimeTcpConnectionMode valueOf(java.lang.String); | descriptor: (Ljava/lang/String;)Lcoakka/v2/android/RuntimeTcpConnectionMode;
+coakka.v2.android.RuntimeTcpConnectionMode | public static coakka.v2.android.RuntimeTcpConnectionMode[] values(); | descriptor: ()[Lcoakka/v2/android/RuntimeTcpConnectionMode;
+coakka.v2.android.RuntimeTcpConnectionMode | public static final coakka.v2.android.RuntimeTcpConnectionMode BOUNDED_POOL; | descriptor: Lcoakka/v2/android/RuntimeTcpConnectionMode;
+coakka.v2.android.RuntimeTcpConnectionMode | public static final coakka.v2.android.RuntimeTcpConnectionMode MULTIPLEXED; | descriptor: Lcoakka/v2/android/RuntimeTcpConnectionMode;
+coakka.v2.android.RuntimeTcpConnectionMode | public static final coakka.v2.android.RuntimeTcpConnectionMode PERSISTENT_SINGLE_FLIGHT; | descriptor: Lcoakka/v2/android/RuntimeTcpConnectionMode;
+coakka.v2.android.RuntimeTcpConnectionMode | public static final coakka.v2.android.RuntimeTcpConnectionMode PER_EXCHANGE; | descriptor: Lcoakka/v2/android/RuntimeTcpConnectionMode;
+coakka.v2.android.RuntimeTcpConnectionMode | public static final coakka.v2.android.RuntimeTcpConnectionMode$Companion Companion; | descriptor: Lcoakka/v2/android/RuntimeTcpConnectionMode$Companion;
+coakka.v2.android.RuntimeTcpConnectionMode | public static kotlin.enums.EnumEntries<coakka.v2.android.RuntimeTcpConnectionMode> getEntries(); | descriptor: ()Lkotlin/enums/EnumEntries;
+coakka.v2.android.RuntimeTcpConnectionMode$Companion | public coakka.v2.android.RuntimeTcpConnectionMode$Companion(kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.RuntimeTcpConnectionMode$Companion | public final class coakka.v2.android.RuntimeTcpConnectionMode$Companion {
+coakka.v2.android.StreamDirection | public final class coakka.v2.android.StreamDirection extends java.lang.Enum<coakka.v2.android.StreamDirection> {
+coakka.v2.android.StreamDirection | public static coakka.v2.android.StreamDirection valueOf(java.lang.String); | descriptor: (Ljava/lang/String;)Lcoakka/v2/android/StreamDirection;
+coakka.v2.android.StreamDirection | public static coakka.v2.android.StreamDirection[] values(); | descriptor: ()[Lcoakka/v2/android/StreamDirection;
+coakka.v2.android.StreamDirection | public static final coakka.v2.android.StreamDirection PUBLISH; | descriptor: Lcoakka/v2/android/StreamDirection;
+coakka.v2.android.StreamDirection | public static final coakka.v2.android.StreamDirection SUBSCRIBE; | descriptor: Lcoakka/v2/android/StreamDirection;
+coakka.v2.android.StreamDirection | public static final coakka.v2.android.StreamDirection$Companion Companion; | descriptor: Lcoakka/v2/android/StreamDirection$Companion;
+coakka.v2.android.StreamDirection | public static kotlin.enums.EnumEntries<coakka.v2.android.StreamDirection> getEntries(); | descriptor: ()Lkotlin/enums/EnumEntries;
+coakka.v2.android.StreamDirection$Companion | public coakka.v2.android.StreamDirection$Companion(kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.StreamDirection$Companion | public final class coakka.v2.android.StreamDirection$Companion {
+coakka.v2.android.StreamFrameFlags | public final class coakka.v2.android.StreamFrameFlags {
+coakka.v2.android.StreamFrameFlags | public static final coakka.v2.android.StreamFrameFlags INSTANCE; | descriptor: Lcoakka/v2/android/StreamFrameFlags;
+coakka.v2.android.StreamFrameFlags | public static final int DISCONTINUITY = 2; | descriptor: I
+coakka.v2.android.StreamFrameFlags | public static final int END_OF_SEGMENT = 4; | descriptor: I
+coakka.v2.android.StreamFrameFlags | public static final int KEYFRAME = 1; | descriptor: I
+coakka.v2.android.StreamFrameMetadata | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.StreamFrameMetadata | public coakka.v2.android.StreamFrameMetadata copy(long, long, long, int); | descriptor: (JJJI)Lcoakka/v2/android/StreamFrameMetadata;
+coakka.v2.android.StreamFrameMetadata | public coakka.v2.android.StreamFrameMetadata(long, long, long, int); | descriptor: (JJJI)V
+coakka.v2.android.StreamFrameMetadata | public final class coakka.v2.android.StreamFrameMetadata {
+coakka.v2.android.StreamFrameMetadata | public int component4(); | descriptor: ()I
+coakka.v2.android.StreamFrameMetadata | public int getFlags(); | descriptor: ()I
+coakka.v2.android.StreamFrameMetadata | public int hashCode(); | descriptor: ()I
+coakka.v2.android.StreamFrameMetadata | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamFrameMetadata | public long component1(); | descriptor: ()J
+coakka.v2.android.StreamFrameMetadata | public long component2(); | descriptor: ()J
+coakka.v2.android.StreamFrameMetadata | public long component3(); | descriptor: ()J
+coakka.v2.android.StreamFrameMetadata | public long getCapturedMonoNs(); | descriptor: ()J
+coakka.v2.android.StreamFrameMetadata | public long getDroppedBefore(); | descriptor: ()J
+coakka.v2.android.StreamFrameMetadata | public long getSequence(); | descriptor: ()J
+coakka.v2.android.StreamFrameMetadata | public static coakka.v2.android.StreamFrameMetadata copy$default(coakka.v2.android.StreamFrameMetadata, long, long, long, int, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/StreamFrameMetadata;JJJIILjava/lang/Object;)Lcoakka/v2/android/StreamFrameMetadata;
+coakka.v2.android.StreamLane | public coakka.v2.android.StreamLane(long, boolean, kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (JZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.StreamLane | public coakka.v2.android.StreamLaneStats stats(); | descriptor: ()Lcoakka/v2/android/StreamLaneStats;
+coakka.v2.android.StreamLane | public coakka.v2.android.StreamPressureSnapshot pressure(java.lang.String, coakka.v2.android.StreamDirection); | descriptor: (Ljava/lang/String;Lcoakka/v2/android/StreamDirection;)Lcoakka/v2/android/StreamPressureSnapshot;
+coakka.v2.android.StreamLane | public coakka.v2.android.StreamPressureSnapshot waitPressure(java.lang.String, coakka.v2.android.StreamDirection, long, int); | descriptor: (Ljava/lang/String;Lcoakka/v2/android/StreamDirection;JI)Lcoakka/v2/android/StreamPressureSnapshot;
+coakka.v2.android.StreamLane | public coakka.v2.android.StreamPublishGrant preparePublishGrant(coakka.v2.android.StreamPublishSpec); | descriptor: (Lcoakka/v2/android/StreamPublishSpec;)Lcoakka/v2/android/StreamPublishGrant;
+coakka.v2.android.StreamLane | public coakka.v2.android.StreamSessionSnapshot session(java.lang.String, coakka.v2.android.StreamDirection); | descriptor: (Ljava/lang/String;Lcoakka/v2/android/StreamDirection;)Lcoakka/v2/android/StreamSessionSnapshot;
+coakka.v2.android.StreamLane | public coakka.v2.android.StreamSessionSnapshot waitSession(java.lang.String, coakka.v2.android.StreamDirection, long, int); | descriptor: (Ljava/lang/String;Lcoakka/v2/android/StreamDirection;JI)Lcoakka/v2/android/StreamSessionSnapshot;
+coakka.v2.android.StreamLane | public final class coakka.v2.android.StreamLane implements java.io.Closeable {
+coakka.v2.android.StreamLane | public int getBoundPort(); | descriptor: ()I
+coakka.v2.android.StreamLane | public static coakka.v2.android.StreamLane open(coakka.v2.android.StreamLaneConfig); | descriptor: (Lcoakka/v2/android/StreamLaneConfig;)Lcoakka/v2/android/StreamLane;
+coakka.v2.android.StreamLane | public static coakka.v2.android.StreamLane openOwned(coakka.v2.android.StreamLaneConfig, coakka.v2.android.LaneOwnerConfig); | descriptor: (Lcoakka/v2/android/StreamLaneConfig;Lcoakka/v2/android/LaneOwnerConfig;)Lcoakka/v2/android/StreamLane;
+coakka.v2.android.StreamLane | public static coakka.v2.android.StreamPressureSnapshot waitPressure$default(coakka.v2.android.StreamLane, java.lang.String, coakka.v2.android.StreamDirection, long, int, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/StreamLane;Ljava/lang/String;Lcoakka/v2/android/StreamDirection;JIILjava/lang/Object;)Lcoakka/v2/android/StreamPressureSnapshot;
+coakka.v2.android.StreamLane | public static coakka.v2.android.StreamSessionSnapshot waitSession$default(coakka.v2.android.StreamLane, java.lang.String, coakka.v2.android.StreamDirection, long, int, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/StreamLane;Ljava/lang/String;Lcoakka/v2/android/StreamDirection;JIILjava/lang/Object;)Lcoakka/v2/android/StreamSessionSnapshot;
+coakka.v2.android.StreamLane | public static final coakka.v2.android.StreamLane$Companion Companion; | descriptor: Lcoakka/v2/android/StreamLane$Companion;
+coakka.v2.android.StreamLane | public void cancel(java.lang.String, coakka.v2.android.StreamDirection); | descriptor: (Ljava/lang/String;Lcoakka/v2/android/StreamDirection;)V
+coakka.v2.android.StreamLane | public void close(); | descriptor: ()V
+coakka.v2.android.StreamLane | public void forget(java.lang.String, coakka.v2.android.StreamDirection); | descriptor: (Ljava/lang/String;Lcoakka/v2/android/StreamDirection;)V
+coakka.v2.android.StreamLane | public void preparePublish(coakka.v2.android.StreamPublishSpec); | descriptor: (Lcoakka/v2/android/StreamPublishSpec;)V
+coakka.v2.android.StreamLane | public void subscribe(coakka.v2.android.StreamSubscribeSpec); | descriptor: (Lcoakka/v2/android/StreamSubscribeSpec;)V
+coakka.v2.android.StreamLane$Companion | public coakka.v2.android.StreamLane open(coakka.v2.android.StreamLaneConfig); | descriptor: (Lcoakka/v2/android/StreamLaneConfig;)Lcoakka/v2/android/StreamLane;
+coakka.v2.android.StreamLane$Companion | public coakka.v2.android.StreamLane openOwned(coakka.v2.android.StreamLaneConfig, coakka.v2.android.LaneOwnerConfig); | descriptor: (Lcoakka/v2/android/StreamLaneConfig;Lcoakka/v2/android/LaneOwnerConfig;)Lcoakka/v2/android/StreamLane;
+coakka.v2.android.StreamLane$Companion | public coakka.v2.android.StreamLane$Companion(kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.StreamLane$Companion | public final class coakka.v2.android.StreamLane$Companion {
+coakka.v2.android.StreamLane$Companion | public static coakka.v2.android.StreamLane open$default(coakka.v2.android.StreamLane$Companion, coakka.v2.android.StreamLaneConfig, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/StreamLane$Companion;Lcoakka/v2/android/StreamLaneConfig;ILjava/lang/Object;)Lcoakka/v2/android/StreamLane;
+coakka.v2.android.StreamLaneConfig | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.StreamLaneConfig | public coakka.v2.android.StreamLaneConfig copy(int, java.lang.String, int, long, int, int, int, int, int, int, int, int, coakka.v2.android.StreamLaneSecurityConfig, int, int, int, int); | descriptor: (ILjava/lang/String;IJIIIIIIIILcoakka/v2/android/StreamLaneSecurityConfig;IIII)Lcoakka/v2/android/StreamLaneConfig;
+coakka.v2.android.StreamLaneConfig | public coakka.v2.android.StreamLaneConfig(); | descriptor: ()V
+coakka.v2.android.StreamLaneConfig | public coakka.v2.android.StreamLaneConfig(int, java.lang.String, int, long, int, int, int, int, int, int, int, int, coakka.v2.android.StreamLaneSecurityConfig, int, int, int, int); | descriptor: (ILjava/lang/String;IJIIIIIIIILcoakka/v2/android/StreamLaneSecurityConfig;IIII)V
+coakka.v2.android.StreamLaneConfig | public coakka.v2.android.StreamLaneConfig(int, java.lang.String, int, long, int, int, int, int, int, int, int, int, coakka.v2.android.StreamLaneSecurityConfig, int, int, int, int, int, kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (ILjava/lang/String;IJIIIIIIIILcoakka/v2/android/StreamLaneSecurityConfig;IIIIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.StreamLaneConfig | public coakka.v2.android.StreamLaneSecurityConfig component13(); | descriptor: ()Lcoakka/v2/android/StreamLaneSecurityConfig;
+coakka.v2.android.StreamLaneConfig | public coakka.v2.android.StreamLaneSecurityConfig getSecurity(); | descriptor: ()Lcoakka/v2/android/StreamLaneSecurityConfig;
+coakka.v2.android.StreamLaneConfig | public final class coakka.v2.android.StreamLaneConfig {
+coakka.v2.android.StreamLaneConfig | public int component1(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int component10(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int component11(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int component12(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int component14(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int component15(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int component16(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int component17(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int component3(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int component5(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int component6(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int component7(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int component8(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int component9(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int getBindPort(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int getFlags(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int getIoTimeoutMs(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int getMaxFrameBytes(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int getMaxWindowBytes(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int getPressureAfterMs(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int getPressureObservationMs(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int getProgressFrames(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int getProgressIntervalMs(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int getPublisherWorkerCount(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int getRecoveryAfterMs(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int getSourceRetryMs(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int getStalledAfterMs(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int getSubscriberWorkerCount(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public int hashCode(); | descriptor: ()I
+coakka.v2.android.StreamLaneConfig | public java.lang.String component2(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamLaneConfig | public java.lang.String getBindHost(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamLaneConfig | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamLaneConfig | public long component4(); | descriptor: ()J
+coakka.v2.android.StreamLaneConfig | public long getCapacity(); | descriptor: ()J
+coakka.v2.android.StreamLaneConfig | public static coakka.v2.android.StreamLaneConfig copy$default(coakka.v2.android.StreamLaneConfig, int, java.lang.String, int, long, int, int, int, int, int, int, int, int, coakka.v2.android.StreamLaneSecurityConfig, int, int, int, int, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/StreamLaneConfig;ILjava/lang/String;IJIIIIIIIILcoakka/v2/android/StreamLaneSecurityConfig;IIIIILjava/lang/Object;)Lcoakka/v2/android/StreamLaneConfig;
+coakka.v2.android.StreamLaneException | public coakka.v2.android.StreamLaneException(java.lang.String, int); | descriptor: (Ljava/lang/String;I)V
+coakka.v2.android.StreamLaneException | public final class coakka.v2.android.StreamLaneException extends java.lang.IllegalStateException {
+coakka.v2.android.StreamLaneException | public int getStatus(); | descriptor: ()I
+coakka.v2.android.StreamLaneFlags | public final class coakka.v2.android.StreamLaneFlags {
+coakka.v2.android.StreamLaneFlags | public static final coakka.v2.android.StreamLaneFlags INSTANCE; | descriptor: Lcoakka/v2/android/StreamLaneFlags;
+coakka.v2.android.StreamLaneFlags | public static final int PUBLISHER = 1; | descriptor: I
+coakka.v2.android.StreamLaneFlags | public static final int SUBSCRIBER = 2; | descriptor: I
+coakka.v2.android.StreamLaneSecurityConfig | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.StreamLaneSecurityConfig | public coakka.v2.android.StreamLaneSecurityConfig copy(coakka.v2.android.StreamLaneSecurityMode, long, java.lang.String, java.lang.String, java.lang.String, java.lang.String); | descriptor: (Lcoakka/v2/android/StreamLaneSecurityMode;JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcoakka/v2/android/StreamLaneSecurityConfig;
+coakka.v2.android.StreamLaneSecurityConfig | public coakka.v2.android.StreamLaneSecurityConfig(); | descriptor: ()V
+coakka.v2.android.StreamLaneSecurityConfig | public coakka.v2.android.StreamLaneSecurityConfig(coakka.v2.android.StreamLaneSecurityMode, long, java.lang.String, java.lang.String, java.lang.String, java.lang.String); | descriptor: (Lcoakka/v2/android/StreamLaneSecurityMode;JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+coakka.v2.android.StreamLaneSecurityConfig | public coakka.v2.android.StreamLaneSecurityConfig(coakka.v2.android.StreamLaneSecurityMode, long, java.lang.String, java.lang.String, java.lang.String, java.lang.String, int, kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Lcoakka/v2/android/StreamLaneSecurityMode;JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.StreamLaneSecurityConfig | public coakka.v2.android.StreamLaneSecurityMode component1(); | descriptor: ()Lcoakka/v2/android/StreamLaneSecurityMode;
+coakka.v2.android.StreamLaneSecurityConfig | public coakka.v2.android.StreamLaneSecurityMode getMode(); | descriptor: ()Lcoakka/v2/android/StreamLaneSecurityMode;
+coakka.v2.android.StreamLaneSecurityConfig | public final class coakka.v2.android.StreamLaneSecurityConfig {
+coakka.v2.android.StreamLaneSecurityConfig | public int hashCode(); | descriptor: ()I
+coakka.v2.android.StreamLaneSecurityConfig | public java.lang.String component3(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamLaneSecurityConfig | public java.lang.String component4(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamLaneSecurityConfig | public java.lang.String component5(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamLaneSecurityConfig | public java.lang.String component6(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamLaneSecurityConfig | public java.lang.String getCaCertificateFile(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamLaneSecurityConfig | public java.lang.String getCredentialId(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamLaneSecurityConfig | public java.lang.String getIdentityCertificateFile(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamLaneSecurityConfig | public java.lang.String getPrivateKeyFile(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamLaneSecurityConfig | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamLaneSecurityConfig | public long component2(); | descriptor: ()J
+coakka.v2.android.StreamLaneSecurityConfig | public long getCredentialGeneration(); | descriptor: ()J
+coakka.v2.android.StreamLaneSecurityConfig | public static coakka.v2.android.StreamLaneSecurityConfig copy$default(coakka.v2.android.StreamLaneSecurityConfig, coakka.v2.android.StreamLaneSecurityMode, long, java.lang.String, java.lang.String, java.lang.String, java.lang.String, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/StreamLaneSecurityConfig;Lcoakka/v2/android/StreamLaneSecurityMode;JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcoakka/v2/android/StreamLaneSecurityConfig;
+coakka.v2.android.StreamLaneSecurityMode | public final class coakka.v2.android.StreamLaneSecurityMode extends java.lang.Enum<coakka.v2.android.StreamLaneSecurityMode> {
+coakka.v2.android.StreamLaneSecurityMode | public static coakka.v2.android.StreamLaneSecurityMode valueOf(java.lang.String); | descriptor: (Ljava/lang/String;)Lcoakka/v2/android/StreamLaneSecurityMode;
+coakka.v2.android.StreamLaneSecurityMode | public static coakka.v2.android.StreamLaneSecurityMode[] values(); | descriptor: ()[Lcoakka/v2/android/StreamLaneSecurityMode;
+coakka.v2.android.StreamLaneSecurityMode | public static final coakka.v2.android.StreamLaneSecurityMode DIRECT; | descriptor: Lcoakka/v2/android/StreamLaneSecurityMode;
+coakka.v2.android.StreamLaneSecurityMode | public static final coakka.v2.android.StreamLaneSecurityMode MUTUAL_TLS; | descriptor: Lcoakka/v2/android/StreamLaneSecurityMode;
+coakka.v2.android.StreamLaneSecurityMode | public static final coakka.v2.android.StreamLaneSecurityMode TLS; | descriptor: Lcoakka/v2/android/StreamLaneSecurityMode;
+coakka.v2.android.StreamLaneSecurityMode | public static kotlin.enums.EnumEntries<coakka.v2.android.StreamLaneSecurityMode> getEntries(); | descriptor: ()Lkotlin/enums/EnumEntries;
+coakka.v2.android.StreamLaneStats | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.StreamLaneStats | public coakka.v2.android.StreamLaneStats copy(long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long); | descriptor: (JJJJJJJJJJJJJJJJJJ)Lcoakka/v2/android/StreamLaneStats;
+coakka.v2.android.StreamLaneStats | public coakka.v2.android.StreamLaneStats(long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long); | descriptor: (JJJJJJJJJJJJJJJJJJ)V
+coakka.v2.android.StreamLaneStats | public final class coakka.v2.android.StreamLaneStats {
+coakka.v2.android.StreamLaneStats | public int hashCode(); | descriptor: ()I
+coakka.v2.android.StreamLaneStats | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamLaneStats | public long component1(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long component10(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long component11(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long component12(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long component13(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long component14(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long component15(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long component16(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long component17(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long component18(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long component2(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long component3(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long component4(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long component5(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long component6(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long component7(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long component8(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long component9(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long getActivePublishers(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long getActiveSubscribers(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long getCanceledSessions(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long getCapacity(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long getConsumedBytes(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long getConsumedFrames(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long getEndedPublishers(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long getEndedSubscribers(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long getFailedPublishers(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long getFailedSubscribers(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long getPreparedPublisherCount(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long getPreparedPublishers(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long getPublishedBytes(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long getPublishedFrames(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long getQueuedSubscribers(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long getRetainedRecords(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long getSourceReportedDrops(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public long getSubmittedSubscribers(); | descriptor: ()J
+coakka.v2.android.StreamLaneStats | public static coakka.v2.android.StreamLaneStats copy$default(coakka.v2.android.StreamLaneStats, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/StreamLaneStats;JJJJJJJJJJJJJJJJJJILjava/lang/Object;)Lcoakka/v2/android/StreamLaneStats;
+coakka.v2.android.StreamPressureReasons | public final class coakka.v2.android.StreamPressureReasons {
+coakka.v2.android.StreamPressureReasons | public static final coakka.v2.android.StreamPressureReasons INSTANCE; | descriptor: Lcoakka/v2/android/StreamPressureReasons;
+coakka.v2.android.StreamPressureReasons | public static final int CONSUMER_BUSY = 4; | descriptor: I
+coakka.v2.android.StreamPressureReasons | public static final int CREDIT_WAIT = 1; | descriptor: I
+coakka.v2.android.StreamPressureReasons | public static final int TRANSPORT_READ = 8; | descriptor: I
+coakka.v2.android.StreamPressureReasons | public static final int TRANSPORT_WRITE = 2; | descriptor: I
+coakka.v2.android.StreamPressureSnapshot | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.StreamPressureSnapshot | public coakka.v2.android.StreamDirection component1(); | descriptor: ()Lcoakka/v2/android/StreamDirection;
+coakka.v2.android.StreamPressureSnapshot | public coakka.v2.android.StreamDirection getDirection(); | descriptor: ()Lcoakka/v2/android/StreamDirection;
+coakka.v2.android.StreamPressureSnapshot | public coakka.v2.android.StreamPressureSnapshot copy(coakka.v2.android.StreamDirection, coakka.v2.android.StreamPressureState, int, int, int, long, long, long, long, long, long, long, long, long, long, long); | descriptor: (Lcoakka/v2/android/StreamDirection;Lcoakka/v2/android/StreamPressureState;IIIJJJJJJJJJJJ)Lcoakka/v2/android/StreamPressureSnapshot;
+coakka.v2.android.StreamPressureSnapshot | public coakka.v2.android.StreamPressureSnapshot(coakka.v2.android.StreamDirection, coakka.v2.android.StreamPressureState, int, int, int, long, long, long, long, long, long, long, long, long, long, long); | descriptor: (Lcoakka/v2/android/StreamDirection;Lcoakka/v2/android/StreamPressureState;IIIJJJJJJJJJJJ)V
+coakka.v2.android.StreamPressureSnapshot | public coakka.v2.android.StreamPressureState component2(); | descriptor: ()Lcoakka/v2/android/StreamPressureState;
+coakka.v2.android.StreamPressureSnapshot | public coakka.v2.android.StreamPressureState getState(); | descriptor: ()Lcoakka/v2/android/StreamPressureState;
+coakka.v2.android.StreamPressureSnapshot | public final class coakka.v2.android.StreamPressureSnapshot {
+coakka.v2.android.StreamPressureSnapshot | public int component3(); | descriptor: ()I
+coakka.v2.android.StreamPressureSnapshot | public int component4(); | descriptor: ()I
+coakka.v2.android.StreamPressureSnapshot | public int component5(); | descriptor: ()I
+coakka.v2.android.StreamPressureSnapshot | public int getAvailableCreditBytes(); | descriptor: ()I
+coakka.v2.android.StreamPressureSnapshot | public int getReasonBits(); | descriptor: ()I
+coakka.v2.android.StreamPressureSnapshot | public int getWindowCapacityBytes(); | descriptor: ()I
+coakka.v2.android.StreamPressureSnapshot | public int hashCode(); | descriptor: ()I
+coakka.v2.android.StreamPressureSnapshot | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamPressureSnapshot | public long component10(); | descriptor: ()J
+coakka.v2.android.StreamPressureSnapshot | public long component11(); | descriptor: ()J
+coakka.v2.android.StreamPressureSnapshot | public long component12(); | descriptor: ()J
+coakka.v2.android.StreamPressureSnapshot | public long component13(); | descriptor: ()J
+coakka.v2.android.StreamPressureSnapshot | public long component14(); | descriptor: ()J
+coakka.v2.android.StreamPressureSnapshot | public long component15(); | descriptor: ()J
+coakka.v2.android.StreamPressureSnapshot | public long component16(); | descriptor: ()J
+coakka.v2.android.StreamPressureSnapshot | public long component6(); | descriptor: ()J
+coakka.v2.android.StreamPressureSnapshot | public long component7(); | descriptor: ()J
+coakka.v2.android.StreamPressureSnapshot | public long component8(); | descriptor: ()J
+coakka.v2.android.StreamPressureSnapshot | public long component9(); | descriptor: ()J
+coakka.v2.android.StreamPressureSnapshot | public long getCurrentOperationNs(); | descriptor: ()J
+coakka.v2.android.StreamPressureSnapshot | public long getLastOperationNs(); | descriptor: ()J
+coakka.v2.android.StreamPressureSnapshot | public long getLastProgressMonoNs(); | descriptor: ()J
+coakka.v2.android.StreamPressureSnapshot | public long getMaxPressuredNs(); | descriptor: ()J
+coakka.v2.android.StreamPressureSnapshot | public long getObservedDeliveryBps(); | descriptor: ()J
+coakka.v2.android.StreamPressureSnapshot | public long getObservedMonoNs(); | descriptor: ()J
+coakka.v2.android.StreamPressureSnapshot | public long getPressureStartedMonoNs(); | descriptor: ()J
+coakka.v2.android.StreamPressureSnapshot | public long getStateStartedMonoNs(); | descriptor: ()J
+coakka.v2.android.StreamPressureSnapshot | public long getTotalPressuredNs(); | descriptor: ()J
+coakka.v2.android.StreamPressureSnapshot | public long getTransitionCount(); | descriptor: ()J
+coakka.v2.android.StreamPressureSnapshot | public long getUpdateSequence(); | descriptor: ()J
+coakka.v2.android.StreamPressureSnapshot | public static coakka.v2.android.StreamPressureSnapshot copy$default(coakka.v2.android.StreamPressureSnapshot, coakka.v2.android.StreamDirection, coakka.v2.android.StreamPressureState, int, int, int, long, long, long, long, long, long, long, long, long, long, long, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/StreamPressureSnapshot;Lcoakka/v2/android/StreamDirection;Lcoakka/v2/android/StreamPressureState;IIIJJJJJJJJJJJILjava/lang/Object;)Lcoakka/v2/android/StreamPressureSnapshot;
+coakka.v2.android.StreamPressureState | public final class coakka.v2.android.StreamPressureState extends java.lang.Enum<coakka.v2.android.StreamPressureState> {
+coakka.v2.android.StreamPressureState | public static coakka.v2.android.StreamPressureState valueOf(java.lang.String); | descriptor: (Ljava/lang/String;)Lcoakka/v2/android/StreamPressureState;
+coakka.v2.android.StreamPressureState | public static coakka.v2.android.StreamPressureState[] values(); | descriptor: ()[Lcoakka/v2/android/StreamPressureState;
+coakka.v2.android.StreamPressureState | public static final coakka.v2.android.StreamPressureState FLOWING; | descriptor: Lcoakka/v2/android/StreamPressureState;
+coakka.v2.android.StreamPressureState | public static final coakka.v2.android.StreamPressureState INACTIVE; | descriptor: Lcoakka/v2/android/StreamPressureState;
+coakka.v2.android.StreamPressureState | public static final coakka.v2.android.StreamPressureState PRESSURED; | descriptor: Lcoakka/v2/android/StreamPressureState;
+coakka.v2.android.StreamPressureState | public static final coakka.v2.android.StreamPressureState RECOVERING; | descriptor: Lcoakka/v2/android/StreamPressureState;
+coakka.v2.android.StreamPressureState | public static final coakka.v2.android.StreamPressureState STALLED; | descriptor: Lcoakka/v2/android/StreamPressureState;
+coakka.v2.android.StreamPressureState | public static final coakka.v2.android.StreamPressureState$Companion Companion; | descriptor: Lcoakka/v2/android/StreamPressureState$Companion;
+coakka.v2.android.StreamPressureState | public static kotlin.enums.EnumEntries<coakka.v2.android.StreamPressureState> getEntries(); | descriptor: ()Lkotlin/enums/EnumEntries;
+coakka.v2.android.StreamPressureState$Companion | public coakka.v2.android.StreamPressureState$Companion(kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.StreamPressureState$Companion | public final class coakka.v2.android.StreamPressureState$Companion {
+coakka.v2.android.StreamPublishGrant | public coakka.v2.android.LaneOwnerEndpoint getOwner(); | descriptor: ()Lcoakka/v2/android/LaneOwnerEndpoint;
+coakka.v2.android.StreamPublishGrant | public coakka.v2.android.StreamPublishGrant(coakka.v2.android.LaneOwnerEndpoint, java.lang.String, java.lang.String, long, int); | descriptor: (Lcoakka/v2/android/LaneOwnerEndpoint;Ljava/lang/String;Ljava/lang/String;JI)V
+coakka.v2.android.StreamPublishGrant | public coakka.v2.android.StreamSubscribeSpec toSubscribeSpec(int, coakka.v2.android.AndroidStreamConsumer, int); | descriptor: (ILcoakka/v2/android/AndroidStreamConsumer;I)Lcoakka/v2/android/StreamSubscribeSpec;
+coakka.v2.android.StreamPublishGrant | public final class coakka.v2.android.StreamPublishGrant {
+coakka.v2.android.StreamPublishGrant | public int getMaxFrameBytes(); | descriptor: ()I
+coakka.v2.android.StreamPublishGrant | public java.lang.String getAuthorizationToken(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamPublishGrant | public java.lang.String getSessionId(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamPublishGrant | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamPublishGrant | public long getFormatId(); | descriptor: ()J
+coakka.v2.android.StreamPublishGrant | public static coakka.v2.android.StreamSubscribeSpec toSubscribeSpec$default(coakka.v2.android.StreamPublishGrant, int, coakka.v2.android.AndroidStreamConsumer, int, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/StreamPublishGrant;ILcoakka/v2/android/AndroidStreamConsumer;IILjava/lang/Object;)Lcoakka/v2/android/StreamSubscribeSpec;
+coakka.v2.android.StreamPublishSpec | public coakka.v2.android.AndroidStreamSource getSource(); | descriptor: ()Lcoakka/v2/android/AndroidStreamSource;
+coakka.v2.android.StreamPublishSpec | public coakka.v2.android.StreamPublishSpec(java.lang.String, java.lang.String, long, int, coakka.v2.android.AndroidStreamSource); | descriptor: (Ljava/lang/String;Ljava/lang/String;JILcoakka/v2/android/AndroidStreamSource;)V
+coakka.v2.android.StreamPublishSpec | public final class coakka.v2.android.StreamPublishSpec {
+coakka.v2.android.StreamPublishSpec | public int getMaxFrameBytes(); | descriptor: ()I
+coakka.v2.android.StreamPublishSpec | public java.lang.String getAuthorizationToken(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamPublishSpec | public java.lang.String getSessionId(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamPublishSpec | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamPublishSpec | public long getFormatId(); | descriptor: ()J
+coakka.v2.android.StreamResult | public final class coakka.v2.android.StreamResult extends java.lang.Enum<coakka.v2.android.StreamResult> {
+coakka.v2.android.StreamResult | public static coakka.v2.android.StreamResult valueOf(java.lang.String); | descriptor: (Ljava/lang/String;)Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamResult | public static coakka.v2.android.StreamResult[] values(); | descriptor: ()[Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamResult | public static final coakka.v2.android.StreamResult CANCELED_BY_HOST; | descriptor: Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamResult | public static final coakka.v2.android.StreamResult CLIENT_CERT_REQUIRED; | descriptor: Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamResult | public static final coakka.v2.android.StreamResult CONSUMER_ERROR; | descriptor: Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamResult | public static final coakka.v2.android.StreamResult FORMAT_MISMATCH; | descriptor: Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamResult | public static final coakka.v2.android.StreamResult FRAME_LIMIT; | descriptor: Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamResult | public static final coakka.v2.android.StreamResult INTERNAL_ERROR; | descriptor: Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamResult | public static final coakka.v2.android.StreamResult NETWORK_IO; | descriptor: Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamResult | public static final coakka.v2.android.StreamResult NONE; | descriptor: Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamResult | public static final coakka.v2.android.StreamResult NOT_PREPARED; | descriptor: Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamResult | public static final coakka.v2.android.StreamResult OK; | descriptor: Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamResult | public static final coakka.v2.android.StreamResult PEER_CERT_EXPIRED; | descriptor: Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamResult | public static final coakka.v2.android.StreamResult PEER_CERT_UNTRUSTED; | descriptor: Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamResult | public static final coakka.v2.android.StreamResult PEER_IDENTITY_MISMATCH; | descriptor: Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamResult | public static final coakka.v2.android.StreamResult PROTOCOL_ERROR; | descriptor: Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamResult | public static final coakka.v2.android.StreamResult QUEUE_FULL; | descriptor: Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamResult | public static final coakka.v2.android.StreamResult SOURCE_ERROR; | descriptor: Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamResult | public static final coakka.v2.android.StreamResult TIMEOUT; | descriptor: Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamResult | public static final coakka.v2.android.StreamResult TLS_CONFIG_INVALID; | descriptor: Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamResult | public static final coakka.v2.android.StreamResult TLS_HANDSHAKE_FAILED; | descriptor: Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamResult | public static final coakka.v2.android.StreamResult TOKEN_MISMATCH; | descriptor: Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamResult | public static final coakka.v2.android.StreamResult$Companion Companion; | descriptor: Lcoakka/v2/android/StreamResult$Companion;
+coakka.v2.android.StreamResult | public static kotlin.enums.EnumEntries<coakka.v2.android.StreamResult> getEntries(); | descriptor: ()Lkotlin/enums/EnumEntries;
+coakka.v2.android.StreamResult$Companion | public coakka.v2.android.StreamResult$Companion(kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.StreamResult$Companion | public final class coakka.v2.android.StreamResult$Companion {
+coakka.v2.android.StreamSessionSnapshot | public boolean component11(); | descriptor: ()Z
+coakka.v2.android.StreamSessionSnapshot | public boolean equals(java.lang.Object); | descriptor: (Ljava/lang/Object;)Z
+coakka.v2.android.StreamSessionSnapshot | public boolean getCancelRequested(); | descriptor: ()Z
+coakka.v2.android.StreamSessionSnapshot | public boolean getCompleted(); | descriptor: ()Z
+coakka.v2.android.StreamSessionSnapshot | public boolean getTerminal(); | descriptor: ()Z
+coakka.v2.android.StreamSessionSnapshot | public coakka.v2.android.StreamDirection component1(); | descriptor: ()Lcoakka/v2/android/StreamDirection;
+coakka.v2.android.StreamSessionSnapshot | public coakka.v2.android.StreamDirection getDirection(); | descriptor: ()Lcoakka/v2/android/StreamDirection;
+coakka.v2.android.StreamSessionSnapshot | public coakka.v2.android.StreamResult component3(); | descriptor: ()Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamSessionSnapshot | public coakka.v2.android.StreamResult getResult(); | descriptor: ()Lcoakka/v2/android/StreamResult;
+coakka.v2.android.StreamSessionSnapshot | public coakka.v2.android.StreamSessionSnapshot copy(coakka.v2.android.StreamDirection, coakka.v2.android.StreamState, coakka.v2.android.StreamResult, long, long, long, long, long, int, int, boolean, long, long, long, long, long, java.lang.String); | descriptor: (Lcoakka/v2/android/StreamDirection;Lcoakka/v2/android/StreamState;Lcoakka/v2/android/StreamResult;JJJJJIIZJJJJJLjava/lang/String;)Lcoakka/v2/android/StreamSessionSnapshot;
+coakka.v2.android.StreamSessionSnapshot | public coakka.v2.android.StreamSessionSnapshot(coakka.v2.android.StreamDirection, coakka.v2.android.StreamState, coakka.v2.android.StreamResult, long, long, long, long, long, int, int, boolean, long, long, long, long, long, java.lang.String); | descriptor: (Lcoakka/v2/android/StreamDirection;Lcoakka/v2/android/StreamState;Lcoakka/v2/android/StreamResult;JJJJJIIZJJJJJLjava/lang/String;)V
+coakka.v2.android.StreamSessionSnapshot | public coakka.v2.android.StreamState component2(); | descriptor: ()Lcoakka/v2/android/StreamState;
+coakka.v2.android.StreamSessionSnapshot | public coakka.v2.android.StreamState getState(); | descriptor: ()Lcoakka/v2/android/StreamState;
+coakka.v2.android.StreamSessionSnapshot | public final class coakka.v2.android.StreamSessionSnapshot {
+coakka.v2.android.StreamSessionSnapshot | public int component10(); | descriptor: ()I
+coakka.v2.android.StreamSessionSnapshot | public int component9(); | descriptor: ()I
+coakka.v2.android.StreamSessionSnapshot | public int getNegotiatedMaxFrameBytes(); | descriptor: ()I
+coakka.v2.android.StreamSessionSnapshot | public int getWindowBytes(); | descriptor: ()I
+coakka.v2.android.StreamSessionSnapshot | public int hashCode(); | descriptor: ()I
+coakka.v2.android.StreamSessionSnapshot | public java.lang.String component17(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamSessionSnapshot | public java.lang.String getDetail(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamSessionSnapshot | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamSessionSnapshot | public long component12(); | descriptor: ()J
+coakka.v2.android.StreamSessionSnapshot | public long component13(); | descriptor: ()J
+coakka.v2.android.StreamSessionSnapshot | public long component14(); | descriptor: ()J
+coakka.v2.android.StreamSessionSnapshot | public long component15(); | descriptor: ()J
+coakka.v2.android.StreamSessionSnapshot | public long component16(); | descriptor: ()J
+coakka.v2.android.StreamSessionSnapshot | public long component4(); | descriptor: ()J
+coakka.v2.android.StreamSessionSnapshot | public long component5(); | descriptor: ()J
+coakka.v2.android.StreamSessionSnapshot | public long component6(); | descriptor: ()J
+coakka.v2.android.StreamSessionSnapshot | public long component7(); | descriptor: ()J
+coakka.v2.android.StreamSessionSnapshot | public long component8(); | descriptor: ()J
+coakka.v2.android.StreamSessionSnapshot | public long getBytes(); | descriptor: ()J
+coakka.v2.android.StreamSessionSnapshot | public long getDroppedFrames(); | descriptor: ()J
+coakka.v2.android.StreamSessionSnapshot | public long getFormatId(); | descriptor: ()J
+coakka.v2.android.StreamSessionSnapshot | public long getFrames(); | descriptor: ()J
+coakka.v2.android.StreamSessionSnapshot | public long getLastSequence(); | descriptor: ()J
+coakka.v2.android.StreamSessionSnapshot | public long getStartedMonoNs(); | descriptor: ()J
+coakka.v2.android.StreamSessionSnapshot | public long getSubmittedMonoNs(); | descriptor: ()J
+coakka.v2.android.StreamSessionSnapshot | public long getTerminalMonoNs(); | descriptor: ()J
+coakka.v2.android.StreamSessionSnapshot | public long getUpdateSequence(); | descriptor: ()J
+coakka.v2.android.StreamSessionSnapshot | public long getUpdatedMonoNs(); | descriptor: ()J
+coakka.v2.android.StreamSessionSnapshot | public static coakka.v2.android.StreamSessionSnapshot copy$default(coakka.v2.android.StreamSessionSnapshot, coakka.v2.android.StreamDirection, coakka.v2.android.StreamState, coakka.v2.android.StreamResult, long, long, long, long, long, int, int, boolean, long, long, long, long, long, java.lang.String, int, java.lang.Object); | descriptor: (Lcoakka/v2/android/StreamSessionSnapshot;Lcoakka/v2/android/StreamDirection;Lcoakka/v2/android/StreamState;Lcoakka/v2/android/StreamResult;JJJJJIIZJJJJJLjava/lang/String;ILjava/lang/Object;)Lcoakka/v2/android/StreamSessionSnapshot;
+coakka.v2.android.StreamState | public boolean getTerminal(); | descriptor: ()Z
+coakka.v2.android.StreamState | public final class coakka.v2.android.StreamState extends java.lang.Enum<coakka.v2.android.StreamState> {
+coakka.v2.android.StreamState | public static coakka.v2.android.StreamState valueOf(java.lang.String); | descriptor: (Ljava/lang/String;)Lcoakka/v2/android/StreamState;
+coakka.v2.android.StreamState | public static coakka.v2.android.StreamState[] values(); | descriptor: ()[Lcoakka/v2/android/StreamState;
+coakka.v2.android.StreamState | public static final coakka.v2.android.StreamState ACTIVE; | descriptor: Lcoakka/v2/android/StreamState;
+coakka.v2.android.StreamState | public static final coakka.v2.android.StreamState CANCELED; | descriptor: Lcoakka/v2/android/StreamState;
+coakka.v2.android.StreamState | public static final coakka.v2.android.StreamState CONNECTING; | descriptor: Lcoakka/v2/android/StreamState;
+coakka.v2.android.StreamState | public static final coakka.v2.android.StreamState ENDED; | descriptor: Lcoakka/v2/android/StreamState;
+coakka.v2.android.StreamState | public static final coakka.v2.android.StreamState FAILED; | descriptor: Lcoakka/v2/android/StreamState;
+coakka.v2.android.StreamState | public static final coakka.v2.android.StreamState PREPARED; | descriptor: Lcoakka/v2/android/StreamState;
+coakka.v2.android.StreamState | public static final coakka.v2.android.StreamState QUEUED; | descriptor: Lcoakka/v2/android/StreamState;
+coakka.v2.android.StreamState | public static final coakka.v2.android.StreamState REJECTED; | descriptor: Lcoakka/v2/android/StreamState;
+coakka.v2.android.StreamState | public static final coakka.v2.android.StreamState STOPPING; | descriptor: Lcoakka/v2/android/StreamState;
+coakka.v2.android.StreamState | public static final coakka.v2.android.StreamState$Companion Companion; | descriptor: Lcoakka/v2/android/StreamState$Companion;
+coakka.v2.android.StreamState | public static kotlin.enums.EnumEntries<coakka.v2.android.StreamState> getEntries(); | descriptor: ()Lkotlin/enums/EnumEntries;
+coakka.v2.android.StreamState$Companion | public coakka.v2.android.StreamState$Companion(kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.StreamState$Companion | public final class coakka.v2.android.StreamState$Companion {
+coakka.v2.android.StreamSubscribeSpec | public coakka.v2.android.AndroidStreamConsumer getConsumer(); | descriptor: ()Lcoakka/v2/android/AndroidStreamConsumer;
+coakka.v2.android.StreamSubscribeSpec | public coakka.v2.android.StreamSubscribeSpec(java.lang.String, java.lang.String, java.lang.String, int, long, int, int, int, coakka.v2.android.AndroidStreamConsumer); | descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IJIIILcoakka/v2/android/AndroidStreamConsumer;)V
+coakka.v2.android.StreamSubscribeSpec | public coakka.v2.android.StreamSubscribeSpec(java.lang.String, java.lang.String, java.lang.String, int, long, int, int, int, coakka.v2.android.AndroidStreamConsumer, int, kotlin.jvm.internal.DefaultConstructorMarker); | descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IJIIILcoakka/v2/android/AndroidStreamConsumer;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+coakka.v2.android.StreamSubscribeSpec | public final class coakka.v2.android.StreamSubscribeSpec {
+coakka.v2.android.StreamSubscribeSpec | public int getInitialWindowBytes(); | descriptor: ()I
+coakka.v2.android.StreamSubscribeSpec | public int getMaxFrameBytes(); | descriptor: ()I
+coakka.v2.android.StreamSubscribeSpec | public int getRemotePort(); | descriptor: ()I
+coakka.v2.android.StreamSubscribeSpec | public int getTimeoutMs(); | descriptor: ()I
+coakka.v2.android.StreamSubscribeSpec | public java.lang.String getAuthorizationToken(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamSubscribeSpec | public java.lang.String getRemoteHost(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamSubscribeSpec | public java.lang.String getSessionId(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamSubscribeSpec | public java.lang.String toString(); | descriptor: ()Ljava/lang/String;
+coakka.v2.android.StreamSubscribeSpec | public long getFormatId(); | descriptor: ()J

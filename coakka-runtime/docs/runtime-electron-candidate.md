@@ -1,18 +1,21 @@
 # Private Electron runtime candidate sample
 
-This branch exercises exact private Electron/Node `2.5.5`
+This branch exercises exact private Electron/Node `3.0.0`
 archives from `artifacts/runtime-electron-candidate.json`, not npm coordinates.
-Core is `2.5.1+f6b61768f60a08d81b1dc06625a211ffca8e89e2`, ABI1. Node22.0.0 and
+Core is `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456`, ABI1. Node22.0.0 and
 Electron42.0.0 are the candidate baselines; wider/minimum-OS support remains
 gated independently. Do not substitute a historical public package or attach
 this sample's APIs to it.
 
 The selected connector scheduler supports concurrent request/reply without
-host worker-pool tuning. Its exact installed Node/Electron closure passes
-Runtime, sandboxed renderer, File, Stream and shutdown controls on macOS ARM64,
-Linux ARM64/x64 and Windows ARM64/x64. Historical scheduler failures do not
-describe these new archive bytes. Sample execution and remaining release gates
-are recorded independently; package tests alone do not promote the sample.
+host worker-pool tuning. Final3.0.0 installed Node/Electron execution is recorded
+on macOS ARM64 and physical Windows11 x64, including the sandboxed main/renderer
+boundary. Final3.0.0 Linux ARM64/x64 and native Windows ARM64 smokes remain
+pending. Earlier five-target Runtime, File, Stream, shutdown and long resource
+campaigns remain historical evidence for unchanged processing source; they do
+not establish execution of the new archive identities. Sample execution and
+remaining release gates are recorded independently; package tests alone do not
+promote the sample.
 
 Node, Bun and Electron share one candidate release train. Match both complete
 archive identities in this catalog; a version string alone does
@@ -29,8 +32,8 @@ Use a fresh absolute output directory; its parent must exist. On the developer
 Mac, use mounted external APFS/T7 storage, never a default temp/internal path.
 
 ```sh
-export COAKKA_RUNTIME_CANDIDATE_PACKAGE="/absolute/coakka-v2-connector-electron-2.5.5.tgz"
-export COAKKA_NODE_CANDIDATE_PACKAGE="/absolute/coakka-v2-connector-node-2.5.5.tgz"
+export COAKKA_RUNTIME_CANDIDATE_PACKAGE="/absolute/coakka-v2-connector-electron-3.0.0.tgz"
+export COAKKA_NODE_CANDIDATE_PACKAGE="/absolute/coakka-v2-connector-node-3.0.0.tgz"
 export COAKKA_ESBUILD_MODULE="/absolute/esbuild/lib/main.js"
 export COAKKA_ELECTRON_EXECUTABLE="/absolute/installed-electron-executable"
 export COAKKA_SAMPLE_WORK_ROOT="/absolute/fresh-output"

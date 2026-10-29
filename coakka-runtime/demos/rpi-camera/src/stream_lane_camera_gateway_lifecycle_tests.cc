@@ -19,8 +19,6 @@ int main() {
   config.bind_host = "127.0.0.1";
   config.bind_port = 0u;
   config.max_frame_bytes = 4096u;
-  config.initial_width = 1u;
-  config.initial_height = 1u;
   config.fps = 30u;
   config.recording_directory = recordings.string();
   config.ffmpeg_binary = "ffmpeg-not-invoked-by-lifecycle-test";

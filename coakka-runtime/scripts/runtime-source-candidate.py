@@ -89,12 +89,14 @@ def profile(path: Path, language: str) -> dict:
             or type(value["schema"]) is not int or value["schema"] != 1
             or value["state"] != "private-candidate" or value["language"] != language
             or not isinstance(value["version"], str)
-            or re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+-source", value["version"]) is None
+            or re.fullmatch(r"(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)", value["version"]) is None
             or not isinstance(value["coreCommit"], str)
             or re.fullmatch(r"[0-9a-f]{40}", value["coreCommit"]) is None):
         raise ValueError("private source-package catalog identity refused")
     archive = value["archive"]
-    prefix = "coakka-runtime-" + language + "-" + value["version"]
+    # Product metadata owns the version. The fixed source-package suffix
+    # belongs to archive naming and must never be folded into that version.
+    prefix = "coakka-runtime-" + language + "-" + value["version"] + "-source"
     if (not isinstance(archive, dict) or set(archive) != {"file", "prefix", "bytes", "sha256"}
             or archive["prefix"] != prefix or archive["file"] != prefix + ".tar.gz"
             or type(archive["bytes"]) is not int or not 0 < archive["bytes"] <= MAX_ARCHIVE

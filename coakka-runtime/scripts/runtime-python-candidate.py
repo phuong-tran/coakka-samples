@@ -85,7 +85,7 @@ def decode_catalog(content: bytes) -> dict:
         raise ValueError("unknown catalog shape")
     if (type(value["schema"]) is not int or value["schema"] != 1 or value["state"] != "private-candidate" or
             value["distribution"] != "coakka-v2-connector" or value["version"] != "3.0.0" or
-            value["minimumRuntime"] != "3.11" or value["coreCommit"] != "f6b61768f60a08d81b1dc06625a211ffca8e89e2" or
+            value["minimumRuntime"] != "3.11" or value["coreCommit"] != "1522b4a9f30da1039ef8c7d198bbecfc749a2456" or
             not isinstance(value["wheels"], dict) or value["wheels"].keys() != targets):
         raise ValueError("invalid private Python candidate")
     for row in value["wheels"].values():

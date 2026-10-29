@@ -32,7 +32,7 @@ class AdmissionControls(unittest.TestCase):
             path.write_bytes(content)
             self.rows[name] = dict(bytes=len(content), sha256=hashlib.sha256(content).hexdigest())
         self.value = dict(schema=1, state="private-candidate", version="3.0.0",
-            coreCommit="f6b61768f60a08d81b1dc06625a211ffca8e89e2", files=self.rows,
+            coreCommit="1522b4a9f30da1039ef8c7d198bbecfc749a2456", files=self.rows,
             languageFiles={name: {} for name in ("macos-aarch64", "linux-aarch64", "linux-x86_64", "windows-aarch64", "windows-x86_64")})
 
     def test_exact_member_copy(self):

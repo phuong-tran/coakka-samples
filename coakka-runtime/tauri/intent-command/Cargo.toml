@@ -6,8 +6,8 @@ rust-version = "1.77.2"
 publish = false
 
 [dependencies]
-coakka-runtime-rs = { path = "../RuntimeCandidate/rust", version = "=2.5.3" }
-coakka-tauri-intents = { path = "../RuntimeCandidate/tauri-intents", version = "=0.1.0" }
+coakka-runtime-rs = { path = "../RuntimeCandidate/rust", version = "=3.0.0" }
+coakka-tauri-intents = { path = "../RuntimeCandidate/tauri-intents", version = "=3.0.0" }
 serde_json = "=1.0.151"
 
 [profile.release]

@@ -236,9 +236,8 @@ struct Gateway {
         recorder(value.max_frame_bytes, value.fps, value.recording_directory,
                  value.ffmpeg_binary),
         frame_bytes(value.max_frame_bytes) {
-    profile_width = value.initial_width;
-    profile_height = value.initial_height;
-    profile_fps = value.fps;
+    // The recording fallback cadence is local intent. No Pi profile has been
+    // observed or requested through this gateway at construction.
     frame_write.data = this;
   }
 
@@ -389,7 +388,8 @@ struct Gateway {
     uint32_t expected_height = 0u;
     {
       std::lock_guard<std::mutex> lock(profile_mutex);
-      if (!profile_request_pending || !profile_request_taken) {
+      if (!profile_request_pending || !profile_request_taken ||
+          profile_state != "confirming") {
         return;
       }
       expected_width = requested_width;
@@ -402,13 +402,15 @@ struct Gateway {
       return;
     }
     std::lock_guard<std::mutex> lock(profile_mutex);
-    if (!profile_request_pending || requested_width != frame_width ||
+    if (!profile_request_pending || profile_state != "confirming" ||
+        requested_width != frame_width ||
         requested_height != frame_height) {
       return;
     }
     profile_width = requested_width;
     profile_height = requested_height;
-    profile_fps = requested_fps;
+    // A matching JPEG confirms dimensions only. The Pi's 202 response means
+    // queued intent, and a JPEG carries no authoritative frame-rate fact.
     profile_state = "active";
     last_profile_error.clear();
     profile_request_pending = false;
@@ -446,7 +448,7 @@ struct Gateway {
       std::lock_guard<std::mutex> lock(profile_mutex);
       width = profile_width;
       height = profile_height;
-      fps = profile_fps;
+      fps = requested_fps;
       profile_status = profile_state;
       profile_error = last_profile_error;
     }
@@ -463,7 +465,7 @@ struct Gateway {
     status.add_bool("audio_available", audio_available());
     status.add_uint64("profile_width", width);
     status.add_uint64("profile_height", height);
-    status.add_uint64("profile_fps", fps);
+    status.add_uint64("profile_requested_fps", fps);
     status.add_string("profile_state", profile_status);
     status.add_string("profile_error", profile_error);
     status.add_uint64("received_frames", received_frames);
@@ -975,7 +977,6 @@ struct Gateway {
   mutable std::mutex profile_mutex;
   uint32_t profile_width = 0u;
   uint32_t profile_height = 0u;
-  uint32_t profile_fps = 0u;
   uint32_t requested_width = 0u;
   uint32_t requested_height = 0u;
   uint32_t requested_fps = 0u;
@@ -983,7 +984,7 @@ struct Gateway {
   std::chrono::steady_clock::time_point profile_requested_at{};
   bool profile_request_pending = false;
   bool profile_request_taken = false;
-  std::string profile_state = "active";
+  std::string profile_state = "unknown";
   std::string last_profile_error;
   std::thread worker;
   std::mutex ready_mutex;

@@ -53,7 +53,7 @@ Watch the Go runtime walkthrough:
 
 Full recording: [coakka-runtime-go.mp4](../../docs/assets/coakka-runtime-go.mp4)
 
-Go runtime v2 samples have a Go 1.22 compatibility floor. Use a currently
+Go runtime v3 samples have a Go 1.22 compatibility floor. Use a currently
 supported Go release for production builds.
 
 ## Integration Recipe

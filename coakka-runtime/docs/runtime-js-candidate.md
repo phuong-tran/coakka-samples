@@ -2,12 +2,16 @@
 
 This branch validates a private candidate, not a registry release. Node and Bun
 use the exact archives in `artifacts/runtime-js-candidate.json`, version
-`2.5.5`, with bundled Core
-`2.5.1+f6b61768f60a08d81b1dc06625a211ffca8e89e2` (ABI 1).
+`3.0.0`, with bundled Core
+`3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` (ABI 1).
 Node 22.0.0 and Bun 1.3.14 are the tested minima. The Node candidate includes
 macOS ARM64, Linux ARM64/x64 and Windows ARM64/x64. Bun includes macOS ARM64,
-Linux ARM64 and Windows x64. These exact packages have matching-host installed
-execution; minimum-OS and publication claims remain separate gates.
+Linux ARM64 and Windows x64. Final3.0.0 installed execution is recorded on
+macOS ARM64, physical Windows11 x64 and Raspberry Pi Linux ARM64 for Node and
+Bun. Node's final3.0.0 Linux x64 and native Windows ARM64 smokes remain pending;
+minimum-OS and publication claims remain separate gates. Earlier long resource
+and lifecycle campaigns remain historical evidence for the unchanged processing
+source, not execution evidence for these new archive identities.
 
 Node, Bun and Electron share one candidate release train. Electron consumes
 the exact Node version and archive recorded in its own candidate catalog.
@@ -25,7 +29,7 @@ Set absolute paths; the runner never downloads a missing archive:
 
 ```sh
 export COAKKA_SAMPLE_WORK_ROOT="/absolute/work"
-export COAKKA_RUNTIME_CANDIDATE_PACKAGE="/absolute/coakka-v2-connector-node-2.5.5.tgz"
+export COAKKA_RUNTIME_CANDIDATE_PACKAGE="/absolute/coakka-v2-connector-node-3.0.0.tgz"
 node coakka-runtime/scripts/runtime-js-candidate.mjs node basic
 node coakka-runtime/scripts/runtime-js-candidate.mjs node deadletter
 # Select the Bun archive instead, then:

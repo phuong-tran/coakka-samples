@@ -1,6 +1,26 @@
 # Raspberry Pi Camera Systems Audit v1.1.0
 
-## Current Private Candidate
+## P533 Profile Status Correction
+
+The current private source corrects a caught startup status defect: the host
+previously presented its1280x720 recording preference as an active Pi profile.
+The gateway now owns an unknown initial observation, and the browser shows
+resolution unconfirmed. Only the existing accepted-request/matching-JPEG
+handoff confirms dimensions; a frame before the Pi queue-admission response
+cannot bypass that handoff. FPS is explicitly requested intent, never a measured
+or effective fact, because neither a queued response nor JPEG dimensions proves
+frame rate.
+
+No Core ABI, protocol, poller, thread, queue or buffer is added. Existing mutexes
+protect request/observation transitions, borrowed JPEG bytes are inspected only
+within the callback, and failed/expired requests cannot confirm later. Focused
+status tests cover unknown, untaken, pre-acknowledgement, malformed, mismatching,
+confirmed and expired/late-frame states. The real gateway lifecycle and ordinary
+source tests remain separate. Source readiness and exact matching-host package
+evidence are recorded privately with the Runtime3.0.0 train; publication remains
+closed. This correction does not extend camera platform or production claims.
+
+## P497 Private Candidate Qualification
 
 Source revision `1.1.2` is qualified privately against Runtime native
 `2.5.1+f6b61768f60a08d81b1dc06625a211ffca8e89e2`. Freshly installed

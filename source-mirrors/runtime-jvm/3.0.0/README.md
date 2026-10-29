@@ -158,7 +158,7 @@ Run the packaged jar smoke with embedded native loading:
 ./gradlew :v2:jvm:smokePackagedRuntimeJvmJar
 ```
 
-The3.0.0 baseline uses Coref6b61768/ABI1 and real ProGuard output. It requires
+The3.0.0 baseline uses Core1522b4a9/ABI1 and real ProGuard output. It requires
 source migration and recompilation from2.x; for example, Core uint32 fields
 use Long instead of int, and startup/delivery inspection uses the grouped
 Core-issued snapshots. Current exact package identities and execution records
@@ -234,7 +234,6 @@ reconstruct transport state. External sample/package convergence is separate.
 ## Consumer Notes
 
 - [Consuming Guide](CONSUMING.md)
-- [Standalone Consumer Smoke](consumer-smoke/README.md)
 - [Release Checklist](RELEASE.md)
 
 ## File Lane
@@ -256,7 +255,7 @@ for lifecycle, security, native-version, and conformance requirements.
 This source workspace contains the published connector surface for Stream Lane.
 Pair it only with the exact matching core-runtime generation
 and follow the public [streaming contract](https://github.com/phuong-tran/coakka-samples/blob/main/docs/runtime-streaming.md).
-Package `2.5.3` contains Stream Lane over the exact Core `2.5.1` generation
+Candidate `3.0.0` contains Stream Lane over the exact Core `3.0.0` generation
 recorded in its manifest and `gradle.properties`; do not attach
 these APIs to older coordinates. Replica-aware applications use
 `FileLane.openOwned(...).prepareReceiveGrant(...)` or

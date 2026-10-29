@@ -266,6 +266,23 @@ Both apps read the bearer token directly from the named environment variable;
 there is intentionally no `--token` option that would expose the token in the
 process list. Run either binary with `--help` to print its exact CLI contract.
 
+## Camera Profile Facts
+
+The host begins with resolution unconfirmed. It does not know the Pi's startup
+resolution or frame rate from local recording preferences. Status reports
+`profile_state=unknown` and zero confirmed dimensions until an explicit
+resolution request receives Pi queue admission and a matching JPEG arrives.
+Only that existing observed-frame handoff makes the dimensions active. A
+rejection, malformed or mismatching frame, or five-second confirmation timeout
+cannot promote the request to an observed profile.
+
+`profile_requested_fps` records request intent. The Pi's202 response acknowledges
+queue admission, and JPEG dimensions do not prove camera frame rate. The status
+therefore makes no measured or effective FPS claim. The selector displays
+"Resolution unconfirmed" until dimensions are confirmed; it has no fallback
+resolution or FPS. The recording worker retains its separate timestamp-based
+duration and fallback-cadence contract.
+
 ## Build From Public Source
 
 Clone the public samples repository, unpack exact CoAkka Runtime native `2.5.1`,

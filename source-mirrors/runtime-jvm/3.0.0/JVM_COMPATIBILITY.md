@@ -9,7 +9,7 @@ use `--release 8`. Packaged connector classes must verify as major52.
 
 The private ProGuard candidate executes on actual Java8u504 on macOS ARM64,
 Linux ARM64 and physical Windows x64. Its native generation is Core
-`f6b61768f60a08d81b1dc06625a211ffca8e89e2`, ABI1. The Windows Java8 ASCII
+`1522b4a9f30da1039ef8c7d198bbecfc749a2456`, ABI1. The Windows Java8 ASCII
 cache requirement is in [Consuming](CONSUMING.md). WSL controls the Windows
 test; it is not Windows PE execution.
 

@@ -1,0 +1,6 @@
+# Stable private base identity used only by the second-stage field rule.
+com.google.protobuf.GeneratedMessageLite -> coakka.v2.android.internal.Record:
+com.google.protobuf.AbstractMessageLite -> coakka.v2.android.internal.BaseRecord:
+com.google.protobuf.MessageLiteToString -> coakka.v2.android.internal.RecordText:
+com.google.protobuf.MessageSchema -> coakka.v2.android.internal.RecordLayout:
+com.google.protobuf.MessageSetSchema -> coakka.v2.android.internal.ExtensionLayout:

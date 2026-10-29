@@ -3,9 +3,9 @@
     <CoAkkaCandidateState>private-candidate</CoAkkaCandidateState>
     <CoAkkaCandidateVersion>3.0.0</CoAkkaCandidateVersion>
     <CoAkkaCandidateFile>CoAkka.Runtime.3.0.0.nupkg</CoAkkaCandidateFile>
-    <CoAkkaCandidateBytes>4637573</CoAkkaCandidateBytes>
-    <CoAkkaCandidateSha256>2cb63c3a41bc44135088d47e37599398eb17c4ab04a15e508b4db93bddf28e6d</CoAkkaCandidateSha256>
-    <CoAkkaCandidateCoreSource>f6b61768f60a08d81b1dc06625a211ffca8e89e2</CoAkkaCandidateCoreSource>
+    <CoAkkaCandidateBytes>4151839</CoAkkaCandidateBytes>
+    <CoAkkaCandidateSha256>0019d5ac17db0165b2ab9d908863df6b74b0f256e4a46477193133278adaea16</CoAkkaCandidateSha256>
+    <CoAkkaCandidateCoreSource>1522b4a9f30da1039ef8c7d198bbecfc749a2456</CoAkkaCandidateCoreSource>
   </PropertyGroup>
   <PropertyGroup Label="GeneratedWindowsApphost">
     <CoAkkaCandidateWindowsApphostBytes>151552</CoAkkaCandidateWindowsApphostBytes>

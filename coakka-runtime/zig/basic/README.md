@@ -1,7 +1,7 @@
 # Zig Runtime Basic
 
-This recipe uses the admitted **unpublished 3.0.0-source** archive and exact f6
-Core. It does not substitute a working source checkout or an old public archive.
+This recipe uses the admitted **unpublished 3.0.0 source package** and Core
+`1522b4a9f30da1039ef8c7d198bbecfc749a2456`. It does not substitute a working source checkout or an old public archive.
 The Zig app uses the source package's runtime owner. Requests and terminal
 matching stay in Core; the application does not parse or match responses itself.
 

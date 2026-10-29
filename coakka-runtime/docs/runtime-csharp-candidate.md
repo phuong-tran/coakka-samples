@@ -2,7 +2,7 @@
 
 The sample uses exactly `CoAkka.Runtime` `3.0.0` from the trusted local
 feed described in `artifacts/runtime-csharp-candidate.props`. This is a private
-candidate, not a public NuGet release. It carries Core2.5.1+f6b61768/ABI1 for
+candidate, not a public NuGet release. It carries Core3.0.0+1522b4a9/ABI1 for
 macOS ARM64, Linux ARM64/x64 and native Windows ARM64/x64. No separate native dependency
 installation, source reference or native-library override is needed.
 

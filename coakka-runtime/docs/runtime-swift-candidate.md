@@ -1,17 +1,20 @@
 # Private Swift runtime candidate sample
 
 This sample uses exactly the private `3.0.0` source package and bundled
-Core2.5.1+f6b61768/ABI1, not public2.5.2/2.5.3. The trusted
+Core3.0.0+1522b4a9/ABI1, not public2.5.2/2.5.3. The trusted
 `artifacts/runtime-swift-candidate.json` pins all57 package files and the
 qualified deployment copies of normal language runtime libraries. No separately
 installed Core/provider library or native-path override is needed. Targets are
-macOS ARM64, Linux ARM64/x64 and native Windows ARM64/x64; package presence is not a wider
-platform/minimum-OS/signing or publication claim.
+macOS ARM64, Linux ARM64/x64 and native Windows x64 in the selected supported
+scope. Windows ARM64 is preview for this3.0.0 wave with no official support
+claim; its payload remains available for evaluation. Package presence is not a
+wider platform/minimum-OS/signing or publication claim.
 
-SwiftPM manifest/language floor remains6.0. Qualification profiles are Mac6.2,
-Linux/Windows x64 Swift6.0.3 and native Windows ARM64 Swift6.4.1. The manifest
-language floor is6.0; older Mac compiler and older ARM Windows OS are not inferred. Use a
-coherent supported compiler/SDK profile. The consumer's build is ordinary
+SwiftPM manifest/language floor remains6.0. Build profiles use Mac6.2 and
+Linux/Windows x64 Swift6.0.3. Windows ARM64 Swift6.4.1 was an attempted
+compiler/SDK profile, without a final3.0.0 matching-host execution pass. The
+manifest language floor does not establish an older Mac compiler or ARM Windows
+OS floor. Use a coherent compiler/SDK profile within the selected support scope. The consumer's build is ordinary
 SwiftPM over a local admitted package; WMO/Osize/no-reflection/link stripping
 apply to the app and dynamic Swift module. Core native bytes are not rebuilt.
 
@@ -42,8 +45,9 @@ Native Windows runs native Swift/Python in its supported developer shell. Set
 the same variables to absolute Windows paths. `COAKKA_SWIFT_LANGUAGE_HOME`
 points to the admitted deployment closure for the selected CPU. Windows x64
 uses Swift6.0.3 and `COAKKA_SWIFT_VFS_OVERLAY` for its SDK22621 module maps.
-Windows ARM64 uses Swift6.4.1, SDK26100 and SwiftPM's native build system;
-it does not use the x64 overlay. Then:
+The attempted Windows ARM64 preview profile used Swift6.4.1, SDK26100 and
+SwiftPM's native build system, without the x64 overlay. These attempted inputs
+do not establish final3.0.0 execution or official Windows ARM64 support. Then:
 
 ```text
 python -I -X utf8 -B coakka-runtime/scripts/runtime-swift-candidate.py --repo-root C:/path/to/samples

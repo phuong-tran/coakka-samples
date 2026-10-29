@@ -6,7 +6,7 @@ rust-version = "1.77.2"
 publish = false
 
 [dependencies]
-coakka-runtime-rs = { path = "../RuntimeCandidate", version = "=2.5.3" }
+coakka-runtime-rs = { path = "../RuntimeCandidate", version = "=3.0.0" }
 
 [profile.release]
 opt-level = "s"

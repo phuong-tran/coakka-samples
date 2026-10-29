@@ -1,7 +1,7 @@
 # Tauri Desktop Intent
 
-Private foreground desktop sample for the exact Tauri aggregate 2.5.3 over
-Core 2.5.1. This is not a published, signed or production-support claim. The
+Private foreground desktop sample for the exact Tauri aggregate 3.0.0 over
+Core 3.0.0. This is not a published, signed or production-support claim. The
 old download/Tauri-CLI/debug-build recipe is not used.
 
 The local WebView sends an intent. Rust projects it through the intent adapter
@@ -18,7 +18,7 @@ graph is pinned independently of the Rust SDK's 1.77.2 minimum. Consult the
 and the trust/cleanup contract. No registry or native rebuild is performed.
 
 ```sh
-export COAKKA_TAURI_ARCHIVE=/absolute/candidate/coakka-runtime-tauri-intents-2.5.3-source.tar.gz
+export COAKKA_TAURI_ARCHIVE=/absolute/candidate/coakka-runtime-tauri-intents-3.0.0-source.tar.gz
 export COAKKA_SAMPLE_WORK_ROOT=/absolute/build-storage/desktop-new
 export COAKKA_RUST_CARGO=/absolute/rust/bin/cargo
 export COAKKA_RUST_CARGO_HOME=/absolute/offline-cargo-cache
@@ -36,7 +36,7 @@ target. A successful local build on a newer Linux host is not ABI-baseline
 evidence. The prebuilt Core resource is unchanged, not rebuilt by this app.
 
 ```powershell
-python -B coakka-runtime/scripts/runtime-tauri-desktop-candidate.py --archive D:/candidate/coakka-runtime-tauri-intents-2.5.3-source.tar.gz --source D:/samples/coakka-runtime/tauri/desktop-intent --work D:/build-storage/desktop-new --cargo D:/rust/bin/cargo.exe --cargo-home D:/offline-cargo-cache --target-cache D:/desktop-build-cache --target windows-x86_64
+python -B coakka-runtime/scripts/runtime-tauri-desktop-candidate.py --archive D:/candidate/coakka-runtime-tauri-intents-3.0.0-source.tar.gz --source D:/samples/coakka-runtime/tauri/desktop-intent --work D:/build-storage/desktop-new --cargo D:/rust/bin/cargo.exe --cargo-home D:/offline-cargo-cache --target-cache D:/desktop-build-cache --target windows-x86_64
 & D:/build-storage/desktop-new/installed/coakka-sample-tauri-desktop-intent.exe
 ```
 

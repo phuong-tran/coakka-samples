@@ -2,7 +2,7 @@
 
 Four Kotlin/Java examples use the exact real ProGuard candidate
 `3.0.0` in `artifacts/runtime-jvm-candidate.properties`, not the
-historical public2.5.2 artifact. The runtime JAR bundles Core2.5.1+f6b61768 /
+historical public2.5.2 artifact. The runtime JAR bundles Core3.0.0+1522b4a9 /
 ABI1 and five admitted Core/JNI pairs. Four ordinary public managed runtime
 dependencies accompany it; no separate Core/provider library is installed.
 Candidate targets are macOS ARM64, Linux ARM64/x64 and native Windows ARM64/x64.

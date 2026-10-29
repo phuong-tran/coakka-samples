@@ -1,6 +1,6 @@
 # Rust Runtime Samples
 
-This branch uses the exact private Rust 2.5.3 candidate over native Core 2.5.1,
+This branch uses the exact private Rust 3.0.0 candidate over native Core 3.0.0,
 not the older public 2.5.2 archive. It is not a publication or support claim.
 See the [candidate guide](../docs/runtime-rust-candidate.md) for artifact
 identity, Rust 1.77.2, matching-host tools, explicit offline build storage and

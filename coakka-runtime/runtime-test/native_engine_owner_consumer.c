@@ -14,7 +14,7 @@ int main(void) {
   info.struct_size = sizeof(info);
   assert(coakka_v2_runtime_get_info(&info) == COAKKA_V2_OK);
   assert(info.abi_version == 1 && strcmp(info.git_commit,
-      "f6b61768f60a08d81b1dc06625a211ffca8e89e2") == 0);
+      "1522b4a9f30da1039ef8c7d198bbecfc749a2456") == 0);
   for (unsigned cycle = 0; cycle < 16; ++cycle) {
     const coakka_v2_runtime_config_t base = {"native-engine-evidence", "main", 1, 0};
     const coakka_v2_endpoint_t endpoint = {"127.0.0.1", 0, 1, COAKKA_V2_ENDPOINT_FLAG_LOCAL};
@@ -76,6 +76,6 @@ int main(void) {
     assert(owner.runtime == NULL && owner.client == NULL && owner.reader == NULL);
     assert(native_engine_owner_close(&owner, &failure) == COAKKA_V2_OK);
   }
-  puts("{\"gate\":\"native-engine-fixture-owner\",\"status\":\"pass\",\"cycles\":16,\"responses\":16,\"requestMode\":2,\"responseMode\":2,\"core\":\"f6b61768f60a08d81b1dc06625a211ffca8e89e2\",\"benchmark\":false}");
+  puts("{\"gate\":\"native-engine-fixture-owner\",\"status\":\"pass\",\"cycles\":16,\"responses\":16,\"requestMode\":2,\"responseMode\":2,\"core\":\"1522b4a9f30da1039ef8c7d198bbecfc749a2456\",\"benchmark\":false}");
   return 0;
 }

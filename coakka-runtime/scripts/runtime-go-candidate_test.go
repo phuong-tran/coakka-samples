@@ -19,13 +19,13 @@ import (
 // parser; successful admission must retain the selected semantic-major pair.
 func FuzzCandidateCatalog(f *testing.F) {
 	f.Add([]byte(`{}`))
-	f.Add([]byte(`{"schema":1,"state":"private-candidate","module":"github.com/phuong-tran/coakka-runtime-go/v2","version":"2.0.0","minimumRuntime":"1.22.12","coreCommit":"f6b61768f60a08d81b1dc06625a211ffca8e89e2","moduleManifestSha256":"0000000000000000000000000000000000000000000000000000000000000000","members":{"go.mod":{"bytes":1,"sha256":"0000000000000000000000000000000000000000000000000000000000000000"}}}`))
+	f.Add([]byte(`{"schema":1,"state":"private-candidate","module":"github.com/phuong-tran/coakka-runtime-go/v3","version":"3.0.0","minimumRuntime":"1.22.12","coreCommit":"1522b4a9f30da1039ef8c7d198bbecfc749a2456","moduleManifestSha256":"0000000000000000000000000000000000000000000000000000000000000000","members":{"go.mod":{"bytes":1,"sha256":"0000000000000000000000000000000000000000000000000000000000000000"}}}`))
 	f.Fuzz(func(t *testing.T, data []byte) {
 		if len(data) > 1<<20 {
 			return
 		}
 		value, err := decodeCandidate(data)
-		if err == nil && (value.Module != "github.com/phuong-tran/coakka-runtime-go/v2" || value.Version != "2.0.0") {
+		if err == nil && (value.Module != "github.com/phuong-tran/coakka-runtime-go/v3" || value.Version != "3.0.0") {
 			t.Fatal("admitted inconsistent semantic-major coordinate")
 		}
 	})
@@ -57,8 +57,8 @@ func candidateFixture(t *testing.T) (string, goCandidate) {
 	if err := os.WriteFile(filepath.Join(dir, "go.mod"), content, 0600); err != nil {
 		t.Fatal(err)
 	}
-	return dir, goCandidate{Schema: 1, State: "private-candidate", Module: "github.com/phuong-tran/coakka-runtime-go/v2",
-		Version: "2.0.0", MinimumRuntime: "1.22.12", CoreCommit: "f6b61768f60a08d81b1dc06625a211ffca8e89e2",
+	return dir, goCandidate{Schema: 1, State: "private-candidate", Module: "github.com/phuong-tran/coakka-runtime-go/v3",
+		Version: "3.0.0", MinimumRuntime: "1.22.12", CoreCommit: "1522b4a9f30da1039ef8c7d198bbecfc749a2456",
 		ModuleManifestSHA256: hex.EncodeToString(digest[:]), Members: map[string]candidateMember{
 			"go.mod": {Bytes: int64(len(content)), SHA256: hex.EncodeToString(digest[:])}}}
 }
@@ -84,6 +84,8 @@ func TestCandidateCatalogRefusesUnknownAndBoundViolations(t *testing.T) {
 			c.Members = map[string]candidateMember{"go.mod": {Bytes: 8<<20 + 1, SHA256: catalog.ModuleManifestSHA256}}
 		},
 		func(c *goCandidate) { c.ModuleManifestSHA256 = "wrong" },
+		func(c *goCandidate) { c.Module = "github.com/phuong-tran/coakka-runtime-go/v2" },
+		func(c *goCandidate) { c.Version = "2.0.0" },
 	} {
 		copy := catalog
 		change(&copy)

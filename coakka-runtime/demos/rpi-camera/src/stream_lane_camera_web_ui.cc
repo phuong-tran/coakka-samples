@@ -54,10 +54,11 @@ std::string_view coakka_v2_camera_web_ui_html() noexcept {
     <div id="recordingPath" class="path"></div>
     <footer class="bar bottom">
       <button id="connect" class="primary" title="Connect control WebSocket">Connect</button>
-      <select id="profile" title="Camera resolution">
+      <select id="profile" title="Camera resolution request">
+        <option value="" selected disabled>Resolution unconfirmed</option>
         <option value="640x480x30">640×480</option>
         <option value="800x600x30">800×600</option>
-        <option value="1280x720x30" selected>1280×720</option>
+        <option value="1280x720x30">1280×720</option>
         <option value="1920x1080x30">1920×1080</option>
       </select>
       <button id="live" title="Start or stop the browser livestream">▶ Live</button>
@@ -97,10 +98,10 @@ std::string_view coakka_v2_camera_web_ui_html() noexcept {
       ui.record.textContent = recording ? '■ Stop record' : status.recording_state === 'finalizing' ? '… Finalizing' : '● Record';
       ui.record.classList.toggle('recording', recording);
       ui.record.disabled = !connected || status.recording_state === 'finalizing';
-      ui.profile.disabled = !connected || recording || status.profile_state === 'switching';
+      ui.profile.disabled = !connected || recording || status.profile_state === 'switching' || status.profile_state === 'confirming';
       ui.audio.disabled = !connected || recording || !status.audio_available;
-      const activeProfile = `${status.profile_width || 1280}x${status.profile_height || 720}x${status.profile_fps || 30}`;
-      if (status.profile_state !== 'switching' && [...ui.profile.options].some(option => option.value === activeProfile)) ui.profile.value = activeProfile;
+      const confirmedRequest = `${status.profile_width}x${status.profile_height}x${status.profile_requested_fps}`;
+      ui.profile.value = status.profile_state === 'active' && [...ui.profile.options].some(option => option.value === confirmedRequest) ? confirmedRequest : '';
       ui.live.disabled = !connected;
       ui.stopSession.disabled = !connected || status.transport === 'terminal';
       if (typeof status.livestream_enabled === 'boolean' && status.livestream_enabled !== live) setLiveImage(status.livestream_enabled);

@@ -4,7 +4,7 @@ The basic/deadletter/hot-reload apps on this branch use the exact private
 `3.0.0` platform wheels pinned in
 `artifacts/runtime-python-candidate.json`, not historical public2.5.2.
 Each wheel contains23 minified language modules, the Python native adapter
-and one frozen Core2.5.1+f6b61768f60a08d81b1dc06625a211ffca8e89e2 image, ABI1.
+and one frozen Core3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456 image, ABI1.
 Candidate targets: macOS ARM64, Linux ARM64/x64 and native Windows ARM64/x64.
 The wheels use CPython's `cp311-abi3` stable ABI, not the pure-Python
 `py3-none` tag. CPython3.11 is the baseline; existing matching package evidence uses3.11.15

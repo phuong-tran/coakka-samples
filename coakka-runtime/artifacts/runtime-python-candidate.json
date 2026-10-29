@@ -4,12 +4,12 @@
   "distribution": "coakka-v2-connector",
   "version": "3.0.0",
   "minimumRuntime": "3.11",
-  "coreCommit": "f6b61768f60a08d81b1dc06625a211ffca8e89e2",
+  "coreCommit": "1522b4a9f30da1039ef8c7d198bbecfc749a2456",
   "wheels": {
     "macos-aarch64": {
       "filename": "coakka_v2_connector-3.0.0-cp311-abi3-macosx_13_0_arm64.whl",
-      "bytes": 507119,
-      "sha256": "e3f8ef2764bc2eddccdea0c218a76751363954543baa66b851f94148d1fa5406",
+      "bytes": 507085,
+      "sha256": "0448f4a6a573a338749854fe1e7c9a518ae49d8e8372a476bfdd1e7f9175e9c5",
       "members": {
         "coakka_v2_connector-3.0.0.dist-info/METADATA": {
           "bytes": 44900,
@@ -17,7 +17,7 @@
         },
         "coakka_v2_connector-3.0.0.dist-info/RECORD": {
           "bytes": 3174,
-          "sha256": "94266ac92d673914f45b3467972c61121f1e5dd44187138d2bd068e04d7da068"
+          "sha256": "4066ad839f3e1ed5a9e78d04fd093093308c4240571683f3712a294dfc85cb9d"
         },
         "coakka_v2_connector-3.0.0.dist-info/WHEEL": {
           "bytes": 119,
@@ -69,7 +69,7 @@
         },
         "coakka_v2_connector/_package.json": {
           "bytes": 348,
-          "sha256": "9b97e42b0ecc42a3a414cc14261b0d6d8c8460a16ee79e1d3c405a0197694381"
+          "sha256": "426d09bafab543ee1c9d1f292884c45b933635f1a6107c2790fec0e5a6e82bb0"
         },
         "coakka_v2_connector/_package_image.py": {
           "bytes": 4883,
@@ -77,7 +77,7 @@
         },
         "coakka_v2_connector/_packaging.py": {
           "bytes": 1464,
-          "sha256": "65bea7e16355c56262289003d935fab7100f113f12179f98aeffba4d7945d1fa"
+          "sha256": "e9c817cb4a21fd5d1f0b5ab91bb789246bd7ad535df5606871985ca40c0285b8"
         },
         "coakka_v2_connector/_reader_worker.py": {
           "bytes": 1461,
@@ -124,8 +124,8 @@
           "sha256": "b8308e4c28546f49b4e51f8f5162a133f5d5f8426d66bf04b997ab2c652d74da"
         },
         "coakka_v2_connector/native/libcoakka_runtime_v2.dylib": {
-          "bytes": 860216,
-          "sha256": "b3b0050db65e40da7d8d2dd54aaf9ee50975ecf1498e657c8896f6b98ccc8e12"
+          "bytes": 873360,
+          "sha256": "5ef45ad964a43c3e91c6c69bd731dbc5ac30348721ebffa7d384a7ce05bc4dd2"
         },
         "coakka_v2_connector/orchestrator.py": {
           "bytes": 13477,
@@ -147,8 +147,8 @@
     },
     "linux-aarch64": {
       "filename": "coakka_v2_connector-3.0.0-cp311-abi3-manylinux_2_35_aarch64.whl",
-      "bytes": 1029489,
-      "sha256": "aae6c566d1dd1d4b4f88d2284a4e5fc741c231a666c4d7b520318dba5fc4b58b",
+      "bytes": 1029482,
+      "sha256": "0870761c277e0a6566e65b96b494a94e29482aa82275a05f1af15e0bd2efe937",
       "members": {
         "coakka_v2_connector-3.0.0.dist-info/METADATA": {
           "bytes": 44900,
@@ -156,7 +156,7 @@
         },
         "coakka_v2_connector-3.0.0.dist-info/RECORD": {
           "bytes": 3169,
-          "sha256": "be5ced90f195a8b2fef485995c1dbd340ca671ab323a4dd224a35df680852e5a"
+          "sha256": "1c24af4e5d9d6d232b9d2deca44d3a965b8d0e1a81fb6bc3c71e956c20ab5965"
         },
         "coakka_v2_connector-3.0.0.dist-info/WHEEL": {
           "bytes": 124,
@@ -208,7 +208,7 @@
         },
         "coakka_v2_connector/_package.json": {
           "bytes": 346,
-          "sha256": "8b7f9c6db4d2af1d6cb0d2d5d1d329a922e1277ab034724ecb93d31f46b9a2ac"
+          "sha256": "528fb8093afc167459b87c3548d4a0595426e6bbddb4bd25d632474362cb6f6c"
         },
         "coakka_v2_connector/_package_image.py": {
           "bytes": 4883,
@@ -216,7 +216,7 @@
         },
         "coakka_v2_connector/_packaging.py": {
           "bytes": 1464,
-          "sha256": "65bea7e16355c56262289003d935fab7100f113f12179f98aeffba4d7945d1fa"
+          "sha256": "e9c817cb4a21fd5d1f0b5ab91bb789246bd7ad535df5606871985ca40c0285b8"
         },
         "coakka_v2_connector/_reader_worker.py": {
           "bytes": 1461,
@@ -264,7 +264,7 @@
         },
         "coakka_v2_connector/native/libcoakka_runtime_v2.so": {
           "bytes": 2103344,
-          "sha256": "dbdba44a6c309f0e7eccbae7224bceae63313c199d68b93e408043674ada3579"
+          "sha256": "9092c59320f2aa8d3431e01ac10f292c82b545c23d74f51dcde4855741966de8"
         },
         "coakka_v2_connector/orchestrator.py": {
           "bytes": 13477,
@@ -286,8 +286,8 @@
     },
     "linux-x86_64": {
       "filename": "coakka_v2_connector-3.0.0-cp311-abi3-manylinux_2_36_x86_64.whl",
-      "bytes": 1427883,
-      "sha256": "19df445e7ae3b128a5e97bb219fe06e53665297ccc77fc14e77d9a10b29b74a0",
+      "bytes": 942092,
+      "sha256": "bee5f77043024a29ab8b76b006a6e6889b092b494b3ed55a48f74b0917e734b1",
       "members": {
         "coakka_v2_connector-3.0.0.dist-info/METADATA": {
           "bytes": 44900,
@@ -295,7 +295,7 @@
         },
         "coakka_v2_connector-3.0.0.dist-info/RECORD": {
           "bytes": 3169,
-          "sha256": "d3a2ea8ab412300fde2ac4e701cdb2bb8ed06fe096139eaacb150d678109ab1d"
+          "sha256": "cec41f8f552a89e631ebdeae04fe153fa7164a525814080b8e55c0a9d3d116c6"
         },
         "coakka_v2_connector-3.0.0.dist-info/WHEEL": {
           "bytes": 123,
@@ -347,7 +347,7 @@
         },
         "coakka_v2_connector/_package.json": {
           "bytes": 345,
-          "sha256": "26b2d029c5cf44d0434e112156fec5a4aec836999d8cc2e5c402d3eb0166ead2"
+          "sha256": "8abf2a7ded33c9269a2f88418c5258184639794835429b2db4cf260b8a5144c0"
         },
         "coakka_v2_connector/_package_image.py": {
           "bytes": 4883,
@@ -355,7 +355,7 @@
         },
         "coakka_v2_connector/_packaging.py": {
           "bytes": 1464,
-          "sha256": "65bea7e16355c56262289003d935fab7100f113f12179f98aeffba4d7945d1fa"
+          "sha256": "e9c817cb4a21fd5d1f0b5ab91bb789246bd7ad535df5606871985ca40c0285b8"
         },
         "coakka_v2_connector/_reader_worker.py": {
           "bytes": 1461,
@@ -402,8 +402,8 @@
           "sha256": "bc4846e894e97cea19c1adb156ede758ba00839f571dba9fdc490a28a43f2c98"
         },
         "coakka_v2_connector/native/libcoakka_runtime_v2.so": {
-          "bytes": 3188976,
-          "sha256": "514f7db498ab2f5afab9930f6868eaae95a3e867de426ee63a730d543f452cdc"
+          "bytes": 1902480,
+          "sha256": "4736f09d4a68073c6b9f7043f6418ab5a316ee0ec06a11b92510c65c1247ba81"
         },
         "coakka_v2_connector/orchestrator.py": {
           "bytes": 13477,
@@ -425,8 +425,8 @@
     },
     "windows-aarch64": {
       "filename": "coakka_v2_connector-3.0.0-cp311-abi3-win_arm64.whl",
-      "bytes": 969098,
-      "sha256": "a728281cb493d7127a922e8336ee0c986a2ea03b6812404def3be10984ed0567",
+      "bytes": 969076,
+      "sha256": "5efc052a04f46789c9c4f92ac62a82ec070c92f678ce5a22333091c912073f6b",
       "members": {
         "coakka_v2_connector-3.0.0.dist-info/METADATA": {
           "bytes": 44900,
@@ -434,7 +434,7 @@
         },
         "coakka_v2_connector-3.0.0.dist-info/RECORD": {
           "bytes": 3172,
-          "sha256": "854698bae44cc7de61230adf58c49d255fd291a5e4e49ea9268894dfade61ab5"
+          "sha256": "793a8623e3735addc8cc82822f835da4795aba2dc61bec31014c137b6d297202"
         },
         "coakka_v2_connector-3.0.0.dist-info/WHEEL": {
           "bytes": 111,
@@ -486,7 +486,7 @@
         },
         "coakka_v2_connector/_package.json": {
           "bytes": 349,
-          "sha256": "5767cbf07bb0155e4ab35abcf3705cba59019b7f90a3dcd957b30d639071dff0"
+          "sha256": "b0cb5a73d2ec6c7635d6036bf5c7ee19e9d487e7022a6a487a1504a382a3c97f"
         },
         "coakka_v2_connector/_package_image.py": {
           "bytes": 4883,
@@ -494,7 +494,7 @@
         },
         "coakka_v2_connector/_packaging.py": {
           "bytes": 1464,
-          "sha256": "65bea7e16355c56262289003d935fab7100f113f12179f98aeffba4d7945d1fa"
+          "sha256": "e9c817cb4a21fd5d1f0b5ab91bb789246bd7ad535df5606871985ca40c0285b8"
         },
         "coakka_v2_connector/_reader_worker.py": {
           "bytes": 1461,
@@ -542,7 +542,7 @@
         },
         "coakka_v2_connector/native/libcoakka_runtime_v2.dll": {
           "bytes": 2071552,
-          "sha256": "b1a1ca4068878b1e4d6d9a0f9064b2927a75cd390e755c4b42ed0b530d997046"
+          "sha256": "720a73215b4cbee231cbaadb766704d60ff999b11d52411819484e738f91bacd"
         },
         "coakka_v2_connector/orchestrator.py": {
           "bytes": 13477,
@@ -564,8 +564,8 @@
     },
     "windows-x86_64": {
       "filename": "coakka_v2_connector-3.0.0-cp311-abi3-win_amd64.whl",
-      "bytes": 1054619,
-      "sha256": "c2240bb3ecba7df2281e65c461927830a850939744589744eb4ec8bd5e3b52be",
+      "bytes": 1054614,
+      "sha256": "5d6f290297361a0ce9f87ed152d0e426ab6501e0c355738ae41f4f05be27d954",
       "members": {
         "coakka_v2_connector-3.0.0.dist-info/METADATA": {
           "bytes": 44900,
@@ -573,7 +573,7 @@
         },
         "coakka_v2_connector-3.0.0.dist-info/RECORD": {
           "bytes": 3172,
-          "sha256": "da5b7c14fed100061e1d0aff0ef9ff52f1b651f06d3b47c19a293247e8950c0f"
+          "sha256": "8aaea1295027ba5894da919c277933d837656aae94c2df83ead8da41a94083f3"
         },
         "coakka_v2_connector-3.0.0.dist-info/WHEEL": {
           "bytes": 111,
@@ -625,7 +625,7 @@
         },
         "coakka_v2_connector/_package.json": {
           "bytes": 348,
-          "sha256": "07c99c7cf3a292bb3c70b15fc9219abe232f07b3ba9ed117353fad7afbd67509"
+          "sha256": "c85e73765ecefc060520d53c0b7c81935b4ceaba45a85c63898b55610bb2bd44"
         },
         "coakka_v2_connector/_package_image.py": {
           "bytes": 4883,
@@ -633,7 +633,7 @@
         },
         "coakka_v2_connector/_packaging.py": {
           "bytes": 1464,
-          "sha256": "65bea7e16355c56262289003d935fab7100f113f12179f98aeffba4d7945d1fa"
+          "sha256": "e9c817cb4a21fd5d1f0b5ab91bb789246bd7ad535df5606871985ca40c0285b8"
         },
         "coakka_v2_connector/_reader_worker.py": {
           "bytes": 1461,
@@ -681,7 +681,7 @@
         },
         "coakka_v2_connector/native/libcoakka_runtime_v2.dll": {
           "bytes": 2283520,
-          "sha256": "901cb6e63a17bdcaadfc0aff2c3a082d9272dcb18ba94d7aaa6424665753a8fb"
+          "sha256": "dba531e09359f270a22543ec3b1a4a4bf9750e965c2b5920966871faaff88e4d"
         },
         "coakka_v2_connector/orchestrator.py": {
           "bytes": 13477,

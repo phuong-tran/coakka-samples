@@ -18,9 +18,9 @@ import sys
 import tarfile
 import time
 
-ARCHIVE_SHA = "7a34346a3e0b98c3b45b9dab75dc43d6458da03f6fd466ff79207d2cf447aa5e"
+ARCHIVE_SHA = "b1cc812577d62e18465f3ead914efd3defa4602ff36ea4a7fb86a47fd40714b0"
 TOOL_SHA = "0a9ac6c65a95a929029a38515701eb5f6293b7f2d271d76a4b6d83cd3eaa707e"
-TOOL_MEMBER = "coakka-runtime-rs-2.5.3/tools/package_tools.py"
+TOOL_MEMBER = "coakka-runtime-rs-3.0.0/tools/package_tools.py"
 SOURCES = ("Cargo.toml", "Cargo.lock", "src/main.rs")
 MACOS_TOOLS = {"strip": Path("/usr/bin/strip"), "codesign": Path("/usr/bin/codesign")}
 MACOS_FLOOR_CHECK = Path(__file__).with_name("runtime-macos-floor.py")
@@ -36,8 +36,8 @@ class Candidate:
 
 
 RUST = Candidate(ARCHIVE_SHA, TOOL_MEMBER, "coakka-runtime-sample")
-TAURI = Candidate("cb617d7cbbffb0c3808debaaaedb0716115e35a6c2e84ba71f4b39eca8858816",
-                  "coakka-runtime-tauri-intents-2.5.3-source/rust/tools/package_tools.py",
+TAURI = Candidate("ef77dc499a75318e883ade5786e1767c939fa41d441dddbb6ac267a02348bb20",
+                  "coakka-runtime-tauri-intents-3.0.0-source/rust/tools/package_tools.py",
                   "coakka-sample-tauri-intent-command", True)
 TARGETS = {
     "macos-aarch64": "aarch64-apple-darwin",

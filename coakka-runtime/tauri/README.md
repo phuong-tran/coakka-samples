@@ -1,7 +1,7 @@
 # Tauri Runtime Samples
 
-This private branch is migrating to the exact Tauri source aggregate 2.5.3 over
-native Core 2.5.1. It is not a public package/support claim.
+This private branch is migrating to the exact Tauri source aggregate 3.0.0 over
+native Core 3.0.0. It is not a public package/support claim.
 
 - [Intent command](intent-command/README.md) is a standalone terminal-friendly
   Cargo consumer of the frozen candidate, with typed request/reply/deadletter.

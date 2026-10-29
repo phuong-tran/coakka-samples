@@ -11,8 +11,6 @@ struct coakka_v2_camera_web_gateway_config_t {
   std::string bind_host;
   uint16_t bind_port = 0u;
   uint32_t max_frame_bytes = 0u;
-  uint32_t initial_width = 1280u;
-  uint32_t initial_height = 720u;
   uint32_t fps = 0u;
   std::string recording_directory;
   std::string ffmpeg_binary;

@@ -1,6 +1,6 @@
 # coakka.runtime Maven Central Release
 
-The selected next candidate is3.0.0 over Core2.5.1/f6b61768, with five native
+The selected next candidate is3.0.0 over Core3.0.0/1522b4a9, with five native
 pairs and a new managed API baseline. It requires source migration from2.x.
 Java8/major52 remains the managed floor; native Windows ARM64 requires ARM64
 JDK11 or newer. Freeze the main JAR, sources, Javadoc and POM before the release

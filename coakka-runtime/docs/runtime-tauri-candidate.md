@@ -4,8 +4,8 @@ These are separate private command and desktop sample workflows. There is no
 publication, publisher-signing or support promotion. The terminal command does not start
 a WebView; desktop qualification belongs to the actual app-host boundary.
 Use only the exact archive listed in `artifacts/runtime-tauri-candidate.json`
-from the trusted candidate channel. Archive generation 2.5.3 contains Rust
-crate 2.5.3 and intent crate 0.1.0; that latter Cargo coordinate is not a public
+from the trusted candidate channel. Archive generation 3.0.0 contains Rust
+crate 3.0.0 and intent crate 0.1.0; that latter Cargo coordinate is not a public
 registry selection. Do not substitute the obsolete public 2.5.2 aggregate.
 
 ## Command build
@@ -16,7 +16,7 @@ work on external build storage. There is no default temporary build, package
 download, lock regeneration or native rebuild.
 
 ```sh
-export COAKKA_TAURI_ARCHIVE=/absolute/candidate/coakka-runtime-tauri-intents-2.5.3-source.tar.gz
+export COAKKA_TAURI_ARCHIVE=/absolute/candidate/coakka-runtime-tauri-intents-3.0.0-source.tar.gz
 export COAKKA_SAMPLE_WORK_ROOT=/absolute/build-storage/tauri-command-new
 export COAKKA_RUST_CARGO=/absolute/toolchain/bin/cargo
 export COAKKA_RUST_CARGO_HOME=/absolute/offline-cargo-cache
@@ -28,7 +28,7 @@ Select `linux-aarch64` on Pi. For Windows x64 use native Python in a prepared
 x64 compiler environment:
 
 ```powershell
-python -B coakka-runtime/scripts/runtime-tauri-candidate.py --archive D:/candidate/coakka-runtime-tauri-intents-2.5.3-source.tar.gz --source D:/samples/coakka-runtime/tauri/intent-command --work D:/build-storage/tauri-command-new --cargo D:/rust/bin/cargo.exe --cargo-home D:/offline-cargo-cache --target windows-x86_64
+python -B coakka-runtime/scripts/runtime-tauri-candidate.py --archive D:/candidate/coakka-runtime-tauri-intents-3.0.0-source.tar.gz --source D:/samples/coakka-runtime/tauri/intent-command --work D:/build-storage/tauri-command-new --cargo D:/rust/bin/cargo.exe --cargo-home D:/offline-cargo-cache --target windows-x86_64
 & D:/build-storage/tauri-command-new/installed/coakka-sample-tauri-intent-command.exe
 ```
 

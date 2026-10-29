@@ -1,6 +1,6 @@
 # Mojo Private Candidate Sample
 
-This workflow uses the unpublished 3.0.0-source source package and the
+This workflow uses the unpublished 3.0.0 source package and the
 exact Core build named in `artifacts/runtime-mojo-candidate.json`. Obtain
 the archive through the trusted private candidate channel. The runner verifies
 the complete archive before unpacking it; it does not download another version.

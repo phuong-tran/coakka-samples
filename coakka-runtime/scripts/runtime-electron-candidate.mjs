@@ -15,8 +15,8 @@ const within = (root, path) => { const part = relative(root, path); return part 
 export function admitElectronCatalog(catalog) {
   if (!exact(catalog, ["schema", "state", "core", "packages"]) || catalog.schema !== 1 ||
       catalog.state !== "private-candidate" || !exact(catalog.packages, ["node", "electron"]) ||
-      !exact(catalog.core, ["version", "gitCommit", "abi"]) || catalog.core.version !== "2.5.1" ||
-      catalog.core.gitCommit !== "f6b61768f60a08d81b1dc06625a211ffca8e89e2" || catalog.core.abi !== 1) fail("invalid Electron candidate catalog");
+      !exact(catalog.core, ["version", "gitCommit", "abi"]) || catalog.core.version !== "3.0.0" ||
+      catalog.core.gitCommit !== "1522b4a9f30da1039ef8c7d198bbecfc749a2456" || catalog.core.abi !== 1) fail("invalid Electron candidate catalog");
   const node = admitPackage(catalog.packages.node, "node"), electron = admitPackage(catalog.packages.electron, "electron");
   if (node.version !== electron.version || node.minimumRuntime !== "22.0.0" || electron.minimumRuntime !== "42.0.0") fail("candidate closure or baseline differs");
   return { node, electron };
@@ -68,7 +68,7 @@ export async function prepareCandidate(requested, environment = process.env, sig
   if (signal.aborted) fail("sample interrupted");
   mkdirSync(output);
   const app = join(output, "installed"), stage = join(output, "staging");
-  const receipt = { state: "preparing", nodeVersion, coreCommit: "f6b61768f60a08d81b1dc06625a211ffca8e89e2",
+  const receipt = { state: "preparing", nodeVersion, coreCommit: "1522b4a9f30da1039ef8c7d198bbecfc749a2456",
     packages: { node: entries.node.sha256, electron: entries.electron.sha256 },
     sources: Object.fromEntries(Object.entries(files).map(([name, bytes]) => [name, sha(bytes)])), published: false };
   try {

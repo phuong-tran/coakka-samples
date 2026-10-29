@@ -21,7 +21,7 @@ HERE = Path(__file__).resolve().parent
 SAMPLES = HERE.parents[3]
 CATALOG = SAMPLES / "coakka-runtime/artifacts/runtime-frameworks-candidate.json"
 SCENARIOS = {"spring": "spring-boot-starter-local", "quarkus": "quarkus-local"}
-CORE_COMMIT = "f6b61768f60a08d81b1dc06625a211ffca8e89e2"
+CORE_COMMIT = "1522b4a9f30da1039ef8c7d198bbecfc749a2456"
 spec = importlib.util.spec_from_file_location("framework_admission", HERE / "candidate-admission.py")
 assert spec is not None and spec.loader is not None
 admission = importlib.util.module_from_spec(spec)

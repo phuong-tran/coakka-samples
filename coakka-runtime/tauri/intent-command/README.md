@@ -1,7 +1,7 @@
 # Tauri Intent Command
 
 This is a separate Cargo app, not a packaged smoke and not a desktop WebView.
-It consumes the exact private 2.5.3 aggregate and Core 2.5.1. See the
+It consumes the exact private 3.0.0 aggregate and Core 3.0.0. See the
 [candidate guide](../../docs/runtime-tauri-candidate.md) for artifact/tool/
 offline-cache/fresh external work selections, then run from the repo root:
 

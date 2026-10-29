@@ -37,7 +37,7 @@ class CandidateTests(unittest.TestCase):
         row = dict(filename=name, bytes=path.stat().st_size, sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
                    members={name: dict(bytes=len(data), sha256=hashlib.sha256(data).hexdigest()) for name, data in payloads.items()})
         catalog = dict(schema=1, state="private-candidate", distribution="coakka-v2-connector",
-                       version="3.0.0", minimumRuntime="3.11", coreCommit="f6b61768f60a08d81b1dc06625a211ffca8e89e2",
+                       version="3.0.0", minimumRuntime="3.11", coreCommit="1522b4a9f30da1039ef8c7d198bbecfc749a2456",
                        wheels={target: dict(row) for target in ("macos-aarch64", "linux-aarch64", "linux-x86_64", "windows-aarch64", "windows-x86_64")})
         return path, row, catalog
 
