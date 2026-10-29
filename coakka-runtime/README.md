@@ -23,6 +23,12 @@ and SwiftPM `v2.5.3` use Core
 `2.5.3` use that same Core generation. Runtime tools are published at
 `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`.
 
+This integration branch also prepares unpublished Runtime `3.0.0` candidates.
+For those packages, use the matching [candidate guides](docs/) and exact
+[candidate catalogs](artifacts/). They record the required local archive and
+its identity. The registry coordinates on this page describe already published
+versions; use [Current Packages](../docs/current-packages.md) for those releases.
+
 For day-to-day development and connector validation, treat macOS and Windows as
 valid host environments. For deployment claims, operational drills, and the
 usual production rollout path, keep Linux as the primary target.

@@ -31,6 +31,13 @@ stable directory and an ecosystem entrypoint, with its own lifecycle,
 distribution contract and evidence. A product name does not imply that every
 host language or platform is supported.
 
+The next planned product, `coakka-http-client`, follows the same rule: it gets
+its own product directory, README, package coordinates, version and evidence
+when implementation starts after CoAkka HTTP Runtime. It is not available yet;
+there is no current package or directory link to follow. HTTP Runtime's
+existing outbound HTTP features remain part of that product's documented
+contract until a separate product is implemented and explicitly released.
+
 Public documentation is authored in CoAkka's owning repository and projected
 one way into Samples and Publish. Documentation synchronization does not
 publish packages, admit private candidates, alter released checksums or grant

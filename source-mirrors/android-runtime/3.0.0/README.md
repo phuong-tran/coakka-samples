@@ -17,8 +17,8 @@ records projected build and source bytes. Verify a prepared projection with:
 
 The Apache-2.0 connector source projection contains no Core source or native
 image. Native artifacts have the separately scoped
-[CoAkka Native Artifact License 1.2](https://github.com/phuong-tran/coakka-samples/blob/licenses-1.2/NATIVE-LICENSE.md);
-the [package license map](https://github.com/phuong-tran/coakka-samples/blob/licenses-1.2/PACKAGE-LICENSE.md)
+[CoAkka Native Artifact License 1.2](https://github.com/phuong-tran/coakka-samples/blob/d401e4a62359dcf245ffda093f2cbea21fe5f39a/NATIVE-LICENSE.md);
+the [package licensing guide](https://github.com/phuong-tran/coakka-samples/blob/d401e4a62359dcf245ffda093f2cbea21fe5f39a/docs/package-licensing.md)
 explains the applicable files. Product version `3.0.0` does not change that
 license version.
 

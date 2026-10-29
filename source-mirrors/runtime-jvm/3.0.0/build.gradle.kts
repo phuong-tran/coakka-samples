@@ -308,6 +308,7 @@ val runtimeSourcesJar by tasks.registering(Jar::class) {
     from("src/main/kotlin")
     from("README.md")
     from("CONSUMING.md")
+    from("RELEASE.md")
     from("JVM_COMPATIBILITY.md")
     from("MAVEN_CENTRAL.md")
     from("LICENSE")
@@ -400,7 +401,7 @@ val verifyCentralArtifactShape by tasks.registering {
         ZipFile(runtimeSourcesJar.get().archiveFile.get().asFile).use { zip ->
             val entries = zip.entries().asSequence().map { it.name }.toSet()
             if (entries.none { it.endsWith(".kt") } ||
-                listOf("LICENSE", "NATIVE-LICENSE.md", "PACKAGE-LICENSE.md", "NOTICE").any { it !in entries }
+                listOf("README.md", "CONSUMING.md", "RELEASE.md", "LICENSE", "NATIVE-LICENSE.md", "PACKAGE-LICENSE.md", "NOTICE").any { it !in entries }
             ) {
                 error("reconstructed Runtime sources jar is incomplete")
             }

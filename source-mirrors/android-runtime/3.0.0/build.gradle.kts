@@ -1010,7 +1010,7 @@ publishing {
                 licenses {
                     license {
                         name.set("CoAkka Package License Map (free for application use)")
-                        url.set("https://github.com/phuong-tran/coakka-samples/blob/licenses-1.2/PACKAGE-LICENSE.md")
+                        url.set("https://github.com/phuong-tran/coakka-samples/blob/d401e4a62359dcf245ffda093f2cbea21fe5f39a/docs/package-licensing.md")
                         distribution.set("repo")
                     }
                 }

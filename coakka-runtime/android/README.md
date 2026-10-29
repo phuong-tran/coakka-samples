@@ -24,13 +24,13 @@ Use these identities together for the current private API:
 
 | Identity | Value |
 | --- | --- |
-| Android connector | `1.2.0` private candidate |
-| Connector source checkpoint | `3a046e6c9ebd67934c954e07255ce1fdc5078656` |
-| Native runtime package | Core `2.5.1+f6b61768f60a08d81b1dc06625a211ffca8e89e2` |
+| Android connector | `3.0.0` preview candidate |
+| Compiled connector source checkpoint | `97659069795a701d6e38ea8868282191ab13f1a9` |
+| Native runtime package | Core `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 | Android ABIs | `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64` |
 | Minimum Android API | `24` |
 | Compile SDK | Android API `36.1` or newer |
-| Exact AAR | SHA-256 `a839037be3683649e306cdbef1b780a25b5267598c0172c58e0cc2663bb33ee1`, 3,000,839 bytes |
+| Exact AAR | SHA-256 `3aa24aafb3838c328823e6fee9a54eed50f8d3a075ce883fcd6513a9e1d1ea06`, 3,002,876 bytes |
 | Publication state | unsigned private candidate; no public Maven coordinate |
 
 This exact AAR passes native ARM64 Mac emulators on API 24 and API 36.
@@ -70,7 +70,7 @@ Place the exact candidate AAR under `app/libs` and pin its dependencies in
 
 ```kotlin
 dependencies {
-    implementation(files("libs/coakka-runtime-android-1.2.0.aar"))
+    implementation(files("libs/coakka-runtime-android-3.0.0-private-p533-r1.aar"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.2.10")
 }
 ```
@@ -79,8 +79,10 @@ Verify the local AAR SHA-256 before use. Do not add an unpublished Maven
 coordinate alongside `app/libs`; that can package the same classes and native
 libraries twice.
 
-The [historical source archive](../../source-mirrors/android-runtime/1.2.0/README.md)
-belongs to the older tagged artifact above. It is not a current source projection.
+The [pending 3.0.0 source projection](../../source-mirrors/android-runtime/3.0.0/README.md)
+records the current source and release identity. The
+[historical source archive](../../source-mirrors/android-runtime/1.2.0/README.md)
+belongs to the older tagged artifact above.
 The AAR carries `LICENSE`, `NATIVE-LICENSE.md`, `PACKAGE-LICENSE.md`, and
 `NOTICE` offline because its Kotlin/JNI connector and bundled Native Core files
 have different file-scoped terms.
