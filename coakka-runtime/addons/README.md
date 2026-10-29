@@ -34,7 +34,7 @@ This avoids creating a separate internal HTTP file endpoint with custom body
 limits, temporary-file handling, digest checks, resume, cancellation, and
 receiver-completion semantics for every service. HTTP remains appropriate for
 public/browser distribution and CDN-backed objects. Read
-[Why These Addons Exist](../../docs/runtime-addons.md#why-these-addons-exist) for
+[Why These Addons Exist](../../docs/coakka-runtime/runtime-addons.md#why-these-addons-exist) for
 the full boundary and comparison.
 
 ## Available Releases
@@ -72,5 +72,5 @@ bindings, packaging, credential handling, failure mapping, and matching-host
 tests. Connectors will be added when demonstrated demand justifies that work;
 portability readiness is not presented as an already-supported package.
 
-See [Runtime Addons](../../docs/runtime-addons.md) for package ownership,
+See [Runtime Addons](../../docs/coakka-runtime/runtime-addons.md) for package ownership,
 compatibility, and release rules.

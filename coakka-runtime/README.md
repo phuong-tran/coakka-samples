@@ -1,19 +1,21 @@
 # Runtime Samples
 
+Read the [product documentation](../docs/coakka-runtime/README.md) for the full guide.
+
 Runtime samples show CoAkka runtime v2 as a shared native runtime
 contract consumed through host-language connectors.
 
 Choose a language below, run its basic sample, and then use
-[AI-Assisted Integration](../docs/ai-assisted-integration.md) to select the
+[AI-Assisted Integration](../docs/common/ai-assisted-integration.md) to select the
 canonical connection, TLS/mTLS, File Lane, or Stream Lane contract. That guide
 also defines when a coding agent has enough evidence to generate compilable
 code and when it must stop at workflow pseudocode.
 
 For large immutable files, use the `2.1.0` file lane instead of placing bytes
-inside an `Envelope`. See [Runtime File Transfer](../docs/runtime-file-transfer.md)
+inside an `Envelope`. See [Runtime File Transfer](../docs/coakka-runtime/runtime-file-transfer.md)
 for use cases, the receiver-first workflow, and connector guidance. When a
 target has replicas, read
-[Runtime Lane Owner Grants](../docs/runtime-lane-owner-grants.md) and run the
+[Runtime Lane Owner Grants](../docs/coakka-runtime/runtime-lane-owner-grants.md) and run the
 package-backed [`go/replica-file-fanout`](go/replica-file-fanout/README.md)
 sample; it demonstrates the application-level `ALL` policy with one exact grant
 and independently verified outcome per owner. The native pointer, Maven
@@ -24,10 +26,10 @@ and SwiftPM `v2.5.3` use Core
 `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`.
 
 This integration branch also prepares unpublished Runtime `3.0.0` candidates.
-For those packages, use the matching [candidate guides](docs/) and exact
+For those packages, use the matching [candidate guides](../docs/coakka-runtime/) and exact
 [candidate catalogs](artifacts/). They record the required local archive and
 its identity. The registry coordinates on this page describe already published
-versions; use [Current Packages](../docs/current-packages.md) for those releases.
+versions; use [Current Packages](../docs/common/current-packages.md) for those releases.
 
 For day-to-day development and connector validation, treat macOS and Windows as
 valid host environments. For deployment claims, operational drills, and the

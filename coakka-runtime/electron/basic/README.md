@@ -4,7 +4,7 @@ This alias runs the [desktop intent sample](../desktop-intent/README.md): one
 typed Unicode renderer intent through isolated sandboxed preload/authorized IPC,
 a main-owned Core route and awaited shutdown.
 
-Follow the [candidate guide](../../docs/runtime-electron-candidate.md)
+Follow the [candidate guide](../../../docs/coakka-runtime/runtime-electron-candidate.md)
 to supply exact local Node/Electron archives, Node22/Electron42/esbuild build
 tools and a fresh absolute output on suitable storage.
 

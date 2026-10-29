@@ -2,7 +2,7 @@
 
 Send one request to an absent route, require its matched route-miss result,
 then observe the same event through one bounded subscription. Use the
-[private candidate wheel/workflow](../../docs/runtime-python-candidate.md),
+[private candidate wheel/workflow](../../../docs/coakka-runtime/runtime-python-candidate.md),
 not the old public package or a separately installed native image.
 
 After selecting the exact local wheel and explicit work root, run:

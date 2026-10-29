@@ -9,7 +9,7 @@ native Core 3.0.0. It is not a public package/support claim.
   an app-owned authorized async command, bounded admission, local CSP/assets,
   joined shutdown and a normal desktop application layout.
 
-Follow the [candidate guide](../docs/runtime-tauri-candidate.md) for exact
+Follow the [candidate guide](../../docs/coakka-runtime/runtime-tauri-candidate.md) for exact
 identity, prepared offline tools and explicit build storage. Command/SDK Rust
 1.77.2 and desktop app Rust 1.92 are separate build baselines.
 
@@ -24,5 +24,5 @@ and Core-issued outcomes. AUTO/MULTIPLEX remain Core's normal defaults.
 
 Command-only evidence does not prove WebView scheduling, window destruction,
 browser-process retirement, background progress or desktop performance. Use
-[AI-Assisted Integration](../../docs/ai-assisted-integration.md) before another
+[AI-Assisted Integration](../../docs/common/ai-assisted-integration.md) before another
 feature and keep exact candidate APIs separate from older published packages.

@@ -16,11 +16,11 @@ ARM64, Windows x86_64, and Windows ARM64 inspect archives from
 
 Full recording: [coakka-runtime-inspect.mp4](../../../docs/assets/coakka-runtime-inspect.mp4)
 
-Detailed docs live under [docs/](docs/):
+Detailed docs live under [docs/](../../../docs/coakka-runtime/tools/coakka-runtime-inspect/):
 
-- [Introduction](docs/introduction.md)
-- [Usage Guide](docs/usage.md)
-- [Technical Notes](docs/technical-notes.md)
+- [Introduction](../../../docs/coakka-runtime/tools/coakka-runtime-inspect/introduction.md)
+- [Usage Guide](../../../docs/coakka-runtime/tools/coakka-runtime-inspect/usage.md)
+- [Technical Notes](../../../docs/coakka-runtime/tools/coakka-runtime-inspect/technical-notes.md)
 
 ## Quick Check
 

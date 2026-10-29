@@ -266,7 +266,7 @@ Normal construction leaves CPU and connection choices to Core: `AUTO` and
 capacity `0` also delegates to Core; ordinary samples should omit that option.
 `startupConfig()` reports what Core accepted, including which groups were
 left to its defaults. It does not report input preferences as observed state.
-See [Runtime Defaults And Monitoring](../../docs/runtime-monitoring.md) for
+See [Runtime Defaults And Monitoring](../../docs/coakka-runtime/runtime-monitoring.md) for
 why these defaults exist and when monitoring is useful. These principles apply
 to all host languages, not only Kotlin or Android.
 
@@ -465,7 +465,7 @@ address. `ONE` uses one selected owner's grant. `ALL` enumerates every exact
 owner, obtains one fresh grant per owner, and tracks one independent terminal
 outcome per transfer/session. The full Android types, callback borrowing law,
 ONE/ALL Mermaid flows, and token lifetime rules are in
-[Runtime Lane Owner Grants](../../docs/runtime-lane-owner-grants.md).
+[Runtime Lane Owner Grants](../../docs/coakka-runtime/runtime-lane-owner-grants.md).
 
 ## Device Evaluation Checklist
 

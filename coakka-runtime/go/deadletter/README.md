@@ -1,7 +1,7 @@
 # Go Runtime Deadletter
 
 This private candidate sample uses the exact module in the
-[candidate guide](../../docs/runtime-go-candidate.md), not a historical
+[candidate guide](../../../docs/coakka-runtime/runtime-go-candidate.md), not a historical
 public module version. Read that guide, set its module/work paths and select
 Go with a C11 cgo compiler. No separate native Core install is needed.
 

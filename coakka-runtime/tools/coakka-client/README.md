@@ -10,11 +10,11 @@ Run `coakka-client --help` after unpacking a published archive. If
 `coakka-runtime-client` is not found, that is expected for this release: it is
 the product lane and sample directory name, not the executable name.
 
-Detailed docs live under [docs/](docs/):
+Detailed docs live under [docs/](../../../docs/coakka-runtime/tools/coakka-client/):
 
-- [Introduction](docs/introduction.md)
-- [Usage Guide](docs/usage.md)
-- [Technical Notes](docs/technical-notes.md)
+- [Introduction](../../../docs/coakka-runtime/tools/coakka-client/introduction.md)
+- [Usage Guide](../../../docs/coakka-runtime/tools/coakka-client/usage.md)
+- [Technical Notes](../../../docs/coakka-runtime/tools/coakka-client/technical-notes.md)
 
 This lane is for native CLI workflows that show how an operator or developer
 can drive a runtime path without building a web UI:

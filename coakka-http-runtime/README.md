@@ -1,12 +1,14 @@
 # CoAkka HTTP Runtime Samples
 
+Read the [product documentation](../docs/coakka-http-runtime/README.md) for the full guide.
+
 > Polyglot applications should not require polyglot HTTP infrastructure.
 
 Native is our measurement baseline, not a promise of identical language
 throughput. Each host has scheduling, conversion and memory-management costs;
 measuring those costs under matched conditions helps plan capacity and scaling.
-See [native baseline and language costs](../docs/coakka-http-runtime-introduction.md#native-baseline-and-language-costs)
-and the [monitoring guide](monitoring.md).
+See [native baseline and language costs](../docs/coakka-http-runtime/introduction.md#native-baseline-and-language-costs)
+and the [monitoring guide](../docs/coakka-http-runtime/monitoring.md).
 
 These runnable applications show CoAkka HTTP Runtime from each supported
 language without hiding lifecycle, capacity, security, or failure handling.
@@ -27,7 +29,7 @@ Fixes and optimizations in that implementation can benefit every connector
 that includes the updated runtime, while handlers remain idiomatic application
 code. Each host still has its own scheduling and conversion costs.
 
-Read the [introduction, benefits and capability overview](../docs/coakka-http-runtime-introduction.md)
+Read the [introduction, benefits and capability overview](../docs/coakka-http-runtime/introduction.md)
 for the product rationale. The examples below show how to use it; they are not
 the introduction to CoAkka Runtime's separate distributed messaging model.
 
@@ -45,15 +47,15 @@ HTTP server/client; the two products have different package coordinates.
 
 ## Contents
 
-- [Inspect: metadata, OpenAPI and Swagger UI](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/inspect/metadata-and-openapi.md)
+- [Inspect: metadata, OpenAPI and Swagger UI](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/inspect/metadata-and-openapi.md)
 
-- [Roadmap: distribution, certificates and connectors](roadmap.md)
+- [Roadmap: distribution, certificates and connectors](../docs/coakka-http-runtime/roadmap.md)
 
 - [Why A Shared HTTP Runtime?](#why-a-shared-http-runtime)
 - [Distribution](#distribution)
 - [Languages](#languages)
-- [URL grammar, request/response and glossary](glossary.md)
-- [File delivery, sendfile and uploads](file-delivery.md)
+- [URL grammar, request/response and glossary](../docs/coakka-http-runtime/glossary.md)
+- [File delivery, sendfile and uploads](../docs/coakka-http-runtime/file-delivery.md)
 - [Feature Map](#feature-map)
 - [Run](#run)
 - [Verified Candidate Scope](#verified-candidate-scope)
@@ -61,22 +63,22 @@ HTTP server/client; the two products have different package coordinates.
 - [Security Sample](#security-sample)
 - [Raspberry Pi 5 Benchmark](#raspberry-pi-5-benchmark)
 - [Boundaries](#boundaries)
-- [Detailed feature coverage](FEATURES.md)
+- [Detailed feature coverage](../docs/coakka-http-runtime/FEATURES.md)
 
 ## Languages
 
 | Language and host | Start here | Details and evidence |
 | --- | --- | --- |
-| C11 | [C integration](c/integration.md) | [C sample](c/README.md) |
-| C++20 | [C++ integration](cpp/integration.md) | [C++ sample](cpp/README.md) |
-| Go 1.23 or newer | [Go integration](go/integration.md) | [Go sample](go/README.md) |
-| JVM: Kotlin and Java; Java 8 bytecode, JDK 17 sample compilation | [JVM integration](kotlin/integration.md) | [Kotlin and Java samples](kotlin/README.md) |
-| Python 3.11 or newer | [Python integration](python/integration.md) | [Python sample](python/README.md) |
-| TypeScript on Node.js 22+ and Bun 1.2.22+ | [Node/Bun integration](typescript/integration.md) | [TypeScript sample](typescript/README.md) |
+| C11 | [C integration](../docs/coakka-http-runtime/c/integration.md) | [C sample](c/README.md) |
+| C++20 | [C++ integration](../docs/coakka-http-runtime/cpp/integration.md) | [C++ sample](cpp/README.md) |
+| Go 1.23 or newer | [Go integration](../docs/coakka-http-runtime/go/integration.md) | [Go sample](go/README.md) |
+| JVM: Kotlin and Java; Java 8 bytecode, JDK 17 sample compilation | [JVM integration](../docs/coakka-http-runtime/kotlin/integration.md) | [Kotlin and Java samples](kotlin/README.md) |
+| Python 3.11 or newer | [Python integration](../docs/coakka-http-runtime/python/integration.md) | [Python sample](python/README.md) |
+| TypeScript on Node.js 22+ and Bun 1.2.22+ | [Node/Bun integration](../docs/coakka-http-runtime/typescript/integration.md) | [TypeScript sample](typescript/README.md) |
 
 ## Feature Map
 
-See the [detailed feature index and remaining coverage](FEATURES.md). A listed
+See the [detailed feature index and remaining coverage](../docs/coakka-http-runtime/FEATURES.md). A listed
 source example is not a claim that every edge case has already been tested.
 
 Each lane is a runnable application, not disconnected snippets. Native C/C++

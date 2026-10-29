@@ -20,7 +20,7 @@ CoAkka Runtime, Logger and addons.
 
 ## Start Here
 
-Start with [Introducing CoAkka HTTP Runtime](../coakka-http-runtime-introduction.md):
+Start with [Introducing CoAkka HTTP Runtime](introduction.md):
 why HTTP mechanics become fragmented across languages, how a shared native
 implementation reduces repeated work, which improvements can benefit all
 connectors, and what remains language-specific. It also maps the supported
@@ -30,14 +30,14 @@ The product README explains why the shared runtime exists, shows the ordinary
 route-and-handler shape, and introduces its capability and ownership model:
 
 - [CoAkka HTTP Runtime](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime)
-- [Complete capability matrix](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/capabilities.md)
-- [Queue, backpressure, health, and monitoring operations](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/operations.md)
+- [Complete capability matrix](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/capabilities.md)
+- [Queue, backpressure, health, and monitoring operations](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/operations.md)
 
 ## How It Works
 
-- [How requests, pressure, monitoring, and shutdown flow](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/how-it-works.md)
-- [App Host, language connector, shared foundation, and addon roles](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/app-host-and-connectors.md)
-- [Serve a built frontend beside API, SSE, and WebSocket routes](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/frontend-and-backend.md)
+- [How requests, pressure, monitoring, and shutdown flow](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/how-it-works.md)
+- [App Host, language connector, shared foundation, and addon roles](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/app-host-and-connectors.md)
+- [Serve a built frontend beside API, SSE, and WebSocket routes](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/frontend-and-backend.md)
 
 ## Language Guides
 
@@ -52,10 +52,10 @@ behavior, truthful monitoring surface, lifecycle, and package gate.
 
 ## Operations And Evidence
 
-- [Historical architecture comparison (not a benchmark)](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/comparison-2026-09-13.md)
-- [Focused comparisons with familiar platforms](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/docs/comparisons)
-- [Raspberry Pi 5 benchmark protocol](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/benchmark-rpi5.md)
-- [Measured results and machine/configuration details](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/benchmark-results-rpi5.md)
+- [Historical architecture comparison (not a benchmark)](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/comparison-2026-09-13.md)
+- [Focused comparisons with familiar platforms](https://github.com/phuong-tran/coakka-publish/tree/main/docs/coakka-http-runtime/comparisons)
+- [Raspberry Pi 5 benchmark protocol](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/benchmark-rpi5.md)
+- [Measured results and machine/configuration details](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/benchmark-results-rpi5.md)
 
 The comparison is a positioning snapshot, not a performance leaderboard.
 Measured rows carry their workload and machine context; unmeasured framework
@@ -72,13 +72,13 @@ There is no npm, Maven Central, PyPI or tagged Go-module distribution for HTTP
 Runtime yet. Do not substitute a CoAkka Runtime package coordinate.
 
 See the [sample scope](../../coakka-http-runtime/README.md#verified-candidate-scope)
-for executed profiles and the [feature index](../../coakka-http-runtime/FEATURES.md)
+for executed profiles and the [feature index](FEATURES.md)
 for example coverage and remaining gaps. This does not imply production
 signing or unmeasured-platform support.
 
 ## Samples
 
 Start in the [runnable sample area](../../coakka-http-runtime/README.md), then
-use the [feature coverage index](../../coakka-http-runtime/FEATURES.md). Samples
+use the [feature coverage index](FEATURES.md). Samples
 consume checksum-pinned offline candidates, not a private source build. The
 index distinguishes working examples from remaining coverage gaps.

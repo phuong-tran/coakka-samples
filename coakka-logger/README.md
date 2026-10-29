@@ -1,5 +1,7 @@
 # CoAkka Logger Samples
 
+Read the [product documentation](../docs/coakka-logger/README.md) for the full guide.
+
 CoAkka Logger gives applications a bounded logging queue, explicit admission
 outcomes and observable counters across host languages. These examples show
 what is accepted, refused, read and counted. Logger has its own packages and
@@ -18,7 +20,7 @@ bash run.sh coakka-logger node pressure
 Read the [Node.js guide](node/README.md) for prerequisites. Its basic and pressure
 examples install the exact published `coakka-logger-node@1.2.7` package. Choose
 another host from the language table below and follow that guide's package and
-platform requirements. [Current Packages](../docs/current-packages.md) lists
+platform requirements. [Current Packages](../docs/common/current-packages.md) lists
 independently versioned coordinates.
 
 The basic example starts one logger, emits one record, reads it and inspects
@@ -136,6 +138,6 @@ also adds integration and lifecycle work that should earn its place.
 | [Mojo](mojo/README.md) | `mojo/basic` |
 
 These examples demonstrate their named paths; the table does not expand their
-OS/CPU or production-support evidence. See [Product Layout](../docs/product-layout.md)
-for repository navigation and [Runtime Logging And Observability](../docs/runtime-logging-observability.md)
+OS/CPU or production-support evidence. See [Product Layout](../docs/common/product-layout.md)
+for repository navigation and [Runtime Logging And Observability](../docs/coakka-runtime/runtime-logging-observability.md)
 for composing logging with Runtime's separate delivery facts.

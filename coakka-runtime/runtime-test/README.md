@@ -21,7 +21,7 @@ see [Current-Engine Controls](#current-engine-controls--source-candidate).
 Do not apply the v1 framed-channel description to the new response engine.
 
 For loader, unsigned-library, Windows, macOS, Linux, and TLS/mTLS diagnosis,
-see [Troubleshooting](../../docs/troubleshooting.md).
+see [Troubleshooting](../../docs/coakka-runtime/troubleshooting.md).
 
 ## Contents
 

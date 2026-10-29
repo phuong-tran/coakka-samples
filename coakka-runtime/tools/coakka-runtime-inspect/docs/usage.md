@@ -1,153 +1,29 @@
-# CoAkka Runtime Inspect Usage Guide
+# Documentation moved
 
-Run the lane check first:
+<!-- coakka-doc-forward -->
 
-```sh
-bash run.sh coakka-runtime inspect check
-```
+Read [CoAkka Runtime Inspect Usage Guide](../../../../docs/coakka-runtime/tools/coakka-runtime-inspect/usage.md).
 
-That command verifies the sample docs and reports whether a local inspect
-binary is available. On macOS ARM64, Linux x86_64/ARM64, or Windows
-x86_64/ARM64, it also resolves the published inspect archive from
-`coakka-publish` and verifies its checksum against
-`artifacts/public-artifacts.tsv`.
+<a id="coakka-runtime-inspect-usage-guide"></a>
+[CoAkka Runtime Inspect Usage Guide](../../../../docs/coakka-runtime/tools/coakka-runtime-inspect/usage.md#coakka-runtime-inspect-usage-guide)
 
-## Published Archive Smoke
+<a id="published-archive-smoke"></a>
+[Published Archive Smoke](../../../../docs/coakka-runtime/tools/coakka-runtime-inspect/usage.md#published-archive-smoke)
 
-Run the published macOS ARM64, Linux x86_64/ARM64, or Windows x86_64/ARM64
-archive smoke:
+<a id="docker-smoke"></a>
+[Docker Smoke](../../../../docs/coakka-runtime/tools/coakka-runtime-inspect/usage.md#docker-smoke)
 
-```sh
-bash run.sh coakka-runtime inspect published-smoke
-```
+<a id="local-native-smoke"></a>
+[Local Native Smoke](../../../../docs/coakka-runtime/tools/coakka-runtime-inspect/usage.md#local-native-smoke)
 
-The smoke extracts the published archive, runs `version`, `doctor`,
-`help serve`, and reads one `local-linked-runtime` snapshot with a diagnostic
-route.
+<a id="start-the-browser-ui"></a>
+[Start The Browser UI](../../../../docs/coakka-runtime/tools/coakka-runtime-inspect/usage.md#start-the-browser-ui)
 
-All five current inspect native platforms are published.
+<a id="start-through-docker"></a>
+[Start Through Docker](../../../../docs/coakka-runtime/tools/coakka-runtime-inspect/usage.md#start-through-docker)
 
-## Docker Smoke
+<a id="docker-hub-image"></a>
+[Docker Hub Image](../../../../docs/coakka-runtime/tools/coakka-runtime-inspect/usage.md#docker-hub-image)
 
-Build and smoke a local Docker image from the published Linux inspect archive:
-
-```sh
-bash run.sh coakka-runtime inspect docker-smoke
-```
-
-The image runs `version`, `doctor`, `help serve`, and a
-`local-linked-runtime` snapshot check inside the container.
-
-## Local Native Smoke
-
-Point the sample at a local inspect binary, then run:
-
-```sh
-COAKKA_RUNTIME_INSPECT_BIN=/path/to/coakka-runtime-inspect \
-  bash run.sh coakka-runtime inspect local-smoke
-```
-
-The smoke runs:
-
-- `coakka-runtime-inspect version`
-- `coakka-runtime-inspect doctor`
-- `coakka-runtime-inspect help serve`
-- `coakka-runtime-inspect snapshot --output json --local-route inspect.echo=127.0.0.1:19001`
-
-It checks that the snapshot is labelled `local-linked-runtime` and that the
-runtime-owned route catalog includes `inspect.echo`.
-
-## Start The Browser UI
-
-Start inspect from the local native binary:
-
-```sh
-COAKKA_RUNTIME_INSPECT_BIN=/path/to/coakka-runtime-inspect \
-  bash run.sh coakka-runtime inspect serve
-```
-
-The default UI address is:
-
-```text
-http://127.0.0.1:18080
-```
-
-Override host or port:
-
-```sh
-COAKKA_RUNTIME_INSPECT_HOST=0.0.0.0 \
-COAKKA_RUNTIME_INSPECT_PORT=18081 \
-  bash run.sh coakka-runtime inspect serve
-```
-
-Pass extra inspect serve flags after `serve`:
-
-```sh
-bash run.sh coakka-runtime inspect serve --connect 127.0.0.1:19091
-```
-
-`--connect` configures the remote runtime request path for the Try Route panel.
-It does not make `/api/snapshot` a remote runtime reader in this release.
-
-## Start Through Docker
-
-Run inspect through the local Docker image:
-
-```sh
-bash run.sh coakka-runtime inspect docker-serve
-```
-
-The sample image copies the published Linux inspect archive as-is. It does not
-install native implementation runtime packages; the public archive must already
-be self-contained apart from the normal Linux system libraries provided by the
-base image.
-
-The default host URL is still:
-
-```text
-http://127.0.0.1:18080
-```
-
-Override the host port:
-
-```sh
-COAKKA_RUNTIME_INSPECT_DOCKER_PORT=18081 \
-  bash run.sh coakka-runtime inspect docker-serve
-```
-
-Pass route-try flags after `docker-serve`:
-
-```sh
-bash run.sh coakka-runtime inspect docker-serve --connect host.docker.internal:19091
-```
-
-## Docker Hub Image
-
-The current public Docker Hub image uses Runtime `2.5.1+C1`:
-
-```sh
-bash run.sh coakka-runtime inspect dockerhub-smoke
-docker run --rm docker.io/gabrielgun1983/coakka-runtime-inspect-sample:2.5.1-26f7944d-remote
-```
-
-Serve the browser UI:
-
-```sh
-bash run.sh coakka-runtime inspect dockerhub-serve
-docker run --rm -p 18080:18080 docker.io/gabrielgun1983/coakka-runtime-inspect-sample:2.5.1-26f7944d-remote serve
-```
-
-Route-try can still point at a caller-supplied runtime address:
-
-```sh
-bash run.sh coakka-runtime inspect dockerhub-serve --connect host.docker.internal:19091
-```
-
-## Binary Override
-
-Use a non-default binary path:
-
-```sh
-COAKKA_RUNTIME_INSPECT_BIN=/path/to/coakka-runtime-inspect \
-  bash run.sh coakka-runtime inspect local-smoke
-```
+<a id="binary-override"></a>
+[Binary Override](../../../../docs/coakka-runtime/tools/coakka-runtime-inspect/usage.md#binary-override)

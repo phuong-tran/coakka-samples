@@ -1,6 +1,6 @@
 # C++20 Sample
 
-**Start here:** [Installation and integration guide](integration.md) — prerequisites,
+**Start here:** [Installation and integration guide](../../docs/coakka-http-runtime/cpp/integration.md) — prerequisites,
 package setup, first HTTP request, feature walkthroughs and checked shutdown.
 This README records sample details, verification scope and benchmark results.
 
@@ -145,7 +145,7 @@ until service destruction. Mac/Pi and consumer sanitizer checks pass; ambiguous
 delivery, replay expiry and retention of already-running old handlers are not
 covered by this finite demonstration.
 
-Use the [feature index](../FEATURES.md) for source links, route commands,
+Use the [feature index](../../docs/coakka-http-runtime/FEATURES.md) for source links, route commands,
 expected responses and outstanding test coverage. Sample presence, package
 capability and matching-host execution are separate claims.
 

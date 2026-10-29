@@ -1,6 +1,6 @@
 # JVM Samples: Kotlin and Java
 
-**Start here:** [Installation and integration guide](integration.md) — prerequisites,
+**Start here:** [Installation and integration guide](../../docs/coakka-http-runtime/kotlin/integration.md) — prerequisites,
 package setup, first HTTP request, feature walkthroughs and checked shutdown.
 This README records sample details, verification scope and benchmark results.
 
@@ -9,7 +9,7 @@ classes, lambdas, typed response producers, `use`-style stream ownership, and a
 JVM shutdown hook rather than translating a Java sample line by line.
 
 The connector also supports Java applications through the same JAR and public
-classes. Start with [Java equivalents](integration.md#java-uses-the-same-jvm-connector)
+classes. Start with [Java equivalents](../../docs/coakka-http-runtime/kotlin/integration.md#java-uses-the-same-jvm-connector)
 and the runnable [JavaFeatures.java](src/main/java/sample/JavaFeatures.java).
 
 ```sh
@@ -73,7 +73,7 @@ outputs still remain in `COAKKA_HTTP_SAMPLE_WORK_ROOT`.
 
 ## Feature Recipes And Coverage
 
-Use the [feature index](../FEATURES.md) for source links, route commands,
+Use the [feature index](../../docs/coakka-http-runtime/FEATURES.md) for source links, route commands,
 expected responses and outstanding test coverage. Sample presence, package
 capability and matching-host execution are separate claims.
 

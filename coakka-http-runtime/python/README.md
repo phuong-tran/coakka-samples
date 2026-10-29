@@ -1,6 +1,6 @@
 # Python Sample
 
-**Start here:** [Installation and integration guide](integration.md) — prerequisites,
+**Start here:** [Installation and integration guide](../../docs/coakka-http-runtime/python/integration.md) — prerequisites,
 package setup, first HTTP request, feature walkthroughs and checked shutdown.
 This README records sample details, verification scope and benchmark results.
 
@@ -95,7 +95,7 @@ exhaustive fault injection, or new performance measurements.
 
 ## Feature Recipes And Coverage
 
-Use the [feature index](../FEATURES.md) for source links, route commands,
+Use the [feature index](../../docs/coakka-http-runtime/FEATURES.md) for source links, route commands,
 expected responses and outstanding test coverage. Sample presence, package
 capability and matching-host execution are separate claims.
 

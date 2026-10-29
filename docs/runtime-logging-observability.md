@@ -1,204 +1,38 @@
-# Runtime Logging And Observability
+# Documentation moved
 
-## Contents
+<!-- coakka-doc-forward -->
 
-- [Short Answer](#short-answer)
-- [Three Kinds Of Signals](#three-kinds-of-signals)
-- [Runtime Evidence](#runtime-evidence)
-- [Business Logs](#business-logs)
-- [Existing Logging Frameworks](#existing-logging-frameworks)
-- [Sources And Sinks](#sources-and-sinks)
-- [Where CoAkka Logger Fits](#where-coakka-logger-fits)
-- [Observability Export](#observability-export)
-- [Practical Rule](#practical-rule)
+Read [Runtime Logging And Observability](coakka-runtime/runtime-logging-observability.md).
 
-## Short Answer
+<a id="runtime-logging-and-observability"></a>
+[Runtime Logging And Observability](coakka-runtime/runtime-logging-observability.md#runtime-logging-and-observability)
 
-CoAkka separates runtime evidence from business logs. The runtime reports
-delivery facts. The app-host and handlers log business meaning. Observability
-pipelines export those facts to the tools the team already operates.
+<a id="contents"></a>
+[Contents](coakka-runtime/runtime-logging-observability.md#contents)
 
-```text
-runtime evidence -> delivery facts
-business log     -> domain meaning
-observability    -> fleet export, dashboards, alerts, traces, retention
-```
+<a id="short-answer"></a>
+[Short Answer](coakka-runtime/runtime-logging-observability.md#short-answer)
 
-Log business meaning where business meaning is known. Report runtime evidence
-where runtime delivery is decided. Export observability where the organization
-already observes systems.
+<a id="three-kinds-of-signals"></a>
+[Three Kinds Of Signals](coakka-runtime/runtime-logging-observability.md#three-kinds-of-signals)
 
-## Three Kinds Of Signals
+<a id="runtime-evidence"></a>
+[Runtime Evidence](coakka-runtime/runtime-logging-observability.md#runtime-evidence)
 
-| Signal | Owner | Examples | Where it belongs |
-| --- | --- | --- | --- |
-| Runtime evidence | CoAkka Runtime | route miss, timeout, rejection, deadletter, queue pressure, active generation, reply matching | runtime stats, deadletter stream, runtime inspect, CoAkka Logger integration |
-| Business log | app-host or handler | order created, payment declined, validation failed, tenant decision, audit record | app logger, audit log, domain event, CoAkka Logger when bounded logging is needed |
-| Observability export | platform or app integration | metrics, traces, log shipping, dashboards, alerting | OpenTelemetry, Prometheus, Grafana, Loki, ELK, vendor APM, platform tooling |
+<a id="business-logs"></a>
+[Business Logs](coakka-runtime/runtime-logging-observability.md#business-logs)
 
-The important boundary is meaning. The runtime can say whether delivery was
-admitted, routed, replied, rejected, timed out, or deadlettered. The app knows
-whether that means "payment declined", "retry later", "show a user message",
-"write an audit record", or "compensate a workflow".
+<a id="existing-logging-frameworks"></a>
+[Existing Logging Frameworks](coakka-runtime/runtime-logging-observability.md#existing-logging-frameworks)
 
-## Runtime Evidence
+<a id="sources-and-sinks"></a>
+[Sources And Sinks](coakka-runtime/runtime-logging-observability.md#sources-and-sinks)
 
-For the Core `AUTO` CPU and `MULTIPLEXED` connection defaults, why monitor
-collection is OFF by default, and an opt-in Kotlin example that applies across
-host languages, see [Runtime Monitoring](runtime-monitoring.md). That guide
-also distinguishes ordinary health/stats reads from monitor notifications and
-explains when a new runtime instance is required to change collection.
+<a id="where-coakka-logger-fits"></a>
+[Where CoAkka Logger Fits](coakka-runtime/runtime-logging-observability.md#where-coakka-logger-fits)
 
-Runtime evidence should explain delivery:
+<a id="observability-export"></a>
+[Observability Export](coakka-runtime/runtime-logging-observability.md#observability-export)
 
-- which source submitted the work;
-- which target was called;
-- which route snapshot and generation were active;
-- whether admission succeeded or failed;
-- whether queue pressure affected the request;
-- whether the handler replied;
-- whether the request timed out;
-- whether a route miss, rejection, or deadletter happened;
-- whether transport or endpoint state affected delivery.
-
-Example runtime-shaped records:
-
-```text
-runtime.ask source=checkout-api target=billing.charge.create payload=billing.charge.v1 generation=12 timeoutMs=750
-runtime.route.selected target=billing.charge.create generation=12 endpoint=billing-runtime-b strategy=weighted_round_robin
-runtime.pressure target=billing.charge.create node=billing-runtime-b depth=120 capacity=128
-runtime.deadletter reason=route_miss target=billing.invoice.issue generation=12 source=checkout-api
-```
-
-The exact log schema can differ by connector, logger, or host platform. The
-runtime facts should remain attributable.
-
-## Business Logs
-
-Business logs belong where business meaning is known:
-
-- order created;
-- payment authorized or declined;
-- validation failed;
-- tenant policy denied the request;
-- customer-visible state changed;
-- audit decision made;
-- compensation started;
-- domain retry scheduled.
-
-Those records usually belong in the app-host, handler, domain event stream, or
-audit system. They can use existing framework loggers such as SLF4J, log4j,
-logback, Python logging, Go `slog` or `zap`, .NET `ILogger`, Android logging,
-or the team's existing platform logger.
-
-CoAkka Runtime should not become the business logger just because it sees the
-envelope. The runtime does not own payment meaning, tenant policy, PII masking,
-user-facing error text, audit retention, or alert routing.
-
-## Existing Logging Frameworks
-
-Existing logging frameworks remain valid at the app layer. Use them for
-application messages, domain events, audit decisions, framework lifecycle, and
-operator context.
-
-The discipline is performance and attribution:
-
-- do not log every envelope synchronously on a hot runtime path;
-- do not format large strings before checking the log level;
-- do not write blocking file, console, or network sinks from latency-sensitive
-  runtime paths;
-- do not log full payloads by default;
-- do not hide dropped or rejected log records;
-- do not use logs as the only source of route or control-plane truth.
-
-Logging is work. It can allocate, format, serialize, block, flush, and cross
-the network. CoAkka can report pressure honestly, but it cannot make unbounded
-synchronous logging free.
-
-## Sources And Sinks
-
-Treat runtime, app-hosts, handlers, and connectors as signal sources. Treat
-loggers, metrics exporters, tracing exporters, dashboards, and vendor agents as
-sinks or export paths.
-
-Do not move business logging into the core runtime just because the runtime is
-near the handoff. The core runtime should emit runtime facts. The app layer
-should emit business meaning. A logger or observability adapter can then route
-those records to the right sink.
-
-## Where CoAkka Logger Fits
-
-A practical starting point is:
-
-- keep business logs in the app logger the team already uses;
-- keep runtime delivery evidence in CoAkka Runtime;
-- add CoAkka Logger only when log delivery itself needs a bounded,
-  cross-language, pressure-aware boundary.
-
-CoAkka Logger is useful when logging itself needs a bounded operational
-boundary:
-
-- bounded admission for log records;
-- visible pressure counters;
-- emitted, delivered, dropped, rejected, and drained evidence;
-- cross-language native-backed shape;
-- deterministic drains for samples and embedding tests;
-- correlation with runtime target, payload identity, request id, and route
-  generation.
-
-It is not a mandatory replacement for every app logger, every sink, or every
-observability platform. Keep the host logger when it is already simple,
-bounded, and honest under pressure. Use CoAkka Logger when logging behavior is
-part of the runtime, performance, or polyglot operational contract.
-
-For teams that already use SLF4J, log4j, logback, Python logging, Go `slog` or
-`zap`, .NET `ILogger`, Android logging, or platform logging, CoAkka Logger can
-sit beside that stack as the bounded lane for runtime-shaped operational
-records: emitted, admitted, dropped, rejected, drained, pressure, deadletter
-correlation, request id, target, payload identity, and route generation.
-
-## Observability Export
-
-Observability export belongs above or beside the runtime:
-
-- OpenTelemetry span creation and export;
-- Prometheus metrics;
-- dashboards and alert rules;
-- log shipping to Loki, ELK, or a vendor platform;
-- long-term retention;
-- fleet-level sampling policy;
-- tenant or compliance reporting.
-
-CoAkka does not need a service-mesh proxy to manufacture runtime telemetry.
-Target, endpoint, route generation, admission, pressure, reply, timeout,
-rejection, and deadletter facts originate where the runtime makes those
-decisions. Export them directly through the connector, logger, inspect, or an
-observability adapter instead of reconstructing application delivery from
-sidecar traffic.
-
-CoAkka should contribute runtime facts that those systems can correlate. The
-exporter, retention policy, dashboard, and alert ownership remain with the
-app-host, connector, framework adapter, platform team, or observability addon.
-
-## Practical Rule
-
-Use this split:
-
-```text
-If it explains delivery, it is runtime evidence.
-If it explains business meaning, it is an app or handler log.
-If it explains fleet health, export it to observability.
-```
-
-Good records carry IDs and facts:
-
-- target;
-- payload identity;
-- request or correlation id;
-- route generation;
-- admission outcome;
-- reply, timeout, rejection, or deadletter reason;
-- queue depth and capacity when pressure matters.
-
-Avoid giant payload dumps, high-cardinality debug spam, blocking sinks, and
-logs that hide their own loss. Logging strategy is part of performance design.
+<a id="practical-rule"></a>
+[Practical Rule](coakka-runtime/runtime-logging-observability.md#practical-rule)

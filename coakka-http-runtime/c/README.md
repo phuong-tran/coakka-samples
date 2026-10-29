@@ -1,6 +1,6 @@
 # C11 Sample
 
-**Start here:** [Installation and integration guide](integration.md) — prerequisites,
+**Start here:** [Installation and integration guide](../../docs/coakka-http-runtime/c/integration.md) — prerequisites,
 package setup, first HTTP request, feature walkthroughs and checked shutdown.
 This README records sample details, verification scope and benchmark results.
 
@@ -151,7 +151,7 @@ explicit precondition on this isolated fresh service, not an observed snapshot.
 Mac/Pi and consumer sanitizer checks pass. This is not an injected ambiguous
 delivery, replay-expiry or in-flight-old-handler retention test.
 
-Use the [feature index](../FEATURES.md) for source links, route commands,
+Use the [feature index](../../docs/coakka-http-runtime/FEATURES.md) for source links, route commands,
 expected responses and outstanding test coverage. Sample presence, package
 capability and matching-host execution are separate claims.
 

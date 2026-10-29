@@ -19,9 +19,9 @@ Runtime package coordinates do not install HTTP Runtime.
 
 Shared documentation lives in [docs/](docs/README.md):
 
-- [New to CoAkka](docs/new-to-coakka.md) and [ecosystem overview](docs/ecosystem-overview.md).
-- [Current packages](docs/current-packages.md) and [package/platform evidence](docs/runtime-package-platform-evidence.md).
-- [Product layout](docs/product-layout.md), [integration guidance](docs/ai-assisted-integration.md) and [troubleshooting](docs/troubleshooting.md).
+- [New to CoAkka](docs/common/new-to-coakka.md) and [ecosystem overview](docs/common/ecosystem-overview.md).
+- [Current packages](docs/common/current-packages.md) and [package/platform evidence](docs/coakka-runtime/runtime-package-platform-evidence.md).
+- [Product layout](docs/common/product-layout.md), [integration guidance](docs/common/ai-assisted-integration.md) and [troubleshooting](docs/coakka-runtime/troubleshooting.md).
 
 Samples is a rolling repository. Exact dependencies and executable checks are
 its integration contract. Versioned source mirrors preserve their recorded

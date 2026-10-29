@@ -8,7 +8,7 @@ close seals/joins accepted calls, awaits runtime retirement and normally closes
 the window. Renderer abandonment is not inferred Core cancellation.
 
 Use the exact private Node/Electron archives and explicit Node22/Electron42/
-esbuild0.27.7 tools in the [candidate guide](../../docs/runtime-electron-candidate.md).
+esbuild0.27.7 tools in the [candidate guide](../../../docs/coakka-runtime/runtime-electron-candidate.md).
 No registry download, dependency-archive patch or separate Core install occurs.
 
 ```sh

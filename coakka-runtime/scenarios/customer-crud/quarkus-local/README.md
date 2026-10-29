@@ -7,9 +7,9 @@ runtime for the application.
 
 This sample uses the **unpublished extension 3.0.0 and JVM Runtime 3.0.0 candidate**.
 The released packages remain at 2.5.3; see
-[Current Packages](../../../../docs/current-packages.md).
+[Current Packages](../../../../docs/common/current-packages.md).
 Prepare the exact local packages, Gradle cache and work directory using the
-[framework candidate guide](../../../docs/runtime-frameworks-candidate.md).
+[framework candidate guide](../../../../docs/coakka-runtime/runtime-frameworks-candidate.md).
 
 ## Run
 
@@ -46,7 +46,7 @@ identity, routes and request/reply counters. CPU placement support and selected
 IDs are shown as reported by the platform, without guessing two CPUs from AUTO.
 
 For optional monitoring, see
-[Runtime Monitoring](../../../../docs/runtime-monitoring.md).
+[Runtime Monitoring](../../../../docs/coakka-runtime/runtime-monitoring.md).
 
 ## Customer Work
 
@@ -117,4 +117,4 @@ Quarkus build-time extension or native-image support. Remote transport and
 Kubernetes deployment are outside this same-process sample.
 
 For the integration model, read
-[CoAkka Quarkus](../../../../docs/coakka-quarkus.md).
+[CoAkka Quarkus](../../../../docs/coakka-runtime/coakka-quarkus.md).

@@ -1,60 +1,17 @@
-# CoAkka Runtime Inspect Technical Notes
+# Documentation moved
 
-`coakka-runtime-inspect` sits above `coakka-runtime-core`.
+<!-- coakka-doc-forward -->
 
-It may own browser presentation, local UI state, route-try forms, response
-rendering, and copy-as-CLI snippets. It must not own runtime topology truth,
-service discovery, auth policy, mTLS policy, business schema validation, or
-runtime queue semantics.
+Read [CoAkka Runtime Inspect Technical Notes](../../../../docs/coakka-runtime/tools/coakka-runtime-inspect/technical-notes.md).
 
-## Runtime Truth
+<a id="coakka-runtime-inspect-technical-notes"></a>
+[CoAkka Runtime Inspect Technical Notes](../../../../docs/coakka-runtime/tools/coakka-runtime-inspect/technical-notes.md#coakka-runtime-inspect-technical-notes)
 
-Current inspect snapshots are runtime-owned but local-linked:
+<a id="runtime-truth"></a>
+[Runtime Truth](../../../../docs/coakka-runtime/tools/coakka-runtime-inspect/technical-notes.md#runtime-truth)
 
-```text
-inspect process
-  -> creates ephemeral native runtime
-  -> applies diagnostic route snapshot
-  -> reads runtime C ABI snapshots
-  -> renders JSON and browser panels
-```
+<a id="published-archive-status"></a>
+[Published Archive Status](../../../../docs/coakka-runtime/tools/coakka-runtime-inspect/technical-notes.md#published-archive-status)
 
-The payload explicitly reports:
-
-```text
-snapshot_source=local-linked-runtime
-remote_runtime=false
-```
-
-That is intentional until a dedicated remote read/observe adapter exists.
-
-## Published Archive Status
-
-The current public inspect archive generation is
-`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` for all five platforms. The
-sample runner selects by platform and verifies every archive
-through the same manifest/checksum resolver used by the runtime-client lane.
-
-The archive and Docker image use that exact Runtime generation.
-
-All five archives pass Runtime identity, dependency, architecture, archive,
-and checksum gates. macOS ARM64 completed command and `serve` smoke. Docker
-image smoke passed on Linux amd64 and arm64.
-
-The browser walkthrough GIF and MP4 were recorded on macOS from the published
-macOS ARM64 inspect archive. The recording used two local native runtime
-responders on `127.0.0.1:19091` and `127.0.0.1:19092`; it did not use Docker,
-UTM, JVM, or a language connector.
-
-## Route Try
-
-When `serve --connect host:port` is provided, the browser Try Route panel uses
-the same native request-driving shape as `coakka-client call` / `ask`.
-
-The form supports route, payload, content type, message type, schema version,
-timeout, custom headers, mode, and output mode. It also generates an equivalent
-`coakka-client` command so browser and terminal usage teach the same runtime
-contract.
-
-Unsupported runtime request profiles are reported explicitly instead of being
-hidden behind a fake HTTP fallback.
+<a id="route-try"></a>
+[Route Try](../../../../docs/coakka-runtime/tools/coakka-runtime-inspect/technical-notes.md#route-try)

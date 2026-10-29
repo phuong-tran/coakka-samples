@@ -1,22 +1,8 @@
-# CoAkka Runtime Inspect Docs
+# Documentation moved
 
-`coakka-runtime-inspect` is the browser-facing runtime explorer lane for
-CoAkka Runtime.
+<!-- coakka-doc-forward -->
 
-![CoAkka Runtime Inspect browser walkthrough](../../../../docs/assets/coakka-runtime-inspect.gif)
+Read [CoAkka Runtime Inspect Docs](../../../../docs/coakka-runtime/tools/coakka-runtime-inspect/README.md).
 
-Full recording: [coakka-runtime-inspect.mp4](../../../../docs/assets/coakka-runtime-inspect.mp4)
-
-- [Introduction](introduction.md)
-- [Usage Guide](usage.md)
-- [Technical Notes](technical-notes.md)
-
-Use these docs together with the local sample runner:
-
-```sh
-bash run.sh coakka-runtime inspect check
-bash run.sh coakka-runtime inspect published-smoke
-bash run.sh coakka-runtime inspect local-smoke
-bash run.sh coakka-runtime inspect docker-smoke
-bash run.sh coakka-runtime inspect docker-serve
-```
+<a id="coakka-runtime-inspect-docs"></a>
+[CoAkka Runtime Inspect Docs](../../../../docs/coakka-runtime/tools/coakka-runtime-inspect/README.md#coakka-runtime-inspect-docs)

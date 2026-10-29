@@ -1,6 +1,6 @@
 # Go Runtime Samples
 
-This branch's basic/deadletter/replica-file-fanout apps use the [private candidate workflow](../docs/runtime-go-candidate.md)
+This branch's basic/deadletter/replica-file-fanout apps use the [private candidate workflow](../../docs/coakka-runtime/runtime-go-candidate.md)
 and exact local module, not the historical published train below. They propagate
 inspection/subscription errors, omit incidental tuning and retire owned resources
 before main reports failures. File fan-out observes all three exact owners,
@@ -11,7 +11,7 @@ qualification; use the linked candidate guide for the current runnable apps.
 
 The historical Go sample train consumed `github.com/phuong-tran/coakka-runtime-go@v1.8.2`.
 This is the sample runner pin, not the latest release. See
-[Current Packages](../../docs/current-packages.md) for the current catalog.
+[Current Packages](../../docs/common/current-packages.md) for the current catalog.
 The package embeds native runtime generation `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` for Linux
 ARM64/x86-64, macOS ARM64, and Windows ARM64/x86-64. Package presence and
 execution evidence remain separate in the compatibility matrix.
@@ -237,7 +237,7 @@ compatibility name; new samples use `StartRuntimeHost(...)`.
 
 Use this lane's runnable sample as the source for package imports and basic
 lifecycle names. Before generating connection strategy, TLS/mTLS, File Lane, or
-Stream Lane code, follow [AI-Assisted Integration](../../docs/ai-assisted-integration.md).
+Stream Lane code, follow [AI-Assisted Integration](../../docs/common/ai-assisted-integration.md).
 It links the canonical feature guides, exact package catalog, and platform
 evidence, and it defines when only workflow pseudocode is justified.
 

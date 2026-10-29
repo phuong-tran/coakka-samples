@@ -1,7 +1,7 @@
 # JVM Runtime Basic (Kotlin)
 
 One text echo with the beginner CoAkka.local/use API, no manual route wiring
-or private-state access. Use the [exact private ProGuard workflow](../../docs/runtime-jvm-candidate.md)
+or private-state access. Use the [exact private ProGuard workflow](../../../docs/coakka-runtime/runtime-jvm-candidate.md)
 and its explicit candidate/work/tool/native-cache inputs, then:
 
 ```sh

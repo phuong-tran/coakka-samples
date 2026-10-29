@@ -1,6 +1,6 @@
 # Go Sample
 
-**Start here:** [Installation and integration guide](integration.md) — prerequisites,
+**Start here:** [Installation and integration guide](../../docs/coakka-http-runtime/go/integration.md) — prerequisites,
 package setup, first HTTP request, feature walkthroughs and checked shutdown.
 This README records sample details, verification scope and benchmark results.
 
@@ -60,7 +60,7 @@ files outside source. It does not rebuild the runtime library.
 
 ## Feature Recipes And Coverage
 
-Use the [feature index](../FEATURES.md) for source links, route commands,
+Use the [feature index](../../docs/coakka-http-runtime/FEATURES.md) for source links, route commands,
 expected responses and outstanding test coverage. Sample presence, package
 capability and matching-host execution are separate claims.
 
@@ -141,7 +141,7 @@ These checks and TLS/mTLS pass on macOS ARM64 and Pi Linux ARM64 against the
 exact Go candidate. Go race detection instruments Go sample/connector code,
 not the packaged native library. The tuning check verifies accepted deadline
 configuration; the separate adverse recipe below verifies deadline firing.
-The remaining [coverage gaps](../FEATURES.md) keep the all-features completion
+The remaining [coverage gaps](../../docs/coakka-http-runtime/FEATURES.md) keep the all-features completion
 gate open. No benchmark conclusion follows from a smoke.
 
 ### Deadline And Pressure Recipes

@@ -1,163 +1,38 @@
-# Repository Boundaries
+# Documentation moved
 
-CoAkka keeps runnable examples and versioned artifacts in separate public
-repositories. Neither repository is a single release unit for the ecosystem.
+<!-- coakka-doc-forward -->
 
-## Repositories
+Read [Repository Boundaries](common/repository-boundaries.md).
 
-| Repository | Role | What to look for |
-| --- | --- | --- |
-| `coakka-samples` | Rolling public examples that consume exact published coordinates, plus deliberately scoped tagged source mirrors used by public registry SCM metadata. | Sample code, container flows, framework scenarios, docs, pins, smoke workflows, and immutable source-only projections. |
-| [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) | Versioned artifact warehouse and catalog. | Immutable package lanes, optional `runtime-addons/`, native archives, source packages, release notes, manifests, provenance, and checksums. |
-| Runtime and connector implementation workspaces | Artifact producers consumed through `coakka-publish`. | Source used to build the public artifacts. Public samples should not depend on a local implementation checkout. |
+<a id="repository-boundaries"></a>
+[Repository Boundaries](common/repository-boundaries.md#repository-boundaries)
 
-The normal public reader starts in `coakka-samples`. Runtime and Logger samples resolve
-artifacts from a sibling `coakka-publish` checkout when present, or from the
-public raw artifact URL when a local checkout is absent. HTTP Runtime uses a
-separate archive resolver and requires an explicit `coakka-publish` checkout;
-follow its own sample guide rather than assuming the same fallback.
+<a id="repositories"></a>
+[Repositories](common/repository-boundaries.md#repositories)
 
-Use `coakka-samples` to run examples. Use
-[`coakka-publish`](https://github.com/phuong-tran/coakka-publish) to download
-versioned binaries, package archives, release notes, manifests, and checksums.
+<a id="product-naming-boundary"></a>
+[Product Naming Boundary](common/repository-boundaries.md#product-naming-boundary)
 
-`coakka-samples` has no repository version and creates no GitHub Releases. Git
-tags may mark useful checkpoints, while CI and exact dependency pins state what
-the rolling samples currently exercise.
+<a id="what-coakka-samples-owns"></a>
+[What coakka-samples Owns](common/repository-boundaries.md#what-coakka-samples-owns)
 
-`coakka-publish` also has no aggregate repository version and creates no
-GitHub Releases. Each artifact lane owns its version, immutable directory,
-manifest, checksum, and optional receipt tag. npm, NuGet, PyPI, and Maven use
-their native distribution channels. Official Go and Swift source-package
-repositories may keep GitHub Releases because their semantic tags are
-package-manager coordinates outside the samples repository.
+<a id="what-coakka-samples-does-not-own"></a>
+[What coakka-samples Does Not Own](common/repository-boundaries.md#what-coakka-samples-does-not-own)
 
-## Product Naming Boundary
+<a id="documentation-ownership"></a>
+[Documentation Ownership](common/repository-boundaries.md#documentation-ownership)
 
-`CoAkka` is the ecosystem and brand prefix. Public sample docs should name the
-specific product surface when the distinction matters:
+<a id="artifact-boundary"></a>
+[Artifact Boundary](common/repository-boundaries.md#artifact-boundary)
 
-| Name | Boundary |
-| --- | --- |
-| `CoAkka Runtime` | Runtime product family and runtime delivery model. |
-| `coakka-runtime-core` | Native runtime engine and C ABI surface. |
-| `coakka-runtime-connector` | Host-language and framework connector packages. |
-| `coakka-runtime-client` | CLI runtime client. The published command and archive names use `coakka-client`. |
-| `CoAkka Runtime Addon` | Independently released optional capability that composes with public Runtime features without entering runtime core or the default package. |
-| `CoAkka HTTP Runtime` | Shared HTTP contract, language packages, and HTTP-focused addons. It is distinct from CoAkka Runtime message routing. |
-| `coakka-logger` | Bounded logger product surface. |
+<a id="runtime-boundary"></a>
+[Runtime Boundary](common/repository-boundaries.md#runtime-boundary)
 
-For the full wording rule, read
-[CoAkka Ecosystem Naming](coakka-ecosystem-naming.md).
+<a id="http-runtime-boundary"></a>
+[HTTP Runtime Boundary](common/repository-boundaries.md#http-runtime-boundary)
 
-## What coakka-samples Owns
+<a id="runtime-addon-boundary"></a>
+[Runtime Addon Boundary](common/repository-boundaries.md#runtime-addon-boundary)
 
-- sample entrypoints and docs
-- container flows and compose files
-- framework adapter usage examples
-- language-specific basic, deadletter, hot-reload, pressure, and logger samples
-- language-specific CoAkka HTTP Runtime lifecycle, pressure, streaming, and
-  monitoring samples against its checksum-pinned repository archives
-- artifact pin verification against the public manifest
-- public smoke workflows
-- tagged, source-only release projections when a public package registry needs
-  a stable and anonymously reachable SCM URL
-
-## What coakka-samples Does Not Own
-
-- native runtime implementation
-- package publishing pipeline
-- service-discovery policy
-- deployment control plane
-- production capacity claims
-- private operator runbooks for a specific deployment
-- product releases or an aggregate ecosystem version
-- implementation authority or private release tooling for a projected source
-  mirror
-
-## Documentation Ownership
-
-Public Markdown in both repositories is projected from
-`coakkaCoreNativeDev/public-docs/`. The rendered copies accept issues and
-review, but wording changes are authored in the documentation authority and
-synchronized outward. This prevents common guides, package READMEs, and sample
-instructions from becoming independent versions of the same contract.
-
-## Artifact Boundary
-
-Samples should consume the public artifact surface in the same way a user
-would. That means:
-
-- Maven samples resolve from the public Maven layout.
-- Python, Node.js, Go, C#, Rust, native C/C++, Mojo, and Zig samples resolve
-  pinned public packages or archives.
-- Runtime/Logger archive inputs are checked against
-  `artifacts/public-artifacts.tsv`. HTTP Runtime inputs use the independent
-  pins in `coakka-http-runtime/scripts/package-pins.json` and verify extracted
-  package contents before reuse.
-- Samples should not require a local implementation checkout to run.
-
-A tagged source mirror is a transparency and reproducibility surface, not a
-second implementation branch. It contains only the source, license, manifest,
-and minimal build/test material declared by its producer. The producer verifies
-the projection byte-for-byte before tagging it, and package metadata points at
-the immutable tag rather than at a rolling branch or private repository.
-
-## Runtime Boundary
-
-CoAkka's runtime contract is expressed through targets, envelopes, route
-snapshots, replies, deadletters, timeouts, and stats. The sample code should
-show those concepts without exposing transport implementation details as public
-application semantics.
-
-The `coakka-runtime-client` lane may drive runtime calls and print runtime
-diagnostics, but it must not become an inspect/dashboard product or a business
-schema registry. Sample payload schemas belong to the sample that owns the
-workflow, not to runtime core or the CLI client.
-
-Transport and package implementation can evolve behind the published artifact
-surface. Sample call-sites should stay boring:
-
-```text
-ask target -> reply, timeout, or deadletter
-```
-
-## HTTP Runtime Boundary
-
-CoAkka HTTP Runtime defines listener, connection, protocol, routing, bounded
-request/response/stream, file, health, monitoring, and shutdown behavior.
-Core owns HTTP transport, parsing, effective configuration, and lifecycle.
-Language connectors expose host-inlined handlers through idiomatic APIs while
-preserving their host's values and scheduling. Applications do not need to
-create another language-native HTTP server in front of Core.
-
-HTTP Runtime repository artifacts are released independently under
-`coakka-publish/coakka-http-runtime/`. Runnable consumers belong under
-`coakka-samples/coakka-http-runtime/`. Annotation, decorator, dependency
-injection, validation, or other framework-style experiences belong in addons
-above the connector so the shared HTTP contract remains unchanged.
-
-The HTTP edge may call CoAkka Runtime for application-owned target routing, but
-the two products keep separate lifecycle, queue, and release identities.
-
-## Runtime Addon Boundary
-
-Optional runtime addons are implemented and audited in their source-owner
-workspace, then released independently under `coakka-publish/runtime-addons/`.
-The default runtime package does not absorb their protocol libraries, workers,
-credentials, or product policy.
-
-An addon archive contains the addon module and its public C ABI, not another
-copy of CoAkka Runtime. Its manifest pins runtime ABI compatibility, required
-runtime features, native platforms, owned dependencies, exports, checksums, and
-matching-host evidence. A package template is not a release; samples may consume
-an addon only after its archive is listed in `artifacts/public-artifacts.tsv`.
-
-See [Runtime Addons](runtime-addons.md) for the current lane status and the SFTP
-artifact-publisher composition with File Lane.
-
-## Public Wording Rule
-
-Public sample docs should describe behavior, artifact generation, and runtime
-vocabulary. Avoid turning implementation choices into the public contract unless
-the sample is specifically about a public artifact or public ABI.
+<a id="public-wording-rule"></a>
+[Public Wording Rule](common/repository-boundaries.md#public-wording-rule)

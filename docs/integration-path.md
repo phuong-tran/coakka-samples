@@ -1,147 +1,32 @@
-# CoAkka Sample Rollout Path
+# Documentation moved
 
-This note gives a first-pass path through the samples. It is not a production
-rollout checklist; it is a reading and experimentation order for understanding
-the runtime boundary without opening every sample at once.
+<!-- coakka-doc-forward -->
 
-## Step 1: See The Runtime Path
+Read [CoAkka Sample Rollout Path](common/integration-path.md).
 
-Start with a container sample:
+<a id="coakka-sample-rollout-path"></a>
+[CoAkka Sample Rollout Path](common/integration-path.md#coakka-sample-rollout-path)
 
-```sh
-bash run.sh coakka-runtime containers node-python
-```
+<a id="step-1-see-the-runtime-path"></a>
+[Step 1: See The Runtime Path](common/integration-path.md#step-1-see-the-runtime-path)
 
-Look for the visible shape:
+<a id="step-2-read-one-basic-sample"></a>
+[Step 2: Read One Basic Sample](common/integration-path.md#step-2-read-one-basic-sample)
 
-```text
-browser
-  -> web app
-  -> connector
-  -> CoAkka runtime
-  -> store process
-  -> runtime reply
-  -> web UI
-```
+<a id="step-3-observe-failure-semantics"></a>
+[Step 3: Observe Failure Semantics](common/integration-path.md#step-3-observe-failure-semantics)
 
-The important observation is that the store is not exposed as a REST fallback
-for the web service. Business traffic crosses the runtime path.
+<a id="step-4-understand-route-snapshots"></a>
+[Step 4: Understand Route Snapshots](common/integration-path.md#step-4-understand-route-snapshots)
 
-## Step 2: Read One Basic Sample
+<a id="step-5-move-to-a-real-workflow"></a>
+[Step 5: Move To A Real Workflow](common/integration-path.md#step-5-move-to-a-real-workflow)
 
-Run the smallest runtime sample in a language you know:
+<a id="step-6-cross-a-process-or-language-boundary"></a>
+[Step 6: Cross A Process Or Language Boundary](common/integration-path.md#step-6-cross-a-process-or-language-boundary)
 
-```sh
-bash run.sh coakka-runtime jvm basic
-bash run.sh coakka-runtime python basic
-bash run.sh coakka-runtime node basic
-bash run.sh coakka-runtime go basic
-```
+<a id="step-7-add-an-optional-runtime-capability-only-when-published"></a>
+[Step 7: Add An Optional Runtime Capability Only When Published](common/integration-path.md#step-7-add-an-optional-runtime-capability-only-when-published)
 
-In the code, find these five pieces:
-
-| Piece | What it answers |
-| --- | --- |
-| start spec | What process am I, what route snapshot do I start with, and what queue policy do I use? |
-| route target | Which capability name should runtime route to? |
-| local handler registration | Which target does this process actually own? |
-| typed ask/event | What work is submitted through runtime? |
-| stats/deadletters | What happened after delivery? |
-
-That is the smallest useful CoAkka model.
-
-## Step 3: Observe Failure Semantics
-
-Run one deadletter sample:
-
-```sh
-bash run.sh coakka-runtime jvm deadletter
-bash run.sh coakka-runtime python deadletter
-```
-
-The point is not to make failure disappear. The point is to make delivery
-failure visible as runtime vocabulary: target, generation, reason, and matched
-pending request.
-
-## Step 4: Understand Route Snapshots
-
-Run the route reload sample when you want to see the apply semantics directly:
-
-```sh
-bash run.sh coakka-runtime python hot-reload
-```
-
-Most applications can start with one route snapshot from platform config and
-change it through rollout. This sample exists to show why route generation
-exists when live route changes are needed:
-
-- a newer route snapshot can be applied
-- a stale snapshot is rejected
-- an invalid snapshot does not replace the active route table
-- diagnostics report the active generation
-
-## Step 5: Move To A Real Workflow
-
-Run a local customer CRUD scenario:
-
-```sh
-bash run.sh scenario customer-crud spring-boot-starter-local dev
-```
-
-This scenario keeps HTTP at the browser/API edge and moves customer
-work onto local runtime targets.
-
-If you want explicit route and handler wiring instead of annotation-based
-adapter help, read:
-
-```text
-coakka-runtime/scenarios/customer-crud/spring-boot-single-process
-```
-
-## Step 6: Cross A Process Or Language Boundary
-
-After the local workflow is clear, run a cross-process customer scenario:
-
-```sh
-bash run.sh scenario customer-crud spring-boot-spring-boot dev
-bash run.sh scenario customer-crud spring-boot-node dev
-bash run.sh scenario customer-crud spring-boot-go dev
-```
-
-The web process still owns browser/API HTTP. The store process owns the
-customer target. The business call between them stays runtime-only.
-
-## Step 7: Add An Optional Runtime Capability Only When Published
-
-After the base runtime path is clear, read [Runtime Addons](runtime-addons.md)
-when the app host needs a reusable external protocol or integration workflow.
-An addon composes with Runtime; it does not become a new core lane or arrive in
-every runtime package.
-
-Check `artifacts/public-artifacts.tsv` before writing imports or install
-commands. Eleven artifact-source addons are published at native
-`1.1.0+d1032f6d`, and SFTP is published at replacement native
-`1.2.0+88b9a047`. They remain outside connector packages and currently expose
-native C ABIs only. Addon-specific language connectors may follow when
-demonstrated demand justifies their platform, packaging, testing, and
-maintenance cost; they are not part of the current release contract:
-
-```sh
-bash run.sh coakka-runtime addons https
-bash run.sh coakka-runtime addons sftp
-```
-
-Contributors can still run `bash run.sh source-candidate` to build the current
-Core source and test the next package candidate.
-
-## Step 8: Read Production-Facing Notes
-
-After the samples make sense, read:
-
-- [runtime-integration-guide.md](runtime-integration-guide.md)
-- [production-readiness.md](production-readiness.md)
-- [containerized-runtime.md](containerized-runtime.md)
-- [qna.md](qna.md)
-
-Those notes explain runtime start specs, route snapshots, target/source naming,
-container identity, and common positioning questions.
+<a id="step-8-read-production-facing-notes"></a>
+[Step 8: Read Production-Facing Notes](common/integration-path.md#step-8-read-production-facing-notes)
