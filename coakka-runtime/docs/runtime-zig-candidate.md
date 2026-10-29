@@ -55,3 +55,11 @@ The build checks the resulting application/adapter and bundled Core together;
 an incompatible component refuses before the sample runs. The Zig sample also
 uses a portable ARM64 CPU target. These are application packaging settings,
 not runtime tuning or a replacement for Core's accepted configuration.
+
+Private Windows qualification runs the admitted candidate's actual Windows
+applications on Windows 10 build 19044 x86-64 and Windows 11 build 26200 ARM64.
+Both pass request/reply, cancellation, accepted settings, File/Stream transfer
+and bounded ownership/concurrent-close checks. These are macOS-built Zig 0.16.0
+ReleaseSafe applications executed on matching Windows architectures; a native
+Windows compiler build is not claimed. CPU AUTO is accepted, while the current
+Windows native images report CPU placement unapplied. Publication remains closed.
