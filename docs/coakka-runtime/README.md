@@ -1,7 +1,10 @@
 # CoAkka Runtime Documentation
 
-CoAkka Runtime carries application-owned work between processes and languages.
-The application supplies its handlers; Runtime manages delivery and outcomes.
+**Application-owned work across languages and processes.**
+
+CoAkka Runtime is a polyglot, cross-platform runtime powered by a shared native
+core. Native-backed language connectors expose familiar APIs. The application
+supplies its handlers and business rules; Runtime manages delivery and outcomes.
 
 ## Start
 

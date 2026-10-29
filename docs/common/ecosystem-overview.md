@@ -1,17 +1,28 @@
 # CoAkka Ecosystem Overview
 
-CoAkka is a polyglot, multi-language, multi-platform distributed runtime
-ecosystem. Its central product, **CoAkka Runtime**, routes application-owned
-work by stable target name across processes, languages, containers and hosts.
-It provides bounded admission, request/reply, deadletters and delivery
-diagnostics through idiomatic host-language connectors.
+**Shared native cores. Familiar APIs across languages.**
+
+CoAkka is a **polyglot, cross-platform ecosystem** of **native-backed runtimes**.
+Polyglot means multi-language: application components can use the programming
+languages that fit their work. Multi-platform support follows each product's
+published language, operating-system and CPU compatibility matrix.
+
+Each product has its own native core. Its language connectors share that core's
+implementation and expose familiar APIs; each application owns its runtime
+instances. This gives the ecosystem a common design approach while products
+keep their own contracts, packages and versions.
+
+Its central product, **CoAkka Runtime**, connects **application-owned work** by
+stable target name across processes, languages, containers and hosts. The
+application keeps business behavior; Runtime provides bounded admission,
+request/reply, deadletters and delivery diagnostics.
 
 ## Products And Boundaries
 
 | Product | Owns | Start here |
 | --- | --- | --- |
 | CoAkka Runtime | Distributed target-based delivery, replies, deadletters, File Lane and Stream Lane. | [Runtime integration](../coakka-runtime/guides/runtime-integration-guide.md), [published packages](current-packages.md) |
-| CoAkka Logger | Bounded logging with explicit admission, delivery and pressure outcomes. | [Logging and observability](../coakka-runtime/operations/runtime-logging-observability.md) |
+| CoAkka Logger | Bounded logging with explicit admission, delivery and pressure outcomes. | [Logger documentation](../coakka-logger/README.md) |
 | Runtime Addons | Optional integration capabilities composed with Runtime, such as acquiring a file before File Lane delivery. | [Runtime addons](../coakka-runtime/guides/runtime-addons.md) |
 | CoAkka HTTP Runtime | Independent HTTP server/client: routing, static files, streaming, SSE, WebSocket, TLS/mTLS, monitoring and graceful shutdown. | [HTTP samples](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-http-runtime), [archive catalog](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime) |
 

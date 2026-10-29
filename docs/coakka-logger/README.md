@@ -1,9 +1,12 @@
 # CoAkka Logger Documentation
 
-CoAkka Logger gives applications a bounded place to submit log records,
+**Native-backed logging across languages.**
+
+CoAkka Logger is a cross-platform logging library for polyglot applications.
+Its language connectors share a native logging core with bounded storage,
 explicit acceptance or refusal, and counters for observing pressure. It has
-its own lifecycle and packages. Applications can use it without CoAkka Runtime
-or CoAkka HTTP Runtime.
+its own lifecycle and packages and can be used independently of the other
+CoAkka products.
 
 ## Why logging affects an application
 

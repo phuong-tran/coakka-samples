@@ -2,6 +2,10 @@
 
 **Polyglot applications should not require polyglot HTTP infrastructure.**
 
+CoAkka HTTP Runtime is a **cross-platform HTTP server and client** with a
+**shared native HTTP core**. Its native-backed packages expose that core
+through familiar APIs in each supported language.
+
 A team may build an API in Go, an image endpoint in Python and a web service
 in TypeScript. Maintaining a separate HTTP stack for each language repeats
 decisions about request limits, timeouts, streaming and shutdown.

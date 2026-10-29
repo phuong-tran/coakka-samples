@@ -1,8 +1,11 @@
 # CoAkka HTTP Runtime Documentation
 
-Build an HTTP service with handlers written in your application's language.
-HTTP Runtime owns the shared HTTP service contract; application logic stays
-in the application. This product has its own packages and version.
+**One native HTTP core, shared across languages.**
+
+CoAkka HTTP Runtime is a polyglot, cross-platform HTTP server and client.
+Its native-backed language packages share a native HTTP core while handlers
+remain application code. Each service runs its own runtime instance.
+This product has its own packages and version.
 
 ## Start
 
