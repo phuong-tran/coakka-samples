@@ -12,48 +12,24 @@
       "version": "2.5.5",
       "minimumRuntime": "22.0.0",
       "archive": "coakka-v2-connector-node-2.5.5.tgz",
-      "bytes": 6603293,
-      "sha256": "a449099b7ed89e41e4d801aedeb020dca27e94d44024314792a873a25a58de4d",
+      "bytes": 6294331,
+      "sha256": "f310ebb9560fdfe76e28f2f2345179bb154ca0060965708d74af3bc767c0918a",
       "members": {
-        "LICENSE": {
-          "bytes": 11358,
-          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
-        },
-        "NOTICE": {
-          "bytes": 4305,
-          "sha256": "1b0e11185092f853be1b075f7ef92998dd82ecd903c51563553d95a77a0d4d73"
-        },
-        "native/windows-aarch64/libcoakka_runtime_v2.dll": {
-          "bytes": 2071552,
-          "sha256": "b1a1ca4068878b1e4d6d9a0f9064b2927a75cd390e755c4b42ed0b530d997046"
-        },
-        "native/windows-x86_64/libcoakka_runtime_v2.dll": {
-          "bytes": 2283520,
-          "sha256": "901cb6e63a17bdcaadfc0aff2c3a082d9272dcb18ba94d7aaa6424665753a8fb"
-        },
-        "native/macos-aarch64/libcoakka_runtime_v2.dylib": {
-          "bytes": 860216,
-          "sha256": "b3b0050db65e40da7d8d2dd54aaf9ee50975ecf1498e657c8896f6b98ccc8e12"
-        },
-        "dist/index.js": {
-          "bytes": 133778,
-          "sha256": "8b44790a81ff45db0edfcd70ca05f9c67ace338b57b33491cd23063242a5441b"
-        },
-        "native-manifest.json": {
-          "bytes": 3063,
-          "sha256": "991f7201781383a124e31135ca55340015fe2187a0cf9bba7d32ffe8db63b947"
-        },
-        "package.json": {
-          "bytes": 1138,
-          "sha256": "bbdedf0d1dfe125f511509f7ac2be5d042336173875104790d3d22a392999b76"
-        },
         "CONSUMING.md": {
           "bytes": 10948,
           "sha256": "0b0c49bbaefaccfd149f71a3c1ab2fb8e882fffa0384a03ed42527958e79a939"
         },
+        "LICENSE": {
+          "bytes": 11358,
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        },
         "NATIVE-LICENSE.md": {
           "bytes": 6482,
           "sha256": "089ff94cf25b1707ae3e7d03bb81f0ddfb84e87fb7476f5fea7ebd2cd2f01925"
+        },
+        "NOTICE": {
+          "bytes": 4305,
+          "sha256": "1b0e11185092f853be1b075f7ef92998dd82ecd903c51563553d95a77a0d4d73"
         },
         "PACKAGE-LICENSE.md": {
           "bytes": 1384,
@@ -63,57 +39,81 @@
           "bytes": 16062,
           "sha256": "192cbdcbc9a98dc6d2f9994f62bbe53e0ce406975e5541867ac10e9f73c7d82c"
         },
+        "dist/index.d.ts": {
+          "bytes": 53750,
+          "sha256": "ecc2e130d76dda194b7e56cff82c46bf30b395f9571c2b4365b93b9bc9161773"
+        },
+        "dist/index.js": {
+          "bytes": 133959,
+          "sha256": "4526b4c2aa562bc75014f855d3b986d3a1a14a4bd34aef2c976a1774eafd56db"
+        },
+        "native-manifest.json": {
+          "bytes": 3063,
+          "sha256": "991f7201781383a124e31135ca55340015fe2187a0cf9bba7d32ffe8db63b947"
+        },
         "native/linux-aarch64/libcoakka_runtime_node_v2.node": {
           "bytes": 199064,
           "sha256": "da6bee91e6fd731bc4f925ae4b976fb0c35d57815ea2b4343c2c4fb72e82be54"
-        },
-        "native/linux-x86_64/libcoakka_runtime_node_v2.node": {
-          "bytes": 158192,
-          "sha256": "cb72c7e7f802d901ca4124ac1f50406d71457549d517ff9d446e770f239604a0"
-        },
-        "native/macos-aarch64/libcoakka_runtime_node_v2.node": {
-          "bytes": 92112,
-          "sha256": "e97f22b04d7b40dd53a556a547bd2901cd413f766a301f75a78acd27ba32c34e"
-        },
-        "native/windows-aarch64/libcoakka_runtime_node_v2.node": {
-          "bytes": 229888,
-          "sha256": "db5fa0fddd2738ac0304f47203cc45f82517d9ec04d0056e6b38665ae9d25e11"
-        },
-        "native/windows-x86_64/libcoakka_runtime_node_v2.node": {
-          "bytes": 183296,
-          "sha256": "d98fea8c69b7990e0c5132b60c529f88af6e0407bccbae377df36a3b4590cb31"
-        },
-        "native/linux-aarch64/libcoakka_runtime_values.node": {
-          "bytes": 789040,
-          "sha256": "05acf4ac242eb1f27a6cbf5e4aea13b21e8fb893ce63904cc8d4eb89d766785a"
-        },
-        "native/linux-x86_64/libcoakka_runtime_values.node": {
-          "bytes": 817704,
-          "sha256": "7fcefe9bed0d9843a7e5e0992d8cdd1bfb9e1d8e424d67ce3a0927bdabe4835b"
-        },
-        "native/macos-aarch64/libcoakka_runtime_values.node": {
-          "bytes": 449136,
-          "sha256": "00f7f36f262422219a3523d35fa02147f9cbf1fb2805f51eeff0157ba36de328"
-        },
-        "native/windows-aarch64/libcoakka_runtime_values.node": {
-          "bytes": 907776,
-          "sha256": "e9d34043a93452be185a3810bd99832794c2fa4fa6fd3bd3f649312236b81825"
-        },
-        "native/windows-x86_64/libcoakka_runtime_values.node": {
-          "bytes": 1592320,
-          "sha256": "5f4e8f88ce7f811d28724a0ac6781d3bbd00637b4d694b05fb74fcd74dc29ef1"
         },
         "native/linux-aarch64/libcoakka_runtime_v2.so": {
           "bytes": 2103344,
           "sha256": "dbdba44a6c309f0e7eccbae7224bceae63313c199d68b93e408043674ada3579"
         },
+        "native/linux-aarch64/libcoakka_runtime_values.node": {
+          "bytes": 789040,
+          "sha256": "05acf4ac242eb1f27a6cbf5e4aea13b21e8fb893ce63904cc8d4eb89d766785a"
+        },
+        "native/linux-x86_64/libcoakka_runtime_node_v2.node": {
+          "bytes": 158192,
+          "sha256": "cb72c7e7f802d901ca4124ac1f50406d71457549d517ff9d446e770f239604a0"
+        },
         "native/linux-x86_64/libcoakka_runtime_v2.so": {
           "bytes": 3188976,
           "sha256": "514f7db498ab2f5afab9930f6868eaae95a3e867de426ee63a730d543f452cdc"
         },
-        "dist/index.d.ts": {
-          "bytes": 53713,
-          "sha256": "a4e6e43bbcc2b960c2176771eec79091ba04ca626700936f881e0bba2e471c6c"
+        "native/linux-x86_64/libcoakka_runtime_values.node": {
+          "bytes": 817704,
+          "sha256": "7fcefe9bed0d9843a7e5e0992d8cdd1bfb9e1d8e424d67ce3a0927bdabe4835b"
+        },
+        "native/macos-aarch64/libcoakka_runtime_node_v2.node": {
+          "bytes": 92112,
+          "sha256": "e97f22b04d7b40dd53a556a547bd2901cd413f766a301f75a78acd27ba32c34e"
+        },
+        "native/macos-aarch64/libcoakka_runtime_v2.dylib": {
+          "bytes": 860216,
+          "sha256": "b3b0050db65e40da7d8d2dd54aaf9ee50975ecf1498e657c8896f6b98ccc8e12"
+        },
+        "native/macos-aarch64/libcoakka_runtime_values.node": {
+          "bytes": 449136,
+          "sha256": "00f7f36f262422219a3523d35fa02147f9cbf1fb2805f51eeff0157ba36de328"
+        },
+        "native/windows-aarch64/libcoakka_runtime_node_v2.node": {
+          "bytes": 229888,
+          "sha256": "db5fa0fddd2738ac0304f47203cc45f82517d9ec04d0056e6b38665ae9d25e11"
+        },
+        "native/windows-aarch64/libcoakka_runtime_v2.dll": {
+          "bytes": 2071552,
+          "sha256": "b1a1ca4068878b1e4d6d9a0f9064b2927a75cd390e755c4b42ed0b530d997046"
+        },
+        "native/windows-aarch64/libcoakka_runtime_values.node": {
+          "bytes": 907776,
+          "sha256": "e9d34043a93452be185a3810bd99832794c2fa4fa6fd3bd3f649312236b81825"
+        },
+        "native/windows-x86_64/libcoakka_runtime_node_v2.node": {
+          "bytes": 183296,
+          "sha256": "d98fea8c69b7990e0c5132b60c529f88af6e0407bccbae377df36a3b4590cb31"
+        },
+        "native/windows-x86_64/libcoakka_runtime_v2.dll": {
+          "bytes": 2283520,
+          "sha256": "901cb6e63a17bdcaadfc0aff2c3a082d9272dcb18ba94d7aaa6424665753a8fb"
+        },
+        "native/windows-x86_64/libcoakka_runtime_values.node": {
+          "bytes": 1592320,
+          "sha256": "5f4e8f88ce7f811d28724a0ac6781d3bbd00637b4d694b05fb74fcd74dc29ef1"
+        },
+        "package.json": {
+          "bytes": 1138,
+          "sha256": "bbdedf0d1dfe125f511509f7ac2be5d042336173875104790d3d22a392999b76"
         }
       }
     },
@@ -122,40 +122,24 @@
       "version": "2.5.5",
       "minimumRuntime": "42.0.0",
       "archive": "coakka-v2-connector-electron-2.5.5.tgz",
-      "bytes": 16614,
-      "sha256": "0a2a43bc5e16cd6338f7ec70515e137985f05251e79bfa1a407103e20a5c4cef",
+      "bytes": 16616,
+      "sha256": "03c70025327371a195003e9f8e3322e27bdeeda5bd778e44864b53b41675db9a",
       "members": {
-        "LICENSE": {
-          "bytes": 11358,
-          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
-        },
-        "NOTICE": {
-          "bytes": 730,
-          "sha256": "60dc12817965fc133ed0978119d9b8dc5238001dfcfce0e3005162b298cc5c98"
-        },
-        "dist/preload.cjs": {
-          "bytes": 1192,
-          "sha256": "e23c9a29024b8b280aaa4c1ddb6664e0e8c32ef1c54c7429a4a11222cb4e8b7f"
-        },
-        "dist/index.js": {
-          "bytes": 8074,
-          "sha256": "409bac4ca18992205ec0969e54a141625c111e2ca5a87235f6a5e2994d8b5981"
-        },
-        "dist/preload.js": {
-          "bytes": 651,
-          "sha256": "a4fca920c88dce9fda98d49ef2cfae8b75bb50dbb7cf97c3e2711b5e2be6e219"
-        },
-        "package.json": {
-          "bytes": 1312,
-          "sha256": "0b1925e4af0b743652515e9fcc5ae55a82f5de1402b0b0456885b239f7d03ad2"
-        },
         "CONSUMING.md": {
           "bytes": 3587,
           "sha256": "2bc4a45b22431b42da9bdfab4ade8c2228fce506af38c46862391935e308d351"
         },
+        "LICENSE": {
+          "bytes": 11358,
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        },
         "NATIVE-LICENSE.md": {
           "bytes": 6482,
           "sha256": "089ff94cf25b1707ae3e7d03bb81f0ddfb84e87fb7476f5fea7ebd2cd2f01925"
+        },
+        "NOTICE": {
+          "bytes": 730,
+          "sha256": "60dc12817965fc133ed0978119d9b8dc5238001dfcfce0e3005162b298cc5c98"
         },
         "PACKAGE-LICENSE.md": {
           "bytes": 1384,
@@ -169,9 +153,25 @@
           "bytes": 5161,
           "sha256": "930690f93c2789929a5a2ea2d38113d875f883feaad7eaa2577c03967742df05"
         },
+        "dist/index.js": {
+          "bytes": 8074,
+          "sha256": "409bac4ca18992205ec0969e54a141625c111e2ca5a87235f6a5e2994d8b5981"
+        },
+        "dist/preload.cjs": {
+          "bytes": 1192,
+          "sha256": "e23c9a29024b8b280aaa4c1ddb6664e0e8c32ef1c54c7429a4a11222cb4e8b7f"
+        },
         "dist/preload.d.ts": {
           "bytes": 558,
           "sha256": "d5c3c67fed2059855e260c23e389b41ab40c2c902fa3730078042de3ac371265"
+        },
+        "dist/preload.js": {
+          "bytes": 651,
+          "sha256": "a4fca920c88dce9fda98d49ef2cfae8b75bb50dbb7cf97c3e2711b5e2be6e219"
+        },
+        "package.json": {
+          "bytes": 1312,
+          "sha256": "0b1925e4af0b743652515e9fcc5ae55a82f5de1402b0b0456885b239f7d03ad2"
         }
       }
     }

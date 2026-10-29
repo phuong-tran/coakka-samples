@@ -5,7 +5,7 @@
   "version": "2.0.0",
   "minimumRuntime": "1.22.12",
   "coreCommit": "f6b61768f60a08d81b1dc06625a211ffca8e89e2",
-  "moduleManifestSha256": "37790f9246b2f3e407873b39b78ab129b82a831cb584837925d2f0a3ae03a2e1",
+  "moduleManifestSha256": "131a4afdb256f1db54fcdec99e2ef3a63d077c059e7522a9ba5f965b365f519c",
   "members": {
     "CONSUMING.md": {
       "bytes": 2226,
@@ -224,20 +224,20 @@
       "sha256": "3965326cce8e4daa2c90df6b336aa7778fbf2eebe48cc82b7dccfff9f4f29268"
     },
     "runtime_bridge.c": {
-      "bytes": 56407,
-      "sha256": "66be05ff4afa278bd2cda782e2372d1e136a619b1626039a925927c7a5ea477e"
+      "bytes": 57558,
+      "sha256": "06ae7dc527dae4c9a48109e22b024bda3597cf1789ec9ec880e95f5077318e34"
     },
     "runtime_bridge.h": {
-      "bytes": 13419,
-      "sha256": "484da6a9543ffd59ece3318c96e3161ed4ad5185c2cd5da4c80d9af7d985affe"
+      "bytes": 14104,
+      "sha256": "cce8e866a9764c31010a6e610019fd93d7e3536aea4254265d6c1630f06076d6"
     },
     "runtime_client.go": {
-      "bytes": 45843,
-      "sha256": "ef0e423384b78249e35fb04193fce89f4f90e7ba7778c1491844b22a8e164a06"
+      "bytes": 46333,
+      "sha256": "c72ce4a6d7d479469b3c749d548f23f628bda68e505560efc2e883b6a4441a01"
     },
     "runtime_ffi.go": {
-      "bytes": 58723,
-      "sha256": "2e2bebee14f4b4e2a486f02f16a31fff3050473b8c37cf5dd038cca2b0ef4d59"
+      "bytes": 59355,
+      "sha256": "6c729780504c1e983f54ad710e066f9bf989ff4ff5ef746ab5ed0d348005caba"
     },
     "runtime_handler_queue.go": {
       "bytes": 1609,

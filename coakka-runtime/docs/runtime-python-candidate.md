@@ -3,10 +3,11 @@
 The basic/deadletter/hot-reload apps on this branch use the exact private
 `3.0.0` platform wheels pinned in
 `artifacts/runtime-python-candidate.json`, not historical public2.5.2.
-Each wheel contains22 genuinely minified language modules and one frozen
-Core2.5.1+f6b61768f60a08d81b1dc06625a211ffca8e89e2 image, ABI1.
+Each wheel contains23 minified language modules, the Python native adapter
+and one frozen Core2.5.1+f6b61768f60a08d81b1dc06625a211ffca8e89e2 image, ABI1.
 Candidate targets: macOS ARM64, Linux ARM64/x64 and native Windows ARM64/x64.
-CPython3.11 is the baseline; existing matching package evidence uses3.11.15
+The wheels use CPython's `cp311-abi3` stable ABI, not the pure-Python
+`py3-none` tag. CPython3.11 is the baseline; existing matching package evidence uses3.11.15
 Mac/Pi and3.11.9 Windows. Minimum OS execution is recorded independently from
 the language version. No registry publication is opened by this guide.
 
@@ -20,7 +21,7 @@ mounted external APFS storage. From this repository:
 ```sh
 export PYTHON="/absolute/path/to/python3.11"
 export COAKKA_SAMPLE_WORK_ROOT="/absolute/work"
-export COAKKA_PYTHON_CANDIDATE_WHEEL="/absolute/coakka_v2_connector-3.0.0-py3-none-macosx_13_0_arm64.whl"
+export COAKKA_PYTHON_CANDIDATE_WHEEL="/absolute/coakka_v2_connector-3.0.0-cp311-abi3-macosx_13_0_arm64.whl"
 bash coakka-runtime/python/basic/run.sh
 bash coakka-runtime/python/deadletter/run.sh
 bash coakka-runtime/python/hot-reload/run.sh
@@ -43,7 +44,7 @@ test executables manually if Windows prompts.
 
 ## Admission and ownership
 
-The standard-library runner checks exact archive size/hash and all31 regular
+The standard-library runner checks exact archive size/hash and all33 regular
 members against the canonical catalog before creating unique staging. Catalog:
 256KiB; wheel:4MiB;128members maximum,8MiB per member/32MiB total; app:128KiB.
 Duplicate/unsafe/linked/encrypted members, wrong target and source/native/

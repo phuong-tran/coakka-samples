@@ -41,6 +41,8 @@ internal object NativeBridge {
     @JvmStatic external fun runtimeControl(id: Long, frame: ByteArray): Int
     @JvmStatic external fun runtimeAskOpen(id: Long): Int
     @JvmStatic external fun runtimeAsk(id: Long, frame: ByteArray, timeout: Int): NativeRecord
+    /** Private outcome: owning ByteArray only for Core OK/RESPONSE; actual
+     * non-success facts retain NativePayloadResult. No native view escapes. */
     @JvmStatic external fun runtimeAskPayload(
         id: Long,
         messageId: ByteArray,
@@ -51,7 +53,7 @@ internal object NativeBridge {
         requestTimeout: Int,
         waitTimeout: Int,
         deliveryHint: Int,
-    ): NativePayloadResult
+    ): Any
     @JvmStatic external fun runtimeReplyPayload(
         id: Long,
         requestFrame: ByteArray,

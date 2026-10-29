@@ -93,7 +93,7 @@ def decode_catalog(content: bytes) -> dict:
             raise ValueError("invalid wheel row")
         name = row["filename"]
         if (not isinstance(name, str) or Path(name).name != name or "/" in name or "\\" in name or ":" in name or
-                not name.startswith("coakka_v2_connector-3.0.0-py3-none-") or not name.endswith(".whl") or
+                not name.startswith("coakka_v2_connector-3.0.0-cp311-abi3-") or not name.endswith(".whl") or
                 type(row["bytes"]) is not int or not 0 < row["bytes"] <= 4 << 20 or not digest(row["sha256"]) or
                 not isinstance(row["members"], dict) or not 0 < len(row["members"]) <= 128):
             raise ValueError("invalid wheel identity/bounds")

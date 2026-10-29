@@ -1,7 +1,6 @@
 package coakka.v2.connector
 
 import coakka.v2.connector.protocol.ConnectorDeliveryHint
-import java.net.ServerSocket
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -217,5 +216,5 @@ class RuntimeAskClientTest {
             endpoints = listOf(RuntimeEndpointSpec("127.0.0.1", port.toLong())),
         )
 
-    private fun availablePort(): Int = ServerSocket(0).use { it.localPort }
+    private fun availablePort(): Int = TestSupport.availableLoopbackPort()
 }

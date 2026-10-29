@@ -1,5 +1,6 @@
 package coakka.v2.connector
 
+import coakka.v2.connector.internal.NativePayloadResult
 import coakka.v2.connector.protocol.ConnectorBusinessStatus
 import coakka.v2.connector.protocol.ConnectorDeliveryHint
 import coakka.v2.connector.protocol.ConnectorEnvelope
@@ -238,6 +239,13 @@ class RuntimeAskClient private constructor(
                 waitTimeoutMs = waitTimeoutMs,
                 deliveryHint = deliveryHint.value,
             )
+            // JNI selects this private arm only from Core's actual successful
+            // RESPONSE facts. The array is already an independent JVM owner.
+            if (result is ByteArray) {
+                matchedResponses.incrementAndGet()
+                return result
+            }
+            check(result is NativePayloadResult) { "native ask returned an invalid result" }
             return when (val status = result.status) {
                 CoakkaStatus.OK -> when (result.kind) {
                     CORE_RESULT_RESPONSE -> {

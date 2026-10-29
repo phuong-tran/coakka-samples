@@ -22,13 +22,13 @@
     },
     {
       "path": "io/github/phuong-tran/coakka/runtime/3.0.0/runtime-3.0.0.jar",
-      "bytes": 5416616,
-      "sha256": "ab0e3e6e16a694819588dad18bab627e4a19f9b995b56d65446b10dd94e4fc7d"
+      "bytes": 5416358,
+      "sha256": "e4700cf9b1006f8a850c6321114d0b2263032adfea6f18859f3265c794550b46"
     },
     {
       "path": "io/github/phuong-tran/coakka/runtime/3.0.0/runtime-3.0.0.module",
       "bytes": 3329,
-      "sha256": "dd7ab88ea89656ab543c199520df6f3e868d4aa14e891ccd5361da132af19c91"
+      "sha256": "399fe1924db985680b06f6467a293f808694e485151792159975f355b17dd128"
     },
     {
       "path": "io/github/phuong-tran/coakka/runtime/3.0.0/runtime-3.0.0.pom",

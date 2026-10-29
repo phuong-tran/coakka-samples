@@ -28,7 +28,7 @@ class CandidateTests(unittest.TestCase):
         self.root = Path(fixture.name)
 
     def fixture(self):
-        name = "coakka_v2_connector-3.0.0-py3-none-win_amd64.whl"
+        name = "coakka_v2_connector-3.0.0-cp311-abi3-win_amd64.whl"
         path = self.root / name
         payloads = {"coakka_v2_connector/__init__.py": b"# fixture, never a native image\n"}
         with zipfile.ZipFile(path, "w") as output:
@@ -54,6 +54,9 @@ class CandidateTests(unittest.TestCase):
             lambda c: c["wheels"].pop("windows-aarch64"),
             lambda c: c["wheels"]["macos-aarch64"].update(bytes=(4 << 20)+1),
             lambda c: c["wheels"]["macos-aarch64"].update(sha256="wrong"),
+            lambda c: c["wheels"]["macos-aarch64"].update(filename="coakka_v2_connector-3.0.0-py3-none-win_amd64.whl"),
+            lambda c: c["wheels"]["macos-aarch64"].update(filename="coakka_v2_connector-3.0.0-cp310-abi3-win_amd64.whl"),
+            lambda c: c["wheels"]["macos-aarch64"].update(filename="coakka_v2_connector-3.0.0-cp311-none-win_amd64.whl"),
             lambda c: c["wheels"]["macos-aarch64"].update(members={"../outside": {"bytes": 1, "sha256": "0"*64}}),
         ):
             copy = json.loads(original)
