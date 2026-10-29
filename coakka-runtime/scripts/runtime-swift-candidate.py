@@ -133,6 +133,29 @@ def run(command: list[str], cwd: Path, environment: dict[str, str], bound: int) 
         raise subprocess.CalledProcessError(code, command)
 
 
+def build_flags(host: str, platform_target: str) -> list[str]:
+    """Select build-tool arguments; runtime behavior stays in the admitted package."""
+    flags = ["-Xswiftc", "-warnings-as-errors", "-Xcc", "-Wall", "-Xcc", "-Wextra", "-Xcc", "-Werror", "-debug-info-format", "none",
+        "-Xswiftc", "-Osize", "-Xswiftc", "-whole-module-optimization", "-Xswiftc", "-Xfrontend", "-Xswiftc", "-disable-reflection-metadata",
+        "-Xswiftc", "-Xfrontend", "-Xswiftc", "-disable-reflection-names"]
+    if host == "mac":
+        flags += ["-Xlinker", "-dead_strip", "-Xlinker", "-S", "-Xlinker", "-x"]
+    elif host == "pi":
+        flags += ["-Xswiftc", "-use-ld=lld", "-Xswiftc", "-no-toolchain-stdlib-rpath", "-Xcc", "-fvisibility=hidden",
+            "-Xlinker", "--gc-sections", "-Xlinker", "--strip-all", "-Xlinker", "--fatal-warnings", "-Xlinker", "-z", "-Xlinker", "relro",
+            "-Xlinker", "-z", "-Xlinker", "now", "-Xlinker", "-rpath", "-Xlinker", "$ORIGIN/lib"]
+    else:
+        if platform_target == "windows-x86_64":
+            # Swift6.0.3 Windows system modules own their builtin C headers.
+            # Forward to Swift's importer only; native C warning flags stay exact.
+            flags += ["-Xswiftc", "-Xcc", "-Xswiftc", "-Xclang",
+                "-Xswiftc", "-Xcc", "-Xswiftc", "-fbuiltin-headers-in-system-modules"]
+        else:
+            flags += ["--build-system", "native"]
+        flags += ["-Xlinker", "/WX", "-Xlinker", "/OPT:REF", "-Xlinker", "/OPT:ICF", "-Xlinker", "/INCREMENTAL:NO"]
+    return flags
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo-root", type=Path, required=True)
@@ -188,23 +211,7 @@ def main() -> None:
             "Swift version 6.2" if host == "mac" else "Swift version 6.0.3")
         if expected not in version:
             raise ValueError("qualified candidate toolchain profile required")
-        flags = ["-Xswiftc", "-warnings-as-errors", "-Xcc", "-Wall", "-Xcc", "-Wextra", "-Xcc", "-Werror", "-debug-info-format", "none",
-            "-Xswiftc", "-Osize", "-Xswiftc", "-whole-module-optimization", "-Xswiftc", "-Xfrontend", "-Xswiftc", "-disable-reflection-metadata",
-            "-Xswiftc", "-Xfrontend", "-Xswiftc", "-disable-reflection-names"]
-        if host == "mac":
-            flags += ["-Xlinker", "-dead_strip", "-Xlinker", "-S", "-Xlinker", "-x"]
-        elif host == "pi":
-            flags += ["-Xswiftc", "-use-ld=lld", "-Xswiftc", "-no-toolchain-stdlib-rpath", "-Xcc", "-fvisibility=hidden",
-                "-Xlinker", "--gc-sections", "-Xlinker", "--strip-all", "-Xlinker", "--fatal-warnings", "-Xlinker", "-z", "-Xlinker", "relro",
-                "-Xlinker", "-z", "-Xlinker", "now", "-Xlinker", "-rpath", "-Xlinker", "$ORIGIN/lib"]
-        else:
-            if platform_target == "windows-x86_64":
-                overlay = Path(os.environ.get("COAKKA_SWIFT_VFS_OVERLAY", ""))
-                regular(overlay, 256 << 10)
-                flags += ["-Xswiftc", "-vfsoverlay", "-Xswiftc", str(overlay), "-Xcc", "-ivfsoverlay", "-Xcc", str(overlay)]
-            else:
-                flags += ["--build-system", "native"]
-            flags += ["-Xlinker", "/WX", "-Xlinker", "/OPT:REF", "-Xlinker", "/OPT:ICF", "-Xlinker", "/INCREMENTAL:NO"]
+        flags = build_flags(host, platform_target)
         run([swift, "build", "--package-path", str(app), "--scratch-path", str(stage / "build"), "--cache-path", str(cache / "swift"),
             "--config-path", str(cache / "config"), "--security-path", str(cache / "security"), "-j", "4", "-c", "release", *flags], stage, environment, 180)
         triple = "arm64-apple-macosx" if host == "mac" else (

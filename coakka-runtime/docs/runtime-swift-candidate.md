@@ -44,7 +44,24 @@ rather than silently linking an incompatible language deployment set.
 Native Windows runs native Swift/Python in its supported developer shell. Set
 the same variables to absolute Windows paths. `COAKKA_SWIFT_LANGUAGE_HOME`
 points to the admitted deployment closure for the selected CPU. Windows x64
-uses Swift6.0.3 and `COAKKA_SWIFT_VFS_OVERLAY` for its SDK22621 module maps.
+uses Swift6.0.3 with Windows SDK22621 in the configured MSVC developer shell.
+Complete the standard Swift Windows SDK support installation before building:
+place the matching Swift SDK's `ucrt.modulemap` in the selected UCRT include
+folder as `module.modulemap`, `winsdk.modulemap` in the SDK `um` include folder
+as `module.modulemap`, and `vcruntime.modulemap` plus `vcruntime.apinotes` in the
+MSVC include folder, naming the former `module.modulemap`. Preserve the original
+support-file bytes; the helper does not modify the compiler or SDK installation.
+The helper supplies the builtin-header module mode only to Swift's importer;
+the native C target keeps its strict warning flags. No VFS overlay is required.
+For a direct application build with ordinary `Package.swift`, run this single
+line from the application directory:
+
+```text
+swift build -Xswiftc -Xcc -Xswiftc -Xclang -Xswiftc -Xcc -Xswiftc -fbuiltin-headers-in-system-modules
+```
+
+These are application build-tool flags. The Runtime package's `Package.swift`
+remains free of `unsafeFlags`, and Core configuration and defaults are unchanged.
 The attempted Windows ARM64 preview profile used Swift6.4.1, SDK26100 and
 SwiftPM's native build system, without the x64 overlay. These attempted inputs
 do not establish final3.0.0 execution or official Windows ARM64 support. Then:

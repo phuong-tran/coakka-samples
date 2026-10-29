@@ -109,5 +109,40 @@ class AdmissionControls(unittest.TestCase):
             MODULE.regular(self.package, 128)
 
 
+class BuildProfileControls(unittest.TestCase):
+    def test_windows_x64_importer_and_native_c_flags(self):
+        flags = MODULE.build_flags("windows", "windows-x86_64")
+        swift_args, c_args = [], []
+        index = 0
+        while index < len(flags):
+            if flags[index] in ("-Xswiftc", "-Xcc"):
+                (swift_args if flags[index] == "-Xswiftc" else c_args).append(flags[index + 1])
+                index += 2
+            else:
+                index += 1
+        self.assertEqual(c_args, ["-Wall", "-Wextra", "-Werror"])
+        self.assertEqual(swift_args[-4:], ["-Xcc", "-Xclang", "-Xcc", "-fbuiltin-headers-in-system-modules"])
+        self.assertEqual(flags.count("-fbuiltin-headers-in-system-modules"), 1)
+        self.assertIn("/WX", flags)
+        self.assertNotIn("--build-system", flags)
+
+    def test_builtin_mode_is_only_windows_x64_and_no_overlay(self):
+        profiles = [("mac", "macos-aarch64"), ("pi", "linux-aarch64"),
+            ("pi", "linux-x86_64"), ("windows", "windows-aarch64"), ("windows", "windows-x86_64")]
+        for host, target in profiles:
+            with self.subTest(target=target):
+                flags = MODULE.build_flags(host, target)
+                self.assertEqual("-fbuiltin-headers-in-system-modules" in flags, target == "windows-x86_64")
+                self.assertNotIn("-vfsoverlay", flags)
+                self.assertNotIn("-ivfsoverlay", flags)
+        arm = MODULE.build_flags("windows", "windows-aarch64")
+        self.assertEqual(arm[arm.index("--build-system"):][:2], ["--build-system", "native"])
+
+    def test_profile_lists_do_not_share_mutable_state(self):
+        flags = MODULE.build_flags("windows", "windows-x86_64")
+        flags.clear()
+        self.assertIn("-warnings-as-errors", MODULE.build_flags("windows", "windows-x86_64"))
+
+
 if __name__ == "__main__":
     unittest.main()
