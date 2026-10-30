@@ -7,48 +7,48 @@
   "artifacts": [
     {
       "path": "io/github/phuong-tran/coakka/quarkus-extension/3.0.0/quarkus-extension-3.0.0.jar",
-      "bytes": 19344,
-      "sha256": "abc6747f098a646fc444d6fa342b05c86205e5b747cad3628858cab972c215bb"
+      "bytes": 19387,
+      "sha256": "a73b7c8906cf84b9f8bb7599768f80e1c182fb27795daab6a1732971557e25c2"
     },
     {
       "path": "io/github/phuong-tran/coakka/quarkus-extension/3.0.0/quarkus-extension-3.0.0.module",
       "bytes": 3946,
-      "sha256": "25ff2b9f6cfb0e2deff81520f95be154b833910845867c03f181c3e93ffbd342"
+      "sha256": "2eda5732753a395d3f4abc23ff76b7ce2b56e9d0a116bab28fa867c2a87651db"
     },
     {
       "path": "io/github/phuong-tran/coakka/quarkus-extension/3.0.0/quarkus-extension-3.0.0.pom",
-      "bytes": 2771,
-      "sha256": "526df460ceda5952834202742ffde4bc471ff3cfcce1e19b6cf95eeffe9a7150"
+      "bytes": 2811,
+      "sha256": "ac3487804b57af5b095b1b576108c8e6161c211c8c2af8c726e9436ca38086a6"
     },
     {
       "path": "io/github/phuong-tran/coakka/runtime/3.0.0/runtime-3.0.0.jar",
-      "bytes": 4928847,
-      "sha256": "8a63a5d76210737fb075123399f1d308ddefb1102c6039495873eba37f620c35"
+      "bytes": 4928890,
+      "sha256": "988c9c864e6d89b5b6316edc02b98119b359cf997882abf40134fe6068c41f12"
     },
     {
       "path": "io/github/phuong-tran/coakka/runtime/3.0.0/runtime-3.0.0.module",
       "bytes": 3329,
-      "sha256": "619c0662e1f1d7013846e32de461dfeb6e803ffaac287210dec0edbd1cf41f76"
+      "sha256": "0a4e2bb17cba2494997be4555ab92dbd64686aeccec0d0d1d05e80d1d7017ca4"
     },
     {
       "path": "io/github/phuong-tran/coakka/runtime/3.0.0/runtime-3.0.0.pom",
-      "bytes": 3436,
-      "sha256": "259cbab2a9d28c3a10009f51ad8d8c46b7d201d985b4312112130e5f8eb17ea1"
+      "bytes": 3505,
+      "sha256": "27d9ee7e7b7b2d7d46b0c64bf2c4e9249fe7379b73c1703ca248a917aa27af30"
     },
     {
       "path": "io/github/phuong-tran/coakka/spring-boot-starter/3.0.0/spring-boot-starter-3.0.0.jar",
-      "bytes": 19900,
-      "sha256": "8f5cd86f1bc3062585ba8eaa4d079c5ed91d12b45754e78bf40de0e958e980f2"
+      "bytes": 19943,
+      "sha256": "59373e7a79df72d02d9aa52a5d75c5385c7f25293876cfd849ea38a487a31c1c"
     },
     {
       "path": "io/github/phuong-tran/coakka/spring-boot-starter/3.0.0/spring-boot-starter-3.0.0.module",
       "bytes": 3964,
-      "sha256": "4abc70d129550cc8ea37e3f933546efe5d49bdbb0fcbe385c4e3c372818cb1eb"
+      "sha256": "6b6dffad4bfabb77bd5f2a63b508aa337cc254e68aff4001196367410d53295f"
     },
     {
       "path": "io/github/phuong-tran/coakka/spring-boot-starter/3.0.0/spring-boot-starter-3.0.0.pom",
-      "bytes": 2797,
-      "sha256": "70400392aee481aeba2dfb642ca65b29325c470940208bec792d0800aeaad7d1"
+      "bytes": 2837,
+      "sha256": "7d45957605908739a585b61a155bb2097dcd8301ae943f069c0e3619e0cfb3d2"
     },
     {
       "path": "org/jetbrains/annotations/23.0.0/annotations-23.0.0.jar",

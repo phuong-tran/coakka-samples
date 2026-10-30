@@ -203,6 +203,6 @@ an in-process handler call. TLS applies to runtime TCP traffic when routes and
 deployment topology actually use that transport.
 
 For parameters, network placement, rotation, and failure semantics, see the
-[canonical TLS/mTLS guide](https://github.com/phuong-tran/coakka-publish/blob/main/docs/tls-and-mtls.md),
-[connection strategy guide](https://github.com/phuong-tran/coakka-publish/blob/main/docs/connection-strategies.md),
-and [common troubleshooting](https://github.com/phuong-tran/coakka-publish/blob/main/docs/troubleshooting.md).
+[canonical TLS/mTLS guide](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-runtime/reference/tls-and-mtls.md),
+[connection strategy guide](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-runtime/reference/connection-strategies.md),
+and [common troubleshooting](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-runtime/operations/troubleshooting.md).

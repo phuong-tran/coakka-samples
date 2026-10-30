@@ -1,7 +1,7 @@
 # JVM Runtime Connector
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/phuong-tran/coakka-samples/main/docs/assets/brand/coakka-logo.png" alt="CoAkka" width="480">
+  <img src="https://raw.githubusercontent.com/phuong-tran/coakka-samples/main/docs/common/assets/brand/coakka-logo.png" alt="CoAkka" width="480">
 </p>
 
 The JVM connector brings Kotlin and Java applications into the polyglot,
@@ -48,10 +48,10 @@ behavior, capability availability, and Java/Kotlin-facing semantics.
 Common ecosystem guidance:
 
 - [CoAkka documentation and samples](https://github.com/phuong-tran/coakka-samples/tree/main/docs)
-- [Connection Strategies](https://github.com/phuong-tran/coakka-samples/blob/main/docs/connection-strategies.md)
-- [TLS And mTLS](https://github.com/phuong-tran/coakka-samples/blob/main/docs/tls-and-mtls.md)
-- [Troubleshooting](https://github.com/phuong-tran/coakka-samples/blob/main/docs/troubleshooting.md)
-- [Contact And Support](https://github.com/phuong-tran/coakka-samples/blob/main/docs/contact-and-support.md), including `gabrielgun1983@gmail.com`
+- [Connection Strategies](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/reference/connection-strategies.md)
+- [TLS And mTLS](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/reference/tls-and-mtls.md)
+- [Troubleshooting](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/operations/troubleshooting.md)
+- [Contact And Support](https://github.com/phuong-tran/coakka-samples/blob/main/docs/common/contact-and-support.md), including `gabrielgun1983@gmail.com`
 
 Native packaging:
 
@@ -247,14 +247,14 @@ not make `PAUSED` terminal. Do not wait for a paused transfer to complete withou
 choosing resume, cancel, or another Core-supported action.
 
 `FileLane.open(...)` exposes the independent native bulk-transfer lane. It is
-not owned by `RuntimeHost`; see the shared [file-lane contract](https://github.com/phuong-tran/coakka-samples/blob/main/docs/runtime-file-transfer.md)
+not owned by `RuntimeHost`; see the shared [file-lane contract](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/guides/runtime-file-transfer.md)
 for lifecycle, security, native-version, and conformance requirements.
 
 ## Stream Lane
 
 This source workspace contains the published connector surface for Stream Lane.
 Pair it only with the exact matching core-runtime generation
-and follow the public [streaming contract](https://github.com/phuong-tran/coakka-samples/blob/main/docs/runtime-streaming.md).
+and follow the public [streaming contract](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/guides/runtime-streaming.md).
 Candidate `3.0.0` contains Stream Lane over the exact Core `3.0.0` generation
 recorded in its manifest and `gradle.properties`; do not attach
 these APIs to older coordinates. Replica-aware applications use
@@ -262,12 +262,12 @@ these APIs to older coordinates. Replica-aware applications use
 `StreamLane.openOwned(...).preparePublishGrant(...)`, serialize the returned
 grant through their authenticated control plane, and reconstruct it before
 calling `toSendSpec(...)` or `toSubscribeSpec(...)`. Follow the
-[owner-grant ONE/ALL sample](https://github.com/phuong-tran/coakka-samples/blob/main/docs/runtime-lane-owner-grants.md).
+[owner-grant ONE/ALL sample](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/reference/runtime-lane-owner-grants.md).
 
 ## AI-Assisted Integration
 
 Before generating application code, use the selected connector README together
-with the public [AI-assisted integration guide](https://github.com/phuong-tran/coakka-samples/blob/main/docs/ai-assisted-integration.md).
+with the public [AI-assisted integration guide](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/guides/ai-assisted-integration.md).
 It requires an exact package coordinate, platform evidence, the runnable
 language sample, and the feature-specific lifecycle contract. Do not translate
 API identifiers from another language by analogy.
@@ -283,6 +283,6 @@ Those native terms permit ordinary application and SaaS use but require a
 separate agreement to sell or offer CoAkka itself as managed runtime or
 infrastructure.
 
-See [CoAkka Package Licensing](https://github.com/phuong-tran/coakka-samples/blob/main/docs/package-licensing.md)
+See [CoAkka Package Licensing](https://github.com/phuong-tran/coakka-samples/blob/main/docs/common/package-licensing.md)
 for the file-scope map. The package also carries offline `LICENSE`,
 `NATIVE-LICENSE.md`, `PACKAGE-LICENSE.md`, and `NOTICE` copies.

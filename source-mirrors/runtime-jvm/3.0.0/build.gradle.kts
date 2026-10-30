@@ -434,7 +434,7 @@ publishing {
             pom {
                 name.set("coakka.runtime")
                 description.set("Java 8-compatible JVM connector with packaged native runtimes for CoAkka Runtime v2.")
-                url.set("https://github.com/phuong-tran/coakka-publish")
+                url.set("https://github.com/phuong-tran/coakka-publish/tree/main/coakka-runtime")
                 inceptionYear.set("2025")
                 licenses {
                     license {
@@ -466,8 +466,8 @@ publishing {
                 }
                 withXml {
                     val properties = asNode().appendNode("properties")
-                    properties.appendNode("coakka.documentation.url", "https://github.com/phuong-tran/coakka-samples/tree/main/docs")
-                    properties.appendNode("coakka.samples.url", "https://github.com/phuong-tran/coakka-samples")
+                    properties.appendNode("coakka.documentation.url", "https://github.com/phuong-tran/coakka-samples/tree/main/docs/coakka-runtime")
+                    properties.appendNode("coakka.samples.url", "https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/jvm")
                     properties.appendNode("coakka.source.url", sourceUrl.get())
                 }
             }

@@ -50,7 +50,7 @@ hosts share these defaults and lifecycle rules.
 
 Keep application handlers and business decisions in the application. The
 adapters supply framework integration and delegate runtime decisions to CoAkka
-Runtime. See the shared [documentation](https://github.com/phuong-tran/coakka-samples/blob/main/docs/README.md)
+Runtime. See the shared [documentation](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/README.md)
 for configuration, monitoring, ownership and shutdown guidance.
 
 Source uses Apache2.0. Preserve LICENSE and NOTICE. The separately consumed
