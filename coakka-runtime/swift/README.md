@@ -1,4 +1,10 @@
-# Swift runtime candidate sample
+# Swift Runtime Samples
+
+Swift 3.0.0 is [released on GitHub](https://github.com/phuong-tran/coakka-runtime-swift/releases/tag/v3.0.0).
+Start with [the ordinary remote SwiftPM app](registry-basic/README.md).
+Windows ARM64 alone is preview; the Swift package is a published release.
+
+## Controlled local-package qualification
 
 This private lane uses exactly `3.0.0` and bundled Core3.0.0+1522b4a9,
 not the historical public package train. Follow the

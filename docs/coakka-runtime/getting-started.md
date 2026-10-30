@@ -75,6 +75,18 @@ Go 1.25.5). Import the new `/v3` module path. Start with
 The module includes its matching native Core; no separate Core installation
 or module replacement is needed.
 
+## Swift 3.0.0 from GitHub
+
+```swift
+.package(url: "https://github.com/phuong-tran/coakka-runtime-swift.git", exact: "3.0.0")
+```
+
+Add product `CoAkkaRuntime` to the application target, or use
+[the ordinary SwiftPM first-run app](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/swift/registry-basic).
+The dynamic library and resource bundle deploy together. Preserve both operation
+and throwing-close failures when migrating 2.x applications. Windows ARM64 alone
+is preview; the package carries all five native images.
+
 ## Evaluating 3.0.0
 
 Other main-branch Runtime examples still use **local 3.0.0 candidates**.

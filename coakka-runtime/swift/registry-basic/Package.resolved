@@ -1,0 +1,15 @@
+{
+  "originHash" : "fb4a9eb1873d8358a93cadd36e3e2275a215b54192417767efc2e94629c763e8",
+  "pins" : [
+    {
+      "identity" : "coakka-runtime-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/phuong-tran/coakka-runtime-swift.git",
+      "state" : {
+        "revision" : "0a91a0f3288b51fa84972a7c530cbd27e0e3e452",
+        "version" : "3.0.0"
+      }
+    }
+  ],
+  "version" : 3
+}

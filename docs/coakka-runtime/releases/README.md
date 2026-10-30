@@ -3,6 +3,7 @@
 These records describe their named release, not the current installation.
 Use the [published package ledger](../../common/current-packages.md) for current coordinates.
 
+- [Swift Runtime 3.0.0 on GitHub](2026-10-30-swift-runtime-3.0.0-github.md)
 - [Go Runtime 3.0.0 on GitHub](2026-10-30-go-runtime-3.0.0-github.md)
 - [Node.js/Bun/Electron Runtime 3.0.0 on npm](2026-10-30-npm-node-bun-electron-runtime-3.0.0.md)
 - [Python Runtime 3.0.0 on PyPI](2026-10-30-pypi-python-runtime-3.0.0.md)

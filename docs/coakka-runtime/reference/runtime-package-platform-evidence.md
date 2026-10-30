@@ -127,7 +127,7 @@ coordinates are:
 | PyPI | `coakka-v2-connector==3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 | NuGet | `CoAkka.Runtime==3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 | Go modules | `github.com/phuong-tran/coakka-runtime-go/v3@v3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
-| SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v2.5.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
+| SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 
 Maven Runtime `2.5.3`, npm `2.5.3`, PyPI `2.5.3`, NuGet `2.5.3`, Go `v1.8.3`,
 and Swift `v2.5.3` expose typed replica-owner File and Stream Lane grants.
@@ -206,3 +206,16 @@ default-path execution. All 57 production/header/native members remain exact
 from the qualified package; prior matching-host five-target/race/resource
 evidence is retained, not claimed as a new post-upload run on every target.
 See [the release receipt](../releases/2026-10-30-go-runtime-3.0.0-github.md).
+
+## Swift Runtime 3.0.0
+
+The GitHub Release contains exact source/archive/checksum. Fresh remote SwiftPM
+resolution pins 3.0.0 and the reviewed source commit; all 73 downloaded files match.
+Apple Swift 6.2/macOS ARM64 compiles with strict warnings and passes a rich consumer
+after moving executable/dynamic library/resource bundle away from hidden build
+roots. It covers request/reply, deadletter, callback ownership, refusal/retry,
+File/Stream and shutdown. Local and GitHub Mac ARM source49 tests pass without
+skips. All 46 library/C/header/native members remain unchanged; the manifest only
+integrates current regression tests. Earlier matching-target profiles remain
+qualified; this is not a new post-upload run on every OS. Windows ARM64 alone is
+preview; the Swift package is a release. See [the receipt](../releases/2026-10-30-swift-runtime-3.0.0-github.md).
