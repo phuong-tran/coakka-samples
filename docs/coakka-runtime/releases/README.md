@@ -3,6 +3,7 @@
 These records describe their named release, not the current installation.
 Use the [published package ledger](../../common/current-packages.md) for current coordinates.
 
+- [JVM/Spring Boot/Quarkus Runtime 3.0.0 on Maven Central](2026-10-30-jvm-spring-quarkus-runtime-3.0.0-maven-central.md)
 - [Swift Runtime 3.0.0 on GitHub](2026-10-30-swift-runtime-3.0.0-github.md)
 - [Go Runtime 3.0.0 on GitHub](2026-10-30-go-runtime-3.0.0-github.md)
 - [Node.js/Bun/Electron Runtime 3.0.0 on npm](2026-10-30-npm-node-bun-electron-runtime-3.0.0.md)

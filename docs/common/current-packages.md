@@ -14,16 +14,14 @@ package, PyPI package, Go module, and SwiftPM tag do not need to share the same
 version number. Each lane follows the release cadence of its connector,
 packaging surface, and native payload.
 
-The promoted repository native artifact pointer is
-`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`. Maven Central Runtime
-`2.5.3` and the checksum-pinned connector archives all use
-that Core generation. The independently versioned
-Spring Boot starter and Quarkus extension are current at `2.5.3` and depend
-exactly on Maven Runtime `2.5.3`. Logger JVM distribution `1.2.2` is
-published independently over
-native logger generation `1.2.1+f50756ebff0d`. NuGet Logger remains `1.2.3`.
-All Logger packages use the separately listed generations; version numbers
-remain independent by channel.
+Maven Central Runtime, Spring Boot starter and Quarkus adapter are now
+`3.0.0`. Both framework adapters depend exactly on Runtime `3.0.0`,
+carrying Core `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` / ABI1.
+Use the [JVM 3 release and first runs](../coakka-runtime/releases/2026-10-30-jvm-spring-quarkus-runtime-3.0.0-maven-central.md).
+The frozen checksum-pinned 2.x connector archives retain native generation
+`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`.
+Logger JVM remains `1.2.2` over native logger `1.2.1+f50756ebff0d`;
+NuGet Logger remains `1.2.3`. Logger and other products keep separate versions.
 
 NuGet Runtime is now `CoAkka.Runtime 3.0.0`, carrying Core `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` / ABI1. This is a new .NET API baseline: migrate and recompile 2.x callers. Other Runtime channels retain the versions listed below. See the [C# 3.0.0 release](../coakka-runtime/releases/2026-10-30-nuget-csharp-runtime-3.0.0.md).
 
@@ -44,7 +42,7 @@ published release package.
 The `2.5.3` connector source is `0ba485e8ff19f3ce23902345cb445a1f652fe3f3`;
 the non-JVM archive mirrors are checksum-pinned independently.
 
-Runtime connector release `2.5.3` is the current C1-backed replica-owner release. The supported
+Historical Runtime connector release `2.5.3` introduced the C1-backed replica-owner API. The supported
 host connectors expose typed File receive and Stream publish grants, reconstruct
 trusted grants from a control plane, and pin the resulting lane to the exact
 replica endpoint that prepared it. Fan-out to all replicas therefore means one
@@ -89,7 +87,7 @@ complete matrix with `bash run.sh coakka-runtime addons all published`.
 
 | Channel | Runtime package | Logger package | Sample or guide |
 | --- | --- | --- | --- |
-| Maven Central | [`coakka.runtime` 2.5.3](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/runtime/2.5.3) | [`coakka.logger` 1.2.2](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/logger/1.2.2) | `bash run.sh coakka-runtime jvm basic`; `bash run.sh coakka-logger jvm basic` |
+| Maven Central | [`coakka.runtime` 3.0.0](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/runtime/3.0.0) | [`coakka.logger` 1.2.2](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/logger/1.2.2) | [Java/Kotlin3 first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/jvm/registry-basic); `bash run.sh coakka-logger jvm basic` |
 | NuGet | [`CoAkka.Runtime` 3.0.0](https://www.nuget.org/packages/CoAkka.Runtime/3.0.0) | [`CoAkka.Logger` 1.2.3](https://www.nuget.org/packages/CoAkka.Logger/1.2.3) | [.NET 8 first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/csharp/registry-basic); `bash run.sh coakka-logger csharp basic` |
 | npm | [`coakka-v2-connector-node` 3.0.0](https://www.npmjs.com/package/coakka-v2-connector-node/v/3.0.0) | [`coakka-logger-node` 1.2.7](https://www.npmjs.com/package/coakka-logger-node/v/1.2.7) | [3.0.0 first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/node/registry-basic) |
 | npm (Bun) | [`coakka-v2-connector-bun` 3.0.0](https://www.npmjs.com/package/coakka-v2-connector-bun/v/3.0.0) | [`coakka-logger-bun` 1.2.7](https://www.npmjs.com/package/coakka-logger-bun/v/1.2.7) | [3.0.0 first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/bun/registry-basic) |
@@ -107,10 +105,10 @@ publish a Maven coordinate for it.
 
 Java 17 app hosts can use the independently versioned Maven Central framework
 adapters: [`spring-boot-starter`
-2.5.3](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/spring-boot-starter/2.5.3)
+3.0.0](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/spring-boot-starter/3.0.0)
 or [`quarkus-extension`
-2.5.3](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/quarkus-extension/2.5.3).
-Both depend on public Runtime `2.5.3`; applications select their own verified
+3.0.0](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/quarkus-extension/3.0.0).
+Both depend exactly on public Runtime `3.0.0`; applications select their own verified
 Spring Boot or Quarkus platform line.
 
 The current source coordinates are

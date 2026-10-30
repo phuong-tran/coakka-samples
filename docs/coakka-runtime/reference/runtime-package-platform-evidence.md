@@ -77,7 +77,7 @@ retroactively broaden this receipt.
 
 | Surface | Exact artifact coordinate | Native payloads | Current exact-artifact evidence |
 | --- | --- | --- | --- |
-| JVM | `io.github.phuong-tran.coakka:runtime:2.5.3` | All five | Maven Central signed publication, native identity gate, Java package checks, and clean consumers pass. |
+| JVM | `io.github.phuong-tran.coakka:runtime:3.0.0` | All five | Maven Central signed publication, native identity gate, Java package checks, and clean consumers pass. |
 | Node.js, Bun, Electron, Python, Go, C#, Rust, Swift, Mojo, Zig, Tauri | `runtime/<lane>/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e/` | All five where supported | Frozen connector packages pass the public artifact-surface verifier against the exact C1 native archive. Registry versions remain independently listed below. |
 | Android | historical signed internal `1.2.0` candidate; not published | `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64` | Exact tagged AAR passed clean build, package/ABI checks, R8 name verification, and the release-minified API 36 ARM64 Runtime/request/File/Stream smoke. |
 
@@ -122,7 +122,7 @@ coordinates are:
 
 | Registry | Current verified coordinate | Bundled native generation |
 | --- | --- | --- |
-| Maven Central | `io.github.phuong-tran.coakka:runtime:2.5.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
+| Maven Central | `io.github.phuong-tran.coakka:runtime:3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 | npm | `coakka-v2-connector-{node,bun,electron}@3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 | PyPI | `coakka-v2-connector==3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 | NuGet | `CoAkka.Runtime==3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
@@ -219,3 +219,7 @@ skips. All 46 library/C/header/native members remain unchanged; the manifest onl
 integrates current regression tests. Earlier matching-target profiles remain
 qualified; this is not a new post-upload run on every OS. Windows ARM64 alone is
 preview; the Swift package is a release. See [the receipt](../releases/2026-10-30-swift-runtime-3.0.0-github.md).
+
+## Maven JVM Runtime 3.0.0
+
+The three Central coordinates are Runtime, spring-boot-starter and quarkus-extension3.0.0. All15 public artifacts,15 detached signatures and60 checksums match the frozen selection. A public-only keyring verifies the new signing fingerprint. Fresh Central-only Java 8 Java/Kotlin and POM-only consumers, plus Java 17 Spring 3.5.16 and Quarkus 3.35.2 applications, pass on Mac ARM64. The five native pairs and all executable entries retain prior qualification; this is not a new post-upload matrix on every OS. See [the release](../releases/2026-10-30-jvm-spring-quarkus-runtime-3.0.0-maven-central.md).
