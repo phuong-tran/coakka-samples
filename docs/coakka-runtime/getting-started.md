@@ -14,11 +14,25 @@ A basic example starts a host, registers one handler, sends a request, checks
 its reply and closes the host. Its README gives prerequisites, the command
 and expected output. Keep those steps together in the selected example.
 
+## C# Runtime 3.0.0 from NuGet
+
+C# 3.0.0 is published. Use .NET 8 or newer and the
+[matching first-run example](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/csharp/registry-basic):
+
+```sh
+dotnet run --project coakka-runtime/csharp/registry-basic/CoAkkaRuntimeFirstRun.csproj
+```
+
+Run from the Samples checkout; expected output is `accepted-hello`. The package
+includes its matching native Core. Existing applications install with
+`dotnet add package CoAkka.Runtime --version 3.0.0`; migrate and recompile 2.x
+callers against the new API.
+
 ## Evaluating 3.0.0
 
-The current main-branch Runtime examples use the **unpublished 3.0.0 candidate**.
-They require its matching local artifact and catalog. Begin with the
-[candidate index](previews/README.md); a registry install is not available yet.
+Other main-branch Runtime examples still use **local 3.0.0 candidates**.
+They require the matching artifact and catalog from the
+[candidate index](previews/README.md). Their registry releases remain separate.
 Android and Mojo are evaluation previews. Swift is a release package; only
 Swift on Windows ARM has preview scope for this train.
 

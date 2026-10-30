@@ -1,7 +1,19 @@
-# C# runtime candidate sample
+# C# Runtime 3.0.0
 
-This lane is a private candidate using exactly CoAkka.Runtime `3.0.0`
-and Core3.0.0+1522b4a9/ABI1, not the historical public package train. Use the
+`CoAkka.Runtime 3.0.0` is [published on NuGet](https://www.nuget.org/packages/CoAkka.Runtime/3.0.0).
+Start with [the ordinary .NET 8 first run](registry-basic/README.md):
+
+```sh
+dotnet run --project coakka-runtime/csharp/registry-basic/CoAkkaRuntimeFirstRun.csproj
+```
+
+Run from the Samples checkout. The package includes Core3.0.0/ABI1 and five
+native targets; it needs no separate Core installation. Migrate and recompile
+2.x applications for this new API baseline.
+
+## Local-feed qualification
+
+The separate `basic` runner verifies an exact local package/catalog. Use the
 [admitted candidate guide](../../docs/coakka-runtime/previews/3.0.0/runtime-csharp-candidate.md) for the
 standard .NET8/C#12/ILLink build and matching-host scope.
 

@@ -125,7 +125,7 @@ coordinates are:
 | Maven Central | `io.github.phuong-tran.coakka:runtime:2.5.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
 | npm | `coakka-v2-connector-{node,bun,electron}@2.5.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
 | PyPI | `coakka-v2-connector==2.5.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
-| NuGet | `CoAkka.Runtime==2.5.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
+| NuGet | `CoAkka.Runtime==3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 | Go modules | `github.com/phuong-tran/coakka-runtime-go@v1.8.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
 | SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v2.5.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
 
@@ -165,3 +165,7 @@ copy because the receiver persists data to storage.
 For code and ownership details, read [Runtime File Transfer](../guides/runtime-file-transfer.md),
 [Envelope And Deadletter Map](envelope-deadletter-map.md), and
 [TLS And mTLS](tls-and-mtls.md).
+
+## C# Runtime 3.0.0
+
+NuGet `CoAkka.Runtime 3.0.0` contains one `lib/net8.0` managed asset and five native RIDs: macOS ARM64, Linux ARM64/x64 and Windows ARM64/x64. All original candidate member bytes match the registry archive; NuGet adds only its repository signature. Full signature verification and a fresh NuGet-only .NET 8/macOS ARM64 consumer pass. Earlier .NET 8/9/10 registry observations above describe 2.5.3 and Logger, not a new 3.0.0 run on every runtime. The exact executable payload retains its prior five-target qualification. See [the release receipt](../releases/2026-10-30-nuget-csharp-runtime-3.0.0.md).

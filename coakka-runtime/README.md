@@ -26,8 +26,9 @@ reasoning behind this model.
 
 Run one request/reply example in your language, then add the capabilities you need.
 
-**Version choice comes first.** Main-branch examples use unpublished 3.0.0
-packages. The published-example links below point to a frozen 2.x snapshot:
+**Version choice comes first.** C# `CoAkka.Runtime 3.0.0` is available on NuGet.
+Other main-branch 3.0.0 examples still require their local candidate packages.
+Their published-example links below point to a frozen 2.x snapshot:
 use its complete code, runner and pinned dependencies together. Follow the
 [package ledger](../docs/common/current-packages.md) for released coordinates.
 
@@ -39,7 +40,7 @@ use its complete code, runner and pinned dependencies together. Follow the
 | Bun | [Published example](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/bun) | [3.0.0 example](bun/README.md) |
 | Electron | [Published example](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/electron) | [3.0.0 example](electron/README.md) |
 | Python | [Published example](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/python) | [3.0.0 example](python/README.md) |
-| C# | [Published example](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/csharp) | [3.0.0 example](csharp/README.md) |
+| C# | [NuGet 3.0.0 first run](csharp/registry-basic/README.md) | [Local-feed verification](csharp/README.md) |
 | Go | [Published example](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/go) | [3.0.0 example](go/README.md) |
 | Swift | [Published example](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/swift) | [3.0.0 example](swift/README.md) |
 | Rust | [Published example](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/rust) | [3.0.0 example](rust/README.md) |

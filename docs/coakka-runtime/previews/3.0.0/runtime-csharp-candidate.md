@@ -1,8 +1,12 @@
-# Private C# runtime candidate sample
+# C# Runtime 3.0.0 local-feed qualification
 
 The sample uses exactly `CoAkka.Runtime` `3.0.0` from the trusted local
 feed described in `artifacts/runtime-csharp-candidate.props`. This is a private
-candidate, not a public NuGet release. It carries Core3.0.0+1522b4a9/ABI1 for
+unsigned candidate used for local-feed qualification. The signed 3.0.0 release
+is [available on NuGet](https://www.nuget.org/packages/CoAkka.Runtime/3.0.0);
+ordinary consumers should start with the
+[registry sample](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/csharp/registry-basic).
+The local candidate carries Core3.0.0+1522b4a9/ABI1 for
 macOS ARM64, Linux ARM64/x64 and native Windows ARM64/x64. No separate native dependency
 installation, source reference or native-library override is needed.
 

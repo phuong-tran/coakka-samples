@@ -1,6 +1,6 @@
 # CoAkka Runtime Evaluation And 3.0.0 Candidates
 
-Runtime 3.0.0 is prepared for release but is **not yet available on registries**.
+C# `CoAkka.Runtime 3.0.0` is [published on NuGet](https://www.nuget.org/packages/CoAkka.Runtime/3.0.0); use its [normal first-run example](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/csharp/registry-basic). Other Runtime 3.0.0 connectors remain **local candidates** until individually published.
 A candidate guide names a local qualified archive and its matching catalog.
 It does not make that file publicly downloadable. For an ordinary released
 installation, use [getting started](../getting-started.md).
