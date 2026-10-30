@@ -16,7 +16,7 @@ packaging surface, and native payload.
 
 The promoted repository native artifact pointer is
 `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`. Maven Central Runtime
-`2.5.3`, npm Runtime `2.5.3`, PyPI Runtime `2.5.3`, Go
+`2.5.3`, npm Runtime `2.5.3`, Go
 `v1.8.3`, SwiftPM `v2.5.3`, and the checksum-pinned connector archives all use
 that Core generation. The independently versioned
 Spring Boot starter and Quarkus extension are current at `2.5.3` and depend
@@ -27,6 +27,8 @@ All Logger packages use the separately listed generations; version numbers
 remain independent by channel.
 
 NuGet Runtime is now `CoAkka.Runtime 3.0.0`, carrying Core `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` / ABI1. This is a new .NET API baseline: migrate and recompile 2.x callers. Other Runtime channels retain the versions listed below. See the [C# 3.0.0 release](../coakka-runtime/releases/2026-10-30-nuget-csharp-runtime-3.0.0.md).
+
+PyPI Runtime is now `coakka-v2-connector==3.0.0`, with Core `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` / ABI1, five platform wheels and GIL-enabled CPython3.11 as its minimum. Migrate 2.x callers to the new API. See the [Python 3.0.0 release](../coakka-runtime/releases/2026-10-30-pypi-python-runtime-3.0.0.md).
 
 The `2.5.3` connector source is `0ba485e8ff19f3ce23902345cb445a1f652fe3f3`;
 the non-JVM archive mirrors are checksum-pinned independently.
@@ -81,7 +83,7 @@ complete matrix with `bash run.sh coakka-runtime addons all published`.
 | npm | [`coakka-v2-connector-node` 2.5.3](https://www.npmjs.com/package/coakka-v2-connector-node/v/2.5.3) | [`coakka-logger-node` 1.2.7](https://www.npmjs.com/package/coakka-logger-node/v/1.2.7) | `bash run.sh coakka-runtime node basic` |
 | npm (Bun) | [`coakka-v2-connector-bun` 2.5.3](https://www.npmjs.com/package/coakka-v2-connector-bun/v/2.5.3) | [`coakka-logger-bun` 1.2.7](https://www.npmjs.com/package/coakka-logger-bun/v/1.2.7) | `bash run.sh coakka-runtime bun basic` |
 | npm (Electron) | [`coakka-v2-connector-electron` 2.5.3](https://www.npmjs.com/package/coakka-v2-connector-electron/v/2.5.3) | [`coakka-logger-electron` 1.2.7](https://www.npmjs.com/package/coakka-logger-electron/v/1.2.7) | `bash run.sh coakka-runtime electron basic` |
-| PyPI | [`coakka-v2-connector` 2.5.3](https://pypi.org/project/coakka-v2-connector/2.5.3/) | [`coakka-logger` 1.2.2](https://pypi.org/project/coakka-logger/1.2.2/) | `bash run.sh coakka-runtime python basic` |
+| PyPI | [`coakka-v2-connector` 3.0.0](https://pypi.org/project/coakka-v2-connector/3.0.0/) | [`coakka-logger` 1.2.2](https://pypi.org/project/coakka-logger/1.2.2/) | [CPython3.11 first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/python/registry-basic) |
 | Go modules | [`coakka-runtime-go` v1.8.3](https://github.com/phuong-tran/coakka-runtime-go/tree/v1.8.3) | [`coakka-logger-go` v1.2.6](https://pkg.go.dev/github.com/phuong-tran/coakka-logger-go@v1.2.6) | `bash run.sh coakka-runtime go basic` |
 | SwiftPM | [`coakka-runtime-swift` v2.5.3](https://github.com/phuong-tran/coakka-runtime-swift/tree/v2.5.3) | [`coakka-logger-swift` v1.2.2](https://github.com/phuong-tran/coakka-logger-swift/releases/tag/v1.2.2) | `bash run.sh coakka-runtime swift basic` |
 | Tauri source archive | [`coakka-runtime-tauri-intents` 2.5.3 source](https://github.com/phuong-tran/coakka-publish/tree/main/runtime/tauri/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e) | [`coakka-logger-tauri-intents` 1.2.2 source](https://github.com/phuong-tran/coakka-publish/tree/main/logger/tauri/releases/1.2.1+f50756ebff0d-7718ce6) | [Tauri integration guide](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/tauri/README.md) |
@@ -116,7 +118,7 @@ major `v1` because its established module path does not carry a `/v2` suffix.
 | Connector archives | `runtime/<lane>/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e/` |
 | JVM signed public tree | `https://repo1.maven.org/maven2/io/github/phuong-tran/coakka/runtime/2.5.3/` |
 | npm | `coakka-v2-connector-{node,bun,electron}@2.5.3` |
-| PyPI | `coakka-v2-connector`, exact `2.5.3` |
+| PyPI | `coakka-v2-connector`, exact `3.0.0` |
 | NuGet | `CoAkka.Runtime`, exact `3.0.0` |
 | Go module | `github.com/phuong-tran/coakka-runtime-go@v1.8.3` |
 | SwiftPM | `https://github.com/phuong-tran/coakka-runtime-swift.git`, exact `2.5.3` |

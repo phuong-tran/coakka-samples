@@ -5,7 +5,7 @@ Run its smallest request/reply example before adding files, streams or remote pe
 
 ## Using a published package
 
-Use the [published sample snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime) and follow that snapshot's README,
+For the other released 2.x language lanes, use the [published sample snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime) and follow that snapshot's README,
 runner and exact package version together. Download or check out the snapshot
 before running it; do not copy a 2.x install command into current 3.0.0 source.
 The [published package ledger](../common/current-packages.md) records available releases.
@@ -27,6 +27,20 @@ Run from the Samples checkout; expected output is `accepted-hello`. The package
 includes its matching native Core. Existing applications install with
 `dotnet add package CoAkka.Runtime --version 3.0.0`; migrate and recompile 2.x
 callers against the new API.
+
+## Python Runtime 3.0.0 from PyPI
+
+Use GIL-enabled CPython3.11 or newer and the
+[matching Python first-run example](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/python/registry-basic):
+
+```sh
+python -m pip install coakka-v2-connector==3.0.0
+python coakka-runtime/python/registry-basic/main.py
+```
+
+Run from the Samples checkout in a virtual environment; expected output is
+`accepted-hello`. The wheel includes Core and its matching Python adapter.
+Migrate 2.x applications to the new API.
 
 ## Evaluating 3.0.0
 

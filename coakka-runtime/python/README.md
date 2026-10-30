@@ -1,20 +1,25 @@
 # Python Runtime Samples
 
-For the 3.0.0 API, start with the [ordinary first-run example](registry-basic/README.md).
-It supports the published package or an admitted local wheel, according to the
-[package ledger](../../docs/common/current-packages.md).
+`coakka-v2-connector==3.0.0` is [published on PyPI](https://pypi.org/project/coakka-v2-connector/3.0.0/).
+Start with [the ordinary CPython3.11 first run](registry-basic/README.md):
 
-This branch's basic/deadletter/hot-reload apps use the
-[exact private candidate workflow](../../docs/coakka-runtime/previews/3.0.0/runtime-python-candidate.md).
-They do not install the historical public wheel shown below. Core owns
-defaults/effective facts and typed refusal statuses; the apps scope observation
-and host lifetimes before reporting failure. The published snippets/recordings
-below are historical, not current candidate instructions or qualification.
+```sh
+python -m pip install coakka-v2-connector==3.0.0
+python coakka-runtime/python/registry-basic/main.py
+```
 
-Python runtime samples document the `coakka_v2_connector` package shape. This
-runtime lane consumes `coakka-v2-connector==2.5.3` from PyPI, built against
-native runtime generation `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`
-from connector source `0ba485e`.
+Run from the Samples checkout in a virtual environment. Core and the Python
+adapter are included in the wheel. The basic/deadletter/hot-reload runners
+instead perform [exact local-wheel qualification](../../docs/coakka-runtime/previews/3.0.0/runtime-python-candidate.md).
+The [package ledger](../../docs/common/current-packages.md) records current versions.
+
+## Historical 2.x walkthrough
+
+The snippets/recordings below describe `coakka-v2-connector==2.5.3` and Core
+`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`, from connector source
+`0ba485e`. Use the [frozen 2.x sample](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/python)
+for that version's complete code and runner. They are historical context,
+not 3.0.0 installation instructions or release evidence.
 
 ## Contents
 

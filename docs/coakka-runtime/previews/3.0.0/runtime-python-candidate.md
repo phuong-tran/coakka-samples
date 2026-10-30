@@ -1,8 +1,9 @@
-# Private Python runtime candidate samples
+# Python Runtime 3.0.0 local-wheel qualification
 
-The basic/deadletter/hot-reload apps on this branch use the exact private
-`3.0.0` platform wheels pinned in
-`artifacts/runtime-python-candidate.json`, not historical public2.5.2.
+The 3.0.0 wheels are [published on PyPI](https://pypi.org/project/coakka-v2-connector/3.0.0/).
+Ordinary users should start with the [registry sample](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/python/registry-basic).
+The basic/deadletter/hot-reload runners below verify exact local copies against
+the catalog in `artifacts/runtime-python-candidate.json`.
 Each wheel contains23 minified language modules, the Python native adapter
 and one frozen Core3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456 image, ABI1.
 Candidate targets: macOS ARM64, Linux ARM64/x64 and native Windows ARM64/x64.
@@ -13,8 +14,8 @@ the language version. No registry publication is opened by this guide.
 
 ## Run the exact local candidate
 
-Obtain the trusted catalog and matching wheel from the candidate owner, not
-a connector source tree or a separately installed native library. Choose an
+Use the trusted catalog and matching public PyPI wheel, not a connector source
+tree or a separately installed native library. Choose an
 existing absolute work directory; on the development Mac it must be on
 mounted external APFS storage. From this repository:
 

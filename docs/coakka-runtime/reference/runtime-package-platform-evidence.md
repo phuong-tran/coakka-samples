@@ -124,7 +124,7 @@ coordinates are:
 | --- | --- | --- |
 | Maven Central | `io.github.phuong-tran.coakka:runtime:2.5.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
 | npm | `coakka-v2-connector-{node,bun,electron}@2.5.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
-| PyPI | `coakka-v2-connector==2.5.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
+| PyPI | `coakka-v2-connector==3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 | NuGet | `CoAkka.Runtime==3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 | Go modules | `github.com/phuong-tran/coakka-runtime-go@v1.8.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
 | SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v2.5.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
@@ -169,3 +169,14 @@ For code and ownership details, read [Runtime File Transfer](../guides/runtime-f
 ## C# Runtime 3.0.0
 
 NuGet `CoAkka.Runtime 3.0.0` contains one `lib/net8.0` managed asset and five native RIDs: macOS ARM64, Linux ARM64/x64 and Windows ARM64/x64. All original candidate member bytes match the registry archive; NuGet adds only its repository signature. Full signature verification and a fresh NuGet-only .NET 8/macOS ARM64 consumer pass. Earlier .NET 8/9/10 registry observations above describe 2.5.3 and Logger, not a new 3.0.0 run on every runtime. The exact executable payload retains its prior five-target qualification. See [the release receipt](../releases/2026-10-30-nuget-csharp-runtime-3.0.0.md).
+
+## Python Runtime 3.0.0
+
+All five PyPI wheels match their qualified archive hashes byte-for-byte. Each
+contains the same23 shrunk modules, matching Core3 and Python host adapter;
+the installer selects the matching OS/CPU wheel. Final release qualification
+retains the exact executable five-target evidence. A new isolated CPython3.11.15
+macOS ARM64 install from PyPI only passes the ordinary sample and public
+Runtime/File/Stream consumer. This is not a new post-upload run on every OS.
+PyPy and free-threaded Python remain outside this qualification.
+See [the Python release receipt](../releases/2026-10-30-pypi-python-runtime-3.0.0.md).
