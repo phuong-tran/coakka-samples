@@ -1,0 +1,9 @@
+{
+  "name": "coakka-node-first-run",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "coakka-v2-connector-node": "3.0.0"
+  }
+}

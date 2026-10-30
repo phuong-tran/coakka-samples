@@ -1,0 +1,18 @@
+{
+  "name": "coakka-electron-first-run",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "main.mjs",
+  "scripts": {
+    "preload": "esbuild preload.cjs --bundle --platform=node --format=cjs --external:electron --outfile=preload.bundle.cjs",
+    "start": "npm run preload && electron ."
+  },
+  "dependencies": {
+    "coakka-v2-connector-electron": "3.0.0"
+  },
+  "devDependencies": {
+    "electron": "42.0.0",
+    "esbuild": "0.27.7"
+  }
+}
