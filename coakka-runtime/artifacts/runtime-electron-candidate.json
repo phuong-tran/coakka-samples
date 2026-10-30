@@ -12,8 +12,8 @@
       "version": "3.0.0",
       "minimumRuntime": "22.0.0",
       "archive": "coakka-v2-connector-node-3.0.0.tgz",
-      "bytes": 5807400,
-      "sha256": "354c4506d4a90b8b4b643ee15432f6e611c30182cf46155d385178df21957af6",
+      "bytes": 5807456,
+      "sha256": "9e10098c659b6888f79529c4d30651bcc6cef5f7eabea77f75baea43d7f06da3",
       "members": {
         "LICENSE": {
           "bytes": 11358,
@@ -44,24 +44,24 @@
           "sha256": "4566010db7ab275ab2a3ba071c21fcc8bae7c17bd3518b15e5951c0c271fa1a3"
         },
         "package.json": {
-          "bytes": 1138,
-          "sha256": "0e1518bedf5315f7fea0a92bd9034e3781f897eeae0be7826064d5f475c1aba9"
+          "bytes": 1260,
+          "sha256": "b7b1460e595677362272d011fc4e4dd1f7a9b95618df78ee61207fd1159de3e6"
         },
         "CONSUMING.md": {
-          "bytes": 11094,
-          "sha256": "a195451f53524a8e51d30aa2db506288623b2deb39514d31fad1ed66f097c293"
+          "bytes": 11108,
+          "sha256": "d054c5c5a15e56898419f00d08a9f466d223eda69efe91e13e21b289197dac04"
         },
         "NATIVE-LICENSE.md": {
           "bytes": 6482,
           "sha256": "089ff94cf25b1707ae3e7d03bb81f0ddfb84e87fb7476f5fea7ebd2cd2f01925"
         },
         "PACKAGE-LICENSE.md": {
-          "bytes": 1384,
-          "sha256": "32517109595798ad4b780117783e91aa0196b8d6d699e5d541b5f841c722e06e"
+          "bytes": 1427,
+          "sha256": "828bd69a3adb8f4b1354a23a526f5708289ab3565c6c8484dc551145835649b8"
         },
         "README.md": {
-          "bytes": 16201,
-          "sha256": "62c5fcd98d3f413e64d2ac2343efc1865efa6e1fdfdcc5894f334f0ac208a764"
+          "bytes": 16397,
+          "sha256": "ffa7d472eedca3f56477043169e04bb821283c35200de456e1269efb27966d0a"
         },
         "native/linux-aarch64/libcoakka_runtime_node_v2.node": {
           "bytes": 199064,
@@ -122,8 +122,8 @@
       "version": "3.0.0",
       "minimumRuntime": "42.0.0",
       "archive": "coakka-v2-connector-electron-3.0.0.tgz",
-      "bytes": 16615,
-      "sha256": "0f4235de5d7c898b2228a7a0928bd2a347aaebcb6d6fa8dca41b68bdca51042f",
+      "bytes": 16766,
+      "sha256": "0bef8cdfe0f8abb6475750407eb73d6c49b2c85a49ae148a99428b4525aa0c14",
       "members": {
         "LICENSE": {
           "bytes": 11358,
@@ -146,24 +146,24 @@
           "sha256": "a4fca920c88dce9fda98d49ef2cfae8b75bb50dbb7cf97c3e2711b5e2be6e219"
         },
         "package.json": {
-          "bytes": 1312,
-          "sha256": "cd00cb3935aa1ef766b905a366f7d0b4a5e51c48289c6440612502d4f3674ae0"
+          "bytes": 1445,
+          "sha256": "2cc9ba5b2bf437c5ebc38d991e91c3ab8ed49a7a66e61470c7cb3eede7cf959b"
         },
         "CONSUMING.md": {
-          "bytes": 3587,
-          "sha256": "2bc4a45b22431b42da9bdfab4ade8c2228fce506af38c46862391935e308d351"
+          "bytes": 3599,
+          "sha256": "1b9f952274df708baea184fbeec5e044b0a9302c43e43da5680084f983c639c9"
         },
         "NATIVE-LICENSE.md": {
           "bytes": 6482,
           "sha256": "089ff94cf25b1707ae3e7d03bb81f0ddfb84e87fb7476f5fea7ebd2cd2f01925"
         },
         "PACKAGE-LICENSE.md": {
-          "bytes": 1384,
-          "sha256": "32517109595798ad4b780117783e91aa0196b8d6d699e5d541b5f841c722e06e"
+          "bytes": 1427,
+          "sha256": "828bd69a3adb8f4b1354a23a526f5708289ab3565c6c8484dc551145835649b8"
         },
         "README.md": {
-          "bytes": 10451,
-          "sha256": "9e8b3d3753a53ca10717f66fc4226cefd1283f8558bf25db832e2b9f3107553e"
+          "bytes": 10863,
+          "sha256": "712cbc7a4bdb2a2f7df89258b9507bee69309f76fc0af434800f89fbcf2703f3"
         },
         "dist/index.d.ts": {
           "bytes": 5161,

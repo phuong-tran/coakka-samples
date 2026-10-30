@@ -12,8 +12,8 @@
       "version": "3.0.0",
       "minimumRuntime": "22.0.0",
       "archive": "coakka-v2-connector-node-3.0.0.tgz",
-      "bytes": 5807400,
-      "sha256": "354c4506d4a90b8b4b643ee15432f6e611c30182cf46155d385178df21957af6",
+      "bytes": 5807456,
+      "sha256": "9e10098c659b6888f79529c4d30651bcc6cef5f7eabea77f75baea43d7f06da3",
       "members": {
         "LICENSE": {
           "bytes": 11358,
@@ -44,24 +44,24 @@
           "sha256": "4566010db7ab275ab2a3ba071c21fcc8bae7c17bd3518b15e5951c0c271fa1a3"
         },
         "package.json": {
-          "bytes": 1138,
-          "sha256": "0e1518bedf5315f7fea0a92bd9034e3781f897eeae0be7826064d5f475c1aba9"
+          "bytes": 1260,
+          "sha256": "b7b1460e595677362272d011fc4e4dd1f7a9b95618df78ee61207fd1159de3e6"
         },
         "CONSUMING.md": {
-          "bytes": 11094,
-          "sha256": "a195451f53524a8e51d30aa2db506288623b2deb39514d31fad1ed66f097c293"
+          "bytes": 11108,
+          "sha256": "d054c5c5a15e56898419f00d08a9f466d223eda69efe91e13e21b289197dac04"
         },
         "NATIVE-LICENSE.md": {
           "bytes": 6482,
           "sha256": "089ff94cf25b1707ae3e7d03bb81f0ddfb84e87fb7476f5fea7ebd2cd2f01925"
         },
         "PACKAGE-LICENSE.md": {
-          "bytes": 1384,
-          "sha256": "32517109595798ad4b780117783e91aa0196b8d6d699e5d541b5f841c722e06e"
+          "bytes": 1427,
+          "sha256": "828bd69a3adb8f4b1354a23a526f5708289ab3565c6c8484dc551145835649b8"
         },
         "README.md": {
-          "bytes": 16201,
-          "sha256": "62c5fcd98d3f413e64d2ac2343efc1865efa6e1fdfdcc5894f334f0ac208a764"
+          "bytes": 16397,
+          "sha256": "ffa7d472eedca3f56477043169e04bb821283c35200de456e1269efb27966d0a"
         },
         "native/linux-aarch64/libcoakka_runtime_node_v2.node": {
           "bytes": 199064,
@@ -122,64 +122,44 @@
       "version": "3.0.0",
       "minimumRuntime": "1.3.14",
       "archive": "coakka-v2-connector-bun-3.0.0.tgz",
-      "bytes": 4615655,
-      "sha256": "9aa2c90a6452a1cf74e4eca090e18c1b2004281af78580110a49eea25733a968",
+      "bytes": 4615756,
+      "sha256": "31214d019422d0132f0e3e5798db411d30afb8de8780ca4657d33c5362cb1e18",
       "members": {
-        "CONSUMING.md": {
-          "bytes": 10401,
-          "sha256": "08b1a9eb0263c1356564544611312e430080e7aa854de623be9be91f72706e88"
-        },
-        "dist/index.d.ts": {
-          "bytes": 51262,
-          "sha256": "77316e0758305f90d5039a18c6e6a1c42dc3b44f177dec3bb2c6f2d9982587ec"
-        },
-        "dist/index.js": {
-          "bytes": 101443,
-          "sha256": "d7a888de82556a50742599e7302e60c70b1768f9adb504a5972252781cebd196"
-        },
         "LICENSE": {
           "bytes": 11358,
           "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
         },
-        "native/linux-aarch64/libcoakka_runtime_bun_stream_lane.so": {
-          "bytes": 67168,
-          "sha256": "800755ef750ca86470cf5af942ccbeee0f70c33ea327009c63a430e15eb80d60"
+        "NOTICE": {
+          "bytes": 1814,
+          "sha256": "904ef5b9e27a72550e43f2c626676d978263acad35ac0356b395811d422460cc"
         },
-        "native/linux-aarch64/libcoakka_runtime_bun_v2.node": {
-          "bytes": 199064,
-          "sha256": "da6bee91e6fd731bc4f925ae4b976fb0c35d57815ea2b4343c2c4fb72e82be54"
+        "native/windows-aarch64/libcoakka_runtime_bun_stream_lane.dll": {
+          "bytes": 107520,
+          "sha256": "ae3c38d9ce887d8217efcfee6edda2920d3d61afef49d5693462620c6b7173ce"
         },
-        "native/linux-aarch64/libcoakka_runtime_bun_values.so": {
-          "bytes": 66368,
-          "sha256": "8159a768e063a64a194cfd594dc5d11091a0a655fc6cb42d384a1156fe98364a"
+        "native/windows-x86_64/libcoakka_runtime_bun_stream_lane.dll": {
+          "bytes": 117248,
+          "sha256": "d65bff86f1b669a0329b9e2a9ba8522759dee4613c02bdf905b30e174d08f43b"
         },
-        "native/linux-aarch64/libcoakka_runtime_v2.so": {
-          "bytes": 2103344,
-          "sha256": "9092c59320f2aa8d3431e01ac10f292c82b545c23d74f51dcde4855741966de8"
+        "native/windows-aarch64/libcoakka_runtime_bun_values.dll": {
+          "bytes": 98816,
+          "sha256": "1c544e743147c4b87e3df0c8b059aa23c3a9eac6b220bb26597315765e8a296a"
         },
-        "native/linux-x86_64/libcoakka_runtime_bun_stream_lane.so": {
-          "bytes": 22192,
-          "sha256": "7513fcae712f26631654e8a04b45763e345a4ce1d54fed20529837cd109420f4"
+        "native/windows-x86_64/libcoakka_runtime_bun_values.dll": {
+          "bytes": 107520,
+          "sha256": "f4e263848fce5691fff1ab6bcd42f075463e98148a0775972c5fafe7fcd68961"
         },
-        "native/linux-x86_64/libcoakka_runtime_bun_v2.node": {
-          "bytes": 158192,
-          "sha256": "cb72c7e7f802d901ca4124ac1f50406d71457549d517ff9d446e770f239604a0"
+        "native/windows-aarch64/libcoakka_runtime_v2.dll": {
+          "bytes": 2071552,
+          "sha256": "720a73215b4cbee231cbaadb766704d60ff999b11d52411819484e738f91bacd"
         },
-        "native/linux-x86_64/libcoakka_runtime_bun_values.so": {
-          "bytes": 13056,
-          "sha256": "c1aafbeaa5c2b1046d46e1bfba10a966e73348ea4a4248b755e0581e673d868a"
-        },
-        "native/linux-x86_64/libcoakka_runtime_v2.so": {
-          "bytes": 1902480,
-          "sha256": "4736f09d4a68073c6b9f7043f6418ab5a316ee0ec06a11b92510c65c1247ba81"
+        "native/windows-x86_64/libcoakka_runtime_v2.dll": {
+          "bytes": 2283520,
+          "sha256": "dba531e09359f270a22543ec3b1a4a4bf9750e965c2b5920966871faaff88e4d"
         },
         "native/macos-aarch64/libcoakka_runtime_bun_stream_lane.dylib": {
           "bytes": 37128,
           "sha256": "bed763b09934efd96c9c3226c00d968cc0bf8dd91a522b8406d66688b55dcf4f"
-        },
-        "native/macos-aarch64/libcoakka_runtime_bun_v2.node": {
-          "bytes": 92112,
-          "sha256": "e97f22b04d7b40dd53a556a547bd2901cd413f766a301f75a78acd27ba32c34e"
         },
         "native/macos-aarch64/libcoakka_runtime_bun_values.dylib": {
           "bytes": 16848,
@@ -189,61 +169,81 @@
           "bytes": 873360,
           "sha256": "5ef45ad964a43c3e91c6c69bd731dbc5ac30348721ebffa7d384a7ce05bc4dd2"
         },
-        "native/windows-aarch64/libcoakka_runtime_bun_stream_lane.dll": {
-          "bytes": 107520,
-          "sha256": "ae3c38d9ce887d8217efcfee6edda2920d3d61afef49d5693462620c6b7173ce"
-        },
-        "native/windows-aarch64/libcoakka_runtime_bun_v2.node": {
-          "bytes": 229888,
-          "sha256": "db5fa0fddd2738ac0304f47203cc45f82517d9ec04d0056e6b38665ae9d25e11"
-        },
-        "native/windows-aarch64/libcoakka_runtime_bun_values.dll": {
-          "bytes": 98816,
-          "sha256": "1c544e743147c4b87e3df0c8b059aa23c3a9eac6b220bb26597315765e8a296a"
-        },
-        "native/windows-aarch64/libcoakka_runtime_v2.dll": {
-          "bytes": 2071552,
-          "sha256": "720a73215b4cbee231cbaadb766704d60ff999b11d52411819484e738f91bacd"
-        },
-        "native/windows-x86_64/libcoakka_runtime_bun_stream_lane.dll": {
-          "bytes": 117248,
-          "sha256": "d65bff86f1b669a0329b9e2a9ba8522759dee4613c02bdf905b30e174d08f43b"
-        },
-        "native/windows-x86_64/libcoakka_runtime_bun_v2.node": {
-          "bytes": 183296,
-          "sha256": "d98fea8c69b7990e0c5132b60c529f88af6e0407bccbae377df36a3b4590cb31"
-        },
-        "native/windows-x86_64/libcoakka_runtime_bun_values.dll": {
-          "bytes": 107520,
-          "sha256": "f4e263848fce5691fff1ab6bcd42f075463e98148a0775972c5fafe7fcd68961"
-        },
-        "native/windows-x86_64/libcoakka_runtime_v2.dll": {
-          "bytes": 2283520,
-          "sha256": "dba531e09359f270a22543ec3b1a4a4bf9750e965c2b5920966871faaff88e4d"
-        },
-        "NATIVE-LICENSE.md": {
-          "bytes": 6482,
-          "sha256": "089ff94cf25b1707ae3e7d03bb81f0ddfb84e87fb7476f5fea7ebd2cd2f01925"
+        "dist/index.js": {
+          "bytes": 101443,
+          "sha256": "d7a888de82556a50742599e7302e60c70b1768f9adb504a5972252781cebd196"
         },
         "native-manifest.json": {
           "bytes": 4034,
           "sha256": "d91bd30589965e02e561f6e45a25ad3fbfcfcff893563f671dcac0e034fd0b2a"
         },
-        "NOTICE": {
-          "bytes": 1814,
-          "sha256": "904ef5b9e27a72550e43f2c626676d978263acad35ac0356b395811d422460cc"
+        "package.json": {
+          "bytes": 1252,
+          "sha256": "caf37859935ea5057dd725236ed9e40e27efd2821c676d62fc41e8339b614641"
+        },
+        "CONSUMING.md": {
+          "bytes": 10351,
+          "sha256": "dd8f413de03b22e8f1c6f08d23c99cb01d846225ce57e1457186864aecd44114"
+        },
+        "NATIVE-LICENSE.md": {
+          "bytes": 6482,
+          "sha256": "089ff94cf25b1707ae3e7d03bb81f0ddfb84e87fb7476f5fea7ebd2cd2f01925"
         },
         "PACKAGE-LICENSE.md": {
-          "bytes": 1384,
-          "sha256": "32517109595798ad4b780117783e91aa0196b8d6d699e5d541b5f841c722e06e"
-        },
-        "package.json": {
-          "bytes": 1131,
-          "sha256": "dd3e944884f243a4b364370d4e9833b3437299f60978fd2b22cdf6b122386ebb"
+          "bytes": 1427,
+          "sha256": "828bd69a3adb8f4b1354a23a526f5708289ab3565c6c8484dc551145835649b8"
         },
         "README.md": {
-          "bytes": 13761,
-          "sha256": "97703f06c22f13e9fa0ffd4aa788cd9d950b8e8c765d5b8d0cad95493ba57e56"
+          "bytes": 13986,
+          "sha256": "ede4a23f8ddd8cb78af66cd91d2daaeeea3ed731040b2ebb914624079da74416"
+        },
+        "native/linux-aarch64/libcoakka_runtime_bun_v2.node": {
+          "bytes": 199064,
+          "sha256": "da6bee91e6fd731bc4f925ae4b976fb0c35d57815ea2b4343c2c4fb72e82be54"
+        },
+        "native/linux-x86_64/libcoakka_runtime_bun_v2.node": {
+          "bytes": 158192,
+          "sha256": "cb72c7e7f802d901ca4124ac1f50406d71457549d517ff9d446e770f239604a0"
+        },
+        "native/macos-aarch64/libcoakka_runtime_bun_v2.node": {
+          "bytes": 92112,
+          "sha256": "e97f22b04d7b40dd53a556a547bd2901cd413f766a301f75a78acd27ba32c34e"
+        },
+        "native/windows-aarch64/libcoakka_runtime_bun_v2.node": {
+          "bytes": 229888,
+          "sha256": "db5fa0fddd2738ac0304f47203cc45f82517d9ec04d0056e6b38665ae9d25e11"
+        },
+        "native/windows-x86_64/libcoakka_runtime_bun_v2.node": {
+          "bytes": 183296,
+          "sha256": "d98fea8c69b7990e0c5132b60c529f88af6e0407bccbae377df36a3b4590cb31"
+        },
+        "native/linux-aarch64/libcoakka_runtime_bun_stream_lane.so": {
+          "bytes": 67168,
+          "sha256": "800755ef750ca86470cf5af942ccbeee0f70c33ea327009c63a430e15eb80d60"
+        },
+        "native/linux-x86_64/libcoakka_runtime_bun_stream_lane.so": {
+          "bytes": 22192,
+          "sha256": "7513fcae712f26631654e8a04b45763e345a4ce1d54fed20529837cd109420f4"
+        },
+        "native/linux-aarch64/libcoakka_runtime_bun_values.so": {
+          "bytes": 66368,
+          "sha256": "8159a768e063a64a194cfd594dc5d11091a0a655fc6cb42d384a1156fe98364a"
+        },
+        "native/linux-x86_64/libcoakka_runtime_bun_values.so": {
+          "bytes": 13056,
+          "sha256": "c1aafbeaa5c2b1046d46e1bfba10a966e73348ea4a4248b755e0581e673d868a"
+        },
+        "native/linux-aarch64/libcoakka_runtime_v2.so": {
+          "bytes": 2103344,
+          "sha256": "9092c59320f2aa8d3431e01ac10f292c82b545c23d74f51dcde4855741966de8"
+        },
+        "native/linux-x86_64/libcoakka_runtime_v2.so": {
+          "bytes": 1902480,
+          "sha256": "4736f09d4a68073c6b9f7043f6418ab5a316ee0ec06a11b92510c65c1247ba81"
+        },
+        "dist/index.d.ts": {
+          "bytes": 51262,
+          "sha256": "77316e0758305f90d5039a18c6e6a1c42dc3b44f177dec3bb2c6f2d9982587ec"
         }
       },
       "minimumRuntimeByTarget": {
