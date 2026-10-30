@@ -8,16 +8,16 @@
   "wheels": {
     "macos-aarch64": {
       "filename": "coakka_v2_connector-3.0.0-cp311-abi3-macosx_13_0_arm64.whl",
-      "bytes": 507085,
-      "sha256": "0448f4a6a573a338749854fe1e7c9a518ae49d8e8372a476bfdd1e7f9175e9c5",
+      "bytes": 507301,
+      "sha256": "45a4dfc5ed16b74fd98e05c37d2c86242fbb15f66cd6aeedd06035010943626a",
       "members": {
         "coakka_v2_connector-3.0.0.dist-info/METADATA": {
-          "bytes": 44900,
-          "sha256": "2fc242542dad7deb078e26eb9b82f2f8ab4550a6594e609303a4de69480548f2"
+          "bytes": 46160,
+          "sha256": "2eabc33215cde80e025dd97dec3a8596c8483f0dcfe4f72d7d48d784f5bd95b6"
         },
         "coakka_v2_connector-3.0.0.dist-info/RECORD": {
           "bytes": 3174,
-          "sha256": "4066ad839f3e1ed5a9e78d04fd093093308c4240571683f3712a294dfc85cb9d"
+          "sha256": "359e3052a65c26d3aa4a83e658e692a630508e5aa6060e7c1736e115fdff9e64"
         },
         "coakka_v2_connector-3.0.0.dist-info/WHEEL": {
           "bytes": 119,
@@ -36,8 +36,8 @@
           "sha256": "60dc12817965fc133ed0978119d9b8dc5238001dfcfce0e3005162b298cc5c98"
         },
         "coakka_v2_connector-3.0.0.dist-info/licenses/PACKAGE-LICENSE.md": {
-          "bytes": 1384,
-          "sha256": "32517109595798ad4b780117783e91aa0196b8d6d699e5d541b5f841c722e06e"
+          "bytes": 1427,
+          "sha256": "828bd69a3adb8f4b1354a23a526f5708289ab3565c6c8484dc551145835649b8"
         },
         "coakka_v2_connector/__init__.py": {
           "bytes": 4664,
@@ -147,16 +147,16 @@
     },
     "linux-aarch64": {
       "filename": "coakka_v2_connector-3.0.0-cp311-abi3-manylinux_2_35_aarch64.whl",
-      "bytes": 1029482,
-      "sha256": "0870761c277e0a6566e65b96b494a94e29482aa82275a05f1af15e0bd2efe937",
+      "bytes": 1029699,
+      "sha256": "0c2e3182fe3bb4ffbb2175709b01b7d5d40f0b3db1cd3d98751942f842f88718",
       "members": {
         "coakka_v2_connector-3.0.0.dist-info/METADATA": {
-          "bytes": 44900,
-          "sha256": "2fc242542dad7deb078e26eb9b82f2f8ab4550a6594e609303a4de69480548f2"
+          "bytes": 46160,
+          "sha256": "2eabc33215cde80e025dd97dec3a8596c8483f0dcfe4f72d7d48d784f5bd95b6"
         },
         "coakka_v2_connector-3.0.0.dist-info/RECORD": {
           "bytes": 3169,
-          "sha256": "1c24af4e5d9d6d232b9d2deca44d3a965b8d0e1a81fb6bc3c71e956c20ab5965"
+          "sha256": "1cefcd94f9a4bae6049b8011c1940baf7fc0c9bf74660ca1051377b6a7e143b1"
         },
         "coakka_v2_connector-3.0.0.dist-info/WHEEL": {
           "bytes": 124,
@@ -175,8 +175,8 @@
           "sha256": "60dc12817965fc133ed0978119d9b8dc5238001dfcfce0e3005162b298cc5c98"
         },
         "coakka_v2_connector-3.0.0.dist-info/licenses/PACKAGE-LICENSE.md": {
-          "bytes": 1384,
-          "sha256": "32517109595798ad4b780117783e91aa0196b8d6d699e5d541b5f841c722e06e"
+          "bytes": 1427,
+          "sha256": "828bd69a3adb8f4b1354a23a526f5708289ab3565c6c8484dc551145835649b8"
         },
         "coakka_v2_connector/__init__.py": {
           "bytes": 4664,
@@ -286,16 +286,16 @@
     },
     "linux-x86_64": {
       "filename": "coakka_v2_connector-3.0.0-cp311-abi3-manylinux_2_36_x86_64.whl",
-      "bytes": 942092,
-      "sha256": "bee5f77043024a29ab8b76b006a6e6889b092b494b3ed55a48f74b0917e734b1",
+      "bytes": 942309,
+      "sha256": "7e24407ff325c2f48bedcfa0a187e463f915f48c52236ebc51c0e1ab287aa842",
       "members": {
         "coakka_v2_connector-3.0.0.dist-info/METADATA": {
-          "bytes": 44900,
-          "sha256": "2fc242542dad7deb078e26eb9b82f2f8ab4550a6594e609303a4de69480548f2"
+          "bytes": 46160,
+          "sha256": "2eabc33215cde80e025dd97dec3a8596c8483f0dcfe4f72d7d48d784f5bd95b6"
         },
         "coakka_v2_connector-3.0.0.dist-info/RECORD": {
           "bytes": 3169,
-          "sha256": "cec41f8f552a89e631ebdeae04fe153fa7164a525814080b8e55c0a9d3d116c6"
+          "sha256": "22dbee42dec9cf88b2a4519da1975927bbc14f37114a8e4a0bd9ca7c25b4b403"
         },
         "coakka_v2_connector-3.0.0.dist-info/WHEEL": {
           "bytes": 123,
@@ -314,8 +314,8 @@
           "sha256": "60dc12817965fc133ed0978119d9b8dc5238001dfcfce0e3005162b298cc5c98"
         },
         "coakka_v2_connector-3.0.0.dist-info/licenses/PACKAGE-LICENSE.md": {
-          "bytes": 1384,
-          "sha256": "32517109595798ad4b780117783e91aa0196b8d6d699e5d541b5f841c722e06e"
+          "bytes": 1427,
+          "sha256": "828bd69a3adb8f4b1354a23a526f5708289ab3565c6c8484dc551145835649b8"
         },
         "coakka_v2_connector/__init__.py": {
           "bytes": 4664,
@@ -425,16 +425,16 @@
     },
     "windows-aarch64": {
       "filename": "coakka_v2_connector-3.0.0-cp311-abi3-win_arm64.whl",
-      "bytes": 969076,
-      "sha256": "5efc052a04f46789c9c4f92ac62a82ec070c92f678ce5a22333091c912073f6b",
+      "bytes": 969293,
+      "sha256": "6d69606ec48835b1953602700e3b9250c146fa86add37fc99a9d9b0329255bda",
       "members": {
         "coakka_v2_connector-3.0.0.dist-info/METADATA": {
-          "bytes": 44900,
-          "sha256": "2fc242542dad7deb078e26eb9b82f2f8ab4550a6594e609303a4de69480548f2"
+          "bytes": 46160,
+          "sha256": "2eabc33215cde80e025dd97dec3a8596c8483f0dcfe4f72d7d48d784f5bd95b6"
         },
         "coakka_v2_connector-3.0.0.dist-info/RECORD": {
           "bytes": 3172,
-          "sha256": "793a8623e3735addc8cc82822f835da4795aba2dc61bec31014c137b6d297202"
+          "sha256": "949e1f343f95c80d1c75826a2ec8859495b1e078caddd935f4cb5f40f25d680c"
         },
         "coakka_v2_connector-3.0.0.dist-info/WHEEL": {
           "bytes": 111,
@@ -453,8 +453,8 @@
           "sha256": "2eebe25e3658a6554f2ee0ff0be8e2affcddd62d6924a70cefe965df7e095f54"
         },
         "coakka_v2_connector-3.0.0.dist-info/licenses/PACKAGE-LICENSE.md": {
-          "bytes": 1384,
-          "sha256": "32517109595798ad4b780117783e91aa0196b8d6d699e5d541b5f841c722e06e"
+          "bytes": 1427,
+          "sha256": "828bd69a3adb8f4b1354a23a526f5708289ab3565c6c8484dc551145835649b8"
         },
         "coakka_v2_connector/__init__.py": {
           "bytes": 4664,
@@ -564,16 +564,16 @@
     },
     "windows-x86_64": {
       "filename": "coakka_v2_connector-3.0.0-cp311-abi3-win_amd64.whl",
-      "bytes": 1054614,
-      "sha256": "5d6f290297361a0ce9f87ed152d0e426ab6501e0c355738ae41f4f05be27d954",
+      "bytes": 1054833,
+      "sha256": "a61c3733bed7551340ea3cbc757bbd6ace234772f6faa304fdaf03c8fe2da00a",
       "members": {
         "coakka_v2_connector-3.0.0.dist-info/METADATA": {
-          "bytes": 44900,
-          "sha256": "2fc242542dad7deb078e26eb9b82f2f8ab4550a6594e609303a4de69480548f2"
+          "bytes": 46160,
+          "sha256": "2eabc33215cde80e025dd97dec3a8596c8483f0dcfe4f72d7d48d784f5bd95b6"
         },
         "coakka_v2_connector-3.0.0.dist-info/RECORD": {
           "bytes": 3172,
-          "sha256": "8aaea1295027ba5894da919c277933d837656aae94c2df83ead8da41a94083f3"
+          "sha256": "5a70df3b092b90b3d16d9569c71c27f8ca35d11aacc4cd24d5a47b60357a8f65"
         },
         "coakka_v2_connector-3.0.0.dist-info/WHEEL": {
           "bytes": 111,
@@ -592,8 +592,8 @@
           "sha256": "2eebe25e3658a6554f2ee0ff0be8e2affcddd62d6924a70cefe965df7e095f54"
         },
         "coakka_v2_connector-3.0.0.dist-info/licenses/PACKAGE-LICENSE.md": {
-          "bytes": 1384,
-          "sha256": "32517109595798ad4b780117783e91aa0196b8d6d699e5d541b5f841c722e06e"
+          "bytes": 1427,
+          "sha256": "828bd69a3adb8f4b1354a23a526f5708289ab3565c6c8484dc551145835649b8"
         },
         "coakka_v2_connector/__init__.py": {
           "bytes": 4664,

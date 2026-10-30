@@ -1,5 +1,9 @@
 # Python Runtime Samples
 
+For the 3.0.0 API, start with the [ordinary first-run example](registry-basic/README.md).
+It supports the published package or an admitted local wheel, according to the
+[package ledger](../../docs/common/current-packages.md).
+
 This branch's basic/deadletter/hot-reload apps use the
 [exact private candidate workflow](../../docs/coakka-runtime/previews/3.0.0/runtime-python-candidate.md).
 They do not install the historical public wheel shown below. Core owns
