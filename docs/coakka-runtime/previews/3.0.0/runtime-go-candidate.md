@@ -1,4 +1,4 @@
-# Private Go runtime candidate samples
+# Go 3.0.0 local-module qualification
 
 The basic/deadletter/replica-file-fanout samples on this branch use the exact 66-file private
 module in `artifacts/runtime-go-candidate.json`, label
@@ -99,3 +99,5 @@ a normal `go build` is not represented as obfuscation. Existing exact-package
 resource/shrink/native evidence is reused by identity, not replaced by an echo.
 Other replica/cross-language scenarios, other connectors/tools/Android/
 camera and legal/signing/coordinated-publication gates remain separate.
+
+Go 3.0.0 is now [released on GitHub](../../releases/2026-10-30-go-runtime-3.0.0-github.md). Normal consumers should use the [registry first-run app](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/go/registry-basic). This guide retains its exact local 66-file qualification catalog; the public module additionally contains reviewed documentation, CI and examples. Production/native members remain unchanged.

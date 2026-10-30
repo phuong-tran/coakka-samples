@@ -126,7 +126,7 @@ coordinates are:
 | npm | `coakka-v2-connector-{node,bun,electron}@3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 | PyPI | `coakka-v2-connector==3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 | NuGet | `CoAkka.Runtime==3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
-| Go modules | `github.com/phuong-tran/coakka-runtime-go@v1.8.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
+| Go modules | `github.com/phuong-tran/coakka-runtime-go/v3@v3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 | SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v2.5.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
 
 Maven Runtime `2.5.3`, npm `2.5.3`, PyPI `2.5.3`, NuGet `2.5.3`, Go `v1.8.3`,
@@ -194,3 +194,15 @@ renderer/File/Stream/shutdown. Ordinary first-run apps pass for all three.
 Earlier exact executable target qualification is retained; this is not a new
 post-upload execution on every OS. Bun on Windows ARM64 requires 1.4.0.
 See [the npm release receipt](../releases/2026-10-30-npm-node-bun-electron-runtime-3.0.0.md).
+
+## Go Runtime 3.0.0
+
+The GitHub Release includes the complete five-target source module and SHA256
+sidecar. Fresh Go 1.22.12/macOS ARM64 consumers download through the public Go
+proxy with sumdb enabled; all74 module files match the tagged source. Typed/raw
+requests, default Core facts, admission refusal and awaited close pass.
+GitHub Linux x64 CI passes on Go 1.22.12 and current stable, including actual
+default-path execution. All 57 production/header/native members remain exact
+from the qualified package; prior matching-host five-target/race/resource
+evidence is retained, not claimed as a new post-upload run on every target.
+See [the release receipt](../releases/2026-10-30-go-runtime-3.0.0-github.md).

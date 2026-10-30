@@ -28,7 +28,8 @@ Run one request/reply example in your language, then add the capabilities you ne
 
 **Version choice comes first.** C# `CoAkka.Runtime 3.0.0` (NuGet) and Python
 `coakka-v2-connector==3.0.0` (PyPI) are published. Node.js, Bun and Electron
-`3.0.0` are also published on npm. Other main-branch3.0.0 examples still
+`3.0.0` are also published on npm. Go `/v3@v3.0.0` is released on GitHub.
+Other main-branch3.0.0 examples still
 require their local candidate packages.
 The remaining published-example links below point to a frozen 2.x snapshot:
 use its complete code, runner and pinned dependencies together. Follow the
@@ -43,7 +44,7 @@ use its complete code, runner and pinned dependencies together. Follow the
 | Electron | [npm 3.0.0 first run](electron/registry-basic/README.md) | [Local-archive qualification](electron/README.md) |
 | Python | [PyPI 3.0.0 first run](python/registry-basic/README.md) | [Local-wheel qualification](python/README.md) |
 | C# | [NuGet 3.0.0 first run](csharp/registry-basic/README.md) | [Local-feed verification](csharp/README.md) |
-| Go | [Published example](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/go) | [3.0.0 example](go/README.md) |
+| Go | [Go 3 first run](go/registry-basic/README.md) | [Local-module qualification](go/README.md) |
 | Swift | [Published example](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/swift) | [3.0.0 example](swift/README.md) |
 | Rust | [Published example](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/rust) | [3.0.0 example](rust/README.md) |
 | Tauri | [Published example](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/tauri) | [3.0.0 example](tauri/README.md) |

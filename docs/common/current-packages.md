@@ -16,8 +16,7 @@ packaging surface, and native payload.
 
 The promoted repository native artifact pointer is
 `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`. Maven Central Runtime
-`2.5.3`, Go
-`v1.8.3`, SwiftPM `v2.5.3`, and the checksum-pinned connector archives all use
+`2.5.3`, SwiftPM `v2.5.3`, and the checksum-pinned connector archives all use
 that Core generation. The independently versioned
 Spring Boot starter and Quarkus extension are current at `2.5.3` and depend
 exactly on Maven Runtime `2.5.3`. Logger JVM distribution `1.2.2` is
@@ -31,6 +30,11 @@ NuGet Runtime is now `CoAkka.Runtime 3.0.0`, carrying Core `3.0.0+1522b4a9f30da1
 PyPI Runtime is now `coakka-v2-connector==3.0.0`, with Core `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` / ABI1, five platform wheels and GIL-enabled CPython3.11 as its minimum. Migrate 2.x callers to the new API. See the [Python 3.0.0 release](../coakka-runtime/releases/2026-10-30-pypi-python-runtime-3.0.0.md).
 
 npm Runtime Node.js, Bun and Electron are now `3.0.0`, each with Core `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` / ABI1. Electron depends exactly on Node 3.0.0. Migrate 2.x applications to the new API. See the [npm 3.0.0 release](../coakka-runtime/releases/2026-10-30-npm-node-bun-electron-runtime-3.0.0.md).
+
+Go is published as `github.com/phuong-tran/coakka-runtime-go/v3@v3.0.0`,
+with Core `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` / ABI1. Use the new `/v3` import path and a C11 cgo compiler.
+Go 1.22.12 is the baseline except native Windows ARM64 uses Go 1.25.5.
+See the [Go GitHub Release](../coakka-runtime/releases/2026-10-30-go-runtime-3.0.0-github.md).
 
 The `2.5.3` connector source is `0ba485e8ff19f3ce23902345cb445a1f652fe3f3`;
 the non-JVM archive mirrors are checksum-pinned independently.
@@ -86,7 +90,7 @@ complete matrix with `bash run.sh coakka-runtime addons all published`.
 | npm (Bun) | [`coakka-v2-connector-bun` 3.0.0](https://www.npmjs.com/package/coakka-v2-connector-bun/v/3.0.0) | [`coakka-logger-bun` 1.2.7](https://www.npmjs.com/package/coakka-logger-bun/v/1.2.7) | [3.0.0 first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/bun/registry-basic) |
 | npm (Electron) | [`coakka-v2-connector-electron` 3.0.0](https://www.npmjs.com/package/coakka-v2-connector-electron/v/3.0.0) | [`coakka-logger-electron` 1.2.7](https://www.npmjs.com/package/coakka-logger-electron/v/1.2.7) | [3.0.0 first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/electron/registry-basic) |
 | PyPI | [`coakka-v2-connector` 3.0.0](https://pypi.org/project/coakka-v2-connector/3.0.0/) | [`coakka-logger` 1.2.2](https://pypi.org/project/coakka-logger/1.2.2/) | [CPython3.11 first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/python/registry-basic) |
-| Go modules | [`coakka-runtime-go` v1.8.3](https://github.com/phuong-tran/coakka-runtime-go/tree/v1.8.3) | [`coakka-logger-go` v1.2.6](https://pkg.go.dev/github.com/phuong-tran/coakka-logger-go@v1.2.6) | `bash run.sh coakka-runtime go basic` |
+| Go modules | [`coakka-runtime-go/v3` v3.0.0](https://github.com/phuong-tran/coakka-runtime-go/releases/tag/v3.0.0) | [`coakka-logger-go` v1.2.6](https://pkg.go.dev/github.com/phuong-tran/coakka-logger-go@v1.2.6) | [Go 3 first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/go/registry-basic) |
 | SwiftPM | [`coakka-runtime-swift` v2.5.3](https://github.com/phuong-tran/coakka-runtime-swift/tree/v2.5.3) | [`coakka-logger-swift` v1.2.2](https://github.com/phuong-tran/coakka-logger-swift/releases/tag/v1.2.2) | `bash run.sh coakka-runtime swift basic` |
 | Tauri source archive | [`coakka-runtime-tauri-intents` 2.5.3 source](https://github.com/phuong-tran/coakka-publish/tree/main/runtime/tauri/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e) | [`coakka-logger-tauri-intents` 1.2.2 source](https://github.com/phuong-tran/coakka-publish/tree/main/logger/tauri/releases/1.2.1+f50756ebff0d-7718ce6) | [Tauri integration guide](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/tauri/README.md) |
 | Android preview | [`coakka-runtime-android` 1.2.0 signed preview AAR](../coakka-runtime/previews/edge-iot-android.md#android-and-industrial-tablets) | Use the app's Android logging policy | Integration guide only; no public Maven coordinate |
@@ -105,9 +109,9 @@ Both depend on public Runtime `2.5.3`; applications select their own verified
 Spring Boot or Quarkus platform line.
 
 The current source coordinates are
-`github.com/phuong-tran/coakka-runtime-go@v1.8.3` and
-`github.com/phuong-tran/coakka-runtime-swift@v2.5.3`. Go remains on semantic
-major `v1` because its established module path does not carry a `/v2` suffix.
+`github.com/phuong-tran/coakka-runtime-go/v3@v3.0.0` and
+`github.com/phuong-tran/coakka-runtime-swift@v2.5.3`. Go uses semantic major `v3` through its `/v3` module suffix; historical
+unsuffixed v1 tags remain unchanged.
 
 ## Runtime Artifact And Current Source-Package Entrypoints
 
@@ -122,7 +126,7 @@ major `v1` because its established module path does not carry a `/v2` suffix.
 | npm | `coakka-v2-connector-{node,bun,electron}@3.0.0` |
 | PyPI | `coakka-v2-connector`, exact `3.0.0` |
 | NuGet | `CoAkka.Runtime`, exact `3.0.0` |
-| Go module | `github.com/phuong-tran/coakka-runtime-go@v1.8.3` |
+| Go module | `github.com/phuong-tran/coakka-runtime-go/v3@v3.0.0` |
 | SwiftPM | `https://github.com/phuong-tran/coakka-runtime-swift.git`, exact `2.5.3` |
 | coakka-client | `coakka-tools/coakka-client/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/` |
 | coakka-runtime-inspect | `coakka-tools/coakka-runtime-inspect/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/` |

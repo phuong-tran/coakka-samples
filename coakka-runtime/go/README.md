@@ -1,20 +1,15 @@
 # Go Runtime Samples
 
-This branch's basic/deadletter/replica-file-fanout apps use the [private candidate workflow](../../docs/coakka-runtime/previews/3.0.0/runtime-go-candidate.md)
-and exact local module, not the historical published train below. They propagate
-inspection/subscription errors, omit incidental tuning and retire owned resources
-before main reports failures. File fan-out observes all three exact owners,
-retires admitted transfers and retains files if native stop is unconfirmed.
-Other replica/cross-language scenarios remain separate work. The published
-train/recordings/snippets below are historical, not candidate instructions or
-qualification; use the linked candidate guide for the current runnable apps.
+Go 3.0.0 is [released on GitHub](https://github.com/phuong-tran/coakka-runtime-go/releases/tag/v3.0.0)
+as `github.com/phuong-tran/coakka-runtime-go/v3`. Use the new `/v3` path and
+[start with the ordinary module consumer](registry-basic/README.md).
+The basic/deadletter/fanout wrappers remain controlled
+[local-module qualification](../../docs/coakka-runtime/previews/3.0.0/runtime-go-candidate.md).
 
-The historical Go sample train consumed `github.com/phuong-tran/coakka-runtime-go@v1.8.2`.
-This is the sample runner pin, not the latest release. See
-[Current Packages](../../docs/common/current-packages.md) for the current catalog.
-The package embeds native runtime generation `2.5.0+4b65d0b2256037bf7fc180bfa6df8c41efc1dd6a` for Linux
-ARM64/x86-64, macOS ARM64, and Windows ARM64/x86-64. Package presence and
-execution evidence remain separate in the compatibility matrix.
+## Historical v1 walkthrough
+
+The recordings and snippets below describe the older unsuffixed v1 module.
+Use the matching frozen snapshot for that API; they are not 3.0.0 instructions.
 
 ## Contents
 

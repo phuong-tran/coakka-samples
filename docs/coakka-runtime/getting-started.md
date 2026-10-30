@@ -63,6 +63,18 @@ Start with the [Node.js](https://github.com/phuong-tran/coakka-samples/tree/main
 See the [no-checkout npm walkthrough](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/guides/first-npm-smoke.md)
 for a small application-owned customer operation. Migrate 2.x callers before upgrading.
 
+## Go 3.0.0 from GitHub
+
+```sh
+go get github.com/phuong-tran/coakka-runtime-go/v3@v3.0.0
+```
+
+Use a C11 cgo compiler and Go 1.22.12 or newer (native Windows ARM64:
+Go 1.25.5). Import the new `/v3` module path. Start with
+[the ordinary first-run app](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/go/registry-basic).
+The module includes its matching native Core; no separate Core installation
+or module replacement is needed.
+
 ## Evaluating 3.0.0
 
 Other main-branch Runtime examples still use **local 3.0.0 candidates**.

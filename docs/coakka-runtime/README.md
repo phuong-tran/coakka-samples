@@ -9,7 +9,7 @@ supplies its handlers and business rules; Runtime manages delivery and outcomes.
 ## Start
 
 [Choose a language and run one example](getting-started.md). The guide separates
-published packages, including C#, Python and Node.js/Bun/Electron 3.0.0, from other local 3.0.0 candidates so code and packages match.
+published packages, including C#, Python, Node.js/Bun/Electron and Go 3.0.0, from other local 3.0.0 candidates so code and packages match.
 Then [integrate Runtime into an application](guides/runtime-integration-guide.md).
 
 ## Add a capability
