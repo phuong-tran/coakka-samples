@@ -2,8 +2,8 @@
 
 **Application-owned work across languages and processes.**
 
-CoAkka Runtime is a polyglot, cross-platform runtime powered by a shared native
-core. Native-backed language connectors expose familiar APIs. The application
+CoAkka Runtime is a polyglot, cross-platform distributed runtime for
+application-owned work, powered by a shared native core. Native-backed language connectors expose familiar APIs. The application
 supplies its handlers and business rules; Runtime manages delivery and outcomes.
 
 ## Start

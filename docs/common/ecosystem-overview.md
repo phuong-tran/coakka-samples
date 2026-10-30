@@ -12,10 +12,11 @@ implementation and expose familiar APIs; each application owns its runtime
 instances. This gives the ecosystem a common design approach while products
 keep their own contracts, packages and versions.
 
-Its central product, **CoAkka Runtime**, connects **application-owned work** by
-stable target name across processes, languages, containers and hosts. The
-application keeps business behavior; Runtime provides bounded admission,
-request/reply, deadletters and delivery diagnostics.
+Its central product, **CoAkka Runtime**, is a **polyglot, cross-platform
+distributed runtime for application-owned work**. Stable target names connect
+that work across processes, languages, containers and hosts. The application
+keeps business behavior; Runtime provides bounded admission, request/reply,
+deadletters and delivery diagnostics.
 
 ## Products And Boundaries
 

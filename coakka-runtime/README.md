@@ -2,9 +2,10 @@
 
 **Application-owned work across languages and processes.**
 
-CoAkka Runtime is a **polyglot, cross-platform runtime** backed by a
-**shared native core**. Its native-backed language connectors expose familiar
-APIs while keeping business behavior in application code.
+CoAkka Runtime is a **polyglot, cross-platform distributed runtime for
+application-owned work**, backed by a **shared native core**. Its native-backed
+language connectors expose familiar APIs while keeping business behavior in
+application code.
 
 An API needs an image processed, a customer stored or a device reading fetched.
 These are pieces of application work, even when the code that handles them

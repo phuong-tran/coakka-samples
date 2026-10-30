@@ -7,7 +7,7 @@ their own contract.
 
 | Product | What you can do | Start here |
 | --- | --- | --- |
-| CoAkka Runtime | Connect application-owned work across processes and languages. | [Run and integrate](coakka-runtime/README.md) |
+| CoAkka Runtime | Distributed runtime for application-owned work across processes and languages. | [Run and integrate](coakka-runtime/README.md) |
 | CoAkka HTTP Runtime | Build HTTP services using your application's language. | [Build a service](coakka-http-runtime/README.md) |
 | CoAkka Logger | Submit, read and observe application logs with bounded memory. | [Use Logger](coakka-logger/README.md) |
 
