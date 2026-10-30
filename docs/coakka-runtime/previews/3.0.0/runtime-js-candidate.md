@@ -1,24 +1,19 @@
-# Private Node/Bun runtime candidate samples
+# Node/Bun Runtime 3.0.0 local-archive qualification
 
-This branch validates a private candidate, not a registry release. Node and Bun
-use the exact archives in `artifacts/runtime-js-candidate.json`, version
-`3.0.0`, with bundled Core
-`3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` (ABI 1).
-Node 22.0.0 and Bun 1.3.14 are the required minima, except Bun on Windows
-ARM64 requires 1.4.0. The catalog records each Bun target requirement. Both candidates include
-macOS ARM64, Linux ARM64/x64 and Windows ARM64/x64. Each host requires its own
-installed default-path execution on all five targets before promotion;
-minimum-OS and publication claims remain separate gates. Earlier long resource
-and lifecycle campaigns remain historical evidence for the unchanged processing
-source, not execution evidence for these new archive identities.
+Node.js and Bun 3.0.0 are [published on npm](../../releases/2026-10-30-npm-node-bun-electron-runtime-3.0.0.md).
+Ordinary applications should use the [Node.js](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/node/registry-basic)
+or [Bun](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/bun/registry-basic) first run. The controlled runners below
+still require exact local tarballs from `artifacts/runtime-js-candidate.json`;
+they do not download a package or silently select a version.
 
-Node, Bun and Electron share one candidate release train. Electron consumes
-the exact Node version and archive recorded in its own candidate catalog.
-Tauri follows its separate Rust release train. Match the full catalog identity,
-not only the version string, when obtaining a candidate archive.
-
-Obtain the matching archive from the private candidate owner. Do not substitute
-an npm version, unpacked source tree or separate native library.
+Both packages contain Core `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` / ABI1 and five 64-bit targets:
+macOS ARM64, Linux ARM64/x64, Windows ARM64/x64. Node 22.0.0 and Bun 1.3.14 are
+the minima; Bun on Windows ARM64 requires 1.4.0. Matching executable/native
+members retain the qualified five-target evidence. The release record
+separates that evidence from new registry execution on Mac.
+Node/Bun/Electron share a release train; Electron depends exactly on Node 3.0.0.
+Tauri follows the separate Rust train. Obtain the exact registry archive and
+check its complete hash/member catalog; a version string alone is insufficient.
 
 ## Run
 
@@ -35,7 +30,7 @@ node coakka-runtime/scripts/runtime-js-candidate.mjs node deadletter
 bun coakka-runtime/scripts/runtime-js-candidate.mjs bun basic
 ```
 
-The corresponding `runtime/{node,bun}/.../run.sh` wrappers invoke this runner.
+The corresponding `coakka-runtime/{node,bun}/.../run.sh` wrappers invoke this runner.
 Windows may invoke the same JavaScript entrypoint with native Node/Bun and
 Windows absolute paths; WSL execution is not evidence for the Windows DLL.
 Node requires its standard npm CLI next to the runtime installation. Bun uses

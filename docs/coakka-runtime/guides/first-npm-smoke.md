@@ -1,7 +1,9 @@
 # First npm Smoke
 
 This page is the smallest no-checkout path for a new npm user. It uses only
-packages from the public registry and a temporary local project.
+packages from the public registry and a small local project. Runtime requires
+Node.js 22 or newer;3.0.0 is a new API baseline for 2.x callers.
+Bun and Electron 3.0.0 have [their own first-run apps](../../../coakka-runtime/README.md).
 
 More onboarding docs live here:
 https://github.com/phuong-tran/coakka-samples/tree/main/docs
@@ -66,63 +68,34 @@ Install the runtime package:
 mkdir coakka-runtime-first-run
 cd coakka-runtime-first-run
 npm init -y
-npm install coakka-v2-connector-node@2.5.3
+npm install coakka-v2-connector-node@3.0.0
 ```
 
 Create `runtime.mjs`:
 
 ```js
-import {
-  DeliveryHint,
-  localRoute,
-  NodeRuntimeClient,
-  PayloadFormat,
-  PayloadIdentity,
-  RuntimeHost,
-} from "coakka-v2-connector-node";
+import { Buffer } from "node:buffer";
+import { localRoute, RuntimeHost } from "coakka-v2-connector-node";
 
 const target = "samples.customer.store.create";
 const store = new Map();
-
 const runtime = RuntimeHost.start({
   systemName: "customer-app",
   nodeId: "customer-app-node-1",
-  queueCapacity: 64,
-  strictNoDrop: true,
-  generation: 1,
-  routes: [localRoute(target, 19001)],
+  routes: [localRoute(target)],
 });
-
 try {
-  runtime.registerHandler(target, (request) => {
-    const draft = JSON.parse(Buffer.from(request.payload).toString("utf8"));
-    const customer = {
-      id: draft.id,
-      name: draft.name,
-      createdBy: request.source,
-    };
+  runtime.registerPayloadHandler(target, (bytes) => {
+    const draft = JSON.parse(Buffer.from(bytes).toString("utf8"));
+    const customer = { id: draft.id, name: draft.name };
     store.set(customer.id, customer);
-
-    return NodeRuntimeClient.makeJsonReplyFromRequestIdentity(request, target, {
-      status: "created",
-      customer,
-      storedCount: store.size,
-    });
+    return Buffer.from(JSON.stringify({ status: "created", customer, storedCount: store.size }));
   });
-
-  const response = await runtime.askJson(
-    "customer-api",
-    target,
-    { id: "cust-001", name: "Ada Lovelace" },
-    new PayloadIdentity("samples.customer.create.request.v1", 1, PayloadFormat.JSON),
-    2000,
-    "create_customer",
-    DeliveryHint.ROUTER_DEFAULT,
-  );
-
-  console.log(response);
+  const bytes = await runtime.askPayload("customer-api", target,
+    Buffer.from(JSON.stringify({ id: "cust-001", name: "Ada Lovelace" })), 2000);
+  console.log(JSON.parse(Buffer.from(bytes).toString("utf8")));
 } finally {
-  runtime.close();
+  await runtime.close();
 }
 ```
 
@@ -137,7 +110,7 @@ Expected shape:
 ```text
 {
   status: 'created',
-  customer: { id: 'cust-001', name: 'Ada Lovelace', createdBy: 'customer-api' },
+  customer: { id: 'cust-001', name: 'Ada Lovelace' },
   storedCount: 1
 }
 ```

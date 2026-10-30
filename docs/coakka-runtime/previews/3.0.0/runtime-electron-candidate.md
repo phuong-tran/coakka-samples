@@ -1,26 +1,17 @@
-# Private Electron runtime candidate sample
+# Electron Runtime 3.0.0 local-archive qualification
 
-This branch exercises exact private Electron/Node `3.0.0`
-archives from `artifacts/runtime-electron-candidate.json`, not npm coordinates.
-Core is `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456`, ABI1. Node22.0.0 and
-Electron42.0.0 are the candidate baselines; wider/minimum-OS support remains
-gated independently. Do not substitute a historical public package or attach
-this sample's APIs to it.
+Electron 3.0.0 is [published on npm](../../releases/2026-10-30-npm-node-bun-electron-runtime-3.0.0.md).
+Ordinary applications should use [the registry first-run app](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/electron/registry-basic).
+The controlled path below still takes exact Electron/Node tarballs from
+`artifacts/runtime-electron-candidate.json`, rather than resolving npm versions.
+Core is `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456`, ABI1; baselines are Node 22.0.0 and Electron 42.0.0.
 
-The selected connector scheduler supports concurrent request/reply without
-host worker-pool tuning. Final3.0.0 installed Node/Electron execution is recorded
-on macOS ARM64 and physical Windows11 x64, including the sandboxed main/renderer
-boundary. Final3.0.0 Linux ARM64/x64 and native Windows ARM64 smokes remain
-pending. Earlier five-target Runtime, File, Stream, shutdown and long resource
-campaigns remain historical evidence for unchanged processing source; they do
-not establish execution of the new archive identities. Sample execution and
-remaining release gates are recorded independently; package tests alone do not
-promote the sample.
-
-Node, Bun and Electron share one candidate release train. Match both complete
-archive identities in this catalog; a version string alone does
-not distinguish successive private candidates. Tauri follows its separate
-Rust release train.
+All five Node native payloads and Electron JS/declarations remain exact from
+their qualified package selections. Fresh registry execution on Mac covers
+sandboxed renderer, Runtime/File/Stream and shutdown. Earlier matching-target
+execution and resource campaigns are retained for unchanged executable bytes;
+this is not a new post-upload run on every OS or a new minimum-OS claim.
+Electron depends exactly on Node 3.0.0; Tauri follows the separate Rust train.
 
 ## Prepare and run
 

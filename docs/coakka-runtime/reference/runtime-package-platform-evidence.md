@@ -123,7 +123,7 @@ coordinates are:
 | Registry | Current verified coordinate | Bundled native generation |
 | --- | --- | --- |
 | Maven Central | `io.github.phuong-tran.coakka:runtime:2.5.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
-| npm | `coakka-v2-connector-{node,bun,electron}@2.5.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
+| npm | `coakka-v2-connector-{node,bun,electron}@3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 | PyPI | `coakka-v2-connector==3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 | NuGet | `CoAkka.Runtime==3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 | Go modules | `github.com/phuong-tran/coakka-runtime-go@v1.8.3` | `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` |
@@ -180,3 +180,17 @@ macOS ARM64 install from PyPI only passes the ordinary sample and public
 Runtime/File/Stream consumer. This is not a new post-upload run on every OS.
 PyPy and free-threaded Python remain outside this qualification.
 See [the Python release receipt](../releases/2026-10-30-pypi-python-runtime-3.0.0.md).
+
+## npm Runtime 3.0.0
+
+Node.js, Bun and Electron 3.0.0 are published, with `latest` pointing to 3.0.0
+for all three packages. Registry tarballs match the qualified archives byte for
+byte. Every JavaScript, declaration and native member remains unchanged from
+the qualified five-target payload. Node/Bun include macOS ARM64, Linux ARM64/x64
+and Windows ARM64/x64 images; Electron uses the exact Node 3.0.0 dependency.
+A new anonymous npm-only macOS ARM64 installation passes Node 22.0.0 and
+Bun 1.3.14 Runtime/values/File/Stream/shutdown checks and Electron 42 sandboxed
+renderer/File/Stream/shutdown. Ordinary first-run apps pass for all three.
+Earlier exact executable target qualification is retained; this is not a new
+post-upload execution on every OS. Bun on Windows ARM64 requires 1.4.0.
+See [the npm release receipt](../releases/2026-10-30-npm-node-bun-electron-runtime-3.0.0.md).

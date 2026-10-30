@@ -1,16 +1,25 @@
-# Node Runtime Samples
+# Node.js Runtime Samples
 
-This branch's runnable samples target the private candidate described in the
-[candidate guide](../../docs/coakka-runtime/previews/3.0.0/runtime-js-candidate.md), not the historical npm
-train below. Use its exact local archive and explicit work directory. The apps
-omit incidental tuning, read Core-issued facts and await asynchronous shutdown.
-The recordings and integration snippets below remain historical reference,
-not copy-ready evidence for the candidate.
+`coakka-v2-connector-node@3.0.0` is published on npm.
+Start with [the ordinary3.0.0 first run](registry-basic/README.md):
 
-Node.js runtime samples document the `coakka-v2-connector-node` package shape.
-This runtime lane consumes `coakka-v2-connector-node@2.5.3` from npm, built
-against native runtime generation
-`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`.
+```sh
+cd coakka-runtime/node/registry-basic
+npm install
+node main.mjs
+```
+
+Expected output: `accepted-hello`. The package carries its matching Core and
+host adapters. The basic/deadletter wrappers instead perform
+[exact local-archive qualification](../../docs/coakka-runtime/previews/3.0.0/runtime-js-candidate.md).
+Use the [package ledger](../../docs/common/current-packages.md) for versions.
+
+## Historical 2.x walkthrough
+
+The recordings and integration snippets below describe npm 2.5.3 and Core
+2.5.1+26f7944d. Use the [complete frozen 2.x sample](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/node)
+with that version's runner and API. These are historical context, not 3.0.0
+installation instructions or release evidence.
 
 ## Contents
 

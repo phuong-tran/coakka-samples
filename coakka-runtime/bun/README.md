@@ -1,21 +1,25 @@
 # Bun Runtime Samples
 
-This branch's runnable samples target the private candidate described in the
-[candidate guide](../../docs/coakka-runtime/previews/3.0.0/runtime-js-candidate.md), not the historical npm
-train below. Use its exact local archive and explicit work directory. The apps
-omit incidental tuning, read Core-issued facts and await asynchronous shutdown.
-The recordings and integration snippets below remain historical reference,
-not copy-ready evidence for the candidate.
+`coakka-v2-connector-bun@3.0.0` is published on npm.
+Start with [the ordinary3.0.0 first run](registry-basic/README.md):
 
-These samples exercise the Bun-facing CoAkka runtime connector lane.
+```sh
+cd coakka-runtime/bun/registry-basic
+npm install
+bun main.mjs
+```
 
-The current Bun lane consumes `coakka-v2-connector-bun@2.5.3` from npm and
-loads native runtime generation
-`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`.
+Expected output: `accepted-hello`. The package carries its matching Core and
+host adapters. The basic/deadletter wrappers instead perform
+[exact local-archive qualification](../../docs/coakka-runtime/previews/3.0.0/runtime-js-candidate.md).
+Use the [package ledger](../../docs/common/current-packages.md) for versions.
 
-The package carries the native runtime resources. A sample user installs the
-published Bun package and runs `RuntimeHost`; there is no separate native
-runtime install step.
+## Historical 2.x walkthrough
+
+The recordings and integration snippets below describe npm 2.5.3 and Core
+2.5.1+26f7944d. Use the [complete frozen 2.x sample](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/bun)
+with that version's runner and API. These are historical context, not 3.0.0
+installation instructions or release evidence.
 
 Watch the Bun runtime walkthrough:
 

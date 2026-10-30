@@ -3,7 +3,7 @@
 Use Node.js 22 or newer and `coakka-v2-connector-node@3.0.0`.
 See the [current package ledger](../../../docs/common/current-packages.md)
 for registry availability. Install the published package, or evaluate the exact
-local archive below before publication; a2.x package cannot run this API.
+local archive below for controlled qualification; a 2.x package cannot run this API.
 
 From the Samples checkout:
 

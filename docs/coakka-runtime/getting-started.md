@@ -42,6 +42,27 @@ Run from the Samples checkout in a virtual environment; expected output is
 `accepted-hello`. The wheel includes Core and its matching Python adapter.
 Migrate 2.x applications to the new API.
 
+## Node.js, Bun and Electron 3.0.0 from npm
+
+Choose the package for your application host:
+
+```sh
+npm install coakka-v2-connector-node@3.0.0
+# Bun application:
+bun add coakka-v2-connector-bun@3.0.0
+# Electron application:
+npm install coakka-v2-connector-electron@3.0.0
+```
+
+Use Node.js 22+, Bun 1.3.14+ (Windows ARM64:1.4.0+), or Electron 42+.
+Electron includes an exact dependency on the Node connector; native ownership
+stays in the main process. The package includes its matching native Core.
+Start with the [Node.js](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/node/registry-basic),
+[Bun](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/bun/registry-basic) or
+[Electron](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/electron/registry-basic) first-run app.
+See the [no-checkout npm walkthrough](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/guides/first-npm-smoke.md)
+for a small application-owned customer operation. Migrate 2.x callers before upgrading.
+
 ## Evaluating 3.0.0
 
 Other main-branch Runtime examples still use **local 3.0.0 candidates**.
