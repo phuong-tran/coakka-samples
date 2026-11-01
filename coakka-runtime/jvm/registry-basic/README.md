@@ -1,21 +1,61 @@
-# JVM Runtime 3.0.0 — first run from Maven Central
+# JVM Runtime 3.0.0: First Run
 
-From a checkout of coakka-samples, use JDK17+ for Gradle:
+Choose Kotlin or Java. Both examples use Runtime 3.0.0 from Maven Central.
 
-    ./gradlew -p coakka-runtime/jvm/registry-basic run
-    ./gradlew -p coakka-runtime/jvm/registry-basic runJava
+**You need:** JDK 17 for the sample build and a
+[Samples checkout](../../../docs/coakka-runtime/getting-started.md#get-the-examples).
+Use the Gradle wrapper included in the repository.
 
-The first command runs Kotlin; the second runs Java. Both use the published
-`io.github.phuong-tran.coakka:runtime:3.0.0` dependency from Maven Central.
-They reuse the ordinary basic example sources, create one handler, send a request,
-check the reply and counters, then await shutdown. A separate native installation
-or local CoAkka Maven repository is not required.
+## Kotlin
 
-The library retains Java 8 compatibility. Native Windows ARM64 requires ARM64
-JDK11+. Advanced settings stay omitted; Core resolves AUTO/MULTIPLEXED and monitor
-off. [Release details](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/releases/2026-10-30-jvm-spring-quarkus-runtime-3.0.0-maven-central.md)
-include platform scope and2.x migration notes.
+From the Samples repository root:
 
-For baseline verification only, COAKKA_SAMPLE_JAVA_HOME can select a Java 8 runtime
-and COAKKA_SAMPLE_WORK_ROOT can redirect build/native-cache output. Normal first
-runs use the selected build JDK and the normal loader cache.
+~~~sh
+./gradlew -p coakka-runtime/jvm/registry-basic run
+~~~
+
+Look for:
+
+~~~text
+coakka_runtime_response payload=hello-runtime-jvm
+~~~
+
+Read [Main.kt](../basic/src/main/kotlin/coakka/samples/runtime/jvm/basic/Main.kt).
+The application starts a local Runtime in a use block, registers a handler,
+asks for work and closes when the block ends.
+
+## Java
+
+From the Samples repository root:
+
+~~~sh
+./gradlew -p coakka-runtime/jvm/registry-basic runJava
+~~~
+
+Look for:
+
+~~~text
+coakka_runtime_response payload=hello-runtime-java
+~~~
+
+Read [Main.java](../java-basic/src/main/java/coakka/samples/runtime/jvm/javabasic/Main.java).
+It registers a text handler, sends a request, checks the reply and awaits
+shutdown while preserving operation and close failures.
+
+## Windows and application requirements
+
+In PowerShell, replace ./gradlew with .\gradlew.bat in either command.
+Use an ARM64 JDK on native Windows ARM64.
+
+The sample build uses JDK 17; the plain Runtime library retains Java 8
+compatibility, with ARM64 JDK 11 or later required on native Windows ARM64.
+A separate Core installation is not needed.
+
+## Continue
+
+- [Run a Spring Boot or Quarkus customer application](../../scenarios/customer-crud/framework-registry/README.md).
+- [Choose another use case](../../../docs/coakka-runtime/guides/examples-and-use-cases.md).
+- [Integrate Runtime in an application](../../../docs/coakka-runtime/guides/runtime-integration-guide.md).
+
+Local-package checks have [separate evaluation instructions](../../../docs/coakka-runtime/previews/README.md);
+they are not needed for the commands above.

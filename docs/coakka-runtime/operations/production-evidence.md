@@ -1,5 +1,10 @@
 # Production Evidence
 
+For current installation, use the [package ledger](../../common/current-packages.md),
+[3.0.0 changelog](../CHANGELOG.md) and [language-first examples](../getting-started.md).
+The campaign rows below retain their named versions and scope; an older row
+does not describe the latest package or prove a newer sample ran.
+
 This page is the **CoAkka Runtime and Logger** evidence ledger for the public
 sample repository. HTTP server/client evidence is recorded separately in the
 [HTTP Runtime sample scope](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/README.md#verify-a-change)
@@ -122,9 +127,8 @@ public CI evidence, not as a substitute for target-environment capacity work.
 
 ## Current Reading Order
 
-1. Run a container sample.
-2. Read [Runtime Glossary](../reference/runtime-glossary.md).
-3. Run one basic runtime sample in a familiar language.
-4. Run one deadletter or pressure sample.
-5. Read [Runtime Integration Guide](../guides/runtime-integration-guide.md).
-6. Use this page as the production evidence checklist.
+1. [Run one published example in your language](../getting-started.md).
+2. [Choose a business use case](../guides/examples-and-use-cases.md).
+3. Read the [integration guide](../guides/runtime-integration-guide.md) when moving it into your application.
+4. Add failure/pressure observations using the exact selected package's API.
+5. Use this page for deployment evidence; older container demonstrations keep their original versions.

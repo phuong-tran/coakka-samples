@@ -1,605 +1,195 @@
 # Runtime Integration Guide
 
-This guide is for moving from the samples to an existing service. The samples
-are intentionally small, but the integration shape should stay the same:
+**Keep your application logic. Add named work, request/reply and a clear lifetime.**
 
-For vocabulary first, start with [Runtime Glossary](../reference/runtime-glossary.md). For
-fit and operational ownership, read
-[Production Readiness](../operations/production-readiness.md). For the public sample
-evidence checklist, read [Production Evidence](../operations/production-evidence.md). For
-repository ownership boundaries, read
-[Repository Boundaries](../../common/repository-boundaries.md).
-For a startup-oriented path from monolith to local polyglot processes and then
-independent deployment, read
-[Build The Product Before The Infrastructure](../explanation/startup-development-path.md).
-
-1. add the language connector artifact
-2. start one runtime participant per process
-3. publish a route table
-4. register local handlers for targets owned by the process
-5. send typed requests/events to peer targets
-6. handle deadletters and shut down cleanly
+Run [one first example in your language](../getting-started.md), then bring the
+same steps into your application. You do not need to learn another language's
+API or choose a deployment topology first.
 
 ## Contents
 
-- [Published Public Transport](#published-public-transport)
-- [Start Spec](#start-spec)
-- [Source And Target](#source-and-target)
-- [Request Parameters](#request-parameters)
-- [Target Design](#target-design)
-- [Endpoint Flags](#endpoint-flags)
-- [Route Resolution Strategy](#route-resolution-strategy)
-- [Payload Contract](#payload-contract)
-- [Handler Pattern](#handler-pattern)
-- [Caller Pattern](#caller-pattern)
-- [Queue And Failure Policy](#queue-and-failure-policy)
-- [Shutdown](#shutdown)
-- [Language Recipes](#language-recipes)
+- [Start with your language's code](#language-recipes).
+- [Configure this application](#start-spec).
+- [Name the work and write its handler](#target-design).
+- [Call it and handle failures](#caller-pattern).
+- [Close it deliberately](#shutdown).
+- [Add another process when needed](#before-and-after-route-knowledge).
 
 ## Published Public Transport
 
-The published artifact surface exposes logger packages, the public native
-runtime C ABI package, runtime JVM/language connector packages, and the Spring
-Boot and Quarkus adapters. With a matching public artifact checkout, local
-in-process request/reply samples and cross-process customer scenarios keep
-business traffic on the runtime path.
+Install the connector for your application host from the
+[published package ledger](../../common/current-packages.md). Use its matching
+3.0.0 examples and package components together. The normal package includes
+Runtime; a separate Core installation is not needed.
 
-Delivery failures remain explicit runtime failures. The samples should not hide
-route, queue, or transporter failures behind a store HTTP fallback.
-HTTP stays at real external edges such as the browser-facing web API.
-
-The customer scenario exposes that distinction through a `deliveryMode` field:
-
-| Value | Meaning |
-| --- | --- |
-| `runtime` | The business response came back through the runtime route. |
-| `store-http-direct` | The store HTTP API was called directly. |
+For a business example, start with [examples and use cases](examples-and-use-cases.md).
+A web application keeps its HTTP endpoints, authentication, validation and
+response handling. Runtime connects the application work behind those endpoints.
 
 ## Start Spec
 
-Every language exposes the same start-spec concepts. Treat `RuntimeStartSpec`
-as the startup declaration for one runtime participant:
+Create Runtime for the lifetime of your application or service. The startup
+type and convenience functions differ by language; use your host's first-run
+source rather than copying field names from another host.
 
-```text
-RuntimeStartSpec
-  process identity
-  queue and delivery policy
-  initial route snapshot
-```
+Choose your application's name and the work it owns. A local first example
+declares one target and registers one handler. CPU use, connection strategy and
+monitoring can stay omitted: AUTO, MULTIPLEXED and monitoring-off are the defaults.
 
-| Field | Question it answers | Integration rule |
-| --- | --- | --- |
-| `systemName` | Which logical service do I belong to? | Stable logical service name, such as `billing-api` or `customer-store`. |
-| `nodeId` | Which concrete instance/process am I? | Concrete process identity. Include instance/host/pod identity when multiple instances run. |
-| `queueCapacity` | How much work can runtime buffer before applying pressure? | Bounded queue size. Start conservative, measure pressure, then tune. |
-| `strictNoDrop` | Should overload be visible instead of silently dropping work? | Prefer `true` while integrating so overload becomes visible. |
-| delivered-request lane | Should runtime keep delivered requests on their own runtime lane? | Enabled by Core default on the current native construction path; normally omit this option and inspect Core's effective settings. This keeps inbound handler work separate from reply/deadletter matching. |
-| `network` | Does this runtime accept inbound network traffic? | Choose `EMBEDDED`, `OUTBOUND_ONLY`, or explicit `NETWORK_NODE`; do not infer it from route metadata. |
-| `generation` | Which version of the route table is this? | Start with `1`; keep it stable for a stable Service DNS route, and increment only when the CoAkka route snapshot changes. |
-| `routes` | What targets does this runtime know how to route? | Target-to-endpoint map. Local targets are owned here; peer targets point elsewhere. |
-
-The app host or connector maps deployment configuration into these fields and
-passes the start spec to the runtime.
-
-Execution, connection strategy and monitoring are independent startup choices.
-The current native construction contract defaults to CPU `AUTO`, persistent
-`MULTIPLEXED` connections and monitor collection OFF. Read accepted settings
-from Core rather than reconstructing them from the start spec. See
-[Runtime Monitoring](../operations/runtime-monitoring.md) for the reasons, opt-in lifecycle
-and a Kotlin example of the shared cross-language model.
+Read [defaults and monitoring](../operations/runtime-monitoring.md) when you
+need to inspect accepted settings or request extra diagnostics.
 
 ### Reading The Runtime Types
 
-The nested types are route-table vocabulary, not business domain objects.
+These are concepts, not a list of identically named classes in every language:
 
-| Type | Question it answers | Meaning |
-| --- | --- | --- |
-| `RuntimeStartSpec` | What does this process declare when joining runtime? | Full startup/config declaration for one runtime process. |
-| `RuntimeRouteSpec` | Which target/capability is routed where? | One route-table row: a target/capability and its endpoint candidates. |
-| `RuntimeEndpointSpec` | Where can that target be handled? | One endpoint with `host`, `port`, and endpoint flags. |
-| `RuntimeEndpointFlags` | What is the endpoint's routing state? | Endpoint state used by route selection, such as `NONE`, `LOCAL`, or `UNAVAILABLE`. |
-
-Example shape:
-
-```text
-RuntimeStartSpec
-  systemName = customer-store
-  nodeId = customer-store-pod-7
-  network = NETWORK_NODE
-    bind = 0.0.0.0:19301
-    advertise = 10.20.1.45:19301
-  generation = 1
-  routes:
-    RuntimeRouteSpec
-      target = samples.customer.store
-      endpoints:
-        RuntimeEndpointSpec
-          host = customer-store-pod-7
-          port = 0
-          flags = LOCAL
-```
-
-Read that as:
-
-```text
-This process is one customer-store runtime participant. Its current route-table
-generation is 1. It owns the samples.customer.store target locally, so this
-process must register the handler for that target.
-```
-
-The local endpoint's port remains `0`; the separately declared network policy
-owns the listener and advertised address. A peer route uses
-`10.20.1.45:19301` without the `LOCAL` flag.
-
-If the endpoint has no `LOCAL` flag, this process does not own that handler.
-The route points at a peer runtime endpoint instead.
+| Concept | Application question |
+| --- | --- |
+| Startup settings | What application instance is starting? |
+| Target | What work can a caller ask for? |
+| Route | Where can that work be handled? |
+| Handler | Which application function performs it? |
+| Request and result | What information goes in, and what comes back? |
 
 ### Field Details
 
-`systemName` is the logical participant or service name. Keep it stable across
-restarts and replicas:
+Use a stable logical application/service name and a distinct instance identity
+where several instances run. Keep advanced queue, delivery and routing settings
+at their normal defaults until your workload shows a need to change them.
 
-```text
-customer-store
-billing-worker
-document-service
-```
-
-`nodeId` is the concrete instance identity. In Kubernetes, include enough pod or
-instance identity to distinguish replicas:
-
-```text
-customer-store-pod-7
-customer-store-us-east-1a-0003
-```
-
-Do not hard-code `nodeId` in dynamic deployments. The connector should read it
-from platform/runtime configuration when the process starts. Common sources are:
-
-- Kubernetes pod name
-- Kubernetes pod UID
-- hostname
-- container ID
-- explicit `COAKKA_NODE_ID` or `INSTANCE_ID` environment variable
-
-`nodeId` is runtime identity, not image identity. Build one reusable container
-image for every replica and supply `nodeId` when each container or pod starts.
-For Kubernetes, Docker Compose, and image-build examples, see
-[Containerized Runtime Notes](../operations/containerized-runtime.md).
-
-Treat duplicate `nodeId` values as misconfiguration in real deployments.
-Requests may still be delivered if route selection does not depend on node
-identity, but logs, stats, health, deadletters, and route ownership become
-ambiguous. A practical rule is that `nodeId` should be unique within a
-`systemName`.
-
-`queueCapacity` is the bounded runtime queue size. Start small enough that
-pressure is visible, then tune from observed queue depth, burst size, and memory
-budget. Do not treat sample values as production sizing.
-
-`strictNoDrop` should usually be `true` while integrating. Queue pressure,
-missing routes, and rejected work should become explicit failures or
-deadletters instead of silent message loss.
-
-The current native construction path separates incoming handler work from
-reply/deadletter matching in Core. Normally omit this setting and inspect
-Core's accepted configuration. This lets a process receive new requests while
-it waits for replies to earlier requests. Older connector APIs may expose
-`separateDeliveredRequestLane`; follow that installed version's contract rather
-than copying an old explicit setting into a current sample.
-
-`generation` is the route snapshot version. The first snapshot commonly starts
-at `1`. For ordinary Kubernetes deployments that route to a stable Service DNS
-endpoint such as `billing.default.svc.cluster.local:19301`, `generation = 1`
-can remain valid for a long time. Pod scale-up, scale-down, and rescheduling
-usually change Kubernetes Service/EndpointSlice state underneath without
-changing the CoAkka route snapshot.
-
-Publish a newer generation only when the CoAkka route snapshot changes: a new
-target, a different service endpoint, expanded pod endpoints, endpoint flags,
-route strategy, hot reload, or rollback. The runtime rejects stale generations
-so an old config update cannot silently roll back the active route table.
-
-`routes` is the target-to-endpoint map. Each route names a stable capability
-target and lists the endpoints eligible to handle that target.
-
-Route configuration is not extra work invented by CoAkka. With or without
-CoAkka, a system must know which service or capability it intends to call.
-CoAkka changes where that knowledge lives: it becomes explicit, centralized,
-versioned runtime state instead of scattered client wiring.
+When you supply a setting, inspect what Runtime accepted through your language's
+supported inspection API. [Configuration and reference guides](../reference/README.md)
+cover the detailed options.
 
 ### Before And After Route Knowledge
 
-Before CoAkka, the same information often exists as ad-hoc client or framework
-configuration:
+Start locally. When a different process owns the handler, configure that
+process's endpoint and the required network participation using your selected
+package's API. The target name and business request can remain the same.
 
-```text
-customer-web needs customer-store
-customer-store lives at http://customer-store:8080
-the client owns timeout mapping, retry wrapper, status handling, logging,
-and correlation conventions
-```
+A target is not an HTTP URL. A route supplies the location for that named work.
+Keep the location in application/deployment configuration rather than spreading
+it through business handlers.
 
-With CoAkka, the connector maps that relationship into runtime route state.
-Start with the familiar Kubernetes Service DNS shape when it fits:
-
-```text
-target = samples.customer.store
-endpoint = customer-store.default.svc.cluster.local:19301
-generation = 1
-```
-
-In that shape, CoAkka sees one peer endpoint and Kubernetes distributes to the
-pods behind the Service. The backend caller still asks for
-`samples.customer.store`; it does not list pod names.
-
-Only expand the route when CoAkka itself should choose among endpoints:
-
-```text
-target = samples.customer.store
-endpoints = customer-store-a, customer-store-b, customer-store-c
-strategy = WEIGHTED_ROUND_ROBIN or RENDEZVOUS_HASH
-generation = 2
-```
-
-The system still has to know the same relationship. The difference is that the
-relationship enters one runtime contract. That makes topology easier to
-inspect, diagnose, keep consistent across languages, and reload when an
-operator actually needs a live route change. Route misses, unavailable
-endpoints, and queue pressure become runtime outcomes with shared deadletter
-and stats vocabulary instead of each client inventing its own failure shape.
-
-Samples often construct `RuntimeRouteSpec` directly so the moving parts are
-visible. Real integrations should usually generate route specs from the
-platform and app configuration the team already uses, such as framework config,
-Kubernetes values, Helm values, or static deployment config.
-
-This should feel like ordinary application configuration in Kubernetes: the app
-reads env, framework config, Helm values, ConfigMaps, Service DNS, or pod
-metadata at startup, and the connector maps those values into
-`RuntimeStartSpec` plus the initial route snapshot.
-
-For Kubernetes, start with the Service DNS endpoint. For other environments,
-start with that environment's normal service address:
-
-```text
-target -> host:port
-```
-
-That `host:port` may be Kubernetes Service DNS, a Docker Compose service name,
-an on-prem VM or bare-metal hostname, a static LAN address, an edge gateway, or
-an IoT deployment registry value. Use the native service address for the
-environment first; expand endpoints only when CoAkka itself should choose among
-them.
-
-For a local endpoint, `host` is diagnostic identity and `port` should be `0`.
-For a peer endpoint, `host` and `port` identify the reachable runtime node and usually come from the
-connector's startup config source, such as Kubernetes, Consul, a config service,
-or framework config.
-
-Do not read `127.0.0.1` samples as the production model. In Kubernetes, `host`
-is commonly a Service DNS name, pod DNS name, advertised pod IP, or a value
-provided by deployment config. If one application role has multiple replicas,
-keep the runtime port stable across those replicas. For example, three
-`billing` pods can all advertise port `19301`; the differing part is the host
-identity or the Service DNS indirection.
-
-Two common route shapes are:
-
-```text
-Service DNS:
-  billing.default.svc.cluster.local:19301
-
-Expanded pod endpoints:
-  billing-0.billing.default.svc.cluster.local:19301
-  billing-1.billing.default.svc.cluster.local:19301
-  billing-2.billing.default.svc.cluster.local:19301
-```
-
-The first shape gives the runtime one logical endpoint and lets the platform
-resolve the service name. The second shape gives the route snapshot direct
-visibility into each replica. Neither shape requires the application image to
-know pod hostnames ahead of time.
-
-The Service-DNS shape is appropriate for ordinary Runtime messages, where any
-eligible replica may handle one correlated request. File Lane and Stream Lane
-are different after a replica prepares local transfer/session state: the
-returned lane grant must advertise that exact owner, not the load-balancing
-Service endpoint. See
-[Runtime Lane Owner Grants](../reference/runtime-lane-owner-grants.md).
-
-For container and Kubernetes examples, see
-[Containerized Runtime Notes](../operations/containerized-runtime.md).
-
-`RuntimeEndpointFlags.LOCAL` means the endpoint belongs to this process. Only
-targets with a process-owned endpoint should have a handler registered in this
-process.
-
-`RuntimeEndpointFlags.NONE` means no special endpoint flag is set. In
-caller-side route snapshots, read `NONE` as `PEER`: a normal eligible endpoint
-from this process's view. It can receive work, but this process does not own
-that handler locally. In a caller process, peer endpoints normally use `NONE`.
-
-`RuntimeEndpointFlags.UNAVAILABLE` means the endpoint remains visible in the
-snapshot but should be excluded from new request route selection. Use it for
-drain/rollout behavior where the route should stay observable but not receive
-new work.
+See [the routing model](../explanation/runtime-message-and-routing-model.md)
+and [network modes](../reference/runtime-network-modes.md) when adding a peer.
+[Process and language examples](examples-and-use-cases.md#work-across-processes-and-languages)
+identify each demonstration's exact package generation.
 
 ## Source And Target
 
-`source` and `target` answer different questions.
+The target names the work you want performed, such as orders.price.
+The source identifies the caller. Choose names that describe application
+responsibilities and keep them stable across normal restarts.
 
-| Field | Question it answers | Runtime behavior |
-| --- | --- | --- |
-| `source` | Who is sending this request, event, or reply? | Carried for diagnostics, correlation, deadletters, and reply naming. |
-| `target` | What capability should receive this work? | Used by the runtime route table to choose an endpoint. |
-
-Example:
-
-```text
-source = samples.customer.frontend
-target = samples.customer.store
-```
-
-Read that as:
-
-```text
-The frontend is asking the customer store capability to do work.
-```
-
-The runtime routes by `target`, not by `source`.
-`source` should still be stable and meaningful because it appears in logs,
-deadletters, traces, and replies.
-
-For a reply, the handler usually sends from the capability that handled the
-request:
-
-```text
-request:
-  source = samples.customer.frontend
-  target = samples.customer.store
-
-reply:
-  source = samples.customer.store
-  correlated with the original request
-```
-
-Do not use `source` as a routing shortcut or authorization substitute.
-Authorization and business policy belong above the runtime. Runtime uses
-`target` to resolve delivery.
+A process registers handlers for work it owns. A caller can ask for local work
+or work owned by another process.
 
 ## Request Parameters
 
-CoAkka Runtime target calls do not use URL path or query parameters because
-`target` is not a URL. This does not describe CoAkka HTTP Runtime, whose
-requests have ordinary HTTP paths and queries.
-Split request data by responsibility:
+Put business arguments in the request data. Use the installed connector's
+supported request functions and its documented result/error model. Choose a
+timeout that fits the application's operation; small sample timeouts are
+teaching values, not production recommendations.
 
-| Concern | Put it in | Example |
-| --- | --- | --- |
-| Capability address | `target` | `customer.hold` |
-| Business command/query data | payload | `{"customerId":"cust-001","reason":"manual_review"}` |
-| Request context | envelope `headers` map | `tenant=acme`, `x-request-id=req-123`, `idempotency-key=hold-001` |
-
-Read this REST-style call:
-
-```text
-POST /backend/customers/cust-001/hold?tenant=acme
-x-request-id: req-123
-```
-
-as this runtime envelope shape:
-
-```text
-target  = customer.hold
-payload = {"customerId":"cust-001","reason":"manual_review"}
-headers = {"tenant":"acme","x-request-id":"req-123"}
-```
-
-The envelope `headers` field is a small `map<string,string>` for host-side
-context that does not deserve a first-class runtime field yet. Some connector
-APIs may expose that bag as headers, metadata, `extraParam`, or `extraParams`.
-Use it for diagnostics, correlation, tenancy, idempotency keys, and other
-request context.
-
-Do not put core business data in headers. If a value changes the command or
-query semantics, put it in the payload and version it through payload identity.
+If callers and handlers are maintained separately, agree on the request and
+reply shape. Keep application context, credentials and business payloads out
+of diagnostic messages unless explicitly needed and safe to record.
 
 ## Target Design
 
-Use target names as stable service-contract addresses, not process names:
+Name a useful operation or service responsibility, then keep validation and
+business decisions in its application handler. For example, an order-pricing
+handler can validate quantities and calculate a quote; Runtime delivers the
+request and returns its result.
 
-```text
-samples.customer.frontend
-samples.customer.store
-samples.customer.audit
-```
-
-A target should answer “who owns this contract?” rather than “where is the
-current host?”. The route table maps that target to a host/port endpoint.
+Use [the customer walkthrough](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/guides/first-npm-smoke.md)
+to see one ordinary business operation in Node.js.
 
 ## Endpoint Flags
 
-Mark only targets served by the current process as `LOCAL`.
-
-```text
-current process owns samples.customer.store -> LOCAL
-peer process owns samples.customer.frontend -> non-local
-```
-
-Register handlers only for local targets. Sending to a missing or unreachable
-target should produce a deadletter that the caller can log, surface, or retry
-according to business rules.
+Local and remote routes have different ownership. Prefer your language's route
+helpers; follow the selected version's documented endpoint flags when configuring
+routes explicitly. [Network modes](../reference/runtime-network-modes.md) and
+[the routing model](../explanation/runtime-message-and-routing-model.md) explain
+the advanced fields.
 
 ## Route Resolution Strategy
 
-This is an advanced section. Most Kubernetes deployments should start with a
-stable Service DNS endpoint and let Kubernetes distribute to pods.
-
-Route strategy answers this question:
-
-```text
-If a target has multiple eligible endpoints, which endpoint should runtime
-choose?
-```
-
-This is runtime routing policy. It is not business priority, authorization,
-or retry policy. If the route has one Kubernetes Service DNS endpoint, start
-there and let Kubernetes distribute to pods. Strategy selection becomes useful
-when CoAkka sees multiple endpoints or when one target has explicit ownership
-rules.
-
-| Strategy | Question it answers | Typical use |
-| --- | --- | --- |
-| `SINGLE_OWNER` | Does exactly one endpoint own this target? | Owner-bound commands, local samples, actor-like ownership. |
-| `WEIGHTED_ROUND_ROBIN` | Can equivalent endpoints share this work? | Stateless or replicated handlers that can scale horizontally. |
-| `RENDEZVOUS_HASH` | Should the same key keep going to the same endpoint? | Sharded ownership by `order_id`, `tenant_id`, `customer_id`, or another stable key. |
-
-Examples:
-
-```text
-target = payment.authorize
-strategy = SINGLE_OWNER
-```
-
-Read that as:
-
-```text
-payment.authorize has one responsible owner. If that owner is unavailable,
-runtime should fail closed instead of selecting an arbitrary endpoint.
-```
-
-```text
-target = order.validate
-strategy = WEIGHTED_ROUND_ROBIN
-```
-
-Read that as:
-
-```text
-order.validate can run on multiple equivalent endpoints. Runtime may distribute
-new requests across eligible endpoints.
-```
-
-```text
-target = order.create
-strategy = RENDEZVOUS_HASH
-route_key_hint = order_id
-```
-
-Read that as:
-
-```text
-Requests with the same order_id should resolve to the same eligible endpoint,
-which is useful when ownership or cache locality matters.
-```
-
-Endpoint flags and strategy work together:
-
-- `LOCAL` says the endpoint belongs to this process.
-- `NONE` says no special endpoint state is set. In caller-side route
-  snapshots, read it as `PEER`: a normal eligible endpoint from this process's
-  view.
-- `UNAVAILABLE` keeps an endpoint visible but excludes it from new route
-  selection.
-- `strategy` chooses among endpoints that remain eligible.
+Start with the simplest route that names the actual owner of the work.
+Change routing policy only for an application need such as equivalent workers
+or keyed ownership. [Cluster routing](runtime-cluster-routing.md) explains
+those choices and their operational implications.
 
 ## Payload Contract
 
-Every payload identity has:
+Callers and handlers need to agree on data and versioning. A small application
+can start with the language's normal text, byte or JSON APIs. Use the supported
+typed request/reply functions when your application needs explicit message types.
 
-- message type
-- schema version
-- payload format
-
-The samples use JSON because it is easy to inspect:
-
-```text
-samples.customer.create.request.v1
-schema version: 1
-format: JSON
-```
-
-For a real system, keep payload identities stable and version them deliberately.
-Do not reuse a message type for an incompatible payload shape.
-
-When two services share a payload contract, keep the DTOs and message-type
-strings in one shared source of truth. The Spring customer scenario uses a
-`customer-contract` module for that purpose. The web and store services each
-adapt those shared strings into runtime `ConnectorPayloadIdentity` values at the
-connector boundary.
+Version shared business contracts deliberately. Keep one definition of the
+meaning and required fields; each language can represent that data naturally.
+A convenient host API does not remove the need to validate untrusted input.
 
 ## Handler Pattern
 
-A handler should:
+A handler receives a request, validates its business input, performs the local
+operation and returns the documented result. Keep database writes, calculations,
+authorization decisions and business retries in application code.
 
-1. decode the payload
-2. validate the request
-3. perform the local operation
-4. return a typed reply using the original request correlation
-
-Keep handler ownership local. The runtime owns routing and correlation; the
-service still owns its business state and validation.
+Use the connector's reply helpers so replies remain associated with their
+requests. Follow that language API's rules for data that remains in use while
+a request or callback is pending.
 
 ## Caller Pattern
 
-A caller should:
+Handle both the reply and the ways an operation can fail:
 
-1. choose source and target
-2. attach a payload identity
-3. put business arguments in payload
-4. add envelope headers only for request context
-5. set a timeout
-6. name the operation for diagnostics
-7. handle success, timeout, and deadletter paths
+| Outcome | What the application should decide |
+| --- | --- |
+| Reply | Validate/use the returned business result. |
+| Missing or unreachable target | Report a delivery failure; inspect the route and owner. Some failures are reported as a deadletter after work was accepted. |
+| Work refused | Respond to overload or invalid input rather than retrying without a limit. |
+| Timeout or cancellation | Decide whether business retries are safe. A timeout does not prove that a handler made no change. |
+| Close failure | Preserve it alongside an earlier operation failure. |
 
-Start with explicit timeout values. The samples use `2s` for tiny local sample
-flows
-and `5s` in web scenarios. Production values should come from service SLOs and
-failure budgets, not from the sample defaults.
+Use the installed language's typed results/exceptions. Avoid guessing native
+state from message text or from how much time passed.
 
 ## Queue And Failure Policy
 
-Normally leave queue capacity unset so Core resolves its bounded default, then
-inspect the accepted configuration. An explicit `queueCapacity = 128` in an
-older or capacity-focused example is that example's choice, not the ecosystem
-default. Make overload and rejection visible through the installed API's
-failure results and diagnostics.
+Leave queue sizing at the normal default for the first integration. Measure
+actual pressure before changing it, and keep any application retry/backlog
+bounded. A larger queue cannot make a persistently slow handler faster.
 
-For production:
-
-- size queues from expected burst size and memory budget
-- expose queue/deadletter counters in service diagnostics
-- treat deadletters as first-class errors
-- avoid retry loops that can amplify pressure
+Use [monitoring](../operations/runtime-monitoring.md) and
+[production readiness](../operations/production-readiness.md) for a measured
+operating plan.
 
 ## Shutdown
 
-Close the orchestrator during process shutdown. In long-running services, wire
-this into the host framework lifecycle:
+Give Runtime an application lifetime. Stop submitting new work, let active
+work finish or follow the documented cancellation path, and await close.
+Use your language's normal cleanup pattern shown in the first-run source.
 
-- JVM/Spring: bean lifecycle or `AutoCloseable`
-- Python: context manager or application shutdown hook
-- Node.js: `SIGINT`/`SIGTERM` handlers
-- Go: `defer orchestrator.Close()` plus signal handling for servers
+Framework applications should follow their framework lifecycle. Go and Swift
+examples preserve operation and close errors; Python uses a context manager,
+C# uses await-using, and Node/Bun await close in a finally block.
 
 ## Language Recipes
 
-Start from the language closest to your service:
+| Host | Runnable source and instructions |
+| --- | --- |
+| Node.js | [Node first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/node/registry-basic) |
+| Bun | [Bun first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/bun/registry-basic) |
+| Electron | [Desktop first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/electron/registry-basic) |
+| Python | [Python first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/python/registry-basic) |
+| C# | [C# first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/csharp/registry-basic) |
+| Kotlin / Java | [Separate Kotlin and Java commands](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/jvm/registry-basic) |
+| Go | [Go first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/go/registry-basic) |
+| Swift | [Swift first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/swift/registry-basic) |
+| Spring Boot / Quarkus | [Framework customer application](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/scenarios/customer-crud/framework-registry) |
 
-- [JVM runtime samples](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/jvm)
-- [Python runtime samples](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/python)
-- [Node.js runtime samples](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/node)
-- [Go runtime samples](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/go)
-
-Then inspect the customer scenarios for cross-process wiring:
-
-```sh
-bash run.sh scenarios check
-```
-
-Artifact-backed runtime runs can use the public publish checkout. Use
-`COAKKA_PUBLISH_ROOT`, and for JVM lanes `COAKKA_PUBLISH_MAVEN_LOCAL`, to point
-at a local public artifact checkout. For public non-Maven packages, the sample
-resolver verifies artifact SHA256 against `artifacts/public-artifacts.tsv` from
-the publish surface before the package is unpacked or installed.
+For other hosts, use the [sample index](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/README.md#other-languages-and-evaluations)
+and follow the selected package/version's own API. Then use
+[the learning path](integration-path.md) to choose the next level of example.

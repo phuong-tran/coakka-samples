@@ -127,7 +127,7 @@ Current public coordinates are listed in the
 The Quarkus extension lane is published to Maven Central:
 
 ```kotlin
-implementation("io.github.phuong-tran.coakka:quarkus-extension:2.5.3")
+implementation("io.github.phuong-tran.coakka:quarkus-extension:3.0.0")
 ```
 
 Only Maven Central is required:
@@ -142,13 +142,18 @@ Do not mix Quarkus extension versions with an unrelated CoAkka runtime
 generation unless a release note explicitly declares that combination
 compatible.
 
-## JVM 3.0.0 Candidate
+## JVM 3.0.0
 
-The current sample sources use the unpublished 3.0.0
-extension and JVM Runtime together. That candidate is separate from the
-published 2.5.3 coordinate above. Use the
-[framework candidate guide](../previews/3.0.0/runtime-frameworks-candidate.md)
-for the exact local package checks and commands.
+The framework adapter and Runtime 3.0.0 are published on Maven Central.
+Use Java 17 for the framework application. Run the
+[framework customer application](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/scenarios/customer-crud/framework-registry)
+without preparing a local CoAkka Maven repository.
+
+The business samples below are written in Kotlin; the
+[plain JVM first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/jvm/registry-basic)
+also includes separate Java source and a Java run command. Use the
+[local-package guide](../previews/3.0.0/runtime-frameworks-candidate.md) only
+when intentionally qualifying a selected local artifact.
 
 Core chooses CPU placement. Connection and monitor settings keep Core's
 defaults until the application supplies a documented option. Read accepted settings through
@@ -160,7 +165,10 @@ Changing that setting requires a new instance. See
 
 ## Sample Path
 
-The current candidate sample is:
+Use the registry build linked above to launch this source with published 3.0.0
+dependencies. The source folder's local launcher is a separate qualification path.
+
+The application handler source is in:
 
 ```text
 coakka-runtime/scenarios/customer-crud/quarkus-local

@@ -1,168 +1,82 @@
 # New To CoAkka
 
-CoAkka is a polyglot, multi-language, multi-platform distributed runtime
-ecosystem. Start with its central product, **CoAkka Runtime**.
+**Start with one piece of application work, in a language you already know.**
 
-CoAkka Runtime is a native-backed capability runtime for application-owned
-work across processes and languages. It helps an app route work by target
-name, handle request/reply, deadletters, bounded queues, and diagnostics
-without turning every internal boundary into another hand-written HTTP
-endpoint.
+Imagine an application that accepts an order. A Node.js API receives the
+request, Python calculates a price, and a JVM service owns customer records.
+CoAkka Runtime lets the application call that work by a stable name and receive
+a reply. The application still owns validation, calculations and business data.
 
-Application-owned work means capability code governed by the same product or
-application boundary, even when it runs in another process, language,
-container, or host.
+That is **application-owned work**: work belonging to your application even
+when the code runs in another process, language or host. CoAkka Runtime is a
+polyglot, native-backed distributed runtime for connecting that work.
 
-CoAkka Logger is a separate bounded logging surface in the same ecosystem.
+The order example explains the model; choose a runnable example below to see
+which process and language combination that example actually demonstrates.
 
-CoAkka HTTP Runtime is a separate HTTP server and client product for real HTTP
-edges. It does not replace CoAkka Runtime or change its target-based model.
-Its current distribution uses checksum-pinned repository archives, not npm,
-PyPI, Maven Central, or a tagged Go module. If HTTP is your immediate task,
-use the [HTTP Runtime samples](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-http-runtime);
-otherwise follow the Runtime learning path below.
+Each application starts Runtime through its own language package. A call
+between applications can look like this:
 
-If you are evaluating CoAkka for the first time, read it in this order:
-
-| Step | Read or run | Why |
-| --- | --- | --- |
-| 1 | This page | Understand the problem and repository map. |
-| 2 | [Build The Product Before The Infrastructure](../coakka-runtime/explanation/startup-development-path.md) | Start with a modular monolith or locally debugged polyglot processes, then split only when evidence justifies it. |
-| 3 | `bash run.sh coakka-runtime containers node-python` | See two real processes, two languages, browser-visible state, and no backend HTTP fallback. |
-| 4 | [Runtime Field Guide](../coakka-runtime/reference/runtime-field-guide.md) | Connect the sample to the normal Kubernetes Service DNS shape, queues, overload, Nginx, and mTLS boundaries. |
-| 5 | [How It Works](../coakka-runtime/explanation/how-it-works.md) | Understand app-host, connector, runtime, route snapshot, and handler ownership. |
-| 6 | [Runtime Integration Guide](../coakka-runtime/guides/runtime-integration-guide.md) | Map an existing service into `RuntimeStartSpec`, routes, handlers, and shutdown. |
-| 7 | [Runtime Addons](../coakka-runtime/guides/runtime-addons.md) | See how optional protocol or integration capabilities compose with Runtime without entering core. |
-| 8 | [Questions And Answers](../coakka-runtime/reference/qna.md) | Check the common objections: gRPC, Feign, Istio, sockets, load balancing, generations, and Saga. |
-
-## Two Main Public Repositories
-
-| Repository | Use it for | Link |
-| --- | --- | --- |
-| `coakka-samples` | Runnable examples and code you can inspect first. | https://github.com/phuong-tran/coakka-samples |
-| `coakka-publish` | Released packages, native archives, manifests, checksums, compatibility matrix, and release notes. | https://github.com/phuong-tran/coakka-publish |
-
-If you are new, start with `coakka-samples`. Use `coakka-publish` when you need
-exact released files, checksums, compatibility status, or release history.
-Language-specific public package repositories can exist separately. See
-[Current Packages](current-packages.md) for current package-manager entrypoints
-and repository links.
-
-## What You Should Notice First
-
-CoAkka is easiest to understand from an internal HTTP handoff that exists
-primarily to give capability code an address.
-
-Before CoAkka, a team may keep the public API route and then add another
-private HTTP endpoint only to call work owned by the same app or team:
-
-```text
-POST /api/customers
-  -> fetch("http://customer-store/backend/customers")
-  -> store.create(...)
+```mermaid
+flowchart LR
+    app["Your caller, for example Node.js"] -->|"Ask orders.price through CoAkka Runtime"| handler["Your pricing handler, for example Python"]
+    handler -->|"Business reply"| app
 ```
 
-After CoAkka, the public API route can stay exactly where it belongs, but the
-internal handoff becomes a runtime target:
 
-```text
-POST /api/customers
-  -> ask target "samples.customer.store.create"
-  -> store.create(...)
-  -> runtime reply or deadletter
-```
+## Choose the job first
 
-The important change is not "HTTP is bad." Public HTTP, gRPC, browser APIs,
-auth, and deployment policy still belong to the app. CoAkka removes the
-internal HTTP-shaped handoff when it only exists to give capability code owned
-by the same app or team an address.
-
-Runtime samples use a target name:
-
-```text
-caller code -> CoAkka target -> handler -> reply or deadletter
-```
-
-The target is a capability name such as `samples.runtime.node.echo` or
-`billing.invoice.create`. The app registers a handler for the target it owns,
-and callers ask that target instead of building another internal HTTP endpoint.
-
-CoAkka Logger is covered separately. First-time readers should continue with
-the Runtime learning path, then return to Logger when they want bounded,
-cross-language operational evidence and diagnostics that fit beside the
-Runtime vocabulary.
-
-## What CoAkka Is Not
-
-CoAkka Runtime is not a Kafka clone, hosted broker, sidecar mesh, web framework, or
-replacement for public HTTP/gRPC APIs. It is an embedded runtime surface used
-by an application host through language packages. For traffic it owns, its
-built-in TLS/mTLS, connection strategies, cluster routing, failover,
-generations, and delivery evidence remove the need for a service-mesh data
-plane.
-
-Public edges, authentication, deployment policy, and product APIs still belong
-to the application architecture around CoAkka.
-
-## First Learning Path
-
-1. Clone the samples repo and run the golden path:
-
-   ```sh
-   git clone https://github.com/phuong-tran/coakka-samples.git
-   cd coakka-samples
-   bash run.sh coakka-runtime containers node-python
-   ```
-
-   This path uses the published container images to show two runtime
-   participants in different languages. It is the best first proof that CoAkka
-   is not just a local function-call wrapper.
-
-2. If Docker is not available, run the smallest local Runtime package check:
-
-   ```sh
-   bash run.sh coakka-runtime node basic
-   ```
-
-3. Optionally run the smallest local Logger package check:
-
-   ```sh
-   bash run.sh coakka-logger node basic
-   ```
-
-4. Try the no-checkout npm smoke if you want to start from package-manager
-   install commands:
-
-   https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/guides/first-npm-smoke.md
-
-5. Read [Runtime Field Guide](../coakka-runtime/reference/runtime-field-guide.md) before jumping into
-   advanced routing details. Its first pass explains the practical path from a
-   local runtime to Kubernetes Service DNS, stable targets, route snapshots,
-   bounded queues, overload signals, Nginx, mTLS placement, and logger
-   evidence. You can leave expanded endpoints, custom policies, and generation
-   changes for later.
-
-6. Read sample docs for the lane you care about:
-
-   https://github.com/phuong-tran/coakka-samples/tree/main/docs
-
-7. Check released artifacts, checksums, and compatibility status:
-
-   https://github.com/phuong-tran/coakka-publish
-   https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-runtime/reference/compatibility-matrix.md
-
-## How The Main Docs Fit Together
-
-| Doc | Use it when |
+| What are you building? | Start with |
 | --- | --- |
-| [Build The Product Before The Infrastructure](../coakka-runtime/explanation/startup-development-path.md) | You need to ship before choosing a final service, container, or scaling topology. |
-| [Runtime Field Guide](../coakka-runtime/reference/runtime-field-guide.md) | You understand the basic idea and want to know how a real topology should be shaped. |
-| [How It Works](../coakka-runtime/explanation/how-it-works.md) | You want the runtime lifecycle and ownership model. |
-| [Runtime Message And Routing Model](../coakka-runtime/explanation/runtime-message-and-routing-model.md) | You need the vocabulary: start spec, route snapshot, envelope, ask, reply, timeout, and deadletter. |
-| [Runtime Integration Guide](../coakka-runtime/guides/runtime-integration-guide.md) | You are wiring CoAkka into an existing service or framework. |
-| [Runtime Addons](../coakka-runtime/guides/runtime-addons.md) | You need an optional external protocol or integration capability and want the package, ownership, and evidence boundaries. |
-| [Runtime Logging And Observability](../coakka-runtime/operations/runtime-logging-observability.md) | You need to separate runtime evidence, business logs, CoAkka Logger, and observability export. |
-| [Runtime Cluster Routing](../coakka-runtime/guides/runtime-cluster-routing.md) | You are past the simple Service DNS shape and need expanded endpoints, route policies, or generation discipline. |
-| [Edge, IoT, And Industrial Android](../coakka-runtime/previews/edge-iot-android.md) | You want to understand edge Linux, Raspberry Pi, BeagleBone, and Android industrial tablet fit. |
-| [Questions And Answers](../coakka-runtime/reference/qna.md) | You want direct answers to architecture objections and boundary questions. |
-| [Current Packages](current-packages.md) | You need current package-manager entrypoints and version notes. |
+| Calls between application handlers, processes or languages | [CoAkka Runtime](../coakka-runtime/getting-started.md) |
+| An HTTP API, web frontend or streaming endpoint | [CoAkka HTTP Runtime](../coakka-http-runtime/getting-started.md) |
+| Application logging with bounded storage and visible pressure | [CoAkka Logger](../coakka-logger/README.md) |
+
+Each product has its own packages and version. You can adopt one on its own.
+An application can also receive an HTTP request, ask Runtime to perform work
+and record an event through Logger.
+
+## Try Runtime in your language
+
+[Choose your language](../coakka-runtime/getting-started.md), install its
+published package and run one small example. Java and Kotlin have separate
+commands; Node.js, Bun, Electron, Python, C#, Go and Swift have their own source.
+
+The first example starts one local Runtime, registers a handler, sends one
+request and closes. It proves that your package and application can exchange
+a request and reply. It does not require Docker or Kubernetes.
+
+Then [choose a use case](../coakka-runtime/guides/examples-and-use-cases.md):
+a customer operation, a framework application, files or streams. Each example
+states whether it uses a released package, a local evaluation or an older
+demonstration.
+
+## Read the code with four questions
+
+1. **What work has a name?** A target such as orders.price names the operation.
+2. **Who handles it?** Your application registers an ordinary function or method.
+3. **Who calls it?** Another part of the application submits a request and handles
+   the reply or failure.
+4. **When does it close?** The application stops Runtime when its work is done.
+
+Language APIs differ so the code feels natural in each host. The application
+responsibilities stay the same. Start with the real source for your language
+rather than translating a Kotlin or Java example line by line.
+
+## Find the right repository
+
+| Repository | Use it for |
+| --- | --- |
+| [Samples](https://github.com/phuong-tran/coakka-samples) | Run examples and read application code. |
+| [Publish](https://github.com/phuong-tran/coakka-publish) | Find packages, platform requirements and versioned downloads. |
+
+The [package ledger](current-packages.md) records released versions.
+The [product map](product-layout.md) explains the repository layout.
+
+## Continue when you need it
+
+- [Move the example into an application](../coakka-runtime/guides/runtime-integration-guide.md).
+- [Understand the application model](../coakka-runtime/explanation/coakka-story.md).
+- [Grow from one process to several](../coakka-runtime/explanation/startup-development-path.md).
+- [Understand defaults and turn on monitoring](../coakka-runtime/operations/runtime-monitoring.md).
+- [Troubleshoot a failed first run](../coakka-runtime/operations/troubleshooting.md).

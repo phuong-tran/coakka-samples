@@ -18,6 +18,9 @@ of CoAkka Runtime and CoAkka HTTP Runtime.
 
 Read the [product documentation](../docs/coakka-logger/README.md) for the full guide.
 
+Choose your [language guide](#language-guides) first. Each has its own package,
+prerequisites and basic example. The Node.js commands below are one illustration.
+
 ## Start With One Consumer
 
 From the repository root:

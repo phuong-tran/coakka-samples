@@ -1,27 +1,38 @@
 # Bun Runtime 3.0.0: First Run
 
-Use Bun 1.3.14 or newer (Bun 1.4.0+ on Windows ARM64) and `coakka-v2-connector-bun@3.0.0`.
-See the [current package ledger](../../../docs/common/current-packages.md)
-for registry availability. Install the published package, or evaluate the exact
-local archive below for controlled qualification; a 2.x package cannot run this API.
+Send one request to an application handler and print its reply.
 
-From the Samples checkout:
+**You need:** Bun 1.3.14 or later (Windows ARM64: 1.4.0 or later) and a
+[Samples checkout](../../../docs/coakka-runtime/getting-started.md#get-the-examples).
+This app uses the published Bun connector pinned in package.json.
 
-```sh
+## Run
+
+From the Samples repository root:
+
+~~~sh
 cd coakka-runtime/bun/registry-basic
-npm install
+bun install
 bun main.mjs
-```
+~~~
 
-Expected output: `accepted-hello`. The app starts one host, registers a
-bytes handler, sends one request and awaits close. The installed package carries
-its matching Core and host adapters; no separate native setup is needed.
+Expected output:
 
-CPU, connection and monitor defaults stay owned by Core.
+~~~text
+accepted-hello
+~~~
 
-For local archive evaluation, copy this app to a fresh external directory and
-install the admitted tarball there with npm. Do not select native libraries from a source checkout.
-Local installation is not proof of registry availability.
+The app exits after closing Runtime. No Node.js/npm installation or separate
+Core installation is needed for this example.
+
+## Read the code
+
+Open [main.mjs](main.mjs). It starts Runtime, registers one local handler,
+sends a request and awaits close in a finally block. The handler is ordinary
+application JavaScript running in Bun.
+
+This is a one-process example. [Choose a use case](../../../docs/coakka-runtime/guides/examples-and-use-cases.md)
+or [move the same steps into an application](../../../docs/coakka-runtime/guides/runtime-integration-guide.md).
 
 [Runtime examples](../../README.md) ·
-[Integration guide](../../../docs/coakka-runtime/guides/runtime-integration-guide.md).
+[Local-package evaluation](../../../docs/coakka-runtime/previews/README.md).

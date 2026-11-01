@@ -2,42 +2,34 @@
 
 **Application-owned work across languages and processes.**
 
-CoAkka Runtime is a polyglot, cross-platform distributed runtime for
-application-owned work, powered by a shared native core. Native-backed language connectors expose familiar APIs. The application
-supplies its handlers and business rules; Runtime manages delivery and outcomes.
+CoAkka Runtime is a polyglot, cross-platform distributed runtime backed by a
+shared native core. Your application supplies handlers and business rules;
+Runtime connects their named work and reports replies or delivery failures.
 
 ## Start
 
-[Choose a language and run one example](getting-started.md). The guide separates
-published packages, including C#, Python, Node.js/Bun/Electron, Go/Swift and JVM/Spring Boot/Quarkus 3.0.0, from other local 3.0.0 candidates so code and packages match.
-Then [integrate Runtime into an application](guides/runtime-integration-guide.md).
+1. [Choose your language and run one example](getting-started.md).
+2. [Choose a business use case](guides/examples-and-use-cases.md).
+3. [Put the same steps in your application](guides/runtime-integration-guide.md).
+
+Start with one local request. The first-run guides use published 3.0.0 packages
+and point to real source for each language, including separate Java/Kotlin commands.
 
 ## Add a capability
 
-| Task | Guide |
+| Need | Guide |
 | --- | --- |
-| Exchange messages and understand delivery outcomes | [Messages and routing](explanation/runtime-message-and-routing-model.md) |
+| Exchange work and understand replies/failures | [Messages and routing](explanation/runtime-message-and-routing-model.md) |
 | Transfer files or stream data | [Files](guides/runtime-file-transfer.md) · [Streams](guides/runtime-streaming.md) |
-| Integrate a JVM application framework | [Spring Boot](guides/coakka-spring-boot.md) · [Quarkus](guides/coakka-quarkus.md) |
+| Integrate a JVM framework | [Spring Boot](guides/coakka-spring-boot.md) · [Quarkus](guides/coakka-quarkus.md) |
 | Connect browser-facing or optional integrations | [WebSocket](guides/runtime-websocket-integration.md) · [Addons](guides/runtime-addons.md) |
 
-## Operate
+## Operate and look up details
 
-Start with [defaults and monitoring](operations/runtime-monitoring.md): AUTO and
-MULTIPLEXED are the current defaults; extra monitor collection starts OFF.
-The guide explains why, when to enable it and how, using Kotlin as one example
-of the same model available through other languages.
+- [Defaults and monitoring](operations/runtime-monitoring.md): AUTO, MULTIPLEXED and monitoring-off.
+- [Troubleshooting](operations/troubleshooting.md) and [operations](operations/README.md).
+- [Task guides](guides/README.md), [reference](reference/README.md) and [explanations](explanation/README.md).
+- [Changelog and migration](CHANGELOG.md), [release history](releases/README.md) and [local evaluation](previews/README.md).
 
-Use [Client and Inspect](operations/README.md) to inspect a participant, or
-[troubleshoot a problem](operations/troubleshooting.md).
-
-## Learn or look up details
-
-- [Understand the model and adoption choices](explanation/README.md).
-- [Find configuration, platforms and vocabulary](reference/README.md).
-- [Browse all task guides](guides/README.md).
-- [Read the changelog and migration notes](CHANGELOG.md).
-- [Read release history](releases/README.md) or [evaluate the 3.0.0 candidate](previews/README.md).
-
-Runtime versions independently from [HTTP Runtime](../coakka-http-runtime/README.md)
-and [Logger](../coakka-logger/README.md). [All product documentation](../README.md).
+[HTTP Runtime](../coakka-http-runtime/README.md) and [Logger](../coakka-logger/README.md)
+have independent versions. [All product documentation](../README.md).

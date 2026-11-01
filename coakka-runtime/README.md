@@ -2,71 +2,77 @@
 
 **Application-owned work across languages and processes.**
 
-CoAkka Runtime is a **polyglot, cross-platform distributed runtime for
-application-owned work**, backed by a **shared native core**. Its native-backed
-language connectors expose familiar APIs while keeping business behavior in
-application code.
+CoAkka Runtime is a **polyglot, cross-platform distributed runtime**, backed by
+a **shared native core**. Name the work your application owns, register its
+handler and ask for a result. The handler can live in the same process or in a
+different language/process; business rules remain application code.
 
-An API needs an image processed, a customer stored or a device reading fetched.
-These are pieces of application work, even when the code that handles them
-lives in another language or process. As the application grows, connecting
-those pieces can mean maintaining separate endpoints, client wrappers and
-delivery conventions for every handoff.
+An API may need an image processed, a customer stored or a device reading
+fetched. Runtime gives that work a stable target name while your application
+chooses where the handler lives. Read [the story](../docs/coakka-runtime/explanation/coakka-story.md)
+for the model, or run one example below.
 
-CoAkka Runtime makes that work callable by a stable target name. For example,
-a Node.js API can ask a Python handler to process an image. The application
-chooses which process owns the handler; Runtime delivers the request, matches
-its reply and reports delivery failures. Business rules remain application code.
+## First run: choose your language
 
-Use it to connect existing services, introduce another language for a specific
-job or move work into a separate process gradually. The examples below start
-with one local exchange and lead to larger application shapes. Read
-[The CoAkka Story](../docs/coakka-runtime/explanation/coakka-story.md) for the
-reasoning behind this model.
+These apps use **published 3.0.0 packages**. Each README gives prerequisites,
+a command, expected output, the source file and how the app closes.
 
-Run one request/reply example in your language, then add the capabilities you need.
+| Your application | First run |
+| --- | --- |
+| Node.js | [Node.js](node/registry-basic/README.md) |
+| Bun | [Bun](bun/registry-basic/README.md) |
+| Electron | [Electron desktop app](electron/registry-basic/README.md) |
+| Python | [Python](python/registry-basic/README.md) |
+| C# | [C#](csharp/registry-basic/README.md) |
+| Kotlin | [Kotlin](jvm/registry-basic/README.md#kotlin) |
+| Java | [Java](jvm/registry-basic/README.md#java) |
+| Go | [Go](go/registry-basic/README.md) |
+| Swift | [Swift](swift/registry-basic/README.md) |
+| Spring Boot / Quarkus | [Framework customer application](scenarios/customer-crud/framework-registry/README.md) |
 
-**Version choice comes first.** C# `CoAkka.Runtime 3.0.0` (NuGet) and Python
-`coakka-v2-connector==3.0.0` (PyPI) are published. Node.js, Bun and Electron
-`3.0.0` are also published on npm. Go `/v3@v3.0.0` and Swift 3.0.0 are released on GitHub.
-JVM Runtime, Spring Boot and Quarkus 3.0.0 are published on Maven Central.
-Other main-branch 3.0.0 lanes still require their local candidate packages.
-The remaining published-example links below point to a frozen 2.x snapshot:
-use its complete code, runner and pinned dependencies together. Follow the
-[package ledger](../docs/common/current-packages.md) for released coordinates.
+[Get the Samples checkout first](../docs/coakka-runtime/getting-started.md#get-the-examples).
+You only need your chosen language's tools. The first request/reply app runs
+locally and does not require Docker, Kubernetes or a separate Core build.
 
-| Language | Use a published package | Evaluate the current candidate |
-| --- | --- | --- |
-| C/C++ | [Published example](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/native) | [3.0.0 example](native/README.md) |
-| Kotlin / Java | [Maven Central 3.0.0 first run](jvm/registry-basic/README.md) | [3.0.0 example](jvm/README.md) |
-| Node.js | [npm 3.0.0 first run](node/registry-basic/README.md) | [Local-archive qualification](node/README.md) |
-| Bun | [npm 3.0.0 first run](bun/registry-basic/README.md) | [Local-archive qualification](bun/README.md) |
-| Electron | [npm 3.0.0 first run](electron/registry-basic/README.md) | [Local-archive qualification](electron/README.md) |
-| Python | [PyPI 3.0.0 first run](python/registry-basic/README.md) | [Local-wheel qualification](python/README.md) |
-| C# | [NuGet 3.0.0 first run](csharp/registry-basic/README.md) | [Local-feed verification](csharp/README.md) |
-| Go | [Go 3 first run](go/registry-basic/README.md) | [Local-module qualification](go/README.md) |
-| Swift | [Swift 3 first run](swift/registry-basic/README.md) | [Local-package qualification](swift/README.md) |
-| Rust | [Published example](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/rust) | [3.0.0 example](rust/README.md) |
-| Tauri | [Published example](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/tauri) | [3.0.0 example](tauri/README.md) |
-| Zig | [Published example](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/zig) | [3.0.0 example](zig/README.md) |
+## Choose a use case
 
-For a candidate, first read its [3.0.0 package requirements](../docs/coakka-runtime/previews/README.md).
-Each language README leads to a basic example with prerequisites, a command,
-expected output and clean shutdown. A package's included Core is loaded by its
-connector; ordinary users do not build Core separately.
+[Examples and use cases](../docs/coakka-runtime/guides/examples-and-use-cases.md)
+separates small local apps, business operations, process/language demonstrations,
+files, streams and device examples.
 
-## What to try next
+- [Node.js customer operation](../docs/coakka-runtime/guides/first-npm-smoke.md):
+  a published-package walkthrough without cloning this repository.
+- [Customer applications](scenarios/customer-crud/framework-registry/README.md):
+  Spring Boot or Quarkus with Runtime 3.0.0 from Maven Central.
+- [Electron application](electron/registry-basic/README.md): a window sends work
+  through its main process.
+- [Files](../docs/coakka-runtime/guides/runtime-file-transfer.md) and
+  [streams](../docs/coakka-runtime/guides/runtime-streaming.md): follow the named
+  example's package requirements.
 
-- [Deadletter and integration behavior](../docs/coakka-runtime/guides/runtime-integration-guide.md).
-- [File transfer](../docs/coakka-runtime/guides/runtime-file-transfer.md), [streaming](../docs/coakka-runtime/guides/runtime-streaming.md) or [replica file fanout](go/replica-file-fanout/README.md).
-- [Spring Boot and Quarkus scenarios](scenarios/customer-crud/README.md).
-- [Client and Inspect](../docs/coakka-runtime/operations/README.md), or the [RPi camera demo](demos/rpi-camera/README.md).
+## Other languages and evaluations
+
+| Language | Exact source/package path |
+| --- | --- |
+| C/C++ | [Released older snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/native) · [Local 3.0.0 evaluation](native/README.md) |
+| Rust | [Released older snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/rust) · [Local 3.0.0 evaluation](rust/README.md) |
+| Tauri | [Released older snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/tauri) · [Local 3.0.0 evaluation](tauri/README.md) |
+| Zig | [Released older snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/zig) · [Local 3.0.0 evaluation](zig/README.md) |
+| Android / Mojo | [Android](android/README.md) · [Mojo](mojo/README.md): evaluation previews |
+
+These paths keep their own version and prerequisites. [Local evaluation guides](../docs/coakka-runtime/previews/README.md)
+are for checking selected packages, not a prerequisite for the published first runs.
+
+The [Node-to-Python container demo](containers/node-python/README.md) uses
+historical 1.x images. It demonstrates two processes but is not the current
+3.0.0 installation path. [RPi camera](demos/rpi-camera/README.md) and other device
+examples have their own hardware and package requirements.
+
+## Put the pattern in your application
+
+- [Integration guide](../docs/coakka-runtime/guides/runtime-integration-guide.md).
 - [Defaults and monitoring](../docs/coakka-runtime/operations/runtime-monitoring.md).
+- [Migration and 3.0.0 changes](../docs/coakka-runtime/CHANGELOG.md).
+- [Current packages](../docs/common/current-packages.md) and [platform requirements](../docs/coakka-runtime/reference/runtime-package-platform-evidence.md).
 
-[Android](android/README.md) and [Mojo](mojo/README.md) are evaluation previews,
-with their own prerequisites. They are not registry installation paths.
-
-For deployment planning and deeper reading, use the [Runtime documentation](../docs/coakka-runtime/README.md).
-[Choose another product](../README.md).
-
-Read the [Runtime 3.0.0 changelog](../docs/coakka-runtime/CHANGELOG.md) before upgrading older application code.
+[Runtime documentation](../docs/coakka-runtime/README.md) · [All products](../README.md).

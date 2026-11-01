@@ -1,8 +1,9 @@
 # Python Runtime Transport Configuration
 
-This guide describes the unpublished Python `3.0.0` candidate API. For released
-`2.x` packages, use the documentation bundled with the selected release; the
-constructor and inspection contracts below require the candidate API.
+This guide describes the published Python 3.0.0 API. Start with the
+[Python first-run example](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/python/registry-basic)
+for installation and a small application. Older 2.x packages keep their
+version's constructor and inspection contracts.
 
 The public CoAkka C ABI is the semantic authority. The Python connector copies
 its results into frozen Python values; it does not reinterpret lifecycle,
@@ -11,7 +12,7 @@ capability, validation, or edition behavior.
 ## Startup Contract
 
 Set `connection_strategy` and `security` on `ConnectorStartSpec` or
-`ConnectorConfig`. The candidate submits connection intent to Core's native
+`ConnectorConfig`. The connector submits connection intent to Core's native
 constructor, applies optional security while the owner is still `CREATED`,
 installs host handles and starts Core. Core resolves defaults and reports the
 accepted startup state. Connection validation refusal raises
@@ -24,7 +25,7 @@ mode is `MULTIPLEXING`. Omit security to preserve Core defaults. Call
 `RuntimeHost.read_runtime_capabilities(...)` before selecting an optional mode.
 Package names and binary presence do not prove entitlement.
 
-The candidate keeps optional intent nullable: `enable_monitor=None` omits the
+The connector keeps optional intent nullable: `enable_monitor=None` omits the
 group (Core currently OFF), while `False` explicitly supplies OFF. `network=None`
 does not apply a network policy (Core native default EMBEDDED); explicit modes
 and every supplied host/port field are submitted with their own presence bit,
@@ -98,7 +99,7 @@ tuning without mode receives its stable MODE_REQUIRED validation result.
 Inapplicable tuning is not silently discarded. The example above deliberately
 selects an optional mode; a normal first-run host omits connection strategy.
 
-The new candidate removes `startup_connection_result()`: constructor acceptance
+Version 3.0.0 removes `startup_connection_result()`: constructor acceptance
 does not provide a `changed`/reason apply outcome. Use the Core startup receipt
 for accepted facts or `tcp_connection_config()` for live inspection. A live
 inspection refusal is never replaced by cached startup values. Actual

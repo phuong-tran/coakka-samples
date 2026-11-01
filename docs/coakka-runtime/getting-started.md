@@ -1,119 +1,87 @@
 # Start With CoAkka Runtime
 
-Choose a language in the [Runtime sample guide](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/README.md).
-Run its smallest request/reply example before adding files, streams or remote peers.
+**Choose your language, run one example and see a reply.**
 
-## Using a published package
+These first-run apps use released Runtime **3.0.0** packages. Start with one
+language's tools; Docker and Kubernetes are optional later steps. The package
+includes the matching Runtime components.
 
-For the other released 2.x language lanes, use the [published sample snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime) and follow that snapshot's README,
-runner and exact package version together. Download or check out the snapshot
-before running it; do not copy a 2.x install command into current 3.0.0 source.
-The [published package ledger](../common/current-packages.md) records available releases.
+## Get the examples
 
-A basic example starts a host, registers one handler, sends a request, checks
-its reply and closes the host. Its README gives prerequisites, the command
-and expected output. Keep those steps together in the selected example.
+~~~sh
+git clone https://github.com/phuong-tran/coakka-samples.git
+cd coakka-samples
+~~~
 
-## C# Runtime 3.0.0 from NuGet
+All paths below start from this repository root. If you enter an example
+directory, return to the repository root before choosing another example.
 
-C# 3.0.0 is published. Use .NET 8 or newer and the
-[matching first-run example](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/csharp/registry-basic):
+## Choose your language
 
-```sh
-dotnet run --project coakka-runtime/csharp/registry-basic/CoAkkaRuntimeFirstRun.csproj
-```
+| Your application | Tools needed | First-run instructions and code |
+| --- | --- | --- |
+| Node.js | Node.js 22 and npm | [Node.js](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/node/registry-basic/README.md) |
+| Bun | Bun 1.3.14; Windows ARM64: 1.4.0 | [Bun](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/bun/registry-basic/README.md) |
+| Electron | Node.js/npm; the sample installs Electron 42 | [Electron](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/electron/registry-basic/README.md) |
+| Python | Standard CPython 3.11 or later | [Python](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/python/registry-basic/README.md) |
+| C# | .NET SDK 8 or later | [C#](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/csharp/registry-basic/README.md) |
+| Kotlin | JDK 17 to run the sample build | [Kotlin](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/jvm/registry-basic/README.md#kotlin) |
+| Java | JDK 17 to run the sample build | [Java](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/jvm/registry-basic/README.md#java) |
+| Go | Go 1.22.12 and a C compiler; Windows ARM64: Go 1.25.5 | [Go](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/go/registry-basic/README.md) |
+| Swift | A supported Swift installation for your platform | [Swift](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/swift/registry-basic/README.md) |
 
-Run from the Samples checkout; expected output is `accepted-hello`. The package
-includes its matching native Core. Existing applications install with
-`dotnet add package CoAkka.Runtime --version 3.0.0`; migrate and recompile 2.x
-callers against the new API.
+The language README contains the exact command, expected result, source file
+and close behavior. Follow that one path before adding another language.
 
-## Python Runtime 3.0.0 from PyPI
+Spring Boot or Quarkus user? After the plain JVM example, try the
+[published framework application](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/scenarios/customer-crud/framework-registry/README.md).
 
-Use GIL-enabled CPython 3.11 or newer and the
-[matching Python first-run example](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/python/registry-basic):
+## Understand what succeeded
 
-```sh
-python -m pip install coakka-v2-connector==3.0.0
-python coakka-runtime/python/registry-basic/main.py
-```
+Most examples print:
 
-Run from the Samples checkout in a virtual environment; expected output is
-`accepted-hello`. The wheel includes Core and its matching Python adapter.
-Migrate 2.x applications to the new API.
+~~~text
+accepted-hello
+~~~
 
-## Node.js, Bun and Electron 3.0.0 from npm
+Kotlin prints hello-runtime-jvm inside its response line; Java prints
+hello-runtime-java. Electron opens a window with a reply and then exits.
+Each language guide shows its actual expected output.
 
-Choose the package for your application host:
+The application starts one local Runtime, registers a handler, sends a request
+to that handler and closes cleanly. Read those steps in your language's source.
+This first run is intentionally in one process; choose a larger example next.
 
-```sh
-npm install coakka-v2-connector-node@3.0.0
-# Bun application:
-bun add coakka-v2-connector-bun@3.0.0
-# Electron application:
-npm install coakka-v2-connector-electron@3.0.0
-```
+## Choose your next step
 
-Use Node.js 22+, Bun 1.3.14+ (Windows ARM64:1.4.0+), or Electron 42+.
-Electron includes an exact dependency on the Node connector; native ownership
-stays in the main process. The package includes its matching native Core.
-Start with the [Node.js](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/node/registry-basic),
-[Bun](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/bun/registry-basic) or
-[Electron](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/electron/registry-basic) first-run app.
-See the [no-checkout npm walkthrough](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/guides/first-npm-smoke.md)
-for a small application-owned customer operation. Migrate 2.x callers before upgrading.
+| I want to… | Continue here |
+| --- | --- |
+| Handle a customer operation or use a framework | [Examples and use cases](guides/examples-and-use-cases.md) |
+| Add Runtime to my existing application | [Integration guide](guides/runtime-integration-guide.md) |
+| Understand why and when to use Runtime | [The CoAkka story](explanation/coakka-story.md) |
+| Connect work across processes or languages | [Process and language examples, with their versions](guides/examples-and-use-cases.md#work-across-processes-and-languages) |
+| Inspect settings or enable monitoring | [Defaults and monitoring](operations/runtime-monitoring.md) |
 
-## Go 3.0.0 from GitHub
+## If the first run fails
 
-```sh
-go get github.com/phuong-tran/coakka-runtime-go/v3@v3.0.0
-```
+- Confirm the working directory and required language version in the selected README.
+- Use the complete sample and its declared 3.0.0 dependency together.
+- Check the [platform requirements](reference/runtime-package-platform-evidence.md).
+  Packages cover macOS ARM64, Linux ARM64/x64 and Windows ARM64/x64; Swift's
+  Windows ARM64 path alone remains preview.
+- Follow [troubleshooting](operations/troubleshooting.md) before changing advanced settings.
 
-Use a C11 cgo compiler and Go 1.22.12 or newer (native Windows ARM64:
-Go 1.25.5). Import the new `/v3` module path. Start with
-[the ordinary first-run app](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/go/registry-basic).
-The module includes its matching native Core; no separate Core installation
-or module replacement is needed.
+The [package ledger](../common/current-packages.md) records exact released
+coordinates. [The changelog](CHANGELOG.md) explains migration from 2.x.
 
-## Swift 3.0.0 from GitHub
+## Other languages and evaluation paths
 
-```swift
-.package(url: "https://github.com/phuong-tran/coakka-runtime-swift.git", exact: "3.0.0")
-```
+C/C++, Rust, Tauri and Zig have their own released snapshots or local 3.0.0
+evaluation paths; choose their exact source and package together in the
+[Runtime sample index](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/README.md#other-languages-and-evaluations).
+Android and Mojo remain evaluation previews.
 
-Add product `CoAkkaRuntime` to the application target, or use
-[the ordinary SwiftPM first-run app](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/swift/registry-basic).
-The dynamic library and resource bundle deploy together. Preserve both operation
-and throwing-close failures when migrating 2.x applications. Windows ARM64 alone
-is preview; the package carries all five native images.
-
-## JVM, Spring Boot and Quarkus 3.0.0 from Maven Central
-
-Use JDK 17+ to run Gradle. The plain Runtime package retains its Java 8
-application baseline; native Windows ARM64 uses an ARM64 JDK 11+.
-From the Samples checkout, run either the Kotlin or Java example:
-
-```sh
-./gradlew -p coakka-runtime/jvm/registry-basic run
-./gradlew -p coakka-runtime/jvm/registry-basic runJava
-```
-
-The [registry-first build](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/jvm/registry-basic)
-resolves io.github.phuong-tran.coakka:runtime:3.0.0. Java 17 framework apps use
-spring-boot-starter:3.0.0 or quarkus-extension:3.0.0 from the same Maven group;
-start with the [Spring/Quarkus registry build](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/scenarios/customer-crud/framework-registry).
-Read the [3.0.0 changelog](CHANGELOG.md) before upgrading older callers.
-
-## Evaluating 3.0.0
-
-Other main-branch Runtime examples still use **local 3.0.0 candidates**.
-They require the matching artifact and catalog from the
-[candidate index](previews/README.md). Their registry releases remain separate.
-Android and Mojo are evaluation previews. Swift is a release package; only
-Swift on Windows ARM has preview scope for this train.
-
-## After the first reply
-
-Read the [integration guide](guides/runtime-integration-guide.md) to move the
-same lifecycle into your application. For default settings, monitor use and
-examples, read [monitoring](operations/runtime-monitoring.md).
+Local archive/feed tests are for evaluating a package, not a prerequisite for
+using the published packages above. Their instructions stay in the
+[evaluation guides](previews/README.md). HTTP Runtime and Logger use their own
+[get-started paths](../README.md).

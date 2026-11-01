@@ -41,7 +41,7 @@ across languages; matching version numbers are not required.
 | Question | Read first | Required implementation evidence |
 | --- | --- | --- |
 | What does CoAkka do? | [New To CoAkka](../../common/new-to-coakka.md) and [How It Works](../explanation/how-it-works.md) | No code generation yet. |
-| How do I install and start it? | The selected language README, [Current Packages](../../common/current-packages.md), and that language's `runtime/<language>/basic` sample | Use the exact package coordinate and lifecycle shown by the runnable sample. |
+| How do I install and start it? | The selected language README, [Current Packages](../../common/current-packages.md), and its [published first-run example](../getting-started.md) | Use the exact package coordinate and lifecycle shown by the runnable sample. |
 | How do services connect? | [Connection Strategies](../reference/connection-strategies.md) and [Runtime Integration Guide](runtime-integration-guide.md) | Preserve runtime defaults unless the exact connector exposes and the deployment requires another mode. |
 | How do I configure TLS or mTLS? | [TLS And mTLS](../reference/tls-and-mtls.md) | Keep credential loading and reload on application control flow; verify capability and structured apply results. |
 | How do I transfer a large immutable file? | [Runtime File Transfer](runtime-file-transfer.md) | Use a package containing File Lane, preserve both peers' terminal checks, and keep authorization in the application control plane. |
@@ -76,7 +76,7 @@ stronger level.
 
 The published runtime samples collectively demonstrate start, route, handler,
 request/reply, deadletter or failure observation, and close. Start with the
-selected language README under `runtime/` and use its basic sample as the
+[published first-run index](../getting-started.md) and use the selected sample as the
 identifier source; use a deadletter sample only where that lane lists one.
 
 ### Connection Strategy And TLS/mTLS
@@ -155,18 +155,18 @@ terminal outcomes.
 
 | Host lane | First runnable path | Boundary to preserve |
 | --- | --- | --- |
-| JVM/Kotlin or Java | `coakka-runtime/jvm/basic` or `coakka-runtime/jvm/java-basic` | One runtime owner per process; framework adapters may own startup for the app. |
-| Python | `coakka-runtime/python/basic` | Use the context manager or close explicitly during app shutdown. |
-| Node.js | `coakka-runtime/node/basic` | The Node process owns runtime lifecycle; do not move blocking control work onto request callbacks. |
-| Bun | `coakka-runtime/bun/basic` | Use the Bun package and its exported surface; do not substitute Node-only loader assumptions. |
-| Go | `coakka-runtime/go/basic` | Start one runtime host per process and defer close. |
-| C# | `coakka-runtime/csharp/basic` | Dispose the runtime owner and keep asynchronous waits off synchronous request paths. |
+| JVM/Kotlin or Java | `coakka-runtime/jvm/registry-basic` (separate Kotlin/Java commands) | One runtime owner per process; framework adapters may own startup for the app. |
+| Python | `coakka-runtime/python/registry-basic` | Use the context manager or close explicitly during app shutdown. |
+| Node.js | `coakka-runtime/node/registry-basic` | The Node process owns runtime lifecycle; do not move blocking control work onto request callbacks. |
+| Bun | `coakka-runtime/bun/registry-basic` | Use the Bun package and its exported surface; do not substitute Node-only loader assumptions. |
+| Go | `coakka-runtime/go/registry-basic` | Start one runtime host per process and defer close. |
+| C# | `coakka-runtime/csharp/registry-basic` | Dispose the runtime owner and keep asynchronous waits off synchronous request paths. |
 | Rust | `coakka-runtime/rust/basic` | Use the exact archive package and retain explicit result handling. |
-| Swift | `coakka-runtime/swift/basic` | Use the exact SwiftPM tag and check the platform evidence separately. |
+| Swift | `coakka-runtime/swift/registry-basic` | Use the exact SwiftPM tag and check the platform evidence separately. |
 | Zig | `coakka-runtime/zig/basic` | Follow the source package smoke and explicit lifecycle. |
 | Mojo | `coakka-runtime/mojo/basic` | Follow the source package smoke; do not invent a higher-level wrapper surface. |
 | Native C/C++ | `coakka-runtime/native/basic` and `runtime-test` | Follow the public C contract and explicit create/start/stop/destroy ordering. |
-| Electron | `coakka-runtime/electron/basic` | Renderer sends intent; Electron main owns the runtime and native resources. |
+| Electron | `coakka-runtime/electron/registry-basic` | Renderer sends intent; Electron main owns the runtime and native resources. |
 | Tauri | `coakka-runtime/tauri/intent-command` | WebView sends intent; the Rust app host owns runtime integration. |
 
 ## Generated Answer Checklist
@@ -193,8 +193,8 @@ Use a request shaped like this when asking a coding agent for integration code:
 
 ```text
 Integrate CoAkka into a <language/framework> service running on <OS/CPU>.
-Use the exact public package listed in docs/current-packages.md.
-Read docs/ai-assisted-integration.md, the selected runtime/<language>/README.md,
+Use the exact public package listed in docs/common/current-packages.md.
+Read docs/coakka-runtime/guides/ai-assisted-integration.md, the selected language README,
 and the feature guide before generating code. Preserve the demonstrated full
 lifecycle and report any missing language-specific evidence instead of
 inventing API names. The requested capability is

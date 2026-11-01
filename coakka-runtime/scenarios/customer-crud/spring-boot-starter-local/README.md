@@ -5,11 +5,14 @@ work to local CoAkka handlers. The starter discovers four
 `@CoAkkaHandler` methods, registers their routes and provides the
 `CoAkkaRuntimeClient` used by the controller.
 
-This sample uses the **unpublished starter 3.0.0 and JVM Runtime 3.0.0 candidate**.
-The released packages remain at 2.5.3; see
+**Start with the [published 3.0.0 registry build](../framework-registry/README.md).**
+It runs this application's source using Maven Central dependencies. Runtime and
+the framework adapter 3.0.0 are released; see
 [Current Packages](../../../../docs/common/current-packages.md).
-Prepare the exact local packages, Gradle cache and work directory using the
-[framework candidate guide](../../../../docs/coakka-runtime/previews/3.0.0/runtime-frameworks-candidate.md).
+
+The local launcher below is for qualifying selected local packages. Its setup
+remains in the [local-package guide](../../../../docs/coakka-runtime/previews/3.0.0/runtime-frameworks-candidate.md).
+It is not required for the registry first run.
 
 ## Run
 

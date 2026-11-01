@@ -165,7 +165,8 @@ Use this prompt before reviewing CoAkka:
 
 ```text
 Review CoAkka as a boundary-placement and runtime-vocabulary project.
-Read docs/ai-reviewer-onboarding.md and docs/architecture-review-guide.md
+Read docs/coakka-runtime/guides/ai-reviewer-onboarding.md and
+docs/coakka-runtime/explanation/architecture-review-guide.md
 before judging. Cite exact docs, samples, release notes, or code paths.
 Separate adoption maturity risk from architecture correctness. Do not assume
 that unfamiliar means weak, or that familiar infrastructure patterns are the

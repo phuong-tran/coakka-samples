@@ -1,11 +1,17 @@
-# CoAkka Runtime Evaluation And 3.0.0 Candidates
+# CoAkka Runtime Evaluation And Local-Package Checks
 
-C# `CoAkka.Runtime 3.0.0` is [published on NuGet](https://www.nuget.org/packages/CoAkka.Runtime/3.0.0); use its [normal first-run example](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/csharp/registry-basic). Python `coakka-v2-connector==3.0.0` is [published on PyPI](https://pypi.org/project/coakka-v2-connector/3.0.0/); use its [first-run example](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/python/registry-basic). Node.js, Bun and Electron 3.0.0 are [published on npm](../releases/2026-10-30-npm-node-bun-electron-runtime-3.0.0.md). Their local-archive guides below remain qualification paths; ordinary users should use the registry first-run apps. Go `/v3@v3.0.0` is [released on GitHub](../releases/2026-10-30-go-runtime-3.0.0-github.md). Swift 3.0.0 is [released on GitHub](../releases/2026-10-30-swift-runtime-3.0.0-github.md); Windows ARM64 alone remains its preview lane. Other Runtime 3.0.0 connectors remain **local candidates** until individually published.
-A candidate guide names a local qualified archive and its matching catalog.
-It does not make that file publicly downloadable. For an ordinary released
-installation, use [getting started](../getting-started.md).
+For a normal installation, start with the [published first-run examples](../getting-started.md).
+Runtime 3.0.0 is released for Node.js, Bun, Electron, Python, C#, Kotlin/Java,
+Go and Swift, together with the Spring Boot and Quarkus adapters.
+The [package ledger](../../common/current-packages.md) owns exact availability.
 
-| Host | Matching candidate guide |
+The guides below are for checking a selected local package, including an
+already-published version. They are not prerequisites for the published first
+runs. C/C++, Rust, Tauri and Zig retain their own release/evaluation status;
+Android and Mojo remain previews. Swift itself is released; Windows ARM64
+alone is its preview path.
+
+| Host | Local-package check |
 | --- | --- |
 | Node.js / Bun | [JavaScript](3.0.0/runtime-js-candidate.md) |
 | Electron | [Electron](3.0.0/runtime-electron-candidate.md) |

@@ -1,27 +1,38 @@
 # Node.js Runtime 3.0.0: First Run
 
-Use Node.js 22 or newer and `coakka-v2-connector-node@3.0.0`.
-See the [current package ledger](../../../docs/common/current-packages.md)
-for registry availability. Install the published package, or evaluate the exact
-local archive below for controlled qualification; a 2.x package cannot run this API.
+Send one request to an application handler and print its reply.
 
-From the Samples checkout:
+**You need:** Node.js 22 or later, npm and a [Samples checkout](../../../docs/coakka-runtime/getting-started.md#get-the-examples).
+This app uses the published npm package pinned in package.json.
 
-```sh
+## Run
+
+From the Samples repository root:
+
+~~~sh
 cd coakka-runtime/node/registry-basic
 npm install
 node main.mjs
-```
+~~~
 
-Expected output: `accepted-hello`. The app starts one host, registers a
-bytes handler, sends one request and awaits close. The installed package carries
-its matching Core and host adapters; no separate native setup is needed.
+Expected output:
 
-CPU, connection and monitor defaults stay owned by Core.
+~~~text
+accepted-hello
+~~~
 
-For local archive evaluation, copy this app to a fresh external directory and
-install the admitted tarball there with npm. Do not select native libraries from a source checkout.
-Local installation is not proof of registry availability.
+The app exits after closing Runtime. No separate service or Core installation
+is needed for this local example.
 
-[Runtime examples](../../README.md) ·
-[Integration guide](../../../docs/coakka-runtime/guides/runtime-integration-guide.md).
+## Read the code
+
+Open [main.mjs](main.mjs). It starts Runtime, names one local target, registers
+a handler that adds accepted- to the message, asks that target and awaits close
+in a finally block. Your application owns the handler.
+
+This is a one-process example. Next, try the
+[customer operation](../../../docs/coakka-runtime/guides/first-npm-smoke.md) or
+[choose another use case](../../../docs/coakka-runtime/guides/examples-and-use-cases.md).
+
+[Add Runtime to an application](../../../docs/coakka-runtime/guides/runtime-integration-guide.md) ·
+[Local-package evaluation](../../../docs/coakka-runtime/previews/README.md).

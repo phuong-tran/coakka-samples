@@ -1,6 +1,6 @@
 # Runtime Customer CRUD Scenarios
 
-This scenario track turns runtime v2 samples from protocol primitives into a
+This scenario track turns Runtime examples into a
 small web workflow that is easy to understand from any language background.
 
 The story is intentionally ordinary:
@@ -15,6 +15,17 @@ The story is intentionally ordinary:
 The goal is not to teach customer management. The goal is to make process,
 language, routing, request/reply, deadletter, and diagnostics visible through a
 workflow people already understand.
+
+## Start with a released package
+
+Use the [Spring Boot or Quarkus registry build](framework-registry/README.md)
+for a customer application on published Runtime 3.0.0. It gives exact commands,
+browser URLs, source files and how to stop the app.
+
+Other local, desktop and cross-process launchers below retain their own pinned
+or local-package requirements. They are not all registry-first 3.0.0 examples.
+For a smaller example in your own language, use the
+[first-run guide](../../../docs/coakka-runtime/getting-started.md).
 
 ## Contents
 

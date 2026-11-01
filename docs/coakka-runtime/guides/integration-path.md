@@ -1,147 +1,67 @@
 # CoAkka Sample Rollout Path
 
-This note gives a first-pass path through the samples. It is not a production
-rollout checklist; it is a reading and experimentation order for understanding
-the runtime boundary without opening every sample at once.
+Start with one language and one reply. Add a business workflow, another process
+or deployment tools when they help answer your next question.
 
 ## Step 1: See The Runtime Path
 
-Start with a container sample:
+[Choose your language's published first-run example](../getting-started.md).
+It starts one local Runtime, registers an application handler, sends a request,
+checks its reply and closes.
 
-```sh
-bash run.sh coakka-runtime containers node-python
-```
-
-Look for the visible shape:
-
-```text
-browser
-  -> web app
-  -> connector
-  -> CoAkka runtime
-  -> store process
-  -> runtime reply
-  -> web UI
-```
-
-The important observation is that the store is not exposed as a REST fallback
-for the web service. Business traffic crosses the runtime path.
+No container setup is needed for this step. The point is to recognize your own
+application code before introducing a larger deployment.
 
 ## Step 2: Read One Basic Sample
 
-Run the smallest runtime sample in a language you know:
+Read the source named by that example's README. Find:
 
-```sh
-bash run.sh coakka-runtime jvm basic
-bash run.sh coakka-runtime python basic
-bash run.sh coakka-runtime node basic
-bash run.sh coakka-runtime go basic
-```
-
-In the code, find these five pieces:
-
-| Piece | What it answers |
+| Piece | Question |
 | --- | --- |
-| start spec | What process am I, what route snapshot do I start with, and what queue policy do I use? |
-| route target | Which capability name should runtime route to? |
-| local handler registration | Which target does this process actually own? |
-| typed ask/event | What work is submitted through runtime? |
-| stats/deadletters | What happened after delivery? |
+| Start | Where does this application create Runtime? |
+| Target and handler | What work is named, and which function owns it? |
+| Request and reply | What does the caller submit and receive? |
+| Failure handling | What happens if the call or close fails? |
+| Close | Where does the application stop its Runtime? |
 
-That is the smallest useful CoAkka model.
+Use the host language's normal lifecycle. Python's context manager, C#'s
+await-using, Node/Bun's awaited close and Go/Swift error handling express the
+same responsibilities differently.
 
 ## Step 3: Observe Failure Semantics
 
-Run one deadletter sample:
+A successful reply is only the first case. In your application, decide how to
+report a missing target, a timeout, refused work and shutdown.
 
-```sh
-bash run.sh coakka-runtime jvm deadletter
-bash run.sh coakka-runtime python deadletter
-```
-
-The point is not to make failure disappear. The point is to make delivery
-failure visible as runtime vocabulary: target, generation, reason, and matched
-pending request.
+The [integration guide](runtime-integration-guide.md) explains those choices.
+Older deadletter wrappers and local evaluation scripts retain their own package
+requirements; they are not automatically a published 3.0.0 recipe.
 
 ## Step 4: Understand Route Snapshots
 
-Run the route reload sample when you want to see the apply semantics directly:
+A target names work; routes say where it can be handled. Begin with one local
+handler. When another process owns it, configure that process's endpoint and
+keep the application request/reply contract explicit.
 
-```sh
-bash run.sh coakka-runtime python hot-reload
-```
-
-Most applications can start with one route snapshot from platform config and
-change it through rollout. This sample exists to show why route generation
-exists when live route changes are needed:
-
-- a newer route snapshot can be applied
-- a stale snapshot is rejected
-- an invalid snapshot does not replace the active route table
-- diagnostics report the active generation
+Use [the message and routing guide](../explanation/runtime-message-and-routing-model.md)
+when that change becomes relevant. Route reload, custom policies and
+deployment topology can wait until you need them.
 
 ## Step 5: Move To A Real Workflow
 
-Run a local customer CRUD scenario:
+[Choose an example by use case](examples-and-use-cases.md). The Node.js customer
+walkthrough and Spring Boot/Quarkus registry build use released 3.0.0 packages.
+The framework application lets you create, list, update and delete customers.
 
-```sh
-bash run.sh scenario customer-crud spring-boot-starter-local dev
-```
+## Step 6: Add Processes And Deployment
 
-This scenario keeps HTTP at the browser/API edge and moves customer
-work onto local runtime targets.
+[Process and language examples](examples-and-use-cases.md#work-across-processes-and-languages)
+state their exact versions and prerequisites. The existing Node-to-Python
+container demonstration is a historical 1.x example, not the current 3.0.0
+installation path.
 
-If you want explicit route and handler wiring instead of annotation-based
-adapter help, read:
+Read [incremental adoption](../explanation/incremental-adoption.md) and
+[production readiness](../operations/production-readiness.md) when planning
+deployment. A sample's happy-path result is not a production capacity claim.
 
-```text
-coakka-runtime/scenarios/customer-crud/spring-boot-single-process
-```
-
-## Step 6: Cross A Process Or Language Boundary
-
-After the local workflow is clear, run a cross-process customer scenario:
-
-```sh
-bash run.sh scenario customer-crud spring-boot-spring-boot dev
-bash run.sh scenario customer-crud spring-boot-node dev
-bash run.sh scenario customer-crud spring-boot-go dev
-```
-
-The web process still owns browser/API HTTP. The store process owns the
-customer target. The business call between them stays runtime-only.
-
-## Step 7: Add An Optional Runtime Capability Only When Published
-
-After the base runtime path is clear, read [Runtime Addons](runtime-addons.md)
-when the app host needs a reusable external protocol or integration workflow.
-An addon composes with Runtime; it does not become a new core lane or arrive in
-every runtime package.
-
-Check `artifacts/public-artifacts.tsv` before writing imports or install
-commands. Eleven artifact-source addons are published at native
-`1.1.0+d1032f6d`, and SFTP is published at replacement native
-`1.2.0+88b9a047`. They remain outside connector packages and currently expose
-native C ABIs only. Addon-specific language connectors may follow when
-demonstrated demand justifies their platform, packaging, testing, and
-maintenance cost; they are not part of the current release contract:
-
-```sh
-bash run.sh coakka-runtime addons https
-bash run.sh coakka-runtime addons sftp
-```
-
-Contributors can still run `bash run.sh source-candidate` to build the current
-Core source and test the next package candidate.
-
-## Step 8: Read Production-Facing Notes
-
-After the samples make sense, read:
-
-- [runtime-integration-guide.md](runtime-integration-guide.md)
-- [production-readiness.md](../operations/production-readiness.md)
-- [containerized-runtime.md](../operations/containerized-runtime.md)
-- [qna.md](../reference/qna.md)
-
-Those notes explain runtime start specs, route snapshots, target/source naming,
-container identity, and common positioning questions.
+[Back to first run](../getting-started.md).

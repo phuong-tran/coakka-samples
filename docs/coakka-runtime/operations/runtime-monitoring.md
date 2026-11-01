@@ -5,7 +5,7 @@ Kotlin is used for the example, but the same choices and usage steps apply to
 other languages through their own connector APIs.
 
 The defaults below describe Core's current startup settings. The Kotlin
-example uses the **unpublished JVM 3.0.0 candidate**.
+example uses the **published JVM Runtime 3.0.0 API**.
 For an older released package, follow that package's included guide; its
 defaults and API names may differ. See [Current Packages](../../common/current-packages.md)
 when choosing a published version.

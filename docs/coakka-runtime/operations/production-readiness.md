@@ -126,7 +126,8 @@ operation is safe to retry and how to prevent retry loops from amplifying load.
 
 ## Suggested Rollout Path
 
-1. Run one container sample and one language basic sample.
+1. Run a [published first-run example](../getting-started.md) in your language,
+   then choose a business workflow and its exact package requirements.
 2. Read the [Runtime Glossary](../reference/runtime-glossary.md) until `target`,
    `envelope`, `payload identity`, `deadletter`, and `generation` are clear.
 3. Wire one bounded application workflow through a local runtime target.

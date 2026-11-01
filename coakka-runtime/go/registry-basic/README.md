@@ -1,16 +1,37 @@
-# Go 3.0.0 first run
+# Go Runtime 3.0.0: First Run
 
-Use Go 1.22.12+ and a C11 cgo compiler; native Windows ARM64 uses Go 1.25.5
-with its matching ARM64 C compiler.
+Send one request to a Go handler and print its reply.
 
-```sh
+**You need:** Go 1.22.12 or later, a C compiler and a
+[Samples checkout](../../../docs/coakka-runtime/getting-started.md#get-the-examples).
+Native Windows ARM64 uses Go 1.25.5 and a matching ARM64 C compiler.
+
+## Run
+
+From the Samples repository root:
+
+~~~sh
 cd coakka-runtime/go/registry-basic
 go run .
-```
+~~~
 
-Expected output: `accepted-hello`. This app installs
-`github.com/phuong-tran/coakka-runtime-go/v3@v3.0.0` through the normal module
-workflow, starts one host and preserves request/close errors. The module carries
-Core and its five platform images. CPU/connection/monitor defaults stay Core-owned.
-See [current packages](../../../docs/common/current-packages.md) and
-[the integration guide](../../../docs/coakka-runtime/guides/runtime-integration-guide.md).
+Expected output:
+
+~~~text
+accepted-hello
+~~~
+
+Go resolves the exact public /v3 module declared in [go.mod](go.mod).
+No separate Core installation is needed.
+
+## Read the code
+
+Open [main.go](main.go). It starts a local host, registers a handler, submits
+a request and checks its reply. Deferred close preserves cleanup errors
+alongside any operation error.
+
+This is a one-process example. [Choose a use case](../../../docs/coakka-runtime/guides/examples-and-use-cases.md)
+or [integrate the same steps into your application](../../../docs/coakka-runtime/guides/runtime-integration-guide.md).
+
+[Platform and build requirements](../../../docs/coakka-runtime/reference/runtime-package-platform-evidence.md) ·
+[Local-module evaluation](../../../docs/coakka-runtime/previews/README.md).

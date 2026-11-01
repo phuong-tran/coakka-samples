@@ -1,19 +1,28 @@
 # CoAkka Runtime: Guides
 
-[Start with one example](../getting-started.md) or choose the task below.
+Choose the task you want to complete. Start with your own language's code.
 
-- [AI-Assisted Integration](ai-assisted-integration.md)
-- [CoAkka AI Reviewer Onboarding](ai-reviewer-onboarding.md)
-- [CoAkka Quarkus](coakka-quarkus.md)
-- [CoAkka Spring Boot](coakka-spring-boot.md)
-- [First npm Smoke](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/guides/first-npm-smoke.md)
-- [CoAkka Sample Rollout Path](integration-path.md)
-- [Runtime Addons](runtime-addons.md)
-- [Runtime Cluster Routing](runtime-cluster-routing.md)
-- [Runtime File Transfer](runtime-file-transfer.md)
-- [Runtime Integration Guide](runtime-integration-guide.md)
-- [Runtime Streaming](runtime-streaming.md)
-- [WebSocket Integration With CoAkka](runtime-websocket-integration.md)
-- [Two-Machine Linux Walkthrough](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/guides/two-machine-linux.md)
+| Task | Guide |
+| --- | --- |
+| Get my first reply | [First run by language](../getting-started.md) |
+| Find an example for my application | [Examples and use cases](examples-and-use-cases.md) |
+| Add Runtime to an existing application | [Integration guide](runtime-integration-guide.md) |
+| Build a Spring Boot or Quarkus application | [Spring Boot](coakka-spring-boot.md) · [Quarkus](coakka-quarkus.md) |
+| Try a customer operation in Node.js without cloning Samples | [Node.js customer walkthrough](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/guides/first-npm-smoke.md) |
+| Transfer a file or stream data | [Files](runtime-file-transfer.md) · [Streams](runtime-streaming.md) |
+| Connect browser-facing communication | [WebSocket integration](runtime-websocket-integration.md) |
+| Add an optional integration | [Runtime addons](runtime-addons.md) |
 
-[Runtime documentation](../README.md).
+## After the first example
+
+[The learning path](integration-path.md) connects a first reply to a business
+workflow and application integration. [Defaults and monitoring](../operations/runtime-monitoring.md)
+explain which settings to leave alone and when diagnostics help.
+
+## Deployment and deeper review
+
+- [Routing across services](runtime-cluster-routing.md).
+- [Two-machine Linux walkthrough](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/guides/two-machine-linux.md): follow its own pinned package and prerequisites.
+- [AI-assisted integration](ai-assisted-integration.md) and [reviewer onboarding](ai-reviewer-onboarding.md).
+
+[Runtime documentation](../README.md) · [All products](../../README.md).

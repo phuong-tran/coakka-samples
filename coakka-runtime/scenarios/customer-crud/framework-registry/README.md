@@ -1,25 +1,52 @@
-# Spring Boot and Quarkus — Maven Central first run
+# Spring Boot And Quarkus: Customer Application
 
-Use JDK17+ from the coakka-samples checkout. This dedicated build resolves
-Runtime, Spring Boot starter and Quarkus adapter3.0.0 from Maven Central.
-It reuses the customer CRUD sources and does not require a local candidate
-catalog, source mirror or separately installed native library.
+Use published Runtime and framework packages **3.0.0** from Maven Central.
+Choose one application, create a customer and see the list change.
 
-Run one application at a time on the default HTTP port:
+**You need:** JDK 17 and a [Samples checkout](../../../../docs/coakka-runtime/getting-started.md#get-the-examples).
+These builds reuse the application sources in the adjacent Spring/Quarkus folders.
 
-    ./gradlew -p coakka-runtime/scenarios/customer-crud/framework-registry :runtime:scenarios:customer-crud:spring-boot-starter-local:customer-app:bootRun
+## Spring Boot
 
-Or:
+From the Samples repository root:
 
-    ./gradlew -p coakka-runtime/scenarios/customer-crud/framework-registry :runtime:scenarios:customer-crud:quarkus-local:customer-app:quarkusDev
+~~~sh
+./gradlew -p coakka-runtime/scenarios/customer-crud/framework-registry :runtime:scenarios:customer-crud:spring-boot-starter-local:customer-app:bootRun
+~~~
 
-See the [Spring application](../spring-boot-starter-local/README.md) or
-[Quarkus application](../quarkus-local/README.md) for the HTTP routes and business
-flow. This build supplies public registry dependencies; the original local-package
-launcher remains a separate reproduction path. Stop the foreground app with Ctrl-C.
+Open http://localhost:8082. Create, edit and delete a customer, and check
+the updated list. Stop the foreground app with Ctrl-C.
 
-Spring owns HTTP and bean lifecycle; Quarkus owns HTTP and CDI lifecycle. The
-application owns customer data and handlers. CoAkka supplies the shared runtime;
-AUTO/MULTIPLEXED and monitor-off defaults remain owned by Core. Plain JVM Java 8
-and framework Java 17 are separate application baselines. This is normal JVM/CDI
-integration and does not establish native-image support.
+## Quarkus
+
+From the Samples repository root:
+
+~~~sh
+./gradlew -p coakka-runtime/scenarios/customer-crud/framework-registry :runtime:scenarios:customer-crud:quarkus-local:customer-app:quarkusDev
+~~~
+
+Open http://localhost:8083 and try the same customer workflow.
+Stop the foreground app with Ctrl-C.
+
+In Windows PowerShell, replace ./gradlew with .\gradlew.bat in either command.
+Run one example at a time and use an available port; the sample does not stop
+another application that already owns a port.
+
+## Read the code
+
+| Application | Business handler | Application guide |
+| --- | --- | --- |
+| Spring Boot | [CustomerCapabilityHandlers.kt](../spring-boot-starter-local/customer-app/src/main/kotlin/coakka/samples/runtime/scenarios/customer/starterlocal/CustomerCapabilityHandlers.kt) | [Spring source and behavior](../spring-boot-starter-local/README.md) |
+| Quarkus | [CustomerCapabilityHandler.kt](../quarkus-local/customer-app/src/main/kotlin/coakka/samples/runtime/scenarios/customer/quarkuslocal/CustomerCapabilityHandler.kt) | [Quarkus source and behavior](../quarkus-local/README.md) |
+
+The framework owns HTTP and application lifetime. The application owns the
+customer data and handlers; Runtime connects the calls to that work. The store
+is in-memory teaching data, not a persistence layer.
+
+CPU, connection and monitoring settings can stay at their defaults.
+No local CoAkka Maven repository or separate Core installation is required.
+The local-package launchers in adjacent folders are for qualification and
+remain separate from these published-package commands.
+
+[Choose another use case](../../../../docs/coakka-runtime/guides/examples-and-use-cases.md) ·
+[Runtime integration](../../../../docs/coakka-runtime/guides/runtime-integration-guide.md).
