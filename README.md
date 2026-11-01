@@ -14,6 +14,8 @@ still owns its rules and data. **HTTP Runtime** handles HTTP services, while
 **Logger** records application events with bounded storage. Each product can
 be adopted independently and has its own packages and version.
 
+Explore the products and demo on the [CoAkka website](https://coakka-ecosystem-preview.vivid-plume-2955.chatgpt.site/).
+
 ## Try the Node–Python web demo
 
 Build a basket in your browser. Node.js sends it to a separate Python process,
