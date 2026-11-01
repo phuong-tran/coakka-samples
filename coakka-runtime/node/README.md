@@ -14,6 +14,9 @@ host adapters. The basic/deadletter wrappers instead perform
 [exact local-archive qualification](../../docs/coakka-runtime/previews/3.0.0/runtime-js-candidate.md).
 Use the [package ledger](../../docs/common/current-packages.md) for versions.
 
+Next, try [Node.js checkout with Python pricing](../scenarios/order-quote-node-python/README.md):
+a cart and quote across two processes using the published 3.0.0 packages.
+
 ## Historical 2.x walkthrough
 
 The recordings and integration snippets below describe npm 2.5.3 and Core

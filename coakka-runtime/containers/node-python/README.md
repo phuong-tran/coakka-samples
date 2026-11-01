@@ -4,7 +4,8 @@
 package line. Keep their original code and image versions together. For the
 current published 3.0.0 packages, start with
 [the language-first guide](../../../docs/coakka-runtime/getting-started.md).
-This container walkthrough is an optional later example, not the first 3.0.0 install.
+For a current two-process example, run [Node.js checkout with Python pricing](../../scenarios/order-quote-node-python/README.md)
+using published 3.0.0 packages, without containers. This page retains the historical container walkthrough.
 
 This is the first container runtime sample. It runs two containers:
 

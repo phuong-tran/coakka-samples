@@ -31,6 +31,7 @@ examples show that distinction:
 
 | Example | What you see | Version/status |
 | --- | --- | --- |
+| [Node.js checkout to Python pricing](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/scenarios/order-quote-node-python/README.md) | Node sends a cart; a separate Python process owns prices and shipping. Two terminals on one computer. | Published npm/PyPI 3.0.0; no container required. |
 | [Node.js web to Python store](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/containers/node-python) | Two containers; a browser action reaches work owned by the Python process. | Historical published 1.x images; Docker/Podman required. Keep the image versions from its README. |
 | [Customer scenario catalog](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/scenarios/customer-crud) | Local, desktop and cross-process application shapes. | Only the dedicated framework registry build is the published 3.0.0 launcher; other launchers retain their own pinned/local package requirements. |
 | [Two-machine Linux walkthrough](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/guides/two-machine-linux.md) | A web process and a store process on separate Linux machines. | Follow the walkthrough's pinned source/packages and network requirements. |

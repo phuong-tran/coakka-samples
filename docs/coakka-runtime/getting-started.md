@@ -52,6 +52,9 @@ The application starts one local Runtime, registers a handler, sends a request
 to that handler and closes cleanly. Read those steps in your language's source.
 This first run is intentionally in one process; choose a larger example next.
 
+Try [Node.js checkout with Python pricing](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/scenarios/order-quote-node-python/README.md)
+for a two-terminal cart-and-quote example using the published 3.0.0 packages.
+
 ## Choose your next step
 
 | I want to… | Continue here |

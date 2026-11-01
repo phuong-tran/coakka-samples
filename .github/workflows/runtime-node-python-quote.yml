@@ -1,0 +1,49 @@
+name: runtime-node-python-quote
+
+on:
+  push:
+    branches: [main, runtime-native-candidate-20261025]
+    paths:
+      - ".github/workflows/runtime-node-python-quote.yml"
+      - "coakka-runtime/scenarios/order-quote-node-python/**"
+  pull_request:
+    paths:
+      - ".github/workflows/runtime-node-python-quote.yml"
+      - "coakka-runtime/scenarios/order-quote-node-python/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  published-package-demo:
+    name: Node–Python quote (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022, macos-15]
+    defaults:
+      run:
+        working-directory: coakka-runtime/scenarios/order-quote-node-python
+        shell: bash
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22.0.0"
+          package-manager-cache: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Install exact published packages
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          python -m pip install -r requirements.txt
+      - name: Run business and cross-process correctness tests
+        run: |
+          export PYTHON="$(python -c 'import sys; print(sys.executable)')"
+          npm test

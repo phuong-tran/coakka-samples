@@ -1,0 +1,16 @@
+{
+  "name": "coakka-node-python-order-quote-demo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "quote": "node client.mjs",
+    "test": "node --test tests/integration.test.mjs"
+  },
+  "dependencies": {
+    "coakka-v2-connector-node": "3.0.0"
+  }
+}

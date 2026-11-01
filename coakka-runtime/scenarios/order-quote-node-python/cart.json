@@ -1,0 +1,13 @@
+{
+  "cartId": "cart-1001",
+  "items": [
+    {
+      "sku": "tea",
+      "quantity": 2
+    },
+    {
+      "sku": "coffee",
+      "quantity": 1
+    }
+  ]
+}

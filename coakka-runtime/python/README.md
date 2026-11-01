@@ -13,6 +13,9 @@ adapter are included in the wheel. The basic/deadletter/hot-reload runners
 instead perform [exact local-wheel qualification](../../docs/coakka-runtime/previews/3.0.0/runtime-python-candidate.md).
 The [package ledger](../../docs/common/current-packages.md) records current versions.
 
+Next, try [Node.js checkout with Python pricing](../scenarios/order-quote-node-python/README.md):
+a cart and quote across two processes using the published 3.0.0 packages.
+
 ## Historical 2.x walkthrough
 
 The snippets/recordings below describe `coakka-v2-connector==2.5.3` and Core
