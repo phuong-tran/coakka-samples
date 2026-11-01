@@ -1,16 +1,20 @@
 # CoAkka Runtime Samples
 
+[Choose your language](#first-run-choose-your-language) · [Use cases](#choose-a-use-case) · [Documentation](../docs/coakka-runtime/README.md) · [Packages](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-runtime/README.md) · [All products](../README.md)
+
 **Application-owned work across languages and processes.**
 
-CoAkka Runtime is a **polyglot, cross-platform distributed runtime**, backed by
-a **shared native core**. Name the work your application owns, register its
-handler and ask for a result. The handler can live in the same process or in a
-different language/process; business rules remain application code.
+CoAkka Runtime is a **polyglot, cross-platform distributed runtime** backed by a
+**shared native core**. Its native-backed language packages connect named pieces
+of application work while your application keeps its business rules and data.
 
-An API may need an image processed, a customer stored or a device reading
-fetched. Runtime gives that work a stable target name while your application
-chooses where the handler lives. Read [the story](../docs/coakka-runtime/explanation/coakka-story.md)
-for the model, or run one example below.
+For example, a Node.js checkout can ask a Python pricing function for a quote.
+Runtime carries the request and reply; Python calculates the price. Start with
+one local example in your language, then try a two-process application.
+
+Read [the CoAkka story](../docs/coakka-runtime/explanation/coakka-story.md) for
+why the work belongs to the application. The normal connector package includes
+its matching native Runtime; no separate Core installation is needed.
 
 ## First run: choose your language
 

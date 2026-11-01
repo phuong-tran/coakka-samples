@@ -1,46 +1,39 @@
 # CoAkka HTTP Runtime Samples
 
-**Polyglot applications should not require polyglot HTTP infrastructure.**
+[Choose your language](#languages) · [Next steps](#after-one-request) · [Documentation](../docs/coakka-http-runtime/README.md) · [Downloads](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/README.md) · [All products](../README.md)
 
-CoAkka HTTP Runtime is a **cross-platform HTTP server and client** with a
-**shared native HTTP core**. Its native-backed packages expose that core
-through familiar APIs in each supported language.
+**HTTP services in your language. One shared native core.**
 
-A team may build an API in Go, an image endpoint in Python and a web service
-in TypeScript. Maintaining a separate HTTP stack for each language repeats
-decisions about request limits, timeouts, streaming and shutdown.
+CoAkka HTTP Runtime is a **polyglot, cross-platform HTTP server and client**
+backed by a **shared native HTTP core**. Build APIs, serve files or stream
+responses through familiar, native-backed language APIs.
 
-CoAkka HTTP Runtime supplies a shared HTTP engine through language-specific
-packages. Each service runs its own instance, and handlers stay ordinary
-application functions in the language the team already uses. Teams can reuse
-their understanding of HTTP behavior and adopt shared fixes through package
-updates.
+A Python upload service and a Go API can use the same HTTP core while keeping
+their own handlers. Each application runs its own instance and owns its
+business rules. HTTP Runtime handles the HTTP work around those handlers.
 
-Use it for HTTP APIs, web frontends, file delivery, streams and WebSocket
-sessions. CoAkka Runtime's named application work is a separate product; a
-handler can use both when the application needs them. Read the
-[HTTP Runtime introduction](../docs/coakka-http-runtime/explanation/introduction.md)
+HTTP Runtime is independent of CoAkka Runtime, which connects named
+application work across processes. Read the
+[HTTP introduction](../docs/coakka-http-runtime/explanation/introduction.md)
 for the fuller story.
 
-Choose one language below, run its server and send one request. Each Start here
-page gives the tools you need, the package archive and the run command. You do
-not need all language toolchains to try one example.
-
-The examples use checksum-pinned HTTP Runtime 1.0.0 archives from
-[Publish](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime).
-They do not rebuild a private Core or connector. This HTTP service product is
-separate from CoAkka Runtime's distributed application model.
+Choose one language below, install its matching **HTTP Runtime 1.0.0 archive**,
+start the server and send one request. Each guide supplies prerequisites,
+commands, the expected response and shutdown steps. You only need the tools for
+your chosen language. [Archives are available in Publish](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/README.md).
 
 ## Languages
 
-| Language and host | Start here | Details and evidence |
+Follow the guide's exact language version and platform requirements.
+
+| Your language | Setup and first request | Runnable example |
 | --- | --- | --- |
-| C11 | [C integration](../docs/coakka-http-runtime/c/integration.md) | [C sample](c/README.md) |
-| C++20 | [C++ integration](../docs/coakka-http-runtime/cpp/integration.md) | [C++ sample](cpp/README.md) |
-| Go 1.23 or newer | [Go integration](../docs/coakka-http-runtime/go/integration.md) | [Go sample](go/README.md) |
-| JVM: Kotlin and Java; Java 8 bytecode, JDK 17 sample compilation | [JVM integration](../docs/coakka-http-runtime/kotlin/integration.md) | [Kotlin and Java samples](kotlin/README.md) |
-| Python 3.11 or newer | [Python integration](../docs/coakka-http-runtime/python/integration.md) | [Python sample](python/README.md) |
-| TypeScript on Node.js 22+ and Bun 1.2.22+ | [Node/Bun integration](../docs/coakka-http-runtime/typescript/integration.md) | [TypeScript sample](typescript/README.md) |
+| C | [C integration](../docs/coakka-http-runtime/c/integration.md) | [C sample](c/README.md) |
+| C++ | [C++ integration](../docs/coakka-http-runtime/cpp/integration.md) | [C++ sample](cpp/README.md) |
+| Go | [Go integration](../docs/coakka-http-runtime/go/integration.md) | [Go sample](go/README.md) |
+| Kotlin / Java | [JVM integration](../docs/coakka-http-runtime/kotlin/integration.md) | [Kotlin and Java samples](kotlin/README.md) |
+| Python | [Python integration](../docs/coakka-http-runtime/python/integration.md) | [Python sample](python/README.md) |
+| Node.js / Bun / TypeScript | [Node/Bun integration](../docs/coakka-http-runtime/typescript/integration.md) | [TypeScript sample](typescript/README.md) |
 
 ## After one request
 
