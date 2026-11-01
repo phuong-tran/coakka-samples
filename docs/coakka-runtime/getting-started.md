@@ -30,7 +30,7 @@ callers against the new API.
 
 ## Python Runtime 3.0.0 from PyPI
 
-Use GIL-enabled CPython3.11 or newer and the
+Use GIL-enabled CPython 3.11 or newer and the
 [matching Python first-run example](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/python/registry-basic):
 
 ```sh
@@ -86,6 +86,23 @@ Add product `CoAkkaRuntime` to the application target, or use
 The dynamic library and resource bundle deploy together. Preserve both operation
 and throwing-close failures when migrating 2.x applications. Windows ARM64 alone
 is preview; the package carries all five native images.
+
+## JVM, Spring Boot and Quarkus 3.0.0 from Maven Central
+
+Use JDK 17+ to run Gradle. The plain Runtime package retains its Java 8
+application baseline; native Windows ARM64 uses an ARM64 JDK 11+.
+From the Samples checkout, run either the Kotlin or Java example:
+
+```sh
+./gradlew -p coakka-runtime/jvm/registry-basic run
+./gradlew -p coakka-runtime/jvm/registry-basic runJava
+```
+
+The [registry-first build](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/jvm/registry-basic)
+resolves io.github.phuong-tran.coakka:runtime:3.0.0. Java 17 framework apps use
+spring-boot-starter:3.0.0 or quarkus-extension:3.0.0 from the same Maven group;
+start with the [Spring/Quarkus registry build](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/scenarios/customer-crud/framework-registry).
+Read the [3.0.0 changelog](CHANGELOG.md) before upgrading older callers.
 
 ## Evaluating 3.0.0
 

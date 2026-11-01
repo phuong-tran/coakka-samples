@@ -9,7 +9,7 @@ supplies its handlers and business rules; Runtime manages delivery and outcomes.
 ## Start
 
 [Choose a language and run one example](getting-started.md). The guide separates
-published packages, including C#, Python, Node.js/Bun/Electron and Go/Swift 3.0.0, from other local 3.0.0 candidates so code and packages match.
+published packages, including C#, Python, Node.js/Bun/Electron, Go/Swift and JVM/Spring Boot/Quarkus 3.0.0, from other local 3.0.0 candidates so code and packages match.
 Then [integrate Runtime into an application](guides/runtime-integration-guide.md).
 
 ## Add a capability
@@ -36,6 +36,7 @@ Use [Client and Inspect](operations/README.md) to inspect a participant, or
 - [Understand the model and adoption choices](explanation/README.md).
 - [Find configuration, platforms and vocabulary](reference/README.md).
 - [Browse all task guides](guides/README.md).
+- [Read the changelog and migration notes](CHANGELOG.md).
 - [Read release history](releases/README.md) or [evaluate the 3.0.0 candidate](previews/README.md).
 
 Runtime versions independently from [HTTP Runtime](../coakka-http-runtime/README.md)

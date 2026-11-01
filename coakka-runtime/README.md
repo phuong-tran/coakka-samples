@@ -29,8 +29,8 @@ Run one request/reply example in your language, then add the capabilities you ne
 **Version choice comes first.** C# `CoAkka.Runtime 3.0.0` (NuGet) and Python
 `coakka-v2-connector==3.0.0` (PyPI) are published. Node.js, Bun and Electron
 `3.0.0` are also published on npm. Go `/v3@v3.0.0` and Swift 3.0.0 are released on GitHub.
-Other main-branch3.0.0 examples still
-require their local candidate packages.
+JVM Runtime, Spring Boot and Quarkus 3.0.0 are published on Maven Central.
+Other main-branch 3.0.0 lanes still require their local candidate packages.
 The remaining published-example links below point to a frozen 2.x snapshot:
 use its complete code, runner and pinned dependencies together. Follow the
 [package ledger](../docs/common/current-packages.md) for released coordinates.
@@ -38,7 +38,7 @@ use its complete code, runner and pinned dependencies together. Follow the
 | Language | Use a published package | Evaluate the current candidate |
 | --- | --- | --- |
 | C/C++ | [Published example](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/native) | [3.0.0 example](native/README.md) |
-| Kotlin / Java | [Published example](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/jvm) | [3.0.0 example](jvm/README.md) |
+| Kotlin / Java | [Maven Central 3.0.0 first run](jvm/registry-basic/README.md) | [3.0.0 example](jvm/README.md) |
 | Node.js | [npm 3.0.0 first run](node/registry-basic/README.md) | [Local-archive qualification](node/README.md) |
 | Bun | [npm 3.0.0 first run](bun/registry-basic/README.md) | [Local-archive qualification](bun/README.md) |
 | Electron | [npm 3.0.0 first run](electron/registry-basic/README.md) | [Local-archive qualification](electron/README.md) |
@@ -68,3 +68,5 @@ with their own prerequisites. They are not registry installation paths.
 
 For deployment planning and deeper reading, use the [Runtime documentation](../docs/coakka-runtime/README.md).
 [Choose another product](../README.md).
+
+Read the [Runtime 3.0.0 changelog](../docs/coakka-runtime/CHANGELOG.md) before upgrading older application code.

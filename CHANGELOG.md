@@ -5,6 +5,20 @@ surface. It is not a repository release ledger. Artifact versions, manifests,
 and checksums live in the versioned
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) warehouse.
 
+## 3.0.0 — 2026-10-30
+
+- Added registry-first Runtime 3.0.0 entrypoints for Java/Kotlin, Spring Boot,
+  Quarkus, Node.js, Bun, Electron, Python, C#, Go and Swift, reusing ordinary
+  application handlers and business data. No separate Core installation is
+  required for the normal package path.
+- Grouped product navigation and documentation by CoAkka Runtime, HTTP Runtime
+  and Logger, with shared guidance in docs/common. Historical pinned examples
+  retain their named dependencies and scope.
+- See the [Runtime 3.0.0 changelog](docs/coakka-runtime/CHANGELOG.md) for breaking
+  changes, migration, Core defaults, platform scope and actual release receipts.
+  Select matching source and package versions; other candidate/preview lanes
+  are not published by this entry.
+
 ## 2026-08-21
 
 - Expanded the repository front door so Node.js, Bun, and Electron have
