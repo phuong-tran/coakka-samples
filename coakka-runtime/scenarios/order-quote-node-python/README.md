@@ -86,7 +86,8 @@ Press Enter or Ctrl+C to stop.
 ~~~
 
 Keep this terminal open. The ready line appears after Runtime has started and
-the pricing handler has been registered.
+the pricing handler has been registered. Run one pricing service on this port;
+use another port if you start another service.
 
 ## 3. Terminal B: request a quote with Node
 

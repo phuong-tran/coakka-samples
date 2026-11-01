@@ -175,11 +175,18 @@ test("handler exception stays a failed request; bad replies fail at app boundary
   }
 });
 
-test("port collision fails without disturbing the existing service", options, async t => {
-  const s = await service(t);
-  const second = child(python, ["-B", "pricing_service.py", "--port", String(s.port)]);t.after(() => stop(second, true));
-  assert.equal((await second.exited).code, 1);
-  await withQuoteClient(s.port, async c => assert.equal((await c.quote(cart)).totalCents, 4800));
+test("OS-reserved port is refused without disturbing its owner", options, async t => {
+  const port = await freePort();
+  // Windows allows shared binds unless the owner requests exclusivity. Exercise
+  // actual OS refusal instead of assuming two Runtime listeners must conflict.
+  const owner = child(python, ["-B", "tests/port_owner.py", String(port)]);
+  t.after(() => stop(owner));
+  await line(owner, `Port reserved at 127.0.0.1:${port}`);
+  const second = child(python, ["-B", "pricing_service.py", "--port", String(port)]);
+  t.after(() => stop(second, true));
+  assert.equal((await second.exited).code, 1, second.output + second.errors);
+  assert.equal(owner.proc.exitCode, null);
+  assert.equal((await stop(owner)).code, 0);
 });
 
 test("three service epochs close cleanly and EOF stops the worker", options, async t => {
