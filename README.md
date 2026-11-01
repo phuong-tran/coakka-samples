@@ -2,19 +2,20 @@
 
 <p align="center"><img src="docs/common/assets/brand/coakka-logo.png" alt="CoAkka" width="480"></p>
 
+[Website](https://coakka-ecosystem-preview.vivid-plume-2955.chatgpt.site/) · [Get started](#choose-what-you-want-to-build) · [Demo](#try-the-nodepython-web-demo) · [Documentation](docs/README.md)
+
 **Shared native cores. Familiar APIs across languages.**
 
-CoAkka is a **polyglot, cross-platform ecosystem**. Its central product,
-**CoAkka Runtime**, is a **native-backed distributed runtime for
-application-owned work** across languages, processes and hosts.
+CoAkka is a **polyglot, cross-platform ecosystem** built on shared native cores.
+**CoAkka Runtime** is a **native-backed distributed runtime for
+application-owned work** across languages, processes and hosts. Your application
+keeps its handlers, business rules and data.
 
-Keep business handlers in the language that fits the work. A Node.js API can
-call a Python operation or a JVM service through Runtime; the application
-still owns its rules and data. **HTTP Runtime** handles HTTP services, while
-**Logger** records application events with bounded storage. Each product can
-be adopted independently and has its own packages and version.
+Use **HTTP Runtime** for HTTP services and **Logger** for logging with bounded
+storage. Each product can be adopted independently and has its own packages
+and versions.
 
-Explore the products and demo on the [CoAkka website](https://coakka-ecosystem-preview.vivid-plume-2955.chatgpt.site/).
+**[Choose your language and run your first example](#choose-what-you-want-to-build)**
 
 ## Try the Node–Python web demo
 
