@@ -7,7 +7,7 @@ and checksums live in the versioned
 
 ## 3.0.0 — 2026-10-30
 
-- Added registry-first Runtime 3.0.0 entrypoints for Java/Kotlin, Spring Boot,
+- Added examples using released Runtime 3.0.0 packages for Java/Kotlin, Spring Boot,
   Quarkus, Node.js, Bun, Electron, Python, C#, Go and Swift, reusing ordinary
   application handlers and business data. No separate Core installation is
   required for the normal package path.
