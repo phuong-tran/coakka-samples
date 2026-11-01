@@ -43,7 +43,7 @@ files, streams and device examples.
 - [Node.js customer operation](../docs/coakka-runtime/guides/first-npm-smoke.md):
   a published-package walkthrough without cloning this repository.
 - [Node.js checkout, Python pricing](scenarios/order-quote-node-python/README.md):
-  send a cart across two processes and receive its quote using published 3.0.0 packages.
+  edit a browser basket and receive a quote across two processes using published 3.0.0 packages.
 - [Customer applications](scenarios/customer-crud/framework-registry/README.md):
   Spring Boot or Quarkus with Runtime 3.0.0 from Maven Central.
 - [Electron application](electron/registry-basic/README.md): a window sends work

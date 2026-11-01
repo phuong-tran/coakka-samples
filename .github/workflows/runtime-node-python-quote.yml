@@ -47,3 +47,11 @@ jobs:
         run: |
           export PYTHON="$(python -c 'import sys; sys.stdout.write(sys.executable)')"
           npm test
+      - name: Install browser for UI checks
+        if: matrix.os == 'ubuntu-24.04'
+        run: npx playwright install --with-deps chromium
+      - name: Check browser interaction and mobile layout
+        if: matrix.os == 'ubuntu-24.04'
+        run: |
+          export PYTHON="$(python -c 'import sys; sys.stdout.write(sys.executable)')"
+          npm run test:browser

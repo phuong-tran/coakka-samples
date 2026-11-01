@@ -31,7 +31,7 @@ be adopted independently and has its own packages and version.
 
 For Runtime, the language-first path uses released 3.0.0 packages. It starts
 with one local request and reply. Next, try [Node.js checkout with Python pricing](coakka-runtime/scenarios/order-quote-node-python/README.md):
-two processes, a real cart and a quote using published 3.0.0 packages.
+a browser basket, a Python quote and two processes using published 3.0.0 packages.
 Older container images and local-package checks are labeled separately.
 
 ## Explore further

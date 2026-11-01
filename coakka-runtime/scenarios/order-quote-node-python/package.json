@@ -8,9 +8,14 @@
   },
   "scripts": {
     "quote": "node client.mjs",
-    "test": "node --test tests/integration.test.mjs"
+    "test": "node --test tests/integration.test.mjs tests/web.test.mjs",
+    "web": "node web.mjs",
+    "test:browser": "node --test tests/browser.test.mjs"
   },
   "dependencies": {
     "coakka-v2-connector-node": "3.0.0"
+  },
+  "devDependencies": {
+    "playwright": "1.64.1"
   }
 }

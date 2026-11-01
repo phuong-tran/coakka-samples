@@ -31,6 +31,15 @@ export function openQuoteClient(port = 19360) {
            !Number.isSafeInteger(reply.totalCents) || reply.totalCents < 0)) {
         throw new Error("Pricing service returned an invalid quote.");
       }
+      if (reply.status === "quoted" && (
+          ![reply.subtotalCents, reply.shippingCents].every(value => Number.isSafeInteger(value) && value >= 0) ||
+          !Array.isArray(reply.items) || reply.items.length < 1 || reply.items.length > 20 ||
+          reply.items.some(item => item === null || typeof item !== "object" ||
+            typeof item.sku !== "string" || item.sku.length > 64 ||
+            !Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > 100 ||
+            ![item.unitPriceCents, item.lineTotalCents].every(value => Number.isSafeInteger(value) && value >= 0)))) {
+        throw new Error("Pricing service returned invalid quote details.");
+      }
       if (reply.status === "rejected" && typeof reply.message !== "string") {
         throw new Error("Pricing service returned an invalid rejection.");
       }

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Node + Python · CoAkka Quote Demo</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#basket">Skip to basket</a>
+  <header class="site-header wrap">
+    <a class="brand" href="/" aria-label="CoAkka quote demo home"><span class="brand-mark" aria-hidden="true">c</span>coakka<span class="brand-dot">.</span></a>
+    <span class="header-label">RUNTIME / INTERACTIVE EXAMPLE</span>
+    <span class="version">Packages 3.0.0</span>
+  </header>
+  <main class="wrap">
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow"><span class="dot" aria-hidden="true"></span> APPLICATION-OWNED WORK</p>
+      <h1 id="page-title">One basket.<br>Two languages.</h1>
+      <p class="lede">Build your basket in Node.js. Let Python handle the pricing.<br class="desktop-break"> One request, a clear result — connected by CoAkka Runtime.</p>
+      <div class="journey" aria-label="Request path: Node.js checkout through CoAkka Runtime to Python pricing">
+        <span><b class="language node">JS</b> Node.js checkout</span><i aria-hidden="true">→</i>
+        <span class="runtime-step">CoAkka Runtime</span><i aria-hidden="true">→</i>
+        <span><b class="language python">PY</b> Python pricing</span>
+      </div>
+    </section>
+    <div class="workspace">
+      <section class="basket-card panel" id="basket" tabindex="-1" aria-labelledby="basket-title">
+        <div class="panel-heading"><div><span class="step">01 / YOUR INPUT</span><h2 id="basket-title">Build your basket</h2></div><button type="button" class="text-button" id="reset">Reset example <span aria-hidden="true">↺</span></button></div>
+        <form id="quote-form">
+          <fieldset id="cart-fields">
+            <legend class="sr-only">Cart details</legend>
+            <label class="field-label" for="cart-id">Cart reference</label>
+            <input id="cart-id" name="cartId" type="text" value="cart-1001" maxlength="64" pattern="[A-Za-z0-9_-]{1,64}" required autocomplete="off" aria-describedby="cart-help">
+            <p class="field-help" id="cart-help">Letters, numbers, underscores or hyphens. Up to 64 characters.</p>
+            <div class="items-heading"><span>PRODUCT</span><span>QUANTITY</span></div>
+            <div class="product"><div class="product-icon tea" aria-hidden="true">t.</div><div class="product-copy"><label for="qty-tea">Tea</label><span>Loose-leaf blend</span></div><div class="quantity"><button type="button" data-sku="tea" data-step="-1" aria-label="Decrease tea quantity">−</button><input id="qty-tea" name="tea" type="number" min="0" max="100" step="1" value="2" required aria-label="Tea quantity"><button type="button" data-sku="tea" data-step="1" aria-label="Increase tea quantity">+</button></div></div>
+            <div class="product"><div class="product-icon coffee" aria-hidden="true">c.</div><div class="product-copy"><label for="qty-coffee">Coffee</label><span>Roasted beans</span></div><div class="quantity"><button type="button" data-sku="coffee" data-step="-1" aria-label="Decrease coffee quantity">−</button><input id="qty-coffee" name="coffee" type="number" min="0" max="100" step="1" value="1" required aria-label="Coffee quantity"><button type="button" data-sku="coffee" data-step="1" aria-label="Increase coffee quantity">+</button></div></div>
+            <div class="product"><div class="product-icon cocoa" aria-hidden="true">h.</div><div class="product-copy"><label for="qty-cocoa">Cocoa</label><span>Drinking chocolate</span></div><div class="quantity"><button type="button" data-sku="cocoa" data-step="-1" aria-label="Decrease cocoa quantity">−</button><input id="qty-cocoa" name="cocoa" type="number" min="0" max="100" step="1" value="0" required aria-label="Cocoa quantity"><button type="button" data-sku="cocoa" data-step="1" aria-label="Increase cocoa quantity">+</button></div></div>
+            <p class="basket-help">Set a quantity to 0 to leave a product out. Maximum 100 of each.</p>
+            <button type="submit" class="primary" id="get-quote"><span id="button-label">Get quote</span><span id="button-arrow" aria-hidden="true">↗</span></button>
+          </fieldset>
+          <p class="feedback" id="feedback" role="status" aria-live="polite" aria-atomic="true">Your basket is ready. Ask Python for a quote.</p>
+        </form>
+      </section>
+      <section class="quote-card panel" aria-labelledby="result-title" aria-busy="false" id="quote-panel">
+        <div class="panel-heading"><div><span class="step">02 / PYTHON'S RESPONSE</span><h2 id="result-title">Your quote</h2></div><span class="state-badge" id="result-badge">Not requested</span></div>
+        <div id="quote-placeholder" class="quote-placeholder"><span class="receipt-icon" aria-hidden="true">≡</span><h3 id="placeholder-title">Ready when you are.</h3><p id="placeholder-copy">Your item prices, shipping and total<br>will appear here.</p></div>
+        <div id="quote-result" hidden>
+          <p class="total-label">TOTAL QUOTE</p><p class="total" id="quote-total"></p><p class="quote-reference" id="quote-reference"></p>
+          <div class="quote-lines" id="quote-lines" aria-label="Quoted items"></div>
+          <dl class="totals"><div><dt>Subtotal</dt><dd id="quote-subtotal"></dd></div><div><dt>Shipping</dt><dd id="quote-shipping"></dd></div><div class="grand-total"><dt>Total <span>USD</span></dt><dd id="quote-final"></dd></div></dl>
+          <p class="quote-credit"><span aria-hidden="true">✓</span> Calculated by the Python pricing service</p>
+        </div>
+        <p class="demo-note">Fictional prices. This demo does not place an order.</p>
+      </section>
+    </div>
+    <aside class="explanation"><span class="explanation-label">WHY TWO LANGUAGES?</span><p>Checkout stays in JavaScript. Pricing stays in Python.<br>Runtime connects the work; your application keeps its business rules.</p><a href="https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/scenarios/order-quote-node-python/README.md" target="_blank" rel="noreferrer">Read the walkthrough <span aria-hidden="true">↗</span></a></aside>
+  </main>
+  <footer class="wrap"><span>COAKKA RUNTIME</span><span>Shared native core. Familiar language APIs.</span></footer>
+</body>
+</html>
