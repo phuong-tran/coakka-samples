@@ -36,6 +36,11 @@ examples show that distinction:
 | [Customer scenario catalog](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/scenarios/customer-crud) | Local, desktop and cross-process application shapes. | Only the dedicated framework registry build is the published 3.0.0 launcher; other launchers retain their own pinned/local package requirements. |
 | [Two-machine Linux walkthrough](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/guides/two-machine-linux.md) | A web process and a store process on separate Linux machines. | Follow the walkthrough's pinned source/packages and network requirements. |
 
+![Node–Python web demo: edit the basket on the left and read Python's quote on the right.](../assets/node-python-order-quote-web.png)
+
+[Run the browser basket example](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/scenarios/order-quote-node-python/README.md).
+Node.js sends the basket; Python returns the item prices, shipping and total.
+
 Keep a demonstration's complete code and dependencies together. The historical
 container images are not a shortcut for installing current 3.0.0 packages.
 

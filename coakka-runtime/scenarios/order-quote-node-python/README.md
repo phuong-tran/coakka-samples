@@ -12,6 +12,11 @@ Both apps use **published 3.0.0 packages** from npm and PyPI. Run them in two
 terminals on one computer. Each app starts its own Runtime; no separate Runtime
 server, Docker installation or Core build is needed.
 
+![Node–Python demo with a browser basket and a USD 48.00 quote returned by Python.](../../../docs/coakka-runtime/assets/node-python-order-quote-web.png)
+
+The example basket contains two teas and one coffee. Python returns the item
+prices, shipping and **USD 48.00** total shown above.
+
 ## What you will see
 
 The supplied cart contains two teas and one coffee:
