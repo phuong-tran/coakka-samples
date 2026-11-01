@@ -2,7 +2,7 @@
 
 <p align="center"><img src="docs/common/assets/brand/coakka-logo.png" alt="CoAkka" width="480"></p>
 
-[Website](https://coakka-ecosystem-preview.vivid-plume-2955.chatgpt.site/) · [Get started](#choose-what-you-want-to-build) · [Demo](#try-the-nodepython-web-demo) · [Documentation](docs/README.md)
+[Website](https://coakka-ecosystem-preview.vivid-plume-2955.chatgpt.site/) · [Get started](#choose-what-you-want-to-build) · [Demo](#try-the-nodepython-web-demo) · [Runtime tools](#coakka-runtime-client-and-inspect) · [Documentation](docs/README.md)
 
 **Shared native cores. Familiar APIs across languages.**
 
@@ -36,6 +36,58 @@ Change the quantities, request a quote and see Python return the updated total.
 | Call named application work across languages or processes | CoAkka Runtime | [Choose my language and run one example](docs/coakka-runtime/getting-started.md) |
 | Build an HTTP API, web frontend or streaming endpoint | CoAkka HTTP Runtime | [Choose my HTTP language guide](docs/coakka-http-runtime/getting-started.md) |
 | Record logs and see pressure when output falls behind | CoAkka Logger | [Choose my Logger example](docs/coakka-logger/README.md#start-with-one-consumer) |
+
+## CoAkka Runtime: languages, frameworks and app hosts
+
+CoAkka Runtime brings application-owned work to backend, desktop and device
+applications. Choose the integration that matches your code:
+
+| Application language or host | Start here |
+| --- | --- |
+| JavaScript / TypeScript on Node.js and Bun; Python; Java and Kotlin; C#; Go; Swift | [Language-first Runtime examples](coakka-runtime/README.md#first-run-choose-your-language) |
+| Spring Boot and Quarkus | [Framework customer applications](coakka-runtime/scenarios/customer-crud/framework-registry/README.md) |
+| Electron and Tauri desktop apps | [Electron](coakka-runtime/electron/registry-basic/README.md) · [Tauri](coakka-runtime/tauri/README.md) |
+| C / C++, Rust, Zig, Android and Mojo | [Source/archive guides and previews](coakka-runtime/README.md#other-languages-and-evaluations) |
+
+Released 3.0.0 first runs cover Node.js, Bun, Python, Java/Kotlin, C#, Go,
+Swift, Electron, Spring Boot and Quarkus. Tauri, C/C++, Rust and Zig follow their own versioned
+source/archive guides; Android and Mojo are previews. Each guide gives its
+actual package and platform scope.
+
+## CoAkka Runtime Client and Inspect
+
+Use the companion tools to try Runtime before writing another application,
+or to check a request while integrating it.
+
+| Tool | Use it for |
+| --- | --- |
+| [CoAkka Runtime Client](docs/coakka-runtime/operations/coakka-runtime-client.md) — `coakka-runtime-client` | Send test requests from a terminal or script and inspect the returned result. |
+| [CoAkka Runtime Inspect](docs/coakka-runtime/operations/coakka-runtime-inspect.md) — `coakka-runtime-inspect` | Explore Runtime facts and try request/reply interactions in a browser. |
+
+These are the product names. The released Client command is `coakka-client`;
+the Inspect command is `coakka-runtime-inspect`. Follow each tool's guide for
+its published version, connection setup and inspection scope.
+
+## CoAkka HTTP Runtime: shared HTTP, familiar languages
+
+**CoAkka HTTP Runtime** (`coakka-http-runtime`) provides an HTTP server and
+client for polyglot applications. Use it for APIs, web frontends, uploads,
+files, streaming and WebSocket services.
+
+Its language packages share one native HTTP core. Common HTTP behavior and
+fixes can reach several languages through updated packages, while each service
+keeps its own handlers and business rules. Teams can reuse their understanding
+of HTTP across services instead of maintaining unrelated HTTP behavior for
+every application language.
+
+HTTP Runtime serves the HTTP edge; CoAkka Runtime connects named application
+work. An HTTP handler can call Runtime when it needs that work, and either
+product can also be adopted independently.
+
+**Package-manager releases are in preparation for npm, Maven Central, Go
+modules and PyPI.** The current installation path uses 1.0.0 repository archives.
+Start with the [HTTP language guides](docs/coakka-http-runtime/getting-started.md)
+and [current archive catalog](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/README.md).
 
 ## First time here?
 

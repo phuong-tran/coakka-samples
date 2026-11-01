@@ -44,6 +44,19 @@ archives on `coakka-publish/main`, with archive-backed samples. It has no npm,
 PyPI, Maven Central or tagged Go-module release in this distribution. Installing
 a Runtime/Logger package does not install HTTP Runtime.
 
+Package-manager distribution for HTTP Runtime is in preparation for **npm**,
+**Maven Central**, **Go modules** and **PyPI**. The archive path above remains
+the current installation route until those releases are recorded in the ledger.
+
+## Runtime Companion Tools
+
+Use **CoAkka Runtime Client** (`coakka-runtime-client`) to try requests from a
+terminal or script; its currently published command is `coakka-client`.
+**CoAkka Runtime Inspect** (`coakka-runtime-inspect`) provides a browser
+explorer and request/reply trial form. The tools keep their own versions and
+inspection scope. Start with the [Client guide](../coakka-runtime/operations/coakka-runtime-client.md)
+or [Inspect guide](../coakka-runtime/operations/coakka-runtime-inspect.md).
+
 ## Repository Boundaries
 
 | Surface | Responsibility |
@@ -60,8 +73,10 @@ release; see [Repository Boundaries](repository-boundaries.md).
 
 ## Language And Platform Scope
 
-The ecosystem includes native C/C++, JVM and framework adapters, Node.js/Bun,
-Python, Go, C#, Rust, Swift and additional source or desktop/device lanes.
+Runtime integrations include JavaScript/TypeScript on Node.js and Bun, Python,
+Java/Kotlin, C#, Go and Swift; Spring Boot and Quarkus framework adapters; and
+Electron and Tauri desktop apps. C/C++, Rust and Zig have their own source/archive
+paths, while Android and Mojo remain previews.
 That inventory does not mean every product supports every host. Check the
 selected product's exact version, OS, CPU, package contents and matching-host
 execution evidence. A packaged binary alone does not prove connector execution.

@@ -1,7 +1,15 @@
 # CoAkka Runtime Inspect
 
-`coakka-runtime-inspect` is the browser runtime explorer and route-try UI for
-CoAkka Runtime. It is the visual sibling of `coakka-client`.
+**CoAkka Runtime Inspect** (`coakka-runtime-inspect`) is the browser explorer
+and request/reply trial tool for CoAkka Runtime. It is the visual companion to
+[CoAkka Runtime Client](coakka-runtime-client.md), whose published command is
+`coakka-client`.
+
+The current published browser shows the Runtime linked into Inspect itself;
+its connection option selects where trial requests go. The sample guide calls
+those displayed snapshots `local-linked-runtime`. They do not describe the
+remote application's health. See the [Inspect sample guide](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/tools/coakka-runtime-inspect/README.md#boundary)
+for the current read/try distinction.
 
 ![CoAkka Runtime Inspect browser walkthrough](../assets/coakka-runtime-inspect.gif)
 
@@ -25,7 +33,9 @@ It is not an admin dashboard, observability platform, schema registry, service
 discovery server, mTLS control plane, or topology authority. Runtime core
 remains the source of truth; inspect reads and renders runtime facts.
 
-The transport section reports what the connected runtime says is active. TLS
+The transport section reports the Runtime snapshot shown by the UI. In the
+current published browser, that is the locally linked Runtime; the trial
+request destination does not change the owner of those displayed facts. TLS
 credential contents, private keys, and credential file paths are never exposed.
 When certificate identity metadata is available, inspect shows only non-secret
 fields such as credential ID and generation, validity bounds, and fingerprint.

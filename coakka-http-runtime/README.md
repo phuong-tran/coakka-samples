@@ -17,6 +17,24 @@ application work across processes. Read the
 [HTTP introduction](../docs/coakka-http-runtime/explanation/introduction.md)
 for the fuller story.
 
+## Why a shared HTTP core
+
+A Go API and a Python upload service can use the same HTTP core through their
+own language APIs. Common fixes and improvements can be delivered through
+updated language packages. Teams can learn one product's HTTP behavior across
+services while keeping application handlers natural to each language.
+
+HTTP Runtime gives the ecosystem an HTTP server/client surface for browser and
+HTTP integrations. Runtime remains the product for named application work; an
+HTTP handler can call it when needed. Each product can be used on its own.
+
+## Package-manager releases in preparation
+
+Distribution through **npm**, **Maven Central**, **Go modules** and **PyPI** is
+planned. The currently available installation path uses the 1.0.0 archives and
+matching examples below. The [package ledger](../docs/common/current-packages.md)
+records what has actually been released.
+
 Choose one language below, install its matching **HTTP Runtime 1.0.0 archive**,
 start the server and send one request. Each guide supplies prerequisites,
 commands, the expected response and shutdown steps. You only need the tools for

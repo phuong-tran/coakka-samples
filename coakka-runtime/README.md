@@ -16,6 +16,17 @@ Read [the CoAkka story](../docs/coakka-runtime/explanation/coakka-story.md) for
 why the work belongs to the application. The normal connector package includes
 its matching native Runtime; no separate Core installation is needed.
 
+## Languages, frameworks and desktop apps
+
+Runtime integrations include **JavaScript and TypeScript (Node.js / Bun),
+Python, Java, Kotlin, C#, Go and Swift**, with **Spring Boot** and **Quarkus**
+framework adapters and **Electron** desktop support. The language table below
+leads to the released 3.0.0 first runs.
+
+**Tauri**, C/C++, Rust and Zig use version-specific source/archive guides;
+Android and Mojo remain previews. Choose the exact version and platform in
+those guides rather than applying one package's support scope to another.
+
 ## First run: choose your language
 
 These apps use **published 3.0.0 packages**. Each README gives prerequisites,
@@ -73,6 +84,17 @@ The [Node-to-Python container demo](containers/node-python/README.md) uses
 historical 1.x images. It demonstrates two processes but is not the current
 3.0.0 installation path. [RPi camera](demos/rpi-camera/README.md) and other device
 examples have their own hardware and package requirements.
+
+## Runtime companion tools
+
+- [CoAkka Runtime Client](../docs/coakka-runtime/operations/coakka-runtime-client.md)
+  (`coakka-runtime-client`): try requests from the terminal or a script. The
+  published command is `coakka-client`.
+- [CoAkka Runtime Inspect](../docs/coakka-runtime/operations/coakka-runtime-inspect.md)
+  (`coakka-runtime-inspect`): explore Runtime facts and try a request in a browser.
+
+The tool guides keep their own release and inspection scope. Their version is
+independent of the connector package selected for your application.
 
 ## Put the pattern in your application
 
