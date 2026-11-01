@@ -14,6 +14,15 @@ still owns its rules and data. **HTTP Runtime** handles HTTP services, while
 **Logger** records application events with bounded storage. Each product can
 be adopted independently and has its own packages and version.
 
+## Try the Node–Python web demo
+
+Build a basket in your browser. Node.js sends it to a separate Python process,
+which returns item prices, shipping and the total through CoAkka Runtime.
+
+**[Run the demo and read the walkthrough](coakka-runtime/scenarios/order-quote-node-python/README.md)** · Published npm/PyPI **3.0.0** packages · Two terminals, no Docker required.
+
+[![Node–Python browser demo showing a basket and a USD 48.00 quote from Python.](docs/coakka-runtime/assets/node-python-order-quote-web.png)](coakka-runtime/scenarios/order-quote-node-python/README.md)
+
 ## Choose what you want to build
 
 | I want to… | Product | Start here |
@@ -30,8 +39,7 @@ be adopted independently and has its own packages and version.
    or the selected product's next example.
 
 For Runtime, the language-first path uses released 3.0.0 packages. It starts
-with one local request and reply. Next, try [Node.js checkout with Python pricing](coakka-runtime/scenarios/order-quote-node-python/README.md):
-a browser basket, a Python quote and two processes using published 3.0.0 packages.
+with one local request and reply.
 Older container images and local-package checks are labeled separately.
 
 ## Explore further
