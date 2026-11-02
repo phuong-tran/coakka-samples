@@ -15,8 +15,8 @@ released Runtime 3.0.0 Core. No addon was re-released or silently replaced.
 | HTTPS, S3/MinIO, Azure Blob, GCS | Passed | Passed |
 | OCI Registry, Hugging Face Hub, GitHub Release | Passed | Passed |
 | Google Drive, Dropbox | Passed | Passed |
-| WebDAV | Passed with Digest SHA-256 | Passed with explicitly selected Basic over HTTPS; see below |
-| SFTP | Passed with the ECDSA fixture | Passed with the RSA profile below |
+| WebDAV | Passed with Digest SHA-256 | Normal Digest SHA-256 case failed; see the Windows limits below |
+| SFTP | Passed with the ECDSA fixture | Normal connection case failed; see the Windows limits below |
 | Local Drop | Passed | No Windows package; Linux/macOS only |
 
 The checks acquired a file, verified its size and SHA-256 at staging and the
@@ -29,20 +29,24 @@ Runtime 3.0.0. The five Runtime native artifacts remain a separate matrix;
 Local Drop retains its three declared Linux/macOS targets. WSL2 uses the Linux
 x86-64 artifact and is not a sixth native artifact.
 
-## Windows Settings To Check
+<a id="windows-settings-to-check"></a>
+
+## Windows Limits In The Released Addons
+
+Alternate authentication profiles helped diagnose these Windows limitations.
+They are not fixes or recommendations to change your server's authentication
+policy. The failing cases need addon updates and must pass again in corrected
+builds. No new addon version has been published by this audit.
 
 **WebDAV:** the audited Windows addon did not complete the Digest SHA-256
-scenario. Explicit Basic authentication over verified HTTPS passed. Choose that
-mode only if your server and application policy permit it; there is no automatic
-fallback. Keep certificate and hostname verification enabled. Applications that
-require Digest SHA-256 should wait for a validated addon update on Windows.
+scenario. A separate Basic-over-HTTPS test passed, but does not close the normal
+Digest case. Applications requiring Digest SHA-256 should wait for a validated
+Windows addon update. Keep certificate and hostname verification enabled.
 
-**SFTP:** the passing Windows profile used RSA 3072-bit keys, RSA/SHA-2
-authentication, a PEM private key with its matching `.pub` file alongside it,
-and a server permitting `diffie-hellman-group16-sha512`. Keep the expected host
-key SHA-256 pin. The ECDSA/default-server scenario used on Linux did not pass on
-the audited Windows package; check your server's permitted settings before
-deployment. Do not enable legacy SHA-1 algorithms to reproduce this profile.
+**SFTP:** an alternate RSA authentication test passed, while the normal ECDSA
+and server-settings case used on Linux failed with the released Windows addon.
+The alternate test does not close that limitation. Wait for a validated addon
+update for the failing case, and keep server identity verification enabled.
 
 ## Versions And Application Ownership
 
@@ -57,7 +61,7 @@ alive until the addon has stopped and been destroyed. Accept the file only after
 the receiver reports `COMPLETED + OK`.
 
 The compatibility check is complete for the scopes above. A new addon release
-still requires package cleanup and the remaining platform and release checks;
+still requires the Windows fixes, package cleanup, and remaining platform checks;
 this page does not open that release gate.
 
 Continue with [choosing an addon](runtime-addons.md#choose-a-file-acquisition-provider),
