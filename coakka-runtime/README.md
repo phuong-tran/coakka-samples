@@ -106,10 +106,10 @@ addon bindings are not currently released. Add only the capability you need.
 ## Runtime companion tools
 
 - [CoAkka Runtime Client](../docs/coakka-runtime/operations/coakka-runtime-client.md)
-  (`coakka-runtime-client`): try requests from the terminal or a script. The
-  published command is `coakka-client`.
+  — published command `coakka-client`: try requests from a terminal or script.
 - [CoAkka Runtime Inspect](../docs/coakka-runtime/operations/coakka-runtime-inspect.md)
-  (`coakka-runtime-inspect`): explore Runtime facts and try a request in a browser.
+  — published command `coakka-runtime-inspect`: explore Runtime facts and try
+  a request in a browser.
 
 The tool guides keep their own release and inspection scope. Their version is
 independent of the connector package selected for your application.

@@ -1,8 +1,8 @@
 # CoAkka Runtime Client
 
-**CoAkka Runtime Client** (`coakka-runtime-client`) is the command-line tool
-for trying CoAkka Runtime requests from a terminal or script. The published
-command and archive prefix are `coakka-client`.
+**CoAkka Runtime Client** is the command-line tool for trying CoAkka Runtime
+requests from a terminal or script. Run the published command **`coakka-client`**;
+the archive prefix is also `coakka-client`.
 
 Use the full product name when referring to the tool. Run `coakka-client` in
 commands for the current published release.

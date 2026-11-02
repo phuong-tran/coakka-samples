@@ -4,8 +4,8 @@
 
 One shared native HTTP runtime, with idiomatic application APIs across languages.
 
-CoAkka HTTP Runtime is the HTTP server and client product in the CoAkka
-ecosystem. It lets applications use C/C++, Go, Kotlin/Java, Python, or
+CoAkka HTTP Runtime provides HTTP services and outbound HTTP requests in the
+CoAkka ecosystem. It lets applications use C/C++, Go, Kotlin/Java, Python, or
 JavaScript/TypeScript on Node.js and Bun while sharing the implementation of
 HTTP transport, routing, resource limits and lifecycle.
 
@@ -15,6 +15,7 @@ targets. An application can use either alone or compose them at its handler.
 
 ## Contents
 
+- [Outbound HTTP And The Planned HTTP Client](#outbound-http-and-the-planned-http-client)
 - [Why It Exists](#why-it-exists)
 - [What A Shared Runtime Gives You](#what-a-shared-runtime-gives-you)
 - [How Application Code Fits](#how-application-code-fits)
@@ -24,6 +25,20 @@ targets. An application can use either alone or compose them at its handler.
 - [What It Does Not Promise](#what-it-does-not-promise)
 - [When To Use It](#when-to-use-it)
 - [Try It And Read Further](#try-it-and-read-further)
+
+## Outbound HTTP And The Planned HTTP Client
+
+An outbound request is a call your application makes to another HTTP endpoint;
+for example, an upload service asking a remote storage API for a file. These
+client APIs are part of **CoAkka HTTP Runtime** and follow the selected
+language package's documented capabilities. Use its language guide for the
+available API and examples.
+
+**CoAkka HTTP Client** (`coakka-http-client`) is a planned standalone product.
+It has no released package or installation path yet. Existing HTTP Runtime
+client APIs keep their documented scope; this roadmap does not rename or
+remove them. The [product layout](../../common/product-layout.md) owns the plan
+for adding that separate product.
 
 ## Why It Exists
 

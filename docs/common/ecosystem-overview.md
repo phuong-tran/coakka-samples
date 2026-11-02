@@ -13,8 +13,9 @@ instances. This gives the ecosystem a common design approach while products
 keep their own contracts, packages and versions.
 
 Its central product, **CoAkka Runtime**, is a **polyglot, cross-platform
-distributed runtime for application-owned work**. Stable target names connect
-that work across processes, languages, containers and hosts. The application
+distributed runtime for application-owned work**: for example, a Node.js checkout
+asking Python to calculate a price. Stable target names connect that work
+across processes, languages, containers and hosts. The application
 keeps business behavior; Runtime provides bounded admission, request/reply,
 deadletters and delivery diagnostics.
 
@@ -25,12 +26,14 @@ deadletters and delivery diagnostics.
 | CoAkka Runtime | Distributed target-based delivery, replies, deadletters, File Lane and Stream Lane. | [Runtime integration](../coakka-runtime/guides/runtime-integration-guide.md), [published packages](current-packages.md) |
 | CoAkka Logger | Bounded logging with explicit admission, delivery and pressure outcomes. | [Logger documentation](../coakka-logger/README.md) |
 | Runtime Addons | Optional integration capabilities composed with Runtime, such as acquiring a file before File Lane delivery. | [Runtime addons](../coakka-runtime/guides/runtime-addons.md) |
-| CoAkka HTTP Runtime | Independent HTTP server/client: routing, static files, streaming, SSE, WebSocket, TLS/mTLS, monitoring and graceful shutdown. | [HTTP samples](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-http-runtime), [archive catalog](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime) |
+| CoAkka HTTP Runtime | HTTP services and outbound requests: routing, files, streaming, SSE, WebSocket, TLS/mTLS, monitoring and graceful shutdown. | [HTTP samples](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-http-runtime), [archive catalog](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime) |
 
 HTTP Runtime is not a new name for CoAkka Runtime or a required layer around
 it. An HTTP handler can call a Runtime target, but each product keeps its own
 lifecycle, configuration, package identity and release cadence. Applications
-may retain their existing HTTP framework and adopt only Runtime.
+may retain their existing HTTP framework and adopt only Runtime. For the
+difference between HTTP Runtime's outbound requests and the planned standalone
+HTTP Client, read [the client scope](../coakka-http-runtime/explanation/introduction.md#outbound-http-and-the-planned-http-client).
 
 ## Distribution
 
@@ -50,10 +53,9 @@ the current installation route until those releases are recorded in the ledger.
 
 ## Runtime Companion Tools
 
-Use **CoAkka Runtime Client** (`coakka-runtime-client`) to try requests from a
-terminal or script; its currently published command is `coakka-client`.
-**CoAkka Runtime Inspect** (`coakka-runtime-inspect`) provides a browser
-explorer and request/reply trial form. The tools keep their own versions and
+Use **CoAkka Runtime Client**, command `coakka-client`, to try requests from a
+terminal or script. **CoAkka Runtime Inspect**, command `coakka-runtime-inspect`,
+provides a browser explorer and request/reply trial form. The tools keep their own versions and
 inspection scope. Start with the [Client guide](../coakka-runtime/operations/coakka-runtime-client.md)
 or [Inspect guide](../coakka-runtime/operations/coakka-runtime-inspect.md).
 

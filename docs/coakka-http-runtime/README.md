@@ -2,10 +2,13 @@
 
 **One native HTTP core, shared across languages.**
 
-CoAkka HTTP Runtime is a polyglot, cross-platform HTTP server and client.
+CoAkka HTTP Runtime provides polyglot, cross-platform HTTP services and outbound
+HTTP requests.
 Its native-backed language packages share a native HTTP core while handlers
 remain application code. Each service runs its own runtime instance.
-This product has its own packages and version.
+This product has its own packages and version. Read
+[current client scope and roadmap](explanation/introduction.md#outbound-http-and-the-planned-http-client)
+to distinguish its outbound HTTP APIs from the planned standalone HTTP Client.
 
 ## Start
 

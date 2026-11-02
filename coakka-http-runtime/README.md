@@ -4,13 +4,10 @@
 
 **HTTP services in your language. One shared native core.**
 
-CoAkka HTTP Runtime is a **polyglot, cross-platform HTTP server and client**
-backed by a **shared native HTTP core**. Build APIs, serve files or stream
-responses through familiar, native-backed language APIs.
-
-A Python upload service and a Go API can use the same HTTP core while keeping
-their own handlers. Each application runs its own instance and owns its
-business rules. HTTP Runtime handles the HTTP work around those handlers.
+CoAkka HTTP Runtime provides **polyglot, cross-platform HTTP services and
+outbound HTTP requests** backed by a **shared native HTTP core**. Build APIs,
+serve files or stream responses through familiar language APIs. Each application
+runs its own instance and owns its handlers and business rules.
 
 HTTP Runtime is independent of CoAkka Runtime, which connects named
 application work across processes. Read the
@@ -24,9 +21,11 @@ own language APIs. Common fixes and improvements can be delivered through
 updated language packages. Teams can learn one product's HTTP behavior across
 services while keeping application handlers natural to each language.
 
-HTTP Runtime gives the ecosystem an HTTP server/client surface for browser and
-HTTP integrations. Runtime remains the product for named application work; an
-HTTP handler can call it when needed. Each product can be used on its own.
+Outbound requests belong to HTTP Runtime's documented package scope. The
+planned standalone **CoAkka HTTP Client** is a separate future product; read
+[current client scope and roadmap](../docs/coakka-http-runtime/explanation/introduction.md#outbound-http-and-the-planned-http-client).
+Runtime remains the product for named application work; an HTTP handler can
+call it when needed.
 
 ## CoAkka HTTP Runtime Inspect
 
