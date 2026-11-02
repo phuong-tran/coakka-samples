@@ -55,6 +55,10 @@ use [Runtime Package And Platform Evidence](../coakka-runtime/reference/runtime-
 
 ## Runtime Addons
 
+The [Runtime 3.0.0 native addon compatibility check](../coakka-runtime/guides/native-addons-runtime3.md)
+records all twelve providers on WSL2 and the eleven Windows packages, including
+the Windows WebDAV/SFTP limitations. No new addon version was published by this check.
+
 [`runtime-addons/`](../coakka-runtime/guides/runtime-addons.md) is the independent release family for
 optional native capabilities that compose with Runtime without entering the
 default runtime package. Addons carry their own versions, compatibility

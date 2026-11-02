@@ -172,6 +172,10 @@ failure semantics should remain separate addon products.
 
 ## Package And Compatibility Contract
 
+Using Runtime 3.0.0? Read the [native addon compatibility check](native-addons-runtime3.md)
+for tested Windows/WSL combinations and the WebDAV/SFTP settings that matter.
+The existing addon releases keep their independent versions.
+
 A promoted addon is a separate archive under:
 
 ```text
