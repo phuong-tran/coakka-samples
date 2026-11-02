@@ -46,9 +46,10 @@ release. The normal package installation includes the required Runtime support.
 
 ### Breaking changes and migration
 
-3.0.0 requires source migration and recompilation from the previous application
-API. Use the matching 3.0.0 examples and keep the installed package components
-together when deploying an application.
+3.0.0 changes parts of the application API. Review existing code against the
+matching 3.0.0 examples and rebuild compiled applications. Calls that remain
+supported may work unchanged; compatibility with every earlier API is not
+promised. Keep the matching package components together when deploying.
 
 | Host | Upgrade action |
 | --- | --- |
@@ -59,6 +60,34 @@ together when deploying an application.
 | Node.js / Bun / Electron | Upgrade the matching package and application API together. Electron 3.0.0 depends exactly on the Node 3.0.0 connector; main-process ownership and the renderer boundary still apply. |
 | Go | Change the old v1 import and module requirement to github.com/phuong-tran/coakka-runtime-go/v3 at v3.0.0. Recompile against the updated APIs. |
 | Swift | Use an exact 3.0.0 SwiftPM requirement and rebuild. Host close is throwing; preserve both an operation failure and a cleanup failure. Deploy the application's dynamic library and resource bundle together. |
+
+#### A short upgrade checklist
+
+**Why update application code?** The updated APIs make startup settings,
+request results and safe shutdown clearer and more consistent across languages.
+Your application continues to own its business rules; review the integration
+code that creates the Runtime, handles requests/replies and closes it.
+
+1. Install the matching 3.0.0 packages, including any framework adapter, and
+   compare your integration with the current example for your language.
+2. Update changed imports, method calls and request/result handling, then
+   rebuild or run the application. For example, Python message values are now
+   read-only; use the sample's reply-building helpers instead of changing the
+   incoming message.
+3. Check a successful request/reply, a failed or timed-out request and clean
+   shutdown before deploying. Successful startup alone does not exercise all
+   of these paths.
+
+**What if I only change the package version?** Some existing code may still
+work. Code using a removed API or an older request/result type may instead
+produce a build/import error, a missing-method error or an exception when a
+handler runs. These indicate a call or type to update using the matching
+example; changing CPU, connection or monitor settings does not fix them.
+
+No monitor integration is required. When the corresponding options are omitted,
+3.0.0 uses **AUTO**, **MULTIPLEXED** and **monitoring OFF**. Explicit settings
+remain application choices. These defaults do not make every older API
+compatible.
 
 Start from the [getting-started guide](getting-started.md) and the
 [matching source examples](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/README.md).
