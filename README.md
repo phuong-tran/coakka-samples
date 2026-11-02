@@ -44,7 +44,21 @@ Change the quantities, request a quote and see Python return the updated total.
 ## CoAkka Runtime: languages, frameworks and app hosts
 
 CoAkka Runtime brings application-owned work to backend, desktop and device
-applications. Choose the integration that matches your code:
+applications through three complementary lanes:
+
+### Message-Lane, File-Lane and Stream-Lane
+
+| What your application needs | Runtime lane | Learn more |
+| --- | --- | --- |
+| Send commands, ask for results or publish events | **Message-Lane** | [Requests, replies and routing](docs/coakka-runtime/explanation/runtime-message-and-routing-model.md) |
+| Move a stable file that already exists on the sending host | **File-Lane** | [File transfer](docs/coakka-runtime/guides/runtime-file-transfer.md) |
+| Send live frames as they are produced, such as camera, audio or telemetry | **Stream-Lane** | [Streaming](docs/coakka-runtime/guides/runtime-streaming.md) |
+
+For example, send a processing request through Message-Lane, deliver a model
+file through File-Lane, or send live camera frames through Stream-Lane.
+Follow your language guide for the available lane APIs and package scope.
+
+Choose the integration that matches your code:
 
 | Application language or host | Start here |
 | --- | --- |
@@ -69,8 +83,14 @@ verify it, then deliver it to the worker that needs it. Other provider guides
 cover HTTPS, SFTP, cloud storage and local files.
 
 Current addon packages expose a **native C interface**. Each addon has its own
-version, supported platforms and Runtime compatibility; high-level language
-addon bindings are not currently released. Add only the capability you need.
+version, supported platforms and Runtime compatibility. **Native C is the
+maintained addon surface**; additional language bindings will be considered
+when concrete user demand justifies their support and maintenance.
+This scope applies to addons, separately from Runtime's language connectors.
+
+Already have the file locally? Use **File-Lane directly**. If the file lives
+elsewhere, the addon acquires and verifies it locally first, then hands it to
+File-Lane for delivery. Add only the capability you need.
 
 [Understand the workflow](docs/coakka-runtime/guides/runtime-addons.md) ·
 [Choose a provider example](coakka-runtime/addons/README.md) ·
