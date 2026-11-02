@@ -1,6 +1,6 @@
 # CoAkka Runtime Samples
 
-[Choose your language](#first-run-choose-your-language) · [Use cases](#choose-a-use-case) · [Documentation](../docs/coakka-runtime/README.md) · [Packages](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-runtime/README.md) · [All products](../README.md)
+[Choose your language](#first-run-choose-your-language) · [Use cases](#choose-a-use-case) · [Addons](#runtime-addons) · [Documentation](../docs/coakka-runtime/README.md) · [Packages](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-runtime/README.md) · [All products](../README.md)
 
 **Application-owned work across languages and processes.**
 
@@ -84,6 +84,24 @@ The [Node-to-Python container demo](containers/node-python/README.md) uses
 historical 1.x images. It demonstrates two processes but is not the current
 3.0.0 installation path. [RPi camera](demos/rpi-camera/README.md) and other device
 examples have their own hardware and package requirements.
+
+## Runtime addons
+
+**Runtime addons** add optional capabilities around CoAkka Runtime. The released
+**Artifact Source Addons** obtain and verify files from external sources before
+Runtime transfers those files between application peers.
+
+For example, acquire an exact model file from **S3/MinIO** or **Hugging Face Hub**,
+verify it, then deliver it to the worker that needs it. Other provider guides
+cover HTTPS, SFTP, cloud storage and local files.
+
+Current addon packages expose a **native C interface**. Each addon has its own
+version, supported platforms and Runtime compatibility; high-level language
+addon bindings are not currently released. Add only the capability you need.
+
+[Understand the workflow](../docs/coakka-runtime/guides/runtime-addons.md) ·
+[Choose a provider example](addons/README.md) ·
+[Package and compatibility catalog](https://github.com/phuong-tran/coakka-publish/blob/main/runtime-addons/README.md).
 
 ## Runtime companion tools
 

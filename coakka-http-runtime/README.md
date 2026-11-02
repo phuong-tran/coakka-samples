@@ -1,6 +1,6 @@
 # CoAkka HTTP Runtime Samples
 
-[Choose your language](#languages) · [Next steps](#after-one-request) · [Documentation](../docs/coakka-http-runtime/README.md) · [Downloads](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/README.md) · [All products](../README.md)
+[Choose your language](#languages) · [Next steps](#after-one-request) · [HTTP Inspect](#coakka-http-runtime-inspect) · [Documentation](../docs/coakka-http-runtime/README.md) · [Downloads](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/README.md) · [All products](../README.md)
 
 **HTTP services in your language. One shared native core.**
 
@@ -27,6 +27,22 @@ services while keeping application handlers natural to each language.
 HTTP Runtime gives the ecosystem an HTTP server/client surface for browser and
 HTTP integrations. Runtime remains the product for named application work; an
 HTTP handler can call it when needed. Each product can be used on its own.
+
+## CoAkka HTTP Runtime Inspect
+
+**Swagger-like API exploration for an inspection-enabled HTTP service.**
+Browse the route descriptions a service publishes, try HTTP requests in a
+browser and export an **OpenAPI 3.0.3** document. Inspect provides its own UI;
+the exported document can also be used by OpenAPI tools such as Swagger UI.
+
+Current Inspect archives target **macOS ARM64** and **Linux ARM64**. Service
+inspection must be explicitly enabled, and language-connector APIs for declaring
+route/schema metadata are still being completed. Follow the current integration
+status before adding inspection to a language example.
+
+[Explore Inspect and OpenAPI](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/inspect/metadata-and-openapi.md) ·
+[Current integration status](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/inspect/metadata-and-openapi.md#current-package-integration) ·
+[Inspect packages and setup](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/inspect/README.md).
 
 ## Package-manager releases in preparation
 
@@ -58,7 +74,7 @@ Follow the guide's exact language version and platform requirements.
 - [Choose a feature](../docs/coakka-http-runtime/reference/FEATURES.md) such as streaming, WebSocket or frontend delivery.
 - [Read the HTTP model](../docs/coakka-http-runtime/explanation/introduction.md) and [file/upload guide](../docs/coakka-http-runtime/guides/file-delivery.md).
 - [Observe a service](../docs/coakka-http-runtime/operations/monitoring.md).
-- [Use Inspect](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/inspect/metadata-and-openapi.md).
+- [HTTP Runtime Inspect and OpenAPI](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/inspect/metadata-and-openapi.md).
 
 ## Verify a change
 

@@ -2,7 +2,11 @@
 
 <p align="center"><img src="docs/common/assets/brand/coakka-logo.png" alt="CoAkka" width="480"></p>
 
-[Website](https://coakka-ecosystem-preview.vivid-plume-2955.chatgpt.site/) · [Get started](#choose-what-you-want-to-build) · [Demo](#try-the-nodepython-web-demo) · [Runtime tools](#coakka-runtime-client-and-inspect) · [Documentation](docs/README.md)
+[Website](https://coakka-ecosystem-preview.vivid-plume-2955.chatgpt.site/) · [Get started](#choose-what-you-want-to-build) · [Documentation](docs/README.md)
+
+**Contents**
+
+[Choose a product](#choose-what-you-want-to-build) · [CoAkka Runtime](#coakka-runtime-languages-frameworks-and-app-hosts) · **[CoAkka HTTP Runtime](#coakka-http-runtime-shared-http-familiar-languages)** · [HTTP Inspect](#coakka-http-runtime-inspect) · [Runtime addons](#coakka-runtime-addons) · [Runtime Client / Inspect](#coakka-runtime-client-and-inspect) · [Node–Python demo](#try-the-nodepython-web-demo)
 
 **Shared native cores. Familiar APIs across languages.**
 
@@ -54,6 +58,24 @@ Swift, Electron, Spring Boot and Quarkus. Tauri, C/C++, Rust and Zig follow thei
 source/archive guides; Android and Mojo are previews. Each guide gives its
 actual package and platform scope.
 
+## CoAkka Runtime addons
+
+**Runtime addons** add optional capabilities around CoAkka Runtime. The released
+**Artifact Source Addons** obtain and verify files from external sources before
+Runtime transfers those files between application peers.
+
+For example, acquire an exact model file from **S3/MinIO** or **Hugging Face Hub**,
+verify it, then deliver it to the worker that needs it. Other provider guides
+cover HTTPS, SFTP, cloud storage and local files.
+
+Current addon packages expose a **native C interface**. Each addon has its own
+version, supported platforms and Runtime compatibility; high-level language
+addon bindings are not currently released. Add only the capability you need.
+
+[Understand the workflow](docs/coakka-runtime/guides/runtime-addons.md) ·
+[Choose a provider example](coakka-runtime/addons/README.md) ·
+[Package and compatibility catalog](https://github.com/phuong-tran/coakka-publish/blob/main/runtime-addons/README.md).
+
 ## CoAkka Runtime Client and Inspect
 
 Use the companion tools to try Runtime before writing another application,
@@ -88,6 +110,22 @@ product can also be adopted independently.
 modules and PyPI.** The current installation path uses 1.0.0 repository archives.
 Start with the [HTTP language guides](docs/coakka-http-runtime/getting-started.md)
 and [current archive catalog](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/README.md).
+
+### CoAkka HTTP Runtime Inspect
+
+**Swagger-like API exploration for an inspection-enabled HTTP service.**
+Browse the route descriptions a service publishes, try HTTP requests in a
+browser and export an **OpenAPI 3.0.3** document. Inspect provides its own UI;
+the exported document can also be used by OpenAPI tools such as Swagger UI.
+
+Current Inspect archives target **macOS ARM64** and **Linux ARM64**. Service
+inspection must be explicitly enabled, and language-connector APIs for declaring
+route/schema metadata are still being completed. Follow the current integration
+status before adding inspection to a language example.
+
+[Explore Inspect and OpenAPI](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/inspect/metadata-and-openapi.md) ·
+[Current integration status](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/inspect/metadata-and-openapi.md#current-package-integration) ·
+[Inspect packages and setup](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/inspect/README.md).
 
 ## First time here?
 
