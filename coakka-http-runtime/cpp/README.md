@@ -2,9 +2,11 @@
 
 **Start here:** [Installation and integration guide](../../docs/coakka-http-runtime/cpp/integration.md) — prerequisites,
 package setup, first HTTP request, feature walkthroughs and checked shutdown.
-This README records sample details, verification scope and benchmark results.
+This README records verification and benchmark results for the pinned 1.0.0
+callback SDK. For the focused 1.1.2 SDK, use the
+[installed native contract tests](../runtime-test/README.md).
 
-The native application uses only installed `coakka/http/http.h` and
+This sample uses installed `coakka/http/http.h` and
 `CoAkkaHttp::runtime`, with a non-copyable RAII server, explicit checked close, and exception containment at callbacks.
 The runtime schedules callbacks; this application does not build a connector
 request-pump thread. Borrowed request views never escape their callback.

@@ -1,8 +1,9 @@
 # C++20: installation and integration
 
-Start here for a native CoAkka HTTP Runtime application. Use the complete
-artifact-backed sample before adapting callbacks or resource ownership.
-C and C++ share the installed C contract; C++ adds application RAII, not a second HTTP engine.
+This guide runs the callback sample with its pinned 1.0.0 native SDK. The
+C and C++ examples use `<coakka/http/http.h>` and `CoAkkaHttp::runtime`.
+For the focused 1.1.2 SDK and its event ownership model, start with the
+[installed native contract tests](../../../coakka-http-runtime/runtime-test/README.md).
 
 For monitor startup, policy changes, event retention and exporter ownership,
 see [Monitoring an HTTP service](../operations/monitoring.md), including this language's
@@ -62,21 +63,20 @@ reuse. It does not build Core or the connector. Build tools may download their
 own dependencies. Do not bypass a checksum failure or mix native files from
 different archives.
 
-These shell commands support macOS ARM64 and Linux ARM64/x86-64. Windows
-package use is documented in the linked package guide; these POSIX commands
-are not a Windows walkthrough. Package availability and matching-host execution
+These shell commands cover macOS ARM64 and Linux ARM64/x86-64.
+The r3 archive inventory lists Windows packages separately. Package availability and matching-host execution
 are separate facts; see [coverage](../reference/FEATURES.md#final-r3-package-checkpoint).
 
 **Tools for this lane:** a C++20 compiler, CMake 3.24+,
 Python 3.11+, curl and OpenSSL CLI for the security recipe.
 The runner builds only the sample using the native package selected by the pins.
 
-For your own application, follow the
-[native package installation guide](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/native/README.md)
-and [sample CMakeLists.txt](../../../coakka-http-runtime/cpp/CMakeLists.txt). Use the package's exported CMake
-target and matching installed headers rather than including development-tree
-headers or selecting a library from another connector bundle. These instructions
-describe the pinned r3 package, not a newer development API.
+The [sample CMakeLists.txt](../../../coakka-http-runtime/cpp/CMakeLists.txt) selects the exact r3 callback
+SDK. For a new application targeting 1.1.2, the
+[focused native SDK guide](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/native/README.md)
+describes `CoAkkaHttpHost`, `CoAkkaHttp::host` and the installed
+`<coakka/http/host.h>` contract. Keep each SDK's installed headers and
+library together.
 
 ## 2. Run your first server
 
