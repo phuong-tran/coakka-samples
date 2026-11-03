@@ -14,6 +14,8 @@
 - [Acceptance And Reproduction](#acceptance-and-reproduction)
 - [Runner Status](#runner-status)
 - [Preparation](#preparation)
+  - [Check a fixture](#check-a-fixture)
+  - [Run a lane and render its report](#run-a-lane-and-render-its-report)
 - [Go, Node.js, Bun and Python framework comparison](#go-nodejs-bun-and-python-framework-comparison)
 - [Bun.serve() paired comparison](#bunserve-paired-comparison)
 - [Node.js and Bun requests per CPU-second](#nodejs-and-bun-requests-per-cpu-second)
@@ -267,14 +269,28 @@ rows. See the [sample coverage](../../docs/coakka-http-runtime/reference/FEATURE
 
 ## Preparation
 
-The instructions below prepare the separate archive-backed framework comparison
-harness. The release results above use public 1.1.2 packages. The framework
+This directory contains the archive-backed comparison harness. The five
+CoAkka archives used by its preparation script are listed in
+[package-pins.json](../scripts/package-pins.json). To reproduce the
+published 1.1.2 release confirmation, follow its
+[separate reproduction guide](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/benchmark/release-confirmation). The framework
 harness uses Go 1.27.1, Node 22.23.3, Bun 1.4.2,
 Trixie's OpenJDK 21, Python 3.13 and h2load 1.64.0. The separate Go benchmark
 module requires Go 1.25 because its Gin fixture requires it; the CoAkka connector
 retains its independently verified Go 1.23 minimum. JVM benchmark fixtures do
 not raise the connector's Java 8 minimum.
 
+The entry points follow the order in which you use them.
+
+| File | What it does |
+| --- | --- |
+| [deploy-rpi5.sh](scripts/deploy-rpi5.sh) | Checks the archive hashes locally and copies the harness and archives to the Pi. |
+| [prepare-rpi5.sh](scripts/prepare-rpi5.sh) | Verifies the packages again, builds the fixtures under `build/` and records their hashes. |
+| [lanes-2cpu.json](config/lanes-2cpu.json) | Lists each fixture's launch command and the two-CPU workload. |
+| [run-rpi5.py](scripts/run-rpi5.py) | Verifies the prepared inputs, starts one fixture at a time, checks HTTP and loaded packages, and records the load and shutdown. |
+| [summarize.py](scripts/summarize.py) | Validates a campaign record and writes a Markdown report. |
+
+The fixture sources are under [src/](src/), grouped by language.
 Provision the stated tools before preparation. The tool directory must contain
 `go/bin/go`, `node/bin/node` (with npm) and `bun/bin/bun`; the board also needs
 the JDK, Python venv support, CMake, Ninja, a C compiler and h2load. Use a clean,
@@ -296,9 +312,45 @@ bash scripts/deploy-rpi5.sh
 Source, tool and compiled-consumer hash receipts live under `evidence/locks`
 on the Pi. A run fails before changing the CPU governor if any receipt no longer
 matches. Do not run build/preparation commands concurrently with measurements.
-Campaign commands and final warm-up settings for the remaining lanes are
-still pending qualification. The preparation success marker alone is not
-authorization to publish numbers.
+A successful build prints `rpi5-prepare=pass`.
+
+### Check a fixture
+
+On the Pi, change to the prepared workspace. Start the Native C fixture in
+one terminal and leave it running while you send the request.
+
+```sh
+COAKKA_BENCH_CPU_POLICY=auto taskset -c 0-1 build/native/coakka-c 18430
+```
+
+In another terminal on the Pi, check the response.
+
+```sh
+curl --fail --include http://127.0.0.1:18430/fixed
+```
+
+Expect HTTP 200, `Content-Type: application/octet-stream` and the body
+`0123456789abcdef0123456789abcdef`. Stop the fixture with Ctrl-C and check
+for `benchmark-shutdown=pass` in its output.
+
+### Run a lane and render its report
+
+From the prepared workspace on the Pi, select a lane by ID. This example
+uses the default two-CPU profile, three rounds and a 10-second timed load.
+Run `sudo -v` in the same terminal so the runner can set and restore the
+CPU governors.
+
+```sh
+sudo -v
+python3 scripts/run-rpi5.py --lane go-chi --output evidence/go-chi
+python3 scripts/summarize.py evidence/go-chi/campaign.json \
+  --output evidence/go-chi/report.md
+```
+
+Use a fresh output directory for each campaign. The runner saves
+`campaign.json` and the per-run logs in `raw/`. Check the campaign's
+completion status before using the report. Repeat `--lane` to include
+more fixtures, or omit it to run the configured matrix.
 
 ## Go, Node.js, Bun and Python framework comparison
 

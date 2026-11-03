@@ -7,7 +7,8 @@ cd "${root}"
 grep -a -q 'Raspberry Pi 5' /proc/device-tree/model
 grep -Eq '^VERSION_CODENAME="?trixie"?$' /etc/os-release
 [[ ! -d sources && ! -d build/host-prefix ]] || {
-  printf 'refusing mixed source-built and installed-package workspace\n' >&2; exit 1;
+  printf 'refusing mixed source-built and installed-package workspace\n' >&2
+  exit 1
 }
 tool_root="${COAKKA_BENCH_TOOL_ROOT:-${root}/tools}"
 gradle_cache="${COAKKA_BENCH_GRADLE_CACHE:-${root}/build/gradle-cache}"
@@ -16,20 +17,25 @@ gradle_cache="${COAKKA_BENCH_GRADLE_CACHE:-${root}/build/gradle-cache}"
 [[ "$("${tool_root}/go/bin/go" version)" == 'go version go1.27.1 linux/arm64' ]]
 [[ "$("${tool_root}/node/bin/node" --version)" == v22.23.3 ]]
 [[ "$("${tool_root}/bun/bin/bun" --version)" == 1.4.2 ]]
-for command in cmake ninja python3 javac h2load sha256sum; do command -v "${command}" >/dev/null; done
+for command in cmake ninja python3 javac h2load sha256sum; do
+  command -v "${command}" >/dev/null
+done
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-arm64
 [[ -x "${JAVA_HOME}/bin/java" ]]
 export PATH="${tool_root}/go/bin:${tool_root}/node/bin:${JAVA_HOME}/bin:${PATH}"
 export PYTHONDONTWRITEBYTECODE=1
 mkdir -p tools build evidence/locks
 for tool in go node bun; do
-  if [[ ! -e "tools/${tool}" ]]; then ln -s "${tool_root}/${tool}" "tools/${tool}"; fi
+  if [[ ! -e "tools/${tool}" ]]; then
+    ln -s "${tool_root}/${tool}" "tools/${tool}"
+  fi
   [[ "$(readlink -f "tools/${tool}")" == "$(readlink -f "${tool_root}/${tool}")" ]]
 done
 resolve() {
   python3 package-tools/resolve-package.py --publish "${root}/warehouse" \
     --work "${root}/packages" "$1" linux-aarch64
 }
+# Resolve and verify every package before compiling any fixture.
 native="$(resolve native)"
 go_package="$(resolve go)"
 jvm="$(resolve jvm)"
@@ -89,8 +95,14 @@ find warehouse packages build/native build/go/fixed-server build/go/chi-server b
   xargs -0 sha256sum >evidence/locks/built-artifacts.sha256
 cp package-tools/package-pins.json evidence/locks/package-pins.json
 printf 'installed-package consumers; no Core/connector source build\n' >evidence/locks/source-identities.txt
-{ go version; java -version 2>&1; python3 --version; node --version;
-  "${tool_root}/bun/bin/bun" --version; h2load --version; } >evidence/locks/tool-versions.txt
+{
+  go version
+  java -version 2>&1
+  python3 --version
+  node --version
+  "${tool_root}/bun/bin/bun" --version
+  h2load --version
+} >evidence/locks/tool-versions.txt
 sha256sum tools/go/bin/go tools/node/bin/node tools/bun/bin/bun \
   "${JAVA_HOME}/bin/java" "${JAVA_HOME}/lib/server/libjvm.so" \
   "$(command -v python3)" "$(command -v h2load)" >evidence/locks/tool-artifacts.sha256

@@ -6,12 +6,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	coakkahttp "github.com/phuong-tran/coakka-http-runtime-go"
 	"net/http"
 	"os"
 	"os/signal"
 	"strconv"
 	"syscall"
+
+	coakkahttp "github.com/phuong-tran/coakka-http-runtime-go"
 )
 
 var body = []byte("0123456789abcdef0123456789abcdef")

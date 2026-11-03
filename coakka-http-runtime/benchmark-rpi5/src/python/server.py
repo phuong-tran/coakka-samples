@@ -62,18 +62,29 @@ def run_coakka(port: int) -> None:
         info = service.runtime_info()
         if info.cpu is None:
             raise RuntimeError("Core CPU observation unavailable")
-        print("coakka-runtime-info=" + json.dumps({
-            "cpu": {"requestedPolicy": info.cpu.requested_policy,
-                    "placement": info.cpu.placement, "selectedCpuCount": info.cpu.selected_cpu_count,
-                    "selectedCpuIds": info.cpu.selected_cpu_ids},
-            "execution": {"observed": info.execution.observed,
-                          "configuredEventLoops": info.execution.configured_event_loops,
-                          "activeEventLoops": info.execution.active_event_loops},
-            "limits": asdict(service.effective_limits()),
-            "ioUringEffective": info.io_uring_effective,
-            "requestNotificationBatchSize": info.request_notification_batch_size,
-            "terminalNotificationBatchSize": info.terminal_notification_batch_size,
-        }), flush=True)
+        print(
+            "coakka-runtime-info="
+            + json.dumps(
+                {
+                    "cpu": {
+                        "requestedPolicy": info.cpu.requested_policy,
+                        "placement": info.cpu.placement,
+                        "selectedCpuCount": info.cpu.selected_cpu_count,
+                        "selectedCpuIds": info.cpu.selected_cpu_ids,
+                    },
+                    "execution": {
+                        "observed": info.execution.observed,
+                        "configuredEventLoops": info.execution.configured_event_loops,
+                        "activeEventLoops": info.execution.active_event_loops,
+                    },
+                    "limits": asdict(service.effective_limits()),
+                    "ioUringEffective": info.io_uring_effective,
+                    "requestNotificationBatchSize": info.request_notification_batch_size,
+                    "terminalNotificationBatchSize": info.terminal_notification_batch_size,
+                }
+            ),
+            flush=True,
+        )
         # The controller owns process health checks. No periodic native query
         # or timer wakeup is added to only one measured implementation.
         stopped.wait()

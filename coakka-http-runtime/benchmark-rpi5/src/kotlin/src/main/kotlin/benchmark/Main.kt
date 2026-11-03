@@ -96,7 +96,11 @@ private fun startCoakka(port: Int): RunningServer {
             "\"handlerTimeoutMillis\":${limits.appHostTimeoutMillis},\"idleTimeoutMillis\":${limits.idleTimeoutMillis}," +
             "\"keepAliveTimeoutMillis\":${limits.keepAliveTimeoutMillis}}}")
     } catch (failure: Throwable) {
-        try { service.close() } catch (cleanup: Throwable) { failure.addSuppressed(cleanup) }
+        try {
+            service.close()
+        } catch (cleanup: Throwable) {
+            failure.addSuppressed(cleanup)
+        }
         throw failure
     }
     return object : RunningServer {

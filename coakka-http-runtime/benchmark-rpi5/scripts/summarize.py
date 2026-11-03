@@ -16,12 +16,27 @@ def table_value(value: Any) -> str:
     """Keep observed structured facts readable without breaking Markdown tables."""
     if value is None:
         return "N/A — not captured"
-    text = value if isinstance(value, str) else json.dumps(value, sort_keys=True, ensure_ascii=False)
-    return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("|", "\\|").replace("\n", "<br>")
+    text = (
+        value
+        if isinstance(value, str)
+        else json.dumps(value, sort_keys=True, ensure_ascii=False)
+    )
+    return (
+        text.replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace("|", "\\|")
+        .replace("\n", "<br>")
+    )
 
 
-def validate_generator_intervals(measurement: dict[str, Any], cores: set[str], ceiling: float,
-                                 *, allow_limited: bool = False) -> None:
+def validate_generator_intervals(
+    measurement: dict[str, Any],
+    cores: set[str],
+    ceiling: float,
+    *,
+    allow_limited: bool = False,
+) -> None:
     """Reject saturation hidden by a low whole-run CPU average.
 
     Sampling spans startup/warm-up and measurement; these are interval averages,
@@ -35,13 +50,25 @@ def validate_generator_intervals(measurement: dict[str, Any], cores: set[str], c
     for sample in samples:
         start, end = sample.get("start_seconds"), sample.get("end_seconds")
         values = sample.get("busy_by_cpu")
-        if (any(isinstance(value, bool) or not isinstance(value, (int, float))
-                or not math.isfinite(value) for value in (start, end))
-                or abs(start - previous) > 1e-6 or not 1 <= end - start <= 2
-                or not isinstance(values, dict) or set(values) != cores
-                or any(isinstance(value, bool) or not isinstance(value, (int, float))
-                       or not math.isfinite(value) or not 0 <= value <= 100
-                       for value in values.values())):
+        if (
+            any(
+                isinstance(value, bool)
+                or not isinstance(value, (int, float))
+                or not math.isfinite(value)
+                for value in (start, end)
+            )
+            or abs(start - previous) > 1e-6
+            or not 1 <= end - start <= 2
+            or not isinstance(values, dict)
+            or set(values) != cores
+            or any(
+                isinstance(value, bool)
+                or not isinstance(value, (int, float))
+                or not math.isfinite(value)
+                or not 0 <= value <= 100
+                for value in values.values()
+            )
+        ):
             raise ValueError("invalid generator CPU interval evidence")
         previous = end
         peak = max(peak, *values.values())
@@ -57,17 +84,24 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("campaign", type=Path)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--study", action="store_true",
-                        help="render only explicitly labelled client-limited loopback evidence")
+    parser.add_argument(
+        "--study",
+        action="store_true",
+        help="render only explicitly labelled client-limited loopback evidence",
+    )
     args = parser.parse_args()
     campaign = json.loads(args.campaign.read_text())
     if campaign.get("schema_version") != (3 if args.study else 2):
         raise ValueError("benchmark campaign schema is not supported")
-    if not args.study and (campaign.get("evidence_kind", "strict") != "strict"
-                           or campaign.get("workload", {}).get("study_mode", "strict") != "strict"):
+    if not args.study and (
+        campaign.get("evidence_kind", "strict") != "strict"
+        or campaign.get("workload", {}).get("study_mode", "strict") != "strict"
+    ):
         raise ValueError("study evidence cannot be promoted by changing its schema")
-    if args.study and (campaign.get("evidence_kind") != "client-limited-loopback"
-                       or campaign.get("workload", {}).get("study_mode") != "client-limited-loopback"):
+    if args.study and (
+        campaign.get("evidence_kind") != "client-limited-loopback"
+        or campaign.get("workload", {}).get("study_mode") != "client-limited-loopback"
+    ):
         raise ValueError("study identity is missing")
     if campaign.get("complete") is not True:
         raise ValueError("benchmark campaign is incomplete")
@@ -114,8 +148,7 @@ def main() -> int:
     if set(machine["governor_during"]) != set(machine["governor_before"]):
         raise ValueError("benchmark governor inventory changed during the campaign")
     if (
-        machine["temperature_after_initial_cooldown_c"]
-        > workload["cooldown_maximum_c"]
+        machine["temperature_after_initial_cooldown_c"] > workload["cooldown_maximum_c"]
         or machine["cpu_busy_after_initial_cooldown_percent"]
         > workload["cooldown_maximum_cpu_busy_percent"]
     ):
@@ -126,7 +159,9 @@ def main() -> int:
     grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for measurement in campaign["measurements"]:
         if measurement["lane_id"] not in configured_lanes:
-            raise ValueError(f"measurement references unknown lane {measurement['lane_id']}")
+            raise ValueError(
+                f"measurement references unknown lane {measurement['lane_id']}"
+            )
         if measurement["throttled"] != "throttled=0x0":
             raise ValueError(f"measurement was throttled: {measurement['lane_id']}")
         numeric_fields = (
@@ -151,7 +186,9 @@ def main() -> int:
             or not math.isfinite(measurement[field])
             for field in numeric_fields
         ):
-            raise ValueError(f"measurement has invalid numeric evidence: {measurement['lane_id']}")
+            raise ValueError(
+                f"measurement has invalid numeric evidence: {measurement['lane_id']}"
+            )
         if (
             measurement["requests_per_second"] <= 0
             or measurement["benchmark_duration_ms"] <= 0
@@ -159,8 +196,13 @@ def main() -> int:
             or measurement["request_time_mean_ms"] < 0
             or measurement["request_time_p99_ms"] < 0
             or measurement["server_rss_kib"] <= 0
-            or not 0 < measurement["server_rss_mean_kib"] <= measurement["server_rss_peak_kib"]
-            or not 0 <= measurement["request_time_p50_ms"] <= measurement["request_time_p95_ms"] <= measurement["request_time_p99_ms"]
+            or not 0
+            < measurement["server_rss_mean_kib"]
+            <= measurement["server_rss_peak_kib"]
+            or not 0
+            <= measurement["request_time_p50_ms"]
+            <= measurement["request_time_p95_ms"]
+            <= measurement["request_time_p99_ms"]
             or measurement["server_cpu_percent"] < 0
             or not 0 <= measurement["load_cpu_busy_percent"] <= 100
         ):
@@ -176,8 +218,7 @@ def main() -> int:
                 or not 0 <= value <= 100
                 for value in by_core.values()
             )
-            or abs(max(by_core.values()) - measurement["load_cpu_busy_percent"])
-            > 1e-6
+            or abs(max(by_core.values()) - measurement["load_cpu_busy_percent"]) > 1e-6
         ):
             raise ValueError(
                 f"measurement has inconsistent load-core evidence: "
@@ -188,36 +229,44 @@ def main() -> int:
             or not isinstance(measurement["server_process_count"], int)
             or measurement["server_process_count"] <= 0
         ):
-            raise ValueError(f"measurement has invalid process count: {measurement['lane_id']}")
+            raise ValueError(
+                f"measurement has invalid process count: {measurement['lane_id']}"
+            )
         maximum_busy = workload["cooldown_maximum_cpu_busy_percent"]
         if measurement["cpu_busy_after_cooldown_percent"] > maximum_busy:
             raise ValueError(
-                f"measurement did not pass the CPU-idle gate: "
-                f"{measurement['lane_id']}"
+                f"measurement did not pass the CPU-idle gate: " f"{measurement['lane_id']}"
             )
         if (
-            measurement["load_cpu_busy_percent"]
-            > workload["load_cpu_maximum_busy_percent"]
+            measurement["load_cpu_busy_percent"] > workload["load_cpu_maximum_busy_percent"]
         ) and not args.study:
-            raise ValueError(
-                f"load generator was saturated: {measurement['lane_id']}"
-            )
-        validate_generator_intervals(measurement, expected_load_cores,
-                                     workload["load_cpu_maximum_busy_percent"], allow_limited=args.study)
+            raise ValueError(f"load generator was saturated: {measurement['lane_id']}")
+        validate_generator_intervals(
+            measurement,
+            expected_load_cores,
+            workload["load_cpu_maximum_busy_percent"],
+            allow_limited=args.study,
+        )
         if args.study:
-            observed = max(measurement["load_cpu_busy_percent"], measurement["load_cpu_interval_peak_percent"])
+            observed = max(
+                measurement["load_cpu_busy_percent"],
+                measurement["load_cpu_interval_peak_percent"],
+            )
             limited = observed > workload["load_cpu_maximum_busy_percent"]
-            expected_class = "client-limited" if limited else "no-generator-saturation-observed"
-            if (measurement.get("capacity_classification") != expected_class
-                    or measurement.get("generator_headroom") != {
-                        "observed_maximum_busy_percent": observed,
-                        "maximum_busy_percent": workload["load_cpu_maximum_busy_percent"],
-                        "passed": not limited}):
-                raise ValueError("study headroom classification differs from raw observations")
-        if (
-            measurement["temperature_after_cooldown_c"]
-            > workload["cooldown_maximum_c"]
-        ):
+            expected_class = (
+                "client-limited" if limited else "no-generator-saturation-observed"
+            )
+            if measurement.get(
+                "capacity_classification"
+            ) != expected_class or measurement.get("generator_headroom") != {
+                "observed_maximum_busy_percent": observed,
+                "maximum_busy_percent": workload["load_cpu_maximum_busy_percent"],
+                "passed": not limited,
+            }:
+                raise ValueError(
+                    "study headroom classification differs from raw observations"
+                )
+        if measurement["temperature_after_cooldown_c"] > workload["cooldown_maximum_c"]:
             raise ValueError(
                 f"measurement did not pass the temperature gate: "
                 f"{measurement['lane_id']}"
@@ -237,12 +286,15 @@ def main() -> int:
             "responses_4xx",
             "responses_5xx",
         )
-        if any(
-            isinstance(measurement[field], bool)
-            or not isinstance(measurement[field], int)
-            or measurement[field] < 0
-            for field in accounting_fields
-        ) or expected == 0:
+        if (
+            any(
+                isinstance(measurement[field], bool)
+                or not isinstance(measurement[field], int)
+                or measurement[field] < 0
+                for field in accounting_fields
+            )
+            or expected == 0
+        ):
             raise ValueError(
                 f"measurement request accounting is invalid: {measurement['lane_id']}"
             )
@@ -256,9 +308,7 @@ def main() -> int:
             > measured_rate * 0.05
             or measurement["load_wall_seconds"] < total_seconds - 0.5
         ):
-            raise ValueError(
-                f"measurement duration is invalid: {measurement['lane_id']}"
-            )
+            raise ValueError(f"measurement duration is invalid: {measurement['lane_id']}")
         if (
             measurement["requests_total"] != expected
             # Independently recheck the same two-boundary accounting law:
@@ -304,8 +354,12 @@ def main() -> int:
             "p99_ms": statistics.median(item["request_time_p99_ms"] for item in values),
             "p50_ms": statistics.median(item["request_time_p50_ms"] for item in values),
             "p95_ms": statistics.median(item["request_time_p95_ms"] for item in values),
-            "rss_mib": statistics.median(item["server_rss_mean_kib"] for item in values) / 1024,
-            "rss_peak_mib": statistics.median(item["server_rss_peak_kib"] for item in values) / 1024,
+            "rss_mib": statistics.median(item["server_rss_mean_kib"] for item in values)
+            / 1024,
+            "rss_peak_mib": statistics.median(
+                item["server_rss_peak_kib"] for item in values
+            )
+            / 1024,
             "cpu_percent": statistics.median(item["server_cpu_percent"] for item in values),
             "load_cpu_percent": statistics.median(
                 item["load_cpu_busy_percent"] for item in values
@@ -315,8 +369,11 @@ def main() -> int:
     lines = [
         "# Raspberry Pi 5 Benchmark Results",
         "",
-        ("Diagnostic only: fewer than three matched rounds; not publication evidence."
-         if rounds < 3 else "Repeated-run report; publication still requires the complete campaign review."),
+        (
+            "Diagnostic only: fewer than three matched rounds; not publication evidence."
+            if rounds < 3
+            else "Repeated-run report; publication still requires the complete campaign review."
+        ),
         "",
         "All values are medians across matched rounds. `Relative throughput` is",
         "the lane throughput divided by the CoAkka host-inlined lane in the same",
@@ -345,9 +402,7 @@ def main() -> int:
         if lane["ecosystem"] not in ecosystems:
             ecosystems.append(lane["ecosystem"])
     for ecosystem in ecosystems:
-        selected = [
-            lane for lane in campaign["lanes"] if lane["ecosystem"] == ecosystem
-        ]
+        selected = [lane for lane in campaign["lanes"] if lane["ecosystem"] == ecosystem]
         coakka_lanes = [lane for lane in selected if lane["role"] == "coakka"]
         if len(coakka_lanes) != 1:
             raise ValueError(f"ecosystem {ecosystem} must contain one CoAkka lane")
@@ -366,7 +421,9 @@ def main() -> int:
         )
         for lane in selected:
             value = medians[lane["id"]]
-            relative = "not ranked (study)" if args.study else f"{value['rps'] / baseline:.2f}x"
+            relative = (
+                "not ranked (study)" if args.study else f"{value['rps'] / baseline:.2f}x"
+            )
             lines.append(
                 f"| {lane['implementation']} | {value['processes']:.0f} | "
                 f"{value['rps']:,.0f} | "
@@ -449,19 +506,39 @@ def main() -> int:
     )
     # Machine facts and raw per-run accounting accompany the median tables.
     # Optional unavailable fields stay explicit, never filled from old runs.
-    for label, key in (("Firmware", "firmware"), ("Frequency snapshot (kHz)", "cpu_frequency_khz"),
-                       ("RAM/swap before (KiB)", "memory_before"), ("Swap devices", "swap_devices"),
-                       ("Boot filesystem", "root_filesystem"), ("Cooling controls", "cooling"),
-                       ("Ambient temperature", "ambient_temperature"), ("Network", "network_topology"),
-                       ("Observer CPU set", "observer_affinity_during"), ("Tool versions", "tool_versions")):
+    for label, key in (
+        ("Firmware", "firmware"),
+        ("Frequency snapshot (kHz)", "cpu_frequency_khz"),
+        ("RAM/swap before (KiB)", "memory_before"),
+        ("Swap devices", "swap_devices"),
+        ("Boot filesystem", "root_filesystem"),
+        ("Cooling controls", "cooling"),
+        ("Ambient temperature", "ambient_temperature"),
+        ("Network", "network_topology"),
+        ("Observer CPU set", "observer_affinity_during"),
+        ("Tool versions", "tool_versions"),
+    ):
         lines.insert(-1, f"| {label} | {table_value(machine.get(key))} |")
-    lines.extend(["## Candidate Identities", "", "| Package | Linux AArch64 archive SHA-256 |",
-                  "| --- | --- |"])
+    lines.extend(
+        [
+            "## Candidate Identities",
+            "",
+            "| Package | Linux AArch64 archive SHA-256 |",
+            "| --- | --- |",
+        ]
+    )
     for name, pin in sorted(machine.get("package_pins", {}).items()):
         lines.append(f"| {name} | `{pin['sha256']['linux-aarch64']}` |")
-    lines.extend(["", "## Core Observations", "",
-                  "Facts below are the actual startup pull, not values inferred from CPU intent.",
-                  "A null native limits table means that public surface does not expose it.", ""])
+    lines.extend(
+        [
+            "",
+            "## Core Observations",
+            "",
+            "Facts below are the actual startup pull, not values inferred from CPU intent.",
+            "A null native limits table means that public surface does not expose it.",
+            "",
+        ]
+    )
     for lane in campaign["lanes"]:
         if lane["role"] != "coakka":
             continue
@@ -470,41 +547,81 @@ def main() -> int:
         lines.extend([f"### {lane['id']}", ""])
         for record in sorted(unique):
             lines.extend(["```json", json.dumps(json.loads(record), indent=2), "```", ""])
-    lines.extend(["## Per-Run Resource Accounting", "",
-                  "CPU seconds and sampled memory use the warm-up plus measurement window.",
-                  "N/A fields are not zero. Full observations and request outcomes remain in campaign.json.", "",
-                  "Generator CPU interval peak is the maximum of roughly one-second per-core averages, not an instantaneous peak.", "",
-                  "| Lane / round | User CPU s | System CPU s | Generator peak RSS KiB | Observer CPU s | Generator CPU interval peak % |",
-                  "| --- | ---: | ---: | ---: | ---: | ---: |"])
+    lines.extend(
+        [
+            "## Per-Run Resource Accounting",
+            "",
+            "CPU seconds and sampled memory use the warm-up plus measurement window.",
+            "N/A fields are not zero. Full observations and request outcomes remain in campaign.json.",
+            "",
+            "Generator CPU interval peak is the maximum of roughly one-second per-core averages, not an instantaneous peak.",
+            "",
+            "| Lane / round | User CPU s | System CPU s | Generator peak RSS KiB | Observer CPU s | Generator CPU interval peak % |",
+            "| --- | ---: | ---: | ---: | ---: | ---: |",
+        ]
+    )
     for measurement in campaign["measurements"]:
-        cells = [table_value(measurement.get(key)) for key in (
-            "server_user_cpu_seconds", "server_system_cpu_seconds", "load_rss_sampled_peak_kib", "observer_cpu_seconds",
-            "load_cpu_interval_peak_percent")]
-        lines.append(f"| {measurement['lane_id']} / {measurement['round']} | " + " | ".join(cells) + " |")
+        cells = [
+            table_value(measurement.get(key))
+            for key in (
+                "server_user_cpu_seconds",
+                "server_system_cpu_seconds",
+                "load_rss_sampled_peak_kib",
+                "observer_cpu_seconds",
+                "load_cpu_interval_peak_percent",
+            )
+        ]
+        lines.append(
+            f"| {measurement['lane_id']} / {measurement['round']} | "
+            + " | ".join(cells)
+            + " |"
+        )
     if args.study:
-        lines.extend(["", "## Per-Run Generator Limitations", "",
-                      "| Lane / round | Classification | Observed busiest CPU % | Limit % |",
-                      "| --- | --- | ---: | ---: |"])
+        lines.extend(
+            [
+                "",
+                "## Per-Run Generator Limitations",
+                "",
+                "| Lane / round | Classification | Observed busiest CPU % | Limit % |",
+                "| --- | --- | ---: | ---: |",
+            ]
+        )
         for measurement in campaign["measurements"]:
             headroom = measurement["generator_headroom"]
-            lines.append(f"| {measurement['lane_id']} / {measurement['round']} | "
-                         f"{measurement['capacity_classification']} | "
-                         f"{headroom['observed_maximum_busy_percent']:.2f} | "
-                         f"{headroom['maximum_busy_percent']:.2f} |")
-    lines.extend(["", "## Observed Loaded Runtime Files", "",
-                  "Recorded before timed load; filenames and content hashes, not inferred from package intent.",
-                  "Observed paths and process IDs remain in the private measurement receipt.", "",
-                  "| Lane / round | Mapped file | SHA-256 |", "| --- | --- | --- |"])
+            lines.append(
+                f"| {measurement['lane_id']} / {measurement['round']} | "
+                f"{measurement['capacity_classification']} | "
+                f"{headroom['observed_maximum_busy_percent']:.2f} | "
+                f"{headroom['maximum_busy_percent']:.2f} |"
+            )
+    lines.extend(
+        [
+            "",
+            "## Observed Loaded Runtime Files",
+            "",
+            "Recorded before timed load; filenames and content hashes, not inferred from package intent.",
+            "Observed paths and process IDs remain in the private measurement receipt.",
+            "",
+            "| Lane / round | Mapped file | SHA-256 |",
+            "| --- | --- | --- |",
+        ]
+    )
     for measurement in campaign["measurements"]:
         records = measurement.get("loaded_package")
         if records is None:
-            lines.append(f"| {measurement['lane_id']} / {measurement['round']} | N/A — not captured | N/A |")
+            lines.append(
+                f"| {measurement['lane_id']} / {measurement['round']} | N/A — not captured | N/A |"
+            )
         elif not records:
-            lines.append(f"| {measurement['lane_id']} / {measurement['round']} | No CoAkka mapping | — |")
+            lines.append(
+                f"| {measurement['lane_id']} / {measurement['round']} | No CoAkka mapping | — |"
+            )
         else:
             for record in records:
-                lines.append(f"| {measurement['lane_id']} / {measurement['round']} | "
-                             f"{table_value(Path(record['path']).name)} | `{record['sha256']}` |")
+                lines.append(
+                    f"| {measurement['lane_id']} / {measurement['round']} | "
+                    f"{table_value(Path(record['path']).name)} | `{record['sha256']}` |"
+                )
     args.output.write_text("\n".join(lines) + "\n")
     return 0
 

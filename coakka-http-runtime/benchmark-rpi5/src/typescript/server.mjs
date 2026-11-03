@@ -20,20 +20,29 @@ const stopped = stopSignal();
 async function coakka() {
   // Framework lanes must not load another server's native library or reserve
   // its state. Module loading is startup work, outside the measured interval.
-  const { Builder, CpuPolicy, Header, Headers, Limits, Response } = await import("@coakka/http");
+  const { Builder, CpuPolicy, Header, Headers, Limits, Response } = await import(
+    "@coakka/http"
+  );
   const intent = process.env.COAKKA_BENCH_CPU_POLICY;
-  if (intent !== "single" && intent !== "auto") throw new Error("explicit benchmark CPU intent required");
+  if (intent !== "single" && intent !== "auto")
+    throw new Error("explicit benchmark CPU intent required");
   const response = Response.bytes(BODY, {
     headers: new Headers([new Header("content-type", "application/octet-stream")]),
   });
   const service = new Builder()
     .listen("127.0.0.1", port)
-    .limits(new Limits({ cpuPolicy: intent === "single" ? CpuPolicy.SINGLE : CpuPolicy.AUTO }))
+    .limits(
+      new Limits({ cpuPolicy: intent === "single" ? CpuPolicy.SINGLE : CpuPolicy.AUTO }),
+    )
     .get("/fixed", () => response)
     .start();
   try {
-    console.log("coakka-runtime-info=" + JSON.stringify(service.runtimeInfo(),
-      (_key, value) => typeof value === "bigint" ? value.toString() : value));
+    console.log(
+      "coakka-runtime-info=" +
+        JSON.stringify(service.runtimeInfo(), (_key, value) =>
+          typeof value === "bigint" ? value.toString() : value,
+        ),
+    );
     await stopped;
   } finally {
     await service.close();
@@ -50,7 +59,9 @@ async function expressServer() {
   });
   const server = app.listen(port, "127.0.0.1");
   await stopped;
-  await new Promise((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
+  await new Promise((resolve, reject) =>
+    server.close((error) => (error ? reject(error) : resolve())),
+  );
 }
 
 /** Real Fastify routing with logging disabled for the fixed workload. */
@@ -66,10 +77,15 @@ async function fastifyServer() {
 /** Elysia owns dispatch; the payload matches all other lanes byte for byte. */
 async function elysiaServer() {
   const { Elysia } = await import("elysia");
-  const app = new Elysia().get(
-    "/fixed",
-    () => new globalThis.Response(BODY, { headers: { "content-type": "application/octet-stream" } }),
-  ).listen({ hostname: "127.0.0.1", port });
+  const app = new Elysia()
+    .get(
+      "/fixed",
+      () =>
+        new globalThis.Response(BODY, {
+          headers: { "content-type": "application/octet-stream" },
+        }),
+    )
+    .listen({ hostname: "127.0.0.1", port });
   await stopped;
   await app.stop();
 }
@@ -78,17 +94,30 @@ async function elysiaServer() {
 async function honoServer() {
   const { Hono } = await import("hono");
   const app = new Hono();
-  app.get("/fixed", (context) => context.body(BODY, 200, { "content-type": "application/octet-stream" }));
+  app.get("/fixed", (context) =>
+    context.body(BODY, 200, { "content-type": "application/octet-stream" }),
+  );
   const server = Bun.serve({ hostname: "127.0.0.1", port, fetch: app.fetch });
   await stopped;
   await server.stop(false);
 }
 switch (mode) {
-  case "coakka": await coakka(); break;
-  case "express": await expressServer(); break;
-  case "fastify": await fastifyServer(); break;
-  case "elysia": await elysiaServer(); break;
-  case "hono": await honoServer(); break;
-  default: throw new Error(`unsupported JavaScript lane: ${mode}`);
+  case "coakka":
+    await coakka();
+    break;
+  case "express":
+    await expressServer();
+    break;
+  case "fastify":
+    await fastifyServer();
+    break;
+  case "elysia":
+    await elysiaServer();
+    break;
+  case "hono":
+    await honoServer();
+    break;
+  default:
+    throw new Error(`unsupported JavaScript lane: ${mode}`);
 }
 console.log("benchmark-shutdown=pass");
