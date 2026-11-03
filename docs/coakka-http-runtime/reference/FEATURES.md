@@ -56,7 +56,7 @@ Go uses a virtual machine. Each lane must retain its own idiomatic API.
 | Logical-target outbound HTTP | C: [`outbound.c`](../../../coakka-http-runtime/c/outbound.c); C++: [`outbound.cpp`](../../../coakka-http-runtime/cpp/outbound.cpp) | Startup demonstration against a loopback service | Native 200/404 and terminal release; managed cancel/deadline/reuse and TLS/mTLS recipes |
 | Handler-only replacement | `/version`, prepared `v2`, stale revision rejected | `/version`, prepared `v2` | Native and managed success/stale-refusal recipes with continued dispatch |
 | Complete route publication | Outbound examples replace `/source` with `/published` | Isolated `/old` to `/published` service | Native apply/replay/stale refusal; managed coherent snapshot/publication/refusal recipes |
-| Health/liveness/runtime information | Startup reads with required runtime execution and CPU/batch observations | Startup reads | runtime-owned observations; current installed native ABI12/info5 suite and r3 Mac startup checks |
+| Health/liveness/runtime information | Startup reads with required runtime execution and CPU/batch observations | Startup reads | runtime-owned observations; archived r3 native ABI12/info5 suite and r3 Mac startup checks |
 | Monitor events/live policy | Bounded read and [reload recipe](../../../coakka-http-runtime/native/monitor_example.h) | Bounded startup read | Named accepted/stale/over-reservation/restore recipes; exhaustive cursor/waiter faults not claimed |
 | TLS/mTLS | Security mode | Separate security source | HTTP/1.1 success and missing-client-identity rejection checked |
 | HTTP/2 and HTTP/3 | Listener CLI selection | Package listener configuration | Independent Mac/Pi wire/graceful-drain recipe evidence below; not inferred from ordinary HTTP/1 smoke |
@@ -175,8 +175,8 @@ Those runs consume installed packages without rebuilding the runtime or connecto
 Earlier Mac/Pi protocol and named feature receipts above retain their original
 candidate identity; they are not relabeled as fresh r3 Pi sample executions.
 
-Public native contract is ABI12/runtime-info5; the former ABI11 references
-above describe the preceding recipe checkpoint. Configuration and runtime
+The released 1.1.2 native SDK declares host ABI 10. ABI12/runtime-info5
+and ABI11 references on this page describe historical sample checkpoints. Configuration and runtime
 observations remain runtime-owned. Connector execution tuning is fixed internally,
 not an application setting. See the [verified benchmark records](../../../coakka-http-runtime/benchmark-rpi5/README.md#http-runtime-112-on-raspberry-pi-5)
 for the 1.1.2 connector measurements.
