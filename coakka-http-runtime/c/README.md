@@ -4,7 +4,7 @@ The [1.1.2 server and streaming samples](../native/host-server/README.md) use th
 
 **Start here:** [Installation and integration guide](../../docs/coakka-http-runtime/c/integration.md) — prerequisites,
 package setup, first HTTP request, feature walkthroughs and checked shutdown.
-This README records verification and benchmark results for the pinned 1.0.0
+This README records verification for the pinned 1.0.0
 callback SDK. For the focused 1.1.2 SDK, use the
 [installed native contract tests](../runtime-test/README.md).
 

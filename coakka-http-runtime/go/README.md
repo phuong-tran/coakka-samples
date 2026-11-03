@@ -2,7 +2,7 @@
 
 **Start here:** [Installation and integration guide](../../docs/coakka-http-runtime/go/integration.md) — prerequisites,
 package setup, first HTTP request, feature walkthroughs and checked shutdown.
-This README records sample details, verification scope and benchmark results.
+This README records sample details and verification scope.
 
 The Go lane uses ordinary functions, structs, errors, contexts, and
 `signal.NotifyContext`. It imports the module from the pinned offline Go

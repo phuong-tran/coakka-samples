@@ -2,7 +2,7 @@
 
 **Start here:** [Installation and integration guide](../../docs/coakka-http-runtime/kotlin/integration.md) — prerequisites,
 package setup, first HTTP request, feature walkthroughs and checked shutdown.
-This README records sample details, verification scope and benchmark results.
+This README records sample details and verification scope.
 
 Kotlin is the JVM sample language. The application uses builders, data
 classes, lambdas, typed response producers, `use`-style stream ownership, and a

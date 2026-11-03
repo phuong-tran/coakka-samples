@@ -178,8 +178,8 @@ candidate identity; they are not relabeled as fresh r3 Pi sample executions.
 Public native contract is ABI12/runtime-info5; the former ABI11 references
 above describe the preceding recipe checkpoint. Configuration and runtime
 observations remain runtime-owned. Connector execution tuning is fixed internally,
-not an application setting. See the [verified benchmark records](../../../coakka-http-runtime/benchmark-rpi5/README.md#verified-package-results)
-for current-package observations and explicit Pending profiles.
+not an application setting. See the [verified benchmark records](../../../coakka-http-runtime/benchmark-rpi5/README.md#http-runtime-112-on-raspberry-pi-5)
+for the 1.1.2 connector measurements.
 
 ## Try The Existing Routes
 
