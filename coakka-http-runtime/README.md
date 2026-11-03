@@ -43,17 +43,19 @@ status before adding inspection to a language example.
 [Current integration status](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/inspect/metadata-and-openapi.md#current-package-integration) ·
 [Inspect packages and setup](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/inspect/README.md).
 
-## Package-manager releases in preparation
+## Version 1.1.2
 
-Distribution through **npm**, **Maven Central**, **Go modules** and **PyPI** is
-planned. The currently available installation path uses the 1.0.0 archives and
-matching examples below. The [package ledger](../docs/common/current-packages.md)
-records what has actually been released.
+| Host | HTTP Runtime 1.1.2 |
+| --- | --- |
+| Node.js | [`coakka-http-runtime-node`](https://www.npmjs.com/package/coakka-http-runtime-node/v/1.1.2) |
+| Bun | [`coakka-http-runtime-bun`](https://www.npmjs.com/package/coakka-http-runtime-bun/v/1.1.2) |
+| Python | [`coakka-http-runtime-python`](https://pypi.org/project/coakka-http-runtime-python/1.1.2/) |
+| JVM | [`io.github.phuong-tran.coakka:coakka-http-runtime-jvm:1.1.2`](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/coakka-http-runtime-jvm/1.1.2) |
+| Go | [`github.com/phuong-tran/coakka-http-runtime-go@v1.1.2`](https://pkg.go.dev/github.com/phuong-tran/coakka-http-runtime-go@v1.1.2) |
 
-Choose one language below, install its matching **HTTP Runtime 1.0.0 archive**,
-start the server and send one request. Each guide supplies prerequisites,
-commands, the expected response and shutdown steps. You only need the tools for
-your chosen language. [Archives are available in Publish](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/README.md).
+[C and C++ SDK examples](native/host-server/README.md) · [Raspberry Pi 5 benchmark](benchmark-rpi5/README.md)
+
+The language guides below describe the matching historical archive examples.
 
 ## Languages
 
@@ -68,7 +70,7 @@ Follow the guide's exact language version and platform requirements.
 | Python | [Python integration](../docs/coakka-http-runtime/python/integration.md) | [Python sample](python/README.md) |
 | Node.js / Bun / TypeScript | [Node/Bun integration](../docs/coakka-http-runtime/typescript/integration.md) | [TypeScript sample](typescript/README.md) |
 
-For an installed SDK 1.1.2 candidate, see the [C and C++ server and streaming examples](native/host-server/README.md).
+For the installed SDK 1.1.2, see the [C and C++ server and streaming examples](native/host-server/README.md).
 
 ## After one request
 

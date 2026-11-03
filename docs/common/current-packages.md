@@ -138,22 +138,17 @@ unsuffixed v1 tags remain unchanged.
 | coakka-client | `coakka-tools/coakka-client/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/` |
 | coakka-runtime-inspect | `coakka-tools/coakka-runtime-inspect/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/` |
 
-## CoAkka HTTP Runtime: Separate Archive Distribution
+## CoAkka HTTP Runtime
 
-The Runtime/Logger coordinates above do not install CoAkka HTTP Runtime.
-The separate HTTP server/client currently uses checksum-pinned `1.0.0`
-repository archives, not npm, PyPI, Maven Central or a tagged Go module.
+HTTP Runtime has its own packages and release cadence.
 
-The [HTTP catalog](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime)
-contains the native C/C++, Go, JVM, Python and Node.js/Bun archives under
-`<lane>/candidates/2026-10-08-r3/`, for macOS ARM64, Linux ARM64/x86-64 and
-Windows ARM64/x86-64. The directory name is the retained artifact identity;
-consumers use `coakka-publish/main`, not an old release branch.
-
-Start with the [archive-backed samples](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-http-runtime).
-Their feature index, matching-host scope and measured Pi 5 benchmark report
-are separate from Runtime's message-delivery evidence. Optional HTTP Inspect
-archives have their own, narrower platform scope.
+| Host | HTTP Runtime 1.1.2 |
+| --- | --- |
+| Node.js | [`coakka-http-runtime-node`](https://www.npmjs.com/package/coakka-http-runtime-node/v/1.1.2) |
+| Bun | [`coakka-http-runtime-bun`](https://www.npmjs.com/package/coakka-http-runtime-bun/v/1.1.2) |
+| Python | [`coakka-http-runtime-python`](https://pypi.org/project/coakka-http-runtime-python/1.1.2/) |
+| JVM | [`io.github.phuong-tran.coakka:coakka-http-runtime-jvm:1.1.2`](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/coakka-http-runtime-jvm/1.1.2) |
+| Go | [`github.com/phuong-tran/coakka-http-runtime-go@v1.1.2`](https://pkg.go.dev/github.com/phuong-tran/coakka-http-runtime-go@v1.1.2) |
 
 ## Main Public Repositories
 
