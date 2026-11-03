@@ -101,13 +101,4 @@ capability and matching-host execution are separate claims.
 
 ## Raspberry Pi 5 Benchmark
 
-| Application | CPUs | Req/s median (range) | p50 / p95 / p99 ms | CPU % | RSS mean / sampled peak MiB | Errors / timeouts |
-| --- | ---: | --- | --- | ---: | --- | --- |
-| Python + CoAkka | 1 | 10,532.0 (10,516.0–10,584.3) | 5.865 / 9.669 / 10.526 | 99.8 | 35.2 / 35.2 | 0 / 0 |
-| Python + CoAkka | 2 | 11,919.1 (11,845.1–11,985.8) | 5.384 / 6.128 / 6.985 | 137.1 | 35.2 / 35.2 | 0 / 0 |
-
-Installed r3 packages; three-run localhost observations, not a universal
-framework ranking. Missing framework comparisons remain **Pending**.
-See [complete results, machine facts, all runs and evidence identities](../benchmark-rpi5/README.md#verified-package-results)
-and the [methodology](../benchmark-rpi5/README.md). CPU100% means one CPU;
-RSS is sampled, and resource measurements include warm-up.
+See the [HTTP Runtime 1.1.2 measurements](../benchmark-rpi5/README.md#http-runtime-112-on-raspberry-pi-5).

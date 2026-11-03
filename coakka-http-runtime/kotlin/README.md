@@ -138,13 +138,4 @@ Mac/Pi; the HTTP3 peer remains alive to acknowledge shutdown until the runtime d
 
 ## Raspberry Pi 5 Benchmark
 
-| Application | CPUs | Req/s median (range) | p50 / p95 / p99 ms | CPU % | RSS mean / sampled peak MiB | Errors / timeouts |
-| --- | ---: | --- | --- | ---: | --- | --- |
-| Kotlin/JVM + CoAkka | 2 | 94,918.3 (94,639.6–95,380.8) | 0.664 / 0.700 / 0.922 | 154.8 | 219.4 / 223.9 | 0 / 0 |
-
-Installed r3 packages; three-run localhost observations, not a universal
-framework ranking. Missing framework comparisons remain **Pending**. The final
-JVM package 1-CPU row, Vert.x and Undertow are **Pending**.
-See [complete results, machine facts, all runs and evidence identities](../benchmark-rpi5/README.md#verified-package-results)
-and the [methodology](../benchmark-rpi5/README.md). CPU100% means one CPU;
-RSS is sampled, and resource measurements include warm-up.
+See the [HTTP Runtime 1.1.2 measurements](../benchmark-rpi5/README.md#http-runtime-112-on-raspberry-pi-5).

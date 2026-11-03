@@ -202,13 +202,4 @@ Mac/Pi with Go1.23. This does not claim every installed curl supports HTTP/3.
 
 ## Raspberry Pi 5 Benchmark
 
-| Application | CPUs | Req/s median (range) | p50 / p95 / p99 ms | CPU % | RSS mean / sampled peak MiB | Errors / timeouts |
-| --- | ---: | --- | --- | ---: | --- | --- |
-| Go + CoAkka | 1 | 52,040.3 (51,821.0–53,269.8) | 1.165 / 1.771 / 1.981 | 93.7 | 25.5 / 25.8 | 0 / 0 |
-| Go + CoAkka | 2 | 93,169.9 (92,407.1–93,324.7) | 0.662 / 0.830 / 1.213 | 159.0 | 25.9 / 26.4 | 0 / 0 |
-
-Installed r3 packages; three-run localhost observations, not a universal
-framework ranking. Missing framework comparisons remain **Pending**.
-See [complete results, machine facts, all runs and evidence identities](../benchmark-rpi5/README.md#verified-package-results)
-and the [methodology](../benchmark-rpi5/README.md). CPU100% means one CPU;
-RSS is sampled, and resource measurements include warm-up.
+See the [HTTP Runtime 1.1.2 measurements](../benchmark-rpi5/README.md#http-runtime-112-on-raspberry-pi-5).

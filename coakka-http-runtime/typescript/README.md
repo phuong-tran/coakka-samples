@@ -127,17 +127,4 @@ all fault combinations or Windows POSIX-runner support.
 
 ## Raspberry Pi 5 Benchmark
 
-| Application | CPUs | Req/s median (range) | p50 / p95 / p99 ms | CPU % | RSS mean / sampled peak MiB | Errors / timeouts |
-| --- | ---: | --- | --- | ---: | --- | --- |
-| Node.js + CoAkka | 1 | 29,377.8 (29,351.7–29,526.0) | 2.138 / 2.353 / 3.687 | 83.9 | 71.1 / 72.6 | 0 / 0 |
-| Node.js + CoAkka | 2 | 56,487.6 (55,532.0–58,252.8) | 1.099 / 1.310 / 2.134 | 159.5 | 69.3 / 70.0 | 0 / 0 |
-| Bun + CoAkka | 1 | 30,561.8 (29,891.5–31,867.3) | 2.065 / 2.425 / 2.744 | 99.5 | 66.8 / 68.1 | 0 / 0 |
-| Bun.serve | 1 | 46,201.4 (46,043.5–46,323.7) | 1.334 / 1.765 / 2.158 | 99.8 | 38.7 / 41.7 | 0 / 0 |
-| Bun + CoAkka | 2 | 66,026.3 (65,502.2–66,225.1) | 0.944 / 1.063 / 1.585 | 171.0 | 66.1 / 67.1 | 0 / 0 |
-| Bun.serve | 2 | 46,521.7 (46,263.5–46,557.1) | 1.330 / 1.741 / 2.186 | 100.3 | 39.7 / 42.0 | 0 / 0 |
-
-Installed r3 packages; three-run localhost observations, not a universal
-framework ranking. Missing framework comparisons remain **Pending**.
-See [complete results, machine facts, all runs and evidence identities](../benchmark-rpi5/README.md#verified-package-results)
-and the [methodology](../benchmark-rpi5/README.md). CPU100% means one CPU;
-RSS is sampled, and resource measurements include warm-up.
+See the [HTTP Runtime 1.1.2 measurements](../benchmark-rpi5/README.md#http-runtime-112-on-raspberry-pi-5).

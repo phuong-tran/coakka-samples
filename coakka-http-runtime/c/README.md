@@ -231,31 +231,4 @@ sample execution evidence.
 
 ## Raspberry Pi 5 Benchmark
 
-| Application | CPUs | Req/s median (range) | p50 / p95 / p99 ms | CPU % | RSS mean / sampled peak MiB | Errors / timeouts |
-| --- | ---: | --- | --- | ---: | --- | --- |
-| Native C + CoAkka | 1 | 88,255.1 (87,753.3–88,939.2) | 0.715 / 0.756 / 0.943 | 99.7 | 12.9 / 12.9 | 0 / 0 |
-| Native C + CoAkka | 2 | 158,854.4 (158,021.3–158,903.7) | 0.375 / 0.547 / 0.640 | 195.6 | 17.1 / 17.1 | 0 / 0 |
-
-Installed r3 native package, explicitly configured public C host-inlined
-event reader (not callback defaults). Native is measured alone, without
-a competing server. One/two CPUs use one/two loops, notifications 64/32
-and completion batch 64; full terminal events remain enabled. Three fresh-process runs
-per profile, with the required CPU cooldown before each run.
-These are localhost observations, not an unconstrained capacity claim.
-
-After preparing the Pi workspace using the shared methodology, run only
-the native lane from its benchmark directory (use fresh output paths):
-
-```sh
-python3 scripts/run-rpi5.py --study-mode client-limited-loopback --lane c-coakka --config config/lanes.json --output evidence/native-1cpu
-python3 scripts/run-rpi5.py --study-mode client-limited-loopback --lane c-coakka --config config/lanes-2cpu.json --output evidence/native-2cpu
-python3 scripts/summarize.py evidence/native-1cpu/campaign.json --study --output evidence/native-1cpu/STUDY.md
-python3 scripts/summarize.py evidence/native-2cpu/campaign.json --study --output evidence/native-2cpu/STUDY.md
-```
-
-Run the two campaigns sequentially, never concurrently. The runner owns
-cooldown and refuses failed package, response or shutdown checks.
-
-See [complete results, machine facts, all runs and evidence identities](../benchmark-rpi5/README.md#verified-package-results)
-and the [methodology](../benchmark-rpi5/README.md). CPU100% means one CPU;
-RSS is sampled, and resource measurements include warm-up.
+See the [HTTP Runtime 1.1.2 measurements](../benchmark-rpi5/README.md#http-runtime-112-on-raspberry-pi-5).

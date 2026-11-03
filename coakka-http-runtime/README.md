@@ -53,7 +53,7 @@ status before adding inspection to a language example.
 | JVM | [`io.github.phuong-tran.coakka:coakka-http-runtime-jvm:1.1.2`](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/coakka-http-runtime-jvm/1.1.2) |
 | Go | [`github.com/phuong-tran/coakka-http-runtime-go@v1.1.2`](https://pkg.go.dev/github.com/phuong-tran/coakka-http-runtime-go@v1.1.2) |
 
-[C and C++ SDK examples](native/host-server/README.md) · [Raspberry Pi 5 benchmark](benchmark-rpi5/README.md)
+[C and C++ SDK downloads](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/1.1.2) · [C and C++ examples](native/host-server/README.md) · [Raspberry Pi 5 benchmark](benchmark-rpi5/README.md)
 
 The language guides below describe the matching historical archive examples.
 
