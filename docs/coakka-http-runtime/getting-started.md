@@ -8,14 +8,12 @@ Start with the [1.1.2 registry samples](https://github.com/phuong-tran/coakka-sa
 
 | Your application | Start with |
 | --- | --- |
-| Node.js or Bun / TypeScript | [Node/Bun installation and first request](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-http-runtime/typescript/integration.md) |
-| Python | [Python installation and first request](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-http-runtime/python/integration.md) |
-| Kotlin or Java | [JVM installation and first request](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-http-runtime/kotlin/integration.md) |
-| Go | [Go installation and first request](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-http-runtime/go/integration.md) |
-| C | [C installation and first request](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-http-runtime/c/integration.md) |
-| C++ | [C++ installation and first request](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-http-runtime/cpp/integration.md) |
-
-The guides in the table describe the archived feature samples and their matching package requirements.
+| Node.js | [Install from npm and run](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md#nodejs) |
+| Bun | [Install from npm and run with Bun](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md#bun) |
+| Python | [Install from PyPI and run](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md#python) |
+| Kotlin or Java | [Install from Maven Central and run](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md#jvm) |
+| Go | [Install the tagged module and SDK](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md#go) |
+| C or C++ | [Run the native SDK samples](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/native/host-server/README.md) |
 
 The [HTTP sample index](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/README.md)
 links the runnable source and feature coverage for each language.

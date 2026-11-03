@@ -61,7 +61,7 @@ Start with the [1.1.2 registry samples](registry-basic/README.md) for Node.js, B
 
 Follow the guide's exact language version and platform requirements.
 
-| Your language | Setup and first request | Runnable example |
+| Your language | Feature guide | Archived feature sample |
 | --- | --- | --- |
 | C | [C integration](../docs/coakka-http-runtime/c/integration.md) | [C sample](c/README.md) |
 | C++ | [C++ integration](../docs/coakka-http-runtime/cpp/integration.md) | [C++ sample](cpp/README.md) |

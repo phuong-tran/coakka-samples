@@ -3,6 +3,7 @@
 ## Contents
 
 - [HTTP Runtime 1.1.2 on Raspberry Pi 5](#http-runtime-112-on-raspberry-pi-5)
+  - [Native C SDK 1.1.2](#native-c-sdk-112)
 - [Comparison Scope](#comparison-scope)
 - [Machine Record](#machine-record)
 - [Workload And CPU Budgets](#workload-and-cpu-budgets)
@@ -14,25 +15,36 @@
 
 ## HTTP Runtime 1.1.2 on Raspberry Pi 5
 
-These results come from the qualified 1.1.2 packages on a physical Raspberry
-Pi 5. For each connector, the table shows the highest throughput observed
-among two accepted runs, with latency and memory from the same run. Each
-configuration ran once, so these are confirmation measurements rather than
-throughput medians across repeated runs.
+The physical Raspberry Pi 5 ran the public HTTP Runtime 1.1.2 packages.
+Each connector row reports the higher throughput of two accepted runs,
+with latency and memory from that same run.
 
 | Connector | Requests/s | p50 (ms) | p95 (ms) | p99 (ms) | RSS (MiB) | Peak RSS (MiB) |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Python | 74,898.0 | 0.821 | 1.056 | 1.217 | 46.17 | 46.17 |
-| Node.js | 88,288.3 | 0.705 | 0.902 | 0.953 | 72.83 | 72.83 |
-| Bun | 82,615.4 | 0.743 | 0.865 | 1.477 | 71.64 | 72.81 |
-| Go | 94,522.6 | 0.645 | 0.811 | 1.203 | 25.81 | 39.69 |
-| JVM | 82,951.3 | 0.760 | 0.789 | 1.101 | 247.34 | 248.53 |
+| Python | 74,996.0 | 0.820 | 1.070 | 1.175 | 46.11 | 46.11 |
+| Node.js | 88,381.6 | 0.703 | 0.891 | 0.951 | 72.36 | 72.36 |
+| Bun | 81,326.5 | 0.757 | 0.869 | 1.482 | 66.33 | 72.89 |
+| Go | 94,552.6 | 0.647 | 0.822 | 1.173 | 25.94 | 39.17 |
+| JVM | 82,586.4 | 0.763 | 0.791 | 1.095 | 246.53 | 248.06 |
 
-Each timed run lasted 10 seconds over loopback using HTTP/1.1 keep-alive,
-64 clients and a 32-byte response. The server used AUTO on CPUs 0–1 and the
-load generator used CPUs 2–3. All accepted temperature samples were below
-50°C, with no throttling. RSS is the whole server process after load, and
-peak RSS is its process high-water mark. The 1.1.2 pass covered connectors.
+Each timed run used 64 clients, HTTP/1.1 keep-alive, a 32-byte response,
+and a 10-second loopback load. The server used CPUs 0–1 and the load generator
+used CPUs 2–3. Connectors used AUTO and one active I/O event loop. Start
+temperatures were 44.65–47.40°C. The highest measured temperature during
+load was 49.60°C. All accepted runs reported throttle state `0x0`.
+RSS is the whole server process after load. Peak RSS is its high-water mark.
+
+### Native C SDK 1.1.2
+
+| Requests/s | p50 (ms) | p95 (ms) | p99 (ms) | RSS (MiB) | Peak RSS (MiB) |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 161,727.6 | 0.376 | 0.546 | 0.607 | 19.38 | 19.38 |
+
+The native C app used the public SDK with the same workload and CPU partition.
+It explicitly configured two I/O event loops and used one host event reader.
+The table reports the median-throughput run of three accepted runs
+(161,344.0–162,291.2 requests/s), with latency and memory
+from that same run. All 4,853,628 native responses were HTTP 200.
 
 ## Comparison Scope
 
@@ -131,7 +143,7 @@ a short fixed delay alone is not evidence of steady state. Record the chosen
 warm-up and observed stability instead of applying unequal hidden warm-up.
 
 Before **every** run, including the first and retries, stop the preceding
-server and wait at least 30 seconds, until board temperature is at most 50 °C,
+server and wait at least 30 seconds, until board temperature is below 50 °C,
 background CPU busy is at most 5%, and throttle status is clear. Freeze the
 sampling interval and number of consecutive qualifying observations in the
 campaign configuration. The current gate requires three clean observations,
@@ -139,8 +151,9 @@ with a five-second wait between one-second CPU samples; any failure resets the
 streak. A bounded cooldown deadline expiring rejects or defers
 the run; it never bypasses the gate. Keep cooling policy fixed throughout.
 
-Warm-up can heat the CPU again: record conditions at the start and end of the
-timed interval too. Any throttling during measurement rejects that run.
+Record the temperature at load start and during the run when sampling is available.
+The 50 °C limit applies to starting the test. During load, keep recording
+temperature and reject the run if the Pi reports throttling.
 
 ## Metrics And Accounting
 
@@ -222,12 +235,13 @@ clustering. Jetty uses a nonblocking handler, one acceptor and one/two selectors
 Undertow uses one/two I/O threads; Vert.x Web deploys one router verticle per
 assigned CPU; WebFlux uses one/two workers. Spring MVC uses Tomcat's servlet/NIO
 path with 8–64 workers. These are framework comparisons, not bare transport
-rows. See the [sample coverage](../FEATURES.md) before scheduling measurements.
+rows. See the [sample coverage](../../docs/coakka-http-runtime/reference/FEATURES.md) before scheduling measurements.
 
 ## Preparation
 
-This is a Pi-only benchmark harness, not an installer or a change to connector
-minimum versions. The current cohort uses Go 1.27.1, Node 22.23.3, Bun 1.4.2,
+The instructions below prepare the separate archive-backed framework comparison
+harness. The release results above use public 1.1.2 packages. The framework
+harness uses Go 1.27.1, Node 22.23.3, Bun 1.4.2,
 Trixie's OpenJDK 21, Python 3.13 and h2load 1.64.0. The separate Go benchmark
 module requires Go 1.25 because its Gin fixture requires it; the CoAkka connector
 retains its independently verified Go 1.23 minimum. JVM benchmark fixtures do
@@ -256,5 +270,3 @@ on the Pi. A run fails before changing the CPU governor if any receipt no longer
 matches. Do not run build/preparation commands concurrently with measurements.
 Campaign commands and final warm-up settings remain pending qualification;
 the preparation success marker alone is not authorization to publish numbers.
-
-<!-- VERIFIED RESULTS -->

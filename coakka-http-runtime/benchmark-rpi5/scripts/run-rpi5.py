@@ -280,7 +280,8 @@ def wait_until_cool(
         throttle_state = throttled()
         busy_percent = cpu_busy_percent()
         if (
-            current_temperature <= maximum_c
+            current_temperature < 50
+            and current_temperature <= maximum_c
             and throttle_state == "throttled=0x0"
             and busy_percent <= maximum_cpu_busy_percent
         ):
@@ -1093,6 +1094,8 @@ def measure(
                         if not os.sched_getaffinity(int(thread.name)) <= allowed:
                             raise ValueError("Native worker escaped the CPU budget")
             before_c = temperature_c()
+            if before_c >= 50 or throttled() != "throttled=0x0":
+                raise RuntimeError(f"Load admission failed for {lane['id']}: {before_c:.2f} °C or throttling")
             memory_before = memory_snapshot()
             frequencies_before = frequency_snapshot()
             request_log = request_log_root / (

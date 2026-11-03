@@ -439,11 +439,11 @@ class BenchmarkToolsTest(unittest.TestCase):
             self.assertEqual((43, 4), RUNNER.wait_until_cool(50, 15, 5))
             self.assertEqual(6, temperature.call_count)
 
-    def test_cooldown_times_out_without_three_clean_samples(self) -> None:
+    def test_cooldown_at_fifty_does_not_admit_a_run(self) -> None:
         with (
             mock.patch.object(RUNNER.time, "sleep"),
             mock.patch.object(RUNNER.time, "monotonic", side_effect=[0, 601]),
-            mock.patch.object(RUNNER, "temperature_c", return_value=51),
+            mock.patch.object(RUNNER, "temperature_c", return_value=50),
             mock.patch.object(RUNNER, "throttled", return_value="throttled=0x0"),
             mock.patch.object(RUNNER, "cpu_busy_percent", return_value=2),
         ):
