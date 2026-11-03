@@ -33,15 +33,14 @@ unpublished registry entry.
 
 ## Certificate lifecycle
 
-Live listener certificate reload is planned for a future version. The intended
-experience is an explicit, checked change of credential material, with clear
-effective-state reporting and failure behavior. Detailed connection, trust
-transition and rollback semantics will accompany the verified API.
+The 1.1.2 release candidate supports explicit TLS and mTLS credential reload
+for secure listeners. Operators submit a new credential set with the expected
+effective generation. A rejected update preserves the current generation.
+New handshakes use the accepted credentials, while existing sessions follow
+the listener's retirement policy. Monitoring remains off by default.
 
-Today, certificate rotation uses a replacement service: prepare credentials,
-start and verify the new instance, shift traffic, then drain the old instance.
-That is the current operational procedure; the roadmap is not an instruction
-to reload a running listener by overwriting its certificate files.
+For older packages, rotate with a replacement service. See the certificate
+operations guide for both procedures.
 
 ## More language connectors
 
@@ -58,17 +57,11 @@ Core already supports route API metadata, including parameters, request bodies,
 responses and schemas. Inspect already consumes that metadata and projects
 OpenAPI 3.0.3; its standalone application has its own qualified packages.
 
-The language connectors do not yet expose the end-user API for declaring this
-metadata. A future update will connect idiomatic connector declarations to the
-existing Core capability, with Java-friendly JVM APIs, per-language samples,
-documentation and artifact-backed tests. Metadata belongs to route registration,
-not to every incoming request. This work extends the public integration path;
-it does not redesign the metadata model or add schema work to the request path.
-
-Downstream OpenAPI-tool verification will accompany that integration. See
-[metadata and OpenAPI](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/inspect/metadata-and-openapi.md)
-for current behavior and the distinction between route snapshots and schema
-publication. No new connector API is implied by this roadmap entry.
+JavaScript/TypeScript, Python, Go and JVM connectors expose route metadata
+and authenticated inspection. The 1.1.2 qualification exercised the focused
+native read surface and the Node/Bun OpenAPI workflow with the standalone
+Inspector. See [metadata and OpenAPI](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/inspect/metadata-and-openapi.md)
+for the distinction between route snapshots and schema publication.
 
 ## Current guides
 

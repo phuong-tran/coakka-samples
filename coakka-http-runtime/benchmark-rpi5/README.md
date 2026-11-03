@@ -255,6 +255,27 @@ the preparation success marker alone is not authorization to publish numbers.
 
 ## Results
 
+### Connector profiling checkpoint before 1.1.2 TLS/mTLS integration
+
+The following Pi 5 measurements use the earlier ABI10 Core (22f5f309).
+They describe the connector profiling checkpoint. The final 1.1.2 binaries
+need their own measurement before these figures can be quoted for that build.
+
+For each host, the table selects the higher median throughput across the
+shared and fresh response cohorts. Both cohorts are retained in the profiling
+evidence. RSS includes the language host and native runtime. Peak RSS is the
+highest process high-water mark across the selected cohort.
+
+| Host | Mode | Median req/s | p99 median (ms) | RSS median (MiB) | Peak RSS (MiB) |
+|---|---|---:|---:|---:|---:|
+| python | shared | 75,044.3 | 1.138 | 40.3 | 40.4 |
+| node | shared | 88,592.2 | 0.935 | 72.0 | 72.0 |
+| bun | shared | 81,988.6 | 1.434 | 72.8 | 79.2 |
+| go | fresh | 93,775.5 | 1.156 | 25.7 | 39.2 |
+| jvm | fresh | 82,299.6 | 1.161 | 249.8 | 251.0 |
+
+### Historical benchmark matrix
+
 | Application | CPUs | Req/s median (range) | p50 / p95 / p99 ms | CPU % | RSS mean / sampled peak MiB | Errors / timeouts |
 | --- | ---: | --- | --- | ---: | --- | --- |
 | Go + CoAkka | 1 | 52,040.3 (51,821.0–53,269.8) | 1.165 / 1.771 / 1.981 | 93.7 | 25.5 / 25.8 | 0 / 0 |
