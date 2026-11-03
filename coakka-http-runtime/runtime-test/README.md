@@ -24,7 +24,7 @@ complete SDK; such a run is evidence for that SDK, not a 1.1.2 release pass.
 Configure verifies the complete source inventory before compiling. Its SHA256
 manifest detects source drift; it is not a publisher signature.
 
-## What the eleven tests prove
+## What the tests prove
 
 | Case | Invariant |
 | --- | --- |
@@ -33,12 +33,18 @@ manifest detects source drift; it is not a publisher signature.
 | ownership | Cross-service and retired tokens refused; drain/stop do not discharge a live borrowed lease |
 | pressure | One retained admission, bounded refusal, invalid response does not consume reply ownership, recovery |
 | outbound | Logical selection, copied intent, response correlation and cancellation terminal |
+| tls_reload | Focused 1.1.2 credential apply and query, TLS and mTLS trust rotation over loopback, admitted responses survive drain, typed refusal and stop, monitor remains off |
 | routes | Coherent snapshot, captured old binding, revision conflict preserves state, exact activation replay |
 | stream | Ordered request chunks/trailers/end, Core writable notification, bounded response stream and trailers |
 | concurrency | Four clients, one event reader, 32 distinct replies and proven worker joins |
 | execution | Absent/explicit/malformed construction intent, Core CPU facts, configured versus active loops |
 | cpp | Standard-layout C records and checked C++ create/inspect/destroy |
 | fixture_wire | Truncation, framing conflict, overflow and wrong-body/trailer rejection in the fixture assertion |
+
+The TLS case uses two disposable loopback-only identities and the public
+outbound API. It starts a fresh outbound owner for each handshake so a pooled
+connection cannot hide a trust change. The fixture certificates expire on
+2045-01-01 UTC. This case is required for SDK 1.1.2 and later.
 
 POSIX hosts run an additional white-box fixture test: refusal at each partial
 thread-creation position must release and join every child actually created.

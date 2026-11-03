@@ -51,6 +51,15 @@ foreach(case IN ITEMS runtime contract ownership pressure outbound routes stream
   register_test(http_host_${case})
 endforeach()
 target_link_libraries(http_host_concurrency PRIVATE http_test_threads)
+# Version 1.1.2 introduces the focused TLS credential control surface.
+if(COAKKA_HTTP_TEST_SDK_VERSION VERSION_GREATER_EQUAL "1.1.2")
+  add_executable(http_host_tls_reload host_tls_reload.c)
+  target_link_libraries(http_host_tls_reload PRIVATE http_test_support)
+  register_test(http_host_tls_reload)
+  file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/tls-fixture")
+  set_tests_properties(http_host_tls_reload PROPERTIES
+    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/tls-fixture")
+endif()
 add_executable(http_host_cpp host_cpp_header.cc)
 target_link_libraries(http_host_cpp PRIVATE http_test_options CoAkkaHttp::host)
 register_test(http_host_cpp)
