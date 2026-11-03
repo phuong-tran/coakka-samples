@@ -16,22 +16,23 @@
 ## HTTP Runtime 1.1.2 on Raspberry Pi 5
 
 The physical Raspberry Pi 5 ran the public HTTP Runtime 1.1.2 packages.
-Bun and JVM report the fastest accepted run from their follow-up measurements.
-The other connectors report the faster of two accepted runs. Each row uses
-latency and memory from the same run as throughput.
+Each connector ran three times under a configuration fixed before the
+measurement campaign. Each row reports the median-throughput run and
+uses latency and memory from that same run. The range includes all
+three accepted runs.
 
-| Connector | Requests/s | p50 (ms) | p95 (ms) | p99 (ms) | RSS (MiB) | Peak RSS (MiB) |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Python | 74,996.0 | 0.820 | 1.070 | 1.175 | 46.11 | 46.11 |
-| Node.js | 88,381.6 | 0.703 | 0.891 | 0.951 | 72.36 | 72.36 |
-| Bun | 82,144.1 | 0.748 | 0.866 | 1.470 | 69.55 | 72.89 |
-| Go | 94,552.6 | 0.647 | 0.822 | 1.173 | 25.94 | 39.17 |
-| JVM | 82,848.8 | 0.769 | 0.794 | 0.810 | 245.91 | 248.05 |
+| Connector | Median req/s | Req/s range | p50 (ms) | p95 (ms) | p99 (ms) | RSS (MiB) | Peak RSS (MiB) |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Python | 74,891.3 | 74,175.0–75,147.8 | 0.813 | 1.056 | 1.143 | 46.20 | 46.20 |
+| Node.js | 87,583.2 | 87,235.6–88,585.0 | 0.709 | 0.894 | 0.959 | 72.62 | 72.62 |
+| Bun | 81,569.7 | 80,947.9–82,715.2 | 0.752 | 0.869 | 1.496 | 70.36 | 73.38 |
+| Go | 95,972.1 | 94,832.4–96,123.7 | 0.638 | 0.813 | 1.162 | 25.75 | 39.69 |
+| JVM | 83,272.5 | 81,284.2–84,387.4 | 0.763 | 0.789 | 0.811 | 249.33 | 249.33 |
 
 Each timed run used 64 clients, HTTP/1.1 keep-alive, a 32-byte response,
 and a 10-second loopback load. The server used CPUs 0–1 and the load generator
 used CPUs 2–3. Connectors used AUTO and one active I/O event loop. Start
-temperatures were 41.90–47.40°C. The highest measured temperature during
+temperatures were 44.10–46.85°C. The highest measured temperature during
 load was 49.60°C. All accepted runs reported throttle state `0x0`.
 RSS is the whole server process after load. Peak RSS is its high-water mark.
 
