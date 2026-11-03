@@ -121,6 +121,21 @@ with a trailer, an observed partial-body disconnect and continued service.
 
 ### Outbound Requests
 
+With an independently verified focused host SDK, use the public `host.h`
+outbound example:
+
+```bash
+COAKKA_HTTP_HOST_PREFIX=/path/to/verified/host-sdk \
+  COAKKA_HTTP_SAMPLE_WORK_ROOT=/path/to/external/sample-build \
+  bash coakka-http-runtime/cpp/run.sh host-outbound
+```
+
+The focused sample requests the exact `1.1.2` host SDK by default.
+It exercises request and terminal leases, logical-target correlation, HTTP 404,
+and complete route publication with exact replay and stale-generation refusal.
+The commands above for the separately pinned `1.0.0` archive remain available.
+
+
 [`outbound.cpp`](outbound.cpp) starts a loopback upstream and declares its
 assigned port as a logical target on the client service. The runtime copies the
 topology and owns transport/defaults. Each submitted call has a three-second

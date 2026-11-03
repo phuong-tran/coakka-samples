@@ -129,6 +129,21 @@ not add Windows sample-execution evidence or a performance claim.
 
 ### Outbound Requests
 
+With an independently verified focused host SDK, use the public `host.h`
+outbound example:
+
+```bash
+COAKKA_HTTP_HOST_PREFIX=/path/to/verified/host-sdk \
+  COAKKA_HTTP_SAMPLE_WORK_ROOT=/path/to/external/sample-build \
+  bash coakka-http-runtime/c/run.sh host-outbound
+```
+
+The focused sample requests the exact `1.1.2` host SDK by default.
+It exercises request and terminal leases, logical-target correlation, HTTP 404,
+and complete route publication with exact replay and stale-generation refusal.
+The commands above for the separately pinned `1.0.0` archive remain available.
+
+
 [`outbound.c`](outbound.c) starts a loopback upstream on an assigned port and
 declares it as the logical target `sample.upstream` on a second service. The runtime
 copies that topology at create and owns transport selection, queues, timeouts
