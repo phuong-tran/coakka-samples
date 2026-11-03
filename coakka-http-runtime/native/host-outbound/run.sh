@@ -16,10 +16,13 @@ cmake -S "${root}" -B "${build}" -DCMAKE_BUILD_TYPE=Release \
   -DCOAKKA_HTTP_HOST_PREFIX="${prefix}" -DCOAKKA_HTTP_HOST_SAMPLE_SDK_VERSION="${version}"
 cmake --build "${build}" --config Release --target "${target}"
 if [[ "${2:-outbound}" != outbound ]]; then
-  binary="${build}/${target}"
-  if [[ ! -x "${binary}" ]]; then
-    binary="${build}/Release/${target}.exe"
-  fi
-  exec "${binary}" "$2"
+  for binary in "${build}/${target}" "${build}/${target}.exe" \
+                "${build}/Release/${target}" "${build}/Release/${target}.exe"; do
+    if [[ -x "${binary}" ]]; then
+      exec "${binary}" "$2"
+    fi
+  done
+  printf 'sample executable not found in %s\n' "${build}" >&2
+  exit 1
 fi
 ctest --test-dir "${build}" -C Release -R "^${target}$" --output-on-failure
