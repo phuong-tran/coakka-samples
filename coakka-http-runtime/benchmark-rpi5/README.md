@@ -61,9 +61,9 @@ from that same run. All 4,853,628 native responses were HTTP 200.
 | Node.js | CoAkka host-inlined | Express, Fastify |
 | Bun | CoAkka host-inlined | Elysia, Hono |
 
-Vert.x and Undertow comparisons are **Pending** for both CPU budgets. The
-current JVM remeasurement covers CoAkka only; no accepted comparison results
-are published for those two frameworks in this round.
+The [JVM framework comparison](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/jvm-framework-runs-rpi5.md) records Undertow, Vert.x and
+CoAkka JVM runs for both CPU budgets, with admission status for each profile.
+The following comparison profiles are not admitted: Vert.x Web 4.5.34, 2 CPU, 64 connections.
 
 No standalone Netty or native-library competitor is included. The separately
 requested Bun.serve paired study is reported explicitly; it does not add other
@@ -218,8 +218,8 @@ failures, missing terminal accounting or forced shutdown reject the run.
 
 All 19 lanes have passed functional HTTP/keep-alive and shutdown checks on both
 CPU profiles. This does not qualify JIT warm-up, sustained throughput, or the
-new resource collector. Pilot qualification and the final repeated campaign
-remain open. A forced server kill is a failed run. Uvicorn's normal re-raised
+new resource collector. Pilot qualification and repeated measurements for the remaining comparison
+lanes are still open. A forced server kill is a failed run. Uvicorn's normal re-raised
 SIGTERM is accepted only with complete shutdown evidence for every worker.
 
 CPU and sampled RSS cover the complete load-process lifetime (warm-up plus
@@ -272,5 +272,6 @@ bash scripts/deploy-rpi5.sh
 Source, tool and compiled-consumer hash receipts live under `evidence/locks`
 on the Pi. A run fails before changing the CPU governor if any receipt no longer
 matches. Do not run build/preparation commands concurrently with measurements.
-Campaign commands and final warm-up settings remain pending qualification;
-the preparation success marker alone is not authorization to publish numbers.
+Campaign commands and final warm-up settings for the remaining lanes are
+still pending qualification. The preparation success marker alone is not
+authorization to publish numbers.
