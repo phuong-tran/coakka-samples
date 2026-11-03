@@ -8,6 +8,8 @@ from different packages. Older archive receipts describe their own contracts.
 
 ## Build and run
 
+For the macOS ARM64 SDK download and toolchain setup, see the [tested build steps](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/inspect/macos-walkthrough.md#build-and-test-against-the-native-sdk).
+
 Verify and extract one complete native SDK for the matching host, then run:
 
 ```sh
@@ -33,7 +35,7 @@ manifest detects source drift; it is not a publisher signature.
 | ownership | Cross-service and retired tokens refused; drain/stop do not discharge a live borrowed lease |
 | pressure | One retained admission, bounded refusal, invalid response does not consume reply ownership, recovery |
 | outbound | Logical selection, copied intent, response correlation and cancellation terminal |
-| tls_reload | Focused 1.1.2 credential apply and query, TLS and mTLS trust rotation over loopback, admitted responses survive drain, typed refusal and stop, monitor remains off |
+| tls_reload | Credential apply and query, TLS and mTLS trust rotation over loopback, admitted responses survive drain, typed refusal and stop, monitor remains off |
 | routes | Coherent snapshot, captured old binding, revision conflict preserves state, exact activation replay |
 | stream | Ordered request chunks/trailers/end, Core writable notification, bounded response stream and trailers |
 | concurrency | Four clients, one event reader, 32 distinct replies and proven worker joins |
