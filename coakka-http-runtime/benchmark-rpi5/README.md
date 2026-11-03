@@ -12,6 +12,8 @@
 - [Acceptance And Reproduction](#acceptance-and-reproduction)
 - [Runner Status](#runner-status)
 - [Preparation](#preparation)
+- [Go, Node.js, Bun and Python framework comparison](#go-nodejs-bun-and-python-framework-comparison)
+- [Bun.serve() paired comparison](#bunserve-paired-comparison)
 
 ## HTTP Runtime 1.1.2 on Raspberry Pi 5
 
@@ -65,9 +67,10 @@ The [JVM framework comparison](https://github.com/phuong-tran/coakka-publish/blo
 CoAkka JVM runs at 2 CPU and 64 connections. Vert.x Web 4.5.34 exceeded
 the load-generator CPU ceiling in this profile.
 
-No standalone Netty or native-library competitor is included. The separately
-requested Bun.serve paired study is reported explicitly; it does not add other
-language-standard HTTP servers to the comparison matrix. Framework dependencies are not extra comparison rows.
+The [framework comparison](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/framework-runs-rpi5.md) covers Go, Node.js, Bun and Python.
+The [Bun.serve() paired comparison](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/bun-serve-runs-rpi5.md) covers Bun's built-in server.
+Both campaigns use two server CPUs and 64 localhost connections.
+The scope excludes standalone Netty and native-library competitors.
 Spring MVC with Tomcat is one stack, not two independent results. C++ samples
 refer to the native C baseline without claiming a separate C++ measurement.
 
@@ -276,3 +279,39 @@ matches. Do not run build/preparation commands concurrently with measurements.
 Campaign commands and final warm-up settings for the remaining lanes are
 still pending qualification. The preparation success marker alone is not
 authorization to publish numbers.
+
+## Go, Node.js, Bun and Python framework comparison
+
+This campaign compared CoAkka 1.1.2 with eight framework fixtures.
+The server had a two-CPU budget and used 64 HTTP/1.1 connections over Pi 5 localhost.
+p99 and sampled RSS come from the throughput-median run.
+
+| Host | Application | Median req/s | Req/s range | p99 (ms) | Mean RSS (MiB) | Sampled peak RSS (MiB) |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| Go | CoAkka 1.1.2 | 94,664.1 | 94,495.1–95,231.8 | 1.232 | 26.65 | 37.88 |
+| Go | Chi 5.3.2 | 90,899.9 | 90,743.5–90,915.4 | 2.271 | 13.61 | 14.14 |
+| Go | Gin 1.12.0 | 90,462.2 | 90,110.8–90,671.2 | 2.469 | 17.31 | 17.47 |
+| Python | CoAkka 1.1.2 | 74,337.7 | 74,321.5–74,681.5 | 1.211 | 49.80 | 49.80 |
+| Python | FastAPI 0.141.1 + Uvicorn 0.52.4 | 29,218.6 | 29,018.1–29,306.6 | 3.942 | 128.74 | 128.75 |
+| Python | Starlette 1.6.0 + Uvicorn 0.52.4 | 48,678.7 | 48,668.4–49,168.2 | 2.230 | 99.19 | 99.20 |
+| Node.js | CoAkka 1.1.2 | 87,038.7 | 86,391.2–89,017.8 | 0.974 | 73.30 | 73.44 |
+| Node.js | Express 5.2.1 | 5,336.6 | 5,323.3–5,419.4 | 19.063 | 123.25 | 126.08 |
+| Node.js | Fastify 5.12.4 | 16,721.1 | 16,095.2–17,101.2 | 4.197 | 85.39 | 86.95 |
+| Bun | CoAkka 1.1.2 | 82,150.7 | 78,714.4–85,151.6 | 1.469 | 72.14 | 73.61 |
+| Bun | Elysia 1.4.30 | 44,384.3 | 42,287.7–45,645.7 | 2.075 | 53.28 | 55.06 |
+| Bun | Hono 4.13.7 | 42,018.5 | 40,215.5–43,785.4 | 2.312 | 49.02 | 50.38 |
+
+[View all 36 individual runs](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/framework-runs-rpi5.md#per-run-results).
+
+## Bun.serve() paired comparison
+
+This campaign paired CoAkka Bun 1.1.2 with Bun.serve() using a fetch handler.
+The server had a two-CPU budget and used 64 HTTP/1.1 connections over Pi 5 localhost.
+p99 and sampled RSS come from the throughput-median run.
+
+| Application | Median req/s | Range req/s | p99 (ms) | Mean RSS (MiB) | Sampled peak RSS (MiB) |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| CoAkka Bun 1.1.2 | 83,623.7 | 83,469.1–83,898.6 | 1.475 | 73.66 | 75.00 |
+| `Bun.serve()` | 46,425.7 | 46,410.9–48,229.1 | 2.223 | 40.01 | 42.14 |
+
+[View all 6 individual runs](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/bun-serve-runs-rpi5.md#individual-runs).
