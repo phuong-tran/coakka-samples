@@ -2,9 +2,7 @@
 
 **Choose your language, start a service and send one request.**
 
-HTTP Runtime is a separate product from CoAkka Runtime. Its current 1.0.0
-distribution uses repository archives. Follow one language guide to obtain the
-matching archive and prepare only that language's tools.
+Start with the [1.1.2 registry samples](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md) for Node.js, Bun, Python, Go or JVM. For C or C++, download the [native SDK 1.1.2](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/1.1.2) and run the [server or streaming sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/native/host-server/README.md).
 
 ## Choose your language
 
@@ -17,9 +15,7 @@ matching archive and prepare only that language's tools.
 | C | [C installation and first request](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-http-runtime/c/integration.md) |
 | C++ | [C++ installation and first request](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-http-runtime/cpp/integration.md) |
 
-Each guide gives prerequisites, archive setup, the service command, a request
-to send, its expected response and how to stop the service. Follow that complete
-sequence; installing a CoAkka Runtime connector does not install HTTP Runtime.
+The guides in the table describe the archived feature samples and their matching package requirements.
 
 The [HTTP sample index](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/README.md)
 links the runnable source and feature coverage for each language.

@@ -1,6 +1,7 @@
 # C and C++ server and response streaming with SDK 1.1.2
 
-Set `COAKKA_HTTP_HOST_PREFIX` to the installed, verified 1.1.2 SDK and
+Download and verify the [native SDK 1.1.2](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/1.1.2).
+Set `COAKKA_HTTP_HOST_PREFIX` to the extracted SDK and
 `COAKKA_HTTP_SAMPLE_WORK_ROOT` to an external build directory. Run one
 example from the repository root.
 

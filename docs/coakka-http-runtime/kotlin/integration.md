@@ -38,11 +38,10 @@ and [certificate rotation versus hot reload](https://github.com/phuong-tran/coak
 
 ## 1. Install and prepare
 
-These instructions use the exact repository archives selected by
-[`package-pins.json`](../../../coakka-http-runtime/scripts/package-pins.json), currently the
-`2026-10-08-r3` train. HTTP Runtime is **not installed from npm, PyPI,
-Maven Central or a Go module tag** in this guide. CoAkka Runtime's registry
-packages are a different product.
+For the public 1.1.2 package, follow the [registry first request](../../../coakka-http-runtime/registry-basic/README.md). The feature recipes on this page use the pinned 1.0.0 archive samples.
+
+The archived feature samples use the `2026-10-08-r3` packages selected by
+[`package-pins.json`](../../../coakka-http-runtime/scripts/package-pins.json).
 
 If you do not already have the two public checkouts, clone them side by side
 in a workspace with enough storage:

@@ -34,6 +34,8 @@ and [certificate rotation versus hot reload](https://github.com/phuong-tran/coak
 
 ## 1. Install and prepare
 
+For the public 1.1.2 package, follow the [registry first request](../../../coakka-http-runtime/registry-basic/README.md). The feature recipes on this page use the pinned 1.0.0 archive samples.
+
 ### New applications
 
 ```sh
