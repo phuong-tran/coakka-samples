@@ -27,7 +27,7 @@ BODY = b"0123456789abcdef0123456789abcdef"
 def arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--config", type=Path, default=Path("config/lanes.json"))
+    parser.add_argument("--config", type=Path, default=Path("config/lanes-2cpu.json"))
     parser.add_argument("--rounds", type=int)
     parser.add_argument("--duration", type=int)
     parser.add_argument(

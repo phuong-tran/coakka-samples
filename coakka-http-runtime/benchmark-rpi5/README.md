@@ -62,8 +62,8 @@ from that same run. All 4,853,628 native responses were HTTP 200.
 | Bun | CoAkka host-inlined | Elysia, Hono |
 
 The [JVM framework comparison](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/jvm-framework-runs-rpi5.md) records Undertow, Vert.x and
-CoAkka JVM runs for both CPU budgets, with admission status for each profile.
-The following comparison profiles are not admitted: Vert.x Web 4.5.34, 2 CPU, 64 connections.
+CoAkka JVM runs at 2 CPU and 64 connections. Vert.x Web 4.5.34 exceeded
+the load-generator CPU ceiling in this profile.
 
 No standalone Netty or native-library competitor is included. The separately
 requested Bun.serve paired study is reported explicitly; it does not add other
@@ -101,7 +101,8 @@ No database, logging, compression, TLS, proxy or application authentication is
 silently added to only one implementation. This workload is a transport and
 handler-overhead measurement, not production application capacity.
 
-Measure independent 1-CPU and 2-CPU profiles. Record actual CPU IDs, all server
+Measure the 2-CPU profile with 64 concurrent loopback connections. Defer
+1-CPU comparisons. Record actual CPU IDs, all server
 workers/threads, runtime flags and the generator CPU set. Server and generator
 CPU sets must not overlap in a loopback run. An allowed two-CPU set does not
 prove that a single-threaded host uses both CPUs; show observed CPU usage.
