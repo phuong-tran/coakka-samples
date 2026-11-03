@@ -1,5 +1,7 @@
 # Raspberry Pi 5 Benchmark Methodology
 
+[Published results by campaign](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/README.md) · [Evidence and reproduction](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/evidence-rpi5.md)
+
 ## Contents
 
 - [HTTP Runtime 1.1.2 on Raspberry Pi 5](#http-runtime-112-on-raspberry-pi-5)
@@ -54,18 +56,20 @@ from that same run. All 4,853,628 native responses were HTTP 200.
 
 ## Comparison Scope
 
+[Current JVM results](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/jvm-full-runs-rpi5.md) · [Evidence and reproduction](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/evidence-rpi5.md)
+
 | Host | Measured application | Comparison applications |
 | --- | --- | --- |
 | Native C | CoAkka configured public C host-inlined API | None; standalone native baseline |
 | Go | CoAkka host-inlined | Chi, Gin |
-| Kotlin/JVM | CoAkka host-inlined | Spring WebFlux, Spring MVC with Tomcat, Jetty, Undertow, Vert.x |
+| Kotlin/JVM | CoAkka host-inlined | Spring WebFlux, Spring MVC with Tomcat, Jetty, Undertow, Vert.x, Tomcat with a direct servlet |
 | Python | CoAkka host-inlined | FastAPI, Starlette; exact server stack named |
 | Node.js | CoAkka host-inlined | Express, Fastify |
 | Bun | CoAkka host-inlined | Elysia, Hono |
 
-The [JVM framework comparison](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/jvm-framework-runs-rpi5.md) records Undertow, Vert.x and
-CoAkka JVM runs at 2 CPU and 64 connections. Vert.x Web 4.5.34 exceeded
-the load-generator CPU ceiling in this profile.
+The [JVM framework comparison](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/jvm-full-runs-rpi5.md) includes direct Tomcat,
+Spring MVC on Tomcat, Jetty, WebFlux, Undertow, Vert.x and CoAkka JVM.
+The per-run record explains the admission outcome for every configuration.
 
 The [framework comparison](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/framework-runs-rpi5.md) covers Go, Node.js, Bun and Python.
 The [Bun.serve() paired comparison](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/bun-serve-runs-rpi5.md) covers Bun's built-in server.
@@ -305,7 +309,8 @@ p99 and sampled RSS come from the throughput-median run.
 
 ## Bun.serve() paired comparison
 
-This campaign paired CoAkka Bun 1.1.2 with Bun.serve() using a fetch handler.
+CoAkka Bun reuses one prebuilt response. The Bun.serve() fetch fixture
+creates a new Response for each request from the same fixed payload.
 The server had a two-CPU budget and used 64 HTTP/1.1 connections over Pi 5 localhost.
 p99 and sampled RSS come from the throughput-median run.
 
