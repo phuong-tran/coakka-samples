@@ -8,7 +8,7 @@ from different packages. Older archive receipts describe their own contracts.
 
 ## Build and run
 
-For the macOS ARM64 SDK download and toolchain setup, see the [tested build steps](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/inspect/macos-walkthrough.md#build-and-test-against-the-native-sdk).
+For the macOS ARM64 SDK download and toolchain setup, see the [tested build steps](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/inspect/walkthrough.md#build-and-test-against-the-native-sdk).
 
 Verify and extract one complete native SDK for the matching host, then run:
 
