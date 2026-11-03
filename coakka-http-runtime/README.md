@@ -21,7 +21,7 @@ HTTP delivery, limits and shutdown.
 
 The feature guides below include recipes that use pinned 1.0.0 archives.
 
-## HTTP Inspect
+## CoAkka HTTP Runtime Inspect
 
 Inspect can browse a service’s published routes, try requests and export
 OpenAPI. Its packages target macOS ARM64 and Linux ARM64. The service must
