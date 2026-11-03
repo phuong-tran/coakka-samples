@@ -7,6 +7,11 @@ lane_root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [[ "${1:-}" == host-outbound ]]; then
   exec bash "${lane_root}/../native/host-outbound/run.sh" cpp
 fi
+case "${1:-}" in
+  host-server|host-streaming)
+    exec bash "${lane_root}/../native/host-outbound/run.sh" cpp "${1#host-}"
+    ;;
+esac
 # shellcheck source=../scripts/common.sh
 source "${lane_root}/../scripts/common.sh"
 

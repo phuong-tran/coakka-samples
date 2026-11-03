@@ -1,5 +1,7 @@
 # C++20: installation and integration
 
+For SDK 1.1.2, run the [focused server and streaming examples](../../../coakka-http-runtime/native/host-server/README.md).
+
 This guide runs the callback sample with its pinned 1.0.0 native SDK. The
 C and C++ examples use `<coakka/http/http.h>` and `CoAkkaHttp::runtime`.
 For the focused 1.1.2 SDK and its event ownership model, start with the

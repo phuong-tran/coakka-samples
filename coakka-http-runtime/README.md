@@ -68,6 +68,8 @@ Follow the guide's exact language version and platform requirements.
 | Python | [Python integration](../docs/coakka-http-runtime/python/integration.md) | [Python sample](python/README.md) |
 | Node.js / Bun / TypeScript | [Node/Bun integration](../docs/coakka-http-runtime/typescript/integration.md) | [TypeScript sample](typescript/README.md) |
 
+For an installed SDK 1.1.2 candidate, see the [C and C++ server and streaming examples](native/host-server/README.md).
+
 ## After one request
 
 - [Choose a feature](../docs/coakka-http-runtime/reference/FEATURES.md) such as streaming, WebSocket or frontend delivery.

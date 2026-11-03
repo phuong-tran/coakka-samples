@@ -1,5 +1,7 @@
 # C11 Sample
 
+The [1.1.2 server and streaming samples](../native/host-server/README.md) use the installed focused C ABI.
+
 **Start here:** [Installation and integration guide](../../docs/coakka-http-runtime/c/integration.md) — prerequisites,
 package setup, first HTTP request, feature walkthroughs and checked shutdown.
 This README records verification and benchmark results for the pinned 1.0.0
