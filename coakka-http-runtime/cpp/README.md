@@ -41,6 +41,10 @@ shown by the language connector samples, not invented for this API.
 
 ## Run
 
+Start with `smoke` to check the server, outbound client, and streaming
+producer in one command. Use `run` to keep the server open for manual
+requests. The focused 1.1.2 examples have their own build commands.
+
 First set `COAKKA_PUBLISH_ROOT` and `COAKKA_HTTP_SAMPLE_WORK_ROOT` as described
 in the [sample overview](../README.md), then:
 

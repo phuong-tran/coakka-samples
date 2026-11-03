@@ -47,6 +47,11 @@ the peer is not a replacement implementation for outbound transport.
 
 ## Run
 
+Start with `smoke` for the server and client examples on Node.js and Bun.
+Use `adverse-smoke` to see how the application handles deadlines,
+full capacity, cancellation, and a later request. The recipe prints a
+`=pass` line for each check.
+
 ```bash
 bash coakka-http-runtime/typescript/run.sh check
 bash coakka-http-runtime/typescript/run.sh smoke

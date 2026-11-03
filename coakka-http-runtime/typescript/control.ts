@@ -1,8 +1,17 @@
 /** Core-issued startup observations and generation-checked monitor reload. */
 import assert from "node:assert/strict";
 import {
-  Builder, CpuPolicy, CpuPlacement, Limits, MonitorCategory, MonitorCollection,
-  MonitorLatency, MonitorNotification, NotificationProfile, Response, type Service,
+  Builder,
+  CpuPolicy,
+  CpuPlacement,
+  Limits,
+  MonitorCategory,
+  MonitorCollection,
+  MonitorLatency,
+  MonitorNotification,
+  NotificationProfile,
+  Response,
+  type Service,
 } from "@coakka/http";
 
 /** Narrow the advanced public record without inventing absent native facts. */
@@ -17,9 +26,14 @@ function reload(service: Service): void {
   assert.equal(typeof initial.generation, "bigint");
   assert.equal(typeof initial.reservedEventCapacity, "number");
   const original = record(initial.policy);
-  const desired = { ...original, collection: MonitorCollection.AGGREGATES,
-    notification: MonitorNotification.POLL, latency: MonitorLatency.NONE,
-    activeEventCapacity: 0, eventCategories: 0 };
+  const desired = {
+    ...original,
+    collection: MonitorCollection.AGGREGATES,
+    notification: MonitorNotification.POLL,
+    latency: MonitorLatency.NONE,
+    activeEventCapacity: 0,
+    eventCategories: 0,
+  };
   const accepted = service.monitorApply(initial.generation as bigint, desired);
   assert.equal(accepted.changed, true);
   const effective = record(accepted.effective);
@@ -28,7 +42,10 @@ function reload(service: Service): void {
   const stale = service.monitorApply(initial.generation as bigint, original);
   assert.equal(stale.changed, false);
   assert.deepEqual(stale.effective, effective);
-  const oversized = { ...original, activeEventCapacity: (initial.reservedEventCapacity as number) + 1 };
+  const oversized = {
+    ...original,
+    activeEventCapacity: (initial.reservedEventCapacity as number) + 1,
+  };
   const refused = service.monitorApply(effective.generation as bigint, oversized);
   assert.equal(refused.changed, false);
   assert.deepEqual(refused.effective, effective);
@@ -36,22 +53,33 @@ function reload(service: Service): void {
   assert.equal(restored.changed, true);
   assert.deepEqual(service.monitorConfig().policy, original);
   // Keep native refusal reasons visible; never infer a cause from a message.
-  console.log(`monitor-reload=pass stale-reason=${stale.reason} reservation-reason=${refused.reason}`);
+  console.log(
+    `monitor-reload=pass stale-reason=${stale.reason} reservation-reason=${refused.reason}`,
+  );
 }
 
 /** One owner at a time: CPU placement is a shared process scope, not per-route. */
 async function settings(single: boolean): Promise<boolean> {
-  const service = new Builder().limits(new Limits({
-    cpuPolicy: single ? CpuPolicy.SINGLE : CpuPolicy.AUTO,
-    requestNotificationProfile: NotificationProfile.SMALL,
-    terminalNotificationProfile: NotificationProfile.MEDIUM,
-    headerTimeoutMillis: 5000, bodyTimeoutMillis: 5000,
-    maxRequestBodyBytes: 65536,
-  })).monitor({ collection: MonitorCollection.AGGREGATES_AND_EVENTS,
-    eventCapacity: 32, maxEventsPerRead: 8,
-    categories: MonitorCategory.LIFECYCLE | MonitorCategory.EXCHANGE,
-    signalReserved: true,
-  }).get("/", () => Response.text("control-ready")).start();
+  const service = new Builder()
+    .limits(
+      new Limits({
+        cpuPolicy: single ? CpuPolicy.SINGLE : CpuPolicy.AUTO,
+        requestNotificationProfile: NotificationProfile.SMALL,
+        terminalNotificationProfile: NotificationProfile.MEDIUM,
+        headerTimeoutMillis: 5000,
+        bodyTimeoutMillis: 5000,
+        maxRequestBodyBytes: 65536,
+      }),
+    )
+    .monitor({
+      collection: MonitorCollection.AGGREGATES_AND_EVENTS,
+      eventCapacity: 32,
+      maxEventsPerRead: 8,
+      categories: MonitorCategory.LIFECYCLE | MonitorCategory.EXCHANGE,
+      signalReserved: true,
+    })
+    .get("/", () => Response.text("control-ready"))
+    .start();
   try {
     const info = service.runtimeInfo();
     assert.ok(info.execution.observed && info.execution.activeEventLoops > 0);
@@ -64,7 +92,9 @@ async function settings(single: boolean): Promise<boolean> {
     console.log("Core CPU", info.cpu, "execution", info.execution);
     reload(service);
     return info.cpu.placement !== CpuPlacement.UNSUPPORTED;
-  } finally { await service.close(); }
+  } finally {
+    await service.close();
+  }
 }
 
 if (await settings(false)) await settings(true);

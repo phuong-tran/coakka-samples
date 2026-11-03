@@ -94,23 +94,30 @@ function streamedUploadHandler() {
         body.set(part, offset);
         offset += part.byteLength;
       }
-      return Response.bytes(body, { headers: new Headers([
-        new Header("x-upload-observed", event.trailers.get("x-upload-check") ?? "absent"),
-      ]) });
+      return Response.bytes(body, {
+        headers: new Headers([
+          new Header("x-upload-observed", event.trailers.get("x-upload-check") ?? "absent"),
+        ]),
+      });
     }
     return undefined;
   };
 }
 
 /** Read copied query and indexed header projections without reparsing target. */
-function helloResponse(request: Readonly<{
-  queryParameters: ReadonlyArray<Readonly<{ encodedKey: Uint8Array; encodedValue: Uint8Array | null }>>;
-  headers: Headers;
-}>): Response {
+function helloResponse(
+  request: Readonly<{
+    queryParameters: ReadonlyArray<
+      Readonly<{ encodedKey: Uint8Array; encodedValue: Uint8Array | null }>
+    >;
+    headers: Headers;
+  }>,
+): Response {
   const first = request.queryParameters[0];
-  const title = first !== undefined && new TextDecoder().decode(first.encodedKey) === "title"
-    ? new TextDecoder().decode(first.encodedValue ?? new Uint8Array()) || "hello"
-    : "hello";
+  const title =
+    first !== undefined && new TextDecoder().decode(first.encodedKey) === "title"
+      ? new TextDecoder().decode(first.encodedValue ?? new Uint8Array()) || "hello"
+      : "hello";
   return Response.text(`${title} from ${request.headers.get("x-sample-caller") ?? ""}`);
 }
 
@@ -142,46 +149,85 @@ function createService(assets: string, upstreamPort: number, ioUring: boolean): 
     .outboundTarget({
       name: outboundTarget,
       generation: 1n,
-      endpoints: [{
-        nodeId: "loopback",
-        connectHost: "127.0.0.1",
-        connectPort: upstreamPort,
-        httpAuthority: `127.0.0.1:${upstreamPort}`,
-      }],
+      endpoints: [
+        {
+          nodeId: "loopback",
+          connectHost: "127.0.0.1",
+          connectPort: upstreamPort,
+          httpAuthority: `127.0.0.1:${upstreamPort}`,
+        },
+      ],
     })
     .get("/hello", helloResponse)
     .post("/echo", (request) => Response.bytes(request.bytes(), { status: 201 }))
     .postStream("/upload", streamedUploadHandler(), {
-      bodyPolicy: { enabled: true, acceptAbsent: true, acceptOther: true, maxBodyBytes: uploadLimit },
+      bodyPolicy: {
+        enabled: true,
+        acceptAbsent: true,
+        acceptOther: true,
+        maxBodyBytes: uploadLimit,
+      },
     })
-    .get("/stream", () => new StreamingResponse(async (writer) => {
-      await writer.write("stream-");
-      await writer.write("ready");
-      return new Headers([new Header("x-stream-end", "done")]);
-    }, { headers: new Headers([new Header("content-type", "text/plain")]) }), { response: "stream" })
-    .get("/events", () => sse([
-      { data: "ready\nsecond line", event: "state", id: "1", retry: 1000 },
-    ]), { response: "sse" })
-    .get("/socket", () => websocket({
-      protocol: "coakka.sample",
-      open(session) { session.send("welcome"); },
-      message(session, message) { session.send(message.data); },
-    }), { response: "websocket" })
-    .get("/download", () => new FileResponse(82n, "/sample.txt", {
-      headers: new Headers([new Header("content-type", "text/plain")]),
-    }), { response: "file" })
+    .get(
+      "/stream",
+      () =>
+        new StreamingResponse(
+          async (writer) => {
+            await writer.write("stream-");
+            await writer.write("ready");
+            return new Headers([new Header("x-stream-end", "done")]);
+          },
+          { headers: new Headers([new Header("content-type", "text/plain")]) },
+        ),
+      { response: "stream" },
+    )
+    .get(
+      "/events",
+      () => sse([{ data: "ready\nsecond line", event: "state", id: "1", retry: 1000 }]),
+      { response: "sse" },
+    )
+    .get(
+      "/socket",
+      () =>
+        websocket({
+          protocol: "coakka.sample",
+          open(session) {
+            session.send("welcome");
+          },
+          message(session, message) {
+            session.send(message.data);
+          },
+        }),
+      { response: "websocket" },
+    )
+    .get(
+      "/download",
+      () =>
+        new FileResponse(82n, "/sample.txt", {
+          headers: new Headers([new Header("content-type", "text/plain")]),
+        }),
+      { response: "file" },
+    )
     .get("/version", () => Response.text("v1"))
     .get("/gzip", () => Response.text("compressible-sample-".repeat(64)))
     .get("/parameters/{id}", (request) => {
       // Core has parsed capture/query boundaries. Keep encoded values, order,
       // duplicates, absent values and empty values distinct; do not split URL.
       const decode = (bytes: Uint8Array) => new TextDecoder().decode(bytes);
-      return Response.text(JSON.stringify({
-        path: request.pathParameters.map((item) => ({ name: item.name, encodedValue: decode(item.encodedValue) })),
-        query: request.queryParameters.map((item) => ({ encodedKey: decode(item.encodedKey),
-          encodedValue: item.encodedValue === null ? null : decode(item.encodedValue) })),
-        headers: request.headers.getAll("x-sample-value"),
-      }), { headers: new Headers([new Header("content-type", "application/json")]) });
+      return Response.text(
+        JSON.stringify({
+          path: request.pathParameters.map((item) => ({
+            name: item.name,
+            encodedValue: decode(item.encodedValue),
+          })),
+          query: request.queryParameters.map((item) => ({
+            encodedKey: decode(item.encodedKey),
+            encodedValue: item.encodedValue === null ? null : decode(item.encodedValue),
+          })),
+          headers: request.headers.getAll("x-sample-value"),
+        }),
+        { headers: new Headers([new Header("content-type", "application/json")]) },
+      );
     });
   if (ioUring) builder.ioUring();
   return builder.start();
@@ -220,19 +266,21 @@ async function demonstrateRoutePublication(): Promise<void> {
       activationId: 1n,
       expectedRouteGeneration: before.routeGeneration,
       expectedBindingChangeSequence: before.bindingChangeSequence,
-      routes: Object.freeze([Object.freeze({
-        id: 2n,
-        handlerBindingId: 2n,
-        method: "GET",
-        pattern: "/published",
-        bodyDelivery: BodyDelivery.INLINE,
-        bodyPolicy: Object.freeze({
-          enabled: true,
-          acceptAbsent: true,
-          acceptOther: true,
-          maxBodyBytes: 1_048_576,
+      routes: Object.freeze([
+        Object.freeze({
+          id: 2n,
+          handlerBindingId: 2n,
+          method: "GET",
+          pattern: "/published",
+          bodyDelivery: BodyDelivery.INLINE,
+          bodyPolicy: Object.freeze({
+            enabled: true,
+            acceptAbsent: true,
+            acceptOther: true,
+            maxBodyBytes: 1_048_576,
+          }),
         }),
-      })]),
+      ]),
     });
     const outcome = service.publishRoutes(publication);
     if (outcome.code !== RouteControlCode.APPLIED || !outcome.changed) {
@@ -240,13 +288,17 @@ async function demonstrateRoutePublication(): Promise<void> {
     }
     const after = service.routes;
     const refused = service.publishRoutes({ ...publication, activationId: 2n });
-    if (refused.code !== RouteControlCode.GENERATION_MISMATCH || refused.changed ||
-        before.routes[0]?.routeId !== 1n || after.routes[0]?.routeId !== 2n ||
-        service.routes.routeGeneration !== after.routeGeneration) {
+    if (
+      refused.code !== RouteControlCode.GENERATION_MISMATCH ||
+      refused.changed ||
+      before.routes[0]?.routeId !== 1n ||
+      after.routes[0]?.routeId !== 2n ||
+      service.routes.routeGeneration !== after.routeGeneration
+    ) {
       throw new Error("Core route snapshot/refusal contract mismatch");
     }
     const response = await fetch(`http://127.0.0.1:${service.port}/published`);
-    if (response.status !== 201 || await response.text() !== "new-generation") {
+    if (response.status !== 201 || (await response.text()) !== "new-generation") {
       throw new Error("published route did not select its prepared handler");
     }
   } finally {
@@ -263,11 +315,16 @@ async function demonstrateOutbound(service: Service): Promise<void> {
     timeoutMillis: 3_000,
   });
   const terminal = await service.takeOutbound(5_000);
-  if (terminal === null || terminal.call.slot !== call.slot ||
-      terminal.call.generation !== call.generation ||
-      terminal.reason !== OutboundReason.RESPONSE || terminal.phase !== OutboundPhase.RESPONSE ||
-      terminal.certainty !== OutboundCertainty.COMPLETE_RESPONSE ||
-      terminal.responseStatus !== 200 || new TextDecoder().decode(terminal.body) !== "outbound-ready") {
+  if (
+    terminal === null ||
+    terminal.call.slot !== call.slot ||
+    terminal.call.generation !== call.generation ||
+    terminal.reason !== OutboundReason.RESPONSE ||
+    terminal.phase !== OutboundPhase.RESPONSE ||
+    terminal.certainty !== OutboundCertainty.COMPLETE_RESPONSE ||
+    terminal.responseStatus !== 200 ||
+    new TextDecoder().decode(terminal.body) !== "outbound-ready"
+  ) {
     throw new Error("outbound result did not match the declared target");
   }
 }
@@ -277,27 +334,42 @@ async function smoke(service: Service): Promise<void> {
   // fetch transparently decodes content; this finite wire client also verifies
   // that negotiation really produced GZIP rather than merely accepting config.
   await new Promise<void>((resolveResponse, reject) => {
-    const request = get({ hostname: "127.0.0.1", port: service.port,
-      path: "/gzip", headers: { "accept-encoding": "gzip" } }, (response) => {
-      const parts: Buffer[] = [];
-      let size = 0;
-      response.on("error", reject);
-      response.on("data", (chunk: Buffer) => {
-        size += chunk.byteLength;
-        if (size > 4096) { response.destroy(new Error("encoded response exceeds bound")); return; }
-        parts.push(chunk);
-      });
-      response.on("end", () => {
-        try {
-          if (response.statusCode !== 200 || response.headers["content-encoding"] !== "gzip" ||
-              gunzipSync(Buffer.concat(parts), { maxOutputLength: 4096 }).toString() !==
-                "compressible-sample-".repeat(64)) {
-            throw new Error("buffered compression wire mismatch");
+    const request = get(
+      {
+        hostname: "127.0.0.1",
+        port: service.port,
+        path: "/gzip",
+        headers: { "accept-encoding": "gzip" },
+      },
+      (response) => {
+        const parts: Buffer[] = [];
+        let size = 0;
+        response.on("error", reject);
+        response.on("data", (chunk: Buffer) => {
+          size += chunk.byteLength;
+          if (size > 4096) {
+            response.destroy(new Error("encoded response exceeds bound"));
+            return;
           }
-          resolveResponse();
-        } catch (error) { reject(error); }
-      });
-    });
+          parts.push(chunk);
+        });
+        response.on("end", () => {
+          try {
+            if (
+              response.statusCode !== 200 ||
+              response.headers["content-encoding"] !== "gzip" ||
+              gunzipSync(Buffer.concat(parts), { maxOutputLength: 4096 }).toString() !==
+                "compressible-sample-".repeat(64)
+            ) {
+              throw new Error("buffered compression wire mismatch");
+            }
+            resolveResponse();
+          } catch (error) {
+            reject(error);
+          }
+        });
+      },
+    );
     request.setTimeout(5000, () => request.destroy(new Error("GZIP peer timeout")));
     request.on("error", reject);
   });
@@ -320,10 +392,7 @@ async function smoke(service: Service): Promise<void> {
       ...(body === undefined ? {} : { body }),
       headers,
     };
-    const response = await fetch(
-      `http://127.0.0.1:${service.port}${path}`,
-      requestOptions,
-    );
+    const response = await fetch(`http://127.0.0.1:${service.port}${path}`, requestOptions);
     const text = await response.text();
     if (response.status !== status || !text.includes(expected)) {
       throw new Error(`${path}: status=${response.status} body=${JSON.stringify(text)}`);
@@ -347,9 +416,7 @@ async function main(): Promise<void> {
   // bypass the checked, reverse-order close path.
   const stopped = selected.smoke ? undefined : waitForSignal();
   await demonstrateRoutePublication();
-  const upstream = new Builder()
-    .get("/source", () => Response.text("outbound-ready"))
-    .start();
+  const upstream = new Builder().get("/source", () => Response.text("outbound-ready")).start();
   let service: Service | undefined;
   try {
     service = createService(selected.assets, upstream.port, selected.ioUring);
@@ -360,7 +427,7 @@ async function main(): Promise<void> {
     const runtimeInfo = service.runtimeInfo();
     process.stdout.write(
       `ready=${health.ready} monitor-latest=${page.latestSequence} retained=${page.events.length} ` +
-      `io-uring-requested=${runtimeInfo.ioUringRequested} io-uring-effective=${runtimeInfo.ioUringEffective}\n`,
+        `io-uring-requested=${runtimeInfo.ioUringRequested} io-uring-effective=${runtimeInfo.ioUringEffective}\n`,
     );
     process.stdout.write(`typescript-sample=http://127.0.0.1:${service.port}\n`);
     if (selected.smoke) {
@@ -370,8 +437,16 @@ async function main(): Promise<void> {
     }
   } finally {
     const failures: unknown[] = [];
-    try { await service?.close(); } catch (error) { failures.push(error); }
-    try { await upstream.close(); } catch (error) { failures.push(error); }
+    try {
+      await service?.close();
+    } catch (error) {
+      failures.push(error);
+    }
+    try {
+      await upstream.close();
+    } catch (error) {
+      failures.push(error);
+    }
     if (failures.length > 0) throw new AggregateError(failures, "sample shutdown failed");
   }
   process.stdout.write(selected.smoke ? "typescript-smoke=pass\n" : "typescript-shutdown=pass\n");
