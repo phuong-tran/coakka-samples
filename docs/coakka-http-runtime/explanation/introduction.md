@@ -4,8 +4,8 @@
 
 One shared native HTTP runtime, with idiomatic application APIs across languages.
 
-CoAkka HTTP Runtime provides HTTP services and outbound HTTP requests in the
-CoAkka ecosystem. It lets applications use C/C++, Go, Kotlin/Java, Python, or
+CoAkka HTTP Runtime is the HTTP server and client product in the CoAkka
+ecosystem. It lets applications use C/C++, Go, Kotlin/Java, Python, or
 JavaScript/TypeScript on Node.js and Bun while sharing the implementation of
 HTTP transport, routing, resource limits and lifecycle.
 
@@ -15,7 +15,6 @@ targets. An application can use either alone or compose them at its handler.
 
 ## Contents
 
-- [Outbound HTTP And The Planned HTTP Client](#outbound-http-and-the-planned-http-client)
 - [Why It Exists](#why-it-exists)
 - [What A Shared Runtime Gives You](#what-a-shared-runtime-gives-you)
 - [How Application Code Fits](#how-application-code-fits)
@@ -26,19 +25,11 @@ targets. An application can use either alone or compose them at its handler.
 - [When To Use It](#when-to-use-it)
 - [Try It And Read Further](#try-it-and-read-further)
 
-## Outbound HTTP And The Planned HTTP Client
+## Outbound HTTP and the planned HTTP Client
 
-An outbound request is a call your application makes to another HTTP endpoint;
-for example, an upload service asking a remote storage API for a file. These
-client APIs are part of **CoAkka HTTP Runtime** and follow the selected
-language package's documented capabilities. Use its language guide for the
-available API and examples.
-
-**CoAkka HTTP Client** (`coakka-http-client`) is a planned standalone product.
-It has no released package or installation path yet. Existing HTTP Runtime
-client APIs keep their documented scope; this roadmap does not rename or
-remove them. The [product layout](../../common/product-layout.md) owns the plan
-for adding that separate product.
+HTTP Runtime includes outbound request APIs for calls your application makes
+to other HTTP endpoints. Each language guide describes the APIs its package
+supports. CoAkka HTTP Client is a separate planned product.
 
 ## Why It Exists
 
@@ -189,8 +180,9 @@ start with [CoAkka Runtime](../../common/new-to-coakka.md).
 
 ## Try It And Read Further
 
-HTTP Runtime 1.1.2 ships through npm, PyPI, Maven Central and a tagged Go
-module. The [native SDK](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/1.1.2) supplies the C ABI and matching libraries.
+HTTP Runtime 1.1.2 is available from npm, PyPI, Maven Central and the tagged Go
+module. The native SDK supplies the C headers and matching libraries.
+[Package catalog](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/README.md#version-112) · [Native SDK](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/1.1.2)
 
 1. Choose a language in the [HTTP sample guide](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-http-runtime).
 2. Run a [1.1.2 registry sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md) or use the matching native SDK.

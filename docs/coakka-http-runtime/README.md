@@ -2,21 +2,18 @@
 
 **One native HTTP core, shared across languages.**
 
-[Install 1.1.2 and run a first request](../../coakka-http-runtime/registry-basic/README.md).
-
-CoAkka HTTP Runtime provides polyglot, cross-platform HTTP services and outbound
-HTTP requests.
+CoAkka HTTP Runtime provides cross-platform HTTP services and outbound HTTP requests.
 Its native-backed language packages share a native HTTP core while handlers
 remain application code. Each service runs its own runtime instance.
-This product has its own packages and version. Read
-[current client scope and roadmap](explanation/introduction.md#outbound-http-and-the-planned-http-client)
-to distinguish its outbound HTTP APIs from the planned standalone HTTP Client.
+This product has its own packages and version.
 
 ## Start
 
 [Run one service and send one request](getting-started.md), or
 [download the matching package](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/README.md).
-HTTP Runtime 1.1.2 is available from the [public registries and native SDK catalog](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/README.md#version-112).
+Install HTTP Runtime 1.1.2 from its public registries or download the matching
+C/C++ SDK. The earlier 1.0.0 archives support the historical feature recipes.
+[Packages and SDK](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/README.md#version-112)
 
 ## Use and operate
 

@@ -1,49 +1,15 @@
 # CoAkka HTTP Runtime Samples
 
-[Choose your language](#languages) · [Next steps](#after-one-request) · [HTTP Inspect](#coakka-http-runtime-inspect) · [Documentation](../docs/coakka-http-runtime/README.md) · [Downloads](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/README.md) · [All products](../README.md)
+HTTP Runtime runs HTTP services and sends outbound requests from C, C++, Go,
+Kotlin, Java, Python, Node.js and Bun. Each service runs its own instance.
+Application handlers use their language API while the native runtime handles
+HTTP delivery, limits and shutdown.
 
-**HTTP services in your language. One shared native core.**
-
-CoAkka HTTP Runtime provides **polyglot, cross-platform HTTP services and
-outbound HTTP requests** backed by a **shared native HTTP core**. Build APIs,
-serve files or stream responses through familiar language APIs. Each application
-runs its own instance and owns its handlers and business rules.
-
-HTTP Runtime is independent of CoAkka Runtime, which connects named
-application work across processes. Read the
-[HTTP introduction](../docs/coakka-http-runtime/explanation/introduction.md)
-for the fuller story.
-
-## Why a shared HTTP core
-
-A Go API and a Python upload service can use the same HTTP core through their
-own language APIs. Common fixes and improvements can be delivered through
-updated language packages. Teams can learn one product's HTTP behavior across
-services while keeping application handlers natural to each language.
-
-Outbound requests belong to HTTP Runtime's documented package scope. The
-planned standalone **CoAkka HTTP Client** is a separate future product; read
-[current client scope and roadmap](../docs/coakka-http-runtime/explanation/introduction.md#outbound-http-and-the-planned-http-client).
-Runtime remains the product for named application work; an HTTP handler can
-call it when needed.
-
-## CoAkka HTTP Runtime Inspect
-
-**Swagger-like API exploration for an inspection-enabled HTTP service.**
-Browse the route descriptions a service publishes, try HTTP requests in a
-browser and export an **OpenAPI 3.0.3** document. Inspect provides its own UI;
-the exported document can also be used by OpenAPI tools such as Swagger UI.
-
-Current Inspect archives target **macOS ARM64** and **Linux ARM64**. Service
-inspection must be explicitly enabled, and language-connector APIs for declaring
-route/schema metadata are still being completed. Follow the current integration
-status before adding inspection to a language example.
-
-[Walkthrough](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/inspect/walkthrough.md) · [Explore Inspect and OpenAPI](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/inspect/metadata-and-openapi.md) ·
-[Current integration status](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/inspect/metadata-and-openapi.md#current-package-integration) ·
-[Inspect packages and setup](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/inspect/README.md).
+[HTTP documentation](../docs/coakka-http-runtime/README.md) · [Pi 5 benchmark](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/README.md)
 
 ## Version 1.1.2
+
+[Run your first request](registry-basic/README.md) · [C and C++ examples](native/host-server/README.md)
 
 | Host | HTTP Runtime 1.1.2 |
 | --- | --- |
@@ -53,31 +19,32 @@ status before adding inspection to a language example.
 | JVM | [`io.github.phuong-tran.coakka:coakka-http-runtime-jvm:1.1.2`](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/coakka-http-runtime-jvm/1.1.2) |
 | Go | [`github.com/phuong-tran/coakka-http-runtime-go@v1.1.2`](https://pkg.go.dev/github.com/phuong-tran/coakka-http-runtime-go@v1.1.2) |
 
-[C and C++ SDK downloads](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/1.1.2) · [C and C++ examples](native/host-server/README.md) · [Raspberry Pi 5 benchmark](benchmark-rpi5/README.md)
+The feature guides below include recipes that use pinned 1.0.0 archives.
 
-Start with the [1.1.2 registry samples](registry-basic/README.md) for Node.js, Bun, Python, Go, and JVM. The language guides below also document the historical archive-backed feature samples.
+## HTTP Inspect
+
+Inspect can browse a service’s published routes, try requests and export
+OpenAPI. Its packages target macOS ARM64 and Linux ARM64. The service must
+enable inspection before the companion can connect.
+[Walkthrough](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/inspect/walkthrough.md) · [Integration status](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/inspect/metadata-and-openapi.md#current-package-integration)
 
 ## Languages
 
-Follow the guide's exact language version and platform requirements.
-
-| Your language | Feature guide | Archived feature sample |
+| Language and host | Feature guide | Archived feature sample |
 | --- | --- | --- |
-| C | [C integration](../docs/coakka-http-runtime/c/integration.md) | [C sample](c/README.md) |
-| C++ | [C++ integration](../docs/coakka-http-runtime/cpp/integration.md) | [C++ sample](cpp/README.md) |
-| Go | [Go integration](../docs/coakka-http-runtime/go/integration.md) | [Go sample](go/README.md) |
-| Kotlin / Java | [JVM integration](../docs/coakka-http-runtime/kotlin/integration.md) | [Kotlin and Java samples](kotlin/README.md) |
-| Python | [Python integration](../docs/coakka-http-runtime/python/integration.md) | [Python sample](python/README.md) |
-| Node.js / Bun / TypeScript | [Node/Bun integration](../docs/coakka-http-runtime/typescript/integration.md) | [TypeScript sample](typescript/README.md) |
-
-For the installed SDK 1.1.2, see the [C and C++ server and streaming examples](native/host-server/README.md).
+| C11 | [C integration](../docs/coakka-http-runtime/c/integration.md) | [C sample](c/README.md) |
+| C++20 | [C++ integration](../docs/coakka-http-runtime/cpp/integration.md) | [C++ sample](cpp/README.md) |
+| Go 1.23 or newer | [Go integration](../docs/coakka-http-runtime/go/integration.md) | [Go sample](go/README.md) |
+| JVM: Kotlin and Java; Java 8 bytecode, JDK 17 sample compilation | [JVM integration](../docs/coakka-http-runtime/kotlin/integration.md) | [Kotlin and Java samples](kotlin/README.md) |
+| Python 3.11 or newer | [Python integration](../docs/coakka-http-runtime/python/integration.md) | [Python sample](python/README.md) |
+| TypeScript on Node.js 22+ and Bun 1.2.22+ | [Node/Bun integration](../docs/coakka-http-runtime/typescript/integration.md) | [TypeScript sample](typescript/README.md) |
 
 ## After one request
 
 - [Choose a feature](../docs/coakka-http-runtime/reference/FEATURES.md) such as streaming, WebSocket or frontend delivery.
 - [Read the HTTP model](../docs/coakka-http-runtime/explanation/introduction.md) and [file/upload guide](../docs/coakka-http-runtime/guides/file-delivery.md).
 - [Observe a service](../docs/coakka-http-runtime/operations/monitoring.md).
-- [HTTP Runtime Inspect and OpenAPI](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/inspect/metadata-and-openapi.md).
+- [Use Inspect](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/inspect/metadata-and-openapi.md).
 
 ## Verify a change
 

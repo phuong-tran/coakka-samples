@@ -34,9 +34,9 @@ and [certificate rotation versus hot reload](https://github.com/phuong-tran/coak
 
 ## 1. Install and prepare
 
-For the public 1.1.2 package, follow the [registry first request](../../../coakka-http-runtime/registry-basic/README.md). The feature recipes on this page use the pinned 1.0.0 archive samples.
+Start with the [1.1.2 registry sample](../../../coakka-http-runtime/registry-basic/README.md).
 
-The archived feature samples use the `2026-10-08-r3` packages selected by
+The feature recipes use the 1.0.0 archives selected by
 [`package-pins.json`](../../../coakka-http-runtime/scripts/package-pins.json).
 
 If you do not already have the two public checkouts, clone them side by side

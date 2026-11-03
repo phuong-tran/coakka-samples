@@ -2,18 +2,23 @@
 
 **Choose your language, start a service and send one request.**
 
-Start with the [1.1.2 registry samples](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md) for Node.js, Bun, Python, Go or JVM. For C or C++, download the [native SDK 1.1.2](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/1.1.2) and run the [server or streaming sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/native/host-server/README.md).
+Run a first request with a public HTTP Runtime 1.1.2 package for Node.js, Bun,
+Python, Go or JVM, or use the focused native SDK for C and C++.
+[Registry samples](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md) · [Native SDK](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/1.1.2)
 
 ## Choose your language
 
 | Your application | Start with |
 | --- | --- |
-| Node.js | [Install from npm and run](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md#nodejs) |
-| Bun | [Install from npm and run with Bun](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md#bun) |
-| Python | [Install from PyPI and run](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md#python) |
-| Kotlin or Java | [Install from Maven Central and run](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md#jvm) |
-| Go | [Install the tagged module and SDK](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md#go) |
-| C or C++ | [Run the native SDK samples](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/native/host-server/README.md) |
+| Node.js or Bun / TypeScript | [Node/Bun installation and first request](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-http-runtime/typescript/integration.md) |
+| Python | [Python installation and first request](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-http-runtime/python/integration.md) |
+| Kotlin or Java | [JVM installation and first request](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-http-runtime/kotlin/integration.md) |
+| Go | [Go installation and first request](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-http-runtime/go/integration.md) |
+| C | [C installation and first request](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-http-runtime/c/integration.md) |
+| C++ | [C++ installation and first request](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-http-runtime/cpp/integration.md) |
+
+The language guides below also cover the feature samples that use the pinned
+1.0.0 archives. Follow the setup for the sample you choose.
 
 The [HTTP sample index](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/README.md)
 links the runnable source and feature coverage for each language.
