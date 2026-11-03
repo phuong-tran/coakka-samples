@@ -195,6 +195,6 @@ module. The [native SDK](https://github.com/phuong-tran/coakka-publish/tree/main
 1. Choose a language in the [HTTP sample guide](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-http-runtime).
 2. Run a [1.1.2 registry sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md) or use the matching native SDK.
 3. Explore the feature index above, then [operations](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/operations/operations.md).
-4. Read [Pi 5 benchmark results](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/benchmarks/benchmark-results-rpi5.md)
+4. Read [Pi 5 benchmark results](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/README.md)
    with their payload, CPU configuration, machine and measurement conditions;
    unmeasured comparisons remain pending.

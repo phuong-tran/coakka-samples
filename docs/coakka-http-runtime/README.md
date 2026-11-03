@@ -26,7 +26,7 @@ HTTP Runtime 1.1.2 is available from the [public registries and native SDK catal
 - [Explanations](explanation/README.md): product choices and the application model.
 
 [Inspect metadata and OpenAPI](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/inspect/metadata-and-openapi.md)
-is an optional companion. [Recorded benchmarks](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/benchmarks/benchmark-results-rpi5.md)
+is an optional companion. [Recorded benchmarks](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/README.md)
 describe their workload and hardware; they do not predict every application.
 
 [Choose another product](../README.md).

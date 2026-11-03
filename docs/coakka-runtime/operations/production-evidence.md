@@ -8,7 +8,7 @@ does not describe the latest package or prove a newer sample ran.
 This page is the **CoAkka Runtime and Logger** evidence ledger for the public
 sample repository. HTTP server/client evidence is recorded separately in the
 [HTTP Runtime sample scope](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/README.md#verify-a-change)
-and [HTTP benchmark results](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/benchmarks/benchmark-results-rpi5.md).
+and [HTTP benchmark results](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/README.md).
 
 The
 samples show that the published artifact surface is runnable and that the
