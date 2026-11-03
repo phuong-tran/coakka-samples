@@ -60,7 +60,7 @@ OpenAPI 3.0.3; its standalone application has its own qualified packages.
 JavaScript/TypeScript, Python, Go and JVM connectors expose route metadata
 and authenticated inspection. The 1.1.2 qualification exercised the focused
 native read surface and the Node/Bun OpenAPI workflow with the standalone
-Inspector. See [metadata and OpenAPI](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/inspect/metadata-and-openapi.md)
+Inspector. See [metadata and OpenAPI](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/inspect/metadata-and-openapi.md)
 for the distinction between route snapshots and schema publication.
 
 ## Current guides
