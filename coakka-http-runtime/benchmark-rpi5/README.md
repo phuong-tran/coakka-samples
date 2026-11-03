@@ -16,6 +16,7 @@
 - [Preparation](#preparation)
 - [Go, Node.js, Bun and Python framework comparison](#go-nodejs-bun-and-python-framework-comparison)
 - [Bun.serve() paired comparison](#bunserve-paired-comparison)
+- [Node.js and Bun requests per CPU-second](#nodejs-and-bun-requests-per-cpu-second)
 
 ## HTTP Runtime 1.1.2 on Raspberry Pi 5
 
@@ -335,3 +336,35 @@ p99 and sampled RSS come from the throughput-median run.
 | `Bun.serve()` | 46,425.7 | 46,410.9–48,229.1 | 2.223 | 40.01 | 42.14 |
 
 [View all 6 individual runs](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/bun-serve-runs-rpi5.md#individual-runs).
+
+## Node.js and Bun requests per CPU-second
+
+This separate campaign gave each server process the same two CPUs (0–1).
+h2load used CPUs 2–3 and drove 64 persistent HTTP/1.1 connections over
+localhost. Each fixture returned HTTP 200 with the same 32-byte payload.
+
+The CoAkka Node.js and Bun fixtures reuse a prebuilt response. Fastify
+sends the shared payload through its reply API. The `Bun.serve()` fetch
+fixture creates a new `Response` per request from shared payload bytes.
+The results include the cost of those response paths.
+
+Requests completed and total process CPU time across all server threads
+are counted in the same 10-second window after warm-up. Req/CPU-s divides
+successful requests by server CPU-seconds. Each row uses the middle of
+three accepted runs ranked by that metric. Request count, CPU time,
+throughput and p99 all come from that run.
+
+| Application | Requests in 10 s | Server CPU (s) | Req/s | Req/CPU-s | p99 (ms) | Accepted runs |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| Node.js / CoAkka 1.1.2 | 874,042 | 19.0805 | 87,404.2 | 45,808.1 | 0.960 | [1](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/node-bun-cpu-runs-rpi5.md#node-coakka-run-1) · [2](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/node-bun-cpu-runs-rpi5.md#node-coakka-run-2) · [3](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/node-bun-cpu-runs-rpi5.md#node-coakka-run-3) |
+| Node.js / Fastify 5.12.4 | 166,797 | 10.0086 | 16,679.7 | 16,665.4 | 4.184 | [1](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/node-bun-cpu-runs-rpi5.md#node-fastify-run-1) · [2](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/node-bun-cpu-runs-rpi5.md#node-fastify-run-2) · [3](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/node-bun-cpu-runs-rpi5.md#node-fastify-run-3) |
+| Bun / CoAkka 1.1.2 | 822,720 | 18.9202 | 82,272.0 | 43,483.6 | 1.449 | [1](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/node-bun-cpu-runs-rpi5.md#bun-coakka-run-1) · [2](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/node-bun-cpu-runs-rpi5.md#bun-coakka-run-2) · [3](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/node-bun-cpu-runs-rpi5.md#bun-coakka-run-3) |
+| Bun / `Bun.serve()` | 482,802 | 10.0356 | 48,280.2 | 48,108.9 | 2.151 | [1](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/node-bun-cpu-runs-rpi5.md#bun-direct-run-1) · [2](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/node-bun-cpu-runs-rpi5.md#bun-direct-run-2) · [3](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/node-bun-cpu-runs-rpi5.md#bun-direct-run-3) |
+
+The CoAkka fixtures used about 19 CPU-seconds per median run. Fastify and
+`Bun.serve()` used about 10 each. For these fixtures, CoAkka Node.js
+delivered 2.75× the requests per CPU-second of Fastify. CoAkka Bun
+delivered 1.70× the throughput of `Bun.serve()`, which delivered 10.6%
+more requests per CPU-second.
+
+[Measurement details and all 12 runs](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/node-bun-cpu-runs-rpi5.md).
