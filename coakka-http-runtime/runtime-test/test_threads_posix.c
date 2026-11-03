@@ -1,13 +1,12 @@
 #include "test_threads.h"
 
 #include <pthread.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct test_thread_gate {
   pthread_mutex_t mutex;
   pthread_cond_t condition;
-  size_t ready;
-  size_t target;
   int released;
 } test_thread_gate_t;
 
@@ -18,101 +17,73 @@ typedef struct test_thread_start {
   int result;
 } test_thread_start_t;
 
+/* Once a child exists, an unproven coordination/join cannot return to callers
+ * that own its stack context. Abort this test process instead of freeing a
+ * possibly live owner's storage and accidentally reporting successful cleanup. */
+static void fixture_failure(const char *operation, int code) {
+  (void)fprintf(stderr, "thread fixture %s failed: %d\n", operation, code);
+  abort();
+}
+
+static void checked(int code, const char *operation) {
+  if (code != 0) fixture_failure(operation, code);
+}
+
 static void *thread_entry(void *opaque) {
   test_thread_start_t *start = (test_thread_start_t *)opaque;
-  test_thread_gate_t *gate = start->gate;
-
-  if (pthread_mutex_lock(&gate->mutex) != 0) {
-    start->result = -1;
-    return NULL;
-  }
-  gate->ready += 1U;
-  if (gate->ready == gate->target) {
-    (void)pthread_cond_broadcast(&gate->condition);
-  }
-  while (gate->released == 0 && start->result == 0) {
-    if (pthread_cond_wait(&gate->condition, &gate->mutex) != 0) {
-      start->result = -1;
-    }
-  }
-  if (pthread_mutex_unlock(&gate->mutex) != 0) {
-    start->result = -1;
-  }
-  if (start->result == 0) {
-    start->result = start->worker(start->context);
-  }
+  checked(pthread_mutex_lock(&start->gate->mutex), "gate lock");
+  while (!start->gate->released)
+    checked(pthread_cond_wait(&start->gate->condition, &start->gate->mutex), "gate wait");
+  checked(pthread_mutex_unlock(&start->gate->mutex), "gate unlock");
+  start->result = start->worker(start->context);
   return NULL;
 }
 
 int coakka_http_test_run_threads(coakka_http_test_thread_fn worker,
                                  void **contexts, size_t count) {
-  pthread_t *threads;
-  test_thread_start_t *starts;
+  pthread_t *threads = NULL;
+  test_thread_start_t *starts = NULL;
   test_thread_gate_t gate;
   size_t started = 0U;
   int result = 0;
-
   if (worker == NULL || contexts == NULL || count == 0U ||
-      pthread_mutex_init(&gate.mutex, NULL) != 0) {
-    return -1;
-  }
+      count > COAKKA_HTTP_TEST_MAX_THREADS) return -1;
+  if (pthread_mutex_init(&gate.mutex, NULL) != 0) return -1;
   if (pthread_cond_init(&gate.condition, NULL) != 0) {
-    (void)pthread_mutex_destroy(&gate.mutex);
+    checked(pthread_mutex_destroy(&gate.mutex), "mutex cleanup");
     return -1;
   }
-  gate.ready = 0U;
-  gate.target = count;
   gate.released = 0;
   threads = (pthread_t *)calloc(count, sizeof(*threads));
   starts = (test_thread_start_t *)calloc(count, sizeof(*starts));
-  if (threads == NULL || starts == NULL) {
-    result = -1;
-    goto cleanup;
-  }
-
-  for (started = 0U; started < count; ++started) {
+  if (threads == NULL || starts == NULL) { result = -1; goto cleanup; }
+  for (; started < count; ++started) {
     starts[started].worker = worker;
     starts[started].context = contexts[started];
     starts[started].gate = &gate;
-    if (pthread_create(&threads[started], NULL, thread_entry,
-                       &starts[started]) != 0) {
+    if (pthread_create(&threads[started], NULL, thread_entry, &starts[started]) != 0) {
       result = -1;
       break;
     }
   }
-  if (pthread_mutex_lock(&gate.mutex) != 0) {
-    result = -1;
-  } else {
-    if (started == count) {
-      while (gate.ready != gate.target) {
-        if (pthread_cond_wait(&gate.condition, &gate.mutex) != 0) {
-          result = -1;
-          break;
-        }
-      }
-    }
-    gate.released = 1;
-    if (pthread_cond_broadcast(&gate.condition) != 0) {
-      result = -1;
-    }
-    if (pthread_mutex_unlock(&gate.mutex) != 0) {
-      result = -1;
-    }
-  }
+  /* Publishing one sticky gate after creation requires no "all ready" wait.
+   * Late starters see released under the same mutex; partial creation releases
+   * every child that actually exists rather than waiting for missing children. */
+  checked(pthread_mutex_lock(&gate.mutex), "release lock");
+  gate.released = 1;
+  checked(pthread_cond_broadcast(&gate.condition), "release broadcast");
+  checked(pthread_mutex_unlock(&gate.mutex), "release unlock");
   while (started > 0U) {
     --started;
-    if (pthread_join(threads[started], NULL) != 0 ||
-        starts[started].result != 0) {
-      result = -1;
-    }
+    /* Workers have finite Core/socket budgets. CTest is the process watchdog;
+     * portable pthread_join itself is not a hard realtime deadline guarantee. */
+    checked(pthread_join(threads[started], NULL), "join");
+    if (starts[started].result != 0) result = -1;
   }
-
 cleanup:
   free(starts);
   free(threads);
-  if (pthread_cond_destroy(&gate.condition) != 0 ||
-      pthread_mutex_destroy(&gate.mutex) != 0) {
-    result = -1;
-  }
+  checked(pthread_cond_destroy(&gate.condition), "condition cleanup");
+  checked(pthread_mutex_destroy(&gate.mutex), "mutex cleanup");
   return result;
 }
