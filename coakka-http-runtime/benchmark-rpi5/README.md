@@ -21,6 +21,8 @@ measurement campaign. Each row reports the median-throughput run and
 uses latency and memory from that same run. The range includes all
 three accepted runs.
 
+[View the results for each accepted run](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/benchmark-runs-rpi5.md).
+
 | Connector | Median req/s | Req/s range | p50 (ms) | p95 (ms) | p99 (ms) | RSS (MiB) | Peak RSS (MiB) |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Python | 74,891.3 | 74,175.0–75,147.8 | 0.813 | 1.056 | 1.143 | 46.20 | 46.20 |
