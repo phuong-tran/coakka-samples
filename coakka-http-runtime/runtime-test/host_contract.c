@@ -8,6 +8,7 @@ int main(void) {
   coakka_http_host_limits_t effective, prior, sentinel;
   coakka_http_host_runtime_info_t runtime;
   coakka_http_host_service_info_t info;
+  coakka_http_host_monitor_config_t monitor;
   uint32_t failed = COAKKA_HTTP_HOST_FAILED_INDEX_NONE;
   int ok = 1, cleanup_ok = 1;
   if (!test_platform_open()) return 1;
@@ -19,10 +20,17 @@ int main(void) {
   TEST_CHECK(runtime.features == coakka_http_host_features());
   coakka_http_host_configuration_init(&config);
   TEST_CHECK(config.limits.max_connections == 0U);
+  TEST_CHECK(config.monitor.initial_collection == COAKKA_HTTP_HOST_MONITOR_DISABLED);
   TEST_CHECK(coakka_http_host_service_create(NULL, NULL, 0U, &owner.service,
                                              &failed) == COAKKA_HTTP_HOST_INVALID_ARGUMENT);
   TEST_CHECK(owner.service == NULL);
   TEST_CHECK(test_service_open(&owner, &config, NULL, 0U));
+  /* Default-off is observed through the typed Core query as well as the
+   * convenience predicate: a failed query must never masquerade as OFF. */
+  coakka_http_host_monitor_config_init(&monitor);
+  TEST_CHECK(coakka_http_host_monitor_config(owner.service, &monitor) == COAKKA_HTTP_HOST_OK);
+  TEST_CHECK(monitor.policy.collection == COAKKA_HTTP_HOST_MONITOR_DISABLED);
+  TEST_CHECK(coakka_http_host_monitor_enabled(owner.service) == 0U);
   coakka_http_host_limits_init(&effective);
   TEST_CHECK(coakka_http_host_service_limits(owner.service, &effective) == COAKKA_HTTP_HOST_OK);
   /* Relationships, not a copied table of Core defaults. Initial zeros express
