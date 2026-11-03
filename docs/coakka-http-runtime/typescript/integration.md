@@ -34,11 +34,22 @@ and [certificate rotation versus hot reload](https://github.com/phuong-tran/coak
 
 ## 1. Install and prepare
 
-These instructions use the exact repository archives selected by
-[`package-pins.json`](../../../coakka-http-runtime/scripts/package-pins.json), currently the
-`2026-10-08-r3` train. HTTP Runtime is **not installed from npm, PyPI,
-Maven Central or a Go module tag** in this guide. CoAkka Runtime's registry
-packages are a different product.
+### New applications
+
+```sh
+npm install coakka-http-runtime-node@1.1.2
+# In a Bun application
+bun add coakka-http-runtime-bun@1.1.2
+```
+
+Import the API from the package you install. Each package contains the
+binaries for macOS ARM64, Linux x64 and ARM64, and Windows x64 and ARM64.
+It selects the matching binary when you import the package.
+
+### Run the archived samples
+
+The sample runner uses the 1.0.0 repository archives pinned in
+[`package-pins.json`](../../../coakka-http-runtime/scripts/package-pins.json). Imports from `@coakka/http` below refer to that sample.
 
 If you do not already have the two public checkouts, clone them side by side
 in a workspace with enough storage:
@@ -69,7 +80,7 @@ are separate facts; see [coverage](../reference/FEATURES.md#final-r3-package-che
 
 **Tools for this lane:** Node.js 22+ and npm for the shared TypeScript build; Bun 1.2.22+ additionally for Bun execution. Python 3.11+ resolves packages. Security recipes need OpenSSL CLI. On Windows the package guide recommends the tested Bun 1.4.2 line; that is separate from these POSIX runners and is not certification of every newer version.
 
-The runner installs the local verified package into a staged application with install hooks disabled. It type-checks and compiles TypeScript for Node; Bun executes the same source directly. It does not rely on Node's optional TypeScript stripping. For your own app, install the matching local `.tgz` using the package guide, keep its native directory intact, and compile TypeScript normally for Node.
+The runner installs the local verified package into a staged application with install hooks disabled. It type-checks and compiles TypeScript for Node; Bun executes the same source directly. It does not rely on Node's optional TypeScript stripping. For your own app, use the 1.1.2 registry commands above and compile TypeScript normally for Node.
 
 [Package installation and platform details](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/javascript/README.md).
 
