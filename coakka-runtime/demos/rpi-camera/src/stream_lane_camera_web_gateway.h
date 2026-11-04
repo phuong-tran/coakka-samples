@@ -70,8 +70,9 @@ public:
   void set_audio_transport_state(uint32_t state) noexcept;
   bool take_profile_request(coakka_v2_camera_profile_request_t *request);
   // Submits one bounded profile POST through HTTP Runtime's native outbound
-  // lane. The call copies all request bytes and consumes its terminal event
-  // before return; callers never own a native event lease.
+  // lane. The temporary 1.1.2 numeric-target build workaround is isolated in
+  // its named module. Both paths finish synchronously and retain no caller
+  // bytes or native event lease after return.
   bool request_profile(const coakka_v2_camera_profile_request_t &request,
                        std::string *error);
   void complete_profile_request(uint64_t sequence, bool accepted,
