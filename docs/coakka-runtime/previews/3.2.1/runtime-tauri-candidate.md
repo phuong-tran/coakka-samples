@@ -1,6 +1,7 @@
 # Tauri Intents 3.2.1 archive sample
 
 This guide uses the pinned 3.2.1 source archive with embedded Core 3.2.
+Download the archive and checksum from the [3.2.1 release record](../../releases/2026-11-05-rust-tauri-runtime-3.2.1-source.md).
 Select the archive named in the
 [Samples pin](../../../../coakka-runtime/artifacts/runtime-tauri-candidate.json).
 The runner verifies the exact SHA-256 before opening it.

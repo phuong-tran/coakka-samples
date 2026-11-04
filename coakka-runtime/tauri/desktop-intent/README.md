@@ -1,5 +1,7 @@
 # Tauri Desktop Intent
 
+Download the archive and SHA-256 from the [3.2.1 release record](../../../docs/coakka-runtime/releases/2026-11-05-rust-tauri-runtime-3.2.1-source.md).
+
 Foreground desktop sample for the Tauri Intents 3.2.1 aggregate with Core 3.2.
 The WebView evidence for this version covers macOS ARM64 with Tauri 2.11.5.
 The five bundled Core images describe the aggregate payload.

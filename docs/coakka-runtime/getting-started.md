@@ -84,9 +84,8 @@ evaluation paths; choose their exact source and package together in the
 [Runtime sample index](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/README.md#other-languages-and-evaluations).
 The [Zig 3.2.1 source archive](releases/2026-11-05-zig-mojo-runtime-3.2.1-source.md) and
 [Mojo 3.2.1 preview](previews/3.2.1/runtime-mojo-candidate.md) use Core 3.2.
-The [Rust 3.2.1](previews/3.2.1/runtime-rust-candidate.md) and
-[Tauri 3.2.1](previews/3.2.1/runtime-tauri-candidate.md) guides cover local
-evaluation of their checksum-pinned source packages.
+[Rust and Tauri Intents 3.2.1](releases/2026-11-05-rust-tauri-runtime-3.2.1-source.md) are available as
+checksum-pinned source archives.
 Android remains a separate preview.
 
 Local archive/feed tests are for evaluating a package, not a prerequisite for

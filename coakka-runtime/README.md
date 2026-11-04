@@ -72,8 +72,8 @@ files, streams and device examples.
 | Language | Exact source/package path |
 | --- | --- |
 | C/C++ | [Released older snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/native) · [Local 3.0.0 evaluation](native/README.md) |
-| Rust | [Released older snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/rust) · [Local 3.2.1 archive example](rust/README.md) |
-| Tauri | [Released older snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/tauri) · [Local 3.2.1 archive example](tauri/README.md) |
+| Rust | [Released older snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/rust) · [3.2.1 source archive example](rust/README.md) |
+| Tauri | [Released older snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/tauri) · [3.2.1 source archive example](tauri/README.md) |
 | Zig | [Released older snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/zig) · [3.2.1 source archive example](zig/README.md) |
 | Android / Mojo | [Android](android/README.md) · [Mojo 3.2.1 preview](mojo/README.md): evaluation previews |
 

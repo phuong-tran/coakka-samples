@@ -1,5 +1,7 @@
 # Tauri Intent Command
 
+Download the archive and SHA-256 from the [3.2.1 release record](../../../docs/coakka-runtime/releases/2026-11-05-rust-tauri-runtime-3.2.1-source.md).
+
 This Cargo app consumes the Tauri Intents 3.2.1 aggregate and Core 3.2.
 It exercises the adapter from the terminal on macOS ARM64. Select the
 [3.2.1 archive and toolchain](../../../docs/coakka-runtime/previews/3.2.1/runtime-tauri-candidate.md),

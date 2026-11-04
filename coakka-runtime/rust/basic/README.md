@@ -1,5 +1,7 @@
 # Rust Runtime Basic
 
+Download the archive and SHA-256 from the [3.2.1 release record](../../../docs/coakka-runtime/releases/2026-11-05-rust-tauri-runtime-3.2.1-source.md).
+
 This standalone Cargo app consumes the exact Rust 3.2.1 source archive with
 Core 3.2. The basic runner covers macOS ARM64, Linux ARM64 and Windows x64.
 Choose the [3.2.1 archive and toolchain](../../../docs/coakka-runtime/previews/3.2.1/runtime-rust-candidate.md),

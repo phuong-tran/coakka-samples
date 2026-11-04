@@ -107,7 +107,8 @@ complete matrix with `bash run.sh coakka-runtime addons all published`.
 | PyPI | [`coakka-v2-connector` 3.2.1](https://pypi.org/project/coakka-v2-connector/3.2.1/) | [`coakka-logger` 1.2.2](https://pypi.org/project/coakka-logger/1.2.2/) | [CPython3.11 first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/python/registry-basic) |
 | Go modules | [`coakka-runtime-go/v3` v3.2.1](https://github.com/phuong-tran/coakka-runtime-go/releases/tag/v3.2.1) | [`coakka-logger-go` v1.2.6](https://pkg.go.dev/github.com/phuong-tran/coakka-logger-go@v1.2.6) | [Go 3.2.1 first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/go/registry-basic) |
 | SwiftPM | [`coakka-runtime-swift` v3.2.1](https://github.com/phuong-tran/coakka-runtime-swift/releases/tag/v3.2.1) | [`coakka-logger-swift` v1.2.2](https://github.com/phuong-tran/coakka-logger-swift/releases/tag/v1.2.2) | [Swift 3.2.1 first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/swift/registry-basic) |
-| Tauri source archive | [`coakka-runtime-tauri-intents` 2.5.3 source](https://github.com/phuong-tran/coakka-publish/tree/main/runtime/tauri/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e) | [`coakka-logger-tauri-intents` 1.2.2 source](https://github.com/phuong-tran/coakka-publish/tree/main/logger/tauri/releases/1.2.1+f50756ebff0d-7718ce6) | [Tauri integration guide](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/tauri/README.md) |
+| Rust source archive | [`coakka-runtime-rs` 3.2.1](https://raw.githubusercontent.com/phuong-tran/coakka-publish/89e183de62618085a1223c69d8f5ecadf6e7cf7b/coakka-runtime/rust/releases/3.2.1%2Bf9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45/coakka-runtime-rs-3.2.1.tar.gz) | Use the application's Rust logging policy | [Checksum and host scope](../coakka-runtime/releases/2026-11-05-rust-tauri-runtime-3.2.1-source.md) |
+| Tauri source archive | [`coakka-runtime-tauri-intents` 3.2.1](https://raw.githubusercontent.com/phuong-tran/coakka-publish/89e183de62618085a1223c69d8f5ecadf6e7cf7b/coakka-runtime/tauri/releases/3.2.1%2Bf9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45/coakka-runtime-tauri-intents-3.2.1-source.tar.gz) | [`coakka-logger-tauri-intents` 1.2.2 source](https://github.com/phuong-tran/coakka-publish/tree/main/logger/tauri/releases/1.2.1+f50756ebff0d-7718ce6) | [Checksum and WebView scope](../coakka-runtime/releases/2026-11-05-rust-tauri-runtime-3.2.1-source.md) |
 | Android preview | [coakka-runtime-android-3.2.1.aar](https://raw.githubusercontent.com/phuong-tran/coakka-publish/fe81cabbfbeb02672b02b19de8cfbe1a846630aa/coakka-runtime/android/releases/3.2.1%2Bf9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45/coakka-runtime-android-3.2.1.aar) | Use the app's Android logging policy | [Install and verify](../coakka-runtime/releases/2026-11-05-android-runtime-3.2.1-preview.md) |
 | Zig source archive | [`coakka-runtime-zig` 3.2.1](https://raw.githubusercontent.com/phuong-tran/coakka-publish/c426326567f57dc01ca0449c347779802833b66b/coakka-runtime/zig/releases/3.2.1%2Bf9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45/coakka-runtime-zig-3.2.1-source.tar.gz) | Use the application's Zig logging policy | [Checksum and host scope](../coakka-runtime/releases/2026-11-05-zig-mojo-runtime-3.2.1-source.md) |
 | Mojo source preview | [`coakka-runtime-mojo` 3.2.1 preview](https://raw.githubusercontent.com/phuong-tran/coakka-publish/c426326567f57dc01ca0449c347779802833b66b/coakka-runtime/mojo/releases/3.2.1%2Bf9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45/coakka-runtime-mojo-3.2.1-source.tar.gz) | Use the application's Mojo logging policy | [Checksum and preview scope](../coakka-runtime/releases/2026-11-05-zig-mojo-runtime-3.2.1-source.md) |
@@ -116,8 +117,11 @@ Zig 3.2.1 and Mojo 3.2.1 preview are checksum-pinned source archives with
 embedded Core 3.2. Mojo preview execution covers macOS ARM64 and Raspberry Pi 5
 Linux ARM64.
 
-Node.js, Bun, and Electron are three distinct npm packages. Tauri uses a
-checksum-pinned source archive. Android 3.2.1 is a standalone preview AAR
+Rust 3.2.1 and Tauri Intents 3.2.1 use checksum-pinned source archives with
+embedded Core 3.2. Tauri WebView execution was verified on macOS ARM64.
+
+Node.js, Bun, and Electron are three distinct npm packages. Android 3.2.1
+is a standalone preview AAR
 with Core 3.2 and four ABIs: `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64`.
 Installed emulator tests and lifecycle soak passed on API 24 x86_64
 (613 cycles) and API 36 ARM64 (477 cycles). API 24 ARM64 stopped before
