@@ -10,7 +10,7 @@ Choose the task you want to complete. Start with your own language's code.
 | Build a Spring Boot or Quarkus application | [Spring Boot](coakka-spring-boot.md) · [Quarkus](coakka-quarkus.md) |
 | Try a customer operation in Node.js without cloning Samples | [Node.js customer walkthrough](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/guides/first-npm-smoke.md) |
 | Transfer a file or stream data | [Files](runtime-file-transfer.md) · [Streams](runtime-streaming.md) |
-| Connect browser-facing communication | [WebSocket integration](runtime-websocket-integration.md) |
+| Connect browser-facing communication | [HTTP/WebSocket edge integration](runtime-websocket-integration.md) |
 | Add an optional integration | [Runtime addons](runtime-addons.md) |
 
 ## After the first example

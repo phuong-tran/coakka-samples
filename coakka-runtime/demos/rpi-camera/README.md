@@ -11,12 +11,18 @@ This sample has two native applications:
 This is an evaluation demo for Stream Lane publication, subscription, bounded
 backpressure, cancellation, and shutdown. Its executables are provided so users
 can test those runtime paths on their own hardware; they are not a separate
-CoAkka product or a production camera support promise. Source revision `1.1.2`
-is a private candidate built against Runtime native
+CoAkka product or a production camera support promise. Current source revision
+`1.1.2` uses the released CoAkka HTTP Runtime `1.1.2` native host ABI for the
+host UI, MJPEG, WebSocket control, outbound profile request, and Pi profile
+endpoint. It is built against Runtime native
 `2.5.1+f6b61768f60a08d81b1dc06625a211ffca8e89e2`. Its freshly installed
 Linux ARM64 publisher and macOS ARM64 companion passed the physical Raspberry
-Pi 5 USB-camera and audio workflow. This qualification does not publish a new
-release, alter the existing v1.1.0 archives or promise production camera support.
+Pi 5 USB-camera and audio workflow before the HTTP migration. Current source
+commit `062d5856d7747f80e834f7c18fbfab9886327636` passes strict
+exact-package builds and loopback HTTP/WebSocket tests on macOS ARM64 and a
+physical Pi 5; the migrated live camera/audio workflow remains open. This
+source change does not publish a new camera release, alter the existing v1.1.0
+archives, or promise production camera support.
 
 The web listener is intentionally restricted to `127.0.0.1`. The Pi listener
 uses a bearer token and is intended for a trusted private network. This sample
@@ -62,6 +68,10 @@ plus verified convenience binaries provides both properties.
 
 ## Supported Artifact Matrix
 
+This table describes the published `v1.1.0` archives and their historical
+pre-migration evidence. Current-source HTTP Runtime evidence is tracked
+separately in [`SYSTEMS-AUDIT.md`](SYSTEMS-AUDIT.md).
+
 | Application | Platform | Artifact | Current gate |
 | --- | --- | --- | --- |
 | Pi publisher | Raspberry Pi OS/Debian 12, ARM64 | `coakka_camera_pi` | GCC strict build and live Pi 5 smoke |
@@ -90,28 +100,40 @@ smoke. Verify `SHA256SUMS` before running the archive.
 
 ## Runtime Dependencies
 
+Current source builds require the exact CoAkka Runtime native `2.5.1` package
+and the released
+[CoAkka HTTP Runtime native `1.1.2` SDK](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/1.1.2).
+The application no longer links libuv or implements its own HTTP/WebSocket
+wire parser. HTTP Runtime Core owns the listener, routing, framing, WebSocket
+session, bounded response pressure, outbound request, and drain mechanics.
+
 Raspberry Pi OS or Debian:
 
 ```sh
 sudo apt update
-sudo apt install -y libasound2 libuv1 ffmpeg v4l-utils alsa-utils
+sudo apt install -y libasound2 ffmpeg v4l-utils alsa-utils
 ```
 
 Ubuntu 24.04 host:
 
 ```sh
 sudo apt update
-sudo apt install -y libuv1t64 ffmpeg
+sudo apt install -y ffmpeg
 ```
 
 macOS host:
 
 ```sh
-brew install libuv ffmpeg
+brew install ffmpeg
 ```
 
-Windows host requires a recent `ffmpeg.exe` on `PATH`. Keep
-`libcoakka_runtime_v2.dll` beside `coakka_camera_host.exe` in a binary bundle.
+Windows host requires a recent `ffmpeg.exe` on `PATH`. A current-source binary
+bundle keeps both `libcoakka_runtime_v2.dll` and `coakka_http_host.dll` beside
+`coakka_camera_host.exe`.
+
+Published camera `v1.1.0` archives predate this migration and retain their
+recorded libuv dependency and qualification contract. Follow that release's
+manifest and bundled README when running those unchanged binaries.
 
 ## Find The Camera And Microphone
 
@@ -276,7 +298,7 @@ Only that existing observed-frame handoff makes the dimensions active. A
 rejection, malformed or mismatching frame, or five-second confirmation timeout
 cannot promote the request to an observed profile.
 
-`profile_requested_fps` records request intent. The Pi's202 response acknowledges
+`profile_requested_fps` records request intent. The Pi's `202` response acknowledges
 queue admission, and JPEG dimensions do not prove camera frame rate. The status
 therefore makes no measured or effective FPS claim. The selector displays
 "Resolution unconfirmed" until dimensions are confirmed; it has no fallback
@@ -285,13 +307,15 @@ duration and fallback-cadence contract.
 
 ## Build From Public Source
 
-Clone the public samples repository, unpack exact CoAkka Runtime native `2.5.1`,
-and set `RUNTIME_ROOT` to that package:
+Clone the public samples repository. Unpack exact CoAkka Runtime native `2.5.1`
+and the matching-platform HTTP Runtime native `1.1.2` archive, then set both
+package roots:
 
 ```sh
 git clone https://github.com/phuong-tran/coakka-samples.git
-cd coakka-samples/runtime-streaming-demo/rpi-camera
+cd coakka-samples/coakka-runtime/demos/rpi-camera
 export RUNTIME_ROOT=/absolute/path/to/coakka-runtime-native-v2-2.5.1
+export HTTP_ROOT=/absolute/path/to/coakka-http-runtime-native-1.1.2
 ```
 
 The Runtime `2.5.1` Linux ARM64 evaluation library targets Debian 12 / glibc
@@ -302,6 +326,8 @@ cmake -S . -B build/pi -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DCOAKKA_RUNTIME_LIBRARY="$RUNTIME_ROOT/native/linux-aarch64/libcoakka_runtime_v2.so" \
   -DCOAKKA_RUNTIME_INCLUDE_DIR="$RUNTIME_ROOT/include" \
+  -DCOAKKA_HTTP_HOST_LIBRARY="$HTTP_ROOT/lib/libcoakka_http_host.so" \
+  -DCOAKKA_HTTP_HOST_INCLUDE_DIR="$HTTP_ROOT/include" \
   -DCOAKKA_CAMERA_BUILD_HOST=OFF \
   -DCOAKKA_CAMERA_BUILD_PI=ON
 cmake --build build/pi --target coakka_camera_pi -j4
@@ -313,18 +339,18 @@ Build the host app on macOS or Linux:
 ```sh
 cmake -S . -B build/host -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
-  -DCoAkkaRuntimeNativeV2_DIR="$RUNTIME_ROOT/cmake" \
+  -DCMAKE_PREFIX_PATH="$RUNTIME_ROOT/cmake;$HTTP_ROOT" \
   -DCOAKKA_CAMERA_BUILD_HOST=ON \
   -DCOAKKA_CAMERA_BUILD_PI=OFF
 cmake --build build/host --target coakka_camera_host -j4
 ctest --test-dir build/host --output-on-failure
 ```
 
-Windows source builds require a target-matching static libuv package plus
-`COAKKA_RUNTIME_IMPORT_LIBRARY`, an import library generated from the exact
-Runtime DLL in the native package. The prebuilt Windows archive is the normal
-evaluation path. It remains unsigned and must not be represented as natively
-verified until the release matrix says so.
+Windows source builds use the target-matching HTTP Runtime SDK, including its
+`coakka_http_host.lib` import library, plus `COAKKA_RUNTIME_IMPORT_LIBRARY`
+generated from the exact Runtime DLL. No separate libuv package is required.
+The published camera `v1.1.0` archive remains the existing evaluation binary;
+it is unsigned and must not be represented as requalified by this source change.
 
 ## Download And Verify Published Binaries
 
@@ -339,7 +365,7 @@ shasum -a 256 -c SHA256SUMS --ignore-missing
 ```
 
 The command must report `OK` for every downloaded archive. Source review and
-source builds use the `coakka-samples/runtime-streaming-demo/rpi-camera/` directory;
+source builds use the `coakka-samples/coakka-runtime/demos/rpi-camera/` directory;
 there is no generated GitHub Release source archive and no private Core
 snapshot in the public binary lane.
 
@@ -348,8 +374,10 @@ The public implementation files are under this directory's `src/` folder:
 - `stream_lane_camera_web_demo.cc`: role-specific CLI and Stream Lane wiring;
 - `v4l2_mjpeg_camera_source.c`: bounded V4L2 MMAP source;
 - `alsa_pcm_audio_source.c`: bounded ALSA PCM source;
-- `stream_lane_camera_control_server.cc`: Pi profile-control listener;
-- `stream_lane_camera_web_gateway.cc`: local libuv HTTP/MJPEG/WebSocket bridge;
+- `camera_http_host.h`: shared native HTTP ABI byte/header helpers;
+- `stream_lane_camera_control_server.cc`: Pi HTTP Runtime profile endpoint;
+- `stream_lane_camera_web_gateway.cc`: HTTP Runtime UI, MJPEG, WebSocket, and
+  outbound profile adapter;
 - `stream_lane_camera_recorder.cc`: bounded recorder and FFmpeg finalizer;
 - `stream_lane_camera_web_ui.cc`: embedded browser UI.
 

@@ -5,8 +5,16 @@ app-host can compose browser sessions with CoAkka by using:
 
 - ordinary Runtime messages or request/reply for control;
 - Stream Lane for one bounded point-to-point sequence of opaque frames; and
-- an app-owned WebSocket bridge for browser protocol, buffering, fan-out, and
-  session policy.
+- an app-host WebSocket edge for browser protocol, bounded buffering, fan-out,
+  and session policy.
+
+For a new CoAkka-native edge, prefer
+[CoAkka HTTP Runtime 1.1.2](../../coakka-http-runtime/explanation/introduction.md).
+It is a separate product that owns the HTTP listener, WebSocket upgrade and
+session mechanics, bounded output and graceful drain. Its
+[native SDK](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/1.1.2)
+is the C/C++ path. A working Node.js, Bun, JVM, Go or other reviewed edge
+framework remains valid; this guide does not require replacing it.
 
 WebSocket is a full-duplex application protocol commonly opened with an HTTP
 handshake. It is not another Runtime transport mode, and Stream Lane does not
@@ -15,7 +23,7 @@ need to understand it.
 ```mermaid
 flowchart LR
     Browser["Browser or external client"]
-    Edge["App-host<br/>WebSocket endpoint"]
+    Edge["App-host edge<br/>HTTP Runtime or existing framework"]
     Control["Runtime messages<br/>control plane"]
     Stream["Stream Lane<br/>bounded data plane"]
     Service["Camera, service,<br/>or device owner"]
@@ -27,7 +35,9 @@ flowchart LR
     Stream ==>|"borrowed frames"| Edge
 ```
 
-This is protocol composition, not built-in WebSocket support.
+This is protocol composition, not built-in support in CoAkka Runtime. CoAkka
+HTTP Runtime may own the WebSocket protocol mechanics while the application
+keeps the public schema and business policy.
 
 ## Contents
 
@@ -44,18 +54,25 @@ This is protocol composition, not built-in WebSocket support.
 
 ## Ownership Boundary
 
-The WebSocket app-host owns:
+The application owns:
 
-- the HTTP upgrade, listener, TLS for `wss`, origin checks, authentication,
+- the declared listener/TLS policy, origin rule, authentication,
   authorization, tenant isolation, and rate limits;
-- its public command and event schema, WebSocket message types, ping/pong,
-  close codes, reconnect behavior, and browser session lifetime;
+- its public command and event schema, application message types, close
+  meaning, reconnect behavior, and browser session lifetime;
 - mapping Stream Lane `format_id` values to application media or data formats;
 - copying borrowed Stream Lane frames into bounded app-owned storage before an
   asynchronous WebSocket send;
 - per-client queue limits, slow-client policy, drops, disconnects, and fan-out;
 - mapping Runtime and Stream Lane terminal outcomes into its public protocol;
 - browser-facing metrics, audit records, and user-visible errors.
+
+The chosen HTTP edge engine owns protocol mechanics. CoAkka HTTP Runtime owns
+listener I/O, HTTP parsing, upgrade validation, WebSocket framing, ping/pong,
+bounded native send pressure, close delivery and drain through its native Core.
+With another framework, that framework and its reviewed WebSocket library own
+the equivalent mechanics. Do not implement a second parser or session engine
+in the application adapter.
 
 CoAkka Runtime owns:
 
@@ -65,8 +82,9 @@ CoAkka Runtime owns:
   frames, receiver credit, transport-pressure observations, cancellation, and
   local terminal session records.
 
-CoAkka does not own WebSocket framing, browser playback, codec negotiation,
-media transcoding, fan-out, or public session authentication.
+CoAkka Runtime does not own WebSocket framing. Neither Runtime nor HTTP Runtime
+owns browser playback, codec negotiation, media transcoding, application
+fan-out, or public session authentication.
 
 ## Control Plane And Data Plane
 
@@ -111,9 +129,9 @@ placed in a URL, or written to logs.
 ## The Borrowed-Frame Rule
 
 The Stream Lane consumer receives `data` and frame metadata borrowed only for
-the callback duration. A WebSocket library normally completes sends
-asynchronously, so it must not retain those pointers after the callback
-returns.
+the callback duration. CoAkka HTTP Runtime and other WebSocket engines may
+complete sends asynchronously, so the app-host must not retain those pointers
+after the callback returns.
 
 The bridge therefore needs one explicit handoff:
 
@@ -122,10 +140,10 @@ Stream Lane consumer callback
   -> validate frame and size
   -> copy into bounded app-owned storage
   -> enqueue without an unbounded wait
-  -> wake the WebSocket event loop
+  -> wake the chosen HTTP edge producer
   -> return to Stream Lane
 
-WebSocket event loop
+HTTP edge producer
   -> take app-owned frame
   -> encode or wrap according to the public protocol
   -> send
@@ -258,19 +276,23 @@ Before calling a WebSocket composition production-ready, verify:
 - browser disconnect, queue overflow, Stream Lane failure, Runtime timeout,
   and shutdown paths are tested;
 - the media/data format is actually consumable by the target browser client;
-- matching-host evidence covers the chosen connector, WebSocket library, TLS
-  configuration, and target architecture.
+- matching-host evidence covers the chosen connector and HTTP edge package,
+  TLS configuration, and target architecture.
 
 ## Existing Reference
 
 The public [Raspberry Pi camera sample](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/demos/rpi-camera)
 shows a concrete native app-host that subscribes to bounded MJPEG and PCM
-Stream Lane sessions and owns a loopback HTTP/MJPEG/WebSocket gateway.
+Stream Lane sessions. Its current source uses the released CoAkka HTTP Runtime
+1.1.2 native host ABI for the loopback HTTP/MJPEG/WebSocket gateway and for the
+outbound Pi profile request. The application still owns the command schema,
+latest-frame queue, recording policy and Stream Lane handoff.
 Its listener is intentionally restricted to `127.0.0.1`; it does not claim
 Internet exposure, TLS, or multi-user browser authentication. Its Windows
-release evidence also labels WebSocket control as pending. Treat it as an
-ownership and lifecycle reference, not proof of a general WebSocket transport
-or production Internet gateway.
+`v1.1.0` binary evidence predates this source migration and labels WebSocket
+control as pending. Treat current source as an ownership and lifecycle
+reference, not proof of a general WebSocket transport or production Internet
+gateway.
 
 Read [Runtime Streaming](runtime-streaming.md) for the complete Stream Lane
 contract and [Keep HTTP At The Edge](../../coakka-http-runtime/explanation/http-edge-runtime-boundary.md) for the

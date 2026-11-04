@@ -31,7 +31,7 @@ deadletter outcome.
 
 ```text
 external client
-  -> HTTP edge hosted by Node.js, Bun, JVM, Go, or another app framework
+  -> HTTP edge hosted by CoAkka HTTP Runtime or an existing app framework
   -> authentication, authorization, validation, and edge policy
   -> thin HTTP-to-CoAkka request adapter
   -> CoAkka target, route, bounded admission, and request/reply lifecycle
@@ -59,6 +59,19 @@ public API policy:
 These concerns should not be pushed into CoAkka Runtime. Runtime should not
 learn HTTP methods, paths, cookies, framework middleware, or public status-code
 policy merely to make the integration look complete.
+
+For a new CoAkka-native edge, start with
+[CoAkka HTTP Runtime 1.1.2](introduction.md). It already owns the shared HTTP
+server/client mechanics, streaming, WebSocket sessions, bounded pressure and
+graceful shutdown through the same native Core across its connectors. The
+[native SDK](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/1.1.2)
+is the corresponding choice for C and C++ app-hosts.
+
+This is a recommendation, not a requirement to replace a working framework.
+Node.js, Bun, JVM, Go and other reviewed HTTP stacks remain valid when the
+application needs their middleware or platform integration. In either case,
+the app owns public API and business policy while the chosen HTTP engine owns
+protocol mechanics; neither choice moves HTTP semantics into CoAkka Runtime.
 
 ## Runtime Owns Internal Delivery
 
@@ -193,4 +206,6 @@ the complete target, envelope, reply, timeout, and deadletter vocabulary. For a
 full-duplex browser edge, read
 [WebSocket Integration With CoAkka](../../coakka-runtime/guides/runtime-websocket-integration.md); the
 app-host still owns the public protocol while Runtime messages and Stream Lane
-remain behind it.
+remain behind it. CoAkka HTTP Runtime is the recommended CoAkka-native owner of
+the listener, upgrade, session and bounded output mechanics; an existing
+reviewed edge framework remains supported.

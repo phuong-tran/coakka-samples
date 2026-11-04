@@ -22,14 +22,14 @@ and point to real source for each language, including separate Java/Kotlin comma
 | Exchange work and understand replies/failures | [Messages and routing](explanation/runtime-message-and-routing-model.md) |
 | Transfer files or stream data | [Files](guides/runtime-file-transfer.md) · [Streams](guides/runtime-streaming.md) |
 | Integrate a JVM framework | [Spring Boot](guides/coakka-spring-boot.md) · [Quarkus](guides/coakka-quarkus.md) |
-| Connect browser-facing or optional integrations | [WebSocket](guides/runtime-websocket-integration.md) · [Addons](guides/runtime-addons.md) |
+| Connect browser-facing or optional integrations | [HTTP/WebSocket edge](guides/runtime-websocket-integration.md) · [Addons](guides/runtime-addons.md) |
 
 ## Operate and look up details
 
 - [Defaults and monitoring](operations/runtime-monitoring.md): AUTO, MULTIPLEXED and monitoring-off.
 - [Troubleshooting](operations/troubleshooting.md) and [operations](operations/README.md).
 - [Task guides](guides/README.md), [reference](reference/README.md) and [explanations](explanation/README.md).
-- [Changelog and migration](CHANGELOG.md), [release history](releases/README.md) and [local evaluation](previews/README.md).
+- [Changelog and migration](CHANGELOG.md), [release history](releases/) and [local evaluation](previews/README.md).
 
 [HTTP Runtime](../coakka-http-runtime/README.md) and [Logger](../coakka-logger/README.md)
 have independent versions. [All product documentation](../README.md).

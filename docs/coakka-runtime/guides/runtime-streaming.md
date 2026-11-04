@@ -28,8 +28,10 @@ the operation and exchange a stream grant. Keep live frame bytes out of
 has a known final size, and needs integrity verification or resumable storage.
 For a browser-facing composition, read
 [WebSocket Integration With CoAkka](runtime-websocket-integration.md). The
-WebSocket endpoint, asynchronous send queue, browser format, and fan-out remain
-app-host responsibilities.
+public command schema, browser format, Stream Lane handoff, and fan-out remain
+app-host responsibilities. For a new CoAkka-native edge, prefer CoAkka HTTP
+Runtime 1.1.2 to own the HTTP listener, WebSocket upgrade/session, bounded
+output and drain; an existing reviewed edge framework remains valid.
 
 ## Contents
 

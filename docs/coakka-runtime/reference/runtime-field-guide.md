@@ -83,6 +83,11 @@ public request
 The public HTTP edge is real. It owns external request policy, TLS/mTLS when
 needed, request limits, access logs, and external response shape.
 
+For a new CoAkka-native edge, CoAkka HTTP Runtime `1.1.2` is the recommended
+server/client and WebSocket owner, including its native SDK for C/C++. A
+working reviewed framework remains valid; the application owns the same public
+policy in either case.
+
 The app-host is real. It owns authentication context, tenant policy,
 validation, idempotency policy, and the decision to submit internal work.
 

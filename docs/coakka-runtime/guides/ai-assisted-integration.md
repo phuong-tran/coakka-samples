@@ -47,7 +47,7 @@ across languages; matching version numbers are not required.
 | How do I transfer a large immutable file? | [Runtime File Transfer](runtime-file-transfer.md) | Use a package containing File Lane, preserve both peers' terminal checks, and keep authorization in the application control plane. |
 | How do I carry live bounded frames? | [Runtime Streaming](runtime-streaming.md) | Use only an exact Stream Lane source or package generation; preserve callbacks, pressure observation, terminal state, and close ordering. |
 | How do I target one or all service replicas? | [Runtime Lane Owner Grants](../reference/runtime-lane-owner-grants.md) | Use typed connector owner grants, enumerate exact owners for `ALL`, and keep one independent transfer/session outcome per owner. |
-| How do I expose a stream through WebSocket? | [WebSocket Integration With CoAkka](runtime-websocket-integration.md) | Keep WebSocket in the app-host; copy borrowed frames into bounded app-owned queues and do not claim Stream Lane fan-out or browser protocol support. |
+| How do I expose a stream through WebSocket? | [WebSocket Integration With CoAkka](runtime-websocket-integration.md) | Prefer CoAkka HTTP Runtime 1.1.2 for a new CoAkka-native edge, or keep an existing reviewed framework. The app-host still owns schema and stream policy; copy borrowed frames into bounded app-owned queues and do not claim Stream Lane fan-out or browser protocol support. |
 | What works on my OS and CPU? | [Runtime Package And Platform Evidence](../reference/runtime-package-platform-evidence.md) | Distinguish a packaged native file from matching-host connector execution. |
 
 ## Evidence Levels
