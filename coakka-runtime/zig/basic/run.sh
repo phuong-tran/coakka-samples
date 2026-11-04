@@ -9,8 +9,8 @@ for name in COAKKA_RUNTIME_LIB COAKKA_FILE_LANE_RUNTIME_LIB COAKKA_STREAM_LANE_R
     exit 2
   fi
 done
-: "${COAKKA_ZIG_ARCHIVE:?select the exact private3.0.0-source archive}"
-[[ "$(zig version)" == "0.16.0" ]] || { echo "use qualified Zig0.16.0" >&2; exit 2; }
+: "${COAKKA_ZIG_ARCHIVE:?select the exact archive named in the Samples pin}"
+[[ "$(zig version)" == "0.16.0" ]] || { echo "use qualified Zig 0.16.0" >&2; exit 2; }
 : "${COAKKA_ZIG_GLOBAL_CACHE_ROOT:?select the reusable Zig cache}"
 [[ "${COAKKA_ZIG_GLOBAL_CACHE_ROOT}" == /* && -d "${COAKKA_ZIG_GLOBAL_CACHE_ROOT}" && ! -L "${COAKKA_ZIG_GLOBAL_CACHE_ROOT}" ]] || exit 2
 admission="$(python3 -I -B "${repo_root}/coakka-runtime/scripts/runtime-source-candidate.py" --language zig --archive "${COAKKA_ZIG_ARCHIVE}" --work "${COAKKA_SAMPLE_WORK_ROOT}")"

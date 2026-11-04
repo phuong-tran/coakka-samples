@@ -1,25 +1,32 @@
-# Mojo Runtime Basic
+# Mojo Runtime Basic Preview
 
-This recipe uses the admitted **unpublished 3.0.0 source package** and Core
-`1522b4a9f30da1039ef8c7d198bbecfc749a2456`. It does not substitute a working source checkout or an old public archive.
-Mojo remains an executable over the package's C smoke boundary, not a stable
-high-level Mojo application API. The old sample-local transport copy is removed.
+This example consumes the **Mojo 3.2.1 preview source package** with embedded Runtime Core 3.2.
+Use Mojo 1.0.0b2.dev2026052115, Python 3.11 or later, and a matching C compiler.
+Mojo preview execution was checked on macOS ARM64 and Raspberry Pi 5
+(Linux ARM64). The package includes Core images for Linux x86-64 and Windows,
+but Mojo execution is unqualified on those targets.
 
-Choose a fresh absolute work path with an existing parent. On the development
-Mac use external APFS storage. Select the trusted archive whose exact hash is
-recorded in coakka-runtime/artifacts/runtime-mojo-candidate.json.
+Run the following from the Samples checkout. Select the archive matching the
+[Samples pin](../../artifacts/runtime-mojo-candidate.json) and a fresh
+absolute work path whose parent already exists.
+
+On macOS use the SDK selected by Xcode for the preview build:
 
 ~~~sh
-export COAKKA_MOJO_ARCHIVE=/absolute/coakka-runtime-mojo-3.0.0-source.tar.gz
-export COAKKA_SAMPLE_WORK_ROOT=/absolute/existing-parent/fresh-mojo-basic
+export SDKROOT="$(xcrun --sdk macosx --show-sdk-path)"
+export MACOSX_DEPLOYMENT_TARGET=13.0
+~~~
+
+~~~sh
+export COAKKA_MOJO_ARCHIVE="/absolute/coakka-runtime-mojo-3.2.1-source.tar.gz"
+export COAKKA_SAMPLE_WORK_ROOT="/absolute/existing-parent/mojo-basic-new"
 bash run.sh coakka-runtime mojo basic
 ~~~
 
-The runner refuses archive changes, an existing work path and native-library
-overrides. It builds outside the repository, checks startup/request/reply and
-route-miss behavior, then closes the owner. Build/package staging is removed;
-installed outputs and the admission receipt remain under the chosen work path.
+The runner checks the archive SHA-256 before unpacking, builds with the
+bundled Core, and runs request/reply and route-miss checks. It removes build
+staging and retains the installed application and an admission receipt under
+the selected work path.
 
-Normal configuration leaves CPU placement, queue capacity, connection strategy
-and monitoring to Core. This sample does not establish a new benchmark,
-native-image support or additional language/compiler platforms.
+This preview uses a Mojo executable and the packaged C boundary. It does not
+provide a stable high-level Mojo API.

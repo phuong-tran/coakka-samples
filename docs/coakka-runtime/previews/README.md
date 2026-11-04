@@ -22,8 +22,8 @@ alone is its preview path.
 | Go | [Go](3.0.0/runtime-go-candidate.md) |
 | Swift | [Swift](3.0.0/runtime-swift-candidate.md) |
 | Rust / Tauri | [Rust](3.0.0/runtime-rust-candidate.md) · [Tauri](3.0.0/runtime-tauri-candidate.md) |
-| Zig | [Zig](3.0.0/runtime-zig-candidate.md) |
-| Mojo preview | [Mojo](3.0.0/runtime-mojo-candidate.md) |
+| Zig | [3.2.1 source package](3.2.1/runtime-zig-candidate.md) · [3.0.0 history](3.0.0/runtime-zig-candidate.md) |
+| Mojo preview | [3.2.1 preview](3.2.1/runtime-mojo-candidate.md) · [3.0.0 history](3.0.0/runtime-mojo-candidate.md) |
 
 The [Android 3.2.1 preview AAR](../releases/2026-11-05-android-runtime-3.2.1-preview.md) can be used as a local Gradle dependency. Mojo also remains a preview.
 Swift is published. Its Windows ARM64 lane remains a preview.

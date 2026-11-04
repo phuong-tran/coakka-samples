@@ -74,8 +74,8 @@ files, streams and device examples.
 | C/C++ | [Released older snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/native) · [Local 3.0.0 evaluation](native/README.md) |
 | Rust | [Released older snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/rust) · [Local 3.0.0 evaluation](rust/README.md) |
 | Tauri | [Released older snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/tauri) · [Local 3.0.0 evaluation](tauri/README.md) |
-| Zig | [Released older snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/zig) · [Local 3.0.0 evaluation](zig/README.md) |
-| Android / Mojo | [Android](android/README.md) · [Mojo](mojo/README.md): evaluation previews |
+| Zig | [Released older snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/zig) · [Local 3.2.1 evaluation](zig/README.md) |
+| Android / Mojo | [Android](android/README.md) · [Mojo 3.2.1 preview](mojo/README.md): evaluation previews |
 
 These paths keep their own version and prerequisites. [Local evaluation guides](../docs/coakka-runtime/previews/README.md)
 are for checking selected packages, not a prerequisite for the published first runs.

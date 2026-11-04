@@ -9,8 +9,8 @@ for name in COAKKA_RUNTIME_LIB COAKKA_FILE_LANE_RUNTIME_LIB COAKKA_STREAM_LANE_R
     exit 2
   fi
 done
-: "${COAKKA_MOJO_ARCHIVE:?select the exact private3.0.0-source archive}"
-[[ "$(mojo --version)" == "Mojo 1.0.0b2.dev2026052115 (cb8874f5)" ]] || { echo "use qualified Mojo1.0.0b2.dev2026052115" >&2; exit 2; }
+: "${COAKKA_MOJO_ARCHIVE:?select the exact archive named in the Samples pin}"
+[[ "$(mojo --version)" == "Mojo 1.0.0b2.dev2026052115 (cb8874f5)" ]] || { echo "use qualified Mojo 1.0.0b2.dev2026052115" >&2; exit 2; }
 admission="$(python3 -I -B "${repo_root}/coakka-runtime/scripts/runtime-source-candidate.py" --language mojo --archive "${COAKKA_MOJO_ARCHIVE}" --work "${COAKKA_SAMPLE_WORK_ROOT}")"
 package_root="$(printf '%s' "${admission}" | python3 -I -B -c 'import json,sys;print(json.load(sys.stdin)["packageRoot"])')"
 work_root="${COAKKA_SAMPLE_WORK_ROOT}"
