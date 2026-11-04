@@ -23,9 +23,9 @@ The frozen checksum-pinned 2.x connector archives retain native generation
 Logger JVM remains `1.2.2` over native logger `1.2.1+f50756ebff0d`;
 NuGet Logger remains `1.2.3`. Logger and other products keep separate versions.
 
-NuGet Runtime `CoAkka.Runtime 3.1.1` includes Core 3.1 r2,
-build `6789dd16210fc01f17cca4d2b66a592d1ac79121`, ABI 1, for .NET 8 or later.
-See the [C# 3.1.1 release](../coakka-runtime/releases/2026-11-04-nuget-csharp-runtime-3.1.1.md).
+NuGet `CoAkka.Runtime 3.2.1` includes Core generation 3.2,
+build `f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45`, ABI 1, for .NET 8 or later.
+See the [C# 3.2.1 release](../coakka-runtime/releases/2026-11-05-nuget-csharp-runtime-3.2.1.md).
 
 PyPI Runtime is now `coakka-v2-connector==3.0.0`, with Core `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` / ABI1, five platform wheels and GIL-enabled CPython3.11 as its minimum. Migrate 2.x callers to the new API. See the [Python 3.0.0 release](../coakka-runtime/releases/2026-10-30-pypi-python-runtime-3.0.0.md).
 
@@ -97,7 +97,7 @@ complete matrix with `bash run.sh coakka-runtime addons all published`.
 | Channel | Runtime package | Logger package | Sample or guide |
 | --- | --- | --- | --- |
 | Maven Central | [`coakka.runtime` 3.0.0](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/runtime/3.0.0) | [`coakka.logger` 1.2.2](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/logger/1.2.2) | [Java/Kotlin3 first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/jvm/registry-basic); `bash run.sh coakka-logger jvm basic` |
-| NuGet | [`CoAkka.Runtime` 3.1.1](https://www.nuget.org/packages/CoAkka.Runtime/3.1.1) | [`CoAkka.Logger` 1.2.3](https://www.nuget.org/packages/CoAkka.Logger/1.2.3) | [C# 3.1.1 install](../coakka-runtime/releases/2026-11-04-nuget-csharp-runtime-3.1.1.md#install); `bash run.sh coakka-logger csharp basic` |
+| NuGet | [`CoAkka.Runtime` 3.2.1](https://www.nuget.org/packages/CoAkka.Runtime/3.2.1) | [`CoAkka.Logger` 1.2.3](https://www.nuget.org/packages/CoAkka.Logger/1.2.3) | [C# 3.2.1 install](../coakka-runtime/releases/2026-11-05-nuget-csharp-runtime-3.2.1.md#install); `bash run.sh coakka-logger csharp basic` |
 | npm | [`coakka-v2-connector-node` 3.2.1](https://www.npmjs.com/package/coakka-v2-connector-node/v/3.2.1) | [`coakka-logger-node` 1.2.7](https://www.npmjs.com/package/coakka-logger-node/v/1.2.7) | [3.2.1 first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/node/registry-basic) |
 | npm (Bun) | [`coakka-v2-connector-bun` 3.2.1](https://www.npmjs.com/package/coakka-v2-connector-bun/v/3.2.1) | [`coakka-logger-bun` 1.2.7](https://www.npmjs.com/package/coakka-logger-bun/v/1.2.7) | [3.2.1 first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/bun/registry-basic) |
 | npm (Electron) | [`coakka-v2-connector-electron` 3.2.1](https://www.npmjs.com/package/coakka-v2-connector-electron/v/3.2.1) | [`coakka-logger-electron` 1.2.7](https://www.npmjs.com/package/coakka-logger-electron/v/1.2.7) | [Electron 3.2.1 install](../coakka-runtime/releases/2026-11-05-npm-node-bun-electron-runtime-3.2.1.md#install) |
@@ -137,7 +137,7 @@ unsuffixed v1 tags remain unchanged.
 | JVM signed public tree | `https://repo1.maven.org/maven2/io/github/phuong-tran/coakka/runtime/2.5.3/` |
 | npm | `coakka-v2-connector-{node,bun,electron}@3.2.1` |
 | PyPI | `coakka-v2-connector`, exact `3.0.0` |
-| NuGet | `CoAkka.Runtime`, exact `3.1.1` |
+| NuGet | `CoAkka.Runtime`, exact `3.2.1` |
 | Go module | `github.com/phuong-tran/coakka-runtime-go/v3@v3.0.0` |
 | SwiftPM | `https://github.com/phuong-tran/coakka-runtime-swift.git`, exact `3.0.0` |
 | coakka-client | `coakka-tools/coakka-client/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/` |

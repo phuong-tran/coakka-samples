@@ -126,7 +126,7 @@ coordinates are:
 | npm (Node.js and Bun) | `coakka-v2-connector-{node,bun}@3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` |
 | npm (Electron) | `coakka-v2-connector-electron@3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` via Node `3.2.1` |
 | PyPI | `coakka-v2-connector==3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
-| NuGet | `CoAkka.Runtime==3.1.1` | `3.1+6789dd16210fc01f17cca4d2b66a592d1ac79121` |
+| NuGet | `CoAkka.Runtime==3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` |
 | Go modules | `github.com/phuong-tran/coakka-runtime-go/v3@v3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 | SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 
@@ -166,6 +166,12 @@ copy because the receiver persists data to storage.
 For code and ownership details, read [Runtime File Transfer](../guides/runtime-file-transfer.md),
 [Envelope And Deadletter Map](envelope-deadletter-map.md), and
 [TLS And mTLS](tls-and-mtls.md).
+
+## C# Runtime 3.2.1
+
+NuGet repository signing preserves every qualified package member. A clean
+.NET 8 consumer on macOS ARM64 restored the public package and verified
+request/reply, a route-miss deadletter and the loaded Core. See the [release record](../releases/2026-11-05-nuget-csharp-runtime-3.2.1.md).
 
 ## C# Runtime 3.1.1
 

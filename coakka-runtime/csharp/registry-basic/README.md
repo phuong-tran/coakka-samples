@@ -1,10 +1,10 @@
-# C# Runtime 3.0.0: First Run
+# C# Runtime 3.2.1: First Run
 
 Send one request to a C# handler and print its reply.
 
 **You need:** .NET SDK 8 or later and a
 [Samples checkout](../../../docs/coakka-runtime/getting-started.md#get-the-examples).
-The project uses CoAkka.Runtime 3.0.0 from NuGet.
+The project uses CoAkka.Runtime 3.2.1 from NuGet.
 
 ## Run
 
