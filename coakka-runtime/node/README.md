@@ -1,9 +1,7 @@
 # Node.js Runtime Samples
 
-`coakka-v2-connector-node@3.1.2` is published on npm and includes Core
-generation `3.1` r2. See the [3.1.2 release record](../../docs/coakka-runtime/releases/2026-11-04-npm-node-bun-runtime-3.1.2.md).
-
-The [3.0.0 first-run sample](registry-basic/README.md) uses its pinned version.
+Use the [3.2.1 first run](registry-basic/README.md) and see the
+[package ledger](../../docs/common/current-packages.md) for registry availability.
 
 ```sh
 cd coakka-runtime/node/registry-basic

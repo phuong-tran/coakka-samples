@@ -1,4 +1,4 @@
-# Bun Runtime 3.0.0: First Run
+# Bun Runtime 3.2.1: First Run
 
 Send one request to an application handler and print its reply.
 

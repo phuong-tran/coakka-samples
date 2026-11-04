@@ -123,8 +123,8 @@ coordinates are:
 | Registry | Current verified coordinate | Bundled native generation |
 | --- | --- | --- |
 | Maven Central | `io.github.phuong-tran.coakka:runtime:3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
-| npm (Node.js and Bun) | `coakka-v2-connector-{node,bun}@3.1.2` | `3.1+6789dd16210fc01f17cca4d2b66a592d1ac79121` |
-| npm (Electron) | `coakka-v2-connector-electron@3.1.1` | `3.1+6789dd16210fc01f17cca4d2b66a592d1ac79121` via Node `3.1.2` |
+| npm (Node.js and Bun) | `coakka-v2-connector-{node,bun}@3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` |
+| npm (Electron) | `coakka-v2-connector-electron@3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` via Node `3.2.1` |
 | PyPI | `coakka-v2-connector==3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 | NuGet | `CoAkka.Runtime==3.1.1` | `3.1+6789dd16210fc01f17cca4d2b66a592d1ac79121` |
 | Go modules | `github.com/phuong-tran/coakka-runtime-go/v3@v3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
@@ -189,6 +189,11 @@ macOS ARM64 install from PyPI only passes the ordinary sample and public
 Runtime/File/Stream consumer. This is not a new post-upload run on every OS.
 PyPy and free-threaded Python remain outside this qualification.
 See [the Python release receipt](../releases/2026-10-30-pypi-python-runtime-3.0.0.md).
+
+## npm Runtime 3.2.1
+
+The three public tarballs match the qualified archives by SHA-256. A clean
+install resolved Electron with Node.js 3.2.1. See the [npm release record](../releases/2026-11-05-npm-node-bun-electron-runtime-3.2.1.md).
 
 ## npm Runtime 3.1.2
 

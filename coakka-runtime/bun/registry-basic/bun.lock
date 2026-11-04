@@ -1,0 +1,15 @@
+{
+  "lockfileVersion": 1,
+  "configVersion": 1,
+  "workspaces": {
+    "": {
+      "name": "coakka-bun-first-run",
+      "dependencies": {
+        "coakka-v2-connector-bun": "3.2.1",
+      },
+    },
+  },
+  "packages": {
+    "coakka-v2-connector-bun": ["coakka-v2-connector-bun@3.2.1", "", {}, "sha512-z8nzr/AWiNHA5An4QxtVHPHiFezPrbXyPP1KD33dTeQx1P5tzpqFyUXFLdEXAHoAs1ls2ML9q/U4CcK4edPoog=="],
+  }
+}

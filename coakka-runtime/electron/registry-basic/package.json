@@ -9,7 +9,7 @@
     "start": "npm run preload && electron ."
   },
   "dependencies": {
-    "coakka-v2-connector-electron": "3.0.0"
+    "coakka-v2-connector-electron": "3.2.1"
   },
   "devDependencies": {
     "electron": "42.0.0",

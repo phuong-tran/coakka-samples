@@ -64,7 +64,7 @@ Choose the integration that matches your code:
 | Electron and Tauri desktop apps | [Electron](coakka-runtime/electron/registry-basic/README.md) · [Tauri](coakka-runtime/tauri/README.md) |
 | C / C++, Rust, Zig, Android and Mojo | [Source/archive guides and previews](coakka-runtime/README.md#other-languages-and-evaluations) |
 
-Start with the **3.0.0** language examples. Tauri, C/C++, Rust and Zig use their
+Start with the first run for your language. Tauri, C/C++, Rust and Zig use their
 own versioned source/archive guides; Android and Mojo are previews. Follow each
 guide's package, lane and platform scope.
 
@@ -76,9 +76,9 @@ A connector fix can advance its own revision to `3.1.2` while using the
 same Core SDK and native checksums. When the connector adopts Core `3.2`,
 its first release on that generation is `3.2.1`.
 
-On npm, Node.js and Bun `3.1.2` and Electron `3.1.1` use Core 3.1 r2.
-Electron installs Node.js `3.1.2` as its exact dependency.
-See the [current package versions](docs/common/current-packages.md).
+On npm, Node.js, Bun and Electron `3.2.1` use Core 3.2. Electron installs
+Node.js `3.2.1` as its exact dependency. See the [npm release record](docs/coakka-runtime/releases/2026-11-05-npm-node-bun-electron-runtime-3.2.1.md)
+and [current package versions](docs/common/current-packages.md).
 
 ## CoAkka Runtime addons
 

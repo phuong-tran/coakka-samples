@@ -1,7 +1,7 @@
 # Node.js Customer Operation
 
 Create a customer through a named application handler using published Runtime
-3.1.2. This is a one-process business example you can run without cloning
+3.2.1. This is a one-process business example you can run without cloning
 Samples. The application owns the customer data and operation.
 
 **You need:** Node.js 22 or later and npm.
@@ -14,7 +14,7 @@ Use a new working directory:
 mkdir coakka-runtime-first-run
 cd coakka-runtime-first-run
 npm init -y
-npm install coakka-v2-connector-node@3.1.2
+npm install coakka-v2-connector-node@3.2.1
 ~~~
 
 ## Write the application
