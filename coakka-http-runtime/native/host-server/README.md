@@ -29,5 +29,5 @@ scope-bound owner. The [shared flow](example.h) releases the event lease
 after taking its exchange identity. It waits for a writable event before
 sending stream data and waits for the terminal event before closing.
 
-The [installed SDK tests](../../runtime-test/README.md) cover request streams,
+The [coakka-http-runtime-test](../../coakka-http-runtime-test.md) cover request streams,
 cancellation, and lifecycle.

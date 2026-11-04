@@ -6,7 +6,7 @@ The [2.0.1 server and streaming samples](../native/host-server/README.md) use th
 package setup, first HTTP request, feature walkthroughs and checked shutdown.
 This README records verification for the pinned 1.0.0
 callback SDK. For the focused 2.0.1 SDK, use the
-[installed native contract tests](../runtime-test/README.md).
+[coakka-http-runtime-test](../coakka-http-runtime-test.md).
 
 This sample uses installed `coakka/http/http.h` and
 `CoAkkaHttp::runtime`, with a non-copyable RAII server, explicit checked close, and exception containment at callbacks.
