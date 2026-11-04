@@ -1,4 +1,4 @@
-# Go Runtime 3.0.0: First Run
+# Go Runtime 3.2.1: First Run
 
 Send one request to a Go handler and print its reply.
 
@@ -12,7 +12,7 @@ From the Samples repository root:
 
 ~~~sh
 cd coakka-runtime/go/registry-basic
-go run .
+go run -mod=readonly .
 ~~~
 
 Expected output:

@@ -127,7 +127,7 @@ coordinates are:
 | npm (Electron) | `coakka-v2-connector-electron@3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` via Node `3.2.1` |
 | PyPI | `coakka-v2-connector==3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` |
 | NuGet | `CoAkka.Runtime==3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` |
-| Go modules | `github.com/phuong-tran/coakka-runtime-go/v3@v3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
+| Go modules | `github.com/phuong-tran/coakka-runtime-go/v3@v3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` |
 | SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 
 Maven Runtime `2.5.3`, npm `2.5.3`, PyPI `2.5.3`, NuGet `2.5.3`, Go `v1.8.3`,
@@ -234,6 +234,15 @@ renderer/File/Stream/shutdown. Ordinary first-run apps pass for all three.
 Earlier exact executable target qualification is retained; this is not a new
 post-upload execution on every OS. Bun on Windows ARM64 requires 1.4.0.
 See [the npm release receipt](../releases/2026-10-30-npm-node-bun-electron-runtime-3.0.0.md).
+
+## Go Runtime 3.2.1
+
+The [GitHub release](https://github.com/phuong-tran/coakka-runtime-go/releases/tag/v3.2.1) and its archive checksum were verified
+anonymously. The public Go proxy module matches the tagged source and the five
+qualified Core 3.2 images. A clean macOS ARM64 consumer passed request/reply;
+GitHub CI ran the Linux x64 application on Go 1.22.12 and stable Go.
+See the [release record](../releases/2026-11-05-go-runtime-3.2.1-github.md) for artifact hashes and
+matching-host qualification scope.
 
 ## Go Runtime 3.0.0
 
