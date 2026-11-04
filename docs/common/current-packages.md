@@ -1,7 +1,7 @@
 # Current Packages
 
-This page lists the current public package-manager entrypoints for CoAkka
-Runtime and CoAkka Logger.
+This page lists current public packages for CoAkka Runtime, CoAkka HTTP
+Runtime, and CoAkka Logger.
 
 Every runtime package below is a connector into the same polyglot,
 multi-language, multi-platform CoAkka Runtime ecosystem. A Python, Go, C#,
@@ -141,7 +141,9 @@ unsuffixed v1 tags remain unchanged.
 ## CoAkka HTTP Runtime
 
 HTTP Runtime has its own packages and release cadence. Version `2.0.1`
-means Core generation `2.0` and connector revision `1`. See [the versioning
+means Core generation `2.0` and connector revision `1`. The native SDK pin
+is `2.0.1` with C ABI 10. Version `1.1.2` is deprecated for new installs.
+See [the versioning
 guide](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/versions.md).
 
 | Host | HTTP Runtime 2.0.1 |
@@ -152,7 +154,7 @@ guide](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runti
 | JVM | [`io.github.phuong-tran.coakka:coakka-http-runtime-jvm:2.0.1`](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/coakka-http-runtime-jvm/2.0.1) |
 | Go | [`github.com/phuong-tran/coakka-http-runtime-go/v2@v2.0.1`](https://github.com/phuong-tran/coakka-http-runtime-go/releases/tag/v2.0.1) |
 
-For native C or C++, download the [2.0.1 native SDK for your platform](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/2.0.1).
+For C, C++, or Go, download the [2.0.1 native SDK for your platform](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/2.0.1).
 [Run a first request](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md).
 
 ## Main Public Repositories

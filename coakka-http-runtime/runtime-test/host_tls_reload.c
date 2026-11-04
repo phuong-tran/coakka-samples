@@ -70,7 +70,8 @@ static int exchange(test_service_t *server, uint16_t port,
                     coakka_http_host_security_t security,
                     const fixture_identity_t *trusted_server,
                     const fixture_identity_t *client_identity,
-                    int expected_success,
+                    const char *tls_peer,
+                    coakka_http_host_outbound_reason_t expected_reason,
                     const coakka_http_host_tls_reload_request_t *drain) {
   test_service_t client;
   coakka_http_host_configuration_t config;
@@ -96,10 +97,10 @@ static int exchange(test_service_t *server, uint16_t port,
   endpoint.node_id = test_text("tls-fixture");
   endpoint.connect_host = test_text("127.0.0.1");
   endpoint.connect_port = port;
-  endpoint.http_authority = test_text("localhost");
+  endpoint.http_authority = test_text("http.fixture.test");
   endpoint.security = security;
   endpoint.available = 1U;
-  endpoint.tls_peer_identity = test_text("localhost");
+  endpoint.tls_peer_identity = test_text(tls_peer);
   endpoint.tls_trust_generation = trust.generation;
   if (client_identity != NULL) {
     coakka_http_host_outbound_identity_init(&identity);
@@ -126,9 +127,12 @@ static int exchange(test_service_t *server, uint16_t port,
   request.timeout_ms = 3000U;
   TEST_CHECK(coakka_http_host_submit_outbound(client.service, &request, &call) ==
              COAKKA_HTTP_HOST_OK);
-  if (expected_success) {
+  if (expected_reason == COAKKA_HTTP_HOST_OUTBOUND_RESPONSE) {
     TEST_CHECK(test_next_request(server));
     TEST_CHECK(test_bytes_equal(coakka_http_host_request_target(&server->event), "/tls"));
+    TEST_CHECK(
+        test_bytes_equal(coakka_http_host_request_authority(&server->event),
+                         "http.fixture.test"));
     if (drain != NULL) {
       coakka_http_host_tls_reload_outcome_t outcome;
       coakka_http_host_tls_reload_outcome_init(&outcome);
@@ -151,13 +155,19 @@ static int exchange(test_service_t *server, uint16_t port,
                                             &event) == COAKKA_HTTP_HOST_OK);
   event_live = 1;
   TEST_CHECK(event.call.slot == call.slot && event.call.generation == call.generation);
-  if (expected_success) {
-    TEST_CHECK(event.reason == COAKKA_HTTP_HOST_OUTBOUND_RESPONSE);
+  TEST_CHECK(event.reason == expected_reason);
+  if (expected_reason == COAKKA_HTTP_HOST_OUTBOUND_RESPONSE) {
     TEST_CHECK(event.response_status == 200U);
     TEST_CHECK(test_bytes_equal(event.response_body, "authenticated fixture"));
+  } else if (expected_reason == COAKKA_HTTP_HOST_OUTBOUND_PROVIDER_REJECTED) {
+    TEST_CHECK(event.phase == COAKKA_HTTP_HOST_OUTBOUND_PHASE_PROVIDER_ADOPTION);
+    TEST_CHECK(event.certainty == COAKKA_HTTP_HOST_OUTBOUND_NO_REQUEST_BYTES_SENT);
   } else {
-    TEST_CHECK(event.reason == COAKKA_HTTP_HOST_OUTBOUND_PROVIDER_FAILURE);
     TEST_CHECK(event.phase == COAKKA_HTTP_HOST_OUTBOUND_PHASE_TRANSPORT);
+    if (strcmp(tls_peer, "127.0.0.2") == 0) {
+      TEST_CHECK(event.certainty ==
+                 COAKKA_HTTP_HOST_OUTBOUND_NO_REQUEST_BYTES_SENT);
+    }
   }
 
 cleanup:
@@ -201,7 +211,23 @@ static int secure_reload(coakka_http_host_security_t security) {
              COAKKA_HTTP_HOST_OK);
   TEST_CHECK(effective_is(&effective, security, 1U, "identity-a", 0U, 0));
   TEST_CHECK(exchange(&owner, port, security, &identity_a,
-                      mutual ? &identity_a : NULL, 1, NULL));
+                      mutual ? &identity_a : NULL, "127.0.0.1",
+                      COAKKA_HTTP_HOST_OUTBOUND_RESPONSE, NULL));
+  TEST_CHECK(exchange(&owner, port, security, &identity_a,
+                      mutual ? &identity_a : NULL, "127.0.0.2",
+                      COAKKA_HTTP_HOST_OUTBOUND_PROVIDER_FAILURE, NULL));
+  if (!mutual) {
+    // These identities fail syntax validation before reaching the TLS peer.
+    TEST_CHECK(exchange(&owner, port, security, &identity_a, NULL,
+                        "0x7f000001",
+                        COAKKA_HTTP_HOST_OUTBOUND_PROVIDER_REJECTED, NULL));
+    TEST_CHECK(exchange(&owner, port, security, &identity_a, NULL,
+                        "service..fixture.test",
+                        COAKKA_HTTP_HOST_OUTBOUND_PROVIDER_REJECTED, NULL));
+    TEST_CHECK(exchange(&owner, port, security, &identity_a, NULL,
+                        "service-.fixture.test",
+                        COAKKA_HTTP_HOST_OUTBOUND_PROVIDER_REJECTED, NULL));
+  }
 
   coakka_http_host_tls_reload_request_init(&request);
   coakka_http_host_tls_reload_outcome_init(&outcome);
@@ -247,7 +273,7 @@ static int secure_reload(coakka_http_host_security_t security) {
              effective_is(&outcome.effective, security, 1U, "identity-a", 0U, 0));
   TEST_CHECK(monitor_off(owner.service));
   TEST_CHECK(exchange(&owner, port, security, &identity_a,
-                      mutual ? &identity_a : NULL, 1, NULL));
+                      mutual ? &identity_a : NULL, "localhost", 1, NULL));
 
   request.mode = COAKKA_HTTP_HOST_TLS_RELOAD_GRACEFUL;
   set_material(&request, &identity_b);
@@ -257,19 +283,24 @@ static int secure_reload(coakka_http_host_security_t security) {
   TEST_CHECK(outcome.changed == 1U &&
              effective_is(&outcome.effective, security, 2U, "identity-b", 0U, 0));
   TEST_CHECK(exchange(&owner, port, security, &identity_a,
-                      mutual ? &identity_b : NULL, 0, NULL));
+                      mutual ? &identity_b : NULL, "localhost",
+                      COAKKA_HTTP_HOST_OUTBOUND_PROVIDER_FAILURE, NULL));
   if (mutual) {
-    TEST_CHECK(exchange(&owner, port, security, &identity_b, &identity_a, 0, NULL));
+    TEST_CHECK(exchange(&owner, port, security, &identity_b, &identity_a,
+                        "localhost", COAKKA_HTTP_HOST_OUTBOUND_PROVIDER_FAILURE,
+                        NULL));
   }
   TEST_CHECK(exchange(&owner, port, security, &identity_b,
-                      mutual ? &identity_b : NULL, 1, NULL));
+                      mutual ? &identity_b : NULL, "localhost",
+                      COAKKA_HTTP_HOST_OUTBOUND_RESPONSE, NULL));
 
   request.expected_generation = 2U;
   request.credential_generation = 3U;
   request.credential_id = test_text("identity-b-drain");
   request.mode = COAKKA_HTTP_HOST_TLS_RELOAD_DRAIN_EXISTING;
   TEST_CHECK(exchange(&owner, port, security, &identity_b,
-                      mutual ? &identity_b : NULL, 1, &request));
+                      mutual ? &identity_b : NULL, "localhost",
+                      COAKKA_HTTP_HOST_OUTBOUND_RESPONSE, &request));
   TEST_CHECK(coakka_http_host_tls_credentials(owner.service, &effective) ==
              COAKKA_HTTP_HOST_OK);
   TEST_CHECK(effective_is(&effective, security, 3U, "identity-b-drain", 3U, 0));

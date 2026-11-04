@@ -60,6 +60,9 @@ javac -cp 'target/dependency/*' Hello.java
 java "-Djava.library.path=$PWD/native" -cp '.:target/dependency/*' Hello
 ```
 
+For Kotlin, follow the [2.0.1 first-request example](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/jvm/README.md#first-request-in-kotlin)
+using the same managed JAR and matching native ZIP.
+
 ## C and C++
 
 Use the [server and streaming examples](../native/host-server/README.md)

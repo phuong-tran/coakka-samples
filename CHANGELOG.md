@@ -5,6 +5,15 @@ surface. It is not a repository release ledger. Artifact versions, manifests,
 and checksums live in the versioned
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) warehouse.
 
+## HTTP Runtime 2.0.1 — 2026-11-04
+
+- Updated first-request samples and the native contract suite to use HTTP
+  Runtime `2.0.1`. The suite includes outbound address and TLS regressions.
+  [First request](coakka-http-runtime/registry-basic/README.md)
+- Switched the Raspberry Pi camera source to SDK `2.0.1` and removed its LAN
+  IP workaround after testing live resolution changes on a Pi 5.
+  [Camera sample](coakka-runtime/demos/rpi-camera/README.md)
+
 ## 3.0.0 — 2026-10-30
 
 - Added examples using released Runtime 3.0.0 packages for Java/Kotlin, Spring Boot,

@@ -9,6 +9,8 @@ set(COAKKA_HTTP_TEST_SDK_VERSION "2.0.1" CACHE STRING "Exact installed SDK versi
 find_package(CoAkkaHttpHost ${COAKKA_HTTP_TEST_SDK_VERSION} EXACT REQUIRED CONFIG)
 find_package(Threads REQUIRED)
 option(COAKKA_HTTP_TEST_FUZZ "Build the optional Clang libFuzzer fixture seam" OFF)
+set(COAKKA_HTTP_TEST_OUTBOUND_LAN_ADDRESS "" CACHE STRING
+    "Non-loopback IPv4 address already assigned to the test host")
 
 add_library(http_test_options INTERFACE)
 target_compile_features(http_test_options INTERFACE c_std_11 cxx_std_20)
@@ -39,7 +41,7 @@ function(register_test name)
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
         $<TARGET_FILE:CoAkkaHttp::host> $<TARGET_FILE_DIR:${name}> VERBATIM)
   endif()
-  add_test(NAME ${name} COMMAND ${name})
+  add_test(NAME ${name} COMMAND ${name} ${ARGN})
   # One process-level watchdog complements finite Core and socket waits. The
   # thread helper never frees a child context when completion is unproven.
   set_tests_properties(${name} PROPERTIES TIMEOUT 120)
@@ -50,6 +52,19 @@ foreach(case IN ITEMS runtime contract ownership pressure outbound routes stream
   target_link_libraries(http_host_${case} PRIVATE http_test_support)
   register_test(http_host_${case})
 endforeach()
+add_executable(http_host_outbound_address host_outbound_address.c)
+target_link_libraries(http_host_outbound_address PRIVATE http_test_support)
+register_test(http_host_outbound_address localhost 9 /address rejected)
+if(NOT COAKKA_HTTP_TEST_OUTBOUND_LAN_ADDRESS STREQUAL "")
+  if(NOT COAKKA_HTTP_TEST_OUTBOUND_LAN_ADDRESS MATCHES
+      "^[0-9]+[.][0-9]+[.][0-9]+[.][0-9]+$" OR
+      COAKKA_HTTP_TEST_OUTBOUND_LAN_ADDRESS MATCHES "^(0[.]|127[.])")
+    message(FATAL_ERROR "The outbound LAN case requires a local non-loopback IPv4 address")
+  endif()
+  add_test(NAME http_host_outbound_lan
+    COMMAND http_host_outbound "${COAKKA_HTTP_TEST_OUTBOUND_LAN_ADDRESS}")
+  set_tests_properties(http_host_outbound_lan PROPERTIES TIMEOUT 120)
+endif()
 target_link_libraries(http_host_concurrency PRIVATE http_test_threads)
 # Version 1.1.2 introduces the focused TLS credential control surface.
 if(COAKKA_HTTP_TEST_SDK_VERSION VERSION_GREATER_EQUAL "1.1.2")

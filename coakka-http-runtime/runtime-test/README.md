@@ -10,7 +10,7 @@ from different packages. Older archive receipts describe their own contracts.
 
 For the macOS ARM64 SDK download and toolchain setup, see the [tested build steps](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/inspect/walkthrough.md#build-and-test-against-the-native-sdk).
 
-Verify and extract one complete native SDK for the matching host, then run:
+Verify and extract the [2.0.1 native SDK for your host](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/2.0.1/), then run:
 
 ```sh
 cmake -S coakka-http-runtime/runtime-test -B build/http-tests \
@@ -35,6 +35,7 @@ manifest detects source drift; it is not a publisher signature.
 | ownership | Cross-service and retired tokens refused; drain/stop do not discharge a live borrowed lease |
 | pressure | One retained admission, bounded refusal, invalid response does not consume reply ownership, recovery |
 | outbound | Logical selection, copied intent, response correlation and cancellation terminal |
+| outbound_address | A hostname without a configured resolver is rejected before any request bytes are sent. The terminal event belongs to the submitted call and appears once. |
 | tls_reload | Credential apply and query, TLS and mTLS trust rotation over loopback, admitted responses survive drain, typed refusal and stop, monitor remains off |
 | routes | Coherent snapshot, captured old binding, revision conflict preserves state, exact activation replay |
 | stream | Ordered request chunks/trailers/end, Core writable notification, bounded response stream and trailers |
@@ -42,6 +43,11 @@ manifest detects source drift; it is not a publisher signature.
 | execution | Absent/explicit/malformed construction intent, Core CPU facts, configured versus active loops |
 | cpp | Standard-layout C records and checked C++ create/inspect/destroy |
 | fixture_wire | Truncation, framing conflict, overflow and wrong-body/trailer rejection in the fixture assertion |
+
+For the optional LAN regression, configure with
+`-DCOAKKA_HTTP_TEST_OUTBOUND_LAN_ADDRESS=<local-ipv4>`. Use a non-loopback
+IPv4 address assigned to the machine running the suite. This adds
+`http_host_outbound_lan`, which sends a request to a local fixture via that IP.
 
 The TLS case uses two disposable loopback-only identities and the public
 outbound API. It starts a fresh outbound owner for each handshake so a pooled

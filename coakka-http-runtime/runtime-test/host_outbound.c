@@ -2,7 +2,7 @@
 
 #include <string.h>
 
-int main(void) {
+int main(int argc, char **argv) {
   test_service_t upstream, client;
   coakka_http_host_configuration_t config;
   coakka_http_host_route_t route;
@@ -15,11 +15,16 @@ int main(void) {
   uint16_t port;
   int terminal_live = 0;
   int ok = 1, cleanup_ok = 1;
+  if (argc > 2) {
+    (void)fprintf(stderr, "usage: %s [local-bind-address]\n", argv[0]);
+    return 1;
+  }
+  const char *upstream_address = argc == 2 ? argv[1] : "127.0.0.1";
   if (!test_platform_open()) return 1;
   test_service_init(&upstream);
   test_service_init(&client);
   coakka_http_host_configuration_init(&config);
-  config.bind_address = test_text("127.0.0.1");
+  config.bind_address = test_text(upstream_address);
   coakka_http_host_route_init(&route);
   route.route_id = route.handler_binding_id = 1U;
   route.method = test_text("GET");
@@ -28,7 +33,7 @@ int main(void) {
   TEST_CHECK(coakka_http_host_service_port(upstream.service, &port) == COAKKA_HTTP_HOST_OK);
   coakka_http_host_outbound_endpoint_init(&endpoint);
   endpoint.node_id = test_text("fixture-upstream");
-  endpoint.connect_host = test_text("127.0.0.1");
+  endpoint.connect_host = test_text(upstream_address);
   endpoint.connect_port = port;
   endpoint.http_authority = test_text("localhost");
   endpoint.available = 1U;
@@ -52,7 +57,21 @@ int main(void) {
   /* Submission borrows caller values only for the call. Target selection and
    * completion matching remain Core-owned, not a fixture-side call map. */
   memset(request_path, '?', sizeof(request_path) - 1U);
-  TEST_CHECK(test_next_request(&upstream));
+  const int received = test_next_request(&upstream);
+  if (!received) {
+    coakka_http_host_outbound_event_init(&event);
+    if (coakka_http_host_take_outbound(client.service, 0U, &event) ==
+        COAKKA_HTTP_HOST_OK) {
+      terminal_live = 1;
+      (void)fprintf(stderr, "outbound terminal reason=%u delivery=%u: %.*s\n",
+                    (unsigned)event.reason, (unsigned)event.certainty,
+                    (int)event.diagnostic.size,
+                    event.diagnostic.size == 0U
+                        ? ""
+                        : (const char *)event.diagnostic.data);
+    }
+  }
+  TEST_CHECK(received);
   TEST_CHECK(test_bytes_equal(coakka_http_host_request_target(&upstream.event), "/upstream"));
   TEST_CHECK(test_respond(&upstream, 200U, "outbound reply"));
   TEST_CHECK(test_release(&upstream));

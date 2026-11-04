@@ -1,6 +1,8 @@
 # Raspberry Pi 5 Benchmark Methodology
 
-The published results below are from HTTP Runtime 1.1.2 and the explicitly named earlier runs. A Raspberry Pi 5 run for 2.0.1 is pending.
+The results below are from HTTP Runtime `1.1.2` and the explicitly named
+earlier runs. Use `2.0.1` for new installs. The `2.0.1` baseline is deferred.
+See the [benchmark version note](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/README.md).
 
 [Published results by campaign](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/README.md) · [Evidence and reproduction](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/evidence-rpi5.md)
 
