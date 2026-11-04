@@ -4,6 +4,7 @@ These records describe their named release, not the current installation.
 Use the [published package ledger](../../common/current-packages.md) for current coordinates.
 For changes and migration by version, read the [Runtime changelog](../CHANGELOG.md).
 
+- [Client and Inspect 3.2.1](2026-11-05-runtime-tools-3.2.1.md)
 - [JVM, Spring Boot and Quarkus 3.2.1 on Maven Central](2026-11-05-jvm-spring-quarkus-runtime-3.2.1-maven-central.md)
 - [Swift Runtime 3.2.1 on GitHub](2026-11-05-swift-runtime-3.2.1-github.md)
 - [Go Runtime 3.2.1 on GitHub](2026-11-05-go-runtime-3.2.1-github.md)

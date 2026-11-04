@@ -141,12 +141,13 @@ unsuffixed v1 tags remain unchanged.
 | NuGet | `CoAkka.Runtime`, exact `3.2.1` |
 | Go module | `github.com/phuong-tran/coakka-runtime-go/v3@v3.2.1` |
 | SwiftPM | `https://github.com/phuong-tran/coakka-runtime-swift.git`, exact `3.2.1` |
-| coakka-client | `coakka-tools/coakka-client/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/` |
-| coakka-runtime-inspect | `coakka-tools/coakka-runtime-inspect/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/` |
+| coakka-client | [coakka-client 3.2.1](https://github.com/phuong-tran/coakka-publish/tree/86aa17f3d2af26bfd0faee3c02fbd9e82750592e/coakka-tools/coakka-client/releases/3.2.1%2Bf9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45) |
+| coakka-runtime-inspect | [coakka-runtime-inspect 3.2.1](https://github.com/phuong-tran/coakka-publish/tree/86aa17f3d2af26bfd0faee3c02fbd9e82750592e/coakka-tools/coakka-runtime-inspect/releases/3.2.1%2Bf9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45) |
 
-Client and Inspect 2.5.1 are the current public tool downloads. Both 3.2.1
-tool archives remain candidates. See the [Runtime changelog](../coakka-runtime/CHANGELOG.md)
-for package availability in the 3.2 release train.
+Client and Inspect 3.2.1 each bundle Core 3.2 and provide five native archives.
+The [tool release record](../coakka-runtime/releases/2026-11-05-runtime-tools-3.2.1.md)
+lists verified downloads and SHA-256 values. The Docker demos use their own
+2.5.1 images.
 
 ## CoAkka HTTP Runtime
 

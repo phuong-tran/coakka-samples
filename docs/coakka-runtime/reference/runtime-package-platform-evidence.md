@@ -48,8 +48,7 @@ manifest, and per-file checksums.
 Both Linux payloads fail closed above the glibc 2.36 baseline. The archive and
 all five libraries pass architecture, dependency, exact 139-export, public
 header, legal-bundle, checksum, and embedded build-identity verification. The
-separately versioned public tool train is recorded below. These published
-identities are distinct from the newer private native-startup candidates.
+separately versioned public tool train is recorded below. The 2.5.1 evidence below applies to that release train.
 
 ## Published Runtime Tool 2.5.1 Matrix
 
@@ -276,12 +275,14 @@ integrates current regression tests. Earlier matching-target profiles remain
 qualified; this is not a new post-upload run on every OS. Windows ARM64 alone is
 preview; the Swift package is a release. See [the receipt](../releases/2026-10-30-swift-runtime-3.0.0-github.md).
 
-## Client, Inspect and Android 3.2.1 candidates
+## Client and Inspect 3.2.1
 
 Client and Inspect archive qualification covers macOS ARM64, Linux ARM64
 on Pi 5, Linux x64 on WSL2, physical Windows x64 and Windows ARM64 in UTM.
 The connected installed checks cover request/reply and inspection.
-The public downloads remain at 2.5.1.
+The [release record](../releases/2026-11-05-runtime-tools-3.2.1.md) lists all ten anonymously verified archives.
+
+## Android 3.2.1 preview
 
 The Android preview AAR passed installed execution and lifecycle soak on
 API 24 x86_64 and API 36 ARM64 emulators. See the
