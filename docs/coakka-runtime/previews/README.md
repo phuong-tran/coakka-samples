@@ -21,7 +21,7 @@ alone is its preview path.
 | Spring Boot / Quarkus | [Framework integrations](3.0.0/runtime-frameworks-candidate.md) |
 | Go | [Go](3.0.0/runtime-go-candidate.md) |
 | Swift | [Swift](3.0.0/runtime-swift-candidate.md) |
-| Rust / Tauri | [Rust](3.0.0/runtime-rust-candidate.md) · [Tauri](3.0.0/runtime-tauri-candidate.md) |
+| Rust / Tauri | [Rust 3.2.1](3.2.1/runtime-rust-candidate.md) · [Tauri 3.2.1](3.2.1/runtime-tauri-candidate.md) · [Rust 3.0.0 history](3.0.0/runtime-rust-candidate.md) · [Tauri 3.0.0 history](3.0.0/runtime-tauri-candidate.md) |
 | Zig | [3.2.1 source package](3.2.1/runtime-zig-candidate.md) · [3.0.0 history](3.0.0/runtime-zig-candidate.md) |
 | Mojo preview | [3.2.1 preview](3.2.1/runtime-mojo-candidate.md) · [3.0.0 history](3.0.0/runtime-mojo-candidate.md) |
 

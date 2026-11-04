@@ -1,8 +1,8 @@
 # Tauri Desktop Intent
 
-Private foreground desktop sample for the exact Tauri aggregate 3.0.0 over
-Core 3.0.0. This is not a published, signed or production-support claim. The
-old download/Tauri-CLI/debug-build recipe is not used.
+Foreground desktop sample for the Tauri Intents 3.2.1 aggregate with Core 3.2.
+The WebView evidence for this version covers macOS ARM64 with Tauri 2.11.5.
+The five bundled Core images describe the aggregate payload.
 
 The local WebView sends an intent. Rust projects it through the intent adapter
 to one local Core route and returns the typed result. The UI displays a cold
@@ -14,11 +14,11 @@ It does not choose an engine, probe the OS, or own native handles.
 Use stable Rust 1.92 or newer with Clippy, Python 3.11+ at build time, prepared
 native GUI/linker tools, and existing offline Cargo/build caches. The framework
 graph is pinned independently of the Rust SDK's 1.77.2 minimum. Consult the
-[candidate guide](../../../docs/coakka-runtime/previews/3.0.0/runtime-tauri-candidate.md) for archive identity
+[candidate guide](../../../docs/coakka-runtime/previews/3.2.1/runtime-tauri-candidate.md) for archive identity
 and the trust/cleanup contract. No registry or native rebuild is performed.
 
 ```sh
-export COAKKA_TAURI_ARCHIVE=/absolute/candidate/coakka-runtime-tauri-intents-3.0.0-source.tar.gz
+export COAKKA_TAURI_ARCHIVE=/absolute/candidate/coakka-runtime-tauri-intents-3.2.1-source.tar.gz
 export COAKKA_SAMPLE_WORK_ROOT=/absolute/build-storage/desktop-new
 export COAKKA_RUST_CARGO=/absolute/rust/bin/cargo
 export COAKKA_RUST_CARGO_HOME=/absolute/offline-cargo-cache
@@ -27,26 +27,16 @@ export COAKKA_RUST_TARGET=macos-aarch64
 bash run.sh coakka-runtime tauri desktop-intent
 ```
 
-Choose `linux-aarch64` for Pi. Windows x64 uses native Python and a prepared
-x64 compiler environment; it does not execute the app under WSL:
-
-For a portable Linux artifact, build in the prepared ARM64 Debian 12/GLIBC 2.36
-environment, inspect the final libc version requirements and test it on the
-target. A successful local build on a newer Linux host is not ABI-baseline
-evidence. The prebuilt Core resource is unchanged, not rebuilt by this app.
-
-```powershell
-python -B coakka-runtime/scripts/runtime-tauri-desktop-candidate.py --archive D:/candidate/coakka-runtime-tauri-intents-3.0.0-source.tar.gz --source D:/samples/coakka-runtime/tauri/desktop-intent --work D:/build-storage/desktop-new --cargo D:/rust/bin/cargo.exe --cargo-home D:/offline-cargo-cache --target-cache D:/desktop-build-cache --target windows-x86_64
-& D:/build-storage/desktop-new/installed/coakka-sample-tauri-desktop-intent.exe
-```
+Linux and Windows desktop execution, minimum OS validation and installer
+signing require separate qualification for this aggregate.
 
 The producer builds release code, runs strict Clippy and library tests, and
 installs only the app, native resources and legal material. Move the complete
 `installed/` tree. Mac has `CoAkka Tauri Intent.app`, declaring macOS 13.0 or
 later to match its bundled runtime image. The image is under
 `Contents/Frameworks/`; original component metadata and all legal texts are
-under `Contents/Resources/`. Its local private signature is not publisher
-signing or qualification on every older OS. No Python/Cargo/build tree or
+under `Contents/Resources/`. Its local signature is for running the sample. The archive records publisher
+signing as absent. No Python/Cargo/build tree or
 separate Core dependency installation is needed to run the app. Normal OS GUI
 services remain platform prerequisites. A candidate signing warning must not
 be bypassed by disabling protection.

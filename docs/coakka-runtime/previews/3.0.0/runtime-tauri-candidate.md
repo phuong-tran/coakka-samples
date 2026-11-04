@@ -1,5 +1,9 @@
 # Tauri sample candidate
 
+This historical 3.0.0 workflow requires its original archive and a Samples
+revision that still carries its pin. See the
+[3.2.1 guide](../3.2.1/runtime-tauri-candidate.md) for the current staged pin.
+
 These are separate private command and desktop sample workflows. There is no
 publication, publisher-signing or support promotion. The terminal command does not start
 a WebView; desktop qualification belongs to the actual app-host boundary.

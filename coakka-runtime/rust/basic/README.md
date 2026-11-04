@@ -1,11 +1,9 @@
 # Rust Runtime Basic
 
-A standalone Cargo application consumes the exact frozen Rust 3.0.0 candidate
-and native Core 3.0.0. The selected archive carries five native targets; this
-basic runner remains qualified for Mac ARM64, Linux ARM64 and Windows x64. It does not run a packaged smoke binary or download an
-older public archive. Read the [candidate guide](../../../docs/coakka-runtime/previews/3.0.0/runtime-rust-candidate.md)
-and select explicit artifact, toolchain, offline cache and fresh external work
-paths before running:
+This standalone Cargo app consumes the exact Rust 3.2.1 source archive with
+Core 3.2. The basic runner covers macOS ARM64, Linux ARM64 and Windows x64.
+Choose the [3.2.1 archive and toolchain](../../../docs/coakka-runtime/previews/3.2.1/runtime-rust-candidate.md),
+then run from the Samples root:
 
 ```sh
 bash run.sh coakka-runtime rust basic
@@ -16,10 +14,10 @@ the typed route-miss result for `samples.customer.missing`. Both asks retain
 their two-second deadline. Core supplies effective settings; no queue/CPU/
 connection/monitor tuning or native override is required in application code.
 
-Expected facts for the frozen candidate:
+Expected output includes the running Core identity and typed results:
 
 ```text
-runtime=3.0.0 git=1522b4a9f30da1039ef8c7d198bbecfc749a2456 abi=1 cpu_policy=0 connection_mode=3 monitor=false delivery=2/2
+runtime=3.2 git=f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45 abi=1 cpu_policy=0 connection_mode=3 monitor=false delivery=2/2
 response={"customer":"Ada"} deadletter=2 original=samples.customer.missing pending=0
 CoAkka Rust sample ok
 ```
@@ -32,4 +30,4 @@ RAII retires the host on normal return, `?` and app unwind. The callback owns
 no reference back to the host. Run the resulting installed executable without
 Python, Cargo, build environment variables or source trees; move the complete
 installed directory rather than the executable alone. Keep its exact native
-image, manifest and legal files. This private sample is not a public release.
+image, manifest and legal files.

@@ -1,9 +1,9 @@
 # Tauri Intent Command
 
-This is a separate Cargo app, not a packaged smoke and not a desktop WebView.
-It consumes the exact private 3.0.0 aggregate and Core 3.0.0. See the
-[candidate guide](../../../docs/coakka-runtime/previews/3.0.0/runtime-tauri-candidate.md) for artifact/tool/
-offline-cache/fresh external work selections, then run from the repo root:
+This Cargo app consumes the Tauri Intents 3.2.1 aggregate and Core 3.2.
+It exercises the adapter from the terminal on macOS ARM64. Select the
+[3.2.1 archive and toolchain](../../../docs/coakka-runtime/previews/3.2.1/runtime-tauri-candidate.md),
+then run from the Samples root:
 
 ```sh
 bash run.sh coakka-runtime tauri intent-command
@@ -20,6 +20,5 @@ retires the last dispatcher clone on return/error/unwind, without `process::exit
 or fabricated serialization fallback. Move the installed directory as a whole;
 it needs no Python/Cargo/source or separate native dependency installation.
 
-A GUI must run blocking work off UI and join accepted work and browser lifetime
-under explicit application permissions. This CLI intentionally does not claim
-that desktop gate. The candidate remains private and is not a published release.
+The [desktop example](../desktop-intent/README.md) shows app-owned window
+permissions, bounded blocking work and joined shutdown.

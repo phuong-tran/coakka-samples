@@ -10,6 +10,7 @@ import io
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import signal
 import stat
@@ -18,9 +19,7 @@ import sys
 import tarfile
 import time
 
-ARCHIVE_SHA = "b1cc812577d62e18465f3ead914efd3defa4602ff36ea4a7fb86a47fd40714b0"
 TOOL_SHA = "0a9ac6c65a95a929029a38515701eb5f6293b7f2d271d76a4b6d83cd3eaa707e"
-TOOL_MEMBER = "coakka-runtime-rs-3.0.0/tools/package_tools.py"
 SOURCES = ("Cargo.toml", "Cargo.lock", "src/main.rs")
 MACOS_TOOLS = {"strip": Path("/usr/bin/strip"), "codesign": Path("/usr/bin/codesign")}
 MACOS_FLOOR_CHECK = Path(__file__).with_name("runtime-macos-floor.py")
@@ -30,15 +29,12 @@ MACOS_FLOOR_CHECK = Path(__file__).with_name("runtime-macos-floor.py")
 class Candidate:
     """Build-only artifact/layout identity, never a runtime default table."""
     archive_sha: str
+    archive_bytes: int
     tool_member: str
     binary: str
     nested_rust: bool = False
 
 
-RUST = Candidate(ARCHIVE_SHA, TOOL_MEMBER, "coakka-runtime-sample")
-TAURI = Candidate("ef77dc499a75318e883ade5786e1767c939fa41d441dddbb6ac267a02348bb20",
-                  "coakka-runtime-tauri-intents-3.0.0-source/rust/tools/package_tools.py",
-                  "coakka-sample-tauri-intent-command", True)
 TARGETS = {
     "macos-aarch64": "aarch64-apple-darwin",
     "linux-aarch64": "aarch64-unknown-linux-gnu",
@@ -76,8 +72,35 @@ def digest(content: bytes) -> str:
     return hashlib.sha256(content).hexdigest()
 
 
+def pinned_candidate(lane: str, binary: str, *, nested_rust: bool = False) -> Candidate:
+    catalog_path = Path(__file__).resolve().parents[1] / "artifacts" / f"runtime-{lane}-candidate.json"
+    catalog = json.loads(regular(catalog_path, 65536))
+    version_key = "aggregateVersion" if nested_rust else "version"
+    expected_state = "private-sample-candidate" if nested_rust else "private-candidate"
+    version = catalog.get(version_key) if isinstance(catalog, dict) else None
+    if (not isinstance(version, str) or re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", version) is None
+            or type(catalog.get("schema")) is not int or catalog["schema"] != 1
+            or catalog.get("state") != expected_state):
+        raise ValueError("invalid Cargo sample catalog")
+    prefix = (f"coakka-runtime-tauri-intents-{version}-source" if nested_rust
+              else f"coakka-runtime-rs-{version}")
+    member = prefix + ("/rust/tools/package_tools.py" if nested_rust else "/tools/package_tools.py")
+    archive = catalog.get("archive")
+    if (not isinstance(archive, dict) or archive.get("file") != prefix + ".tar.gz"
+            or type(archive.get("bytes")) is not int or not 0 < archive["bytes"] <= 16 << 20
+            or not isinstance(archive.get("sha256"), str)
+            or re.fullmatch(r"[0-9a-f]{64}", archive["sha256"]) is None
+            or catalog.get("buildTool") != {"member": member, "sha256": TOOL_SHA}):
+        raise ValueError("invalid Cargo archive or package tool pin")
+    return Candidate(archive["sha256"], archive["bytes"], member, binary, nested_rust)
+
+
+RUST = pinned_candidate("rust", "coakka-runtime-sample")
+TAURI = pinned_candidate("tauri", "coakka-sample-tauri-intent-command", nested_rust=True)
+
+
 def archive_tool(content: bytes, candidate: Candidate = RUST) -> bytes:
-    if len(content) > 16 << 20 or digest(content) != candidate.archive_sha:
+    if len(content) != candidate.archive_bytes or digest(content) != candidate.archive_sha:
         raise ValueError("frozen Cargo source archive identity refused")
     # Only digest-admitted bytes reach tar parsing or Python compilation.
     # Full member/path/expansion admission stays in this exact package's
