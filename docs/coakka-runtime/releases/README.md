@@ -4,6 +4,7 @@ These records describe their named release, not the current installation.
 Use the [published package ledger](../../common/current-packages.md) for current coordinates.
 For changes and migration by version, read the [Runtime changelog](../CHANGELOG.md).
 
+- [C# Runtime 3.1.1 on NuGet](2026-11-04-nuget-csharp-runtime-3.1.1.md)
 - [Electron Runtime 3.1.1 on npm](2026-11-04-npm-electron-runtime-3.1.1.md)
 - [Node.js and Bun Runtime 3.1.2 on npm](2026-11-04-npm-node-bun-runtime-3.1.2.md)
 - [Node.js and Bun Runtime 3.1.1 on npm](2026-11-04-npm-node-bun-runtime-3.1.1.md)

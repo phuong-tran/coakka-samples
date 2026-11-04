@@ -126,7 +126,7 @@ coordinates are:
 | npm (Node.js and Bun) | `coakka-v2-connector-{node,bun}@3.1.2` | `3.1+6789dd16210fc01f17cca4d2b66a592d1ac79121` |
 | npm (Electron) | `coakka-v2-connector-electron@3.1.1` | `3.1+6789dd16210fc01f17cca4d2b66a592d1ac79121` via Node `3.1.2` |
 | PyPI | `coakka-v2-connector==3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
-| NuGet | `CoAkka.Runtime==3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
+| NuGet | `CoAkka.Runtime==3.1.1` | `3.1+6789dd16210fc01f17cca4d2b66a592d1ac79121` |
 | Go modules | `github.com/phuong-tran/coakka-runtime-go/v3@v3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 | SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 
@@ -166,6 +166,14 @@ copy because the receiver persists data to storage.
 For code and ownership details, read [Runtime File Transfer](../guides/runtime-file-transfer.md),
 [Envelope And Deadletter Map](envelope-deadletter-map.md), and
 [TLS And mTLS](tls-and-mtls.md).
+
+## C# Runtime 3.1.1
+
+NuGet adds its repository signature to the qualified package. Every original
+archive member matches byte for byte. A fresh NuGet-only .NET 8 consumer on
+macOS ARM64 verified request/reply, a route-miss deadletter and the loaded
+Core identity. The managed and five native assets carry their matching-host
+qualification. See the [3.1.1 release receipt](../releases/2026-11-04-nuget-csharp-runtime-3.1.1.md).
 
 ## C# Runtime 3.0.0
 
