@@ -11,10 +11,11 @@ This sample has two native applications:
 This is an evaluation demo for Stream Lane publication, subscription, bounded
 backpressure, cancellation, and shutdown. Its executables are provided so users
 can test those runtime paths on their own hardware; they are not a separate
-CoAkka product or a production camera support promise. The current source uses the released CoAkka HTTP Runtime
-native SDK `2.0.1` (C ABI 10) for the UI, MJPEG, WebSocket control, outbound
-profile requests, and the Pi profile endpoint. CoAkka Runtime native
-`2.5.1+f6b61768f60a08d81b1dc06625a211ffca8e89e2` owns Stream Lane.
+CoAkka product or a production camera support promise. The current source uses
+the released CoAkka HTTP Runtime native SDK `2.0.1` (C ABI 10) for the UI,
+MJPEG, WebSocket control, outbound profile requests, and the Pi profile
+endpoint. CoAkka Runtime native `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`
+owns Stream Lane.
 
 On a physical Raspberry Pi 5 and a macOS ARM64 host, the browser received
 camera frames and confirmed `1280x720 → 800x600 → 1280x720` through the normal
@@ -98,8 +99,9 @@ smoke. Verify `SHA256SUMS` before running the archive.
 
 ## Runtime Dependencies
 
-Current source builds require the exact CoAkka Runtime native `2.5.1`
-package and the
+Current source builds require the published
+[CoAkka Runtime native `2.5.1+26f7944d` archive](https://github.com/phuong-tran/coakka-publish/tree/main/runtime/native/releases/2.5.1%2B26f7944de4a4e0598845a54e4775f9463a9e33be)
+and the
 [CoAkka HTTP Runtime native `2.0.1` SDK](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/2.0.1)
 for the build host. HTTP Runtime Core owns the listener, routing, framing,
 WebSocket sessions, response pressure, outbound requests, and drain.
@@ -305,9 +307,10 @@ duration and fallback-cadence contract.
 
 ## Build From Public Source
 
-Clone the public samples repository. Unpack exact CoAkka Runtime native `2.5.1`
-and the matching-platform HTTP Runtime native `2.0.1` archive, then set both
-package roots:
+Verify both archive checksums against their release `SHA256SUMS` files. Unpack
+the Runtime archive and the HTTP Runtime SDK for the machine doing the build.
+On Raspberry Pi OS, install `build-essential`, `cmake`, `ninja-build`, and
+`libasound2-dev` for a source build. Set both package roots after cloning.
 
 ```sh
 git clone https://github.com/phuong-tran/coakka-samples.git
@@ -327,6 +330,7 @@ cmake -S . -B build/pi -G Ninja \
   -DCOAKKA_CAMERA_BUILD_PI=ON
 cmake --build build/pi --parallel 4
 ctest --test-dir build/pi --output-on-failure
+cmake --install build/pi --prefix "$PWD/install/pi" --component pi
 ```
 
 Build the host app on macOS or Linux:
@@ -339,7 +343,14 @@ cmake -S . -B build/host -G Ninja \
   -DCOAKKA_CAMERA_BUILD_PI=OFF
 cmake --build build/host --parallel 4
 ctest --test-dir build/host --output-on-failure
+cmake --install build/host --prefix "$PWD/install/host" --component host
 ```
+
+Run the corresponding application from `install/pi` or `install/host`.
+Each install contains its executable and the runtime images it loads beside
+it. Run `./coakka_camera_pi --help` or `./coakka_camera_host --help` from that
+directory before using the [Pi command](#run-the-pi-app) or [host
+command](#run-the-host-app).
 
 Windows source builds use the target-matching HTTP Runtime SDK, including its
 `coakka_http_host.lib` import library, plus `COAKKA_RUNTIME_IMPORT_LIBRARY`

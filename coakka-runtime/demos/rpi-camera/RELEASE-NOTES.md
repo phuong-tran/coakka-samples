@@ -1,5 +1,19 @@
 # CoAkka Raspberry Pi Camera Sample v1.1.0
 
+## Camera 1.1.2 archive candidate
+
+The Pi publisher and macOS host install independently through the CMake `pi`
+and `host` components. Both carry the native libraries beside the executable.
+The candidate was built from Samples commit `eddff0c` with the published
+CoAkka Runtime native `2.5.1+26f7944d` and HTTP Runtime native `2.0.1` packages.
+
+On a physical Pi 5 and a macOS ARM64 host, the extracted archives served a
+complete MJPEG frame and confirmed `1280×720 → 800×600 → 1280×720` through
+WebSocket profile control. The host recorded an MJPEG-only file and an MJPEG
+file with AAC audio from the USB microphone. Both applications exited cleanly.
+The candidate covers this two-machine pairing. The binary download catalog
+continues to list camera v1.1.0.
+
 ## Current Source After v1.1.0
 
 Current source uses HTTP Runtime native SDK `2.0.1` (C ABI 10) for

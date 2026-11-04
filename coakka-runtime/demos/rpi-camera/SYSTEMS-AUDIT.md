@@ -1,5 +1,29 @@
 # Raspberry Pi Camera Systems Audit
 
+## Camera 1.1.2 archive verification
+
+Samples commit `eddff0c596de0f431daab94515b86b01fbfff5a4` installs the Pi
+publisher and host as separate components. Each component carries the
+executable, the matching CoAkka Runtime image and the HTTP Runtime image
+under the name the loader expects. The archive file lists and SHA-256
+checks were verified before extracting into fresh directories. The running
+processes loaded the copies inside those directories. The inputs were the
+published Runtime native `2.5.1+26f7944d` and HTTP Runtime native `2.0.1`
+archives, verified against the published checksums.
+
+| Scope | Evidence |
+| --- | --- |
+| macOS ARM64 strict source build | 6/6 tests passed |
+| Physical Pi 5 Linux ARM64 strict source build | 7/7 tests passed |
+| macOS ARM64 sample ASan, UBSan and leak detection | 6/6 tests passed with LLVM 22 |
+| Freshly extracted Pi publisher and macOS host archives | UI and health, WebSocket control, a complete MJPEG frame, three confirmed profiles, recordings with and without AAC, disconnect and exit 0 |
+
+The install change reuses the libraries staged by the build and adds no
+running process, thread, queue or borrowed lifetime. The live test covers
+the two archive targets above. A Windows or Linux x86-64 camera archive
+would require its own matching-host evidence. The packaged runtime images
+were consumed as released binaries in the sample sanitizer build.
+
 ## HTTP SDK 2.0.1: LAN profile replay and workaround removal
 
 The gateway submits one fixed POST through the installed host ABI. Core owns
