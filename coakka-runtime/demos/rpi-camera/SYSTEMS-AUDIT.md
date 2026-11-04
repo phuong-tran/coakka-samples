@@ -1,8 +1,45 @@
 # Raspberry Pi Camera Systems Audit
 
+## P561 Temporary HTTP 1.1.2 Numeric-Target Workaround
+
+Current source commit `46462b32026ceeaf599f4c1bb5e504451411dd1f`
+keeps CoAkka HTTP Runtime `1.1.2` as the owner of the loopback UI, MJPEG,
+WebSocket, Pi profile endpoint, and normal outbound requests. It adds one
+version-named compatibility path for the released provider defect that treats a
+non-loopback numeric target as resolver-dependent and rejects it before I/O.
+Only that numeric profile-control target bypasses Runtime outbound; loopback
+and hostname targets retain the ordinary Runtime path.
+
+The workaround owns one synchronous fixed plaintext `POST /v1/profile` on the
+application control-call path. It performs numeric-only address admission with
+no DNS, allows no retry, uses a two-second monotonic deadline, limits both the
+request and response head to 4 KiB, validates the bearer token before request
+construction, and accepts only HTTP `202`. It creates no production thread and
+does not add a listener, general HTTP parser, WebSocket implementation, or
+application network event loop. Errors fail the profile request closed and the
+existing state machine cannot report a requested profile as observed until a
+matching JPEG arrives.
+
+Strict workaround-ON and workaround-OFF builds pass 7/7 and 6/6 focused tests.
+The workaround test passes 100 normal repetitions, 20 LLVM 22
+ASan/UBSan/LeakSanitizer repetitions, and 20 separate LLVM 22 TSan repetitions;
+cppcheck and Clang static analysis pass. The production source cross-compiles
+for Linux and Windows x86_64 and ARM64. A physical Raspberry Pi 5 LAN replay
+reached browser states `active:800x600` and then `active:1280x720`, with matching
+Pi camera profile logs and joined host/Pi shutdown.
+
+This is not a fix or release of HTTP Runtime. The removal gate is an exact
+corrected HTTP Runtime package, an
+`COAKKA_CAMERA_HTTP_RUNTIME_1_1_2_NUMERIC_TARGET_WORKAROUND=OFF` build, and the
+same physical `1280x720 -> 800x600 -> 1280x720` replay through Runtime outbound.
+After that gate passes, delete the CMake option, workaround module, focused
+test, and gateway call site together. No camera package, binary, version,
+support, performance, or HTTP Runtime release claim is made by this slice.
+
 ## P559 HTTP Runtime Native Edge Migration
 
-Current source uses the released CoAkka HTTP Runtime `1.1.2` native host ABI 10
+The P559 migration source uses the released CoAkka HTTP Runtime `1.1.2` native
+host ABI 10
 instead of an application-owned libuv listener and custom HTTP/WebSocket wire
 parser. HTTP Runtime Core now owns inbound and outbound HTTP mechanics,
 listener I/O, route and body admission, WebSocket upgrade/session/framing,
@@ -25,16 +62,21 @@ native `1.1.2` packages on macOS ARM64 and physical Raspberry Pi 5 Linux ARM64.
 The focused package tests cover loopback health, accepted and rejected Origins,
 single-session WebSocket control, MJPEG response streaming, bearer-protected
 profile control, native outbound profile submission, malformed input,
-profile-state ownership, and concurrent idempotent stop. Linux x86-64, Windows,
-live V4L2/ALSA capture through the migrated edge, sustained stress, and soak
-remain open. This is source-readiness evidence, not a new camera package,
-release, support, or performance claim; published camera `v1.1.0` binaries
-retain their historical implementation and evidence.
+profile-state ownership, and concurrent idempotent stop. A physical Pi 5 and
+macOS ARM64 host additionally pass migrated V4L2/ALSA capture, Stream Lane
+delivery, loopback MJPEG display, WebSocket control, MJPEG/AAC recording, and
+joined shutdown. Remote profile switching does not pass in that migration
+source: HTTP Runtime native
+`1.1.2` rejects a non-loopback numeric LAN target as resolver-dependent before
+request bytes are sent. Linux x86-64, Windows, sustained stress, and soak remain
+open. This is source-readiness evidence, not a new camera package, release,
+support, or performance claim; published camera `v1.1.0` binaries retain their
+historical implementation and evidence.
 
 ## P533 Profile Status Correction
 
 The current private source corrects a caught startup status defect: the host
-previously presented its1280x720 recording preference as an active Pi profile.
+previously presented its 1280x720 recording preference as an active Pi profile.
 The gateway now owns an unknown initial observation, and the browser shows
 resolution unconfirmed. Only the existing accepted-request/matching-JPEG
 handoff confirms dimensions; a frame before the Pi queue-admission response
@@ -83,8 +125,10 @@ duplicate those facts.
 Frame producers copy borrowed Stream Lane bytes into preallocated application
 slots. A transition from an empty display queue wakes the sole HTTP request
 reader through the public interrupt contract; no extra application poller,
-socket loop, or HTTP parser exists. Stop is idempotent and keeps the service
-owner alive until both reader threads have exited and all leases are released.
+socket loop, or general HTTP parser exists. The P561 workaround owns only one
+bounded synchronous numeric-target profile POST on the control-call path. Stop
+is idempotent and keeps the service owner alive until both reader threads have
+exited and all leases are released.
 The application normally stops Stream Lane callbacks before final gateway
 destruction; a concurrent final callback sees the stopping state and cannot
 dereference a destroyed HTTP service.
@@ -146,34 +190,39 @@ it. Release checksums establish artifact integrity, not publisher identity.
 ## Evidence And Residual Risk
 
 P559 evidence was collected on 2026-11-04 from source commit
-`062d5856d7747f80e834f7c18fbfab9886327636`.
+`062d5856d7747f80e834f7c18fbfab9886327636`. P561 workaround and physical
+profile-switch evidence uses source commit
+`46462b32026ceeaf599f4c1bb5e504451411dd1f`.
 
 | Control | Result | Evidence and promotion impact |
 | --- | --- | --- |
-| Ownership, borrowing, lifecycle, cancellation, shutdown | pass | One owner per HTTP event reader; every successful event lease is released; outbound identity is matched; stop is drain/stop/join/destroy. Focused lifecycle and package tests pass. |
-| Bounds and exhaustion | pass | Connection, active-request, queue, header, body, WebSocket payload, MJPEG chunk, retained-byte, display, recorder, timeout, and thread bounds are explicit. Capacity/stale results fail closed or retire the affected stream/session. |
-| Senior systems review | pass | Reviewed allocation, event ownership, mutex/atomic handoff, monotonic deadlines, wakeups, descriptor/service lifetime, and failure paths. No app-owned network poller or protocol parser remains. |
+| Ownership, borrowing, lifecycle, cancellation, shutdown | pass | One owner per HTTP event reader; every successful event lease is released; ordinary outbound identity is matched; stop is drain/stop/join/destroy. The temporary numeric-target request retains its owned bytes through one synchronous call and closes its descriptor on every outcome. Focused lifecycle and package tests pass. |
+| Bounds and exhaustion | pass | Connection, active-request, queue, header, body, WebSocket payload, MJPEG chunk, retained-byte, display, recorder, timeout, and thread bounds are explicit. The workaround adds 4 KiB request/response-head ceilings, one two-second monotonic deadline, and no retry or retained state. Capacity/stale results fail closed or retire the affected stream/session. |
+| Senior systems review | pass | Reviewed allocation, event ownership, mutex/atomic handoff, monotonic deadlines, wakeups, descriptor/service lifetime, and failure paths. No app-owned network poller or general protocol parser remains; the temporary fixed POST is isolated from the HTTP/Stream event loops and adds no thread. |
 | Expert systems review | not applicable | The slice does not change MMAP/DMA, IRQ, kernel, MMU, NUMA, io_uring, or hard-realtime behavior. Existing V4L2/ALSA ownership remains unchanged; no kernel-adjacent mechanism is justified. |
-| Strict compilation | pass | AppleClang 17 on macOS ARM64 passes `-Wall -Wextra -Wpedantic -Werror`; GCC 14.2 on physical Pi 5 ARM64 passes the same strict policy for host and Pi targets. |
-| Static analysis | pass | LLVM `clang-tidy` 22.1.5 passes changed implementation and tests with analyzer, bugprone, performance, and portability families as errors. The intentional white-box `.cc` include and two unrelated existing style checks are explicitly excluded. |
-| Public/package black box | pass | Exact package-tree build passes 6/6 on macOS and 7/7 on Pi. The HTTP test traverses the native package for health, rejected Origin, duplicate control session, accepted WebSocket, MJPEG, bearer rejection, malformed profile, and native outbound profile delivery. |
-| ASan and UBSan | pass | LLVM 22.1.5 combined ASan/UBSan build passes 6/6 with halt-on-error. AppleClang 17's sanitizer runtime stalls after interceptor initialization, so it is not used as evidence. |
-| LeakSanitizer | blocked | macOS reports `detect_leaks is not supported on this platform` before `main`. Publication still requires a working matching-host leak run. |
-| TSan | pass | Separate LLVM 22.1.5 TSan build passes 6/6, including concurrent gateway stop and real HTTP Runtime event readers. |
+| Strict compilation | pass | AppleClang 17 on macOS ARM64 passes `-Wall -Wextra -Wpedantic -Werror`; GCC 14.2 on physical Pi 5 ARM64 passes the same strict policy for host and Pi targets. P561 passes both workaround-ON and workaround-OFF builds and the production workaround source cross-compiles for Linux and Windows x86_64/ARM64. |
+| Static analysis | pass | LLVM `clang-tidy` 22.1.5 passes the P559 implementation and tests with analyzer, bugprone, performance, and portability families as errors. P561 cppcheck and LLVM 22 Clang analyzer runs are clean. |
+| Public/package black box | pass | Exact package-tree build passes 7/7 with the workaround on and 6/6 with it off on macOS; the P559 Pi build passes 7/7. Coverage includes health, rejected Origin, duplicate control session, accepted WebSocket, MJPEG, bearer rejection, malformed profile, loopback native outbound, and the isolated temporary POST fixture. Physical LAN replay is recorded separately. |
+| ASan and UBSan | pass | LLVM 22.1.5 combined ASan/UBSan build passes the P559 6/6 suite with halt-on-error. The P561 focused workaround test passes 20 repetitions under LLVM 22 ASan/UBSan. AppleClang 17's sanitizer runtime stalls after interceptor initialization, so it is not used as evidence. |
+| LeakSanitizer | blocked | The focused P561 LLVM 22 run passes 20 repetitions with leak detection, but the AppleClang matching-host whole-package run reports `detect_leaks is not supported on this platform` before `main`. Publication still requires a working whole-package matching-host leak run. |
+| TSan | pass | Separate LLVM 22.1.5 TSan evidence passes the P559 6/6 suite and 20 P561 focused repetitions, including concurrent gateway stop, real HTTP Runtime event readers, and the temporary fixed POST fixture. |
 | Bounded parser fuzzing | pass | Existing camera JSON owner passes 10,000 libFuzzer runs with ASan/UBSan, `max_len=8192`, and a two-second per-input timeout. HTTP and WebSocket wire parsing is HTTP Runtime-owned and is not duplicated here. |
-| Physical Raspberry Pi 5 ARM64 | pass for build/package smoke | Debian GCC 14.2 builds both ARM64 apps and passes 7/7 loopback/package tests. `coakka_camera_pi` records the exact source commit, has SHA-256 `b69f7f8c4ad820e223cad70a6f5fa65de41c66503fc20701a219a12762258dd5`, and imports Runtime, HTTP Runtime, ALSA, and system libraries; it has no libuv/uSockets dependency. Live camera/audio migration remains open. |
-| macOS ARM64 installed-package identity | pass | Runtime archive SHA-256 is `da1e5713de30efb841896670dbeb310ac9e91547e9a2a25ecea3315c7d812e93`; HTTP Runtime archive SHA-256 is `620b419cbb4c6f00c32697aca28584fd30dc6ccb8a5177806fdb900a667ecac0`. The host imports `libcoakka_runtime_v2.dylib` and `libcoakka_http_host.1.dylib`, with no libuv/uSockets dependency. |
+| Physical Raspberry Pi 5 ARM64 | pass for build/package and live capture | Debian GCC 14.2 builds both ARM64 apps and passes 7/7 loopback/package tests. `coakka_camera_pi` records the P559 source commit, has SHA-256 `b69f7f8c4ad820e223cad70a6f5fa65de41c66503fc20701a219a12762258dd5`, and imports Runtime, HTTP Runtime, ALSA, and system libraries; it has no libuv/uSockets dependency. A fresh source build opened the USB MJPEG camera at 1280x720/30 and mono 48 kHz ALSA input, then delivered 8,385 video frames and 26,873 audio frames before joined cancellation. P561 physical replay additionally logged `CAMERA_PROFILE profile=800x600@30` and restoration to `1280x720@30`. |
+| macOS ARM64 installed-package identity and live host | pass | Runtime archive SHA-256 is `da1e5713de30efb841896670dbeb310ac9e91547e9a2a25ecea3315c7d812e93`; HTTP Runtime archive SHA-256 is `620b419cbb4c6f00c32697aca28584fd30dc6ccb8a5177806fdb900a667ecac0`. The host imports `libcoakka_runtime_v2.dylib` and `libcoakka_http_host.1.dylib`, with no libuv/uSockets dependency. P559 received 8,384 video frames and finalized a 9.962-second Matroska recording containing 1280x720 MJPEG and mono 48 kHz AAC; its SHA-256 is `a307409f3c9f5565eb3953143653e9c3f40dc77e896c27509a78a1a1c4110634`. P561 WebSocket state reached `active:800x600` and restored `active:1280x720`. |
+| Remote outbound profile switching | blocked | P559 proves released HTTP Runtime `1.1.2` rejects `192.168.1.13` as resolver-dependent before sending bytes. P561 physical LAN replay passes only because the version-named numeric-target workaround handles that fixed profile POST. A corrected HTTP Runtime release, workaround-OFF replay, and workaround deletion remain mandatory; this row does not reclassify the owner defect as fixed. |
 | Linux x86-64 and Windows matching-host qualification | blocked | Not run in this slice. No new support or release claim may use this source until the applicable host lanes pass. |
-| Stress, pressure, fault injection, soak, live camera/audio | blocked | Focused malformed input, auth refusal, Origin refusal, duplicate session, bounded queue, and concurrent stop cases pass; sustained slow-network, disconnect, disk-full, allocation failure, camera removal, and live V4L2/ALSA evidence remain release gates. |
+| Stress, pressure, fault injection, and soak | blocked | Focused malformed input, auth refusal, Origin refusal, duplicate session, bounded queue, and concurrent stop cases pass; sustained slow-network, disconnect, disk-full, allocation failure, camera removal, and soak evidence remain release gates. |
 | Performance benchmark | not applicable | No performance mechanism or claim is introduced. The physical Pi remains the only allowed comparative baseline if a later performance gate is opened. |
-| Release binary hardening and publication | not applicable | No package or binary is released by P559. Export, stripping, signing, final dependency closure, and release-matrix gates remain mandatory for a future artifact. |
+| Release binary hardening and publication | not applicable | No package or binary is released by P559 or P561. Export, stripping, signing, final dependency closure, and release-matrix gates remain mandatory for a future artifact. |
 
-The older P497 Raspberry Pi/macOS live workflow predates the HTTP Runtime
-migration and cannot qualify the current edge. Open production gates therefore
-include live V4L2/ALSA requalification, Linux x86-64 and Windows matching-host
-tests, working leak evidence, TLS/mTLS, typed CoAkka control, sustained browser
-soak, camera removal/reconnect, disk-full and quota tests, slow-network shaping,
-HTTP/stream pressure fault injection, FFmpeg failure drills, signed Windows
-distribution, and codec-safe production fan-out. NUMA pinning, io_uring,
-lock-free queues, and kernel bypass are not justified by current cost centers
-and are deliberately absent.
+The current live V4L2/ALSA and temporary profile path are matching-source
+evidence, but they do not erase the HTTP Runtime owner defect or broaden release
+claims. Open production gates therefore include a corrected and released HTTP
+Runtime remote-target provider, workaround-OFF physical profile replay and
+workaround deletion, Linux x86-64 and Windows
+matching-host tests, working leak evidence, TLS/mTLS, typed CoAkka control,
+sustained browser soak, camera removal/reconnect, disk-full and quota tests,
+slow-network shaping, HTTP/stream pressure fault injection, FFmpeg failure
+drills, signed Windows distribution, and codec-safe production fan-out. NUMA
+pinning, io_uring, lock-free queues, and kernel bypass are not justified by
+current cost centers and are deliberately absent.

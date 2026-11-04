@@ -13,16 +13,24 @@ backpressure, cancellation, and shutdown. Its executables are provided so users
 can test those runtime paths on their own hardware; they are not a separate
 CoAkka product or a production camera support promise. Current source revision
 `1.1.2` uses the released CoAkka HTTP Runtime `1.1.2` native host ABI for the
-host UI, MJPEG, WebSocket control, outbound profile request, and Pi profile
-endpoint. It is built against Runtime native
+host UI, MJPEG, WebSocket control, normal outbound profile request, and Pi
+profile endpoint. It is built against Runtime native
 `2.5.1+f6b61768f60a08d81b1dc06625a211ffca8e89e2`. Its freshly installed
 Linux ARM64 publisher and macOS ARM64 companion passed the physical Raspberry
 Pi 5 USB-camera and audio workflow before the HTTP migration. Current source
-commit `062d5856d7747f80e834f7c18fbfab9886327636` passes strict
+commit `46462b32026ceeaf599f4c1bb5e504451411dd1f` passes strict
 exact-package builds and loopback HTTP/WebSocket tests on macOS ARM64 and a
-physical Pi 5; the migrated live camera/audio workflow remains open. This
-source change does not publish a new camera release, alter the existing v1.1.0
-archives, or promise production camera support.
+physical Pi 5. The migrated live path also passes physical USB-camera capture,
+ALSA capture, Stream Lane delivery, loopback MJPEG display, WebSocket control,
+and MJPEG/AAC recording between that Pi and a macOS ARM64 host. Physical LAN
+profile switching also passes through a narrowly bounded temporary workaround
+for a released HTTP Runtime `1.1.2` outbound defect: a non-loopback numeric
+address such as `192.168.1.13` is treated as a hostname requiring a resolver
+and is rejected before request bytes are sent. The HTTP Runtime defect remains
+open; the workaround must be removed after the sample moves to a fixed HTTP
+Runtime release and replays the physical LAN profile test with the option off.
+This source change does not publish a new camera release, alter the existing
+v1.1.0 archives, or promise production camera support.
 
 The web listener is intentionally restricted to `127.0.0.1`. The Pi listener
 uses a bearer token and is intended for a trusted private network. This sample
@@ -103,9 +111,30 @@ smoke. Verify `SHA256SUMS` before running the archive.
 Current source builds require the exact CoAkka Runtime native `2.5.1` package
 and the released
 [CoAkka HTTP Runtime native `1.1.2` SDK](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/1.1.2).
-The application no longer links libuv or implements its own HTTP/WebSocket
-wire parser. HTTP Runtime Core owns the listener, routing, framing, WebSocket
-session, bounded response pressure, outbound request, and drain mechanics.
+The application no longer links libuv or implements an HTTP/WebSocket listener
+or general wire parser. HTTP Runtime Core owns the listener, routing, framing,
+WebSocket session, bounded response pressure, normal outbound requests, and
+drain mechanics.
+
+HTTP Runtime native `1.1.2` currently rejects the sample's outbound profile
+request when the Pi is addressed by a non-loopback numeric LAN address. Camera
+and audio streaming, browser MJPEG, WebSocket control, recording, and shutdown
+are unaffected. Current source therefore enables
+`COAKKA_CAMERA_HTTP_RUNTIME_1_1_2_NUMERIC_TARGET_WORKAROUND` by default. Only a
+non-loopback numeric profile-control target takes this temporary path;
+loopback and hostname targets still use HTTP Runtime outbound. The workaround
+performs one fixed plaintext `POST /v1/profile` with no DNS or retry, a
+two-second monotonic deadline, 4 KiB request and response-head limits, strict
+bearer-token validation, and an exact `202` success requirement. It runs on the
+application control-call path, creates no production thread, and does not own
+the UI, MJPEG, WebSocket, or Pi listener.
+
+This compatibility path is not the HTTP Runtime fix. After a corrected HTTP
+Runtime release is available, bump the exact dependency, configure the sample
+with
+`-DCOAKKA_CAMERA_HTTP_RUNTIME_1_1_2_NUMERIC_TARGET_WORKAROUND=OFF`, replay
+`1280x720 -> 800x600 -> 1280x720` against a physical Pi over LAN, and then
+delete the option, workaround module, focused test, and gateway call site.
 
 Raspberry Pi OS or Debian:
 
@@ -267,8 +296,11 @@ New-Item -ItemType Directory -Force $recordings | Out-Null
 ```
 
 Open `http://127.0.0.1:8091/`. Use the UI to start or stop live display,
-select a resolution, start or stop recording, choose audio per recording, or
-disconnect the Stream Lane session. `Ctrl-C` also cancels the host session.
+start or stop recording, choose audio per recording, or disconnect the Stream
+Lane session. With the default current-source build, the resolution selector
+uses the temporary numeric-target workaround described above when the Pi is
+addressed by a non-loopback numeric LAN address. `Ctrl-C` also cancels the host
+session.
 
 Host options:
 
@@ -346,6 +378,13 @@ cmake --build build/host --target coakka_camera_host -j4
 ctest --test-dir build/host --output-on-failure
 ```
 
+Set
+`-DCOAKKA_CAMERA_HTTP_RUNTIME_1_1_2_NUMERIC_TARGET_WORKAROUND=OFF` to prove the
+ordinary HTTP Runtime outbound path. With the released `1.1.2` package, a
+non-loopback numeric LAN profile request is expected to fail until the owning
+provider is fixed; loopback coverage still passes. The option is a temporary,
+version-named removal seam rather than a supported transport choice.
+
 Windows source builds use the target-matching HTTP Runtime SDK, including its
 `coakka_http_host.lib` import library, plus `COAKKA_RUNTIME_IMPORT_LIBRARY`
 generated from the exact Runtime DLL. No separate libuv package is required.
@@ -378,6 +417,9 @@ The public implementation files are under this directory's `src/` folder:
 - `stream_lane_camera_control_server.cc`: Pi HTTP Runtime profile endpoint;
 - `stream_lane_camera_web_gateway.cc`: HTTP Runtime UI, MJPEG, WebSocket, and
   outbound profile adapter;
+- `stream_lane_camera_profile_http_workaround.cc`: temporary, bounded numeric
+  profile POST for the HTTP Runtime `1.1.2` provider defect; remove it after the
+  fixed-runtime OFF-path replay;
 - `stream_lane_camera_recorder.cc`: bounded recorder and FFmpeg finalizer;
 - `stream_lane_camera_web_ui.cc`: embedded browser UI.
 
