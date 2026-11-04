@@ -125,7 +125,7 @@ coordinates are:
 | Maven Central | `io.github.phuong-tran.coakka:runtime:3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 | npm (Node.js and Bun) | `coakka-v2-connector-{node,bun}@3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` |
 | npm (Electron) | `coakka-v2-connector-electron@3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` via Node `3.2.1` |
-| PyPI | `coakka-v2-connector==3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
+| PyPI | `coakka-v2-connector==3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` |
 | NuGet | `CoAkka.Runtime==3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` |
 | Go modules | `github.com/phuong-tran/coakka-runtime-go/v3@v3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 | SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
@@ -184,6 +184,12 @@ qualification. See the [3.1.1 release receipt](../releases/2026-11-04-nuget-csha
 ## C# Runtime 3.0.0
 
 NuGet `CoAkka.Runtime 3.0.0` contains one `lib/net8.0` managed asset and five native RIDs: macOS ARM64, Linux ARM64/x64 and Windows ARM64/x64. All original candidate member bytes match the registry archive; NuGet adds only its repository signature. Full signature verification and a fresh NuGet-only .NET 8/macOS ARM64 consumer pass. Earlier .NET 8/9/10 registry observations above describe 2.5.3 and Logger, not a new 3.0.0 run on every runtime. The exact executable payload retains its prior five-target qualification. See [the release receipt](../releases/2026-10-30-nuget-csharp-runtime-3.0.0.md).
+
+## Python Runtime 3.2.1
+
+All five wheels downloaded from PyPI match the qualified SHA-256 values. A
+fresh macOS ARM64 CPython 3.11 install passed request/reply, shutdown, File
+and Stream. See the [release record](../releases/2026-11-05-pypi-python-runtime-3.2.1.md).
 
 ## Python Runtime 3.0.0
 

@@ -5,6 +5,7 @@ Use the [published package ledger](../../common/current-packages.md) for current
 For changes and migration by version, read the [Runtime changelog](../CHANGELOG.md).
 
 - [Node.js, Bun and Electron Runtime 3.2.1 on npm](2026-11-05-npm-node-bun-electron-runtime-3.2.1.md)
+- [Python Runtime 3.2.1 on PyPI](2026-11-05-pypi-python-runtime-3.2.1.md)
 - [C# Runtime 3.2.1 on NuGet](2026-11-05-nuget-csharp-runtime-3.2.1.md)
 - [C# Runtime 3.1.1 on NuGet](2026-11-04-nuget-csharp-runtime-3.1.1.md)
 - [Electron Runtime 3.1.1 on npm](2026-11-04-npm-electron-runtime-3.1.1.md)

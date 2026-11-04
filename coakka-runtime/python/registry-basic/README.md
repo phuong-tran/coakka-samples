@@ -1,4 +1,4 @@
-# Python Runtime 3.0.0: First Run
+# Python Runtime 3.2.1: First Run
 
 Send one request to a Python handler and print its reply.
 
@@ -14,7 +14,7 @@ macOS or Linux:
 
 ~~~sh
 python3 -m venv .venv
-.venv/bin/python -m pip install coakka-v2-connector==3.0.0
+.venv/bin/python -m pip install coakka-v2-connector==3.2.1
 .venv/bin/python coakka-runtime/python/registry-basic/main.py
 ~~~
 
@@ -22,7 +22,7 @@ Windows PowerShell:
 
 ~~~powershell
 py -3 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install coakka-v2-connector==3.0.0
+.\.venv\Scripts\python.exe -m pip install coakka-v2-connector==3.2.1
 .\.venv\Scripts\python.exe coakka-runtime/python/registry-basic/main.py
 ~~~
 

@@ -1,10 +1,10 @@
 # Python Runtime Samples
 
-`coakka-v2-connector==3.0.0` is [published on PyPI](https://pypi.org/project/coakka-v2-connector/3.0.0/).
-Start with [the ordinary CPython3.11 first run](registry-basic/README.md):
+Use the [3.2.1 first run](registry-basic/README.md) and see the
+[package ledger](../../docs/common/current-packages.md) for registry availability.
 
 ```sh
-python -m pip install coakka-v2-connector==3.0.0
+python -m pip install coakka-v2-connector==3.2.1
 python coakka-runtime/python/registry-basic/main.py
 ```
 
