@@ -1,17 +1,13 @@
 #include "stream_lane_camera_control_server.h"
 
+#include "camera_http_host.h"
 #include "camera_json.h"
-#include "runtime_addon_web_wire.h"
-
-#include <uv.h>
-
-#include <arpa/inet.h>
 
 #include <algorithm>
 #include <array>
 #include <atomic>
-#include <charconv>
-#include <condition_variable>
+#include <cstdio>
+#include <exception>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -19,18 +15,14 @@
 #include <system_error>
 #include <thread>
 #include <utility>
-#include <vector>
 
 namespace {
 
-using coakka::runtime_addon_web::http_request_t;
-using coakka::runtime_addon_web::make_http_response_text;
-using coakka::runtime_addon_web::parse_request_from_text;
-using coakka::runtime_addon_web::request_path_without_query;
-using coakka::runtime_addon_web::try_extract_http_request_bytes;
-
-constexpr size_t kMaxRequestBytes = 8u * 1024u;
-constexpr size_t kMaxClients = 4u;
+constexpr uint64_t kProfileRouteId = 1u;
+constexpr uint64_t kProfileBindingId = 1001u;
+constexpr uint64_t kMaxRequestBytes = 8ull * 1024ull;
+constexpr uint64_t kDrainTimeoutMs = 1000u;
+constexpr uint64_t kStopTimeoutMs = 2000u;
 
 bool constant_time_equal(std::string_view left, std::string_view right) {
   const size_t compared = std::max(left.size(), right.size());
@@ -45,23 +37,6 @@ bool constant_time_equal(std::string_view left, std::string_view right) {
   return difference == 0u;
 }
 
-struct Server;
-
-struct Client {
-  uv_tcp_t handle{};
-  Server *server = nullptr;
-  std::array<char, 4096u> read_buffer{};
-  std::string input;
-  bool closing = false;
-  bool responded = false;
-};
-
-struct Write {
-  uv_write_t request{};
-  Client *client = nullptr;
-  std::string payload;
-};
-
 bool read_uint32(const coakka::camera_json::object_t &body, const char *name,
                  uint32_t *out) {
   return coakka::camera_json::value_as_uint32(body.find(name), out);
@@ -71,269 +46,250 @@ struct Server {
   explicit Server(coakka_v2_camera_control_server_config_t value)
       : config(std::move(value)) {}
 
+  ~Server() { stop(); }
+
   bool start(std::string *error) {
+    if (error == nullptr) {
+      return false;
+    }
+    std::lock_guard<std::mutex> lifecycle_lock(lifecycle_mutex);
+    if (service != nullptr || stopped.load(std::memory_order_acquire)) {
+      *error = "control server can only be started once";
+      return false;
+    }
+
+    coakka_http_host_configuration_t configuration;
+    coakka_http_host_configuration_init(&configuration);
+    configuration.bind_address = coakka::camera_http::bytes(config.bind_host);
+    configuration.port = config.bind_port;
+    configuration.protocol = COAKKA_HTTP_HOST_PROTOCOL_HTTP_1_1;
+    configuration.security = COAKKA_HTTP_HOST_SECURITY_PLAINTEXT;
+    configuration.omit_buffered_success_events = 1u;
+    configuration.limits.max_connections = 4u;
+    configuration.limits.max_active_requests = 4u;
+    configuration.limits.request_queue_capacity = 4u;
+    configuration.limits.completion_queue_capacity = 4u;
+    configuration.limits.terminal_queue_capacity = 4u;
+    configuration.limits.max_header_count = 16u;
+    configuration.limits.max_header_bytes = 4u * 1024u;
+    configuration.limits.max_request_body_bytes = kMaxRequestBytes;
+    configuration.limits.max_response_body_bytes = 16ull * 1024ull;
+    configuration.limits.handler_timeout_ms = 2000u;
+    configuration.limits.drain_timeout_ms = kDrainTimeoutMs;
+    configuration.limits.stop_timeout_ms = kStopTimeoutMs;
+
+    coakka_http_host_route_t route;
+    coakka_http_host_route_init(&route);
+    route.route_id = kProfileRouteId;
+    route.handler_binding_id = kProfileBindingId;
+    route.method = coakka::camera_http::bytes("POST");
+    route.encoded_path_pattern = coakka::camera_http::bytes("/v1/profile");
+    coakka_http_host_body_policy_init(&route.body_policy);
+    route.body_policy.enabled = 1u;
+    route.body_policy.accept_other = 1u;
+    route.body_policy.max_body_bytes = kMaxRequestBytes;
+
+    uint32_t failed_route = COAKKA_HTTP_HOST_FAILED_INDEX_NONE;
+    coakka_http_host_status_t status = coakka_http_host_service_create(
+        &configuration, &route, 1u, &service, &failed_route);
+    if (status != COAKKA_HTTP_HOST_OK) {
+      *error = "control service create failed: " +
+               coakka::camera_http::status_text(status);
+      service = nullptr;
+      return false;
+    }
+    coakka_http_host_issue_t issue;
+    coakka_http_host_issue_init(&issue);
+    status = coakka_http_host_service_start(service, &issue);
+    if (status != COAKKA_HTTP_HOST_OK) {
+      *error = "control service start failed: " +
+               coakka::camera_http::startup_error(status, issue);
+      destroy_service();
+      return false;
+    }
+    status = coakka_http_host_service_port(service, &port);
+    if (status != COAKKA_HTTP_HOST_OK) {
+      *error = "control service port query failed: " +
+               coakka::camera_http::status_text(status);
+      (void)coakka_http_host_service_stop(service);
+      destroy_service();
+      return false;
+    }
     try {
       worker = std::thread([this] { run(); });
     } catch (const std::system_error &failure) {
-      *error = "control worker start failed: " + std::string(failure.what());
-      return false;
-    }
-    std::unique_lock<std::mutex> lock(ready_mutex);
-    ready_condition.wait(lock, [this] {
-      return ready.load(std::memory_order_acquire);
-    });
-    if (start_result != 0) {
-      *error = uv_strerror(start_result);
+      *error = "control reader start failed: " + std::string(failure.what());
+      (void)coakka_http_host_service_stop(service);
+      destroy_service();
+      port = 0u;
       return false;
     }
     return true;
   }
 
-  void stop() {
+  void stop() noexcept {
     if (stopped.exchange(true, std::memory_order_acq_rel)) {
       return;
     }
-    stopping.store(true, std::memory_order_release);
-    if (ready.load(std::memory_order_acquire) && start_result == 0) {
-      (void)uv_async_send(&async);
+    coakka_http_host_service_t *active = nullptr;
+    {
+      std::lock_guard<std::mutex> lifecycle_lock(lifecycle_mutex);
+      active = service;
+      if (active == nullptr) {
+        return;
+      }
+      const coakka_http_host_status_t drain =
+          coakka_http_host_service_begin_drain(active);
+      if (drain != COAKKA_HTTP_HOST_OK && drain != COAKKA_HTTP_HOST_CLOSED) {
+        report_shutdown_failure("begin drain", drain);
+      }
+    }
+
+    coakka_http_host_drain_state_t drain_state =
+        COAKKA_HTTP_HOST_DRAIN_NOT_STARTED;
+    const coakka_http_host_status_t waited =
+        coakka_http_host_service_wait_drained(active, kDrainTimeoutMs,
+                                              &drain_state);
+    if (waited != COAKKA_HTTP_HOST_OK && waited != COAKKA_HTTP_HOST_TIMEOUT &&
+        waited != COAKKA_HTTP_HOST_CLOSED) {
+      report_shutdown_failure("wait for drain", waited);
+    }
+    const coakka_http_host_status_t stopped_status =
+        coakka_http_host_service_stop(active);
+    if (stopped_status != COAKKA_HTTP_HOST_OK) {
+      report_shutdown_failure("stop", stopped_status);
     }
     if (worker.joinable()) {
       worker.join();
     }
+    {
+      std::lock_guard<std::mutex> lifecycle_lock(lifecycle_mutex);
+      destroy_service();
+      port = 0u;
+    }
   }
 
-  static void alloc_read(uv_handle_t *handle, size_t, uv_buf_t *buffer) {
-    auto *client = static_cast<Client *>(handle->data);
-    *buffer =
-        uv_buf_init(client->read_buffer.data(),
-                    static_cast<unsigned int>(client->read_buffer.size()));
+  void run() noexcept {
+    for (;;) {
+      coakka_http_host_request_event_t event;
+      coakka_http_host_request_event_init(&event);
+      const coakka_http_host_status_t status =
+          coakka_http_host_take_request(service, 1000u, &event);
+      if (status == COAKKA_HTTP_HOST_TIMEOUT) {
+        continue;
+      }
+      if (status == COAKKA_HTTP_HOST_CLOSED) {
+        return;
+      }
+      if (status != COAKKA_HTTP_HOST_OK) {
+        report_shutdown_failure("take request", status);
+        return;
+      }
+      if (event.kind == COAKKA_HTTP_HOST_REQUEST &&
+          event.handler_binding_id == kProfileBindingId) {
+        try {
+          handle_request(event);
+        } catch (const std::exception &failure) {
+          report_worker_exception(failure.what());
+          respond_json(event.exchange, 500u,
+                       R"({"ok":false,"error":"internal error"})");
+        } catch (...) {
+          report_worker_exception("unknown exception");
+          respond_json(event.exchange, 500u,
+                       R"({"ok":false,"error":"internal error"})");
+        }
+      }
+      const coakka_http_host_status_t released =
+          coakka_http_host_release_request(service, &event);
+      if (released != COAKKA_HTTP_HOST_OK) {
+        report_shutdown_failure("release request", released);
+        return;
+      }
+    }
   }
 
-  static void delete_client(uv_handle_t *handle) {
-    auto *client = static_cast<Client *>(handle->data);
-    auto &clients = client->server->clients;
-    clients.erase(std::remove(clients.begin(), clients.end(), client),
-                  clients.end());
-    delete client;
-  }
+  void handle_request(const coakka_http_host_request_event_t &event) {
+    const auto authorization =
+        coakka::camera_http::header_value(event, "authorization");
+    constexpr std::string_view bearer_prefix = "Bearer ";
+    const bool valid_authorization =
+        authorization.has_value() &&
+        authorization->starts_with(bearer_prefix) &&
+        constant_time_equal(authorization->substr(bearer_prefix.size()),
+                            config.authorization_token);
+    if (!valid_authorization) {
+      respond_json(event.exchange, 403u, R"({"ok":false,"error":"forbidden"})");
+      return;
+    }
 
-  static void close_client(Client *client) {
-    if (client == nullptr || client->closing) {
-      return;
-    }
-    client->closing = true;
-    (void)uv_read_stop(reinterpret_cast<uv_stream_t *>(&client->handle));
-    uv_close(reinterpret_cast<uv_handle_t *>(&client->handle), delete_client);
-  }
-
-  static void write_complete(uv_write_t *request, int) {
-    std::unique_ptr<Write> write(static_cast<Write *>(request->data));
-    close_client(write->client);
-  }
-
-  static void respond(Client *client, int status, std::string body) {
-    auto write = std::make_unique<Write>();
-    write->client = client;
-    write->payload =
-        make_http_response_text(status, "application/json", std::move(body));
-    write->request.data = write.get();
-    uv_buf_t buffer =
-        uv_buf_init(write->payload.data(),
-                    static_cast<unsigned int>(write->payload.size()));
-    if (uv_write(&write->request,
-                 reinterpret_cast<uv_stream_t *>(&client->handle), &buffer, 1u,
-                 write_complete) != 0) {
-      close_client(client);
-      return;
-    }
-    (void)write.release();
-  }
-
-  void handle_request(Client *client) {
-    size_t request_size = 0u;
-    std::string error;
-    if (!try_extract_http_request_bytes(client->input, &request_size, &error)) {
-      return;
-    }
-    client->responded = true;
-    if (!error.empty() || request_size > kMaxRequestBytes) {
-      respond(client, 400, "{\"ok\":false,\"error\":\"bad request\"}");
-      return;
-    }
-    http_request_t request;
-    if (!parse_request_from_text(client->input.substr(0u, request_size),
-                                 &request, &error)) {
-      respond(client, 400, "{\"ok\":false,\"error\":\"bad request\"}");
-      return;
-    }
-    const auto authorization = request.headers.find("authorization");
-    const std::string expected_authorization =
-        "Bearer " + config.authorization_token;
-    if (authorization == request.headers.end() ||
-        !constant_time_equal(authorization->second, expected_authorization)) {
-      respond(client, 403, "{\"ok\":false,\"error\":\"forbidden\"}");
-      return;
-    }
-    if (request.method != "POST" ||
-        request_path_without_query(request.path) != "/v1/profile") {
-      respond(client, 404, "{\"ok\":false,\"error\":\"not found\"}");
-      return;
-    }
+    const std::string_view raw_body =
+        coakka::camera_http::view(coakka_http_host_request_body(&event));
     coakka::camera_json::object_t body;
     std::string json_error;
     const bool parsed =
-        coakka::camera_json::parse_object(request.body, &body, &json_error);
+        coakka::camera_json::parse_object(raw_body, &body, &json_error);
     uint32_t width = 0u;
     uint32_t height = 0u;
     uint32_t fps = 0u;
     if (!parsed || !read_uint32(body, "width", &width) ||
         !read_uint32(body, "height", &height) ||
         !read_uint32(body, "fps", &fps)) {
-      respond(client, 400, "{\"ok\":false,\"error\":\"invalid profile\"}");
+      respond_json(event.exchange, 400u,
+                   R"({"ok":false,"error":"invalid profile"})");
       return;
     }
+
     std::array<char, 192u> handler_error{};
     if (!config.profile_handler(config.handler_context, width, height, fps,
                                 handler_error.data(), handler_error.size())) {
       coakka::camera_json::object_writer_t response;
       response.add_bool("ok", false);
       response.add_string("error", handler_error.data());
-      respond(client, 409, response.finish());
+      respond_json(event.exchange, 409u, response.finish());
       return;
     }
-    respond(client, 202, "{\"ok\":true}");
+    respond_json(event.exchange, 202u, R"({"ok":true})");
   }
 
-  static void read_client(uv_stream_t *stream, ssize_t read,
-                          const uv_buf_t *buffer) {
-    auto *client = static_cast<Client *>(stream->data);
-    if (read < 0) {
-      close_client(client);
-      return;
-    }
-    if (read == 0 || client->responded) {
-      return;
-    }
-    client->input.append(buffer->base, static_cast<size_t>(read));
-    if (client->input.size() > kMaxRequestBytes) {
-      close_client(client);
-      return;
-    }
-    client->server->handle_request(client);
-  }
-
-  static void accept_client(uv_stream_t *stream, int status) {
-    auto *server = static_cast<Server *>(stream->data);
-    if (status < 0 || server->stopping.load(std::memory_order_acquire)) {
-      return;
-    }
-    auto client = std::make_unique<Client>();
-    client->server = server;
-    client->handle.data = client.get();
-    if (uv_tcp_init(&server->loop, &client->handle) != 0) {
-      return;
-    }
-    Client *owned = client.release();
-    if (uv_accept(stream, reinterpret_cast<uv_stream_t *>(&owned->handle)) !=
-        0) {
-      close_client(owned);
-      return;
-    }
-    if (server->clients.size() >= kMaxClients) {
-      close_client(owned);
-      return;
-    }
-    server->clients.push_back(owned);
-    if (uv_read_start(reinterpret_cast<uv_stream_t *>(&owned->handle),
-                      alloc_read, read_client) != 0) {
-      close_client(owned);
+  void respond_json(coakka_http_host_exchange_t exchange, uint32_t status,
+                    std::string_view body) noexcept {
+    const coakka_http_host_status_t result = coakka::camera_http::respond(
+        service, exchange, status, "application/json", body);
+    if (result != COAKKA_HTTP_HOST_OK &&
+        result != COAKKA_HTTP_HOST_STALE_EXCHANGE &&
+        result != COAKKA_HTTP_HOST_CLOSED) {
+      report_shutdown_failure("respond", result);
     }
   }
 
-  static void async_ready(uv_async_t *handle) {
-    auto *server = static_cast<Server *>(handle->data);
-    if (!server->stopping.load(std::memory_order_acquire)) {
+  void destroy_service() noexcept {
+    if (service == nullptr) {
       return;
     }
-    const std::vector<Client *> clients = server->clients;
-    for (Client *client : clients) {
-      close_client(client);
+    const coakka_http_host_status_t status =
+        coakka_http_host_service_destroy(&service);
+    if (status != COAKKA_HTTP_HOST_OK) {
+      report_shutdown_failure("destroy", status);
     }
-    uv_close(reinterpret_cast<uv_handle_t *>(&server->listener), nullptr);
-    uv_close(reinterpret_cast<uv_handle_t *>(&server->async), nullptr);
   }
 
-  void publish_ready(int result) {
-    {
-      std::lock_guard<std::mutex> lock(ready_mutex);
-      start_result = result;
-      ready.store(true, std::memory_order_release);
-    }
-    ready_condition.notify_one();
+  static void
+  report_shutdown_failure(const char *operation,
+                          coakka_http_host_status_t status) noexcept {
+    (void)std::fprintf(stderr, "camera control HTTP %s failed: %s\n", operation,
+                       coakka_http_host_status_name(status));
   }
 
-  void run() {
-    int result = uv_loop_init(&loop);
-    if (result != 0) {
-      publish_ready(result);
-      return;
-    }
-    listener.data = this;
-    async.data = this;
-    result = uv_tcp_init(&loop, &listener);
-    if (result == 0) {
-      result = uv_async_init(&loop, &async, async_ready);
-    }
-    sockaddr_in address{};
-    if (result == 0) {
-      result =
-          uv_ip4_addr(config.bind_host.c_str(), config.bind_port, &address);
-    }
-    if (result == 0) {
-      result = uv_tcp_bind(&listener,
-                           reinterpret_cast<const sockaddr *>(&address), 0u);
-    }
-    if (result == 0) {
-      result = uv_listen(reinterpret_cast<uv_stream_t *>(&listener), 4,
-                         accept_client);
-    }
-    if (result == 0) {
-      int length = sizeof(address);
-      result = uv_tcp_getsockname(
-          &listener, reinterpret_cast<sockaddr *>(&address), &length);
-      port = ntohs(address.sin_port);
-    }
-    if (result != 0) {
-      uv_walk(
-          &loop,
-          [](uv_handle_t *handle, void *) {
-            if (!uv_is_closing(handle)) {
-              uv_close(handle, nullptr);
-            }
-          },
-          nullptr);
-      (void)uv_run(&loop, UV_RUN_DEFAULT);
-      (void)uv_loop_close(&loop);
-      publish_ready(result);
-      return;
-    }
-    publish_ready(0);
-    (void)uv_run(&loop, UV_RUN_DEFAULT);
-    (void)uv_loop_close(&loop);
+  static void report_worker_exception(const char *detail) noexcept {
+    (void)std::fprintf(stderr, "camera control HTTP request failed: %s\n",
+                       detail != nullptr ? detail : "unknown exception");
   }
 
   coakka_v2_camera_control_server_config_t config;
-  uv_loop_t loop{};
-  uv_tcp_t listener{};
-  uv_async_t async{};
-  std::vector<Client *> clients;
+  coakka_http_host_service_t *service = nullptr;
   std::thread worker;
-  std::mutex ready_mutex;
-  std::condition_variable ready_condition;
-  std::atomic<bool> stopping{false};
+  std::mutex lifecycle_mutex;
   std::atomic<bool> stopped{false};
-  std::atomic<bool> ready{false};
-  int start_result = UV_EINVAL;
   uint16_t port = 0u;
 };
 
@@ -348,8 +304,8 @@ struct coakka_v2_camera_control_server_t::impl_t {
 std::unique_ptr<coakka_v2_camera_control_server_t>
 coakka_v2_camera_control_server_t::create(
     const coakka_v2_camera_control_server_config_t &config) {
-  if (config.bind_host.empty() || config.bind_port == 0u ||
-      config.authorization_token.empty() || config.profile_handler == nullptr) {
+  if (config.bind_host.empty() || config.authorization_token.empty() ||
+      config.profile_handler == nullptr) {
     return nullptr;
   }
   return std::unique_ptr<coakka_v2_camera_control_server_t>(
@@ -365,7 +321,7 @@ coakka_v2_camera_control_server_t::~coakka_v2_camera_control_server_t() {
 }
 
 bool coakka_v2_camera_control_server_t::start(std::string *error) {
-  return impl_ != nullptr && error != nullptr && impl_->server.start(error);
+  return impl_ != nullptr && impl_->server.start(error);
 }
 
 void coakka_v2_camera_control_server_t::stop() {

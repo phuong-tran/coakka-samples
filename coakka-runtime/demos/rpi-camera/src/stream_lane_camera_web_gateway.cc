@@ -1,24 +1,17 @@
 #include "stream_lane_camera_web_gateway.h"
 
+#include "camera_http_host.h"
 #include "camera_json.h"
-#include "runtime_addon_web_wire.h"
 #include "stream_lane_camera_recorder.h"
 #include "stream_lane_camera_web_ui.h"
 
-#include <uv.h>
-
-#if defined(_WIN32)
-#include <winsock2.h>
-#else
-#include <arpa/inet.h>
-#endif
 #include <algorithm>
 #include <array>
 #include <atomic>
 #include <chrono>
-#include <condition_variable>
 #include <cstdio>
 #include <cstring>
+#include <exception>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -28,24 +21,28 @@
 #include <utility>
 #include <vector>
 
-namespace {
-
-using coakka::runtime_addon_web::header_contains_token;
-using coakka::runtime_addon_web::http_request_t;
-using coakka::runtime_addon_web::make_http_response_text;
-using coakka::runtime_addon_web::make_websocket_upgrade_response;
-using coakka::runtime_addon_web::parse_request_from_text;
-using coakka::runtime_addon_web::request_path_without_query;
-using coakka::runtime_addon_web::try_extract_http_request_bytes;
-using coakka::runtime_addon_web::websocket_frame;
+namespace coakka::camera_web_gateway_detail {
 
 constexpr size_t kQueueFrames = 4u;
 constexpr size_t kAudioFrameBytes = 1920u;
-constexpr size_t kMaxHttpBytes = 16u * 1024u;
-constexpr size_t kMaxWebsocketPayload = 4u * 1024u;
-constexpr size_t kMaxControlWrites = 8u;
-constexpr size_t kMaxClients = 8u;
+constexpr size_t kMaxWebsocketPayload = 4ull * 1024ull;
+constexpr size_t kFrameMetadataCapacity = 384u;
+constexpr uint64_t kDrainTimeoutMs = 1000u;
+constexpr uint64_t kStopTimeoutMs = 2000u;
+constexpr uint64_t kRequestWaitMs = 60ull * 1000ull;
+constexpr uint32_t kProfileRequestTimeoutMs = 2000u;
+constexpr std::string_view kProfileLogicalTarget = "camera-profile-control";
+constexpr auto kStatusInterval = std::chrono::milliseconds(500);
 constexpr auto kProfileConfirmationTimeout = std::chrono::seconds(5);
+
+constexpr uint64_t kUiRouteId = 1u;
+constexpr uint64_t kHealthRouteId = 2u;
+constexpr uint64_t kStreamRouteId = 3u;
+constexpr uint64_t kControlRouteId = 4u;
+constexpr uint64_t kUiBindingId = 1001u;
+constexpr uint64_t kHealthBindingId = 1002u;
+constexpr uint64_t kStreamBindingId = 1003u;
+constexpr uint64_t kControlBindingId = 1004u;
 
 struct FrameSlot {
   explicit FrameSlot(size_t capacity) : bytes(capacity) {}
@@ -105,20 +102,22 @@ bool jpeg_dimensions(const uint8_t *data, size_t size, uint32_t *width,
 
 class DisplayQueue {
 public:
-  explicit DisplayQueue(size_t capacity) { initialize(capacity); }
-
-  void set_async(uv_async_t *async) {
-    std::lock_guard<std::mutex> lock(mutex_);
-    async_ = async;
+  explicit DisplayQueue(size_t capacity) {
+    slots_.reserve(kQueueFrames);
+    for (size_t index = 0u; index < kQueueFrames; ++index) {
+      slots_.emplace_back(capacity);
+    }
   }
 
   coakka_v2_status_t push(const uint8_t *data,
-                          const coakka_v2_stream_frame_t *frame) noexcept {
+                          const coakka_v2_stream_frame_t *frame,
+                          bool *became_nonempty) noexcept {
     std::lock_guard<std::mutex> lock(mutex_);
-    if (!valid_frame(data, frame) ||
+    if (became_nonempty == nullptr || !valid_frame(data, frame) ||
         (expected_sequence_ != 0u && frame->sequence != expected_sequence_)) {
       return COAKKA_V2_ERR_IO;
     }
+    *became_nonempty = count_ == 0u;
     expected_sequence_ = frame->sequence + 1u;
     source_drops_ += frame->dropped_before;
     if (count_ == slots_.size()) {
@@ -127,13 +126,13 @@ public:
       ++queue_drops_;
     }
     FrameSlot &slot = slots_[(head_ + count_) % slots_.size()];
-    copy_frame(slot, data, frame);
+    std::memcpy(slot.bytes.data(), data, frame->size);
+    slot.size = frame->size;
+    slot.sequence = frame->sequence;
+    slot.captured_mono_ns = frame->captured_mono_ns;
     ++count_;
     ++received_frames_;
     received_bytes_ += frame->size;
-    // The mutex is also the lifetime fence between producer threads and the
-    // loop thread detaching and closing this libuv handle.
-    if (async_ != nullptr) (void)uv_async_send(async_);
     return COAKKA_V2_OK;
   }
 
@@ -171,27 +170,12 @@ public:
   }
 
 private:
-  void initialize(size_t capacity) {
-    slots_.reserve(kQueueFrames);
-    for (size_t index = 0u; index < kQueueFrames; ++index) {
-      slots_.emplace_back(capacity);
-    }
-  }
-
   bool valid_frame(const uint8_t *data,
                    const coakka_v2_stream_frame_t *frame) const noexcept {
     return data != nullptr && frame != nullptr && frame->size >= 4u &&
            frame->size <= slots_[0].bytes.size() && data[0] == 0xffu &&
            data[1] == 0xd8u && data[frame->size - 2u] == 0xffu &&
            data[frame->size - 1u] == 0xd9u;
-  }
-
-  static void copy_frame(FrameSlot &slot, const uint8_t *data,
-                         const coakka_v2_stream_frame_t *frame) noexcept {
-    std::memcpy(slot.bytes.data(), data, frame->size);
-    slot.size = frame->size;
-    slot.sequence = frame->sequence;
-    slot.captured_mono_ns = frame->captured_mono_ns;
   }
 
   mutable std::mutex mutex_;
@@ -203,31 +187,6 @@ private:
   uint64_t received_bytes_ = 0u;
   uint64_t source_drops_ = 0u;
   uint64_t queue_drops_ = 0u;
-  uv_async_t *async_ = nullptr;
-};
-
-enum class ClientMode { Http, Stream, Websocket };
-
-struct Gateway;
-
-struct WebClient {
-  uv_tcp_t handle{};
-  Gateway *gateway = nullptr;
-  std::array<char, 8192u> read_buffer{};
-  std::string input;
-  ClientMode mode = ClientMode::Http;
-  size_t pending_control_writes = 0u;
-  bool stream_headers_sent = false;
-  bool closing = false;
-};
-
-struct OwnedWrite {
-  uv_write_t request{};
-  WebClient *client = nullptr;
-  std::string payload;
-  bool close_after = false;
-  bool stream_headers = false;
-  bool control_write = false;
 };
 
 struct Gateway {
@@ -235,131 +194,679 @@ struct Gateway {
       : config(value), display(value.max_frame_bytes),
         recorder(value.max_frame_bytes, value.fps, value.recording_directory,
                  value.ffmpeg_binary),
-        frame_bytes(value.max_frame_bytes) {
-    // The recording fallback cadence is local intent. No Pi profile has been
-    // observed or requested through this gateway at construction.
-    frame_write.data = this;
-  }
+        frame_bytes(value.max_frame_bytes),
+        frame_chunk(value.max_frame_bytes + kFrameMetadataCapacity) {}
+
+  ~Gateway() { stop(); }
 
   bool start(std::string *error) {
+    if (error == nullptr) {
+      return false;
+    }
+    const coakka_http_host_capabilities_t required =
+        COAKKA_HTTP_HOST_CAPABILITY_INBOUND |
+        COAKKA_HTTP_HOST_CAPABILITY_RESPONSE_STREAM |
+        COAKKA_HTTP_HOST_CAPABILITY_WEBSOCKET |
+        (profile_outbound_enabled() ? COAKKA_HTTP_HOST_CAPABILITY_OUTBOUND
+                                    : 0u);
+    if ((coakka_http_host_features() & required) != required) {
+      *error = "loaded HTTP Runtime lacks a camera HTTP capability";
+      return false;
+    }
     if (!recorder.start_worker(error)) {
       return false;
     }
-    try {
-      worker = std::thread([this] { run(); });
-    } catch (const std::system_error &failure) {
-      *error = "web worker start failed: " + std::string(failure.what());
+
+    std::lock_guard<std::mutex> lifecycle_lock(lifecycle_mutex);
+    if (service != nullptr || stopped.load(std::memory_order_acquire)) {
+      *error = "web gateway can only be started once";
       recorder.shutdown();
       return false;
     }
-    std::unique_lock<std::mutex> lock(ready_mutex);
-    ready_condition.wait(lock, [this] {
-      return ready.load(std::memory_order_acquire);
-    });
-    if (start_result != 0) {
-      *error = uv_strerror(start_result);
+    if (!create_service(error)) {
+      recorder.shutdown();
+      return false;
+    }
+    try {
+      request_worker = std::thread([this] { run_requests(); });
+      websocket_worker = std::thread([this] { run_websockets(); });
+    } catch (const std::system_error &failure) {
+      *error = "HTTP event reader start failed: " + std::string(failure.what());
+      (void)coakka_http_host_service_stop(service);
+      if (request_worker.joinable()) {
+        request_worker.join();
+      }
+      if (websocket_worker.joinable()) {
+        websocket_worker.join();
+      }
+      destroy_service();
       recorder.shutdown();
       return false;
     }
     return true;
   }
 
-  void stop() {
+  void stop() noexcept {
     if (stopped.exchange(true, std::memory_order_acq_rel)) {
       return;
     }
     recorder.shutdown();
     stopping.store(true, std::memory_order_release);
-    if (ready.load(std::memory_order_acquire) && start_result == 0) {
-      (void)uv_async_send(&async);
-    }
-    if (worker.joinable()) {
-      worker.join();
-    }
-  }
 
-  static void alloc_read(uv_handle_t *handle, size_t,
-                         uv_buf_t *buffer) noexcept {
-    auto *client = static_cast<WebClient *>(handle->data);
-    *buffer =
-        uv_buf_init(client->read_buffer.data(),
-                    static_cast<unsigned int>(client->read_buffer.size()));
-  }
-
-  static void delete_client(uv_handle_t *handle) noexcept {
-    auto *client = static_cast<WebClient *>(handle->data);
-    Gateway *gateway = client->gateway;
-    gateway->clients.erase(
-        std::remove(gateway->clients.begin(), gateway->clients.end(), client),
-        gateway->clients.end());
-    delete client;
-  }
-
-  static void close_client(WebClient *client) noexcept {
-    if (client == nullptr || client->closing) {
-      return;
-    }
-    client->closing = true;
-    Gateway *gateway = client->gateway;
-    if (gateway->stream_client == client) {
-      gateway->stream_client = nullptr;
-    }
-    if (gateway->control_client == client) {
-      gateway->control_client = nullptr;
-    }
-    (void)uv_read_stop(reinterpret_cast<uv_stream_t *>(&client->handle));
-    uv_close(reinterpret_cast<uv_handle_t *>(&client->handle), delete_client);
-  }
-
-  static void owned_write_complete(uv_write_t *request, int status) noexcept {
-    std::unique_ptr<OwnedWrite> write(static_cast<OwnedWrite *>(request->data));
-    WebClient *client = write->client;
-    if (write->control_write && client != nullptr &&
-        client->pending_control_writes != 0u) {
-      --client->pending_control_writes;
-    }
-    if (status < 0 || write->close_after) {
-      close_client(client);
-      return;
-    }
-    if (write->stream_headers && client != nullptr && !client->closing) {
-      client->stream_headers_sent = true;
-      client->gateway->pump_stream();
-    }
-  }
-
-  static bool send_owned(WebClient *client, std::string payload,
-                         bool close_after = false, bool stream_headers = false,
-                         bool control_write = false) {
-    if (client == nullptr || client->closing ||
-        (control_write &&
-         client->pending_control_writes >= kMaxControlWrites)) {
-      return false;
-    }
-    auto write = std::make_unique<OwnedWrite>();
-    write->client = client;
-    write->payload = std::move(payload);
-    write->close_after = close_after;
-    write->stream_headers = stream_headers;
-    write->control_write = control_write;
-    write->request.data = write.get();
-    uv_buf_t buffer =
-        uv_buf_init(write->payload.data(),
-                    static_cast<unsigned int>(write->payload.size()));
-    if (control_write) {
-      ++client->pending_control_writes;
-    }
-    const int result = uv_write(
-        &write->request, reinterpret_cast<uv_stream_t *>(&client->handle),
-        &buffer, 1u, owned_write_complete);
-    if (result != 0) {
-      if (control_write) {
-        --client->pending_control_writes;
+    coakka_http_host_service_t *active = nullptr;
+    {
+      std::lock_guard<std::mutex> lifecycle_lock(lifecycle_mutex);
+      active = service;
+      if (active == nullptr) {
+        return;
       }
+      const coakka_http_host_status_t drain =
+          coakka_http_host_service_begin_drain(active);
+      if (drain != COAKKA_HTTP_HOST_OK && drain != COAKKA_HTTP_HOST_CLOSED) {
+        report_failure("begin drain", drain);
+      }
+      const coakka_http_host_status_t interrupted =
+          coakka_http_host_interrupt_requests(active);
+      if (interrupted != COAKKA_HTTP_HOST_OK &&
+          interrupted != COAKKA_HTTP_HOST_CLOSED) {
+        report_failure("interrupt request reader", interrupted);
+      }
+    }
+
+    coakka_http_host_drain_state_t drain_state =
+        COAKKA_HTTP_HOST_DRAIN_NOT_STARTED;
+    const coakka_http_host_status_t waited =
+        coakka_http_host_service_wait_drained(active, kDrainTimeoutMs,
+                                              &drain_state);
+    if (waited != COAKKA_HTTP_HOST_OK && waited != COAKKA_HTTP_HOST_TIMEOUT &&
+        waited != COAKKA_HTTP_HOST_CLOSED) {
+      report_failure("wait for drain", waited);
+    }
+    const coakka_http_host_status_t stopped_status =
+        coakka_http_host_service_stop(active);
+    if (stopped_status != COAKKA_HTTP_HOST_OK) {
+      report_failure("stop", stopped_status);
+    }
+    if (request_worker.joinable()) {
+      request_worker.join();
+    }
+    if (websocket_worker.joinable()) {
+      websocket_worker.join();
+    }
+    {
+      std::lock_guard<std::mutex> lifecycle_lock(lifecycle_mutex);
+      destroy_service();
+      bound_port.store(0u, std::memory_order_release);
+    }
+  }
+
+  bool create_service(std::string *error) {
+    coakka_http_host_configuration_t configuration;
+    coakka_http_host_configuration_init(&configuration);
+    configuration.bind_address = coakka::camera_http::bytes(config.bind_host);
+    configuration.port = config.bind_port;
+    configuration.protocol = COAKKA_HTTP_HOST_PROTOCOL_HTTP_1_1;
+    configuration.security = COAKKA_HTTP_HOST_SECURITY_PLAINTEXT;
+    configuration.reserve_websocket = 1u;
+    configuration.omit_buffered_success_events = 1u;
+    configuration.limits.max_connections = 8u;
+    configuration.limits.max_active_requests = 8u;
+    configuration.limits.request_queue_capacity = 8u;
+    configuration.limits.completion_queue_capacity = 8u;
+    configuration.limits.terminal_queue_capacity = 8u;
+    configuration.limits.max_header_count = 24u;
+    configuration.limits.max_header_bytes = 8u * 1024u;
+    configuration.limits.max_request_body_bytes = kMaxWebsocketPayload;
+    // One MJPEG response is long-lived, but each accepted DATA chunk must fit
+    // the same Core-owned per-response ceiling as the largest admitted frame.
+    const uint64_t max_stream_chunk_bytes =
+        static_cast<uint64_t>(config.max_frame_bytes) + kFrameMetadataCapacity;
+    configuration.limits.max_response_body_bytes = max_stream_chunk_bytes;
+    configuration.limits.response_stream_chunk_slots = 2u;
+    configuration.limits.response_stream_max_retained_items = 2u;
+    configuration.limits.response_stream_max_chunk_bytes =
+        max_stream_chunk_bytes;
+    configuration.limits.response_stream_max_retained_bytes =
+        2ull * max_stream_chunk_bytes;
+    configuration.limits.response_stream_max_total_retained_bytes =
+        2ull * max_stream_chunk_bytes;
+    configuration.limits.handler_timeout_ms = 30ull * 1000ull;
+    configuration.limits.drain_timeout_ms = kDrainTimeoutMs;
+    configuration.limits.stop_timeout_ms = kStopTimeoutMs;
+    configuration.limits.response_write_timeout_ms = 2000u;
+
+    coakka_http_host_outbound_endpoint_t profile_endpoint;
+    coakka_http_host_outbound_endpoint_init(&profile_endpoint);
+    coakka_http_host_outbound_target_t profile_target;
+    coakka_http_host_outbound_target_init(&profile_target);
+    const std::string profile_authority =
+        config.profile_control_host + ":" +
+        std::to_string(config.profile_control_port);
+    if (profile_outbound_enabled()) {
+      profile_endpoint.weight = 1u;
+      profile_endpoint.node_id =
+          coakka::camera_http::bytes("camera-profile-endpoint");
+      profile_endpoint.connect_host =
+          coakka::camera_http::bytes(config.profile_control_host);
+      profile_endpoint.connect_port = config.profile_control_port;
+      profile_endpoint.http_authority =
+          coakka::camera_http::bytes(profile_authority);
+      profile_endpoint.security = COAKKA_HTTP_HOST_SECURITY_PLAINTEXT;
+      profile_endpoint.available = 1u;
+      profile_target.strategy = COAKKA_HTTP_HOST_OUTBOUND_SINGLE_OWNER;
+      profile_target.name = coakka::camera_http::bytes(kProfileLogicalTarget);
+      profile_target.generation = 1u;
+      profile_target.endpoints = &profile_endpoint;
+      profile_target.endpoint_count = 1u;
+      configuration.outbound_target_count = 1u;
+      configuration.outbound_targets = &profile_target;
+    }
+
+    std::array<coakka_http_host_route_t, 4u> routes;
+    for (coakka_http_host_route_t &route : routes) {
+      coakka_http_host_route_init(&route);
+      route.method = coakka::camera_http::bytes("GET");
+    }
+    routes[0].route_id = kUiRouteId;
+    routes[0].handler_binding_id = kUiBindingId;
+    routes[0].encoded_path_pattern = coakka::camera_http::bytes("/");
+    routes[1].route_id = kHealthRouteId;
+    routes[1].handler_binding_id = kHealthBindingId;
+    routes[1].encoded_path_pattern = coakka::camera_http::bytes("/healthz");
+    routes[2].route_id = kStreamRouteId;
+    routes[2].handler_binding_id = kStreamBindingId;
+    routes[2].encoded_path_pattern =
+        coakka::camera_http::bytes("/stream.mjpeg");
+    routes[3].route_id = kControlRouteId;
+    routes[3].handler_binding_id = kControlBindingId;
+    routes[3].encoded_path_pattern = coakka::camera_http::bytes("/ws/control");
+    routes[3].flags = COAKKA_HTTP_HOST_ROUTE_WEBSOCKET;
+
+    uint32_t failed_route = COAKKA_HTTP_HOST_FAILED_INDEX_NONE;
+    coakka_http_host_status_t status = coakka_http_host_service_create(
+        &configuration, routes.data(), static_cast<uint32_t>(routes.size()),
+        &service, &failed_route);
+    if (status != COAKKA_HTTP_HOST_OK) {
+      *error = "HTTP service create failed: " +
+               coakka::camera_http::status_text(status);
+      service = nullptr;
       return false;
     }
-    (void)write.release();
+    coakka_http_host_issue_t issue;
+    coakka_http_host_issue_init(&issue);
+    status = coakka_http_host_service_start(service, &issue);
+    if (status != COAKKA_HTTP_HOST_OK) {
+      *error = "HTTP service start failed: " +
+               coakka::camera_http::startup_error(status, issue);
+      destroy_service();
+      return false;
+    }
+    uint16_t port = 0u;
+    status = coakka_http_host_service_port(service, &port);
+    if (status != COAKKA_HTTP_HOST_OK) {
+      *error = "HTTP service port query failed: " +
+               coakka::camera_http::status_text(status);
+      (void)coakka_http_host_service_stop(service);
+      destroy_service();
+      return false;
+    }
+    bound_port.store(port, std::memory_order_release);
     return true;
+  }
+
+  bool request_profile(const coakka_v2_camera_profile_request_t &request,
+                       std::string *error) {
+    if (error == nullptr || !profile_outbound_enabled()) {
+      return false;
+    }
+    std::lock_guard<std::mutex> outbound_lock(outbound_mutex);
+    if (outbound_reader_failed) {
+      *error = "camera profile HTTP reader is unavailable";
+      return false;
+    }
+    const std::string body = "{\"width\":" + std::to_string(request.width) +
+                             ",\"height\":" + std::to_string(request.height) +
+                             ",\"fps\":" + std::to_string(request.fps) + "}";
+    const std::string authorization =
+        "Bearer " + config.profile_authorization_token;
+    const std::array<coakka_http_host_header_t, 2u> headers{{
+        {coakka::camera_http::bytes("authorization"),
+         coakka::camera_http::bytes(authorization)},
+        {coakka::camera_http::bytes("content-type"),
+         coakka::camera_http::bytes("application/json")},
+    }};
+    coakka_http_host_outbound_request_t outbound;
+    coakka_http_host_outbound_request_init(&outbound);
+    outbound.timeout_ms = kProfileRequestTimeoutMs;
+    outbound.logical_target = coakka::camera_http::bytes(kProfileLogicalTarget);
+    outbound.method = coakka::camera_http::bytes("POST");
+    outbound.target = coakka::camera_http::bytes("/v1/profile");
+    outbound.headers = headers.data();
+    outbound.header_count = static_cast<uint32_t>(headers.size());
+    outbound.body = coakka::camera_http::bytes(body);
+
+    coakka_http_host_outbound_call_t call{};
+    coakka_http_host_status_t status =
+        coakka_http_host_submit_outbound(service, &outbound, &call);
+    if (status != COAKKA_HTTP_HOST_OK) {
+      *error = "camera profile request admission failed: " +
+               coakka::camera_http::status_text(status);
+      return false;
+    }
+
+    coakka_http_host_outbound_event_t event;
+    coakka_http_host_outbound_event_init(&event);
+    status = coakka_http_host_take_outbound(
+        service, static_cast<uint64_t>(kProfileRequestTimeoutMs) + 1000u,
+        &event);
+    if (status == COAKKA_HTTP_HOST_TIMEOUT) {
+      (void)coakka_http_host_cancel_outbound(service, call);
+      coakka_http_host_outbound_event_init(&event);
+      status = coakka_http_host_take_outbound(service, 1000u, &event);
+    }
+    if (status != COAKKA_HTTP_HOST_OK) {
+      outbound_reader_failed = true;
+      *error = "camera profile response wait failed: " +
+               coakka::camera_http::status_text(status);
+      return false;
+    }
+
+    const bool matching_call = event.call.slot == call.slot &&
+                               event.call.generation == call.generation;
+    const bool accepted = matching_call &&
+                          event.reason == COAKKA_HTTP_HOST_OUTBOUND_RESPONSE &&
+                          event.response_status == 202u;
+    const uint16_t response_status = event.response_status;
+    const std::string diagnostic(coakka::camera_http::view(event.diagnostic));
+    const coakka_http_host_status_t released =
+        coakka_http_host_release_outbound(service, &event);
+    if (released != COAKKA_HTTP_HOST_OK) {
+      outbound_reader_failed = true;
+      *error = "camera profile response release failed: " +
+               coakka::camera_http::status_text(released);
+      return false;
+    }
+    if (!matching_call) {
+      outbound_reader_failed = true;
+      *error = "camera profile response identity did not match its request";
+      return false;
+    }
+    if (!accepted) {
+      *error = response_status != 0u
+                   ? "camera rejected the requested profile with HTTP " +
+                         std::to_string(response_status)
+                   : "camera profile request failed: " + diagnostic;
+    }
+    return accepted;
+  }
+
+  void run_requests() noexcept {
+    for (;;) {
+      coakka_http_host_request_event_t event;
+      coakka_http_host_request_event_init(&event);
+      const coakka_http_host_status_t status =
+          coakka_http_host_take_request(service, kRequestWaitMs, &event);
+      if (status == COAKKA_HTTP_HOST_CLOSED) {
+        return;
+      }
+      if (status != COAKKA_HTTP_HOST_OK && status != COAKKA_HTTP_HOST_TIMEOUT) {
+        report_failure("take request", status);
+        return;
+      }
+      if (status == COAKKA_HTTP_HOST_OK) {
+        bool handler_failed = false;
+        try {
+          handle_request_event(event);
+        } catch (const std::exception &failure) {
+          report_worker_exception("request", failure.what());
+          handler_failed = true;
+        } catch (...) {
+          report_worker_exception("request", "unknown exception");
+          handler_failed = true;
+        }
+        if (handler_failed && event.kind == COAKKA_HTTP_HOST_REQUEST) {
+          respond(event.exchange, 500u, "text/plain", "internal error\n");
+        }
+        const coakka_http_host_status_t released =
+            coakka_http_host_release_request(service, &event);
+        if (released != COAKKA_HTTP_HOST_OK) {
+          report_failure("release request", released);
+          return;
+        }
+        if (handler_failed) {
+          return;
+        }
+      }
+      try {
+        if (stopping.load(std::memory_order_acquire) ||
+            !livestream_enabled.load(std::memory_order_acquire)) {
+          finish_stream();
+        } else {
+          pump_stream();
+        }
+      } catch (const std::exception &failure) {
+        report_worker_exception("request", failure.what());
+        return;
+      } catch (...) {
+        report_worker_exception("request", "unknown exception");
+        return;
+      }
+    }
+  }
+
+  void handle_request_event(const coakka_http_host_request_event_t &event) {
+    if (event.kind == COAKKA_HTTP_HOST_REQUEST) {
+      handle_request(event);
+      return;
+    }
+    if (event.kind == COAKKA_HTTP_HOST_RESPONSE_WRITABLE &&
+        stream_active.load(std::memory_order_acquire) &&
+        coakka::camera_http::same_exchange(event.exchange, stream_exchange)) {
+      stream_writable = true;
+      return;
+    }
+    if ((event.kind == COAKKA_HTTP_HOST_REQUEST_CANCELLED ||
+         event.kind == COAKKA_HTTP_HOST_REQUEST_TERMINAL) &&
+        stream_active.load(std::memory_order_acquire) &&
+        coakka::camera_http::same_exchange(event.exchange, stream_exchange)) {
+      clear_stream();
+    }
+  }
+
+  void handle_request(const coakka_http_host_request_event_t &event) {
+    switch (event.handler_binding_id) {
+    case kUiBindingId:
+      respond(event.exchange, 200u, "text/html; charset=utf-8",
+              coakka_v2_camera_web_ui_html());
+      return;
+    case kHealthBindingId:
+      respond(event.exchange, 200u, "application/json", R"({"ok":true})");
+      return;
+    case kStreamBindingId:
+      start_stream(event.exchange);
+      return;
+    case kControlBindingId:
+      accept_websocket(event);
+      return;
+    default:
+      respond(event.exchange, 404u, "text/plain", "not found\n");
+    }
+  }
+
+  void start_stream(coakka_http_host_exchange_t exchange) {
+    if (!livestream_enabled.load(std::memory_order_acquire)) {
+      respond(exchange, 503u, "text/plain", "livestream is disabled\n");
+      return;
+    }
+    bool expected = false;
+    if (!stream_active.compare_exchange_strong(expected, true,
+                                               std::memory_order_acq_rel)) {
+      respond(exchange, 409u, "text/plain", "a viewer is already active\n");
+      return;
+    }
+    const std::array<coakka_http_host_header_t, 3u> headers{{
+        {coakka::camera_http::bytes("content-type"),
+         coakka::camera_http::bytes(
+             "multipart/x-mixed-replace; boundary=coakka-frame")},
+        {coakka::camera_http::bytes("cache-control"),
+         coakka::camera_http::bytes("no-store, no-cache, must-revalidate")},
+        {coakka::camera_http::bytes("pragma"),
+         coakka::camera_http::bytes("no-cache")},
+    }};
+    coakka_http_host_response_t head;
+    coakka_http_host_response_init(&head);
+    head.status_code = 200u;
+    head.headers = headers.data();
+    head.header_count = static_cast<uint32_t>(headers.size());
+    const coakka_http_host_status_t status =
+        coakka_http_host_start_response_stream(service, exchange, &head);
+    if (status != COAKKA_HTTP_HOST_OK) {
+      clear_stream();
+      if (status != COAKKA_HTTP_HOST_STALE_EXCHANGE &&
+          status != COAKKA_HTTP_HOST_CLOSED) {
+        report_failure("start MJPEG response", status);
+      }
+      return;
+    }
+    stream_exchange = exchange;
+    stream_writable = false;
+  }
+
+  void accept_websocket(const coakka_http_host_request_event_t &event) {
+    const auto host = coakka::camera_http::header_value(event, "host");
+    const auto origin = coakka::camera_http::header_value(event, "origin");
+    // HTTP Runtime projects Host as the request authority. Keep a header
+    // fallback for transports that also preserve the original field.
+    const std::string_view authority =
+        host.has_value() ? *host
+                         : coakka::camera_http::view(
+                               coakka_http_host_request_authority(&event));
+    const std::string expected_origin =
+        authority.empty() ? std::string{} : "http://" + std::string(authority);
+    bool expected_pending = false;
+    const bool reserved = websocket_upgrade_pending.compare_exchange_strong(
+        expected_pending, true, std::memory_order_acq_rel);
+    if (!reserved || control_connected.load(std::memory_order_acquire) ||
+        !origin.has_value() || *origin != expected_origin) {
+      if (reserved) {
+        websocket_upgrade_pending.store(false, std::memory_order_release);
+      }
+      respond(event.exchange, 403u, "text/plain", "forbidden\n");
+      return;
+    }
+    const coakka_http_host_status_t status = coakka_http_host_accept_websocket(
+        service, event.exchange,
+        coakka::camera_http::bytes(std::string_view{}));
+    if (status != COAKKA_HTTP_HOST_OK) {
+      websocket_upgrade_pending.store(false, std::memory_order_release);
+      if (status != COAKKA_HTTP_HOST_STALE_EXCHANGE &&
+          status != COAKKA_HTTP_HOST_CLOSED) {
+        report_failure("accept WebSocket", status);
+      }
+    }
+  }
+
+  void pump_stream() {
+    if (!stream_active.load(std::memory_order_acquire) || !stream_writable) {
+      return;
+    }
+    size_t frame_size = 0u;
+    uint64_t sequence = 0u;
+    uint64_t captured_mono_ns = 0u;
+    if (!display.take_latest(frame_bytes.data(), frame_bytes.size(),
+                             &frame_size, &sequence, &captured_mono_ns)) {
+      return;
+    }
+    const int header_size = std::snprintf(
+        reinterpret_cast<char *>(frame_chunk.data()), kFrameMetadataCapacity,
+        "--coakka-frame\r\nContent-Type: image/jpeg\r\n"
+        "Content-Length: %zu\r\nX-CoAkka-Sequence: %llu\r\n"
+        "X-Captured-Monotonic-Ns: %llu\r\n\r\n",
+        frame_size, static_cast<unsigned long long>(sequence),
+        static_cast<unsigned long long>(captured_mono_ns));
+    if (header_size <= 0 ||
+        static_cast<size_t>(header_size) >= kFrameMetadataCapacity ||
+        static_cast<size_t>(header_size) + frame_size + 2u >
+            frame_chunk.size()) {
+      finish_stream();
+      return;
+    }
+    const size_t payload_offset = static_cast<size_t>(header_size);
+    std::memcpy(frame_chunk.data() + payload_offset, frame_bytes.data(),
+                frame_size);
+    frame_chunk[payload_offset + frame_size] = '\r';
+    frame_chunk[payload_offset + frame_size + 1u] = '\n';
+    const size_t chunk_size = payload_offset + frame_size + 2u;
+    const coakka_http_host_status_t status =
+        coakka_http_host_write_response_stream(
+            service, stream_exchange,
+            {frame_chunk.data(), static_cast<size_t>(chunk_size)});
+    if (status == COAKKA_HTTP_HOST_OK) {
+      stream_writable = false;
+      browser_frames.fetch_add(1u, std::memory_order_relaxed);
+      browser_bytes.fetch_add(frame_size, std::memory_order_relaxed);
+      return;
+    }
+    if (status == COAKKA_HTTP_HOST_CAPACITY_EXHAUSTED) {
+      stream_writable = false;
+      return;
+    }
+    if (status != COAKKA_HTTP_HOST_STALE_EXCHANGE &&
+        status != COAKKA_HTTP_HOST_CLOSED) {
+      report_failure("write MJPEG response", status);
+    }
+    clear_stream();
+  }
+
+  void finish_stream() noexcept {
+    if (!stream_active.load(std::memory_order_acquire)) {
+      return;
+    }
+    const coakka_http_host_status_t status =
+        coakka_http_host_finish_response_stream(service, stream_exchange,
+                                                nullptr, 0u);
+    if (status != COAKKA_HTTP_HOST_OK &&
+        status != COAKKA_HTTP_HOST_STALE_EXCHANGE &&
+        status != COAKKA_HTTP_HOST_CLOSED) {
+      report_failure("finish MJPEG response", status);
+    }
+    clear_stream();
+  }
+
+  void clear_stream() noexcept {
+    stream_active.store(false, std::memory_order_release);
+    stream_writable = false;
+    stream_exchange = {};
+  }
+
+  void run_websockets() noexcept {
+    auto next_status = std::chrono::steady_clock::now() + kStatusInterval;
+    coakka_http_host_websocket_t session{};
+    bool close_requested = false;
+    for (;;) {
+      const auto now = std::chrono::steady_clock::now();
+      const auto remaining =
+          next_status > now
+              ? std::chrono::duration_cast<std::chrono::milliseconds>(
+                    next_status - now)
+              : std::chrono::milliseconds::zero();
+      const uint64_t timeout_ms =
+          stopping.load(std::memory_order_acquire)
+              ? 100u
+              : static_cast<uint64_t>(std::max<int64_t>(0, remaining.count()));
+      coakka_http_host_websocket_event_t event;
+      coakka_http_host_websocket_event_init(&event);
+      const coakka_http_host_status_t status =
+          coakka_http_host_take_websocket(service, timeout_ms, &event);
+      if (status == COAKKA_HTTP_HOST_CLOSED) {
+        return;
+      }
+      if (status != COAKKA_HTTP_HOST_OK && status != COAKKA_HTTP_HOST_TIMEOUT) {
+        report_failure("take WebSocket", status);
+        return;
+      }
+      if (status == COAKKA_HTTP_HOST_OK) {
+        bool handler_failed = false;
+        try {
+          handle_websocket_event(event, &session, &close_requested);
+        } catch (const std::exception &failure) {
+          report_worker_exception("WebSocket", failure.what());
+          handler_failed = true;
+        } catch (...) {
+          report_worker_exception("WebSocket", "unknown exception");
+          handler_failed = true;
+        }
+        const coakka_http_host_status_t released =
+            coakka_http_host_release_websocket(service, &event);
+        if (released != COAKKA_HTTP_HOST_OK) {
+          report_failure("release WebSocket", released);
+          return;
+        }
+        if (handler_failed) {
+          abort_websocket(session);
+          return;
+        }
+      }
+      try {
+        expire_profile_request();
+        const auto after_event = std::chrono::steady_clock::now();
+        if (!stopping.load(std::memory_order_acquire) &&
+            control_connected.load(std::memory_order_acquire) &&
+            after_event >= next_status) {
+          send_status(session);
+          next_status = after_event + kStatusInterval;
+        }
+      } catch (const std::exception &failure) {
+        report_worker_exception("WebSocket", failure.what());
+        abort_websocket(session);
+        return;
+      } catch (...) {
+        report_worker_exception("WebSocket", "unknown exception");
+        abort_websocket(session);
+        return;
+      }
+      if (stopping.load(std::memory_order_acquire) &&
+          control_connected.load(std::memory_order_acquire) &&
+          !close_requested) {
+        close_requested = true;
+        const coakka_http_host_status_t closed =
+            coakka_http_host_close_websocket(
+                service, session, 1001u,
+                coakka::camera_http::bytes("camera gateway stopping"));
+        if (closed != COAKKA_HTTP_HOST_OK &&
+            closed != COAKKA_HTTP_HOST_STALE_EXCHANGE &&
+            closed != COAKKA_HTTP_HOST_CLOSED) {
+          report_failure("close WebSocket", closed);
+        }
+      }
+    }
+  }
+
+  void handle_websocket_event(const coakka_http_host_websocket_event_t &event,
+                              coakka_http_host_websocket_t *session,
+                              bool *close_requested) {
+    switch (event.kind) {
+    case COAKKA_HTTP_HOST_WEBSOCKET_OPEN:
+      *session = event.session;
+      *close_requested = false;
+      websocket_upgrade_pending.store(false, std::memory_order_release);
+      control_connected.store(true, std::memory_order_release);
+      send_status(*session);
+      return;
+    case COAKKA_HTTP_HOST_WEBSOCKET_TEXT:
+      if (!coakka::camera_http::same_websocket(event.session, *session)) {
+        return;
+      }
+      if (event.data.size > kMaxWebsocketPayload) {
+        close_websocket(*session, 1009u, "control message is too large");
+        *close_requested = true;
+        return;
+      }
+      handle_command(*session, coakka::camera_http::view(event.data));
+      return;
+    case COAKKA_HTTP_HOST_WEBSOCKET_BINARY:
+      close_websocket(event.session, 1003u, "binary control is unsupported");
+      *close_requested = true;
+      return;
+    case COAKKA_HTTP_HOST_WEBSOCKET_PING:
+      send_websocket(event.session, COAKKA_HTTP_HOST_WEBSOCKET_PONG,
+                     coakka::camera_http::view(event.data));
+      return;
+    case COAKKA_HTTP_HOST_WEBSOCKET_CLOSE:
+      if (coakka::camera_http::same_websocket(event.session, *session)) {
+        *session = {};
+        *close_requested = false;
+        control_connected.store(false, std::memory_order_release);
+      }
+      return;
+    case COAKKA_HTTP_HOST_WEBSOCKET_ACCEPT_FAILED:
+      websocket_upgrade_pending.store(false, std::memory_order_release);
+      return;
+    case COAKKA_HTTP_HOST_WEBSOCKET_PONG:
+    case COAKKA_HTTP_HOST_WEBSOCKET_WRITABLE:
+    default:
+      return;
+    }
   }
 
   std::string transport_name() const {
@@ -403,8 +910,7 @@ struct Gateway {
     }
     std::lock_guard<std::mutex> lock(profile_mutex);
     if (!profile_request_pending || profile_state != "confirming" ||
-        requested_width != frame_width ||
-        requested_height != frame_height) {
+        requested_width != frame_width || requested_height != frame_height) {
       return;
     }
     profile_width = requested_width;
@@ -458,10 +964,14 @@ struct Gateway {
     status.add_bool("ok", ok);
     status.add_string("error", error);
     status.add_string("control",
-                      control_client != nullptr ? "connected" : "disconnected");
+                      control_connected.load(std::memory_order_acquire)
+                          ? "connected"
+                          : "disconnected");
     status.add_string("transport", transport_name());
-    status.add_bool("livestream_enabled", livestream_enabled);
-    status.add_bool("viewer_connected", stream_client != nullptr);
+    status.add_bool("livestream_enabled",
+                    livestream_enabled.load(std::memory_order_acquire));
+    status.add_bool("viewer_connected",
+                    stream_active.load(std::memory_order_acquire));
     status.add_bool("audio_available", audio_available());
     status.add_uint64("profile_width", width);
     status.add_uint64("profile_height", height);
@@ -489,13 +999,11 @@ struct Gateway {
     return status.finish();
   }
 
-  void send_status(WebClient *client, std::string_view request_id = {},
-                   bool ok = true, std::string_view error = {}) {
-    if (!send_owned(client,
-                    websocket_frame(0x1u, status_json(request_id, ok, error)),
-                    false, false, true)) {
-      close_client(client);
-    }
+  void send_status(coakka_http_host_websocket_t session,
+                   std::string_view request_id = {}, bool ok = true,
+                   std::string_view error = {}) {
+    send_websocket(session, COAKKA_HTTP_HOST_WEBSOCKET_TEXT,
+                   status_json(request_id, ok, error));
   }
 
   static bool command_uint32(const coakka::camera_json::object_t &command,
@@ -510,7 +1018,8 @@ struct Gateway {
                           (width == 1920u && height == 1080u));
   }
 
-  void handle_command(WebClient *client, std::string_view payload) {
+  void handle_command(coakka_http_host_websocket_t session,
+                      std::string_view payload) {
     coakka::camera_json::object_t command;
     std::string json_error;
     const bool parsed =
@@ -519,13 +1028,12 @@ struct Gateway {
     std::string name;
     if (!parsed ||
         !coakka::camera_json::value_as_string(command.find("id"), &id) ||
-        !coakka::camera_json::value_as_string(command.find("command"),
-                                              &name)) {
-      send_status(client, {}, false, "expected string id and command");
+        !coakka::camera_json::value_as_string(command.find("command"), &name)) {
+      send_status(session, {}, false, "expected string id and command");
       return;
     }
     if (id.empty() || id.size() > 64u || name.empty() || name.size() > 64u) {
-      send_status(client, id, false, "id or command is out of bounds");
+      send_status(session, id, false, "id or command is out of bounds");
       return;
     }
 
@@ -533,18 +1041,18 @@ struct Gateway {
     std::string error;
     if (name == "status.get") {
     } else if (name == "livestream.start") {
-      livestream_enabled = true;
+      livestream_enabled.store(true, std::memory_order_release);
+      wake_request_reader();
     } else if (name == "livestream.stop") {
-      livestream_enabled = false;
-      close_client(stream_client);
+      livestream_enabled.store(false, std::memory_order_release);
+      wake_request_reader();
     } else if (name == "recording.start") {
       bool with_audio = false;
       const auto *audio = command.find("audio");
-      if (audio != nullptr) {
-        if (!coakka::camera_json::value_as_bool(audio, &with_audio)) {
-          ok = false;
-          error = "audio must be a boolean";
-        }
+      if (audio != nullptr &&
+          !coakka::camera_json::value_as_bool(audio, &with_audio)) {
+        ok = false;
+        error = "audio must be a boolean";
       }
       if (ok && with_audio && !audio_available()) {
         ok = false;
@@ -594,359 +1102,95 @@ struct Gateway {
       ok = false;
       error = "unknown command";
     }
-    send_status(client, id, ok, error);
+    send_status(session, id, ok, error);
   }
 
-  bool parse_websocket_frames(WebClient *client) {
-    while (client->input.size() >= 2u) {
-      const auto *bytes =
-          reinterpret_cast<const uint8_t *>(client->input.data());
-      const bool fin = (bytes[0] & 0x80u) != 0u;
-      const uint8_t opcode = bytes[0] & 0x0fu;
-      const bool masked = (bytes[1] & 0x80u) != 0u;
-      uint64_t payload_size = bytes[1] & 0x7fu;
-      size_t header_size = 2u;
-      if ((bytes[0] & 0x70u) != 0u || !fin || !masked) {
-        return false;
-      }
-      if (payload_size == 126u) {
-        if (client->input.size() < 4u) {
-          return true;
-        }
-        payload_size = (static_cast<uint64_t>(bytes[2]) << 8u) | bytes[3];
-        header_size = 4u;
-      } else if (payload_size == 127u) {
-        return false;
-      }
-      if (payload_size > kMaxWebsocketPayload) {
-        return false;
-      }
-      if (opcode >= 0x8u && payload_size > 125u) {
-        return false;
-      }
-      const size_t total = header_size + 4u + static_cast<size_t>(payload_size);
-      if (client->input.size() < total) {
-        return true;
-      }
-      const uint8_t *mask = bytes + header_size;
-      std::string payload(payload_size, '\0');
-      for (size_t index = 0u; index < payload.size(); ++index) {
-        payload[index] = static_cast<char>(bytes[header_size + 4u + index] ^
-                                           mask[index % 4u]);
-      }
-      client->input.erase(0u, total);
-      if (opcode == 0x1u) {
-        handle_command(client, payload);
-      } else if (opcode == 0x8u) {
-        return false;
-      } else if (opcode == 0x9u) {
-        if (!send_owned(client, websocket_frame(0xau, payload), false, false,
-                        true)) {
-          return false;
-        }
-      } else if (opcode != 0xau) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  void handle_http(WebClient *client) {
-    size_t request_size = 0u;
-    std::string error;
-    if (!try_extract_http_request_bytes(client->input, &request_size, &error)) {
-      return;
-    }
-    if (!error.empty() || request_size > kMaxHttpBytes) {
-      (void)send_owned(client,
-                       make_http_response_text(400, "text/plain", error), true);
-      return;
-    }
-    http_request_t request;
-    if (!parse_request_from_text(client->input.substr(0u, request_size),
-                                 &request, &error)) {
-      (void)send_owned(client,
-                       make_http_response_text(400, "text/plain", error), true);
-      return;
-    }
-    client->input.erase(0u, request_size);
-    const std::string path = request_path_without_query(request.path);
-    if (request.method != "GET") {
-      (void)send_owned(client, make_http_response_text(405, "text/plain", ""),
-                       true);
-      return;
-    }
-    if (path == "/") {
-      const std::string body(coakka_v2_camera_web_ui_html());
-      (void)send_owned(
-          client,
-          make_http_response_text(200, "text/html; charset=utf-8", body), true);
-      return;
-    }
-    if (path == "/healthz") {
-      (void)send_owned(
-          client,
-          make_http_response_text(200, "application/json", "{\"ok\":true}"),
-          true);
-      return;
-    }
-    if (path == "/stream.mjpeg") {
-      if (!livestream_enabled || stream_client != nullptr) {
-        const int status = livestream_enabled ? 409 : 503;
-        (void)send_owned(
-            client, make_http_response_text(status, "text/plain", ""), true);
-        return;
-      }
-      stream_client = client;
-      client->mode = ClientMode::Stream;
-      if (!send_owned(
-              client,
-              "HTTP/1.1 200 OK\r\nCache-Control: no-store, no-cache, "
-              "must-revalidate\r\nPragma: no-cache\r\nConnection: close\r\n"
-              "Content-Type: multipart/x-mixed-replace; "
-              "boundary=coakka-frame\r\n\r\n",
-              false, true)) {
-        close_client(client);
-      }
-      return;
-    }
-    if (path == "/ws/control") {
-      const auto key = request.headers.find("sec-websocket-key");
-      const auto origin = request.headers.find("origin");
-      const auto host = request.headers.find("host");
-      const std::string expected_origin = host == request.headers.end()
-                                              ? std::string{}
-                                              : "http://" + host->second;
-      const bool valid =
-          control_client == nullptr &&
-          header_contains_token(request.headers, "upgrade", "websocket") &&
-          header_contains_token(request.headers, "connection", "upgrade") &&
-          key != request.headers.end() && host != request.headers.end() &&
-          origin != request.headers.end() &&
-          origin->second == expected_origin &&
-          request.headers.find("sec-websocket-version") !=
-              request.headers.end() &&
-          request.headers.at("sec-websocket-version") == "13";
-      if (!valid) {
-        (void)send_owned(client, make_http_response_text(403, "text/plain", ""),
-                         true);
-        return;
-      }
-      client->mode = ClientMode::Websocket;
-      control_client = client;
-      if (!send_owned(client, make_websocket_upgrade_response(key->second))) {
-        close_client(client);
-        return;
-      }
-      send_status(client);
-      if (!client->input.empty() && !parse_websocket_frames(client)) {
-        close_client(client);
-      }
-      return;
-    }
-    (void)send_owned(client, make_http_response_text(404, "text/plain", ""),
-                     true);
-  }
-
-  static void read_client(uv_stream_t *stream, ssize_t read,
-                          const uv_buf_t *buffer) noexcept {
-    auto *client = static_cast<WebClient *>(stream->data);
-    if (read < 0) {
-      close_client(client);
-      return;
-    }
-    if (read == 0) {
-      return;
-    }
-    client->input.append(buffer->base, static_cast<size_t>(read));
-    if (client->input.size() > kMaxHttpBytes) {
-      close_client(client);
-      return;
-    }
-    bool valid = true;
-    if (client->mode == ClientMode::Websocket) {
-      valid = client->gateway->parse_websocket_frames(client);
-    } else if (client->mode == ClientMode::Http) {
-      client->gateway->handle_http(client);
-    }
-    if (!valid) {
-      close_client(client);
+  void respond(coakka_http_host_exchange_t exchange, uint32_t status,
+               std::string_view content_type, std::string_view body) noexcept {
+    const coakka_http_host_status_t result = coakka::camera_http::respond(
+        service, exchange, status, content_type, body);
+    if (result != COAKKA_HTTP_HOST_OK &&
+        result != COAKKA_HTTP_HOST_STALE_EXCHANGE &&
+        result != COAKKA_HTTP_HOST_CLOSED) {
+      report_failure("respond", result);
     }
   }
 
-  static void accept_client(uv_stream_t *server, int status) noexcept {
-    auto *gateway = static_cast<Gateway *>(server->data);
-    if (status < 0 || gateway->stopping.load(std::memory_order_acquire)) {
+  void send_websocket(coakka_http_host_websocket_t session, uint32_t kind,
+                      std::string_view payload) noexcept {
+    const coakka_http_host_status_t status = coakka_http_host_send_websocket(
+        service, session, kind, coakka::camera_http::bytes(payload));
+    if (status == COAKKA_HTTP_HOST_CAPACITY_EXHAUSTED) {
+      close_websocket(session, 1013u, "control response queue is full");
       return;
     }
-    auto client = std::make_unique<WebClient>();
-    client->gateway = gateway;
-    client->handle.data = client.get();
-    if (uv_tcp_init(&gateway->loop, &client->handle) != 0) {
-      return;
-    }
-    WebClient *owned = client.release();
-    if (uv_accept(server, reinterpret_cast<uv_stream_t *>(&owned->handle)) !=
-        0) {
-      close_client(owned);
-      return;
-    }
-    if (gateway->clients.size() >= kMaxClients) {
-      close_client(owned);
-      return;
-    }
-    gateway->clients.push_back(owned);
-    if (uv_read_start(reinterpret_cast<uv_stream_t *>(&owned->handle),
-                      alloc_read, read_client) != 0) {
-      close_client(owned);
+    if (status != COAKKA_HTTP_HOST_OK &&
+        status != COAKKA_HTTP_HOST_STALE_EXCHANGE &&
+        status != COAKKA_HTTP_HOST_CLOSED) {
+      report_failure("send WebSocket", status);
     }
   }
 
-  static void frame_write_complete(uv_write_t *request, int status) noexcept {
-    auto *gateway = static_cast<Gateway *>(request->data);
-    WebClient *completed_client = gateway->frame_write_client;
-    gateway->frame_write_client = nullptr;
-    gateway->frame_write_in_flight = false;
-    if (status < 0) {
-      close_client(completed_client);
-      return;
-    }
-    gateway->browser_frames.fetch_add(1u, std::memory_order_relaxed);
-    gateway->browser_bytes.fetch_add(gateway->frame_size,
-                                     std::memory_order_relaxed);
-    gateway->pump_stream();
-  }
-
-  void pump_stream() {
-    if (frame_write_in_flight || stream_client == nullptr ||
-        stream_client->closing || !stream_client->stream_headers_sent) {
-      return;
-    }
-    uint64_t sequence = 0u;
-    uint64_t captured_mono_ns = 0u;
-    if (!display.take_latest(frame_bytes.data(), frame_bytes.size(),
-                             &frame_size, &sequence, &captured_mono_ns)) {
-      return;
-    }
-    const int header_size = std::snprintf(
-        frame_header.data(), frame_header.size(),
-        "--coakka-frame\r\nContent-Type: image/jpeg\r\nContent-Length: %zu\r\n"
-        "X-CoAkka-Sequence: %llu\r\nX-Captured-Monotonic-Ns: %llu\r\n\r\n",
-        frame_size, static_cast<unsigned long long>(sequence),
-        static_cast<unsigned long long>(captured_mono_ns));
-    if (header_size <= 0 ||
-        static_cast<size_t>(header_size) >= frame_header.size()) {
-      close_client(stream_client);
-      return;
-    }
-    std::array<uv_buf_t, 3u> buffers{
-        uv_buf_init(frame_header.data(),
-                    static_cast<unsigned int>(header_size)),
-        uv_buf_init(reinterpret_cast<char *>(frame_bytes.data()),
-                    static_cast<unsigned int>(frame_size)),
-        uv_buf_init(const_cast<char *>("\r\n"), 2u)};
-    frame_write_in_flight = true;
-    frame_write_client = stream_client;
-    if (uv_write(&frame_write,
-                 reinterpret_cast<uv_stream_t *>(&stream_client->handle),
-                 buffers.data(), static_cast<unsigned int>(buffers.size()),
-                 frame_write_complete) != 0) {
-      frame_write_in_flight = false;
-      frame_write_client = nullptr;
-      close_client(stream_client);
+  void close_websocket(coakka_http_host_websocket_t session, uint32_t code,
+                       std::string_view reason) noexcept {
+    const coakka_http_host_status_t status = coakka_http_host_close_websocket(
+        service, session, code, coakka::camera_http::bytes(reason));
+    if (status != COAKKA_HTTP_HOST_OK &&
+        status != COAKKA_HTTP_HOST_STALE_EXCHANGE &&
+        status != COAKKA_HTTP_HOST_CLOSED) {
+      report_failure("close WebSocket", status);
     }
   }
 
-  static void status_tick(uv_timer_t *timer) noexcept {
-    auto *gateway = static_cast<Gateway *>(timer->data);
-    gateway->expire_profile_request();
-    if (gateway->control_client != nullptr &&
-        gateway->control_client->pending_control_writes < 2u) {
-      gateway->send_status(gateway->control_client);
+  void abort_websocket(coakka_http_host_websocket_t session) noexcept {
+    if (control_connected.exchange(false, std::memory_order_acq_rel)) {
+      close_websocket(session, 1011u, "camera control failed");
+    }
+    websocket_upgrade_pending.store(false, std::memory_order_release);
+  }
+
+  void wake_request_reader() noexcept {
+    if (stopping.load(std::memory_order_acquire)) {
+      return;
+    }
+    std::lock_guard<std::mutex> lifecycle_lock(lifecycle_mutex);
+    if (service == nullptr || stopping.load(std::memory_order_acquire)) {
+      return;
+    }
+    const coakka_http_host_status_t status =
+        coakka_http_host_interrupt_requests(service);
+    if (status != COAKKA_HTTP_HOST_OK && status != COAKKA_HTTP_HOST_CLOSED) {
+      report_failure("interrupt request reader", status);
     }
   }
 
-  static void async_ready(uv_async_t *handle) noexcept {
-    auto *gateway = static_cast<Gateway *>(handle->data);
-    if (gateway->stopping.load(std::memory_order_acquire)) {
-      gateway->display.set_async(nullptr);
-      const std::vector<WebClient *> clients = gateway->clients;
-      for (WebClient *client : clients) {
-        close_client(client);
-      }
-      uv_close(reinterpret_cast<uv_handle_t *>(&gateway->server), nullptr);
-      uv_close(reinterpret_cast<uv_handle_t *>(&gateway->timer), nullptr);
-      uv_close(reinterpret_cast<uv_handle_t *>(&gateway->async), nullptr);
-      return;
-    }
-    gateway->pump_stream();
+  bool profile_outbound_enabled() const noexcept {
+    return !config.profile_control_host.empty() &&
+           config.profile_control_port != 0u &&
+           !config.profile_authorization_token.empty();
   }
 
-  void publish_ready(int result) {
-    {
-      std::lock_guard<std::mutex> lock(ready_mutex);
-      start_result = result;
-      ready.store(true, std::memory_order_release);
+  void destroy_service() noexcept {
+    if (service == nullptr) {
+      return;
     }
-    ready_condition.notify_one();
+    const coakka_http_host_status_t status =
+        coakka_http_host_service_destroy(&service);
+    if (status != COAKKA_HTTP_HOST_OK) {
+      report_failure("destroy", status);
+    }
   }
 
-  void run() {
-    int result = uv_loop_init(&loop);
-    if (result != 0) {
-      publish_ready(result);
-      return;
-    }
-    server.data = this;
-    async.data = this;
-    timer.data = this;
-    result = uv_tcp_init(&loop, &server);
-    if (result == 0) {
-      result = uv_async_init(&loop, &async, async_ready);
-    }
-    if (result == 0) {
-      result = uv_timer_init(&loop, &timer);
-    }
-    sockaddr_in address{};
-    if (result == 0) {
-      result =
-          uv_ip4_addr(config.bind_host.c_str(), config.bind_port, &address);
-    }
-    if (result == 0) {
-      result = uv_tcp_bind(&server,
-                           reinterpret_cast<const sockaddr *>(&address), 0u);
-    }
-    if (result == 0) {
-      result =
-          uv_listen(reinterpret_cast<uv_stream_t *>(&server), 8, accept_client);
-    }
-    if (result == 0) {
-      int length = sizeof(address);
-      result = uv_tcp_getsockname(
-          &server, reinterpret_cast<sockaddr *>(&address), &length);
-      bound_port = ntohs(address.sin_port);
-    }
-    if (result == 0) {
-      result = uv_timer_start(&timer, status_tick, 500u, 500u);
-    }
-    if (result != 0) {
-      uv_walk(
-          &loop,
-          [](uv_handle_t *handle, void *) {
-            if (!uv_is_closing(handle)) {
-              uv_close(handle, nullptr);
-            }
-          },
-          nullptr);
-      (void)uv_run(&loop, UV_RUN_DEFAULT);
-      (void)uv_loop_close(&loop);
-      publish_ready(result);
-      return;
-    }
-    display.set_async(&async);
-    publish_ready(0);
-    (void)uv_run(&loop, UV_RUN_DEFAULT);
-    (void)uv_loop_close(&loop);
+  static void report_failure(const char *operation,
+                             coakka_http_host_status_t status) noexcept {
+    (void)std::fprintf(stderr, "camera gateway HTTP %s failed: %s\n", operation,
+                       coakka_http_host_status_name(status));
+  }
+
+  static void report_worker_exception(const char *worker,
+                                      const char *detail) noexcept {
+    (void)std::fprintf(stderr, "camera gateway HTTP %s failed: %s\n", worker,
+                       detail != nullptr ? detail : "unknown exception");
   }
 
   coakka_v2_camera_web_gateway_config_t config;
@@ -957,21 +1201,16 @@ struct Gateway {
   std::atomic<bool> disconnect{false};
   std::atomic<bool> stopping{false};
   std::atomic<bool> stopped{false};
-  uv_loop_t loop{};
-  uv_tcp_t server{};
-  uv_async_t async{};
-  uv_timer_t timer{};
-  std::vector<WebClient *> clients;
-  WebClient *stream_client = nullptr;
-  WebClient *control_client = nullptr;
-  uv_write_t frame_write{};
-  WebClient *frame_write_client = nullptr;
-  std::array<char, 192u> frame_header{};
+  std::atomic<bool> livestream_enabled{false};
+  std::atomic<bool> stream_active{false};
+  std::atomic<bool> control_connected{false};
+  std::atomic<bool> websocket_upgrade_pending{false};
+  coakka_http_host_service_t *service = nullptr;
+  coakka_http_host_exchange_t stream_exchange{};
+  bool stream_writable = false;
   std::vector<uint8_t> frame_bytes;
-  size_t frame_size = 0u;
-  bool frame_write_in_flight = false;
-  bool livestream_enabled = false;
-  uint16_t bound_port = 0u;
+  std::vector<uint8_t> frame_chunk;
+  std::atomic<uint16_t> bound_port{0u};
   std::atomic<uint64_t> browser_frames{0u};
   std::atomic<uint64_t> browser_bytes{0u};
   mutable std::mutex profile_mutex;
@@ -986,27 +1225,35 @@ struct Gateway {
   bool profile_request_taken = false;
   std::string profile_state = "unknown";
   std::string last_profile_error;
-  std::thread worker;
-  std::mutex ready_mutex;
-  std::condition_variable ready_condition;
-  std::atomic<bool> ready{false};
-  int start_result = UV_EINVAL;
+  std::thread request_worker;
+  std::thread websocket_worker;
+  std::mutex lifecycle_mutex;
+  std::mutex outbound_mutex;
+  bool outbound_reader_failed = false;
 };
 
-} // namespace
+} // namespace coakka::camera_web_gateway_detail
 
 struct coakka_v2_camera_web_gateway_t::impl_t {
   explicit impl_t(const coakka_v2_camera_web_gateway_config_t &config)
       : gateway(config) {}
-  Gateway gateway;
+  coakka::camera_web_gateway_detail::Gateway gateway;
 };
 
 std::unique_ptr<coakka_v2_camera_web_gateway_t>
 coakka_v2_camera_web_gateway_t::create(
     const coakka_v2_camera_web_gateway_config_t &config) {
+  const bool any_profile_endpoint = !config.profile_control_host.empty() ||
+                                    config.profile_control_port != 0u ||
+                                    !config.profile_authorization_token.empty();
+  const bool complete_profile_endpoint =
+      !config.profile_control_host.empty() &&
+      config.profile_control_port != 0u &&
+      !config.profile_authorization_token.empty();
   if (config.bind_host != "127.0.0.1" || config.max_frame_bytes == 0u ||
       config.fps == 0u || config.recording_directory.empty() ||
-      config.ffmpeg_binary.empty()) {
+      config.ffmpeg_binary.empty() ||
+      (any_profile_endpoint && !complete_profile_endpoint)) {
     return nullptr;
   }
   return std::unique_ptr<coakka_v2_camera_web_gateway_t>(
@@ -1020,7 +1267,7 @@ coakka_v2_camera_web_gateway_t::coakka_v2_camera_web_gateway_t(
 coakka_v2_camera_web_gateway_t::~coakka_v2_camera_web_gateway_t() { stop(); }
 
 bool coakka_v2_camera_web_gateway_t::start(std::string *error) {
-  return impl_ != nullptr && error != nullptr && impl_->gateway.start(error);
+  return impl_ != nullptr && impl_->gateway.start(error);
 }
 
 void coakka_v2_camera_web_gateway_t::stop() {
@@ -1034,10 +1281,24 @@ coakka_v2_status_t coakka_v2_camera_web_gateway_t::consume(
   if (impl_ == nullptr || data == nullptr || frame == nullptr) {
     return COAKKA_V2_ERR_INVALID_ARG;
   }
-  const coakka_v2_status_t result = impl_->gateway.display.push(data, frame);
+  bool became_nonempty = false;
+  const coakka_v2_status_t result =
+      impl_->gateway.display.push(data, frame, &became_nonempty);
   if (result == COAKKA_V2_OK) {
-    impl_->gateway.confirm_profile_frame(data, frame->size);
+    try {
+      impl_->gateway.confirm_profile_frame(data, frame->size);
+    } catch (const std::exception &failure) {
+      impl_->gateway.report_worker_exception("profile confirmation",
+                                             failure.what());
+    } catch (...) {
+      impl_->gateway.report_worker_exception("profile confirmation",
+                                             "unknown exception");
+    }
     impl_->gateway.recorder.push(data, frame);
+    if (became_nonempty &&
+        impl_->gateway.stream_active.load(std::memory_order_acquire)) {
+      impl_->gateway.wake_request_reader();
+    }
   }
   return result;
 }
@@ -1045,7 +1306,8 @@ coakka_v2_status_t coakka_v2_camera_web_gateway_t::consume(
 coakka_v2_status_t coakka_v2_camera_web_gateway_t::consume_audio(
     const uint8_t *data, const coakka_v2_stream_frame_t *frame) noexcept {
   if (impl_ == nullptr || data == nullptr || frame == nullptr ||
-      frame->size == 0u || frame->size > kAudioFrameBytes) {
+      frame->size == 0u ||
+      frame->size > coakka::camera_web_gateway_detail::kAudioFrameBytes) {
     return COAKKA_V2_ERR_INVALID_ARG;
   }
   impl_->gateway.recorder.push_audio(data, frame);
@@ -1083,6 +1345,11 @@ bool coakka_v2_camera_web_gateway_t::take_profile_request(
   request->sequence = impl_->gateway.profile_request_sequence;
   impl_->gateway.profile_request_taken = true;
   return true;
+}
+
+bool coakka_v2_camera_web_gateway_t::request_profile(
+    const coakka_v2_camera_profile_request_t &request, std::string *error) {
+  return impl_ != nullptr && impl_->gateway.request_profile(request, error);
 }
 
 void coakka_v2_camera_web_gateway_t::complete_profile_request(
@@ -1123,7 +1390,7 @@ coakka_v2_camera_web_gateway_t::snapshot() const {
                                   &result.display_queue_drops);
   const coakka_v2_camera_recorder_snapshot_t recording =
       impl_->gateway.recorder.snapshot();
-  result.bound_port = impl_->gateway.bound_port;
+  result.bound_port = impl_->gateway.bound_port.load(std::memory_order_acquire);
   result.browser_frames =
       impl_->gateway.browser_frames.load(std::memory_order_relaxed);
   result.browser_bytes =

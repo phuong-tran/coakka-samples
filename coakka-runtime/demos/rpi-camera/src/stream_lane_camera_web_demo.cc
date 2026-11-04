@@ -10,27 +10,13 @@
 #error "Select exactly one camera app role"
 #endif
 
-#if defined(COAKKA_V2_CAMERA_HOST_APP)
-#if defined(_WIN32)
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#else
-#include <cerrno>
-#include <fcntl.h>
-#include <netdb.h>
-#include <sys/socket.h>
-#include <sys/time.h>
-#include <unistd.h>
-#endif
-#endif
-
 #include <array>
 #include <charconv>
 #include <csignal>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
-#include <cstring>
+#include <exception>
 #if defined(COAKKA_V2_CAMERA_HOST_APP)
 #include <filesystem>
 #endif
@@ -77,13 +63,14 @@ bool terminal_state(uint32_t state) noexcept {
 }
 
 template <typename Value>
-bool parse_unsigned(const char *text, Value *out) noexcept {
-  if (text == nullptr || text[0] == '\0' || out == nullptr) {
+bool parse_unsigned(std::string_view text, Value *out) noexcept {
+  if (text.empty() || out == nullptr) {
     return false;
   }
   Value value = 0;
-  const char *end = text + std::strlen(text);
-  const auto parsed = std::from_chars(text, end, value);
+  const char *const begin = text.data();
+  const char *const end = begin + text.size();
+  const auto parsed = std::from_chars(begin, end, value);
   if (parsed.ec != std::errc{} || parsed.ptr != end) {
     return false;
   }
@@ -91,7 +78,7 @@ bool parse_unsigned(const char *text, Value *out) noexcept {
   return true;
 }
 
-enum class CliParseResult { ok, help, error };
+enum class CliParseResult : uint8_t { ok, help, error };
 
 struct NamedOptionReader {
   int argc;
@@ -187,181 +174,8 @@ coakka_v2_stream_lane_config_t subscriber_config(uint32_t max_frame_bytes,
 #endif
 
 #if defined(COAKKA_V2_CAMERA_HOST_APP)
-#if defined(_WIN32)
-using socket_handle_t = SOCKET;
-using socket_length_t = int;
-constexpr socket_handle_t kInvalidSocket = INVALID_SOCKET;
-void close_socket(socket_handle_t fd) { (void)closesocket(fd); }
-#else
-using socket_handle_t = int;
-using socket_length_t = socklen_t;
-constexpr socket_handle_t kInvalidSocket = -1;
-void close_socket(socket_handle_t fd) { (void)close(fd); }
-#endif
-
-bool set_socket_nonblocking(socket_handle_t fd, bool enabled) {
-#if defined(_WIN32)
-  u_long mode = enabled ? 1u : 0u;
-  return ioctlsocket(fd, FIONBIO, &mode) == 0;
-#else
-  const int flags = fcntl(fd, F_GETFL, 0);
-  return flags >= 0 &&
-         fcntl(fd, F_SETFL,
-               enabled ? (flags | O_NONBLOCK) : (flags & ~O_NONBLOCK)) == 0;
-#endif
-}
-
-bool connect_with_timeout(socket_handle_t fd, const sockaddr *address,
-                          socket_length_t address_size) {
-  if (!set_socket_nonblocking(fd, true)) {
-    return false;
-  }
-  const int result = connect(fd, address, address_size);
-  if (result == 0) {
-    return set_socket_nonblocking(fd, false);
-  }
-#if defined(_WIN32)
-  if (WSAGetLastError() != WSAEWOULDBLOCK) {
-    return false;
-  }
-#else
-  if (errno != EINPROGRESS) {
-    return false;
-  }
-#endif
-  fd_set writable;
-  FD_ZERO(&writable);
-  FD_SET(fd, &writable);
-  timeval timeout{2, 0};
-  const int selected =
-      select(static_cast<int>(fd + 1), nullptr, &writable, nullptr, &timeout);
-  int socket_error = 0;
-#if defined(_WIN32)
-  int error_size = sizeof(socket_error);
-  const int read_error =
-      getsockopt(fd, SOL_SOCKET, SO_ERROR,
-                 reinterpret_cast<char *>(&socket_error), &error_size);
-#else
-  socklen_t error_size = sizeof(socket_error);
-  const int read_error =
-      getsockopt(fd, SOL_SOCKET, SO_ERROR, &socket_error, &error_size);
-#endif
-  return selected > 0 && read_error == 0 && socket_error == 0 &&
-         set_socket_nonblocking(fd, false);
-}
-
-bool send_all(socket_handle_t fd, std::string_view bytes) {
-  size_t offset = 0u;
-  while (offset < bytes.size()) {
-    const auto sent = send(fd, bytes.data() + offset,
-                           static_cast<int>(bytes.size() - offset), 0);
-    if (sent <= 0) {
-#if !defined(_WIN32)
-      if (sent < 0 && errno == EINTR) {
-        continue;
-      }
-#endif
-      return false;
-    }
-    offset += static_cast<size_t>(sent);
-  }
-  return true;
-}
-
-bool request_camera_profile(const char *host, uint16_t port, const char *token,
-                            const coakka_v2_camera_profile_request_t &profile,
-                            std::string *error) {
-  addrinfo hints{};
-  hints.ai_family = AF_INET;
-  hints.ai_socktype = SOCK_STREAM;
-  addrinfo *addresses = nullptr;
-  const std::string port_text = std::to_string(port);
-  if (getaddrinfo(host, port_text.c_str(), &hints, &addresses) != 0) {
-    *error = "camera control address resolution failed";
-    return false;
-  }
-  socket_handle_t fd = kInvalidSocket;
-  for (addrinfo *address = addresses; address != nullptr;
-       address = address->ai_next) {
-    fd = socket(address->ai_family, address->ai_socktype, address->ai_protocol);
-    if (fd == kInvalidSocket) {
-      continue;
-    }
-#if defined(_WIN32)
-    const DWORD timeout_ms = 2000u;
-    (void)setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO,
-                     reinterpret_cast<const char *>(&timeout_ms),
-                     sizeof(timeout_ms));
-    (void)setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO,
-                     reinterpret_cast<const char *>(&timeout_ms),
-                     sizeof(timeout_ms));
-#else
-    timeval timeout{2, 0};
-    (void)setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
-    (void)setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));
-#endif
-    if (connect_with_timeout(
-            fd, address->ai_addr,
-            static_cast<socket_length_t>(address->ai_addrlen))) {
-      break;
-    }
-    close_socket(fd);
-    fd = kInvalidSocket;
-  }
-  freeaddrinfo(addresses);
-  if (fd == kInvalidSocket) {
-    *error = "camera control connection failed";
-    return false;
-  }
-  const std::string body = "{\"width\":" + std::to_string(profile.width) +
-                           ",\"height\":" + std::to_string(profile.height) +
-                           ",\"fps\":" + std::to_string(profile.fps) + "}";
-  const std::string request =
-      "POST /v1/profile HTTP/1.1\r\nHost: " + std::string(host) + ":" +
-      port_text + "\r\nAuthorization: Bearer " + token +
-      "\r\nContent-Type: application/json\r\nConnection: close\r\n"
-      "Content-Length: " +
-      std::to_string(body.size()) + "\r\n\r\n" + body;
-  std::array<char, 512u> response{};
-  const bool sent = send_all(fd, request);
-  size_t received = 0u;
-  bool header_complete = false;
-  while (sent && received < response.size()) {
-    const auto count = recv(fd, response.data() + received,
-                            static_cast<int>(response.size() - received), 0);
-    if (count <= 0) {
-#if !defined(_WIN32)
-      if (count < 0 && errno == EINTR) {
-        continue;
-      }
-#endif
-      break;
-    }
-    received += static_cast<size_t>(count);
-    if (std::string_view(response.data(), received).find("\r\n\r\n") !=
-        std::string_view::npos) {
-      header_complete = true;
-      break;
-    }
-  }
-  close_socket(fd);
-  if (!sent || received == 0u || !header_complete) {
-    *error = "camera control response failed";
-    return false;
-  }
-  const std::string_view reply(response.data(), received);
-  if (!reply.starts_with("HTTP/1.1 202 ")) {
-    *error = "camera rejected the requested profile";
-    return false;
-  }
-  return true;
-}
-
 struct SubscriberControl {
   coakka_v2_camera_web_gateway_t *gateway = nullptr;
-  const char *remote_host = nullptr;
-  uint16_t remote_control_port = 0u;
-  const char *token = nullptr;
   const char *audio_session_id = nullptr;
 };
 #endif
@@ -398,9 +212,8 @@ bool wait_terminal(coakka_v2_stream_lane_t *lane, const char *session_id,
       coakka_v2_camera_profile_request_t profile;
       if (control->gateway->take_profile_request(&profile)) {
         std::string error;
-        const bool accepted = request_camera_profile(
-            control->remote_host, control->remote_control_port, control->token,
-            profile, &error);
+        const bool accepted =
+            control->gateway->request_profile(profile, &error);
         control->gateway->complete_profile_request(profile.sequence, accepted,
                                                    std::move(error));
       }
@@ -684,8 +497,8 @@ bool publish_camera(const char *device, const char *audio_device,
     const coakka_v2_status_t audio_prepare_rc =
         coakka_v2_stream_lane_prepare_publish(lane.get(), &audio_publish);
     if (audio_prepare_rc != COAKKA_V2_OK) {
-      std::cerr << "audio publisher prepare failed: status="
-                << audio_prepare_rc << '\n';
+      std::cerr << "audio publisher prepare failed: status=" << audio_prepare_rc
+                << '\n';
       return false;
     }
   }
@@ -798,6 +611,9 @@ bool subscribe_web(const char *remote_host, uint16_t remote_port,
   gateway_config.fps = 30u;
   gateway_config.recording_directory = recording_directory;
   gateway_config.ffmpeg_binary = ffmpeg_binary;
+  gateway_config.profile_control_host = remote_host;
+  gateway_config.profile_control_port = static_cast<uint16_t>(remote_port + 1u);
+  gateway_config.profile_authorization_token = token;
   auto gateway = coakka_v2_camera_web_gateway_t::create(gateway_config);
   std::string error;
   if (gateway == nullptr || !gateway->start(&error)) {
@@ -864,8 +680,7 @@ bool subscribe_web(const char *remote_host, uint16_t remote_port,
   }
 
   coakka_v2_stream_session_snapshot_t snapshot{};
-  SubscriberControl control{gateway.get(), remote_host,
-                            static_cast<uint16_t>(remote_port + 1u), token,
+  SubscriberControl control{gateway.get(),
                             audio_enabled ? audio_session_id.c_str() : nullptr};
   const bool waited =
       wait_terminal(lane.get(), session_id, "livestream-service",
@@ -984,7 +799,7 @@ CliParseResult parse_pi_options(int argc, char **argv, PiOptions *options,
       have_video_device = true;
     } else if (name == "video-index") {
       uint32_t index = 0u;
-      if (!parse_unsigned(value.data(), &index) || index > 255u) {
+      if (!parse_unsigned(value, &index) || index > 255u) {
         *error = "--video-index must be in range 0..255";
         return CliParseResult::error;
       }
@@ -996,8 +811,7 @@ CliParseResult parse_pi_options(int argc, char **argv, PiOptions *options,
       options->bind_host = value;
     } else if (name == "port") {
       uint32_t port = 0u;
-      if (!parse_unsigned(value.data(), &port) || port == 0u ||
-          port >= UINT16_MAX) {
+      if (!parse_unsigned(value, &port) || port == 0u || port >= UINT16_MAX) {
         *error = "--port must be in range 1..65534; port + 1 is control";
         return CliParseResult::error;
       }
@@ -1006,19 +820,17 @@ CliParseResult parse_pi_options(int argc, char **argv, PiOptions *options,
     } else if (name == "token-env") {
       options->token_environment = value;
     } else if (name == "width") {
-      if (!parse_unsigned(value.data(), &options->width) ||
-          options->width == 0u) {
+      if (!parse_unsigned(value, &options->width) || options->width == 0u) {
         *error = "--width must be a positive integer";
         return CliParseResult::error;
       }
     } else if (name == "height") {
-      if (!parse_unsigned(value.data(), &options->height) ||
-          options->height == 0u) {
+      if (!parse_unsigned(value, &options->height) || options->height == 0u) {
         *error = "--height must be a positive integer";
         return CliParseResult::error;
       }
     } else if (name == "fps") {
-      if (!parse_unsigned(value.data(), &options->fps) || options->fps == 0u) {
+      if (!parse_unsigned(value, &options->fps) || options->fps == 0u) {
         *error = "--fps must be a positive integer";
         return CliParseResult::error;
       }
@@ -1083,8 +895,7 @@ CliParseResult parse_host_options(int argc, char **argv, HostOptions *options,
       have_publisher_host = true;
     } else if (name == "publisher-port") {
       uint32_t port = 0u;
-      if (!parse_unsigned(value.data(), &port) || port == 0u ||
-          port >= UINT16_MAX) {
+      if (!parse_unsigned(value, &port) || port == 0u || port >= UINT16_MAX) {
         *error = "--publisher-port must be in range 1..65534";
         return CliParseResult::error;
       }
@@ -1092,8 +903,7 @@ CliParseResult parse_host_options(int argc, char **argv, HostOptions *options,
       have_publisher_port = true;
     } else if (name == "web-port") {
       uint32_t port = 0u;
-      if (!parse_unsigned(value.data(), &port) || port == 0u ||
-          port > UINT16_MAX) {
+      if (!parse_unsigned(value, &port) || port == 0u || port > UINT16_MAX) {
         *error = "--web-port must be in range 1..65535";
         return CliParseResult::error;
       }
@@ -1101,7 +911,7 @@ CliParseResult parse_host_options(int argc, char **argv, HostOptions *options,
     } else if (name == "token-env") {
       options->token_environment = value;
     } else if (name == "max-frame-bytes") {
-      if (!parse_unsigned(value.data(), &options->max_frame_bytes) ||
+      if (!parse_unsigned(value, &options->max_frame_bytes) ||
           options->max_frame_bytes != kLaneMaxFrameBytes) {
         *error = "--max-frame-bytes must be 4194304 for this build";
         return CliParseResult::error;
@@ -1188,17 +998,7 @@ void usage(const char *program, std::ostream &stream) {
 
 } // namespace
 
-int main(int argc, char **argv) {
-#if defined(_WIN32) && defined(COAKKA_V2_CAMERA_HOST_APP)
-  WSADATA winsock{};
-  if (WSAStartup(MAKEWORD(2, 2), &winsock) != 0) {
-    std::cerr << "WinSock initialization failed\n";
-    return 1;
-  }
-  struct WinsockOwner {
-    ~WinsockOwner() { (void)WSACleanup(); }
-  } winsock_owner;
-#endif
+int run_main(int argc, char **argv) {
   std::signal(SIGINT, handle_signal);
   std::signal(SIGTERM, handle_signal);
 #if !defined(_WIN32)
@@ -1247,4 +1047,17 @@ int main(int argc, char **argv) {
              ? 0
              : 1;
 #endif
+}
+
+int main(int argc, char **argv) {
+  try {
+    return run_main(argc, argv);
+  } catch (const std::exception &failure) {
+    (void)std::fprintf(stderr, "fatal camera demo failure: %s\n",
+                       failure.what());
+  } catch (...) {
+    (void)std::fprintf(stderr,
+                       "fatal camera demo failure: unknown exception\n");
+  }
+  return 1;
 }

@@ -14,6 +14,9 @@ struct coakka_v2_camera_web_gateway_config_t {
   uint32_t fps = 0u;
   std::string recording_directory;
   std::string ffmpeg_binary;
+  std::string profile_control_host;
+  uint16_t profile_control_port = 0u;
+  std::string profile_authorization_token;
 };
 
 struct coakka_v2_camera_web_gateway_snapshot_t {
@@ -52,7 +55,8 @@ public:
 
   bool start(std::string *error);
   // Idempotent. The owning app normally quiesces Stream Lane callbacks first;
-  // concurrent final callbacks remain bounded and cannot outlive libuv handles.
+  // concurrent final callbacks remain bounded and cannot outlive the native
+  // HTTP service owner.
   void stop();
 
   // Called by Stream Lane workers. Frame bytes are copied into fixed-capacity
@@ -65,6 +69,11 @@ public:
   void set_transport_state(uint32_t state) noexcept;
   void set_audio_transport_state(uint32_t state) noexcept;
   bool take_profile_request(coakka_v2_camera_profile_request_t *request);
+  // Submits one bounded profile POST through HTTP Runtime's native outbound
+  // lane. The call copies all request bytes and consumes its terminal event
+  // before return; callers never own a native event lease.
+  bool request_profile(const coakka_v2_camera_profile_request_t &request,
+                       std::string *error);
   void complete_profile_request(uint64_t sequence, bool accepted,
                                 std::string error);
   bool disconnect_requested() const noexcept;

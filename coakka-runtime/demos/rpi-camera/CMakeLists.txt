@@ -30,20 +30,87 @@ if(COAKKA_RUNTIME_LIBRARY)
 else()
   find_package(CoAkkaRuntimeNativeV2 CONFIG REQUIRED)
 endif()
+if(COAKKA_HTTP_HOST_LIBRARY)
+  if(NOT COAKKA_HTTP_HOST_INCLUDE_DIR)
+    message(FATAL_ERROR
+      "Set COAKKA_HTTP_HOST_INCLUDE_DIR when COAKKA_HTTP_HOST_LIBRARY is used")
+  endif()
+  add_library(CoAkkaHttp::host SHARED IMPORTED)
+  set_target_properties(CoAkkaHttp::host PROPERTIES
+    IMPORTED_LOCATION "${COAKKA_HTTP_HOST_LIBRARY}"
+    INTERFACE_INCLUDE_DIRECTORIES "${COAKKA_HTTP_HOST_INCLUDE_DIR}")
+
+  # A direct Unix override commonly names the unversioned package symlink.
+  # Stage every link in that bounded chain because the executable loads the
+  # package SONAME, while retaining the exact implementation image as well.
+  set(COAKKA_HTTP_HOST_STAGE_FILES)
+  set(_coakka_http_stage_file "${COAKKA_HTTP_HOST_LIBRARY}")
+  set(_coakka_http_stage_links_remaining 8)
+  while(IS_SYMLINK "${_coakka_http_stage_file}" AND
+        _coakka_http_stage_links_remaining GREATER 0)
+    list(APPEND COAKKA_HTTP_HOST_STAGE_FILES "${_coakka_http_stage_file}")
+    file(READ_SYMLINK "${_coakka_http_stage_file}"
+      _coakka_http_stage_link)
+    if(IS_ABSOLUTE "${_coakka_http_stage_link}")
+      set(_coakka_http_stage_file "${_coakka_http_stage_link}")
+    else()
+      get_filename_component(_coakka_http_stage_directory
+        "${_coakka_http_stage_file}" DIRECTORY)
+      get_filename_component(_coakka_http_stage_file
+        "${_coakka_http_stage_directory}/${_coakka_http_stage_link}"
+        ABSOLUTE)
+    endif()
+    math(EXPR _coakka_http_stage_links_remaining
+      "${_coakka_http_stage_links_remaining} - 1")
+  endwhile()
+  if(IS_SYMLINK "${_coakka_http_stage_file}")
+    message(FATAL_ERROR
+      "COAKKA_HTTP_HOST_LIBRARY has more than 8 symbolic-link levels")
+  endif()
+  if(NOT EXISTS "${_coakka_http_stage_file}")
+    message(FATAL_ERROR
+      "COAKKA_HTTP_HOST_LIBRARY resolves to a missing image")
+  endif()
+  list(APPEND COAKKA_HTTP_HOST_STAGE_FILES "${_coakka_http_stage_file}")
+  if(UNIX)
+    file(REAL_PATH "${_coakka_http_stage_file}"
+      _coakka_http_stage_real_file)
+    get_filename_component(_coakka_http_stage_directory
+      "${_coakka_http_stage_real_file}" DIRECTORY)
+    file(GLOB _coakka_http_stage_candidates
+      "${_coakka_http_stage_directory}/*")
+    foreach(_coakka_http_stage_candidate IN LISTS
+            _coakka_http_stage_candidates)
+      if(IS_SYMLINK "${_coakka_http_stage_candidate}")
+        file(REAL_PATH "${_coakka_http_stage_candidate}"
+          _coakka_http_stage_candidate_real)
+        if(_coakka_http_stage_candidate_real STREQUAL
+           _coakka_http_stage_real_file)
+          list(APPEND COAKKA_HTTP_HOST_STAGE_FILES
+            "${_coakka_http_stage_candidate}")
+        endif()
+      endif()
+    endforeach()
+  endif()
+  list(REMOVE_DUPLICATES COAKKA_HTTP_HOST_STAGE_FILES)
+  unset(_coakka_http_stage_candidate)
+  unset(_coakka_http_stage_candidate_real)
+  unset(_coakka_http_stage_candidates)
+  unset(_coakka_http_stage_directory)
+  unset(_coakka_http_stage_file)
+  unset(_coakka_http_stage_link)
+  unset(_coakka_http_stage_links_remaining)
+  unset(_coakka_http_stage_real_file)
+else()
+  find_package(CoAkkaHttpHost 1.1.2 EXACT CONFIG REQUIRED)
+endif()
 find_package(Threads REQUIRED)
 
-if(NOT CMAKE_CROSSCOMPILING)
-  find_package(PkgConfig QUIET)
-endif()
-if(PkgConfig_FOUND AND NOT CMAKE_CROSSCOMPILING)
-  pkg_check_modules(COAKKA_CAMERA_LIBUV QUIET IMPORTED_TARGET libuv)
-endif()
-if(WIN32)
-  find_package(libuv CONFIG QUIET)
-endif()
-
 add_library(coakka_camera_json STATIC src/camera_json.cc)
-target_compile_features(coakka_camera_json PRIVATE cxx_std_20)
+set_target_properties(coakka_camera_json PROPERTIES
+  CXX_STANDARD 20
+  CXX_STANDARD_REQUIRED YES
+  CXX_EXTENSIONS NO)
 target_include_directories(coakka_camera_json PUBLIC
   "${CMAKE_CURRENT_SOURCE_DIR}/src")
 if(MSVC)
@@ -60,7 +127,10 @@ if(COAKKA_CAMERA_BUILD_FUZZER)
   add_executable(coakka_camera_json_fuzz
     src/camera_json_fuzz.cc
     src/camera_json.cc)
-  target_compile_features(coakka_camera_json_fuzz PRIVATE cxx_std_20)
+  set_target_properties(coakka_camera_json_fuzz PROPERTIES
+    CXX_STANDARD 20
+    CXX_STANDARD_REQUIRED YES
+    CXX_EXTENSIONS NO)
   target_include_directories(coakka_camera_json_fuzz PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/src")
   target_compile_options(coakka_camera_json_fuzz PRIVATE
@@ -72,7 +142,10 @@ endif()
 
 if(BUILD_TESTING)
   add_executable(coakka_camera_json_tests src/camera_json_tests.cc)
-  target_compile_features(coakka_camera_json_tests PRIVATE cxx_std_20)
+  set_target_properties(coakka_camera_json_tests PROPERTIES
+    CXX_STANDARD 20
+    CXX_STANDARD_REQUIRED YES
+    CXX_EXTENSIONS NO)
   target_link_libraries(coakka_camera_json_tests PRIVATE coakka_camera_json)
   if(MSVC)
     target_compile_options(coakka_camera_json_tests PRIVATE /W4 /WX)
@@ -84,23 +157,6 @@ if(BUILD_TESTING)
   set_tests_properties(coakka_camera_json_tests PROPERTIES
     LABELS "camera;parser;security" TIMEOUT 10)
 endif()
-if(TARGET PkgConfig::COAKKA_CAMERA_LIBUV)
-  set(COAKKA_CAMERA_LIBUV_TARGET PkgConfig::COAKKA_CAMERA_LIBUV)
-elseif(WIN32 AND TARGET libuv::uv_a)
-  set(COAKKA_CAMERA_LIBUV_TARGET libuv::uv_a)
-elseif(WIN32)
-  message(FATAL_ERROR
-    "Windows camera builds require a libuv package exporting static target "
-    "libuv::uv_a; dynamic libuv is not part of the release bundle")
-else()
-  find_path(COAKKA_CAMERA_LIBUV_INCLUDE_DIR uv.h REQUIRED)
-  find_library(COAKKA_CAMERA_LIBUV_LIBRARY NAMES uv libuv REQUIRED)
-  add_library(coakka_camera_libuv UNKNOWN IMPORTED)
-  set_target_properties(coakka_camera_libuv PROPERTIES
-    IMPORTED_LOCATION "${COAKKA_CAMERA_LIBUV_LIBRARY}"
-    INTERFACE_INCLUDE_DIRECTORIES "${COAKKA_CAMERA_LIBUV_INCLUDE_DIR}")
-  set(COAKKA_CAMERA_LIBUV_TARGET coakka_camera_libuv)
-endif()
 
 if(WIN32)
   if(NOT COAKKA_RUNTIME_IMPORT_LIBRARY)
@@ -110,16 +166,31 @@ if(WIN32)
   endif()
   set_target_properties(CoAkkaRuntimeNativeV2::runtime_v2 PROPERTIES
     IMPORTED_IMPLIB "${COAKKA_RUNTIME_IMPORT_LIBRARY}")
+  if(COAKKA_HTTP_HOST_LIBRARY)
+    if(NOT COAKKA_HTTP_HOST_IMPORT_LIBRARY)
+      message(FATAL_ERROR
+        "Set COAKKA_HTTP_HOST_IMPORT_LIBRARY to the import library matching "
+        "the HTTP host DLL")
+    endif()
+    set_target_properties(CoAkkaHttp::host PROPERTIES
+      IMPORTED_IMPLIB "${COAKKA_HTTP_HOST_IMPORT_LIBRARY}")
+  endif()
 endif()
 
 function(coakka_camera_target_defaults target)
-  target_compile_features(${target} PRIVATE c_std_11 cxx_std_20)
+  set_target_properties(${target} PROPERTIES
+    C_STANDARD 11
+    C_STANDARD_REQUIRED YES
+    C_EXTENSIONS NO
+    CXX_STANDARD 20
+    CXX_STANDARD_REQUIRED YES
+    CXX_EXTENSIONS NO)
   target_include_directories(${target} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
   target_link_libraries(${target} PRIVATE
     CoAkkaRuntimeNativeV2::runtime_v2
+    CoAkkaHttp::host
     Threads::Threads
-    coakka_camera_json
-    ${COAKKA_CAMERA_LIBUV_TARGET})
+    coakka_camera_json)
   if(MSVC)
     target_compile_options(${target} PRIVATE /W4 /WX)
   else()
@@ -140,8 +211,29 @@ function(coakka_camera_target_defaults target)
   endif()
   add_custom_command(TARGET ${target} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-      "${CoAkkaRuntimeNativeV2_NATIVE_LIBRARY}"
+      "$<TARGET_FILE:CoAkkaRuntimeNativeV2::runtime_v2>"
       "$<TARGET_FILE_DIR:${target}>")
+  if(COAKKA_HTTP_HOST_STAGE_FILES)
+    foreach(http_stage_file IN LISTS COAKKA_HTTP_HOST_STAGE_FILES)
+      add_custom_command(TARGET ${target} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+          "${http_stage_file}"
+          "$<TARGET_FILE_DIR:${target}>")
+    endforeach()
+  else()
+    add_custom_command(TARGET ${target} POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE:CoAkkaHttp::host>"
+        "$<TARGET_FILE_DIR:${target}>")
+  endif()
+  if(UNIX AND NOT COAKKA_HTTP_HOST_STAGE_FILES)
+    # The executable records HTTP Runtime's major-version SONAME. Copy that
+    # package-owned link/name as well as the exact implementation image.
+    add_custom_command(TARGET ${target} POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_SONAME_FILE:CoAkkaHttp::host>"
+        "$<TARGET_FILE_DIR:${target}>")
+  endif()
 endfunction()
 
 if(COAKKA_CAMERA_BUILD_HOST)
@@ -149,8 +241,7 @@ if(COAKKA_CAMERA_BUILD_HOST)
     src/stream_lane_camera_web_demo.cc
     src/stream_lane_camera_recorder.cc
     src/stream_lane_camera_web_gateway.cc
-    src/stream_lane_camera_web_ui.cc
-    src/runtime_addon_web_wire.cc)
+    src/stream_lane_camera_web_ui.cc)
   target_compile_definitions(coakka_camera_host PRIVATE
     COAKKA_V2_CAMERA_HOST_APP=1
     COAKKA_CAMERA_PUBLIC_SOURCE_COMMIT="${COAKKA_CAMERA_SOURCE_COMMIT}")
@@ -166,8 +257,7 @@ if(COAKKA_CAMERA_BUILD_HOST)
     src/stream_lane_camera_gateway_lifecycle_tests.cc
     src/stream_lane_camera_recorder.cc
     src/stream_lane_camera_web_gateway.cc
-    src/stream_lane_camera_web_ui.cc
-    src/runtime_addon_web_wire.cc)
+    src/stream_lane_camera_web_ui.cc)
   coakka_camera_target_defaults(coakka_camera_gateway_lifecycle_tests)
   if(WIN32)
     target_link_libraries(coakka_camera_gateway_lifecycle_tests
@@ -178,11 +268,26 @@ if(COAKKA_CAMERA_BUILD_HOST)
   set_tests_properties(coakka_camera_gateway_lifecycle_tests PROPERTIES
     LABELS "camera;concurrency;lifecycle" TIMEOUT 15)
 
+  add_executable(coakka_camera_http_integration_tests
+    src/stream_lane_camera_http_integration_tests.cc
+    src/stream_lane_camera_control_server.cc
+    src/stream_lane_camera_recorder.cc
+    src/stream_lane_camera_web_gateway.cc
+    src/stream_lane_camera_web_ui.cc)
+  coakka_camera_target_defaults(coakka_camera_http_integration_tests)
+  if(WIN32)
+    target_link_libraries(coakka_camera_http_integration_tests
+      PRIVATE dbghelp ws2_32)
+  endif()
+  add_test(NAME coakka_camera_http_integration_tests
+    COMMAND coakka_camera_http_integration_tests)
+  set_tests_properties(coakka_camera_http_integration_tests PROPERTIES
+    LABELS "camera;http;websocket;security;package" TIMEOUT 20)
+
   add_executable(coakka_camera_profile_status_tests
     src/stream_lane_camera_profile_status_tests.cc
     src/stream_lane_camera_recorder.cc
-    src/stream_lane_camera_web_ui.cc
-    src/runtime_addon_web_wire.cc)
+    src/stream_lane_camera_web_ui.cc)
   coakka_camera_target_defaults(coakka_camera_profile_status_tests)
   if(WIN32)
     target_link_libraries(coakka_camera_profile_status_tests
@@ -195,8 +300,10 @@ if(COAKKA_CAMERA_BUILD_HOST)
 
   add_executable(coakka_camera_lane_owner_lifecycle_tests
     src/stream_lane_camera_lane_owner_tests.cc)
-  target_compile_features(coakka_camera_lane_owner_lifecycle_tests PRIVATE
-    cxx_std_20)
+  set_target_properties(coakka_camera_lane_owner_lifecycle_tests PROPERTIES
+    CXX_STANDARD 20
+    CXX_STANDARD_REQUIRED YES
+    CXX_EXTENSIONS NO)
   target_include_directories(coakka_camera_lane_owner_lifecycle_tests PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/src")
   target_link_libraries(coakka_camera_lane_owner_lifecycle_tests PRIVATE
@@ -223,8 +330,7 @@ if(COAKKA_CAMERA_BUILD_PI)
     src/stream_lane_camera_web_demo.cc
     src/stream_lane_camera_control_server.cc
     src/alsa_pcm_audio_source.c
-    src/v4l2_mjpeg_camera_source.c
-    src/runtime_addon_web_wire.cc)
+    src/v4l2_mjpeg_camera_source.c)
   target_compile_definitions(coakka_camera_pi PRIVATE
     COAKKA_V2_CAMERA_PI_APP=1
     COAKKA_CAMERA_PUBLIC_SOURCE_COMMIT="${COAKKA_CAMERA_SOURCE_COMMIT}")

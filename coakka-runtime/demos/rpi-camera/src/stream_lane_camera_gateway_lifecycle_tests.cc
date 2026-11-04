@@ -3,12 +3,13 @@
 #include <atomic>
 #include <chrono>
 #include <cstdint>
+#include <exception>
 #include <filesystem>
 #include <iostream>
 #include <string>
 #include <thread>
 
-int main() {
+int run_test() {
   const std::filesystem::path recordings =
       std::filesystem::temp_directory_path() /
       "coakka-camera-gateway-lifecycle-test";
@@ -18,7 +19,7 @@ int main() {
   coakka_v2_camera_web_gateway_config_t config;
   config.bind_host = "127.0.0.1";
   config.bind_port = 0u;
-  config.max_frame_bytes = 4096u;
+  config.max_frame_bytes = COAKKA_V2_STREAM_LANE_MAX_FRAME_BYTES;
   config.fps = 30u;
   config.recording_directory = recordings.string();
   config.ffmpeg_binary = "ffmpeg-not-invoked-by-lifecycle-test";
@@ -67,4 +68,16 @@ int main() {
     return 1;
   }
   return 0;
+}
+
+int main() {
+  try {
+    return run_test();
+  } catch (const std::exception &failure) {
+    std::cerr << "camera gateway lifecycle test failed: " << failure.what()
+              << '\n';
+  } catch (...) {
+    std::cerr << "camera gateway lifecycle test failed: unknown exception\n";
+  }
+  return 1;
 }

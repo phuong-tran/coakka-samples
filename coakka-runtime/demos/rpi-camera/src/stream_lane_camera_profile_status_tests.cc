@@ -3,9 +3,12 @@
 #include "stream_lane_camera_web_gateway.cc"
 
 #include <cstdlib>
+#include <exception>
 #include <iostream>
 
 namespace {
+using Gateway = coakka::camera_web_gateway_detail::Gateway;
+
 void require(bool condition, const char *detail) {
   if (!condition) {
     std::cerr << detail << '\n';
@@ -43,27 +46,28 @@ void expect(const Gateway &gateway, const char *state, uint32_t width,
     }
     return coakka::camera_json::value_as_uint32(item, out);
   };
-  require(coakka::camera_json::value_as_string(value.find("profile_state"),
-                                             &actual_state) &&
-              read_status_uint(value.find("profile_width"), &actual_width) &&
-              read_status_uint(value.find("profile_height"), &actual_height) &&
-              read_status_uint(
-                  value.find("profile_requested_fps"), &actual_fps),
-          "status must carry typed requested/confirmed fields");
+  require(
+      coakka::camera_json::value_as_string(value.find("profile_state"),
+                                           &actual_state) &&
+          read_status_uint(value.find("profile_width"), &actual_width) &&
+          read_status_uint(value.find("profile_height"), &actual_height) &&
+          read_status_uint(value.find("profile_requested_fps"), &actual_fps),
+      "status must carry typed requested/confirmed fields");
   require(actual_state == state && actual_width == width &&
               actual_height == height && actual_fps == requested_fps,
           "status differs from owner-issued profile facts");
 }
 } // namespace
 
-int main() {
+int run_test() {
   coakka_v2_camera_web_gateway_config_t config;
   config.max_frame_bytes = 4096u;
-  config.fps = 30u; // Recorder preference must not become observed camera facts.
+  config.fps =
+      30u; // Recorder preference must not become observed camera facts.
   Gateway gateway(config);
   expect(gateway, "unknown", 0u, 0u, 0u);
-  constexpr uint8_t jpeg[] = {0xffu, 0xd8u, 0xffu, 0xc0u, 0x00u, 0x07u,
-                              0x08u, 0x01u, 0xe0u, 0x02u, 0x80u, 0xffu, 0xd9u};
+  constexpr uint8_t jpeg[] = {0xffu, 0xd8u, 0xffu, 0xc0u, 0x00u, 0x07u, 0x08u,
+                              0x01u, 0xe0u, 0x02u, 0x80u, 0xffu, 0xd9u};
   gateway.confirm_profile_frame(jpeg, sizeof(jpeg));
   expect(gateway, "unknown", 0u, 0u, 0u);
 
@@ -96,11 +100,24 @@ int main() {
   gateway.profile_request_pending = true;
   gateway.profile_request_taken = true;
   gateway.profile_state = "confirming";
-  gateway.profile_requested_at = std::chrono::steady_clock::now() -
-                                 kProfileConfirmationTimeout;
+  gateway.profile_requested_at =
+      std::chrono::steady_clock::now() -
+      coakka::camera_web_gateway_detail::kProfileConfirmationTimeout;
   gateway.expire_profile_request();
   expect(gateway, "failed", 640u, 480u, 30u);
   gateway.confirm_profile_frame(jpeg, sizeof(jpeg));
   expect(gateway, "failed", 640u, 480u, 30u);
   return 0;
+}
+
+int main() {
+  try {
+    return run_test();
+  } catch (const std::exception &failure) {
+    std::cerr << "camera profile status test failed: " << failure.what()
+              << '\n';
+  } catch (...) {
+    std::cerr << "camera profile status test failed: unknown exception\n";
+  }
+  return 1;
 }
