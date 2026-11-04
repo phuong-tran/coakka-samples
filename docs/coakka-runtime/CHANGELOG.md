@@ -21,6 +21,7 @@ build `f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` and ABI 1.
 | SwiftPM / GitHub | [Swift](releases/2026-11-05-swift-runtime-3.2.1-github.md) |
 | coakka-publish native archives | [Client and Inspect](releases/2026-11-05-runtime-tools-3.2.1.md) |
 | coakka-publish AAR preview | [Android](releases/2026-11-05-android-runtime-3.2.1-preview.md) |
+| coakka-publish source archives | [Zig and Mojo preview](releases/2026-11-05-zig-mojo-runtime-3.2.1-source.md) |
 
 Core validates configured IP addresses and hostnames at the native boundary.
 On Windows, runtime shutdown can interrupt a blocked write to a host pipe.

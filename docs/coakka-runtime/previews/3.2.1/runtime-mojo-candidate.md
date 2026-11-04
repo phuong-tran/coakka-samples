@@ -6,6 +6,7 @@ Mojo preview execution was checked on macOS ARM64 and Raspberry Pi 5
 (Linux ARM64). The package includes Core images for Linux x86-64 and Windows,
 but Mojo execution is unqualified on those targets.
 
+Download the archive and checksum from the [3.2.1 release record](../../releases/2026-11-05-zig-mojo-runtime-3.2.1-source.md).
 Run the following from the Samples checkout. Select the archive matching the
 [Samples pin](../../../../coakka-runtime/artifacts/runtime-mojo-candidate.json) and a fresh
 absolute work path whose parent already exists.

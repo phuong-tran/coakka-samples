@@ -6,6 +6,7 @@ Zig 0.16.0 application execution was checked on macOS ARM64, Raspberry Pi 5
 (Linux ARM64), WSL2 (Linux x86-64), native Windows x86-64, and Windows ARM64
 in UTM. The Windows runs used applications cross-built on macOS.
 
+Download the archive and checksum from the [3.2.1 release record](../../releases/2026-11-05-zig-mojo-runtime-3.2.1-source.md).
 Run the following from the Samples checkout. Select the archive matching the
 [Samples pin](../../../../coakka-runtime/artifacts/runtime-zig-candidate.json) and a fresh
 absolute work path whose parent already exists.

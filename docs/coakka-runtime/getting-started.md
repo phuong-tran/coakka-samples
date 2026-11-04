@@ -82,7 +82,7 @@ coordinates. [The changelog](CHANGELOG.md) explains migration from 2.x.
 C/C++, Rust, Tauri and Zig have their own released snapshots or local
 evaluation paths; choose their exact source and package together in the
 [Runtime sample index](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/README.md#other-languages-and-evaluations).
-The [Zig 3.2.1 source candidate](previews/3.2.1/runtime-zig-candidate.md) and
+The [Zig 3.2.1 source archive](releases/2026-11-05-zig-mojo-runtime-3.2.1-source.md) and
 [Mojo 3.2.1 preview](previews/3.2.1/runtime-mojo-candidate.md) use Core 3.2.
 Android remains a separate preview.
 
