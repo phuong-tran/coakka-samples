@@ -128,7 +128,7 @@ coordinates are:
 | PyPI | `coakka-v2-connector==3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` |
 | NuGet | `CoAkka.Runtime==3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` |
 | Go modules | `github.com/phuong-tran/coakka-runtime-go/v3@v3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` |
-| SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
+| SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` |
 
 Maven Runtime `2.5.3`, npm `2.5.3`, PyPI `2.5.3`, NuGet `2.5.3`, Go `v1.8.3`,
 and Swift `v2.5.3` expose typed replica-owner File and Stream Lane grants.
@@ -255,6 +255,15 @@ default-path execution. All 57 production/header/native members remain exact
 from the qualified package; prior matching-host five-target/race/resource
 evidence is retained, not claimed as a new post-upload run on every target.
 See [the release receipt](../releases/2026-10-30-go-runtime-3.0.0-github.md).
+
+## Swift Runtime 3.2.1
+
+The [GitHub release](https://github.com/phuong-tran/coakka-runtime-swift/releases/tag/v3.2.1) source archive, SHA-256 sidecar, and a fresh
+SwiftPM checkout match the same tag. On macOS ARM64, the exact version passed
+the first-run sample and an installed consumer moved away from its build tree.
+The consumer checked the running Core build and exercised request/reply,
+deadletters, File, Stream and shutdown. Windows ARM64 remains an evaluation
+preview. See the [release record](../releases/2026-11-05-swift-runtime-3.2.1-github.md).
 
 ## Swift Runtime 3.0.0
 

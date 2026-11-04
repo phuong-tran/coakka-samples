@@ -9,8 +9,9 @@ version/status column before running a larger demonstration.
 ## Start in your language
 
 [First-run examples](../getting-started.md) cover Node.js, Bun, Electron,
-Python, C#, Kotlin, Java, Go and Swift with published 3.0.0 packages. Each README
-names its source, prerequisites, run command, expected result and close behavior.
+Python, C#, Kotlin, Java, Go and Swift. Each README names the pinned package,
+prerequisites, run command, expected result and close behavior. See the
+[current package ledger](../../common/current-packages.md) for release versions.
 
 ## Try a business operation
 
@@ -42,7 +43,7 @@ examples show that distinction:
 Node.js sends the basket; Python returns the item prices, shipping and total.
 
 Keep a demonstration's complete code and dependencies together. The historical
-container images are not a shortcut for installing current 3.0.0 packages.
+container images have their own version and package pins.
 
 ## Add a capability when you need it
 
