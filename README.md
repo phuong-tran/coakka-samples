@@ -2,7 +2,7 @@
 
 <p align="center"><img src="docs/common/assets/brand/coakka-logo.png" alt="CoAkka" width="480"></p>
 
-[Website](https://coakka-ecosystem-preview.vivid-plume-2955.chatgpt.site/) · [Get started](#choose-what-you-want-to-build) · [Documentation](docs/README.md) · **[coakka-http-runtime-test](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/runtime-test)** · [HTTP Benchmarks (Pi 5)](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/README.md)
+[Website](https://coakka-ecosystem-preview.vivid-plume-2955.chatgpt.site/) · [Get started](#choose-what-you-want-to-build) · [Documentation](docs/README.md) · **[coakka-http-runtime-test](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/runtime-test)** · [coakka-runtime-test](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-runtime/runtime-test) · [HTTP Benchmarks (Pi 5)](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/README.md)
 
 **Contents**
 
@@ -67,6 +67,18 @@ Choose the integration that matches your code:
 Start with the **3.0.0** language examples. Tauri, C/C++, Rust and Zig use their
 own versioned source/archive guides; Android and Mojo are previews. Follow each
 guide's package, lane and platform scope.
+
+### Core and connector versions
+
+Read a connector version such as `3.1.1` as Core generation `3.1`
+and connector revision `1`, the connector's first release on that Core.
+A connector fix can advance its own revision to `3.1.2` while using the
+same Core SDK and native checksums. When the connector adopts Core `3.2`,
+its first release on that generation is `3.2.1`.
+
+On npm, Node.js and Bun `3.1.2` and Electron `3.1.1` use Core 3.1 r2.
+Electron installs Node.js `3.1.2` as its exact dependency.
+See the [current package versions](docs/common/current-packages.md).
 
 ## CoAkka Runtime addons
 

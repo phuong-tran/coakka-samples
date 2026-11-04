@@ -123,7 +123,8 @@ coordinates are:
 | Registry | Current verified coordinate | Bundled native generation |
 | --- | --- | --- |
 | Maven Central | `io.github.phuong-tran.coakka:runtime:3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
-| npm | `coakka-v2-connector-{node,bun,electron}@3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
+| npm (Node.js and Bun) | `coakka-v2-connector-{node,bun}@3.1.2` | `3.1+6789dd16210fc01f17cca4d2b66a592d1ac79121` |
+| npm (Electron) | `coakka-v2-connector-electron@3.1.1` | `3.1+6789dd16210fc01f17cca4d2b66a592d1ac79121` via Node `3.1.2` |
 | PyPI | `coakka-v2-connector==3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 | NuGet | `CoAkka.Runtime==3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
 | Go modules | `github.com/phuong-tran/coakka-runtime-go/v3@v3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
@@ -181,10 +182,24 @@ Runtime/File/Stream consumer. This is not a new post-upload run on every OS.
 PyPy and free-threaded Python remain outside this qualification.
 See [the Python release receipt](../releases/2026-10-30-pypi-python-runtime-3.0.0.md).
 
+## npm Runtime 3.1.2
+
+The Node.js and Bun packages match the verified registry tarballs and both
+`latest` selectors point to `3.1.2`. The package introduction and logo were
+corrected. The native binaries match the five-target 3.1.1 evidence byte for
+byte. Fresh anonymous macOS installs passed request/reply.
+See the [npm 3.1.2 release record](../releases/2026-11-04-npm-node-bun-runtime-3.1.2.md).
+
+## npm Electron Runtime 3.1.1
+
+The registry tarball matches the qualified archive and a clean npm install
+resolves Node 3.1.2 exactly. The macOS ARM64 gate on Electron 42.0.0 covers
+the sandboxed renderer, request/reply, File, Stream and shutdown.
+See the [Electron release record](../releases/2026-11-04-npm-electron-runtime-3.1.1.md).
+
 ## npm Runtime 3.0.0
 
-Node.js, Bun and Electron 3.0.0 are published, with `latest` pointing to 3.0.0
-for all three packages. Registry tarballs match the qualified archives byte for
+The October 30 release set `latest` to `3.0.0` for Node.js, Bun and Electron. Registry tarballs match the qualified archives byte for
 byte. Every JavaScript, declaration and native member remains unchanged from
 the qualified five-target payload. Node/Bun include macOS ARM64, Linux ARM64/x64
 and Windows ARM64/x64 images; Electron uses the exact Node 3.0.0 dependency.
