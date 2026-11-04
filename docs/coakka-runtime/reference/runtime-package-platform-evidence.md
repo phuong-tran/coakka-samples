@@ -284,9 +284,11 @@ The [release record](../releases/2026-11-05-runtime-tools-3.2.1.md) lists all te
 
 ## Android 3.2.1 preview
 
-The Android preview AAR passed installed execution and lifecycle soak on
-API 24 x86_64 and API 36 ARM64 emulators. See the
-[Android preview](../previews/edge-iot-android.md#android-and-industrial-tablets).
+The Android 3.2.1 preview is a standalone AAR with Core 3.2.
+Installed tests and lifecycle soak passed on API 24 x86_64 (613 cycles)
+and API 36 ARM64 (477 cycles). API 24 ARM64 stopped before APK installation.
+The four ABI payloads passed static checks. See the
+[Android preview release and SHA-256](../releases/2026-11-05-android-runtime-3.2.1-preview.md).
 
 ## Maven JVM Runtime 3.2.1
 

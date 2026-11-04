@@ -20,6 +20,7 @@ build `f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` and ABI 1.
 | Go modules / GitHub | [Go](releases/2026-11-05-go-runtime-3.2.1-github.md) |
 | SwiftPM / GitHub | [Swift](releases/2026-11-05-swift-runtime-3.2.1-github.md) |
 | coakka-publish native archives | [Client and Inspect](releases/2026-11-05-runtime-tools-3.2.1.md) |
+| coakka-publish AAR preview | [Android](releases/2026-11-05-android-runtime-3.2.1-preview.md) |
 
 Core validates configured IP addresses and hostnames at the native boundary.
 On Windows, runtime shutdown can interrupt a blocked write to a host pipe.
@@ -27,7 +28,7 @@ The Go `/v3` import path and Swift `CoAkkaRuntime` product carry forward.
 Electron `3.2.1` depends on Node `3.2.1`. The two Maven framework adapters
 use Runtime `3.2.1`.
 
-Android 3.2.1 remains a private preview. Use the
+Use the
 [current package ledger](../common/current-packages.md) for public downloads.
 
 ## 3.0.0

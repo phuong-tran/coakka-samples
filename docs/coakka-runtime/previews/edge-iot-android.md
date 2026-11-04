@@ -119,9 +119,9 @@ framework. An Android app or Android background service can host a connector,
 load a native runtime through the Android NDK, register handlers, and call
 stable targets.
 
-The Android 3.2.1 AAR is a private preview. See the
+Download the [Android 3.2.1 preview AAR](../releases/2026-11-05-android-runtime-3.2.1-preview.md). See the
 [Android integration recipe](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/android/README.md)
-for the exact candidate and local AAR instructions.
+for the verified download and local Gradle instructions.
 
 A proper Android lane should include:
 
@@ -157,8 +157,7 @@ Treat this as the support boundary:
 - current public package lanes are the released artifact surface;
 - edge Linux is the first practical expansion target for device and gateway
   validation;
-- Android 3.2.1 is evaluated with a private AAR. Its public entrypoint is the
-  integration guide;
+- Android 3.2.1 is available as a standalone preview AAR for local evaluation;
 - the installed execution matrix covers API 24 x86_64 and API 36 ARM64.
   API 24 ARM64 did not reach APK installation. The four ABI payloads have
   static inspection evidence;

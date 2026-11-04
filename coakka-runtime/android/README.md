@@ -7,7 +7,7 @@ choose for a consuming app.
 
 ## Contents
 
-- [Private Candidate](#private-candidate)
+- [Preview AAR](#preview-aar)
 - [Gradle And Local AAR](#gradle-and-local-aar)
 - [Android Manifest](#android-manifest)
 - [Embedded Lifecycle](#embedded-lifecycle)
@@ -18,13 +18,14 @@ choose for a consuming app.
 - [Device Evaluation Checklist](#device-evaluation-checklist)
 - [Troubleshooting](#troubleshooting)
 
-## Private Candidate
+## Preview AAR
 
-The private 3.2.1 preview uses Core `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45`
+The 3.2.1 preview uses Core `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45`
 (ABI 1). The evaluation AAR has SHA-256 `1ce5d292305988b506f388ee5561b7b6f446ed80205e365c3cc9d56f417fb3df` and is 3,007,524 bytes.
 It includes `arm64-v8a`, `armeabi-v7a`, `x86` and `x86_64`.
 The minimum API is 24 and the build uses compile SDK 36.1.
-The preview AAR has no public download or Maven Central coordinate.
+Download the [standalone preview AAR](https://raw.githubusercontent.com/phuong-tran/coakka-publish/fe81cabbfbeb02672b02b19de8cfbe1a846630aa/coakka-runtime/android/releases/3.2.1%2Bf9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45/coakka-runtime-android-3.2.1.aar) and verify it with
+[SHA256SUMS](https://raw.githubusercontent.com/phuong-tran/coakka-publish/fe81cabbfbeb02672b02b19de8cfbe1a846630aa/coakka-runtime/android/releases/3.2.1%2Bf9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45/SHA256SUMS).
 
 The exact AAR passed installed-app tests and about three minutes of
 lifecycle soak on each emulator: API 24 x86_64 (613 cycles) and
@@ -48,7 +49,7 @@ dependencyResolutionManagement {
 }
 ```
 
-If you have the verified candidate AAR, copy it to `app/libs/coakka-runtime-android-3.2.1.aar`.
+Copy the verified preview AAR to `app/libs/coakka-runtime-android-3.2.1.aar`.
 Then pin the AAR and Kotlin runtime in `app/build.gradle.kts`:
 
 ```kotlin

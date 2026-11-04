@@ -25,7 +25,6 @@ alone is its preview path.
 | Zig | [Zig](3.0.0/runtime-zig-candidate.md) |
 | Mojo preview | [Mojo](3.0.0/runtime-mojo-candidate.md) |
 
-[Android preview](edge-iot-android.md) is evaluated with its local AAR and
-sample, without a Maven publication plan. Mojo also remains a preview.
-Swift is publishable; only its Windows ARM lane is preview in this release.
+The [Android 3.2.1 preview AAR](../releases/2026-11-05-android-runtime-3.2.1-preview.md) can be used as a local Gradle dependency. Mojo also remains a preview.
+Swift is published. Its Windows ARM64 lane remains a preview.
 [Runtime documentation](../README.md).
