@@ -1,11 +1,13 @@
 # Runtime Package And Platform Evidence
 
-This page records the current CoAkka Runtime artifact train and the separately
-versioned package-manager registries. It is the source of truth for developers
-and AI code generators selecting an OS/CPU payload or generating file-lane
-code.
+CoAkka Runtime 3.2.1 uses Core 3.2, build
+`f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45`, ABI 1. See
+[Current Packages](../../common/current-packages.md) for install coordinates
+and the [3.2.1 changelog](../CHANGELOG.md#321) for each package's
+release record. The historical archive sections below retain their own
+version, checksum and execution scope.
 
-Current artifact generation:
+Historical 2.5.1 native and connector archives:
 
 ```text
 native runtime:   2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be
@@ -72,17 +74,18 @@ dependency, archive and checksum evidence in this published train. See the
 immutable paths and image digests; newer private target qualification does not
 retroactively broaden this receipt.
 
-## Connector Artifact Matrix
+## Connector Artifact Records
 
-| Surface | Exact artifact coordinate | Native payloads | Current exact-artifact evidence |
+| Surface | Exact artifact coordinate | Native payloads | Release evidence |
 | --- | --- | --- | --- |
 | JVM | `io.github.phuong-tran.coakka:runtime:3.2.1` | All five | Maven Central signed publication, native identity gate, Java package checks, and clean consumers pass. |
-| Node.js, Bun, Electron, Python, Go, C#, Rust, Swift, Mojo, Zig, Tauri | `runtime/<lane>/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e/` | All five where supported | Frozen connector packages pass the public artifact-surface verifier against the exact C1 native archive. Registry versions remain independently listed below. |
-| Android | historical signed internal `1.2.0` candidate; not published | `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64` | Exact tagged AAR passed clean build, package/ABI checks, R8 name verification, and the release-minified API 36 ARM64 Runtime/request/File/Stream smoke. |
+| Historical connector archives | `runtime/<lane>/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e/` | All five where supported | Frozen connector packages pass the public artifact-surface verifier against the exact C1 native archive. Registry versions remain independently listed below. |
+| Android preview | [Android 3.2.1 AAR](../releases/2026-11-05-android-runtime-3.2.1-preview.md) | `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64` | Installed app tests passed on API 24 x86-64 and API 36 ARM64 emulators. |
+| Historical Android candidate | signed internal `1.2.0` candidate | `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64` | Exact tagged AAR passed clean build, package/ABI checks, R8 name verification, and the release-minified API 36 ARM64 Runtime/request/File/Stream smoke. |
 
-Every release directory has a manifest and `SHA256SUMS`. The manifest records
-the five-platform matrix, native source generation, connector source
-generation, and artifact name.
+The frozen desktop archive directories carry a manifest and `SHA256SUMS`.
+Their manifests record platform coverage, native and connector source
+identities, and artifact names.
 
 Connector source `0ba485e8ff19f3ce23902345cb445a1f652fe3f3` makes the native owner-grant contract usable from
 the host-language surfaces. File transfers use transfer-scoped grants with
@@ -106,8 +109,8 @@ the mapping and 34 native plus two callback members in the final APK DEX before
 executing Runtime, request/reply, File Lane, and Stream Lane. The signed bundle
 is retained as internal reproducibility evidence. Earlier API 37 x86_64
 execution belongs to a distinct AAR. See the
-[Android preview](../previews/edge-iot-android.md#android-and-industrial-tablets)
-for the current candidate and its installed execution scope.
+[Android 3.2.1 preview record](../releases/2026-11-05-android-runtime-3.2.1-preview.md)
+for the published AAR and its installed execution scope.
 
 ## Registry Coordinates
 
@@ -204,10 +207,10 @@ install resolved Electron with Node.js 3.2.1. See the [npm release record](../re
 
 ## npm Runtime 3.1.2
 
-The Node.js and Bun packages match the verified registry tarballs and both
-`latest` selectors point to `3.1.2`. The package introduction and logo were
-corrected. The native binaries match the five-target 3.1.1 evidence byte for
-byte. Fresh anonymous macOS installs passed request/reply.
+The Node.js and Bun packages matched the verified registry tarballs.
+Both `latest` selectors pointed to `3.1.2` at that publication. The release
+corrected the package introduction and logo. The native binaries match the
+five-target 3.1.1 evidence byte for byte. Fresh anonymous macOS installs passed request/reply.
 See the [npm 3.1.2 release record](../releases/2026-11-04-npm-node-bun-runtime-3.1.2.md).
 
 ## npm Electron Runtime 3.1.1

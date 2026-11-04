@@ -26,7 +26,9 @@ run printed `accepted-hello`. A second app built against the same tag and ran
 after its executable, dynamic library, and resource bundle were moved away
 from the build tree. It verified the loaded Core build and exercised
 request/reply, deadletters, File and Stream transfer, callback ownership and
-shutdown. All 49 source tests passed locally on macOS ARM64 with the bundled Core. The [GitHub Actions run](https://github.com/phuong-tran/coakka-runtime-swift/actions/runs/41888048785) had not completed at publication.
+shutdown. All 49 source tests passed locally on macOS ARM64 with the bundled
+Core. The [GitHub Actions run](https://github.com/phuong-tran/coakka-runtime-swift/actions/runs/41888048785)
+passed on macOS 15 ARM64 after publication.
 
 The five native images match the qualified SDK. Prepublication installed
 checks covered macOS ARM64, Raspberry Pi Linux ARM64, Linux x64 (WSL2), and

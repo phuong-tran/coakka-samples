@@ -7,7 +7,12 @@ and checksums live in the versioned
 
 ## Runtime 3.2.1 — 2026-11-05
 
-Updated the JVM and framework first runs and the Node/Python cart-and-quote walkthrough to use Runtime 3.2.1. The [first-run index](docs/coakka-runtime/getting-started.md) links to the pinned examples.
+Pinned the JVM, Spring Boot, Quarkus, Node.js, Bun, Electron, Python, C#, Go
+and Swift first runs to Runtime 3.2.1. The Rust, Tauri Intents, Zig and Mojo
+examples use the published 3.2.1 source archives. The Android guide uses the
+separate 3.2.1 preview AAR. See the
+[first-run index](docs/coakka-runtime/getting-started.md) and
+[Current Packages](docs/common/current-packages.md).
 
 ## HTTP Runtime 2.0.1 — 2026-11-04
 

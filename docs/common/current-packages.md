@@ -9,10 +9,14 @@ Swift, or JavaScript package is not a separate language-specific CoAkka
 runtime; each projects the same native core and public runtime contract into
 its host language.
 
-Package versions are independent across the ecosystem. A NuGet package, npm
-package, PyPI package, Go module, and SwiftPM tag do not need to share the same
-version number. Each lane follows the release cadence of its connector,
-packaging surface, and native payload.
+CoAkka Runtime `3.2.1` means connector revision 1 on Core generation `3.2`.
+Core build `f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` uses ABI 1. The matching
+Core comes with the package or its exact Runtime dependency. Each connector
+can advance its own revision on that Core generation. CoAkka HTTP Runtime and
+CoAkka Logger have their own release versions.
+
+The [Runtime 3.2.1 changelog](../coakka-runtime/CHANGELOG.md#321)
+indexes the release records, including the Android and Mojo previews.
 
 Maven Central carries JVM Runtime, Spring Boot starter and Quarkus extension
 `3.2.1`. Both adapters depend exactly on Runtime `3.2.1`, which bundles
@@ -140,7 +144,10 @@ The current source coordinates are
 `github.com/phuong-tran/coakka-runtime-swift@v3.2.1`. Go uses semantic major `v3` through its `/v3` module suffix; historical
 unsuffixed v1 tags remain unchanged.
 
-## Runtime Artifact And Current Source-Package Entrypoints
+## Runtime Artifact And Source-Package Entrypoints
+
+The 3.2.1 packages and tools below are the current release. The native C ABI
+archive and the frozen connector archives retain their historical 2.5.1 paths.
 
 | Surface | Exact coordinate |
 | --- | --- |
