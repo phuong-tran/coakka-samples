@@ -9,10 +9,10 @@ app-host can compose browser sessions with CoAkka by using:
   and session policy.
 
 For a new CoAkka-native edge, prefer
-[CoAkka HTTP Runtime 1.1.2](../../coakka-http-runtime/explanation/introduction.md).
+[CoAkka HTTP Runtime](../../coakka-http-runtime/explanation/introduction.md).
 It is a separate product that owns the HTTP listener, WebSocket upgrade and
 session mechanics, bounded output and graceful drain. Its
-[native SDK](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/1.1.2)
+[native SDK](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/2.0.1)
 is the C/C++ path. A working Node.js, Bun, JVM, Go or other reviewed edge
 framework remains valid; this guide does not require replacing it.
 
@@ -284,7 +284,7 @@ Before calling a WebSocket composition production-ready, verify:
 The public [Raspberry Pi camera sample](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/demos/rpi-camera)
 shows a concrete native app-host that subscribes to bounded MJPEG and PCM
 Stream Lane sessions. Its current source uses the released CoAkka HTTP Runtime
-1.1.2 native host ABI for the loopback HTTP/MJPEG/WebSocket gateway and for the
+2.0.1 native SDK for the loopback HTTP/MJPEG/WebSocket gateway and for the
 outbound Pi profile request. The application still owns the command schema,
 latest-frame queue, recording policy and Stream Lane handoff.
 Its listener is intentionally restricted to `127.0.0.1`; it does not claim

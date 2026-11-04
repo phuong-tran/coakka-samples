@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.24)
 project(CoAkkaHttpHostSamples LANGUAGES C CXX)
 include(CTest)
 
-set(COAKKA_HTTP_HOST_SAMPLE_SDK_VERSION "1.1.2" CACHE STRING
+set(COAKKA_HTTP_HOST_SAMPLE_SDK_VERSION "2.0.1" CACHE STRING
   "Exact installed CoAkka HTTP host SDK version")
 if(NOT IS_DIRECTORY "${COAKKA_HTTP_HOST_PREFIX}")
   message(FATAL_ERROR "Set COAKKA_HTTP_HOST_PREFIX to the verified host SDK")

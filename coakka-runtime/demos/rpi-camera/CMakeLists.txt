@@ -7,9 +7,6 @@ option(COAKKA_CAMERA_BUILD_HOST "Build the desktop host application" ON)
 option(COAKKA_CAMERA_BUILD_PI "Build the Raspberry Pi publisher" OFF)
 option(COAKKA_CAMERA_BUILD_FUZZER
   "Build the Clang bounded camera JSON fuzz target" OFF)
-option(COAKKA_CAMERA_HTTP_RUNTIME_1_1_2_NUMERIC_TARGET_WORKAROUND
-  "Temporarily bypass HTTP Runtime 1.1.2 outbound for non-loopback IP targets"
-  ON)
 set(COAKKA_CAMERA_SOURCE_COMMIT "development" CACHE STRING
   "Full public Samples commit embedded in release executables")
 string(LENGTH "${COAKKA_CAMERA_SOURCE_COMMIT}" COAKKA_CAMERA_SOURCE_COMMIT_LENGTH)
@@ -105,7 +102,7 @@ if(COAKKA_HTTP_HOST_LIBRARY)
   unset(_coakka_http_stage_links_remaining)
   unset(_coakka_http_stage_real_file)
 else()
-  find_package(CoAkkaHttpHost 1.1.2 EXACT CONFIG REQUIRED)
+  find_package(CoAkkaHttpHost 2.0.1 EXACT CONFIG REQUIRED)
 endif()
 find_package(Threads REQUIRED)
 
@@ -160,34 +157,6 @@ if(BUILD_TESTING)
   set_tests_properties(coakka_camera_json_tests PROPERTIES
     LABELS "camera;parser;security" TIMEOUT 10)
 
-  if(COAKKA_CAMERA_HTTP_RUNTIME_1_1_2_NUMERIC_TARGET_WORKAROUND)
-    add_executable(coakka_camera_profile_http_workaround_tests
-      src/stream_lane_camera_profile_http_workaround_tests.cc
-      src/stream_lane_camera_profile_http_workaround.cc)
-    set_target_properties(coakka_camera_profile_http_workaround_tests PROPERTIES
-      CXX_STANDARD 20
-      CXX_STANDARD_REQUIRED YES
-      CXX_EXTENSIONS NO)
-    target_include_directories(coakka_camera_profile_http_workaround_tests
-      PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
-    target_link_libraries(coakka_camera_profile_http_workaround_tests
-      PRIVATE Threads::Threads)
-    if(WIN32)
-      target_compile_definitions(coakka_camera_profile_http_workaround_tests
-        PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
-      target_compile_options(coakka_camera_profile_http_workaround_tests
-        PRIVATE /W4 /WX)
-      target_link_libraries(coakka_camera_profile_http_workaround_tests
-        PRIVATE ws2_32)
-    else()
-      target_compile_options(coakka_camera_profile_http_workaround_tests
-        PRIVATE -Wall -Wextra -Wpedantic -Werror)
-    endif()
-    add_test(NAME coakka_camera_profile_http_workaround_tests
-      COMMAND coakka_camera_profile_http_workaround_tests)
-    set_tests_properties(coakka_camera_profile_http_workaround_tests PROPERTIES
-      LABELS "camera;http;workaround" TIMEOUT 10)
-  endif()
 endif()
 
 if(WIN32)
@@ -223,10 +192,6 @@ function(coakka_camera_target_defaults target)
     CoAkkaHttp::host
     Threads::Threads
     coakka_camera_json)
-  if(COAKKA_CAMERA_HTTP_RUNTIME_1_1_2_NUMERIC_TARGET_WORKAROUND)
-    target_compile_definitions(${target} PRIVATE
-      COAKKA_CAMERA_HTTP_RUNTIME_1_1_2_NUMERIC_TARGET_WORKAROUND=1)
-  endif()
   if(MSVC)
     target_compile_options(${target} PRIVATE /W4 /WX)
   else()
@@ -272,19 +237,12 @@ function(coakka_camera_target_defaults target)
   endif()
 endfunction()
 
-set(COAKKA_CAMERA_PROFILE_WORKAROUND_SOURCE)
-if(COAKKA_CAMERA_HTTP_RUNTIME_1_1_2_NUMERIC_TARGET_WORKAROUND)
-  list(APPEND COAKKA_CAMERA_PROFILE_WORKAROUND_SOURCE
-    src/stream_lane_camera_profile_http_workaround.cc)
-endif()
-
 if(COAKKA_CAMERA_BUILD_HOST)
   add_executable(coakka_camera_host
     src/stream_lane_camera_web_demo.cc
     src/stream_lane_camera_recorder.cc
     src/stream_lane_camera_web_gateway.cc
-    src/stream_lane_camera_web_ui.cc
-    ${COAKKA_CAMERA_PROFILE_WORKAROUND_SOURCE})
+    src/stream_lane_camera_web_ui.cc)
   target_compile_definitions(coakka_camera_host PRIVATE
     COAKKA_V2_CAMERA_HOST_APP=1
     COAKKA_CAMERA_PUBLIC_SOURCE_COMMIT="${COAKKA_CAMERA_SOURCE_COMMIT}")
@@ -300,8 +258,7 @@ if(COAKKA_CAMERA_BUILD_HOST)
     src/stream_lane_camera_gateway_lifecycle_tests.cc
     src/stream_lane_camera_recorder.cc
     src/stream_lane_camera_web_gateway.cc
-    src/stream_lane_camera_web_ui.cc
-    ${COAKKA_CAMERA_PROFILE_WORKAROUND_SOURCE})
+    src/stream_lane_camera_web_ui.cc)
   coakka_camera_target_defaults(coakka_camera_gateway_lifecycle_tests)
   if(WIN32)
     target_link_libraries(coakka_camera_gateway_lifecycle_tests
@@ -317,8 +274,7 @@ if(COAKKA_CAMERA_BUILD_HOST)
     src/stream_lane_camera_control_server.cc
     src/stream_lane_camera_recorder.cc
     src/stream_lane_camera_web_gateway.cc
-    src/stream_lane_camera_web_ui.cc
-    ${COAKKA_CAMERA_PROFILE_WORKAROUND_SOURCE})
+    src/stream_lane_camera_web_ui.cc)
   coakka_camera_target_defaults(coakka_camera_http_integration_tests)
   if(WIN32)
     target_link_libraries(coakka_camera_http_integration_tests
@@ -332,8 +288,7 @@ if(COAKKA_CAMERA_BUILD_HOST)
   add_executable(coakka_camera_profile_status_tests
     src/stream_lane_camera_profile_status_tests.cc
     src/stream_lane_camera_recorder.cc
-    src/stream_lane_camera_web_ui.cc
-    ${COAKKA_CAMERA_PROFILE_WORKAROUND_SOURCE})
+    src/stream_lane_camera_web_ui.cc)
   coakka_camera_target_defaults(coakka_camera_profile_status_tests)
   if(WIN32)
     target_link_libraries(coakka_camera_profile_status_tests

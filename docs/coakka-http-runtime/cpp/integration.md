@@ -1,6 +1,6 @@
 # C++20: installation and integration
 
-For SDK 1.1.2, begin with the [focused server and streaming samples](../../../coakka-http-runtime/native/host-server/README.md).
+For SDK 2.0.1, begin with the [focused server and streaming samples](../../../coakka-http-runtime/native/host-server/README.md).
 
 Start here for a native CoAkka HTTP Runtime application. Use the complete
 artifact-backed sample before adapting callbacks or resource ownership.
@@ -70,7 +70,7 @@ are separate facts; see [coverage](../reference/FEATURES.md#final-r3-package-che
 Python 3.11+, curl and OpenSSL CLI for the security recipe.
 The runner builds only the sample using the native package selected by the pins.
 
-For new applications using SDK 1.1.2, the [focused native SDK guide](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/native/README.md) shows
+For new applications using SDK 2.0.1, the [focused native SDK guide](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/native/README.md) shows
 `CoAkkaHttpHost`, `CoAkkaHttp::host` and `<coakka/http/host.h>`. The archived
 sample uses its own matching `CoAkkaHttp::runtime` target and headers.
 

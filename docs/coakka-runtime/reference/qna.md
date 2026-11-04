@@ -13,7 +13,7 @@ Start here before reading the full index:
 | [Is CoAkka Equivalent To gRPC?](#is-coakka-equivalent-to-grpc) | No. gRPC is right for real service APIs; CoAkka avoids promoting app-owned internal capabilities into L7 APIs too early. |
 | [Do Spring Users Still Need @FeignClient?](#do-spring-users-still-need-feignclient) | Yes for real HTTP services; no for app-owned runtime handoffs that only became HTTP to gain an address. |
 | [Should I Choose Bun Over Node.js To Make CoAkka Faster?](#should-i-choose-bun-over-nodejs-to-make-coakka-faster) | Keep either host at a thin HTTP edge; a faster wrapper does not remove an HTTP-shaped internal architecture. |
-| [Does CoAkka Support WebSocket?](#does-coakka-support-websocket) | CoAkka Runtime does not terminate WebSocket. Prefer CoAkka HTTP Runtime 1.1.2 for a new CoAkka-native edge, or keep an existing reviewed framework. |
+| [Does CoAkka Support WebSocket?](#does-coakka-support-websocket) | CoAkka Runtime does not terminate WebSocket. Prefer CoAkka HTTP Runtime for a new CoAkka-native edge, or keep an existing reviewed framework. |
 | [Is CoAkka The Same Thing As Erlang, Akka, Elixir, Or The Actor Model?](#is-coakka-the-same-thing-as-erlang-akka-elixir-or-the-actor-model) | No. It borrows messaging vocabulary but does not require actor identity, actor lifecycle, or actor-first app modeling. |
 | [Is CoAkka Equivalent To Kafka Or RabbitMQ?](#is-coakka-equivalent-to-kafka-or-rabbitmq) | No. Durable topics, replay, consumer groups, and broker-owned backpressure still belong to brokers. |
 | [Can CoAkka Replace A Service Mesh Such As Istio?](#can-coakka-replace-a-service-mesh-such-as-istio) | Yes for CoAkka runtime traffic. Built-in TLS/mTLS, connection strategies, target-aware cluster routing, failover, generations, and delivery evidence remove the service-mesh data-plane requirement. |
@@ -91,7 +91,7 @@ Logger and explanation:
 | Spring Boot/Quarkus | Use the framework adapters to keep HTTP at the app edge and route selected app-owned work as runtime targets. | The work is just ordinary in-process code or a real external HTTP service API. |
 | HTTP/API gateway | CoAkka sits behind or beside the app-host edge. | The caller is external, public, or needs product API semantics. |
 | Bun/Node.js | Keep either runtime at a thin HTTP edge and choose by ecosystem and operations. | Benchmark their HTTP surfaces when edge throughput is the actual constraint. |
-| WebSocket | Terminate it at the app-host edge; prefer CoAkka HTTP Runtime 1.1.2 for a new CoAkka-native edge, or keep an existing reviewed framework. Use Runtime messages for control and Stream Lane for bounded point-to-point frames. | The requirement is only browser/session protocol, or it needs a dedicated media/event system with replay, fan-out, or browser-native delivery. |
+| WebSocket | Terminate it at the app-host edge; prefer CoAkka HTTP Runtime for a new CoAkka-native edge, or keep an existing reviewed framework. Use Runtime messages for control and Stream Lane for bounded point-to-point frames. | The requirement is only browser/session protocol, or it needs a dedicated media/event system with replay, fan-out, or browser-native delivery. |
 | Dapr | CoAkka is narrower: target routing, bounded delivery, replies, deadletters, and diagnostics. | The team wants a broad distributed application runtime with state, pub/sub, bindings, secrets, and workflow. |
 | Akka/Erlang/Elixir | CoAkka shares some messaging vocabulary but is not actor-first. | The team wants actors, supervision trees, actor identity, and actor lifecycle as the application model. |
 | CQRS/Event Sourcing | CoAkka can carry commands, queries, events, projections, and replay work. | The question is command validation, aggregate invariants, event store, consistency, or read-model design. |
@@ -718,10 +718,10 @@ CoAkka Runtime does not implement or terminate WebSocket. That is an
 intentional ownership boundary, not a missing Stream Lane transport mode.
 
 CoAkka HTTP Runtime is a separate HTTP server/client product and does support
-WebSocket. For a new CoAkka-native edge, version 1.1.2 is the recommended owner
+WebSocket. For a new CoAkka-native edge, HTTP Runtime is the recommended owner
 of the listener, upgrade, session, bounded send pressure and graceful drain;
 C and C++ hosts can use its
-[native SDK](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/1.1.2).
+[native SDK](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/2.0.1).
 This guidance does not invalidate a working Node.js, Bun, JVM, Go or other
 reviewed edge framework.
 

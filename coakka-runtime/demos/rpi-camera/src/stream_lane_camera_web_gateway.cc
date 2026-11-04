@@ -2,9 +2,6 @@
 
 #include "camera_http_host.h"
 #include "camera_json.h"
-#if defined(COAKKA_CAMERA_HTTP_RUNTIME_1_1_2_NUMERIC_TARGET_WORKAROUND)
-#include "stream_lane_camera_profile_http_workaround.h"
-#endif
 #include "stream_lane_camera_recorder.h"
 #include "stream_lane_camera_web_ui.h"
 
@@ -423,19 +420,6 @@ struct Gateway {
       return false;
     }
     std::lock_guard<std::mutex> outbound_lock(outbound_mutex);
-#if defined(COAKKA_CAMERA_HTTP_RUNTIME_1_1_2_NUMERIC_TARGET_WORKAROUND)
-    // HTTP Runtime 1.1.2 rejects non-loopback numeric connect targets before
-    // I/O. Keep the temporary direct call isolated to this fixed sample POST;
-    // delete it when the minimum HTTP Runtime contains the provider fix.
-    if (coakka_v2_camera_profile_http_workaround_required(
-            config.profile_control_host)) {
-      return coakka_v2_camera_profile_http_workaround_send(
-          {config.profile_control_host, config.profile_control_port,
-           config.profile_authorization_token, request.width, request.height,
-           request.fps, kProfileRequestTimeoutMs},
-          error);
-    }
-#endif
     if (outbound_reader_failed) {
       *error = "camera profile HTTP reader is unavailable";
       return false;

@@ -175,11 +175,11 @@ Those runs consume installed packages without rebuilding the runtime or connecto
 Earlier Mac/Pi protocol and named feature receipts above retain their original
 candidate identity; they are not relabeled as fresh r3 Pi sample executions.
 
-The released 1.1.2 native SDK declares host ABI 10. ABI12/runtime-info5
-and ABI11 references on this page describe historical sample checkpoints. Configuration and runtime
-observations remain runtime-owned. Connector execution tuning is fixed internally,
-not an application setting. See the [verified benchmark records](../../../coakka-http-runtime/benchmark-rpi5/README.md#http-runtime-112-on-raspberry-pi-5)
-for the 1.1.2 connector measurements.
+The released native SDK 2.0.1 uses public C ABI 10. References to ABI12,
+runtime-info5 and ABI11 above identify historical sample checkpoints.
+Configuration and observed runtime state remain Core-owned. The
+[benchmark records](../../../coakka-http-runtime/benchmark-rpi5/README.md#http-runtime-112-on-raspberry-pi-5)
+describe HTTP Runtime 1.1.2 measurements; 2.0.1 has not been measured yet.
 
 ## Try The Existing Routes
 

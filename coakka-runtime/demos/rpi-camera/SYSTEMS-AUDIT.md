@@ -1,8 +1,29 @@
 # Raspberry Pi Camera Systems Audit
 
-## P561 Temporary HTTP 1.1.2 Numeric-Target Workaround
+## HTTP SDK 2.0.1: LAN profile replay and workaround removal
 
-Current source commit `46462b32026ceeaf599f4c1bb5e504451411dd1f`
+The gateway submits one fixed POST through the installed host ABI. Core owns
+address admission, connection, terminal event and cancellation; the gateway
+serializes requests under its existing outbound mutex, releases the event, and
+retains no borrowed bytes. The sample owns authorization input, profile intent
+and confirmation by a received JPEG. There are no new threads, queues or
+allocations on the frame path. The change removes the sample's private socket
+path and leaves the existing stop and drain order intact.
+
+Strict builds and installed-SDK tests passed on macOS ARM64 (6/6) and physical
+Pi 5 Linux ARM64 (7/7). The sample-owned macOS suite also passed 6/6 with
+LLVM 22 ASan/UBSan and leak detection, and 6/6 in a separate TSan build.
+On these machines, the real camera supplied frames and confirmed `1280x720 → 800x600 → 1280x720` over `192.168.1.13`; both
+processes exited cleanly. The macOS loader reported the HTTP library from
+the exact staged SDK. The replay used video with audio disabled. It does not
+requalify the previously published camera binaries or add target support.
+
+The P561 and P559 sections below are historical. In particular, their blocked
+numeric-LAN row describes the HTTP SDK 1.1.2 path.
+
+## Historical: P561 Temporary HTTP 1.1.2 Numeric-Target Workaround
+
+Source commit `46462b32026ceeaf599f4c1bb5e504451411dd1f`
 keeps CoAkka HTTP Runtime `1.1.2` as the owner of the loopback UI, MJPEG,
 WebSocket, Pi profile endpoint, and normal outbound requests. It adds one
 version-named compatibility path for the released provider defect that treats a

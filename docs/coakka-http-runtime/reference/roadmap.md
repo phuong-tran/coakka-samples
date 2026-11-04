@@ -1,6 +1,6 @@
 # CoAkka HTTP Runtime roadmap
 
-HTTP Runtime 1.1.2 is available through public package channels. This page records what shipped and outlines future work.
+HTTP Runtime 2.0.1 is available through public package channels. This page records what shipped and outlines future work.
 
 ## Contents
 
@@ -12,21 +12,21 @@ HTTP Runtime 1.1.2 is available through public package channels. This page recor
 
 ## Package distribution
 
-Version 1.1.2 ships Node.js and Bun packages on npm, Python wheels on PyPI,
+Version 2.0.1 ships Node.js and Bun packages on npm, Python wheels on PyPI,
 JVM artifacts for Java and Kotlin on Maven Central, and a tagged Go module.
 The native SDK is available as checksum-pinned archives. See the
-[package catalog](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/README.md#version-112)
+[package catalog](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/README.md#version-201)
 and [first-request samples](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md).
 
 ## Certificate lifecycle
 
-HTTP Runtime 1.1.2 supports explicit TLS and mTLS credential reload
+HTTP Runtime 2.0.1 supports explicit TLS and mTLS credential reload
 for secure listeners. Operators submit a new credential set with the expected
 effective generation. A rejected update preserves the current generation.
 New handshakes use the accepted credentials, while existing sessions follow
 the listener's retirement policy. Monitoring remains off by default.
 
-For older packages, rotate with a replacement service. See the certificate
+For packages without explicit reload, rotate with a replacement service. See the certificate
 operations guide for both procedures.
 
 ## More language connectors
@@ -45,9 +45,8 @@ responses and schemas. Inspect already consumes that metadata and projects
 OpenAPI 3.0.3; its standalone application has its own qualified packages.
 
 JavaScript/TypeScript, Python, Go and JVM connectors expose route metadata
-and authenticated inspection. The 1.1.2 qualification exercised the focused
-native read surface and the Node/Bun OpenAPI workflow with the standalone
-Inspector. See [metadata and OpenAPI](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/inspect/metadata-and-openapi.md)
+and authenticated inspection. See the standalone Inspect walkthrough for a tested 2.0.1 Node.js service,
+route requests and OpenAPI export. See [metadata and OpenAPI](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/inspect/metadata-and-openapi.md)
 for the distinction between route snapshots and schema publication.
 
 ## Current guides

@@ -1,31 +1,20 @@
-# CoAkka HTTP Runtime 1.1.2 first request
+# CoAkka HTTP Runtime 2.0.1 first request
 
-Choose one host below. From a checkout of the samples repository, set the
-source path and create a new working directory for that host.
+Run these commands from a separate application directory. Set `SAMPLE` to
+the absolute path of this directory in your samples checkout. Each registry
+example starts a loopback server, sends one request, and prints `HTTP 200 hello`.
 
-```sh
-SAMPLE="$(pwd)/coakka-http-runtime/registry-basic"
-mkdir -p /absolute/path/to/http-first-run
-cd /absolute/path/to/http-first-run
-```
+## Node.js and Bun
 
-Each sample starts a loopback server on an OS-selected port, sends one
-request, checks the status and body, and closes the server. Success prints
-`HTTP 200 hello`.
-
-## Node.js
+Copy `hello.mjs` from `$SAMPLE`, then run one of these pairs.
 
 ```sh
-cp "$SAMPLE/hello.mjs" .
-npm install coakka-http-runtime-node@1.1.2
+npm install coakka-http-runtime-node@2.0.1
 node hello.mjs
 ```
 
-## Bun
-
 ```sh
-cp "$SAMPLE/hello.mjs" .
-bun add coakka-http-runtime-bun@1.1.2
+bun add coakka-http-runtime-bun@2.0.1
 bun hello.mjs
 ```
 
@@ -35,45 +24,43 @@ Use CPython 3.11 or newer with the GIL enabled.
 
 ```sh
 python3 -m venv .venv
-.venv/bin/python -m pip install coakka-http-runtime-python==1.1.2
+.venv/bin/python -m pip install coakka-http-runtime-python==2.0.1
 .venv/bin/python "$SAMPLE/hello.py"
 ```
 
 ## Go
 
-Install the matching [native SDK 1.1.2](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/1.1.2)
-and set `SDK` to the absolute path of the extracted SDK. The following
-commands use Go with cgo and a C compiler on macOS or Linux.
+Download and verify the [native SDK 2.0.1](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/2.0.1). Set `SDK` to the
+absolute path of the extracted SDK. Use Go 1.23 or newer and a C compiler.
+On macOS or Linux:
 
 ```sh
 cp "$SAMPLE/hello.go" .
 go mod init example.com/http-first-run
-go get github.com/phuong-tran/coakka-http-runtime-go@v1.1.2
+go get github.com/phuong-tran/coakka-http-runtime-go/v2@v2.0.1
 CGO_ENABLED=1 CGO_CFLAGS="-I$SDK/include" \
   CGO_LDFLAGS="-L$SDK/lib -Wl,-rpath,$SDK/lib" go run hello.go
 ```
 
-On macOS, use the SDK belonging to the selected Xcode toolchain if the
-system compiler and linker resolve different SDK versions.
-Set `SDKROOT="$(xcrun --sdk macosx --show-sdk-path)"` before running Go.
+Use the [Go package guide](https://github.com/phuong-tran/coakka-http-runtime-go/blob/v2.0.1/README.md)
+for Windows setup and macOS system SDK troubleshooting.
 
 ## JVM
 
-Use a JDK and Maven. The example below selects the Maven Central native
-classifier for macOS ARM64. The other classifiers are `linux-aarch64`,
-`linux-x86_64`, `windows-aarch64`, and `windows-x86_64`. Select the matching
-classifier in `pom.xml` and use the matching native filenames on that OS.
+Use JDK 17 and Maven. The example selects the macOS ARM64 native ZIP in
+`pom.xml`. On another platform, change the ZIP classifier to match your JVM
+and use the [JVM package guide](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/jvm/README.md)
+for the library setup.
 
 ```sh
 cp "$SAMPLE/pom.xml" "$SAMPLE/Hello.java" .
 mvn org.apache.maven.plugins:maven-dependency-plugin:3.8.1:copy-dependencies
-unzip -q target/dependency/coakka-http-runtime-jvm-1.1.2-macos-aarch64.zip
+unzip -q target/dependency/coakka-http-runtime-jvm-2.0.1-macos-aarch64.zip
 javac -cp 'target/dependency/*' Hello.java
-java -Dcoakka.http.host.path="$PWD/native/libcoakka_http_host.dylib" \
-  -Dcoakka.http.bridge.path="$PWD/native/libcoakka_http_jvm.dylib" \
-  -cp '.:target/dependency/*' Hello
+java "-Djava.library.path=$PWD/native" -cp '.:target/dependency/*' Hello
 ```
 
-## Native C and C++
+## C and C++
 
-Use the [SDK 1.1.2 server and streaming samples](../native/host-server/README.md).
+Use the [server and streaming examples](../native/host-server/README.md)
+with the same native SDK 2.0.1.

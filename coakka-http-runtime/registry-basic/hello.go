@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	coakkahttp "github.com/phuong-tran/coakka-http-runtime-go"
+	coakkahttp "github.com/phuong-tran/coakka-http-runtime-go/v2"
 )
 
 func run() (err error) {

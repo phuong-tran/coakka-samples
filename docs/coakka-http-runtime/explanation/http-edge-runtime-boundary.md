@@ -61,10 +61,10 @@ learn HTTP methods, paths, cookies, framework middleware, or public status-code
 policy merely to make the integration look complete.
 
 For a new CoAkka-native edge, start with
-[CoAkka HTTP Runtime 1.1.2](introduction.md). It already owns the shared HTTP
+[CoAkka HTTP Runtime 2.0.1](introduction.md). It already owns the shared HTTP
 server/client mechanics, streaming, WebSocket sessions, bounded pressure and
 graceful shutdown through the same native Core across its connectors. The
-[native SDK](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/1.1.2)
+[native SDK](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/2.0.1)
 is the corresponding choice for C and C++ app-hosts.
 
 This is a recommendation, not a requirement to replace a working framework.

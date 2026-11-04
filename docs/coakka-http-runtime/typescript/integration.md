@@ -34,12 +34,12 @@ and [certificate rotation versus hot reload](https://github.com/phuong-tran/coak
 
 ## 1. Install and prepare
 
-Start a 1.1.2 application with the package for your host.
+Start a 2.0.1 application with the package for your host.
 
 ```sh
-npm install coakka-http-runtime-node@1.1.2
+npm install coakka-http-runtime-node@2.0.1
 # In a Bun application
-bun add coakka-http-runtime-bun@1.1.2
+bun add coakka-http-runtime-bun@2.0.1
 ```
 
 [Run the registry sample](../../../coakka-http-runtime/registry-basic/README.md).
@@ -77,7 +77,7 @@ are separate facts; see [coverage](../reference/FEATURES.md#final-r3-package-che
 
 **Tools for this lane:** Node.js 22+ and npm for the shared TypeScript build; Bun 1.2.22+ additionally for Bun execution. Python 3.11+ resolves packages. Security recipes need OpenSSL CLI. On Windows the package guide recommends the tested Bun 1.4.2 line; that is separate from these POSIX runners and is not certification of every newer version.
 
-The runner installs the local verified package into a staged application with install hooks disabled. It type-checks and compiles TypeScript for Node; Bun executes the same source directly. It does not rely on Node's optional TypeScript stripping. For a new app, use the 1.1.2 registry commands above.
+The runner installs the local verified package into a staged application with install hooks disabled. It type-checks and compiles TypeScript for Node; Bun executes the same source directly. It does not rely on Node's optional TypeScript stripping. For a new app, use the 2.0.1 registry commands above.
 
 [Package installation and platform details](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/javascript/README.md).
 

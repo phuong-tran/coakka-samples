@@ -2,9 +2,9 @@
 
 **Choose your language, start a service and send one request.**
 
-Run a first request with a public HTTP Runtime 1.1.2 package for Node.js, Bun,
+Run a first request with a public HTTP Runtime 2.0.1 package for Node.js, Bun,
 Python, Go or JVM, or use the focused native SDK for C and C++.
-[Registry samples](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md) · [Native SDK](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/1.1.2)
+[Registry samples](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md) · [Native SDK](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/2.0.1)
 
 ## Choose your language
 

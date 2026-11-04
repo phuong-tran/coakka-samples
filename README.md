@@ -110,10 +110,14 @@ Outbound requests are part of HTTP Runtime's documented package scope. The
 planned standalone **CoAkka HTTP Client** is a separate future product:
 [current client scope and roadmap](docs/coakka-http-runtime/explanation/introduction.md#outbound-http-and-the-planned-http-client).
 
-**Package-manager releases are in preparation for npm, Maven Central, Go
-modules and PyPI.** The current installation path uses 1.0.0 repository archives.
-Start with the [HTTP language guides](docs/coakka-http-runtime/getting-started.md)
-and [current archive catalog](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/README.md).
+**HTTP Runtime 2.0.1** is available for Node.js and Bun on npm, Python on PyPI,
+Go through the `/v2` module, and Java and Kotlin through Maven Central.
+
+The first two numbers identify the Core generation; the last identifies that
+connector's revision on that Core. For example, `2.0.1` is revision 1 on Core
+`2.0`. If Go alone publishes `2.0.2`, it still uses Core `2.0` and the same
+native SDK. See [how to read HTTP Runtime versions](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/versions.md)
+and [run your first HTTP request](docs/coakka-http-runtime/getting-started.md).
 
 ### CoAkka HTTP Runtime Inspect
 

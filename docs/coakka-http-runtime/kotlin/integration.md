@@ -38,7 +38,7 @@ and [certificate rotation versus hot reload](https://github.com/phuong-tran/coak
 
 ## 1. Install and prepare
 
-Start with the [1.1.2 registry sample](../../../coakka-http-runtime/registry-basic/README.md).
+Start with the [2.0.1 registry sample](../../../coakka-http-runtime/registry-basic/README.md).
 
 The feature recipes use the 1.0.0 archives selected by
 [`package-pins.json`](../../../coakka-http-runtime/scripts/package-pins.json).

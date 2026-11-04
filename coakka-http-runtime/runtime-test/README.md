@@ -3,7 +3,7 @@
 This is reviewable consumer test source, not the runtime implementation. It
 consumes only the installed `<coakka/http/host.h>` contract and the relocatable
 `CoAkkaHttp::host` CMake target. C11 and C++20 callers use the same C ABI.
-The 1.1.2 train uses host ABI10. Do not combine headers, metadata or a library
+SDK 2.0.1 uses public C ABI 10. Do not combine headers, metadata or a library
 from different packages. Older archive receipts describe their own contracts.
 
 ## Build and run
@@ -20,9 +20,9 @@ cmake --build build/http-tests --config Release --parallel
 ctest --test-dir build/http-tests -C Release --output-on-failure
 ```
 
-CMake requires SDK version1.1.2 exactly. The explicit
+CMake requires SDK version 2.0.1 exactly by default. The explicit
 `COAKKA_HTTP_TEST_SDK_VERSION` cache entry permits qualification of a different
-complete SDK; such a run is evidence for that SDK, not a 1.1.2 release pass.
+complete SDK; such a run is evidence for that SDK, not evidence for 2.0.1.
 Configure verifies the complete source inventory before compiling. Its SHA256
 manifest detects source drift; it is not a publisher signature.
 

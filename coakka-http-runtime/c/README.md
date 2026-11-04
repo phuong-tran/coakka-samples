@@ -1,11 +1,11 @@
 # C11 Sample
 
-The [1.1.2 server and streaming samples](../native/host-server/README.md) use the installed focused C ABI.
+The [2.0.1 server and streaming samples](../native/host-server/README.md) use the installed focused C ABI.
 
 **Start here:** [Installation and integration guide](../../docs/coakka-http-runtime/c/integration.md) — prerequisites,
 package setup, first HTTP request, feature walkthroughs and checked shutdown.
 This README records verification for the pinned 1.0.0
-callback SDK. For the focused 1.1.2 SDK, use the
+callback SDK. For the focused 2.0.1 SDK, use the
 [installed native contract tests](../runtime-test/README.md).
 
 This sample uses installed `coakka/http/http.h` and
@@ -44,7 +44,7 @@ shown by the language connector samples, not invented for this API.
 
 Start with `smoke` to check the server, outbound client, and streaming
 producer in one command. Use `run` to keep the server open for manual
-requests. The focused 1.1.2 examples have their own build commands.
+requests. The focused 2.0.1 examples have their own build commands.
 
 First set `COAKKA_PUBLISH_ROOT` and `COAKKA_HTTP_SAMPLE_WORK_ROOT` as described
 in the [sample overview](../README.md), then:
@@ -144,7 +144,7 @@ COAKKA_HTTP_HOST_PREFIX=/path/to/verified/host-sdk \
   bash coakka-http-runtime/c/run.sh host-outbound
 ```
 
-The focused sample requests the exact `1.1.2` host SDK by default.
+The focused sample requests the exact `2.0.1` host SDK by default.
 It exercises request and terminal leases, logical-target correlation, HTTP 404,
 and complete route publication with exact replay and stale-generation refusal.
 The commands above for the separately pinned `1.0.0` archive remain available.

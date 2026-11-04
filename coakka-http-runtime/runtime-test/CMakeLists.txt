@@ -5,7 +5,7 @@ include(CTest)
 
 # Override only when explicitly qualifying a different complete SDK. Header,
 # metadata and binary must come from the same admitted package prefix.
-set(COAKKA_HTTP_TEST_SDK_VERSION "1.1.2" CACHE STRING "Exact installed SDK version")
+set(COAKKA_HTTP_TEST_SDK_VERSION "2.0.1" CACHE STRING "Exact installed SDK version")
 find_package(CoAkkaHttpHost ${COAKKA_HTTP_TEST_SDK_VERSION} EXACT REQUIRED CONFIG)
 find_package(Threads REQUIRED)
 option(COAKKA_HTTP_TEST_FUZZ "Build the optional Clang libFuzzer fixture seam" OFF)

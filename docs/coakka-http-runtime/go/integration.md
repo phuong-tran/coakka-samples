@@ -34,7 +34,7 @@ and [certificate rotation versus hot reload](https://github.com/phuong-tran/coak
 
 ## 1. Install and prepare
 
-Start with the [1.1.2 registry sample](../../../coakka-http-runtime/registry-basic/README.md).
+Start with the [2.0.1 registry sample](../../../coakka-http-runtime/registry-basic/README.md).
 
 The feature recipes use the 1.0.0 archives selected by
 [`package-pins.json`](../../../coakka-http-runtime/scripts/package-pins.json).
@@ -96,7 +96,7 @@ a substitute for the actual HTTP request.
 
 ## 3. Read and adapt the application
 
-Read `run`, `newService`, and the handler declarations in [main.go](../../../coakka-http-runtime/go/main.go); use [control.go](../../../coakka-http-runtime/go/control.go), [adverse.go](../../../coakka-http-runtime/go/adverse.go) and [security.go](../../../coakka-http-runtime/go/security.go) for focused recipes. The import is `github.com/phuong-tran/coakka-http-runtime-go`, aliased as `coakkahttp`.
+Read `run`, `newService`, and the handler declarations in [main.go](../../../coakka-http-runtime/go/main.go); use [control.go](../../../coakka-http-runtime/go/control.go), [adverse.go](../../../coakka-http-runtime/go/adverse.go) and [security.go](../../../coakka-http-runtime/go/security.go) for focused recipes. These archived files use the original module path. For a new project on 2.0.1, import `github.com/phuong-tran/coakka-http-runtime-go/v2` as `coakkahttp`.
 
 ```go
 // Inside the existing builder chain, before Start().

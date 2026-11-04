@@ -2,7 +2,8 @@
 
 **Start here:** [Installation and integration guide](../../docs/coakka-http-runtime/python/integration.md) — prerequisites,
 package setup, first HTTP request, feature walkthroughs and checked shutdown.
-This README records sample details and verification scope.
+For a new application, start with the [2.0.1 registry example](../registry-basic/README.md).
+The full feature sample below uses the historical, checksum-pinned 1.0.0 archive.
 
 The Python lane uses typed callables, immutable value objects, context-managed
 network responses, `threading.Event`, and normal exceptions. Static checks run

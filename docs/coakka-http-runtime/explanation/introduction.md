@@ -180,12 +180,12 @@ start with [CoAkka Runtime](../../common/new-to-coakka.md).
 
 ## Try It And Read Further
 
-HTTP Runtime 1.1.2 is available from npm, PyPI, Maven Central and the tagged Go
+HTTP Runtime 2.0.1 is available from npm, PyPI, Maven Central and the tagged Go
 module. The native SDK supplies the C headers and matching libraries.
-[Package catalog](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/README.md#version-112) · [Native SDK](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/1.1.2)
+[Package catalog](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/README.md#version-201) · [Native SDK](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/2.0.1)
 
 1. Choose a language in the [HTTP sample guide](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-http-runtime).
-2. Run a [1.1.2 registry sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md) or use the matching native SDK.
+2. Run a [2.0.1 registry sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md) or use the matching native SDK.
 3. Explore the feature index above, then [operations](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-http-runtime/operations/operations.md).
 4. Read [Pi 5 benchmark results](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/README.md)
    with their payload, CPU configuration, machine and measurement conditions;

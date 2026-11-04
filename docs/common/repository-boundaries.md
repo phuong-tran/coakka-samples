@@ -137,7 +137,7 @@ HTTP Runtime repository artifacts are released independently under
 injection, validation, or other framework-style experiences belong in addons
 above the connector so the shared HTTP contract remains unchanged.
 
-Use released HTTP Runtime `1.1.2` as the preferred starting point for a new
+Use the [current HTTP Runtime release](../coakka-http-runtime/getting-started.md) as the preferred starting point for a new
 CoAkka-native HTTP/WebSocket edge, including the native host SDK for C/C++.
 Existing reviewed frameworks remain supported when their middleware or host
 integration is required; connectors must not duplicate either framework's or

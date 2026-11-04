@@ -1,8 +1,5 @@
 #include "stream_lane_camera_control_server.h"
 #include "stream_lane_camera_web_gateway.h"
-#if defined(COAKKA_CAMERA_HTTP_RUNTIME_1_1_2_NUMERIC_TARGET_WORKAROUND)
-#include "stream_lane_camera_profile_http_workaround.h"
-#endif
 
 #if defined(_WIN32)
 #include <winsock2.h>
@@ -439,30 +436,20 @@ void exercise_control_server() {
   auto gateway = coakka_v2_camera_web_gateway_t::create(gateway_config);
   require(gateway != nullptr, "outbound gateway create failed");
   require(gateway->start(&error), "outbound gateway start failed: " + error);
-  const coakka_v2_camera_profile_request_t profile{1280u, 720u, 30u, 1u};
-  require(gateway->request_profile(profile, &error),
-          "native outbound profile request failed: " + error);
-  require(capture.width.load(std::memory_order_acquire) == 1280u &&
-              capture.height.load(std::memory_order_acquire) == 720u &&
-              capture.fps.load(std::memory_order_acquire) == 30u,
-          "native outbound request did not reach the camera handler");
-#if defined(COAKKA_CAMERA_HTTP_RUNTIME_1_1_2_NUMERIC_TARGET_WORKAROUND)
-  require(
-      coakka_v2_camera_profile_http_workaround_required("192.0.2.10") &&
-          coakka_v2_camera_profile_http_workaround_required("2001:db8::10") &&
-          !coakka_v2_camera_profile_http_workaround_required("127.0.0.1") &&
-          !coakka_v2_camera_profile_http_workaround_required("::1") &&
-          !coakka_v2_camera_profile_http_workaround_required("camera.test"),
-      "temporary workaround target classification drifted");
-  require(coakka_v2_camera_profile_http_workaround_send(
-              {"127.0.0.1", port, "camera-test-token", 640u, 480u, 30u, 2000u},
-              &error),
-          "temporary profile workaround failed: " + error);
-  require(capture.width.load(std::memory_order_acquire) == 640u &&
-              capture.height.load(std::memory_order_acquire) == 480u &&
-              capture.fps.load(std::memory_order_acquire) == 30u,
-          "temporary profile workaround did not reach the camera handler");
-#endif
+  const std::array<coakka_v2_camera_profile_request_t, 3> profiles{{
+      {1280u, 720u, 30u, 1u},
+      {800u, 600u, 30u, 2u},
+      {1280u, 720u, 30u, 3u},
+  }};
+  for (const auto &profile : profiles) {
+    require(gateway->request_profile(profile, &error),
+            "native outbound profile request failed: " + error);
+    require(capture.width.load(std::memory_order_acquire) == profile.width &&
+                capture.height.load(std::memory_order_acquire) ==
+                    profile.height &&
+                capture.fps.load(std::memory_order_acquire) == profile.fps,
+            "native outbound request did not reach the camera handler");
+  }
   gateway->stop();
   std::filesystem::remove_all(recordings, filesystem_error);
 

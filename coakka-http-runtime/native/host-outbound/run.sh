@@ -9,7 +9,7 @@ esac
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 prefix="${COAKKA_HTTP_HOST_PREFIX:?set COAKKA_HTTP_HOST_PREFIX to the verified host SDK}"
 work="${COAKKA_HTTP_SAMPLE_WORK_ROOT:?set COAKKA_HTTP_SAMPLE_WORK_ROOT to an external build directory}"
-version="${COAKKA_HTTP_HOST_SAMPLE_SDK_VERSION:-1.1.2}"
+version="${COAKKA_HTTP_HOST_SAMPLE_SDK_VERSION:-2.0.1}"
 # Use distinct build roots so concurrent C and C++ invocations can configure safely.
 build="${work}/${target}"
 cmake -S "${root}" -B "${build}" -DCMAKE_BUILD_TYPE=Release \
