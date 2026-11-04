@@ -15,7 +15,7 @@ host adapters. The basic/deadletter wrappers instead perform
 Use the [package ledger](../../docs/common/current-packages.md) for versions.
 
 Next, try [Node.js checkout with Python pricing](../scenarios/order-quote-node-python/README.md):
-a cart and quote across two processes using the published 3.0.0 packages.
+a cart and quote across two processes using the published 3.2.1 packages.
 
 ## Historical 2.x walkthrough
 

@@ -77,7 +77,7 @@ retroactively broaden this receipt.
 
 | Surface | Exact artifact coordinate | Native payloads | Current exact-artifact evidence |
 | --- | --- | --- | --- |
-| JVM | `io.github.phuong-tran.coakka:runtime:3.0.0` | All five | Maven Central signed publication, native identity gate, Java package checks, and clean consumers pass. |
+| JVM | `io.github.phuong-tran.coakka:runtime:3.2.1` | All five | Maven Central signed publication, native identity gate, Java package checks, and clean consumers pass. |
 | Node.js, Bun, Electron, Python, Go, C#, Rust, Swift, Mojo, Zig, Tauri | `runtime/<lane>/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e/` | All five where supported | Frozen connector packages pass the public artifact-surface verifier against the exact C1 native archive. Registry versions remain independently listed below. |
 | Android | historical signed internal `1.2.0` candidate; not published | `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64` | Exact tagged AAR passed clean build, package/ABI checks, R8 name verification, and the release-minified API 36 ARM64 Runtime/request/File/Stream smoke. |
 
@@ -105,14 +105,10 @@ The exact release-minified AAR passed on
 (API 36, `arm64-v8a`). R8 evidence checks four exact JNI/callback class names in
 the mapping and 34 native plus two callback members in the final APK DEX before
 executing Runtime, request/reply, File Lane, and Stream Lane. The signed bundle
-is retained as internal reproducibility evidence. It is separate from the
-newer private native-startup candidates. The current private candidate adds
-library obfuscation and product message helpers over frozen Core f6; its
-qualification uses native Mac ARM64 emulators at API 24 and API 36. Earlier
-API 37 x86_64 execution belongs to a distinct older AAR. See
-[Android and industrial tablets](../previews/edge-iot-android.md#android-and-industrial-tablets)
-for that candidate's scope. Neither candidate is a Maven Central publication,
-and no Android registry coordinate is claimed below.
+is retained as internal reproducibility evidence. Earlier API 37 x86_64
+execution belongs to a distinct AAR. See the
+[Android preview](../previews/edge-iot-android.md#android-and-industrial-tablets)
+for the current candidate and its installed execution scope.
 
 ## Registry Coordinates
 
@@ -122,7 +118,7 @@ coordinates are:
 
 | Registry | Current verified coordinate | Bundled native generation |
 | --- | --- | --- |
-| Maven Central | `io.github.phuong-tran.coakka:runtime:3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
+| Maven Central | `io.github.phuong-tran.coakka:runtime:3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` |
 | npm (Node.js and Bun) | `coakka-v2-connector-{node,bun}@3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` |
 | npm (Electron) | `coakka-v2-connector-electron@3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` via Node `3.2.1` |
 | PyPI | `coakka-v2-connector==3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` |
@@ -265,6 +261,8 @@ The consumer checked the running Core build and exercised request/reply,
 deadletters, File, Stream and shutdown. Windows ARM64 remains an evaluation
 preview. See the [release record](../releases/2026-11-05-swift-runtime-3.2.1-github.md).
 
+The Swift 3.2.1 CI retry passed 49 tests on [macOS 15 ARM64](https://github.com/phuong-tran/coakka-runtime-swift/actions/runs/41888048785/job/126786477777).
+
 ## Swift Runtime 3.0.0
 
 The GitHub Release contains exact source/archive/checksum. Fresh remote SwiftPM
@@ -277,6 +275,23 @@ skips. All 46 library/C/header/native members remain unchanged; the manifest onl
 integrates current regression tests. Earlier matching-target profiles remain
 qualified; this is not a new post-upload run on every OS. Windows ARM64 alone is
 preview; the Swift package is a release. See [the receipt](../releases/2026-10-30-swift-runtime-3.0.0-github.md).
+
+## Client, Inspect and Android 3.2.1 candidates
+
+Client and Inspect archive qualification covers macOS ARM64, Linux ARM64
+on Pi 5, Linux x64 on WSL2, physical Windows x64 and Windows ARM64 in UTM.
+The connected installed checks cover request/reply and inspection.
+The public downloads remain at 2.5.1.
+
+The Android preview AAR passed installed execution and lifecycle soak on
+API 24 x86_64 and API 36 ARM64 emulators. See the
+[Android preview](../previews/edge-iot-android.md#android-and-industrial-tablets).
+
+## Maven JVM Runtime 3.2.1
+
+The [Maven release record](../releases/2026-11-05-jvm-spring-quarkus-runtime-3.2.1-maven-central.md) covers all three coordinates,
+the Core 3.2 identity, and verification of 15 public artifacts and their
+detached signatures.
 
 ## Maven JVM Runtime 3.0.0
 

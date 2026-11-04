@@ -1,7 +1,7 @@
 # Production Evidence
 
 For current installation, use the [package ledger](../../common/current-packages.md),
-[3.0.0 changelog](../CHANGELOG.md) and [language-first examples](../getting-started.md).
+[Runtime changelog](../CHANGELOG.md) and [language-first examples](../getting-started.md).
 The campaign rows below retain their named versions and scope; an older row
 does not describe the latest package or prove a newer sample ran.
 

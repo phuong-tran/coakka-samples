@@ -19,11 +19,11 @@ workflow people already understand.
 ## Start with a released package
 
 Use the [Spring Boot or Quarkus registry build](framework-registry/README.md)
-for a customer application on published Runtime 3.0.0. It gives exact commands,
+for a customer application on published Runtime 3.2.1. It gives exact commands,
 browser URLs, source files and how to stop the app.
 
 Other local, desktop and cross-process launchers below retain their own pinned
-or local-package requirements. They are not all registry-first 3.0.0 examples.
+or local-package requirements. They are not all registry-first 3.2.1 examples.
 For a smaller example in your own language, use the
 [first-run guide](../../../docs/coakka-runtime/getting-started.md).
 

@@ -20,37 +20,20 @@ choose for a consuming app.
 
 ## Private Candidate
 
-Use these identities together for the current private API:
+The private 3.2.1 preview uses Core `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45`
+(ABI 1). The evaluation AAR has SHA-256 `1ce5d292305988b506f388ee5561b7b6f446ed80205e365c3cc9d56f417fb3df` and is 3,007,524 bytes.
+It includes `arm64-v8a`, `armeabi-v7a`, `x86` and `x86_64`.
+The minimum API is 24 and the build uses compile SDK 36.1.
+The preview AAR has no public download or Maven Central coordinate.
 
-| Identity | Value |
-| --- | --- |
-| Android connector | `3.0.0` preview candidate |
-| Compiled connector source checkpoint | `97659069795a701d6e38ea8868282191ab13f1a9` |
-| Native runtime package | Core `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
-| Android ABIs | `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64` |
-| Minimum Android API | `24` |
-| Compile SDK | Android API `36.1` or newer |
-| Exact AAR | SHA-256 `3aa24aafb3838c328823e6fee9a54eed50f8d3a075ce883fcd6513a9e1d1ea06`, 3,002,876 bytes |
-| Publication state | unsigned private candidate; no public Maven coordinate |
+The exact AAR passed installed-app tests and about three minutes of
+lifecycle soak on each emulator: API 24 x86_64 (613 cycles) and
+API 36 ARM64 (477 cycles). The API 24 ARM64 emulator failed to boot
+before APK installation. The 32-bit payloads were inspected as binaries.
+Physical-device execution and field soak are outside this evidence.
 
-This exact AAR passes native ARM64 Mac emulators on API 24 and API 36.
-The app and instrumentation are independently minified;
-normal message creation, delivery, correlated replies and payload reads use
-only product APIs. The fixture also checks accepted startup settings,
-monitoring absent/OFF/ON, network intent and accepted facts, close interruption,
-and owner-pinned File and Stream delivery.
-All four ABI payloads receive architecture, export, dependency and disclosure
-checks. Android 32-bit execution and physical-device execution are excluded
-from this acceptance by explicit user direction; no such execution is claimed.
-Earlier Windows API 37 evidence belongs to its distinct older AAR. Bounded
-emulator campaigns do not establish industrial-tablet field-soak support.
-
-The historical `android-runtime-1.2.0` tag at
-`53d39fd9b6dd417374662a25437af106198aff7a` and signed AAR SHA-256
-`edadc38b61a47ad70de6e0a52afeec14cdac467b3cac1c7a15c1d6aa9fd4ad29`
-are immutable older identities. They are not the source or artifact for the
-current API below. A new reviewed public version/tag and source projection
-remain necessary before publication. Do not replace that old tag or mirror.
+The [older Android 1.2.0 source snapshot](../../source-mirrors/android-runtime/1.2.0/README.md)
+is retained for historical reference.
 
 ## Gradle And Local AAR
 
@@ -65,12 +48,12 @@ dependencyResolutionManagement {
 }
 ```
 
-Place the exact candidate AAR under `app/libs` and pin its dependencies in
-`app/build.gradle.kts`:
+If you have the verified candidate AAR, copy it to `app/libs/coakka-runtime-android-3.2.1.aar`.
+Then pin the AAR and Kotlin runtime in `app/build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation(files("libs/coakka-runtime-android-3.0.0-private-p533-r1.aar"))
+    implementation(files("libs/coakka-runtime-android-3.2.1.aar"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.2.10")
 }
 ```
@@ -79,10 +62,6 @@ Verify the local AAR SHA-256 before use. Do not add an unpublished Maven
 coordinate alongside `app/libs`; that can package the same classes and native
 libraries twice.
 
-The [pending 3.0.0 source projection](../../source-mirrors/android-runtime/3.0.0/README.md)
-records the current source and release identity. The
-[historical source archive](../../source-mirrors/android-runtime/1.2.0/README.md)
-belongs to the older tagged artifact above.
 The AAR carries `LICENSE`, `NATIVE-LICENSE.md`, `PACKAGE-LICENSE.md`, and
 `NOTICE` offline because its Kotlin/JNI connector and bundled Native Core files
 have different file-scoped terms.

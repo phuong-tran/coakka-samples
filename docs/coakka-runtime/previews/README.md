@@ -1,7 +1,7 @@
 # CoAkka Runtime Evaluation And Local-Package Checks
 
 For a normal installation, start with the [published first-run examples](../getting-started.md).
-Runtime 3.0.0 is released for Node.js, Bun, Electron, Python, C#, Kotlin/Java,
+Runtime 3.2.1 is released for Node.js, Bun, Electron, Python, C#, Kotlin/Java,
 Go and Swift, together with the Spring Boot and Quarkus adapters.
 The [package ledger](../../common/current-packages.md) owns exact availability.
 

@@ -14,10 +14,10 @@ package, PyPI package, Go module, and SwiftPM tag do not need to share the same
 version number. Each lane follows the release cadence of its connector,
 packaging surface, and native payload.
 
-Maven Central Runtime, Spring Boot starter and Quarkus adapter are now
-`3.0.0`. Both framework adapters depend exactly on Runtime `3.0.0`,
-carrying Core `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` / ABI1.
-Use the [JVM 3 release and first runs](../coakka-runtime/releases/2026-10-30-jvm-spring-quarkus-runtime-3.0.0-maven-central.md).
+Maven Central carries JVM Runtime, Spring Boot starter and Quarkus extension
+`3.2.1`. Both adapters depend exactly on Runtime `3.2.1`, which bundles
+Core `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` (ABI 1).
+See the [Maven release record](../coakka-runtime/releases/2026-11-05-jvm-spring-quarkus-runtime-3.2.1-maven-central.md).
 The frozen checksum-pinned 2.x connector archives retain native generation
 `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`.
 Logger JVM remains `1.2.2` over native logger `1.2.1+f50756ebff0d`;
@@ -99,7 +99,7 @@ complete matrix with `bash run.sh coakka-runtime addons all published`.
 
 | Channel | Runtime package | Logger package | Sample or guide |
 | --- | --- | --- | --- |
-| Maven Central | [`coakka.runtime` 3.0.0](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/runtime/3.0.0) | [`coakka.logger` 1.2.2](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/logger/1.2.2) | [Java/Kotlin3 first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/jvm/registry-basic); `bash run.sh coakka-logger jvm basic` |
+| Maven Central | [`runtime` 3.2.1](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/runtime/3.2.1) | [`coakka.logger` 1.2.2](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/logger/1.2.2) | [Java/Kotlin 3.2.1 first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/jvm/registry-basic); `bash run.sh coakka-logger jvm basic` |
 | NuGet | [`CoAkka.Runtime` 3.2.1](https://www.nuget.org/packages/CoAkka.Runtime/3.2.1) | [`CoAkka.Logger` 1.2.3](https://www.nuget.org/packages/CoAkka.Logger/1.2.3) | [C# 3.2.1 install](../coakka-runtime/releases/2026-11-05-nuget-csharp-runtime-3.2.1.md#install); `bash run.sh coakka-logger csharp basic` |
 | npm | [`coakka-v2-connector-node` 3.2.1](https://www.npmjs.com/package/coakka-v2-connector-node/v/3.2.1) | [`coakka-logger-node` 1.2.7](https://www.npmjs.com/package/coakka-logger-node/v/1.2.7) | [3.2.1 first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/node/registry-basic) |
 | npm (Bun) | [`coakka-v2-connector-bun` 3.2.1](https://www.npmjs.com/package/coakka-v2-connector-bun/v/3.2.1) | [`coakka-logger-bun` 1.2.7](https://www.npmjs.com/package/coakka-logger-bun/v/1.2.7) | [3.2.1 first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/bun/registry-basic) |
@@ -108,19 +108,17 @@ complete matrix with `bash run.sh coakka-runtime addons all published`.
 | Go modules | [`coakka-runtime-go/v3` v3.2.1](https://github.com/phuong-tran/coakka-runtime-go/releases/tag/v3.2.1) | [`coakka-logger-go` v1.2.6](https://pkg.go.dev/github.com/phuong-tran/coakka-logger-go@v1.2.6) | [Go 3.2.1 first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/go/registry-basic) |
 | SwiftPM | [`coakka-runtime-swift` v3.2.1](https://github.com/phuong-tran/coakka-runtime-swift/releases/tag/v3.2.1) | [`coakka-logger-swift` v1.2.2](https://github.com/phuong-tran/coakka-logger-swift/releases/tag/v1.2.2) | [Swift 3.2.1 first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/swift/registry-basic) |
 | Tauri source archive | [`coakka-runtime-tauri-intents` 2.5.3 source](https://github.com/phuong-tran/coakka-publish/tree/main/runtime/tauri/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e) | [`coakka-logger-tauri-intents` 1.2.2 source](https://github.com/phuong-tran/coakka-publish/tree/main/logger/tauri/releases/1.2.1+f50756ebff0d-7718ce6) | [Tauri integration guide](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/tauri/README.md) |
-| Android preview | [`coakka-runtime-android` 1.2.0 signed preview AAR](../coakka-runtime/previews/edge-iot-android.md#android-and-industrial-tablets) | Use the app's Android logging policy | Integration guide only; no public Maven coordinate |
+| Android preview | [Android integration preview](../coakka-runtime/previews/edge-iot-android.md#android-and-industrial-tablets) | Use the app's Android logging policy | Integration guide only; no public Maven coordinate |
 
-Node.js, Bun, and Electron are three distinct npm packages. Tauri is a
-checksum-pinned source archive rather than an npm or crates.io package. Android
-`1.2.0` remains an Android preview candidate, so consumers must not infer or
-publish a Maven coordinate for it.
+Node.js, Bun, and Electron are three distinct npm packages. Tauri uses a checksum-pinned source archive. Android 3.2.1 is a private
+preview candidate. Its integration guide describes local AAR evaluation.
 
 Java 17 app hosts can use the independently versioned Maven Central framework
 adapters: [`spring-boot-starter`
-3.0.0](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/spring-boot-starter/3.0.0)
+3.2.1](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/spring-boot-starter/3.2.1)
 or [`quarkus-extension`
-3.0.0](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/quarkus-extension/3.0.0).
-Both depend exactly on public Runtime `3.0.0`; applications select their own verified
+3.2.1](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/quarkus-extension/3.2.1).
+Both depend exactly on public Runtime `3.2.1`; applications select their own verified
 Spring Boot or Quarkus platform line.
 
 The current source coordinates are
@@ -133,11 +131,11 @@ unsuffixed v1 tags remain unchanged.
 | Surface | Exact coordinate |
 | --- | --- |
 | Native C ABI | `runtime/native/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-runtime-native-v2-2.5.1.tar.gz` |
-| JVM | `io.github.phuong-tran.coakka:runtime:2.5.3` |
-| Spring Boot | `io.github.phuong-tran.coakka:spring-boot-starter:2.5.3` |
-| Quarkus | `io.github.phuong-tran.coakka:quarkus-extension:2.5.3` |
+| JVM | `io.github.phuong-tran.coakka:runtime:3.2.1` |
+| Spring Boot | `io.github.phuong-tran.coakka:spring-boot-starter:3.2.1` |
+| Quarkus | `io.github.phuong-tran.coakka:quarkus-extension:3.2.1` |
 | Connector archives | `runtime/<lane>/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e/` |
-| JVM signed public tree | `https://repo1.maven.org/maven2/io/github/phuong-tran/coakka/runtime/2.5.3/` |
+| JVM signed public tree | `https://repo1.maven.org/maven2/io/github/phuong-tran/coakka/runtime/3.2.1/` |
 | npm | `coakka-v2-connector-{node,bun,electron}@3.2.1` |
 | PyPI | `coakka-v2-connector`, exact `3.2.1` |
 | NuGet | `CoAkka.Runtime`, exact `3.2.1` |
@@ -145,6 +143,10 @@ unsuffixed v1 tags remain unchanged.
 | SwiftPM | `https://github.com/phuong-tran/coakka-runtime-swift.git`, exact `3.2.1` |
 | coakka-client | `coakka-tools/coakka-client/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/` |
 | coakka-runtime-inspect | `coakka-tools/coakka-runtime-inspect/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/` |
+
+Client and Inspect 2.5.1 are the current public tool downloads. Both 3.2.1
+tool archives remain candidates. See the [Runtime changelog](../coakka-runtime/CHANGELOG.md)
+for package availability in the 3.2 release train.
 
 ## CoAkka HTTP Runtime
 

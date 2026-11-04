@@ -2,9 +2,9 @@
 
 **Historical demonstration:** the default Node-to-Python images use the 1.x
 package line. Keep their original code and image versions together. For the
-current published 3.0.0 packages, start with
+current published packages, start with
 [the language-first guide](../../docs/coakka-runtime/getting-started.md).
-This container walkthrough is an optional later example, not the first 3.0.0 install.
+This container walkthrough is an optional later example, not the first registry install.
 
 Container samples show the runtime boundary without requiring every host
 language toolchain on the user's machine.

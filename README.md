@@ -27,7 +27,7 @@ and versions.
 Build a basket in your browser. Node.js sends it to a separate Python process,
 which returns item prices, shipping and the total through CoAkka Runtime.
 
-**[Run the demo and read the walkthrough](coakka-runtime/scenarios/order-quote-node-python/README.md)** · Published npm/PyPI **3.0.0** packages · Two terminals, no Docker required.
+**[Run the demo and read the walkthrough](coakka-runtime/scenarios/order-quote-node-python/README.md)** · Published npm/PyPI **3.2.1** packages · Two terminals, no Docker required.
 
 [![Node–Python demo: change the basket and receive an updated quote from Python.](docs/coakka-runtime/assets/node-python-order-quote-demo.gif)](coakka-runtime/scenarios/order-quote-node-python/README.md)
 

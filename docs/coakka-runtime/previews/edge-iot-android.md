@@ -8,14 +8,11 @@ boundary just to call application-owned capabilities. It needs an app host, a
 supported native runtime package, route snapshots, handlers, and the normal
 platform services around it.
 
-Android industrial tablets are feasible. Android connector `1.2.0` provides
-a private four-ABI AAR with an obfuscated library and a product message API.
-Its current qualification uses independently minified apps on native ARM64
-Mac emulators at API 24 and API 36. An
-Android app or background service can host the connector, load the native
-runtime through the Android NDK, register handlers, and call stable targets.
-Physical-device behavior and industrial field operation need application-specific
-evaluation; they are not inferred from emulator tests.
+The Android 3.2.1 preview packages Core 3.2 for four ABIs. Installed-app
+tests and lifecycle soak passed on API 24 x86_64 and API 36 ARM64 emulators.
+An Android app or background service can own one runtime instance, register
+handlers, and call stable targets. Physical-device evaluation is a separate
+step.
 
 Its normal construction leaves CPU and connection choices to Core: `AUTO`
 and `MULTIPLEXED` are the defaults. Monitoring is OFF unless the application
@@ -122,15 +119,9 @@ framework. An Android app or Android background service can host a connector,
 load a native runtime through the Android NDK, register handlers, and call
 stable targets.
 
-Connector `1.2.0` has an internal candidate AAR with `arm64-v8a`, `armeabi-v7a`,
-`x86`, and `x86_64` payloads, a thin JNI layer, and Android lifecycle guidance.
-The current candidate is qualified through real minified apps on Mac ARM64
-emulators at API 24 and API 36 for startup inspection, request/reply, close,
-File and Stream. `AndroidRuntimeMessages` creates requests, reads their values,
-builds replies and reads response payloads through Core. Apps do not need a
-separate message codec. See the [Android integration recipe](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/android/README.md)
-for the exact candidate identity and code.
-The AAR remains private; publication needs a separate release decision.
+The Android 3.2.1 AAR is a private preview. See the
+[Android integration recipe](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/android/README.md)
+for the exact candidate and local AAR instructions.
 
 A proper Android lane should include:
 
@@ -166,13 +157,11 @@ Treat this as the support boundary:
 - current public package lanes are the released artifact surface;
 - edge Linux is the first practical expansion target for device and gateway
   validation;
-- Android connector `1.2.0` has a clean private source checkpoint and an
-  unsigned emulator-tested candidate; its current API has no public source tag
-  or supported coordinate. The older public 1.2.0 tag is a different immutable
-  artifact and must not be used as its source;
-- current acceptance uses the Mac's native 64-bit emulators; physical-device
-  and Android 32-bit execution are excluded by explicit user direction, while
-  all four ABI payloads retain static inspection;
+- Android 3.2.1 is evaluated with a private AAR. Its public entrypoint is the
+  integration guide;
+- the installed execution matrix covers API 24 x86_64 and API 36 ARM64.
+  API 24 ARM64 did not reach APK installation. The four ABI payloads have
+  static inspection evidence;
 - emulator process restart and bounded load evidence do not establish physical
   Activity/service behavior, industrial LAN or thermal behavior, or field-soak
   support.

@@ -6,6 +6,29 @@ developers; the [current package ledger](../common/current-packages.md) owns
 installation versions, and [release history](releases/README.md) retains the
 individual release records and package details.
 
+## 3.2.1
+
+Connector revision 1 on Core generation 3.2. The bundled Core uses
+build `f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` and ABI 1.
+
+| Channel | Release record |
+| --- | --- |
+| Maven Central | [JVM Runtime, Spring Boot and Quarkus](releases/2026-11-05-jvm-spring-quarkus-runtime-3.2.1-maven-central.md) |
+| npm | [Node.js, Bun and Electron](releases/2026-11-05-npm-node-bun-electron-runtime-3.2.1.md) |
+| PyPI | [Python](releases/2026-11-05-pypi-python-runtime-3.2.1.md) |
+| NuGet | [C#](releases/2026-11-05-nuget-csharp-runtime-3.2.1.md) |
+| Go modules / GitHub | [Go](releases/2026-11-05-go-runtime-3.2.1-github.md) |
+| SwiftPM / GitHub | [Swift](releases/2026-11-05-swift-runtime-3.2.1-github.md) |
+
+Core validates configured IP addresses and hostnames at the native boundary.
+On Windows, runtime shutdown can interrupt a blocked write to a host pipe.
+The Go `/v3` import path and Swift `CoAkkaRuntime` product carry forward.
+Electron `3.2.1` depends on Node `3.2.1`. The two Maven framework adapters
+use Runtime `3.2.1`.
+
+The Client, Inspect and Android 3.2.1 builds are candidates. Use the
+[current package ledger](../common/current-packages.md) for public downloads.
+
 ## 3.0.0
 
 Released **2026-10-30**. This consolidated changelog was added on 2026-11-01;

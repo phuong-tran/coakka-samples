@@ -6,10 +6,12 @@ plugins {
     id("org.springframework.boot")
 }
 
+val coakkaRuntimeVersion = rootProject.extra.properties["coakkaSampleRuntimeVersion"] as? String ?: "3.2.1"
+
 dependencies {
     implementation(platform(SpringBootPlugin.BOM_COORDINATES))
     implementation(project(":runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-contract"))
-    implementation("io.github.phuong-tran.coakka:spring-boot-starter:3.0.0")
+    implementation("io.github.phuong-tran.coakka:spring-boot-starter:$coakkaRuntimeVersion")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 }

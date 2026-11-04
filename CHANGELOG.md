@@ -5,6 +5,10 @@ surface. It is not a repository release ledger. Artifact versions, manifests,
 and checksums live in the versioned
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) warehouse.
 
+## Runtime 3.2.1 — 2026-11-05
+
+Updated the JVM and framework first runs and the Node/Python cart-and-quote walkthrough to use Runtime 3.2.1. The [first-run index](docs/coakka-runtime/getting-started.md) links to the pinned examples.
+
 ## HTTP Runtime 2.0.1 — 2026-11-04
 
 - Updated first-request samples and the native contract suite to use HTTP

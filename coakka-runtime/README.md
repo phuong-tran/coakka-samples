@@ -21,7 +21,7 @@ its matching native Runtime; no separate Core installation is needed.
 Runtime integrations include **JavaScript and TypeScript (Node.js / Bun),
 Python, Java, Kotlin, C#, Go and Swift**, with **Spring Boot** and **Quarkus**
 framework adapters and **Electron** desktop support. The language table below
-leads to the released 3.0.0 first runs.
+leads to the released 3.2.1 first runs.
 
 **Tauri**, C/C++, Rust and Zig use version-specific source/archive guides;
 Android and Mojo remain previews. Choose the exact version and platform in
@@ -29,7 +29,7 @@ those guides rather than applying one package's support scope to another.
 
 ## First run: choose your language
 
-These apps use **published 3.0.0 packages**. Each README gives prerequisites,
+These apps use **published 3.2.1 packages**. Each README gives prerequisites,
 a command, expected output, the source file and how the app closes.
 
 | Your application | First run |
@@ -58,9 +58,9 @@ files, streams and device examples.
 - [Node.js customer operation](../docs/coakka-runtime/guides/first-npm-smoke.md):
   a published-package walkthrough without cloning this repository.
 - [Node.js checkout, Python pricing](scenarios/order-quote-node-python/README.md):
-  edit a browser basket and receive a quote across two processes using published 3.0.0 packages.
+  edit a browser basket and receive a quote across two processes using published 3.2.1 packages.
 - [Customer applications](scenarios/customer-crud/framework-registry/README.md):
-  Spring Boot or Quarkus with Runtime 3.0.0 from Maven Central.
+  Spring Boot or Quarkus with Runtime 3.2.1 from Maven Central.
 - [Electron application](electron/registry-basic/README.md): a window sends work
   through its main process.
 - [Files](../docs/coakka-runtime/guides/runtime-file-transfer.md) and
@@ -82,7 +82,7 @@ are for checking selected packages, not a prerequisite for the published first r
 
 The [Node-to-Python container demo](containers/node-python/README.md) uses
 historical 1.x images. It demonstrates two processes but is not the current
-3.0.0 installation path. [RPi camera](demos/rpi-camera/README.md) and other device
+registry installation path. [RPi camera](demos/rpi-camera/README.md) and other device
 examples have their own hardware and package requirements.
 
 ## Runtime addons
@@ -118,7 +118,7 @@ independent of the connector package selected for your application.
 
 - [Integration guide](../docs/coakka-runtime/guides/runtime-integration-guide.md).
 - [Defaults and monitoring](../docs/coakka-runtime/operations/runtime-monitoring.md).
-- [Migration and 3.0.0 changes](../docs/coakka-runtime/CHANGELOG.md).
+- [Runtime changelog and migration](../docs/coakka-runtime/CHANGELOG.md).
 - [Current packages](../docs/common/current-packages.md) and [platform requirements](../docs/coakka-runtime/reference/runtime-package-platform-evidence.md).
 
 [Runtime documentation](../docs/coakka-runtime/README.md) · [All products](../README.md).
