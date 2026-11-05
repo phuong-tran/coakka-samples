@@ -1,8 +1,8 @@
 # Runtime Evidence Compatibility Index
 
-Run the [native test examples](../runtime-test/README.md) from the Samples checkout.
-For a first run, use `bash run.sh coakka-runtime runtime-test smoke`.
-The [public test source](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-runtime/runtime-test) includes SDK selection and build instructions.
+Run the [native test examples](../coakka-runtime-test.md) from the Samples checkout with Publish beside it.
+For a first run with the published archive, set `COAKKA_NATIVE_EVIDENCE_USE_PREBUILT=1` before running `bash run.sh coakka-runtime coakka-runtime-test smoke`.
+The [public test source](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-runtime/coakka-runtime-test) includes SDK selection and build instructions.
 
 Prefer a controlled Linux host when measurements will inform Kubernetes or
 container deployment decisions. macOS, Windows, Docker, CI, and VM runs remain
@@ -34,15 +34,15 @@ The native lane covers four workload shapes:
 The same public source directory also contains a capability-aware connection
 strategy executable. It verifies all four connection modes, structured
 unsupported/not-entitled results, atomic invalid apply, startup lifecycle, and
-post-start immutability. See [Runtime Test](../runtime-test/README.md) for
+post-start immutability. See [Runtime Test](../coakka-runtime-test.md) for
 its build command and exact TLS/non-TLS scope.
 
-Payload-oriented runs are opt-in:
+With the prebuilt mode enabled, choose a bounded payload and run:
 
 ```sh
-bash run.sh coakka-runtime runtime-test smoke --payload 64K --requests 128
-bash run.sh coakka-runtime runtime-test stress --payload 128K --requests 2000
-bash run.sh coakka-runtime runtime-test soak --payload 64K --duration 30s --max-in-flight 64
+bash run.sh coakka-runtime coakka-runtime-test smoke --payload 64K --requests 128
+bash run.sh coakka-runtime coakka-runtime-test stress --payload 128K --requests 2000
+bash run.sh coakka-runtime coakka-runtime-test soak --payload 64K --duration 30s --max-in-flight 64
 ```
 
 Finite runs are capped at 500,000 requests. Pressure remains small-payload
@@ -58,6 +58,6 @@ compiler, build profile, and power mode can all change the result. Run the same
 command several times under controlled conditions and compare complete JSON
 documents, not one isolated throughput value.
 
-See [Runtime Test](../runtime-test/README.md) for the exact measurement
+See [Runtime Test](../coakka-runtime-test.md) for the exact measurement
 boundary, pass invariants, mode semantics, JSON fields, and source/prebuilt
 execution paths.

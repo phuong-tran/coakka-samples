@@ -3,7 +3,7 @@
 This directory is reserved for repeatable load and benchmark support. Treat the
 files here as reference evidence tied to their metadata and execution context.
 
-Start with [the Runtime test guide](../runtime-test/README.md) for public API correctness, connection-strategy, static-analysis, and sanitizer gates.
+Start with [the Runtime test guide](../coakka-runtime-test.md) for public API correctness, connection-strategy, static-analysis, and sanitizer gates.
 Benchmarking is optional measurement support; it does not replace those tests.
 
 Run a local reference profile:

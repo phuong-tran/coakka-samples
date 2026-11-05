@@ -30,9 +30,15 @@ case "${command}" in
   all) exec bash "${product_root}/run-all.sh" "$@" ;;
   list)
     coakka_print_product_samples coakka-runtime
-    printf '  %s\n' coakka-runtime/runtime-test coakka-runtime/tools/coakka-client coakka-runtime/tools/coakka-runtime-inspect coakka-runtime/demos/rpi-camera
+    printf '  %s\n' coakka-runtime/coakka-runtime-test coakka-runtime/tools/coakka-client coakka-runtime/tools/coakka-runtime-inspect coakka-runtime/demos/rpi-camera
     list_addons; coakka_print_scenarios; coakka_print_containers ;;
-  test|runtime-test) exec bash "${product_root}/runtime-test/run.sh" "$@" ;;
+  test|runtime-test|coakka-runtime-test)
+    publish_root="${COAKKA_PUBLISH_ROOT:-${repo_root}/../coakka-publish}"
+    runner="${publish_root}/coakka-runtime/coakka-runtime-test/run.sh"
+    if [[ ! -f "${runner}" ]]; then
+      coakka_die 'Clone coakka-publish beside Samples or set COAKKA_PUBLISH_ROOT. See https://github.com/phuong-tran/coakka-publish/tree/main/coakka-runtime/coakka-runtime-test'
+    fi
+    exec bash "${runner}" "$@" ;;
   client|coakka-client|runtime-client) exec bash "${product_root}/tools/coakka-client/run.sh" "$@" ;;
   inspect|coakka-runtime-inspect|runtime-inspect) exec bash "${product_root}/tools/coakka-runtime-inspect/run.sh" "$@" ;;
   addons|runtime-addons)
@@ -74,7 +80,7 @@ case "${command}" in
     run_path "scenarios/${track}/${topology}" "$@" ;;
   help|-h|--help)
     printf '%s\n' 'Usage: bash run.sh coakka-runtime <language> <sample>' \
-      '  coakka-runtime [list|all|runtime-test|client|inspect|addons|containers|scenarios|scenario] ...' ;;
+      '  coakka-runtime [list|all|coakka-runtime-test|client|inspect|addons|containers|scenarios|scenario] ...' ;;
   */*) run_path "${command}" "$@" ;;
   *)
     if [[ "$#" == 0 ]]; then run_path "jvm/${command}"
