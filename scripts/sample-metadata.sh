@@ -43,7 +43,7 @@ coakka_print_samples() {
   echo 'Products: coakka-runtime, coakka-http-runtime, coakka-logger'
   coakka_print_product_samples coakka-runtime
   coakka_print_product_samples coakka-logger
-  printf '  %s\n' coakka-runtime/runtime-test coakka-runtime/tools/coakka-client coakka-runtime/tools/coakka-runtime-inspect coakka-runtime/addons coakka-runtime/demos/rpi-camera coakka-http-runtime/verify
+  printf '  %s\n' coakka-runtime/coakka-runtime-test coakka-runtime/tools/coakka-client coakka-runtime/tools/coakka-runtime-inspect coakka-runtime/addons coakka-runtime/demos/rpi-camera coakka-http-runtime/verify
   coakka_print_scenarios
   coakka_print_containers
 }

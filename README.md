@@ -2,11 +2,14 @@
 
 <p align="center"><img src="docs/common/assets/brand/coakka-logo.png" alt="CoAkka" width="480"></p>
 
-[Website](https://coakka-ecosystem-preview.vivid-plume-2955.chatgpt.site/) · [Get started](#choose-what-you-want-to-build) · [Documentation](docs/README.md) · **[coakka-http-runtime-test](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/runtime-test)** · [coakka-runtime-test](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-runtime/runtime-test) · [HTTP Benchmarks (Pi 5)](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/README.md)
+[Website](https://coakka-ecosystem-preview.vivid-plume-2955.chatgpt.site/) · [Get started](#choose-what-you-want-to-build) · [Documentation](docs/README.md) · **[coakka-http-runtime-test](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/runtime-test)** · **[coakka-runtime-test](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-runtime/coakka-runtime-test)** · [HTTP Benchmarks (Pi 5)](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/README.md)
 
 **Contents**
 
 [Choose a product](#choose-what-you-want-to-build) · [CoAkka Runtime](#coakka-runtime-languages-frameworks-and-app-hosts) · **[CoAkka HTTP Runtime](#coakka-http-runtime-shared-http-familiar-languages)** · [HTTP Inspect](#coakka-http-runtime-inspect) · [Runtime addons](#coakka-runtime-addons) · [Runtime Client / Inspect](#coakka-runtime-client-and-inspect) · [Node–Python demo](#try-the-nodepython-web-demo)
+
+[Inspect and run the CoAkka Runtime native tests](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-runtime/coakka-runtime-test)
+through the public C ABI.
 
 **Shared native cores. Familiar APIs across languages.**
 

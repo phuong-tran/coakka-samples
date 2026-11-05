@@ -33,12 +33,12 @@ case "${1:-quickstart}" in
   coakka-http-runtime/*)
     selected="${1#*/}"; shift
     exec bash "${repo_root}/coakka-http-runtime/run.sh" "${selected}" "$@" ;;
-  runtime-test|runtime-client|runtime-inspect|runtime-addons|containers|scenarios|scenario|runtime-addons/*|runtime-client/*|runtime-inspect/*|containers/*)
+  runtime-test|coakka-runtime-test|runtime-client|runtime-inspect|runtime-addons|containers|scenarios|scenario|runtime-addons/*|runtime-client/*|runtime-inspect/*|containers/*)
     exec bash "${repo_root}/coakka-runtime/run.sh" "$@" ;;
   help|-h|--help)
     printf '%s\n' 'Usage: bash run.sh [list|doctor|quickstart|all]' \
       '  bash run.sh coakka-runtime <language> <sample>' \
-      '  bash run.sh coakka-runtime [runtime-test|client|inspect|addons|containers|scenarios|scenario] ...' \
+      '  bash run.sh coakka-runtime [coakka-runtime-test|client|inspect|addons|containers|scenarios|scenario] ...' \
       '  bash run.sh coakka-logger <language> <sample>' \
       '  bash run.sh coakka-http-runtime [verify|all|<language>] ...' ;;
   *) coakka_die "Unknown product or command: $1" ;;

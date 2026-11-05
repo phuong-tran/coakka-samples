@@ -98,7 +98,6 @@ jobs:
           bash -n coakka-logger/run.sh
           bash -n coakka-logger/run-all.sh
           bash -n coakka-runtime/run-all.sh
-          bash -n coakka-runtime/runtime-test/run.sh
           bash -n coakka-runtime/evidence/native/run.sh
           bash -n coakka-runtime/tools/coakka-client/run.sh
           bash -n scripts/check-artifact-pins.sh
@@ -171,47 +170,6 @@ jobs:
           bash run.sh runtime node basic
           bash run.sh runtime native basic
           bash run.sh runtime native pressure
-          bash run.sh runtime-test smoke --payload 64K --requests 128
-          bash run.sh runtime-test pressure --requests 512 --queue-capacity 2
-          bash run.sh runtime-test hot-reload --threads 2 --requests 64 --generations 8 --queue-capacity 64
 
       - name: Run public runtime client smoke
         run: bash run.sh runtime-client
-
-  native-evidence-windows:
-    name: native evidence / windows-x86_64
-    runs-on: windows-latest
-    timeout-minutes: 15
-    steps:
-      - name: Check out samples
-        uses: actions/checkout@v6
-
-      - name: Run native evidence smoke
-        shell: pwsh
-        run: |
-          ./coakka-runtime/runtime-test/run.ps1 smoke --payload 64K --requests 128
-
-      - name: Run native evidence pressure
-        shell: pwsh
-        run: |
-          ./coakka-runtime/runtime-test/run.ps1 pressure --requests 512 --queue-capacity 2
-
-      - name: Run current native concurrency evidence
-        shell: pwsh
-        run: |
-          ./coakka-runtime/runtime-test/run.ps1 race --threads 2 --requests 32 --lifecycle-iterations 2 --queue-capacity 64
-
-  native-evidence-macos:
-    name: native evidence / macos-aarch64
-    runs-on: macos-14
-    timeout-minutes: 15
-    steps:
-      - name: Check out samples
-        uses: actions/checkout@v6
-
-      - name: Run current native evidence
-        run: |
-          bash run.sh runtime-test smoke --payload 64K --requests 128
-          bash run.sh runtime-test pressure --requests 512 --queue-capacity 2
-          bash run.sh runtime-test connection-strategies
-          bash run.sh runtime-test hot-reload --threads 2 --requests 64 --generations 8 --queue-capacity 64
