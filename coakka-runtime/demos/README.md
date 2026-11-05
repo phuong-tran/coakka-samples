@@ -10,5 +10,5 @@ than language-binding basics.
   V4L2/ALSA publisher plus a macOS, Linux, or Windows host gateway with local
   browser control and optional-audio recording.
 
-Prebuilt evaluation binaries remain in the stable
-[`coakka-publish` camera lane](https://github.com/phuong-tran/coakka-publish/tree/main/samples/runtime/native/rpi-camera/releases/1.1.0).
+Download the Pi 5 and macOS ARM64 archives from the
+[camera 1.1.2 release](https://github.com/phuong-tran/coakka-publish/tree/main/samples/runtime/native/rpi-camera/releases/1.1.2).
