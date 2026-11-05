@@ -24,6 +24,13 @@ accepted-hello
 Go resolves the exact public /v3 module declared in [go.mod](go.mod).
 No separate Core installation is needed.
 
+If macOS reports a malformed system library or an unknown architecture while
+linking, select the SDK from the active Xcode installation and retry.
+
+```sh
+export SDKROOT="$(xcrun --sdk macosx --show-sdk-path)"
+```
+
 ## Read the code
 
 Open [main.go](main.go). It starts a local host, registers a handler, submits

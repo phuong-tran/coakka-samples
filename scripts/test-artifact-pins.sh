@@ -87,6 +87,15 @@ run_pin_check() {
 good_publish_root="$(make_publish_root good)"
 expect_success "clean publish manifest" run_pin_check "${good_publish_root}"
 
+preview_root="$(make_publish_root android-preview)"
+printf 'public\t%s\t%s\t%s\n' \
+  "Android Runtime preview AAR" \
+  "coakka-runtime/android/releases/3.2.1+fixture/coakka-runtime-android-3.2.1.aar" \
+  "0000000000000000000000000000000000000000000000000000000000000000" \
+  >>"${preview_root}/artifacts/public-artifacts.tsv"
+expect_success "public Android preview release path" run_pin_check "${preview_root}"
+
+
 bad_path_root="$(make_publish_root bad-path)"
 cat >>"${bad_path_root}/artifacts/public-artifacts.tsv" <<'EOF'
 public	outside fixture	../outside.tar.gz	0000000000000000000000000000000000000000000000000000000000000000

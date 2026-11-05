@@ -1,9 +1,11 @@
 # Python Runtime Transport Configuration
 
-This guide describes the published Python 3.0.0 API. Start with the
-[Python first-run example](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/python/registry-basic)
-for installation and a small application. Older 2.x packages keep their
-version's constructor and inspection contracts.
+This guide describes Python connector 3.2.1 on Core 3.2. Use the
+Quick Start in the package README for installation and a small application.
+Older 2.x packages keep their version's constructor and inspection contracts.
+
+The bundled Core 3.2 does not provide public TCP TLS or mTLS. Security
+apply and reload require Core to report the corresponding capability.
 
 The public CoAkka C ABI is the semantic authority. The Python connector copies
 its results into frozen Python values; it does not reinterpret lifecycle,
@@ -48,8 +50,7 @@ from coakka_v2_connector import (
     local_route,
 )
 
-library = "/opt/coakka/lib/libcoakka_runtime_v2.so"
-capabilities = RuntimeHost.read_runtime_capabilities(library)
+capabilities = RuntimeHost.read_runtime_capabilities()
 mode = (
     RuntimeTcpConnectionMode.BOUNDED_POOL
     if capabilities.supports(RuntimeCapability.TCP_BOUNDED_POOL)
@@ -64,7 +65,7 @@ spec = ConnectorStartSpec(
     security=RuntimeTcpSecuritySpec(mode=RuntimeTcpSecurityMode.PLAINTEXT),
 )
 
-with RuntimeHost.start(spec, library) as runtime:
+with RuntimeHost.start(spec) as runtime:
     assert runtime.runtime_startup_config()["connection"].mode == mode
 ```
 

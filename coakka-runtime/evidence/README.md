@@ -1,18 +1,8 @@
 # Runtime Evidence Compatibility Index
 
-The active public native harness now lives at the root-level
-[`runtime-test/`](../runtime-test/README.md), where it is visible before any
-language- or framework-specific sample. This directory remains an index and a
-compatibility location for older commands.
-
-The first lane is the native public-ABI baseline:
-
-```sh
-bash run.sh coakka-runtime runtime-test smoke
-```
-
-It consumes the published native runtime package through the public C ABI. It
-does not include or reach into private core sources.
+Run the [native test examples](../runtime-test/README.md) from the Samples checkout.
+For a first run, use `bash run.sh coakka-runtime runtime-test smoke`.
+The [public test source](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-runtime/runtime-test) includes SDK selection and build instructions.
 
 Prefer a controlled Linux host when measurements will inform Kubernetes or
 container deployment decisions. macOS, Windows, Docker, CI, and VM runs remain

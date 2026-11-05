@@ -80,7 +80,13 @@ validate_manifest_rows() {
       fail "${source_name} manifest has unsafe path on row ${line_no}: ${relative_path}"
     fi
     case "${relative_path}" in
-      logger/*/releases/*|runtime/*/releases/*|runtime-addons/*/native/releases/*|samples/runtime/native/*/releases/*/*|runtime-inspect/native/releases/*|maven/coakka/*/*/*/*.jar|maven/io/github/phuong-tran/coakka/*/*/*.jar|cli/releases/*|demo/coakka-client/releases/*|coakka-tools/*/releases/*|coakka-tools/*/*/releases/*)
+      logger/*/releases/*|runtime/*/releases/*|\
+      coakka-runtime/android/releases/*/coakka-runtime-android-*.aar|\
+      coakka-runtime/rust/releases/*/coakka-runtime-rs-*.tar.gz|\
+      coakka-runtime/tauri/releases/*/coakka-runtime-tauri-intents-*.tar.gz|\
+      coakka-runtime/zig/releases/*/coakka-runtime-zig-*.tar.gz|\
+      coakka-runtime/mojo/releases/*/coakka-runtime-mojo-*.tar.gz|\
+      runtime-addons/*/native/releases/*|samples/runtime/native/*/releases/*/*|runtime-inspect/native/releases/*|maven/coakka/*/*/*/*.jar|maven/io/github/phuong-tran/coakka/*/*/*.jar|cli/releases/*|demo/coakka-client/releases/*|coakka-tools/*/releases/*|coakka-tools/*/*/releases/*)
         ;;
       *)
         fail "${source_name} manifest has path outside the published artifact surface on row ${line_no}: ${relative_path}"

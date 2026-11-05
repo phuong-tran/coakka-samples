@@ -1,12 +1,24 @@
 # CoAkka HTTP Runtime 2.0.1 first request
 
-Run these commands from a separate application directory. Set `SAMPLE` to
-the absolute path of this directory in your samples checkout. Each registry
-example starts a loopback server, sends one request, and prints `HTTP 200 hello`.
+Choose one language below. Each example starts a local server, sends one
+request, prints `HTTP 200 hello` and exits.
+
+Clone [coakka-samples](https://github.com/phuong-tran/coakka-samples) and open
+a separate application directory. Set `SAMPLE` to the absolute path of
+`coakka-http-runtime/registry-basic` in your checkout.
+
+[HTTP package and platform guide](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/README.md)
+ · [HTTP Runtime documentation](../../docs/coakka-http-runtime/README.md)
 
 ## Node.js and Bun
 
-Copy `hello.mjs` from `$SAMPLE`, then run one of these pairs.
+Copy the sample once.
+
+```sh
+cp "$SAMPLE/hello.mjs" .
+```
+
+Run the commands for Node.js or Bun.
 
 ```sh
 npm install coakka-http-runtime-node@2.0.1
@@ -44,6 +56,13 @@ CGO_ENABLED=1 CGO_CFLAGS="-I$SDK/include" \
 
 Use the [Go package guide](https://github.com/phuong-tran/coakka-http-runtime-go/blob/v2.0.1/README.md)
 for Windows setup and macOS system SDK troubleshooting.
+
+If macOS reports a malformed system library or an unknown architecture while
+linking, select the SDK from the active Xcode installation and retry.
+
+```sh
+export SDKROOT="$(xcrun --sdk macosx --show-sdk-path)"
+```
 
 ## JVM
 

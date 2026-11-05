@@ -1,8 +1,11 @@
 # Native Runtime Test Compatibility Path
 
-The active, auditable harness is at the repository root:
-[`runtime-test/`](../../runtime-test/README.md).
+Use the [Runtime test guide](../../runtime-test/README.md) to choose the released SDK
+and run a test from Samples.
 
-Existing commands through `coakka-runtime/evidence/native` remain supported by the
-wrapper scripts in this directory, but new documentation and automation should
-use `bash run.sh coakka-runtime runtime-test ...`.
+```sh
+bash run.sh coakka-runtime runtime-test smoke
+```
+
+This directory's runner forwards the same options to the Runtime test runner.
+The [public test source](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-runtime/runtime-test) includes build instructions.

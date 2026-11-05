@@ -35,44 +35,26 @@ package repositories.
 
 ## Repository Path Names
 
-Current rolling samples use product directories. A sample directory identifies
-its product and workflow; use the package guide for an installable coordinate.
+The sample directory identifies the product and workflow. Find installable
+coordinates in [Current Packages](current-packages.md).
 
-| Path | Current meaning |
+| Path | Purpose |
 | --- | --- |
-| `coakka-runtime/` | Runtime connector and runtime scenario samples. |
-| `coakka-runtime/tools/coakka-client/` | Runtime Client samples; the published command remains `coakka-client`. |
-| `coakka-runtime/tools/coakka-runtime-inspect/` | Runtime Inspect samples. |
-| `coakka-http-runtime/` | CoAkka HTTP Runtime sample lanes. |
-| `coakka-logger/` | Logger product samples. |
-| `coakka-runtime/containers/` | Containerized Runtime demonstrations. |
+| `coakka-runtime/` | Runtime connectors and application scenarios. |
+| `coakka-runtime/tools/coakka-client/` | Runtime Client examples. Run the published command `coakka-client`. |
+| `coakka-runtime/tools/coakka-runtime-inspect/` | Runtime Inspect examples. |
+| `coakka-http-runtime/` | HTTP Runtime examples. |
+| `coakka-logger/` | Logger examples. |
+| `coakka-runtime/containers/` | Runtime demonstrations using containers. |
 
-Use [Product Layout](product-layout.md) for the directory and documentation
-map. Historical release archives and source mirrors retain their recorded
-paths. Any future path migration must update runner commands, workflows and
-user-facing docs together; never rewrite a pinned artifact URL by analogy.
+See [Product Layout](product-layout.md) for the repository map. Historical
+archives and source mirrors use the paths recorded for their release.
 
 ## Runtime Client Naming
 
-The product name is **CoAkka Runtime Client**; its ecosystem identifier is
-`coakka-runtime-client`. The released executable is **`coakka-client`**, which
-is also the archive prefix. Put the product name and released command together
-at the first introduction. Use the ecosystem identifier for naming/catalog
-discussion, not as an executable command.
-
-When documenting the CLI, use this shape:
-
-```text
-CoAkka Runtime Client is the command-line tool.
-Run the published command coakka-client.
-The published runtime-client release follows the current public runtime tools
-generation in `coakka-publish`.
-```
-
-The CLI runtime client is not the dashboard, inspect surface, or a business
-schema registry. It may print runtime diagnostics and call runtime targets, but
-topology truth, capability ownership, and message delivery semantics stay owned
-by CoAkka Runtime.
+Use **CoAkka Runtime Client** with the released command **`coakka-client`**.
+The ecosystem identifier is `coakka-runtime-client`. Use that identifier
+when referring to the product in the catalog.
 
 ## Public Wording Rules
 

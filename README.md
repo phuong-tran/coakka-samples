@@ -20,7 +20,8 @@ Use **HTTP Runtime** for HTTP services and **Logger** for logging with bounded
 storage. Each product can be adopted independently and has its own packages
 and versions.
 
-**[Choose your language and run your first example](#choose-what-you-want-to-build)**
+**[Choose your language and run your first example](#choose-what-you-want-to-build)** ·
+[Find packages, downloads and checksums](https://github.com/phuong-tran/coakka-publish/blob/main/docs/common/current-packages.md)
 
 ## Try the Node–Python web demo
 
