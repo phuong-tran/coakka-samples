@@ -4,6 +4,7 @@ These records describe their named release, not the current installation.
 Use the [published package ledger](../../common/current-packages.md) for current coordinates.
 For changes and migration by version, read the [Runtime changelog](../CHANGELOG.md).
 
+- [Core 3.2 SDK and CoAkka Runtime Test](2026-11-05-core-runtime-test-3.2.md)
 - [Rust and Tauri Intents Runtime 3.2.1 source packages](2026-11-05-rust-tauri-runtime-3.2.1-source.md)
 - [Zig and Mojo Runtime 3.2.1 source packages](2026-11-05-zig-mojo-runtime-3.2.1-source.md)
 - [Android Runtime 3.2.1 Preview](2026-11-05-android-runtime-3.2.1-preview.md)
