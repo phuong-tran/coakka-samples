@@ -91,13 +91,13 @@ APK installation. See the [Android preview record](../coakka-runtime/releases/20
 
 ## Runtime Artifact And Source-Package Entrypoints
 
-The 3.2.1 packages and tools below are the current release. The native C ABI
-archive and the frozen connector archives retain their historical 2.5.1 paths.
+The standalone Core 3.2 SDK and Runtime Test archives are available for direct
+download. The 3.2.1 tools below bundle Core 3.2.
 
 | Surface | Exact coordinate |
 | --- | --- |
-| Native C ABI | `runtime/native/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-runtime-native-v2-2.5.1.tar.gz` |
-| Connector archives | `runtime/<lane>/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e/` |
+| Native C ABI and Runtime Test | [Core 3.2 SDK, runner downloads and SHA-256](../coakka-runtime/releases/2026-11-05-core-runtime-test-3.2.md) |
+| Historical connector archives | `runtime/<lane>/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e/` |
 | coakka-client | [coakka-client 3.2.1](https://github.com/phuong-tran/coakka-publish/tree/86aa17f3d2af26bfd0faee3c02fbd9e82750592e/coakka-tools/coakka-client/releases/3.2.1%2Bf9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45) |
 | coakka-runtime-inspect | [coakka-runtime-inspect 3.2.1](https://github.com/phuong-tran/coakka-publish/tree/86aa17f3d2af26bfd0faee3c02fbd9e82750592e/coakka-tools/coakka-runtime-inspect/releases/3.2.1%2Bf9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45) |
 

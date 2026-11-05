@@ -104,7 +104,7 @@ fb069aa576e68823d92394175528b640017fed632096ff6de9542d038a3a571d  coakka-runtime
 5e216f60f41f957a8540e600c9da810d36dcb6594ff163037b3f9cbe1c685986  coakka-runtime/bun/basic/README.md
 6d1c639af3ae9f0e2afdd0419b88bce33177d8470e5b74d5bf95574ae4f2db24  coakka-runtime/bun/registry-basic/README.md
 4c5a0a29bbfb866c0203b02642ab491b72bb6d62f15379dbc22faebf473c56b2  coakka-runtime/bun/registry-basic/package.json
-1afd1edecff1f72a832758ed196a36445b2aed9e5e82ee858c27a9045f636b52  coakka-runtime/coakka-runtime-test.md
+1a247db74edb9948ddf452b09c30d05a5940e71f6589e673aea61b13bbbd0ca7  coakka-runtime/coakka-runtime-test.md
 d1d2c07379c212e0dfed6ec39d05bee81fbecc34eda84ebdd4655d13878aff2b  coakka-runtime/containers/README.md
 dfbcb91816c0bd958a57b18b9d234fb3fd2a9c2bde4856a8b657aada75ba96bd  coakka-runtime/containers/node-python/README.md
 90fca14870a978db4ce91084cb6344e148de2ac60a57cf959b590260e221ade4  coakka-runtime/containers/runtime-base/README.md
@@ -204,7 +204,7 @@ d3f86e1a74c8f2d8ea5bec63bc0c20d826ef130c97f6679013b541e88fa1d8fd  docs/coakka-ht
 9e46347e92dd4e065f2c125ebe2ef9fcebfee800653ab673dc6cf1899953f4b3  docs/coakka-logger/first-node-record.md
 aa47b319a76b590708abeec2914f40b1810ecff4b637d7923574b52af08c7d6f  docs/coakka-logger/releases/2026-08-17-logger-jvm-maven-central-1.2.2.md
 3925c507cf5ba0fc7a2278b218e3315e4c21d34c74ea2f09f7871a5f136da83f  docs/coakka-logger/releases/README.md
-1475e712df384b15f325083c015926555e5b6fc85cd58da87d4316a2cc96ed63  docs/coakka-runtime/CHANGELOG.md
+b7a713362a9e7c6e0bd7cc3823cb1ac2ef5a63e6f0836d84f07cb06e33577952  docs/coakka-runtime/CHANGELOG.md
 fd8165a814abfa0c2ee1c692d5522683eb521986d0d68481d4ce8fc79082fd34  docs/coakka-runtime/README.md
 5aced136bdd90070a2a446a4b82affe66514f2e93fe908bd8d66527c3d1f6186  docs/coakka-runtime/assets/coakka-runtime-bun.gif
 0cf0879b5672c72e32ab7b248bd550e1eb9261268dabc82947494ebf9f56ca5f  docs/coakka-runtime/assets/coakka-runtime-bun.mp4
@@ -346,6 +346,7 @@ cad51c3f0072d6aeeddd00e26473ed4a98986948de1b060a12882d4f707720d8  docs/coakka-ru
 64ea5ad014675b796fa82ed2dd127b9266d55f1bb13040badb3209f354f2903b  docs/coakka-runtime/releases/2026-11-04-npm-node-bun-runtime-3.1.2.md
 838deafa1241b9e6d418cea2a1afe131ece3c3f0631890159f2468fd9f835594  docs/coakka-runtime/releases/2026-11-04-nuget-csharp-runtime-3.1.1.md
 9fdf7d558ad3eb4d557a1fe2f7748dac50f759abf588f8c2cb101d66598b0055  docs/coakka-runtime/releases/2026-11-05-android-runtime-3.2.1-preview.md
+a467dd3f6c4b5aebddc59fd8db3fd64d32ccda9a950aad52d63ade735173e603  docs/coakka-runtime/releases/2026-11-05-core-runtime-test-3.2.md
 ecc13509d6cf2aac0038497eca7d36e2ef411e115550c826b1ca59f3dd22d2d9  docs/coakka-runtime/releases/2026-11-05-go-runtime-3.2.1-github.md
 355731e9b8add3ed4c1e9a305232a09f2e4095f12680672158d9cca1430160d5  docs/coakka-runtime/releases/2026-11-05-jvm-spring-quarkus-runtime-3.2.1-maven-central.md
 17e6ab3631504904b61968af2f63a9c4d3e6765eb08a0ec6bfb81b1541f4287f  docs/coakka-runtime/releases/2026-11-05-npm-node-bun-electron-runtime-3.2.1.md
@@ -355,7 +356,7 @@ a8c101c37de53b1d733806619dd1c33b90857760520dbc49fdfee934af4bea99  docs/coakka-ru
 246223eba9625ea74282a88a8b7bb1be72f141bc82ceec97a21fc8c4a6ee0679  docs/coakka-runtime/releases/2026-11-05-rust-tauri-runtime-3.2.1-source.md
 257c67d8b75bc71baaa329edb7a0d27fa64a06d3d7c5d5ace477568c3b3387de  docs/coakka-runtime/releases/2026-11-05-swift-runtime-3.2.1-github.md
 870bebb4c55355a0817a2f5bc7f02df5b80438dc6d68d00a156085756cc97691  docs/coakka-runtime/releases/2026-11-05-zig-mojo-runtime-3.2.1-source.md
-13e32d4f05859f9f5f1aaff6babd31e560dd8b8978ecd298a786934272c1f1b8  docs/coakka-runtime/releases/README.md
+5b6834b439d97861e7ea91687d2efad4a4d293062853cf245a0f5536537106e9  docs/coakka-runtime/releases/README.md
 cb918405c4d9cadeca0fec70a980cc8cae92460d348022926df229c1f457fc76  docs/coakka-runtime/tools/coakka-client/README.md
 2b80406c270ef60f288d3bd469f559fa7dda56887285a7703488c92142f50f41  docs/coakka-runtime/tools/coakka-client/introduction.md
 511f7477bfdd8dfaa0ceae0c55c71df06a8a63a0c29a9aab042548dddd605f54  docs/coakka-runtime/tools/coakka-client/technical-notes.md
@@ -378,7 +379,7 @@ d47c7641e81844da64ed0826007588c68b40d615d82992806c576bfaae485ed8  docs/common/as
 de812af159147a3b18f560d9b275a4c8a12ff74184ffa62e14e739813deb8d6a  docs/common/brand-assets.md
 6ec33ca34a47368194f9c934cdd837a82f560eed0b653f3defd8a3748cbf6039  docs/common/coakka-ecosystem-naming.md
 14b81cbe2fd99c0135e055ef52fc98bad9db7d81dd97a7a5cdfb7e8869d1dcc0  docs/common/contact-and-support.md
-0d09d617faeec5704b36ff0c30f3e2354c8edfcb780eeb50c6480c0712cbcdf6  docs/common/current-packages.md
+3ee650a74920ba00d827de122892e2a2a475e58ed993e5747bc9e92be93ec0d2  docs/common/current-packages.md
 6abdff9a08d00f78e555a2545374bd0f414fc6b46187b34240d89bb174ee05c2  docs/common/ecosystem-overview.md
 cc63d02caf09126933fff28fd53fb24bb497b3ba3dfc1e539633925271e1773e  docs/common/new-to-coakka.md
 d37e9a10935c509e27f6f68cea77ced5f827fa5a8d9714b885a4b0d6e49ed571  docs/common/package-licensing.md

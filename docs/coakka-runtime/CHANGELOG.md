@@ -6,6 +6,13 @@ developers; the [current package ledger](../common/current-packages.md) owns
 installation versions, and [release history](releases/README.md) retains the
 individual release records and package details.
 
+## Core 3.2 native downloads
+
+Released 2026-11-05. The standalone Community SDK exposes C ABI 1.
+The five CoAkka Runtime Test archives bundle the same Core libraries and
+run without a compiler. This release is unsigned.
+[Download the SDK or a runner and verify SHA-256](releases/2026-11-05-core-runtime-test-3.2.md).
+
 ## 3.2.1
 
 Released 2026-11-05. Connector revision 1 on Core generation 3.2. The bundled Core uses
