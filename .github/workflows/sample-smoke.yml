@@ -57,9 +57,11 @@ jobs:
           cache: false
 
       - name: Run public Go runtime samples
+        working-directory: coakka-runtime/go/registry-basic
         run: |
-          bash run.sh runtime go basic
-          bash run.sh runtime go deadletter
+          go run -mod=readonly .
+          # Resolve the deadletter example against the same public module.
+          go run -mod=readonly ../deadletter/main.go
 
   surface:
     name: public sample surface
@@ -83,7 +85,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: "21"
+          java-version: "17"
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v5
@@ -163,11 +165,24 @@ jobs:
           bash run.sh logger csharp basic
           bash run.sh logger rust basic
 
-      - name: Run public runtime smoke
+      - name: Run public JVM runtime sample
+        run: bash gradlew --no-daemon -p coakka-runtime/jvm/registry-basic run
+
+      - name: Run public Python runtime sample
         run: |
-          bash run.sh runtime jvm basic
-          bash run.sh runtime python basic
-          bash run.sh runtime node basic
+          venv="${RUNNER_TEMP}/coakka-runtime-python"
+          python -m venv "${venv}"
+          "${venv}/bin/python" -m pip install coakka-v2-connector==3.2.1
+          "${venv}/bin/python" coakka-runtime/python/registry-basic/main.py
+
+      - name: Run public Node.js runtime sample
+        working-directory: coakka-runtime/node/registry-basic
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          node main.mjs
+
+      - name: Run public native runtime samples
+        run: |
           bash run.sh runtime native basic
           bash run.sh runtime native pressure
 
