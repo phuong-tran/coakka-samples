@@ -1,0 +1,15 @@
+name: Documentation projection
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  projection:
+    name: Documentation projection
+    uses: phuong-tran/coakka-publish/.github/workflows/docs-projection.yml@main
