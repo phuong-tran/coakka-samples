@@ -18,13 +18,28 @@ proxy to supply those mechanics.
 | `PERSISTENT_SINGLE_FLIGHT` | Retain at most one connection per exact endpoint and serialize exchanges | 1 | `TCP_PERSISTENT_SINGLE_FLIGHT` |
 | `MULTIPLEXED` | Retain an endpoint connection and correlate bounded streams | Bounded, currently 16 | `TCP_MULTIPLEXING` |
 
-The current native startup contract resolves omitted execution and connection
-groups inside Core to CPU `AUTO` and persistent `MULTIPLEXED`; omitted security
-remains `PLAINTEXT`. These are accepted Core facts, not connector-side default
-tables. The frozen legacy `coakka_v2_runtime_create` entrypoint retains
-`PER_EXCHANGE + PLAINTEXT` for compatibility. Nothing silently enables TLS or
-mTLS, and documentation for a legacy package must identify that constructor
-scope instead of presenting its connection mode as the universal default.
+## Default Scope And Presence
+
+The default depends on the construction contract and on whether the connection
+group is absent or present. Keep those facts separate:
+
+| Construction input | Effective connection result | Provenance |
+| --- | --- | --- |
+| Current native startup contract with the connection group absent | Core selects persistent `MULTIPLEXED` | Defaulted by Core and reported in the accepted startup snapshot |
+| Current native startup contract with a present mode of `PER_EXCHANGE` (numeric zero) | `PER_EXCHANGE` | Explicit application intent, not omission |
+| Frozen legacy `coakka_v2_runtime_create` with no connection apply | `PER_EXCHANGE` | Compatibility default scoped only to that constructor |
+
+Omitted security remains `PLAINTEXT` on both construction paths. Nothing
+silently enables TLS or mTLS. Documentation for a legacy package must identify
+its constructor scope instead of presenting its connection mode as the
+universal default.
+
+Connectors must preserve optional-group presence. They must not materialize a
+zero-valued connection group to represent omission: doing so changes current
+Core intent from defaulted `MULTIPLEXED` to explicit `PER_EXCHANGE`. The normal
+connector path leaves the group absent, then reads Core's accepted startup
+configuration. A caller that supplies `PER_EXCHANGE` receives that explicit
+mode and its explicit/defaulted provenance back from Core.
 
 `AUTO` selects CPU execution policy; it is independent of connection strategy.
 For why `AUTO` and `MULTIPLEXED` are the normal defaults, why optional monitor
