@@ -44,11 +44,11 @@ Each first run shows the prerequisites, command and expected result.
 
 | Host | Install or dependency coordinate | First run |
 | --- | --- | --- |
-| Node.js | [`npm install coakka-http-runtime-node@2.0.1`](https://www.npmjs.com/package/coakka-http-runtime-node/v/2.0.1) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md#nodejs-and-bun) |
-| Bun | [`bun add coakka-http-runtime-bun@2.0.1`](https://www.npmjs.com/package/coakka-http-runtime-bun/v/2.0.1) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md#nodejs-and-bun) |
-| Python | [`python -m pip install coakka-http-runtime-python==2.0.1`](https://pypi.org/project/coakka-http-runtime-python/2.0.1/) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md#python) |
-| Java / Kotlin | [`io.github.phuong-tran.coakka:coakka-http-runtime-jvm:2.0.1`](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/coakka-http-runtime-jvm/2.0.1) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md#jvm) |
-| Go | [`go get github.com/phuong-tran/coakka-http-runtime-go/v2@v2.0.1`](https://pkg.go.dev/github.com/phuong-tran/coakka-http-runtime-go/v2@v2.0.1) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md#go) |
+| Node.js | [`npm install coakka-http-runtime-node@2.2.1`](https://www.npmjs.com/package/coakka-http-runtime-node/v/2.2.1) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md#nodejs-or-bun) |
+| Bun | [`bun add coakka-http-runtime-bun@2.2.1`](https://www.npmjs.com/package/coakka-http-runtime-bun/v/2.2.1) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md#nodejs-or-bun) |
+| Python | [`python -m pip install coakka-http-runtime-python==2.2.1`](https://pypi.org/project/coakka-http-runtime-python/2.2.1/) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md#python) |
+| Java / Kotlin | [`io.github.phuong-tran.coakka:coakka-http-runtime-jvm:2.2.1`](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/coakka-http-runtime-jvm/2.2.1) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md#java-and-kotlin) |
+| Go | [`go get github.com/phuong-tran/coakka-http-runtime-go/v2@v2.2.1`](https://pkg.go.dev/github.com/phuong-tran/coakka-http-runtime-go/v2@v2.2.1) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md#go) |
 
 ### CoAkka Logger
 
@@ -64,6 +64,10 @@ Each first run shows the prerequisites, command and expected result.
 | Swift | [`.package(url: "https://github.com/phuong-tran/coakka-logger-swift.git", exact: "1.2.2")`](https://github.com/phuong-tran/coakka-logger-swift/releases/tag/v1.2.2) | [Run the sample](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-logger/swift/basic) |
 
 <!-- /package-catalog -->
+
+For CoAkka HTTP Runtime in C or C++, download the
+[Native SDK 2.2.0 and its SHA-256 checksums](https://github.com/phuong-tran/coakka-http-runtime-go/releases/tag/v2.2.1)
+and [build a native sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md#c-and-c).
 
 ## Runtime source archives and previews
 
@@ -108,16 +112,13 @@ lists verified downloads and SHA-256 values. The Docker demos use their own
 
 ## HTTP Runtime SDK
 
-HTTP Runtime has its own packages and release cadence. Version `2.0.1`
-means Core generation `2.0` and connector revision `1`. The native SDK pin
-is `2.0.1` with C ABI 10. Version `1.1.2` is deprecated for new installs.
-See [the versioning
-guide](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/versions.md).
+Connector version `2.2.1` means Core generation `2.2`, connector revision
+`1`. It pins native SDK `2.2.0` with C ABI 10.
+See the [release notes](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/release-2.2.1.md) and
+[versioning guide](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/versions.md).
 
-[Install the connector for your language](#coakka-http-runtime).
-
-For C, C++, or Go, download the [2.0.1 native SDK for your platform](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/2.0.1).
-[Run a first request](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/registry-basic/README.md).
+For C, C++ or Go, download the [2.2.0 native SDK and SHA-256 checksums](https://github.com/phuong-tran/coakka-http-runtime-go/releases/tag/v2.2.1).
+[Run a first request](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md).
 
 ## Runtime Addons
 
