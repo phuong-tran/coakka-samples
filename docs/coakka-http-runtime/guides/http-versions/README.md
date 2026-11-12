@@ -1,8 +1,7 @@
 # Choose an HTTP version
 
-The 2.2.1 registry rollout starts with Node.js and Bun on npm. Use the
-Go, Python and JVM instructions once the matching package is available
-in its registry. The native examples require SDK 2.2.0.
+The 2.2.1 packages are released by registry. Use each example once its
+connector version is available. The native examples require SDK 2.2.0.
 
 All four exercises serve `GET /hello` from CoAkka HTTP Runtime and return
 `hello`. The listener configuration decides how clients connect. The
