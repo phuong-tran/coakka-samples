@@ -1,0 +1,16 @@
+cmake_minimum_required(VERSION 3.24)
+project(coakka_http_protocol_samples LANGUAGES C CXX)
+find_package(CoAkkaHttpHost 2.2.0 EXACT CONFIG REQUIRED)
+add_executable(coakka-http-c server.c)
+add_executable(coakka-http-cpp server.cpp)
+target_compile_features(coakka-http-c PRIVATE c_std_11)
+target_compile_features(coakka-http-cpp PRIVATE cxx_std_17)
+target_link_libraries(coakka-http-c PRIVATE CoAkkaHttp::host)
+target_link_libraries(coakka-http-cpp PRIVATE CoAkkaHttp::host)
+if(WIN32)
+  foreach(sample IN ITEMS coakka-http-c coakka-http-cpp)
+    add_custom_command(TARGET "${sample}" POST_BUILD
+      COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+        "$<TARGET_FILE:CoAkkaHttp::host>" "$<TARGET_FILE_DIR:${sample}>")
+  endforeach()
+endif()

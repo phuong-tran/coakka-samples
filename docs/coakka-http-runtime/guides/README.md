@@ -9,3 +9,5 @@
 - [TypeScript / Node.js / Bun: installation and integration](../typescript/integration.md)
 
 [HTTP documentation](../README.md).
+
+[HTTP version exercises](http-versions/README.md) cover HTTP/1.1, HTTP/2, HTTP/3 and listener V1.
