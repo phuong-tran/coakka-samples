@@ -76,9 +76,10 @@ CGO_ENABLED=1 CGO_CFLAGS="-I$sdk/include" \
 
 ## Java and Kotlin
 
-Resolve the JVM 2.2.1 JAR and matching platform classifier ZIP from Maven
-Central, using either Maven or Gradle. The connector requires Kotlin
-stdlib 2.3.10 at runtime. Extract the ZIP and set `native_dir` to the
+Use `io.github.phuong-tran.coakka:coakka-http-runtime-jvm:2.2.1` from Maven
+Central. Resolve the JAR and matching platform classifier ZIP with Maven or
+Gradle. The connector requires Kotlin stdlib 2.3.10 at runtime.
+Extract the ZIP and set `native_dir` to the
 directory containing both native libraries. Set `connector_jar` and
 `kotlin_stdlib` to the absolute paths of the JARs.
 [JVM installation guide](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/jvm/README.md)
