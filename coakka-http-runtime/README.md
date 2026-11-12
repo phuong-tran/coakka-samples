@@ -11,7 +11,13 @@ HTTP delivery, limits and shutdown.
 tests against the SDK you install. See how the tests check that requests
 stay with the right service, resources are released, and failures are handled.
 
-## Version 2.0.1
+## Start with connector 2.2.1 and Core SDK 2.2.0
+
+[Run the HTTP version samples](protocol-listeners/README.md) to install a
+connector, serve a route and verify the negotiated protocol. The examples
+cover C, C++, Go, Node.js, Bun, Python, Java and Kotlin.
+
+## Historical examples for 2.0.1
 
 [Run your first request](registry-basic/README.md) · [C and C++ examples](native/host-server/README.md)
 
@@ -60,3 +66,5 @@ running your first language example. See [feature coverage](../docs/coakka-http-
 and the [recorded package scope](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/README.md).
 
 [HTTP documentation](../docs/coakka-http-runtime/README.md) · [Other products](../README.md).
+
+[HTTP version exercises](../docs/coakka-http-runtime/guides/http-versions/README.md) cover HTTP/1.1, HTTP/2, HTTP/3 and listener V1.

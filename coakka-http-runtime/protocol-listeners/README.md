@@ -1,7 +1,7 @@
 # Run the HTTP version samples
 
-The 2.2.1 packages are released by registry. Use each example once its
-connector version is available. The native examples require SDK 2.2.0.
+The 2.2.1 connectors are available on their official package channels. C,
+C++ and Go examples need the matching [Core SDK 2.2.0](https://github.com/phuong-tran/coakka-http-runtime-go/releases/tag/v2.2.1).
 
 Each sample serves `GET /hello` and returns `hello`. Start one mode,
 run the matching curl command, then stop the sample before starting a
