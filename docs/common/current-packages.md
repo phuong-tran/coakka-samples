@@ -49,7 +49,6 @@ Each first run shows the prerequisites, command and expected result.
 | Python | [`python -m pip install coakka-http-runtime-python==2.2.1`](https://pypi.org/project/coakka-http-runtime-python/2.2.1/) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md#python) |
 | Java / Kotlin | [`io.github.phuong-tran.coakka:coakka-http-runtime-jvm:2.2.1`](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/coakka-http-runtime-jvm/2.2.1) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md#java-and-kotlin) |
 | Go | [`go get github.com/phuong-tran/coakka-http-runtime-go/v2@v2.2.1`](https://pkg.go.dev/github.com/phuong-tran/coakka-http-runtime-go/v2@v2.2.1) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md#go) |
-| C / C++ | [Native SDK 2.2.0 and SHA-256 checksums](https://github.com/phuong-tran/coakka-http-runtime-go/releases/tag/v2.2.1) | [Build a native sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md#c-and-c) |
 
 ### CoAkka Logger
 
@@ -65,6 +64,10 @@ Each first run shows the prerequisites, command and expected result.
 | Swift | [`.package(url: "https://github.com/phuong-tran/coakka-logger-swift.git", exact: "1.2.2")`](https://github.com/phuong-tran/coakka-logger-swift/releases/tag/v1.2.2) | [Run the sample](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-logger/swift/basic) |
 
 <!-- /package-catalog -->
+
+For CoAkka HTTP Runtime in C or C++, download the
+[Native SDK 2.2.0 and its SHA-256 checksums](https://github.com/phuong-tran/coakka-http-runtime-go/releases/tag/v2.2.1)
+and [build a native sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md#c-and-c).
 
 ## Runtime source archives and previews
 
