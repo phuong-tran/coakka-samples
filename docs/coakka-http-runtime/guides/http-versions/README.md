@@ -16,6 +16,15 @@ Use Core SDK 2.2.0 or the matching 2.2.1 connector. The
 show how to install or select the package and start the same listener
 from C, C++, Go, Node.js, Bun, Python, Java and Kotlin.
 
+In 2.2.1, Node.js and Bun expose both standalone selection and listener V1
+for a shared port. Go, Python, Java and Kotlin expose standalone selection.
+The C and C++ examples also show standalone selection; native applications
+can use the additive V1 API in SDK 2.2.0. See the
+[feature and profile map](../../reference/FEATURES.md#what-you-can-use-in-221)
+before combining protocol settings with advanced features.
+
+## Prepare local TLS files
+
 For the HTTPS exercises, generate a local CA and server identity from the
 root of the Samples repository:
 
@@ -25,4 +34,8 @@ bash coakka-http-runtime/scripts/generate-test-certificates.sh ./http-test-tls
 
 The listener loads `server.pem` and `server.key`. The certificate covers
 `127.0.0.1` and `localhost`. Pass `ca.pem` to curl to verify the server.
-The script generates short-lived credentials for local tests.
+The script generates short-lived credentials for local tests. Copy
+`http-test-tls` into the application's working directory if using the
+README's relative-path examples. Deploy with a certificate chain for your
+actual host and keep its private key outside source control. On Windows,
+use `curl.exe` and run the certificate script with Bash and OpenSSL.

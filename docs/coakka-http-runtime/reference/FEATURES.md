@@ -9,6 +9,25 @@ verified test. **Example** means source exists; it does not mean every failure
 path or every platform has been exercised. **Gap** is work still required, not
 an unsupported-product claim. The current checks use exact offline candidates.
 
+## What you can use in 2.2.1
+
+| Goal | API or profile | Start here |
+| --- | --- | --- |
+| Serve an API over HTTP/1.1, HTTP/2, or HTTP/3 | Standalone listener, one version per listener | [Install and select a protocol](../guides/http-versions/README.md) |
+| Serve one buffered API on all 3 protocols at one HTTPS port | Listener V1, Node.js/Bun or the native SDK | [Use one port](../guides/http-versions/multi.md) |
+| Receive uploads or send incremental responses | Standalone request/response streaming; check the selected protocol for trailer support | [Upload and stream recipes](#try-the-existing-routes) |
+| Push updates to a client | Standalone SSE; for bidirectional messaging, use the HTTP/1.1 WebSocket recipe | [SSE and WebSocket recipes](#try-the-existing-routes) |
+| Serve assets, a single-page app or a selected download | Standalone static mounts and confined file responses | [File, range and cache examples](#try-the-existing-routes) |
+| Secure an endpoint or verify client identity | Standalone TLS/mTLS as allowed by the protocol; V1 uses a server certificate | [Security examples by language](#find-the-source) |
+| Call an upstream HTTP service | Outbound targets with explicit trust, deadlines, cancellation and terminal results | [Outbound and TLS examples](#find-the-source) |
+| Change a handler while serving traffic | Generation-checked rebind on standalone; Node.js/Bun `swapHandler()` on V1 | [Route and handler recipes](#feature-matrix) |
+| Observe live behavior | Pull health, routes and effective settings; reserve bounded monitoring at startup | [Monitoring and runtime information](#configuration-and-ownership) |
+
+The protocol exercises are pinned to 2.2.1 and SDK 2.2.0. The longer
+feature applications and historical verification records below retain
+their own package pins. Use a standalone listener for features that
+need more than V1's buffered request/reply profile.
+
 ## Contents
 
 - [Find The Source](#find-the-source)

@@ -4,6 +4,9 @@ Listener V1 in Core SDK 2.2.0 enables one fixed profile: HTTPS over
 HTTP/1.1, HTTP/2 and HTTP/3. The server opens TCP and UDP on the same
 port. TCP clients negotiate HTTP/1.1 or HTTP/2 during TLS. QUIC clients
 use UDP for HTTP/3. All 3 can call the same buffered request/reply route.
+Listener V1 selects this fixed profile; there is no protocol array to fill in.
+The standalone listener API remains supported for one protocol and other
+service profiles.
 
 Generate the [local certificates](README.md) and run the [Node.js or Bun
 sample](../../../../coakka-http-runtime/protocol-listeners/README.md) in
@@ -42,4 +45,6 @@ depend on it.
 The V1 profile serves buffered request/reply routes with a server
 certificate. Use the standalone listener for features such as streaming,
 WebSockets, mTLS or certificate reload. Allow both TCP and UDP through
-the firewall and any proxy if you want clients to reach all 3 protocols.
+the firewall if clients connect directly. If a proxy terminates TLS or
+QUIC, verify both the client-to-proxy and proxy-to-application hops:
+the curl result describes the hop it connects to.

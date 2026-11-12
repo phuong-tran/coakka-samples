@@ -10,7 +10,7 @@ example.
 | [`http1`](../../docs/coakka-http-runtime/guides/http-versions/http1.md) | `http://127.0.0.1:8080/hello` | HTTP/1.1, plain TCP |
 | [`http2`](../../docs/coakka-http-runtime/guides/http-versions/http2.md) | `https://127.0.0.1:8443/hello` | HTTP/2, TLS over TCP |
 | [`http3`](../../docs/coakka-http-runtime/guides/http-versions/http3.md) | `https://127.0.0.1:8443/hello` | HTTP/3, QUIC over UDP |
-| [`multi`](../../docs/coakka-http-runtime/guides/http-versions/multi.md) | `https://127.0.0.1:8443/hello` | Listener V1, Node.js or Bun |
+| [`multi`](../../docs/coakka-http-runtime/guides/http-versions/multi.md) | `https://127.0.0.1:8443/hello` | Listener V1, Node.js or Bun in these samples |
 
 Start in the root of this repository. For HTTPS, generate short-lived
 loopback credentials and keep the absolute directory for the launch commands:
@@ -24,7 +24,11 @@ cd coakka-http-runtime/protocol-listeners
 For the plain HTTP/1.1 case, you may set `certs="$PWD/http-test-tls"` and
 skip certificate generation. The sample reads certificates only for HTTPS.
 In the commands below, change `http1` to `http2` or `http3` to run the
-corresponding single-protocol example.
+corresponding single-protocol example. The startup message prints the
+address. Use the curl command in the mode's linked guide to check both
+the status and the negotiated version. `multi` is accepted by the
+Node.js and Bun examples; the C and C++ samples here use the standalone
+API.
 
 ## Node.js or Bun
 
