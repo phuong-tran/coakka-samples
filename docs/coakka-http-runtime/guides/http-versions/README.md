@@ -1,7 +1,6 @@
 # Choose an HTTP version
 
-The 2.2.1 packages are released by registry. Use each example once its
-connector version is available. The native examples require SDK 2.2.0.
+Use connector 2.3.1 or Core SDK 2.3.0 for these exercises.
 
 All four exercises serve `GET /hello` from CoAkka HTTP Runtime and return
 `hello`. The listener configuration decides how clients connect. The
@@ -14,16 +13,15 @@ application handler stays the same.
 | [HTTP/3](http3.md) | HTTPS over QUIC on UDP | `200 3` |
 | [HTTP/1.1, HTTP/2 and HTTP/3 on one port](multi.md) | Listener V1 with TLS on TCP and QUIC on UDP | All 3 on the same port |
 
-Use Core SDK 2.2.0 or the matching 2.2.1 connector. The
-[language samples](../../../../coakka-http-runtime/protocol-listeners/README.md)
+The [language samples](../../../../coakka-http-runtime/protocol-listeners/README.md)
 show how to install or select the package and start the same listener
 from C, C++, Go, Node.js, Bun, Python, Java and Kotlin.
 
-In 2.2.1, Node.js and Bun expose both standalone selection and listener V1
-for a shared port. Go, Python, Java and Kotlin expose standalone selection.
-The C and C++ examples also show standalone selection; native applications
-can use the additive V1 API in SDK 2.2.0. See the
-[feature and profile map](../../reference/FEATURES.md#what-you-can-use-in-221)
+Go, Node.js, Bun, Python, Java and Kotlin each expose standalone selection
+and the shared listener. The C and C++ exercises show standalone selection.
+Native applications can also use the shared listener through the optional
+ABI 10 extension. See the
+[feature and profile map](../../reference/FEATURES.md#what-you-can-use-in-231)
 before combining protocol settings with advanced features.
 
 ## Prepare local TLS files

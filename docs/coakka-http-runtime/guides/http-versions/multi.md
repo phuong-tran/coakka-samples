@@ -1,19 +1,25 @@
 # Serve HTTP/1.1, HTTP/2 and HTTP/3 on one port
 
-Listener V1 in Core SDK 2.2.0 enables one fixed profile: HTTPS over
+The shared listener in Core SDK 2.3.0 enables HTTPS over
 HTTP/1.1, HTTP/2 and HTTP/3. The server opens TCP and UDP on the same
 port. TCP clients negotiate HTTP/1.1 or HTTP/2 during TLS. QUIC clients
 use UDP for HTTP/3. All 3 can call the same buffered request/reply route.
-Listener V1 selects this fixed profile; there is no protocol array to fill in.
+Selecting this profile enables all 3 versions together.
 The standalone listener API remains supported for one protocol and other
 service profiles.
 
-Generate the [local certificates](README.md) and run the [Node.js or Bun
-sample](../../../../coakka-http-runtime/protocol-listeners/README.md) in
-`multi` mode. The connector calls `multiProtocolListener({...})`.
-For C and C++, the native SDK exposes the additive
+Generate the [local certificates](README.md#prepare-local-tls-files) and run
+the [sample for your language](../../../../coakka-http-runtime/protocol-listeners/README.md)
+in `multi` mode with connector 2.3.1.
+
+| Language | Builder method |
+| --- | --- |
+| Go | `MultiProtocolListener(...)` |
+| Node.js, Bun, Java, Kotlin | `multiProtocolListener(...)` |
+| Python | `multi_protocol_listener(...)` |
+
+For C and C++, the native SDK exposes the optional
 `coakka_http_host_multi_listener_get_api_v1` table alongside ABI 10.
-Go, Python, Java and Kotlin expose standalone protocol selection in 2.2.1.
 
 Leave this one server running and use the same URL in all 3 calls:
 
