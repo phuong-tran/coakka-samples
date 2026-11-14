@@ -245,6 +245,7 @@ def demonstrate_route_publication() -> None:
         publication = RoutePublication(
             activation_id=1,
             expected_route_generation=before.identity.route_generation,
+            expected_metadata_generation=before.identity.metadata_generation,
             expected_binding_change_sequence=before.identity.binding_change_sequence,
             routes=(
                 Route(
@@ -272,7 +273,12 @@ def demonstrate_route_publication() -> None:
         if len(after.routes) != 1 or after.routes[0].route_id != 2:
             raise RuntimeError("Core route snapshot did not reflect publication")
         stale = service.publish_routes(RoutePublication(
-            2, before.identity.route_generation, before.identity.binding_change_sequence, ()))
+            activation_id=2,
+            expected_route_generation=before.identity.route_generation,
+            expected_metadata_generation=before.identity.metadata_generation,
+            expected_binding_change_sequence=before.identity.binding_change_sequence,
+            routes=(),
+        ))
         if stale.code is not RoutePublicationCode.GENERATION_MISMATCH or service.routes != after:
             raise RuntimeError("stale publication changed the effective route cut")
     finally:

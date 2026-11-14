@@ -235,6 +235,7 @@ private fun demonstrateRoutePublication() {
         val publication = RoutePublication(
             activationId = 1,
             expectedRouteGeneration = before.routeGeneration,
+            expectedMetadataGeneration = before.metadataGeneration,
             expectedBindingChangeSequence = before.bindingChangeSequence,
             routes = listOf(
                 RuntimeRoute(

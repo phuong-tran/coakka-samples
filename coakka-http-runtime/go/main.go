@@ -362,6 +362,7 @@ func demonstrateRoutePublication() (result error) {
 	}
 	publication := coakkahttp.RoutePublication{
 		ActivationID: 1, ExpectedRouteGeneration: initial.RouteGeneration,
+		ExpectedMetadataGeneration:    initial.MetadataGeneration,
 		ExpectedBindingChangeSequence: initial.BindingChangeSequence,
 		Routes: []coakkahttp.Route{{
 			ID: 2, HandlerBindingID: 2, Method: http.MethodGet, Pattern: "/published",
