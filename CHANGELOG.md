@@ -5,6 +5,11 @@ surface. It is not a repository release ledger. Artifact versions, manifests,
 and checksums live in the versioned
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) warehouse.
 
+## [Unreleased]
+
+- Add runnable HTTP/1.1, HTTP/2, HTTP/3 and shared TLS listener samples
+  for C# and Swift. See [HTTP version samples](coakka-http-runtime/protocol-listeners/README.md).
+
 ## HTTP Runtime 2.2.1 — 2026-11-12
 
 - Added separate [HTTP/1.1, HTTP/2, HTTP/3 and shared-port exercises](docs/coakka-http-runtime/guides/http-versions/README.md),

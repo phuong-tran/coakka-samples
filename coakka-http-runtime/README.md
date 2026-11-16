@@ -1,11 +1,11 @@
 # CoAkka HTTP Runtime Samples
 
 HTTP Runtime runs HTTP services and sends outbound requests from C, C++, Go,
-Kotlin, Java, Python, Node.js and Bun. Each service runs its own instance.
+Kotlin, Java, Python, Node.js, Bun, C# and Swift. Each service runs its own instance.
 Application handlers use their language API while the native runtime handles
 HTTP delivery, limits and shutdown.
 
-[HTTP documentation](../docs/coakka-http-runtime/README.md) · [Pi 5 benchmark](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/README.md)
+[HTTP documentation](../docs/coakka-http-runtime/README.md) · [Pi 5 benchmark](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/README.md) · [GitHub Sponsors](https://github.com/sponsors/phuong-tran)
 
 **[coakka-http-runtime-test](coakka-http-runtime-test.md)** — read and run the public C and C++
 tests against the SDK you install. See how the tests check that requests
@@ -16,6 +16,11 @@ stay with the right service, resources are released, and failures are handled.
 [Run the HTTP version samples](protocol-listeners/README.md) to install a
 connector, serve a route and verify the negotiated protocol. The examples
 cover C, C++, Go, Node.js, Bun, Python, Java and Kotlin.
+
+## Connector 2.3.1 samples
+
+The candidate projects also cover C# and Swift with both standalone and
+shared TLS listeners. See [the build and run commands](protocol-listeners/README.md).
 
 ## Historical examples for 2.0.1
 
