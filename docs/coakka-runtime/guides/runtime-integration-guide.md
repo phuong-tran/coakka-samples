@@ -19,7 +19,7 @@ API or choose a deployment topology first.
 
 Install the connector for your application host from the
 [published package ledger](../../common/current-packages.md). Use its matching
-3.0.0 examples and package components together. The normal package includes
+versioned examples and package components together. The normal package includes
 Runtime; a separate Core installation is not needed.
 
 For a business example, start with [examples and use cases](examples-and-use-cases.md).

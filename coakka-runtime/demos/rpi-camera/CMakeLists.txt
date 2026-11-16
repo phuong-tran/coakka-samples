@@ -237,6 +237,31 @@ function(coakka_camera_target_defaults target)
   endif()
 endfunction()
 
+function(coakka_camera_install_app target component)
+  install(TARGETS ${target} RUNTIME DESTINATION . COMPONENT ${component})
+
+  # The build stages the exact runtime images and their loader names next to
+  # the executable. Package those files so a fresh install has the same layout.
+  set(build_directory "$<TARGET_FILE_DIR:${target}>")
+  set(runtime_files
+    "${build_directory}/$<TARGET_FILE_NAME:CoAkkaRuntimeNativeV2::runtime_v2>")
+  if(COAKKA_HTTP_HOST_STAGE_FILES)
+    foreach(http_stage_file IN LISTS COAKKA_HTTP_HOST_STAGE_FILES)
+      get_filename_component(http_stage_name "${http_stage_file}" NAME)
+      list(APPEND runtime_files "${build_directory}/${http_stage_name}")
+    endforeach()
+  else()
+    list(APPEND runtime_files
+      "${build_directory}/$<TARGET_FILE_NAME:CoAkkaHttp::host>")
+    if(UNIX)
+      list(APPEND runtime_files
+        "${build_directory}/$<TARGET_SONAME_FILE_NAME:CoAkkaHttp::host>")
+    endif()
+  endif()
+  list(REMOVE_DUPLICATES runtime_files)
+  install(FILES ${runtime_files} DESTINATION . COMPONENT ${component})
+endfunction()
+
 if(COAKKA_CAMERA_BUILD_HOST)
   add_executable(coakka_camera_host
     src/stream_lane_camera_web_demo.cc
@@ -247,6 +272,7 @@ if(COAKKA_CAMERA_BUILD_HOST)
     COAKKA_V2_CAMERA_HOST_APP=1
     COAKKA_CAMERA_PUBLIC_SOURCE_COMMIT="${COAKKA_CAMERA_SOURCE_COMMIT}")
   coakka_camera_target_defaults(coakka_camera_host)
+  coakka_camera_install_app(coakka_camera_host host)
   if(WIN32)
     target_link_libraries(coakka_camera_host PRIVATE dbghelp ws2_32)
   endif()
@@ -336,6 +362,7 @@ if(COAKKA_CAMERA_BUILD_PI)
     COAKKA_V2_CAMERA_PI_APP=1
     COAKKA_CAMERA_PUBLIC_SOURCE_COMMIT="${COAKKA_CAMERA_SOURCE_COMMIT}")
   coakka_camera_target_defaults(coakka_camera_pi)
+  coakka_camera_install_app(coakka_camera_pi pi)
   target_link_libraries(coakka_camera_pi PRIVATE ALSA::ALSA)
   add_test(NAME coakka_camera_pi_cli_help
     COMMAND coakka_camera_pi --help)

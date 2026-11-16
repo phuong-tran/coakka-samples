@@ -1,5 +1,9 @@
 # Rust sample candidate
 
+This historical 3.0.0 workflow requires its original archive and a Samples
+revision that still carries its pin. See the
+[3.2.1 guide](../3.2.1/runtime-rust-candidate.md) for the current staged pin.
+
 This is a private source-candidate workflow, not a published crates.io version
 or a release/support claim. Use the exact archive in
 `artifacts/runtime-rust-candidate.json`, obtained through the trusted candidate

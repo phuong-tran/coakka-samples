@@ -2,7 +2,7 @@
 
 **Choose your language, run one example and see a reply.**
 
-These first-run apps use released Runtime **3.0.0** packages. Start with one
+These first-run apps use released Runtime **3.2.1** packages. Start with one
 language's tools; Docker and Kubernetes are optional later steps. The package
 includes the matching Runtime components.
 
@@ -53,7 +53,7 @@ to that handler and closes cleanly. Read those steps in your language's source.
 This first run is intentionally in one process; choose a larger example next.
 
 Try [Node.js checkout with Python pricing](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/scenarios/order-quote-node-python/README.md)
-for a two-terminal cart-and-quote example using the published 3.0.0 packages.
+for a two-terminal cart-and-quote example using the published 3.2.1 packages.
 
 ## Choose your next step
 
@@ -68,7 +68,7 @@ for a two-terminal cart-and-quote example using the published 3.0.0 packages.
 ## If the first run fails
 
 - Confirm the working directory and required language version in the selected README.
-- Use the complete sample and its declared 3.0.0 dependency together.
+- Use the complete sample and its declared package dependency together.
 - Check the [platform requirements](reference/runtime-package-platform-evidence.md).
   Packages cover macOS ARM64, Linux ARM64/x64 and Windows ARM64/x64; Swift's
   Windows ARM64 path alone remains preview.
@@ -79,10 +79,14 @@ coordinates. [The changelog](CHANGELOG.md) explains migration from 2.x.
 
 ## Other languages and evaluation paths
 
-C/C++, Rust, Tauri and Zig have their own released snapshots or local 3.0.0
+C/C++, Rust, Tauri and Zig have their own released snapshots or local
 evaluation paths; choose their exact source and package together in the
 [Runtime sample index](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/README.md#other-languages-and-evaluations).
-Android and Mojo remain evaluation previews.
+The [Zig 3.2.1 source archive](releases/2026-11-05-zig-mojo-runtime-3.2.1-source.md) and
+[Mojo 3.2.1 preview](previews/3.2.1/runtime-mojo-candidate.md) use Core 3.2.
+[Rust and Tauri Intents 3.2.1](releases/2026-11-05-rust-tauri-runtime-3.2.1-source.md) are available as
+checksum-pinned source archives.
+Android remains a separate preview.
 
 Local archive/feed tests are for evaluating a package, not a prerequisite for
 using the published packages above. Their instructions stay in the

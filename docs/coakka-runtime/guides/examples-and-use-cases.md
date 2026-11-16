@@ -9,16 +9,17 @@ version/status column before running a larger demonstration.
 ## Start in your language
 
 [First-run examples](../getting-started.md) cover Node.js, Bun, Electron,
-Python, C#, Kotlin, Java, Go and Swift with published 3.0.0 packages. Each README
-names its source, prerequisites, run command, expected result and close behavior.
+Python, C#, Kotlin, Java, Go and Swift. Each README names the pinned package,
+prerequisites, run command, expected result and close behavior. See the
+[current package ledger](../../common/current-packages.md) for release versions.
 
 ## Try a business operation
 
 | Build or learn | Language | Package path | Open |
 | --- | --- | --- | --- |
-| Create a customer through a named application handler | Node.js | Published npm 3.0.0; one process | [No-checkout customer walkthrough](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/guides/first-npm-smoke.md) |
-| Browser/API application with customer create, read, update and delete | Kotlin on Spring Boot or Quarkus | Published Maven 3.0.0; same-process handlers | [Framework first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/scenarios/customer-crud/framework-registry) |
-| A desktop window submitting application work | Electron | Published npm 3.0.0; Runtime lives in the main process | [Desktop first run and source](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/electron/registry-basic) |
+| Create a customer through a named application handler | Node.js | Published npm 3.2.1; one process | [No-checkout customer walkthrough](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/guides/first-npm-smoke.md) |
+| Browser/API application with customer create, read, update and delete | Kotlin on Spring Boot or Quarkus | Published Maven 3.2.1; same-process handlers | [Framework first run](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/scenarios/customer-crud/framework-registry) |
+| A desktop window submitting application work | Electron | Published npm 3.2.1; Runtime lives in the main process | [Desktop first run and source](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/electron/registry-basic) |
 
 The customer stores are in-memory teaching examples. The application owns its
 data, validation and HTTP response. Add your own persistence and business rules
@@ -31,9 +32,9 @@ examples show that distinction:
 
 | Example | What you see | Version/status |
 | --- | --- | --- |
-| [Node.js checkout to Python pricing](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/scenarios/order-quote-node-python/README.md) | Browser basket and live quote; Node asks a separate Python process for prices and shipping. Two terminals on one computer; CLI also available. | Published npm/PyPI 3.0.0; no container required. |
+| [Node.js checkout to Python pricing](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/scenarios/order-quote-node-python/README.md) | Browser basket and live quote; Node asks a separate Python process for prices and shipping. Two terminals on one computer; CLI also available. | Published npm/PyPI 3.2.1; no container required. |
 | [Node.js web to Python store](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/containers/node-python) | Two containers; a browser action reaches work owned by the Python process. | Historical published 1.x images; Docker/Podman required. Keep the image versions from its README. |
-| [Customer scenario catalog](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/scenarios/customer-crud) | Local, desktop and cross-process application shapes. | Only the dedicated framework registry build is the published 3.0.0 launcher; other launchers retain their own pinned/local package requirements. |
+| [Customer scenario catalog](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/scenarios/customer-crud) | Local, desktop and cross-process application shapes. | Only the dedicated framework registry build is the published 3.2.1 launcher; other launchers retain their own pinned/local package requirements. |
 | [Two-machine Linux walkthrough](https://github.com/phuong-tran/coakka-samples/blob/main/docs/coakka-runtime/guides/two-machine-linux.md) | A web process and a store process on separate Linux machines. | Follow the walkthrough's pinned source/packages and network requirements. |
 
 ![Node–Python web demo: edit the basket on the left and read Python's quote on the right.](../assets/node-python-order-quote-web.png)
@@ -42,7 +43,7 @@ examples show that distinction:
 Node.js sends the basket; Python returns the item prices, shipping and total.
 
 Keep a demonstration's complete code and dependencies together. The historical
-container images are not a shortcut for installing current 3.0.0 packages.
+container images have their own version and package pins.
 
 ## Add a capability when you need it
 

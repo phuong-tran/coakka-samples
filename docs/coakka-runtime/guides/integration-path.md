@@ -35,7 +35,7 @@ report a missing target, a timeout, refused work and shutdown.
 
 The [integration guide](runtime-integration-guide.md) explains those choices.
 Older deadletter wrappers and local evaluation scripts retain their own package
-requirements; they are not automatically a published 3.0.0 recipe.
+requirements; they are not automatically a registry-backed recipe.
 
 ## Step 4: Understand Route Snapshots
 
@@ -50,14 +50,14 @@ deployment topology can wait until you need them.
 ## Step 5: Move To A Real Workflow
 
 [Choose an example by use case](examples-and-use-cases.md). The Node.js customer
-walkthrough and Spring Boot/Quarkus registry build use released 3.0.0 packages.
+walkthrough and Spring Boot/Quarkus registry build use released 3.2.1 packages.
 The framework application lets you create, list, update and delete customers.
 
 ## Step 6: Add Processes And Deployment
 
 [Process and language examples](examples-and-use-cases.md#work-across-processes-and-languages)
 state their exact versions and prerequisites. The existing Node-to-Python
-container demonstration is a historical 1.x example, not the current 3.0.0
+container demonstration is a historical 1.x example, not the current
 installation path.
 
 Read [incremental adoption](../explanation/incremental-adoption.md) and

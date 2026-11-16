@@ -8,10 +8,12 @@ val quarkusPlatformGroupId = "io.quarkus.platform"
 val quarkusPlatformArtifactId = "quarkus-bom"
 val quarkusPlatformVersion = System.getenv("COAKKA_SAMPLE_QUARKUS_VERSION") ?: "3.35.2"
 
+val coakkaRuntimeVersion = rootProject.extra.properties["coakkaSampleRuntimeVersion"] as? String ?: "3.2.1"
+
 dependencies {
     implementation(platform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
     implementation(project(":runtime:scenarios:customer-crud:spring-boot-spring-boot:customer-contract"))
-    implementation("io.github.phuong-tran.coakka:quarkus-extension:3.0.0")
+    implementation("io.github.phuong-tran.coakka:quarkus-extension:$coakkaRuntimeVersion")
     implementation("io.quarkus:quarkus-arc")
     implementation("io.quarkus:quarkus-kotlin")
     implementation("io.quarkus:quarkus-rest-jackson")

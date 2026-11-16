@@ -95,30 +95,13 @@ runtime target.
 
 ## Published Artifacts
 
-Current public native CLI generation:
-`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`.
+Download [coakka-client 3.2.1](https://github.com/phuong-tran/coakka-publish/tree/86aa17f3d2af26bfd0faee3c02fbd9e82750592e/coakka-tools/coakka-client/releases/3.2.1%2Bf9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45) for macOS ARM64, Linux ARM64/x64, or
+Windows ARM64/x64. The tool bundles Core 3.2 (ABI 1). The
+[release record](../releases/2026-11-05-runtime-tools-3.2.1.md) lists checksums and installed test scope.
 
-Native CLI archives live under:
-
-```text
-coakka-tools/coakka-client/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/
-```
-
-The Docker Linux verification bundle uses the same Runtime generation:
-
-```text
-coakka-tools/coakka-client/docker-demo/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/
-```
-
-Use `coakka-publish/artifacts/public-artifacts.tsv` for exact paths and
-checksums.
-
-All five archives pass Runtime identity, dependency, architecture, archive,
-and checksum gates. The Docker Hub image
-`docker.io/gabrielgun1983/coakka-runtime-client-demo:2.5.1-26f7944d-remote`
-has digest
-`sha256:30586188a7a400b8085a3eed475ad086761f1506816ac6d1b70887fe901958e6`;
-its full walkthrough passed on Linux amd64 and arm64.
+The sample runner commands below exercise the pinned 2.5.1 walkthrough.
+For the native 3.2.1 build, unpack the archive and run the executable
+from its package directory.
 
 ## Sample Entry Points
 

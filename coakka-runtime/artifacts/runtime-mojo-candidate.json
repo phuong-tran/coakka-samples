@@ -1,1 +1,13 @@
-{"schema": 1, "state": "private-candidate", "language": "mojo", "version": "3.0.0", "coreCommit": "1522b4a9f30da1039ef8c7d198bbecfc749a2456", "archive": {"file": "coakka-runtime-mojo-3.0.0-source.tar.gz", "prefix": "coakka-runtime-mojo-3.0.0-source", "bytes": 4038229, "sha256": "589ad1e4da95d9ecf2188415778c90e0e06b830fe2c9f76270de2503fe873c01"}}
+{
+  "schema": 1,
+  "state": "private-candidate",
+  "language": "mojo",
+  "version": "3.2.1",
+  "coreCommit": "f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45",
+  "archive": {
+    "file": "coakka-runtime-mojo-3.2.1-source.tar.gz",
+    "prefix": "coakka-runtime-mojo-3.2.1-source",
+    "bytes": 4249191,
+    "sha256": "6d7ecea56ecf0df60cfe87368627ed55a9428ef250beebd81b8f9bd7c8b61134"
+  }
+}

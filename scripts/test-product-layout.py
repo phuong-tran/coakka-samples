@@ -24,12 +24,16 @@ class ProductLayoutControls(unittest.TestCase):
             destination = self.repo / name
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(REPO / name, destination)
-        for name in ("coakka-runtime/node/basic", "coakka-logger/node/basic", "coakka-runtime/runtime-test",
+        for name in ("coakka-runtime/node/basic", "coakka-logger/node/basic",
                      "coakka-runtime/tools/coakka-client", "coakka-runtime/tools/coakka-runtime-inspect",
                      "coakka-runtime/addons/artifact-publisher-https/native", "coakka-runtime/containers/node-python"):
             directory = self.repo / name
             directory.mkdir(parents=True, exist_ok=True)
             (directory / "run.sh").write_text("#!/usr/bin/env bash\nprintf '%s\\n' '" + name + "' \"$@\"\n")
+
+        publish_entry = self.work / "coakka-publish/coakka-runtime/coakka-runtime-test/run.sh"
+        publish_entry.parent.mkdir(parents=True)
+        publish_entry.write_text("#!/usr/bin/env bash\nprintf '%s\n' 'coakka-runtime/coakka-runtime-test' \"$@\"\n")
 
     def run_entry(self, *args: str) -> subprocess.CompletedProcess[str]:
         return subprocess.run(["bash", str(self.repo / "run.sh"), *args], cwd=self.cwd,
@@ -45,7 +49,7 @@ class ProductLayoutControls(unittest.TestCase):
                         self.assertEqual(result.stdout.splitlines(), [product + "/node/basic"])
 
     def test_tool_harness_addon_and_container_argument_ownership(self) -> None:
-        for selector, expected in (("runtime-test", "runtime-test"), ("client", "tools/coakka-client"),
+        for selector, expected in (("runtime-test", "coakka-runtime-test"), ("coakka-runtime-test", "coakka-runtime-test"), ("client", "tools/coakka-client"),
                                    ("inspect", "tools/coakka-runtime-inspect")):
             result = self.run_entry("coakka-runtime", selector, "one argument; no shell", "--flag")
             self.assertEqual(result.returncode, 0, result.stderr)

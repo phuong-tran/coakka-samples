@@ -5,12 +5,12 @@ customer work uses the local CoAkka target `samples.customer.store`.
 A CDI handler owns the store operation; the extension starts and closes the
 runtime for the application.
 
-**Start with the [published 3.0.0 registry build](../framework-registry/README.md).**
-It runs this application's source using Maven Central dependencies. Runtime and
-the framework adapter 3.0.0 are released; see
+**Start with the [3.2.1 registry build](../framework-registry/README.md).**
+It runs this application's source using Runtime and its framework adapter
+from Maven Central. For verified availability, see
 [Current Packages](../../../../docs/common/current-packages.md).
 
-The local launcher below is for qualifying selected local packages. Its setup
+The historical local launcher below qualifies the 3.0.0 packages. Its setup
 remains in the [local-package guide](../../../../docs/coakka-runtime/previews/3.0.0/runtime-frameworks-candidate.md).
 It is not required for the registry first run.
 

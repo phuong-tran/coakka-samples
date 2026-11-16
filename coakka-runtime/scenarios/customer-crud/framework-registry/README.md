@@ -1,6 +1,6 @@
 # Spring Boot And Quarkus: Customer Application
 
-Use published Runtime and framework packages **3.0.0** from Maven Central.
+Use Runtime and framework packages **3.2.1** from Maven Central.
 Choose one application, create a customer and see the list change.
 
 **You need:** JDK 17 and a [Samples checkout](../../../../docs/coakka-runtime/getting-started.md#get-the-examples).

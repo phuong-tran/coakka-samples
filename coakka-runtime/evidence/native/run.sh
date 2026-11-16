@@ -2,4 +2,4 @@
 set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-exec bash "${script_dir}/../../runtime-test/run.sh" "$@"
+exec bash "${script_dir}/../../run.sh" coakka-runtime-test "$@"

@@ -1,10 +1,10 @@
 # Python Runtime Samples
 
-`coakka-v2-connector==3.0.0` is [published on PyPI](https://pypi.org/project/coakka-v2-connector/3.0.0/).
-Start with [the ordinary CPython3.11 first run](registry-basic/README.md):
+Use the [3.2.1 first run](registry-basic/README.md) and see the
+[package ledger](../../docs/common/current-packages.md) for registry availability.
 
 ```sh
-python -m pip install coakka-v2-connector==3.0.0
+python -m pip install coakka-v2-connector==3.2.1
 python coakka-runtime/python/registry-basic/main.py
 ```
 
@@ -14,7 +14,7 @@ instead perform [exact local-wheel qualification](../../docs/coakka-runtime/prev
 The [package ledger](../../docs/common/current-packages.md) records current versions.
 
 Next, try [Node.js checkout with Python pricing](../scenarios/order-quote-node-python/README.md):
-a cart and quote across two processes using the published 3.0.0 packages.
+a cart and quote across two processes using the published 3.2.1 packages.
 
 ## Historical 2.x walkthrough
 

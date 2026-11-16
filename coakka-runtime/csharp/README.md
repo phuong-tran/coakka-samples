@@ -1,15 +1,16 @@
-# C# Runtime 3.0.0
+# C# Runtime samples
 
-`CoAkka.Runtime 3.0.0` is [published on NuGet](https://www.nuget.org/packages/CoAkka.Runtime/3.0.0).
-Start with [the ordinary .NET 8 first run](registry-basic/README.md):
+Use the [3.2.1 first run](registry-basic/README.md) and see the
+[package ledger](../../docs/common/current-packages.md) for registry availability.
+
+Run the .NET 8 first run from the Samples checkout.
 
 ```sh
 dotnet run --project coakka-runtime/csharp/registry-basic/CoAkkaRuntimeFirstRun.csproj
 ```
 
-Run from the Samples checkout. The package includes Core3.0.0/ABI1 and five
-native targets; it needs no separate Core installation. Migrate and recompile
-2.x applications for this new API baseline.
+The 3.2.1 package includes Core 3.2. Migrate and recompile 2.x
+applications when adopting the 3.x managed API.
 
 ## Local-feed qualification
 

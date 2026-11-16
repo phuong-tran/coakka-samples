@@ -1,7 +1,7 @@
 # CoAkka Runtime Evaluation And Local-Package Checks
 
 For a normal installation, start with the [published first-run examples](../getting-started.md).
-Runtime 3.0.0 is released for Node.js, Bun, Electron, Python, C#, Kotlin/Java,
+Runtime 3.2.1 is released for Node.js, Bun, Electron, Python, C#, Kotlin/Java,
 Go and Swift, together with the Spring Boot and Quarkus adapters.
 The [package ledger](../../common/current-packages.md) owns exact availability.
 
@@ -21,11 +21,10 @@ alone is its preview path.
 | Spring Boot / Quarkus | [Framework integrations](3.0.0/runtime-frameworks-candidate.md) |
 | Go | [Go](3.0.0/runtime-go-candidate.md) |
 | Swift | [Swift](3.0.0/runtime-swift-candidate.md) |
-| Rust / Tauri | [Rust](3.0.0/runtime-rust-candidate.md) · [Tauri](3.0.0/runtime-tauri-candidate.md) |
-| Zig | [Zig](3.0.0/runtime-zig-candidate.md) |
-| Mojo preview | [Mojo](3.0.0/runtime-mojo-candidate.md) |
+| Rust / Tauri | [Rust 3.2.1](3.2.1/runtime-rust-candidate.md) · [Tauri 3.2.1](3.2.1/runtime-tauri-candidate.md) · [Rust 3.0.0 history](3.0.0/runtime-rust-candidate.md) · [Tauri 3.0.0 history](3.0.0/runtime-tauri-candidate.md) |
+| Zig | [3.2.1 source package](3.2.1/runtime-zig-candidate.md) · [3.0.0 history](3.0.0/runtime-zig-candidate.md) |
+| Mojo preview | [3.2.1 preview](3.2.1/runtime-mojo-candidate.md) · [3.0.0 history](3.0.0/runtime-mojo-candidate.md) |
 
-[Android preview](edge-iot-android.md) is evaluated with its local AAR and
-sample, without a Maven publication plan. Mojo also remains a preview.
-Swift is publishable; only its Windows ARM lane is preview in this release.
+The [Android 3.2.1 preview AAR](../releases/2026-11-05-android-runtime-3.2.1-preview.md) can be used as a local Gradle dependency. Mojo also remains a preview.
+Swift is published. Its Windows ARM64 lane remains a preview.
 [Runtime documentation](../README.md).

@@ -1,9 +1,11 @@
-# Mojo Runtime Samples
+# Mojo Runtime Samples — Preview
 
-The current basic recipe consumes the admitted **unpublished 3.0.0-source**
-candidate. Published 2.5.x package facts remain separate in
-[Current Packages](../../docs/common/current-packages.md).
+Start with [basic](basic/README.md) to run the pinned **3.2.1 preview source package**
+with its bundled Runtime Core 3.2.
 
-Start with [basic](basic/README.md). The sample checks its exact archive before
-building and uses only that package's Core. Core keeps AUTO, MULTIPLEXED and
-monitor OFF; CPU placement support is reported as accepted by Core.
+Mojo preview execution was checked on macOS ARM64 and Raspberry Pi 5
+(Linux ARM64). The package includes Core images for Linux x86-64 and Windows,
+but Mojo execution is unqualified on those targets.
+
+See [Current Packages](../../docs/common/current-packages.md) for published
+package versions.

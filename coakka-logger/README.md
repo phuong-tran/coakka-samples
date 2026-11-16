@@ -1,49 +1,31 @@
 # CoAkka Logger Samples
 
-[Choose your language](#language-guides) · [Why logging affects your app](#how-logging-can-slow-an-application) · [Pressure example](#observe-pressure-instead-of-hiding-it) · [Documentation](../docs/coakka-logger/README.md) · [All products](../README.md)
+[Choose a Logger package](../docs/common/current-packages.md#coakka-logger)
+ · [Run a first example](../docs/coakka-logger/README.md#start-with-one-consumer)
+ · [All products](../README.md)
 
 **Native-backed logging across languages.**
 
-CoAkka Logger is a **cross-platform logging library for polyglot applications**.
-Its language packages share a native logging core with bounded storage and
-visible acceptance or refusal of records.
+CoAkka Logger is a **cross-platform logging library** for **polyglot
+applications**. Its language connectors share a native logging core with
+bounded storage and explicit acceptance or refusal of records.
 
-Logging uses resources alongside the work your application serves. A burst of
-messages or slow output can hold up requests or consume memory. Logger makes
-that pressure visible so your application can decide how to read records and
-handle refused writes.
+Logs help explain what an application is doing, but producing and writing them
+also uses the application's resources. A burst of messages or a slow output
+destination can turn logging into part of the performance problem.
 
-Logger can be used independently of Runtime and HTTP Runtime. Choose your
-language below; each guide lists its package, prerequisites and basic example.
-The [product documentation](../docs/coakka-logger/README.md) explains the model.
+CoAkka Logger gives applications bounded log storage, explicit acceptance or
+refusal and counters for observing pressure across host languages. These
+examples show how to submit, read and count records, then test what happens
+when producers get ahead of the consumer. Logger can be used independently
+of CoAkka Runtime and CoAkka HTTP Runtime.
 
-## Language Guides
+Read the [product documentation](../docs/coakka-logger/README.md) for the full guide.
 
-| Host | Examples |
-| --- | --- |
-| [Kotlin / Java](jvm/README.md) | `jvm/basic`, `jvm/java-basic`, `jvm/pressure`, `jvm/java-pressure` |
-| [Python](python/README.md) | `python/basic`, `python/pressure` |
-| [Node.js](node/README.md) | `node/basic`, `node/pressure` |
-| [Bun](bun/README.md) | `bun/basic`, `bun/pressure` |
-| [Electron](electron/README.md) | `electron/basic`; the main process owns Logger. |
-| [Tauri](tauri/README.md) | `tauri/basic`; the Rust app host owns Logger. |
-| [Go](go/README.md) | `go/basic`, `go/pressure` |
-| [C#](csharp/README.md) | `csharp/basic`, `csharp/pressure` |
-| [Rust](rust/README.md) | `rust/basic`, `rust/pressure` |
-| [Swift](swift/basic/README.md) | `swift/basic` |
-| [Native C/C++](native/README.md) | `native/basic`, `native/pressure` |
-| [Zig](zig/README.md) | `zig/basic` |
-| [Mojo](mojo/README.md) | `mojo/basic` |
-
-These examples demonstrate their named paths; the table does not expand their
-OS/CPU or production-support evidence. See [Product Layout](../docs/common/product-layout.md)
-for repository navigation and [Runtime Logging And Observability](../docs/coakka-runtime/operations/runtime-logging-observability.md)
-for composing logging with Runtime's separate delivery facts.
+Choose your [language guide](#language-guides) first. Each has its own package,
+prerequisites and basic example. The Node.js commands below are one illustration.
 
 ## Start With One Consumer
-
-The commands here illustrate Node.js. For another language, use its basic
-example from the table above.
 
 From the repository root:
 
@@ -154,3 +136,26 @@ Keep an existing framework logger when its filtering, bounds, output,
 shutdown and loss reporting already meet the application's needs. CoAkka is
 useful when those contracts need to stay explicit across language hosts; it
 also adds integration and lifecycle work that should earn its place.
+
+## Language Guides
+
+| Host | Examples |
+| --- | --- |
+| [JVM and Java](jvm/README.md) | `jvm/basic`, `jvm/java-basic`, `jvm/pressure`, `jvm/java-pressure` |
+| [Python](python/README.md) | `python/basic`, `python/pressure` |
+| [Node.js](node/README.md) | `node/basic`, `node/pressure` |
+| [Bun](bun/README.md) | `bun/basic`, `bun/pressure` |
+| [Electron](electron/README.md) | `electron/basic`; the main process owns Logger. |
+| [Tauri](tauri/README.md) | `tauri/basic`; the Rust app host owns Logger. |
+| [Go](go/README.md) | `go/basic`, `go/pressure` |
+| [C#](csharp/README.md) | `csharp/basic`, `csharp/pressure` |
+| [Rust](rust/README.md) | `rust/basic`, `rust/pressure` |
+| [Swift](swift/basic/README.md) | `swift/basic` |
+| [Native C/C++](native/README.md) | `native/basic`, `native/pressure` |
+| [Zig](zig/README.md) | `zig/basic` |
+| [Mojo](mojo/README.md) | `mojo/basic` |
+
+These examples demonstrate their named paths; the table does not expand their
+OS/CPU or production-support evidence. See [Product Layout](../docs/common/product-layout.md)
+for repository navigation and [Runtime Logging And Observability](../docs/coakka-runtime/operations/runtime-logging-observability.md)
+for composing logging with Runtime's separate delivery facts.

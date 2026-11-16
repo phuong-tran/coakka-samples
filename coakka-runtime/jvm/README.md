@@ -1,6 +1,6 @@
 # JVM Runtime Samples
 
-For the published3.0.0 API, start with [the Maven Central Java/Kotlin example](registry-basic/README.md). It resolves the public package and reuses the ordinary handler sources. The older walkthrough below records its named2.x train; the checked local candidate workflows remain available for reproduction.
+For the published Runtime 3.2.1 API, start with [the Maven Central Java/Kotlin example](registry-basic/README.md). It resolves the public package and reuses the ordinary handler sources. The older walkthrough below records its named2.x train; the checked local candidate workflows remain available for reproduction.
 
 This branch's four Kotlin/Java apps use the
 [exact private ProGuard candidate workflow](../../docs/coakka-runtime/previews/3.0.0/runtime-jvm-candidate.md).

@@ -1,6 +1,6 @@
-# JVM Runtime 3.0.0: First Run
+# JVM Runtime 3.2.1: First Run
 
-Choose Kotlin or Java. Both examples use Runtime 3.0.0 from Maven Central.
+Choose Kotlin or Java. Both examples use Runtime 3.2.1 from Maven Central.
 
 **You need:** JDK 17 for the sample build and a
 [Samples checkout](../../../docs/coakka-runtime/getting-started.md#get-the-examples).

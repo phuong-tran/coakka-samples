@@ -1,4 +1,4 @@
-# Swift Runtime 3.0.0: First Run
+# Swift Runtime 3.2.1: First Run
 
 Send one request to a Swift handler and print its reply.
 
@@ -13,7 +13,7 @@ From the Samples repository root:
 
 ~~~sh
 cd coakka-runtime/swift/registry-basic
-swift run -c release CoAkkaFirstRun
+swift run --force-resolved-versions -c release CoAkkaFirstRun
 ~~~
 
 Expected output:
@@ -22,7 +22,7 @@ Expected output:
 accepted-hello
 ~~~
 
-Swift Package Manager resolves the public 3.0.0 tag declared in
+Swift Package Manager resolves the exact 3.2.1 tag declared in
 [Package.swift](Package.swift). No separate Core installation is needed.
 
 ## Read the code

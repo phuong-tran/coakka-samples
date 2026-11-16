@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "state": "private-sample-candidate",
-  "aggregateVersion": "3.0.0",
-  "rustCrateVersion": "3.0.0",
-  "intentCrateVersion": "3.0.0",
+  "aggregateVersion": "3.2.1",
+  "rustCrateVersion": "3.2.1",
+  "intentCrateVersion": "3.2.1",
   "rustMinimum": "1.77.2",
   "desktop": {
     "rustMinimum": "1.92.0",
@@ -12,14 +12,14 @@
     "linuxBuildBaseline": "Debian 12 ARM64 / GLIBC 2.36",
     "foregroundOnly": true
   },
-  "coreCommit": "1522b4a9f30da1039ef8c7d198bbecfc749a2456",
+  "coreCommit": "f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45",
   "archive": {
-    "file": "coakka-runtime-tauri-intents-3.0.0-source.tar.gz",
-    "bytes": 4136964,
-    "sha256": "3a69269fde861b5b29a6200975d338b7198252d4454f811ebfa88a0a844056d9"
+    "file": "coakka-runtime-tauri-intents-3.2.1-source.tar.gz",
+    "bytes": 4353274,
+    "sha256": "81ccf9868d5b89f3c274c07be3de1845cf78048f78acca9bbae2565eb55150d4"
   },
   "buildTool": {
-    "member": "coakka-runtime-tauri-intents-3.0.0-source/rust/tools/package_tools.py",
+    "member": "coakka-runtime-tauri-intents-3.2.1-source/rust/tools/package_tools.py",
     "sha256": "0a9ac6c65a95a929029a38515701eb5f6293b7f2d271d76a4b6d83cd3eaa707e"
   }
 }

@@ -4,6 +4,21 @@ These records describe their named release, not the current installation.
 Use the [published package ledger](../../common/current-packages.md) for current coordinates.
 For changes and migration by version, read the [Runtime changelog](../CHANGELOG.md).
 
+- [Core 3.2 SDK and CoAkka Runtime Test](2026-11-05-core-runtime-test-3.2.md)
+- [Rust and Tauri Intents Runtime 3.2.1 source packages](2026-11-05-rust-tauri-runtime-3.2.1-source.md)
+- [Zig and Mojo Runtime 3.2.1 source packages](2026-11-05-zig-mojo-runtime-3.2.1-source.md)
+- [Android Runtime 3.2.1 Preview](2026-11-05-android-runtime-3.2.1-preview.md)
+- [Client and Inspect 3.2.1](2026-11-05-runtime-tools-3.2.1.md)
+- [JVM, Spring Boot and Quarkus 3.2.1 on Maven Central](2026-11-05-jvm-spring-quarkus-runtime-3.2.1-maven-central.md)
+- [Swift Runtime 3.2.1 on GitHub](2026-11-05-swift-runtime-3.2.1-github.md)
+- [Go Runtime 3.2.1 on GitHub](2026-11-05-go-runtime-3.2.1-github.md)
+- [Node.js, Bun and Electron Runtime 3.2.1 on npm](2026-11-05-npm-node-bun-electron-runtime-3.2.1.md)
+- [Python Runtime 3.2.1 on PyPI](2026-11-05-pypi-python-runtime-3.2.1.md)
+- [C# Runtime 3.2.1 on NuGet](2026-11-05-nuget-csharp-runtime-3.2.1.md)
+- [C# Runtime 3.1.1 on NuGet](2026-11-04-nuget-csharp-runtime-3.1.1.md)
+- [Electron Runtime 3.1.1 on npm](2026-11-04-npm-electron-runtime-3.1.1.md)
+- [Node.js and Bun Runtime 3.1.2 on npm](2026-11-04-npm-node-bun-runtime-3.1.2.md)
+- [Node.js and Bun Runtime 3.1.1 on npm](2026-11-04-npm-node-bun-runtime-3.1.1.md)
 - [JVM/Spring Boot/Quarkus Runtime 3.0.0 on Maven Central](2026-10-30-jvm-spring-quarkus-runtime-3.0.0-maven-central.md)
 - [Swift Runtime 3.0.0 on GitHub](2026-10-30-swift-runtime-3.0.0-github.md)
 - [Go Runtime 3.0.0 on GitHub](2026-10-30-go-runtime-3.0.0-github.md)

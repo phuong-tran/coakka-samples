@@ -8,11 +8,15 @@ the end-to-end mental model.
 ## Contents
 
 - [Read The Outcome Boundary First](#read-the-outcome-boundary-first)
+- [Build One Request Envelope](#build-one-request-envelope)
 - [Envelope Fields](#envelope-fields)
+- [Use Headers As Context, Not A Second Payload](#use-headers-as-context-not-a-second-payload)
 - [one_way And Message Kind](#one_way-and-message-kind)
 - [Delivery Hints](#delivery-hints)
 - [Deadletter Fields](#deadletter-fields)
+- [Where A Deadletter Is Produced](#where-a-deadletter-is-produced)
 - [Deadletter Reasons](#deadletter-reasons)
+- [Failover Is Not User Retry](#failover-is-not-user-retry)
 - [TLS And mTLS Failures](#tls-and-mtls-failures)
 - [Timeout And Retry Rules](#timeout-and-retry-rules)
 
@@ -34,6 +38,51 @@ submit returned non-OK -> not admitted; handle the synchronous error
 submit returned OK     -> later delivery failure is a deadletter
 handler returned error -> business RESPONSE, not a deadletter
 ```
+
+## Build One Request Envelope
+
+Start from the business intent and let the connector normalize fields that its
+host-language API owns. Assemble a reply-capable request in this order:
+
+1. choose one stable capability `target`, then select `REQUEST` with
+   `one_way=false`;
+2. identify the payload with `message_type`, a positive
+   `payload_schema_version`, and `payload_format`;
+3. encode the business data into `payload`;
+4. create a unique `message_id` and request/response `correlation_id`; the
+   connector may generate these together with `reply_to`;
+5. set a bounded `timeout_ms` wait/delivery budget;
+6. add only the small cross-cutting context the handler or diagnostics need;
+7. validate the semantic combination before admission.
+
+A language-neutral billing request can look like this:
+
+```yaml
+message_id: msg-01J...
+correlation_id: ask-01J...
+source: checkout-api
+target: billing.charge
+reply_to: checkout-api
+kind: REQUEST
+one_way: false
+timeout_ms: 1500
+message_type: billing.charge.v1
+payload_schema_version: 1
+payload_format: JSON
+headers:
+  trace_id: trace-92f1
+  tenant_id: tenant-acme
+  idempotency_key: checkout-7842:charge
+payload: '{"checkout_id":"7842","amount_minor":125000,"currency":"VND"}'
+```
+
+The exact header names are application contracts, not reserved Core names.
+`route_key_hint` in a rendezvous-hash route names the header whose value Core
+should read for that route; it does not make every header part of routing.
+
+A user retry is a new submission. Give the new envelope a new `message_id` and
+let the connector create a new request correlation identity. Preserve the same
+business idempotency key when both submissions refer to one logical operation.
 
 ## Envelope Fields
 
@@ -72,6 +121,31 @@ The runtime semantic checks that are easiest to miss are:
 A connector builder may reject an invalid combination before submission. If an
 invalid encoded envelope is admitted, runtime emits
 `Deadletter(reason=INVALID_ENVELOPE)`.
+
+## Use Headers As Context, Not A Second Payload
+
+Good header values are small, bounded context that travels beside the business
+message:
+
+- trace/request identity used to correlate logs and diagnostics;
+- tenant or app-host context already authorized by the application;
+- a business idempotency key used by the handler or reconciliation path;
+- one stable shard/affinity key when a route explicitly names it;
+- small operational tags that are safe to copy and observe.
+
+Keep these values out of headers:
+
+- fields that change the business meaning of the command or query: put them in
+  the payload and version that payload contract;
+- payload type, schema version, or encoding: use the first-class envelope
+  fields;
+- large documents, binary content, or unbounded metadata;
+- raw authentication tokens, private keys, or other secrets that could appear
+  in diagnostics;
+- retry counters or policies that ask Core to infer business idempotency.
+
+The app-host authenticates and authorizes before submission. A tenant header is
+propagated context, not proof of authorization by itself.
 
 ## `one_way` And Message Kind
 
@@ -128,6 +202,30 @@ Responses are matched by `correlation_id`. Deadletters identify the failed
 attempt through `original_envelope.message_id`; connectors may also expose the
 original correlation ID as observation metadata.
 
+## Where A Deadletter Is Produced
+
+The caller observes one deadletter surface, but the record can be produced at
+different runtime boundaries:
+
+| Producer | Example facts | What reaches the caller |
+| --- | --- | --- |
+| Caller-side runtime before remote ownership | No active snapshot, route miss, locality mismatch, outbound queue expiry, connection/TLS refusal, or remote reply timeout. | The caller runtime builds the deadletter from the original admitted envelope. |
+| Selected peer runtime after the request frame arrives | Inbound envelope invalid, peer ingress queue rejected, peer runtime stopping, peer route/handler absent, or local handoff failed. | The peer builds a deadletter; the caller runtime may perform eligible endpoint failover, otherwise forwards that record to the caller surface. |
+| No envelope exists yet | An inbound TLS handshake fails before a request frame can be decoded. | No deadletter can contain an original envelope. The receiving runtime records a typed ingress/transport event instead. |
+| Business handler owns the request | The handler accepts or rejects the domain operation. | A business `RESPONSE`, not a deadletter. If no terminal result returns within budget, the caller observes timeout ambiguity. |
+
+The current `Deadletter` schema has no `producer_runtime_id` field. Do not infer
+physical origin from `reason` alone. Retain the caller-selected endpoint and
+correlate `active_generation`, `resolved_host/port`, transport metadata, and
+runtime monitor facts such as forwarded-deadletter counters. A forwarded peer
+deadletter preserves the original envelope and peer-produced causal facts; the
+caller runtime accounts the endpoint-attempt chain.
+
+This is why “the peer had no target” and “the caller had no route” are not the
+same incident. Both may surface a routing-shaped reason, but the selected
+endpoint, active generation, and forwarded-deadletter evidence identify the
+boundary that needs repair.
+
 ## Deadletter Reasons
 
 The numeric values are stable across connectors and the core runtime.
@@ -155,6 +253,54 @@ Deadletters are terminal for that submitted envelope. Runtime endpoint failover
 inside one delivery attempt and an application retry are different operations.
 Submitting again creates a new application attempt and should use a new
 `message_id` while preserving business idempotency context.
+
+## Failover Is Not User Retry
+
+Think of one admitted request as one registered parcel with one tracking number
+and one delivery deadline.
+
+If the first post office is closed before it accepts the parcel, the delivery
+network may take the same parcel to another eligible post office. That is Core
+endpoint failover:
+
+- it stays inside the same request lifecycle and preserves the same envelope
+  identity;
+- it consumes the original remaining monotonic deadline rather than starting a
+  fresh timeout;
+- it requires safe evidence that the previous endpoint did not take delivery
+  ownership, such as endpoint-scoped `NOT_DELIVERED` transport evidence;
+- a peer-side `QUEUE_REJECTED`, `LOCAL_HANDOFF_FAILED`, or `RUNTIME_STOPPED`
+  deadletter is also eligible for another endpoint attempt while budget and an
+  eligible endpoint remain;
+- `endpoint_attempt_count` reports the post offices tried for this one parcel.
+
+If the delivery network returns the parcel or the deadline ends, that request
+has a terminal outcome. Only then may the sender create a new parcel submission
+under application policy. That is user retry:
+
+- it uses a new `message_id` and consumes a separate bounded application retry
+  budget;
+- it preserves the business idempotency identity when the logical operation is
+  the same;
+- it is owned by the application because only business code knows whether
+  repeating the effect is safe.
+
+Do not fail over after evidence that an endpoint may have accepted ownership.
+`REMOTE_REPLY_TIMEOUT` is terminal and ambiguous, not permission to try the same
+effect on another endpoint. A late or lost confirmation cannot prove that the
+recipient did not act.
+
+```text
+one admitted Envelope
+  endpoint A -> NOT_DELIVERED, budget remains
+  endpoint B -> RESPONSE
+  result: one request, two endpoint attempts, no user retry
+
+terminal timeout or deadletter
+  application reconciles business identity
+  application may submit a new Envelope with a new message_id
+  result: user retry, not endpoint failover
+```
 
 ## TLS And mTLS Failures
 
@@ -207,3 +353,32 @@ connector examples.
   without a corresponding change only add load.
 - Queue rejection and one-way shedding are pressure evidence; backoff and load
   shedding come before increasing bounded capacity.
+
+Think of a timeout like a restaurant order whose pickup buzzer did not ring in
+time. The kitchen may not have accepted the ticket, may still be cooking, may
+have completed the meal while the buzzer failed, or may have sent a signal that
+arrived too late. The caller's deadline proves only that no terminal answer was
+observed; it does not reveal which kitchen state is true.
+
+For a read/query, a short bounded user retry may be acceptable. For an
+idempotent command, reuse the same business idempotency key so the handler can
+return the recorded outcome instead of applying the effect twice. For a
+non-idempotent command such as charging money, do not submit a second business
+effect merely because the caller timed out. Query/reconcile the first operation
+by business identity, wait for a late terminal outcome when the integration
+exposes it, or enter an application-owned compensation/manual-review path.
+
+Use this response order:
+
+1. classify whether the observed fact is synchronous refusal, deadletter,
+   business response, caller timeout, or `REMOTE_REPLY_TIMEOUT`;
+2. confirm whether Core already performed safe endpoint failover by checking
+   `endpoint_attempt_count` and monitor facts; do not count those endpoint
+   attempts as user retries;
+3. preserve original `message_id`, correlation, target, active generation,
+   selected endpoint, attempt count, and the business idempotency key;
+4. reconcile ambiguous work before retrying a non-idempotent operation;
+5. if a user retry is safe, create a new envelope with a new `message_id`,
+   preserve business identity, and consume a bounded application retry budget;
+6. do not increase timeout or queue capacity until pressure/latency evidence
+   identifies the actual slow boundary.

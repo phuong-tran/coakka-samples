@@ -127,7 +127,7 @@ Current public coordinates are listed in the
 The Quarkus extension lane is published to Maven Central:
 
 ```kotlin
-implementation("io.github.phuong-tran.coakka:quarkus-extension:3.0.0")
+implementation("io.github.phuong-tran.coakka:quarkus-extension:3.2.1")
 ```
 
 Only Maven Central is required:
@@ -142,9 +142,9 @@ Do not mix Quarkus extension versions with an unrelated CoAkka runtime
 generation unless a release note explicitly declares that combination
 compatible.
 
-## JVM 3.0.0
+## JVM 3.2.1
 
-The framework adapter and Runtime 3.0.0 are published on Maven Central.
+The framework adapter and Runtime 3.2.1 are published on Maven Central.
 Use Java 17 for the framework application. Run the
 [framework customer application](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/scenarios/customer-crud/framework-registry)
 without preparing a local CoAkka Maven repository.
@@ -165,7 +165,7 @@ Changing that setting requires a new instance. See
 
 ## Sample Path
 
-Use the registry build linked above to launch this source with published 3.0.0
+Use the registry build linked above to launch this source with published 3.2.1
 dependencies. The source folder's local launcher is a separate qualification path.
 
 The application handler source is in:

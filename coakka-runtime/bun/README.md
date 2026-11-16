@@ -1,11 +1,11 @@
 # Bun Runtime Samples
 
-`coakka-v2-connector-bun@3.0.0` is published on npm.
-Start with [the ordinary3.0.0 first run](registry-basic/README.md):
+Use the [3.2.1 first run](registry-basic/README.md) and see the
+[package ledger](../../docs/common/current-packages.md) for registry availability.
 
 ```sh
 cd coakka-runtime/bun/registry-basic
-npm install
+bun install --frozen-lockfile
 bun main.mjs
 ```
 

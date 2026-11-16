@@ -30,21 +30,9 @@ That is intentional until a dedicated remote read/observe adapter exists.
 
 ## Published Archive Status
 
-The current public inspect archive generation is
-`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be` for all five platforms. The
-sample runner selects by platform and verifies every archive
-through the same manifest/checksum resolver used by the runtime-client lane.
-
-The archive and Docker image use that exact Runtime generation.
-
-All five archives pass Runtime identity, dependency, architecture, archive,
-and checksum gates. macOS ARM64 completed command and `serve` smoke. Docker
-image smoke passed on Linux amd64 and arm64.
-
-The browser walkthrough GIF and MP4 were recorded on macOS from the published
-macOS ARM64 inspect archive. The recording used two local native runtime
-responders on `127.0.0.1:19091` and `127.0.0.1:19092`; it did not use Docker,
-UTM, JVM, or a language connector.
+Download [coakka-runtime-inspect 3.2.1](https://github.com/phuong-tran/coakka-publish/tree/86aa17f3d2af26bfd0faee3c02fbd9e82750592e/coakka-tools/coakka-runtime-inspect/releases/3.2.1%2Bf9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45) for the native explorer. See the
+[archive checksums and verification](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-runtime/releases/2026-11-05-runtime-tools-3.2.1.md). The sample runner, Docker image, and browser recordings
+describe the pinned 2.5.1 walkthrough.
 
 ## Route Try
 

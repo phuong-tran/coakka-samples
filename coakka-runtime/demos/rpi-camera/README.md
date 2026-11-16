@@ -11,10 +11,11 @@ This sample has two native applications:
 This is an evaluation demo for Stream Lane publication, subscription, bounded
 backpressure, cancellation, and shutdown. Its executables are provided so users
 can test those runtime paths on their own hardware; they are not a separate
-CoAkka product or a production camera support promise. The current source uses the released CoAkka HTTP Runtime
-native SDK `2.0.1` (C ABI 10) for the UI, MJPEG, WebSocket control, outbound
-profile requests, and the Pi profile endpoint. CoAkka Runtime native
-`2.5.1+f6b61768f60a08d81b1dc06625a211ffca8e89e2` owns Stream Lane.
+CoAkka product or a production camera support promise. The current source uses
+the released CoAkka HTTP Runtime native SDK `2.0.1` (C ABI 10) for the UI,
+MJPEG, WebSocket control, outbound profile requests, and the Pi profile
+endpoint. CoAkka Runtime native `2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`
+owns Stream Lane.
 
 On a physical Raspberry Pi 5 and a macOS ARM64 host, the browser received
 camera frames and confirmed `1280x720 → 800x600 → 1280x720` through the normal
@@ -46,7 +47,7 @@ memory, device, shutdown, and evidence boundaries are in
 The focused public source belongs in
 [`coakka-samples`](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-runtime/demos/rpi-camera).
 Prebuilt evaluation binaries belong in the versioned
-[`coakka-publish`](https://github.com/phuong-tran/coakka-publish/tree/main/samples/runtime/native/rpi-camera/releases/1.1.0)
+[`coakka-publish` camera 1.1.2](https://github.com/phuong-tran/coakka-publish/tree/main/samples/runtime/native/rpi-camera/releases/1.1.2)
 lane. Neither repository uses GitHub Releases for this sample; merging reviewed
 content to `main` is the publication event.
 
@@ -66,19 +67,15 @@ plus verified convenience binaries provides both properties.
 
 ## Supported Artifact Matrix
 
-This table describes the published `v1.1.0` archives and their historical
-pre-migration evidence. Current-source HTTP Runtime evidence is tracked
-separately in [`SYSTEMS-AUDIT.md`](SYSTEMS-AUDIT.md).
+| Application | Verified target | Archive |
+| --- | --- | --- |
+| Pi publisher | Raspberry Pi 5, Debian 13 ARM64 | [Linux ARM64](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/samples/runtime/native/rpi-camera/releases/1.1.2/coakka-camera-pi-1.1.2-linux-arm64.tar.gz) |
+| Host gateway | macOS ARM64 | [macOS ARM64](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/samples/runtime/native/rpi-camera/releases/1.1.2/coakka-camera-host-1.1.2-macos-arm64.tar.gz) |
 
-| Application | Platform | Artifact | Current gate |
-| --- | --- | --- | --- |
-| Pi publisher | Raspberry Pi OS/Debian 12, ARM64 | `coakka_camera_pi` | GCC strict build and live Pi 5 smoke |
-| Host gateway | macOS, ARM64 | `coakka_camera_host` | AppleClang strict build and live camera smoke |
-| Host gateway | Linux, x86_64 | `coakka_camera_host` | GCC strict native build and CLI smoke; camera workflow pending |
-| Host gateway | Windows, x86_64 | `coakka_camera_host.exe` | Zig/LLVM strict build; Windows 11 CLI and live-connection/UI smoke |
-
-An artifact whose native smoke is pending must be labeled that way. Do not
-promote compile-only evidence to runtime support.
+Verify the archive against [SHA256SUMS](https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/samples/runtime/native/rpi-camera/releases/1.1.2/SHA256SUMS).
+See [the 1.1.2 release](https://github.com/phuong-tran/coakka-publish/tree/main/samples/runtime/native/rpi-camera/releases/1.1.2) for library requirements and
+[the v1.1.0 catalog](https://github.com/phuong-tran/coakka-publish/tree/main/samples/runtime/native/rpi-camera/releases/1.1.0)
+for the previous Linux x86-64 and Windows x86-64 host archives.
 
 ### Windows Release Status
 
@@ -98,17 +95,18 @@ smoke. Verify `SHA256SUMS` before running the archive.
 
 ## Runtime Dependencies
 
-Current source builds require the exact CoAkka Runtime native `2.5.1`
-package and the
+Current source builds require the published
+[CoAkka Runtime native `2.5.1+26f7944d` archive](https://github.com/phuong-tran/coakka-publish/tree/main/runtime/native/releases/2.5.1%2B26f7944de4a4e0598845a54e4775f9463a9e33be)
+and the
 [CoAkka HTTP Runtime native `2.0.1` SDK](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/native/releases/2.0.1)
 for the build host. HTTP Runtime Core owns the listener, routing, framing,
 WebSocket sessions, response pressure, outbound requests, and drain.
 
-Raspberry Pi OS or Debian:
+Raspberry Pi OS based on Debian 13, or Debian 13 ARM64:
 
 ```sh
 sudo apt update
-sudo apt install -y libasound2 ffmpeg v4l-utils alsa-utils
+sudo apt install -y libasound2t64 v4l-utils alsa-utils
 ```
 
 Ubuntu 24.04 host:
@@ -305,9 +303,10 @@ duration and fallback-cadence contract.
 
 ## Build From Public Source
 
-Clone the public samples repository. Unpack exact CoAkka Runtime native `2.5.1`
-and the matching-platform HTTP Runtime native `2.0.1` archive, then set both
-package roots:
+Verify both archive checksums against their release `SHA256SUMS` files. Unpack
+the Runtime archive and the HTTP Runtime SDK for the machine doing the build.
+On Raspberry Pi OS, install `build-essential`, `cmake`, `ninja-build`, and
+`libasound2-dev` for a source build. Set both package roots after cloning.
 
 ```sh
 git clone https://github.com/phuong-tran/coakka-samples.git
@@ -327,6 +326,7 @@ cmake -S . -B build/pi -G Ninja \
   -DCOAKKA_CAMERA_BUILD_PI=ON
 cmake --build build/pi --parallel 4
 ctest --test-dir build/pi --output-on-failure
+cmake --install build/pi --prefix "$PWD/install/pi" --component pi
 ```
 
 Build the host app on macOS or Linux:
@@ -339,13 +339,20 @@ cmake -S . -B build/host -G Ninja \
   -DCOAKKA_CAMERA_BUILD_PI=OFF
 cmake --build build/host --parallel 4
 ctest --test-dir build/host --output-on-failure
+cmake --install build/host --prefix "$PWD/install/host" --component host
 ```
+
+Run the corresponding application from `install/pi` or `install/host`.
+Each install contains its executable and the runtime images it loads beside
+it. Run `./coakka_camera_pi --help` or `./coakka_camera_host --help` from that
+directory before using the [Pi command](#run-the-pi-app) or [host
+command](#run-the-host-app).
 
 Windows source builds use the target-matching HTTP Runtime SDK, including its
 `coakka_http_host.lib` import library, plus `COAKKA_RUNTIME_IMPORT_LIBRARY`
 generated from the exact Runtime DLL. No separate libuv package is required.
-The published camera `v1.1.0` archive remains the existing evaluation binary;
-it is unsigned and must not be represented as requalified by this source change.
+The Windows v1.1.0 archive and its verification are described under
+[Windows release status](#windows-release-status).
 
 ## Download And Verify Published Binaries
 
@@ -353,10 +360,10 @@ Download `SHA256SUMS` and the archive for the target machine directly from the
 Publish repository. For example, on macOS ARM64:
 
 ```sh
-base='https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/samples/runtime/native/rpi-camera/releases/1.1.0'
+base='https://raw.githubusercontent.com/phuong-tran/coakka-publish/main/samples/runtime/native/rpi-camera/releases/1.1.2'
 curl -fLO "$base/SHA256SUMS"
-curl -fLO "$base/coakka-camera-host-macos-arm64.tar.gz"
-shasum -a 256 -c SHA256SUMS --ignore-missing
+curl -fLO "$base/coakka-camera-host-1.1.2-macos-arm64.tar.gz"
+shasum -a 256 -c --ignore-missing SHA256SUMS
 ```
 
 The command must report `OK` for every downloaded archive. Source review and

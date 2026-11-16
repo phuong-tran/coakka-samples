@@ -8,7 +8,7 @@ plugins {
 }
 
 repositories { mavenCentral() }
-dependencies { implementation("io.github.phuong-tran.coakka:runtime:3.0.0") }
+dependencies { implementation("io.github.phuong-tran.coakka:runtime:3.2.1") }
 kotlin { jvmToolchain(17) }
 
 // Reuse the ordinary examples so the registry path teaches the same API.

@@ -4,6 +4,6 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "coakka-v2-connector-node": "3.0.0"
+    "coakka-v2-connector-node": "3.2.1"
   }
 }

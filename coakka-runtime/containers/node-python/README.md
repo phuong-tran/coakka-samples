@@ -2,10 +2,10 @@
 
 **Historical demonstration:** the default Node-to-Python images use the 1.x
 package line. Keep their original code and image versions together. For the
-current published 3.0.0 packages, start with
+current published packages, start with
 [the language-first guide](../../../docs/coakka-runtime/getting-started.md).
 For a current two-process example, run [Node.js checkout with Python pricing](../../scenarios/order-quote-node-python/README.md)
-using published 3.0.0 packages, without containers. This page retains the historical container walkthrough.
+using published 3.2.1 packages, without containers. This page retains the historical container walkthrough.
 
 This is the first container runtime sample. It runs two containers:
 

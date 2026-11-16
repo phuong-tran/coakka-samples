@@ -5,7 +5,7 @@ Kotlin is used for the example, but the same choices and usage steps apply to
 other languages through their own connector APIs.
 
 The defaults below describe Core's current startup settings. The Kotlin
-example uses the **published JVM Runtime 3.0.0 API**.
+example uses the **published JVM Runtime API**.
 For an older released package, follow that package's included guide; its
 defaults and API names may differ. See [Current Packages](../../common/current-packages.md)
 when choosing a published version.
@@ -126,7 +126,7 @@ The example has no business routes. It turns monitoring on, leaves CPU and
 connection choices at their defaults, checks accepted settings after start,
 reads an initial view and waits up to one second for an update.
 
-It uses the current **3.0.0 candidate JVM API**:
+This example was originally verified with the **3.0.0 JVM API**:
 
 ```kotlin
 import coakka.v2.connector.RuntimeHandle

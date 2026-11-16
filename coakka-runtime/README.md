@@ -21,7 +21,7 @@ its matching native Runtime; no separate Core installation is needed.
 Runtime integrations include **JavaScript and TypeScript (Node.js / Bun),
 Python, Java, Kotlin, C#, Go and Swift**, with **Spring Boot** and **Quarkus**
 framework adapters and **Electron** desktop support. The language table below
-leads to the released 3.0.0 first runs.
+leads to the released 3.2.1 first runs.
 
 **Tauri**, C/C++, Rust and Zig use version-specific source/archive guides;
 Android and Mojo remain previews. Choose the exact version and platform in
@@ -29,7 +29,7 @@ those guides rather than applying one package's support scope to another.
 
 ## First run: choose your language
 
-These apps use **published 3.0.0 packages**. Each README gives prerequisites,
+These apps use **published 3.2.1 packages**. Each README gives prerequisites,
 a command, expected output, the source file and how the app closes.
 
 | Your application | First run |
@@ -58,9 +58,9 @@ files, streams and device examples.
 - [Node.js customer operation](../docs/coakka-runtime/guides/first-npm-smoke.md):
   a published-package walkthrough without cloning this repository.
 - [Node.js checkout, Python pricing](scenarios/order-quote-node-python/README.md):
-  edit a browser basket and receive a quote across two processes using published 3.0.0 packages.
+  edit a browser basket and receive a quote across two processes using published 3.2.1 packages.
 - [Customer applications](scenarios/customer-crud/framework-registry/README.md):
-  Spring Boot or Quarkus with Runtime 3.0.0 from Maven Central.
+  Spring Boot or Quarkus with Runtime 3.2.1 from Maven Central.
 - [Electron application](electron/registry-basic/README.md): a window sends work
   through its main process.
 - [Files](../docs/coakka-runtime/guides/runtime-file-transfer.md) and
@@ -72,17 +72,17 @@ files, streams and device examples.
 | Language | Exact source/package path |
 | --- | --- |
 | C/C++ | [Released older snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/native) · [Local 3.0.0 evaluation](native/README.md) |
-| Rust | [Released older snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/rust) · [Local 3.0.0 evaluation](rust/README.md) |
-| Tauri | [Released older snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/tauri) · [Local 3.0.0 evaluation](tauri/README.md) |
-| Zig | [Released older snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/zig) · [Local 3.0.0 evaluation](zig/README.md) |
-| Android / Mojo | [Android](android/README.md) · [Mojo](mojo/README.md): evaluation previews |
+| Rust | [Released older snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/rust) · [3.2.1 source archive example](rust/README.md) |
+| Tauri | [Released older snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/tauri) · [3.2.1 source archive example](tauri/README.md) |
+| Zig | [Released older snapshot](https://github.com/phuong-tran/coakka-samples/tree/d401e4a62359dcf245ffda093f2cbea21fe5f39a/runtime/zig) · [3.2.1 source archive example](zig/README.md) |
+| Android / Mojo | [Android](android/README.md) · [Mojo 3.2.1 preview](mojo/README.md): evaluation previews |
 
 These paths keep their own version and prerequisites. [Local evaluation guides](../docs/coakka-runtime/previews/README.md)
 are for checking selected packages, not a prerequisite for the published first runs.
 
 The [Node-to-Python container demo](containers/node-python/README.md) uses
 historical 1.x images. It demonstrates two processes but is not the current
-3.0.0 installation path. [RPi camera](demos/rpi-camera/README.md) and other device
+registry installation path. [RPi camera](demos/rpi-camera/README.md) and other device
 examples have their own hardware and package requirements.
 
 ## Runtime addons
@@ -118,7 +118,7 @@ independent of the connector package selected for your application.
 
 - [Integration guide](../docs/coakka-runtime/guides/runtime-integration-guide.md).
 - [Defaults and monitoring](../docs/coakka-runtime/operations/runtime-monitoring.md).
-- [Migration and 3.0.0 changes](../docs/coakka-runtime/CHANGELOG.md).
+- [Runtime changelog and migration](../docs/coakka-runtime/CHANGELOG.md).
 - [Current packages](../docs/common/current-packages.md) and [platform requirements](../docs/coakka-runtime/reference/runtime-package-platform-evidence.md).
 
 [Runtime documentation](../docs/coakka-runtime/README.md) · [All products](../README.md).

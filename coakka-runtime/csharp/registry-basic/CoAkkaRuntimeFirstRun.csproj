@@ -8,6 +8,6 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="CoAkka.Runtime" Version="3.0.0" />
+    <PackageReference Include="CoAkka.Runtime" Version="3.2.1" />
   </ItemGroup>
 </Project>

@@ -2,11 +2,14 @@
 
 <p align="center"><img src="docs/common/assets/brand/coakka-logo.png" alt="CoAkka" width="480"></p>
 
-[Website](https://coakka-ecosystem-preview.vivid-plume-2955.chatgpt.site/) · [Get started](#choose-what-you-want-to-build) · [Documentation](docs/README.md) · **[coakka-http-runtime-test](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/runtime-test)** · [HTTP Benchmarks (Pi 5)](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/README.md)
+[Website](https://coakka-ecosystem-preview.vivid-plume-2955.chatgpt.site/) · [Get started](#choose-what-you-want-to-build) · [Documentation](docs/README.md) · **[coakka-http-runtime-test](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime/runtime-test)** · **[coakka-runtime-test](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-runtime/coakka-runtime-test)** · [HTTP Benchmarks (Pi 5)](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/README.md)
 
 **Contents**
 
 [Choose a product](#choose-what-you-want-to-build) · [CoAkka Runtime](#coakka-runtime-languages-frameworks-and-app-hosts) · **[CoAkka HTTP Runtime](#coakka-http-runtime-shared-http-familiar-languages)** · [HTTP Inspect](#coakka-http-runtime-inspect) · [Runtime addons](#coakka-runtime-addons) · [Runtime Client / Inspect](#coakka-runtime-client-and-inspect) · [Node–Python demo](#try-the-nodepython-web-demo)
+
+[Inspect and run the CoAkka Runtime native tests](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-runtime/coakka-runtime-test)
+through the public C ABI.
 
 **Shared native cores. Familiar APIs across languages.**
 
@@ -20,14 +23,15 @@ Use **HTTP Runtime** for HTTP services and **Logger** for logging with bounded
 storage. Each product can be adopted independently and has its own packages
 and versions.
 
-**[Choose your language and run your first example](#choose-what-you-want-to-build)**
+**[Choose your language and run your first example](#choose-what-you-want-to-build)** ·
+[Find packages, downloads and checksums](https://github.com/phuong-tran/coakka-publish/blob/main/docs/common/current-packages.md)
 
 ## Try the Node–Python web demo
 
 Build a basket in your browser. Node.js sends it to a separate Python process,
 which returns item prices, shipping and the total through CoAkka Runtime.
 
-**[Run the demo and read the walkthrough](coakka-runtime/scenarios/order-quote-node-python/README.md)** · Published npm/PyPI **3.0.0** packages · Two terminals, no Docker required.
+**[Run the demo and read the walkthrough](coakka-runtime/scenarios/order-quote-node-python/README.md)** · Published npm/PyPI **3.2.1** packages · Two terminals, no Docker required.
 
 [![Node–Python demo: change the basket and receive an updated quote from Python.](docs/coakka-runtime/assets/node-python-order-quote-demo.gif)](coakka-runtime/scenarios/order-quote-node-python/README.md)
 
@@ -64,9 +68,21 @@ Choose the integration that matches your code:
 | Electron and Tauri desktop apps | [Electron](coakka-runtime/electron/registry-basic/README.md) · [Tauri](coakka-runtime/tauri/README.md) |
 | C / C++, Rust, Zig, Android and Mojo | [Source/archive guides and previews](coakka-runtime/README.md#other-languages-and-evaluations) |
 
-Start with the **3.0.0** language examples. Tauri, C/C++, Rust and Zig use their
+Start with the first run for your language. Tauri, C/C++, Rust and Zig use their
 own versioned source/archive guides; Android and Mojo are previews. Follow each
 guide's package, lane and platform scope.
+
+### Core and connector versions
+
+Read a connector version such as `3.1.1` as Core generation `3.1`
+and connector revision `1`, the connector's first release on that Core.
+A connector fix can advance its own revision to `3.1.2` while using the
+same Core SDK and native checksums. When the connector adopts Core `3.2`,
+its first release on that generation is `3.2.1`.
+
+On npm, Node.js, Bun and Electron `3.2.1` use Core 3.2. Electron installs
+Node.js `3.2.1` as its exact dependency. See the [npm release record](docs/coakka-runtime/releases/2026-11-05-npm-node-bun-electron-runtime-3.2.1.md)
+and [current package versions](docs/common/current-packages.md).
 
 ## CoAkka Runtime addons
 

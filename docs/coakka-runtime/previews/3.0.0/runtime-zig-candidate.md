@@ -1,10 +1,9 @@
 # Zig Private Candidate Sample
 
-This workflow uses the unpublished 3.0.0 source package and the
-exact Core build named in `artifacts/runtime-zig-candidate.json`. Obtain
-the archive through the trusted private candidate channel. The runner verifies
-the complete archive before unpacking it; it does not download another version.
-Current published package coordinates remain unchanged.
+This is a historical record of the unpublished 3.0.0 source package.
+The active sample pin has moved to the [3.2.1 guide](../3.2.1/runtime-zig-candidate.md).
+To reproduce the original workflow, use the original archive and a Samples
+revision that still contains the 3.0.0 pin.
 
 Use **Zig 0.16.0**, Python 3.11 or later, and a matching C compiler.
 These are build tools. Select existing absolute tool/cache directories and a

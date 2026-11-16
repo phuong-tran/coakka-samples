@@ -13,9 +13,9 @@ instances. This gives the ecosystem a common design approach while products
 keep their own contracts, packages and versions.
 
 Its central product, **CoAkka Runtime**, is a **polyglot, cross-platform
-distributed runtime for application-owned work**: for example, a Node.js checkout
-asking Python to calculate a price. Stable target names connect that work
-across processes, languages, containers and hosts. The application
+distributed runtime for application-owned work**. For example, a Node.js
+checkout can ask Python to calculate a price. Stable target names connect
+that work across processes, languages, containers and hosts. The application
 keeps business behavior; Runtime provides bounded admission, request/reply,
 deadletters and delivery diagnostics.
 
@@ -26,14 +26,15 @@ deadletters and delivery diagnostics.
 | CoAkka Runtime | Distributed target-based delivery, replies, deadletters, File Lane and Stream Lane. | [Runtime integration](../coakka-runtime/guides/runtime-integration-guide.md), [published packages](current-packages.md) |
 | CoAkka Logger | Bounded logging with explicit admission, delivery and pressure outcomes. | [Logger documentation](../coakka-logger/README.md) |
 | Runtime Addons | Optional integration capabilities composed with Runtime, such as acquiring a file before File Lane delivery. | [Runtime addons](../coakka-runtime/guides/runtime-addons.md) |
-| CoAkka HTTP Runtime | HTTP services and outbound requests: routing, files, streaming, SSE, WebSocket, TLS/mTLS, monitoring and graceful shutdown. | [HTTP samples](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-http-runtime), [archive catalog](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime) |
+| CoAkka HTTP Runtime | Independent HTTP server/client: routing, static files, streaming, SSE, WebSocket, TLS/mTLS, monitoring and graceful shutdown. | [HTTP samples](https://github.com/phuong-tran/coakka-samples/tree/main/coakka-http-runtime), [archive catalog](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime) |
 
 HTTP Runtime is not a new name for CoAkka Runtime or a required layer around
 it. An HTTP handler can call a Runtime target, but each product keeps its own
 lifecycle, configuration, package identity and release cadence. Applications
-may retain their existing HTTP framework and adopt only Runtime. For the
-difference between HTTP Runtime's outbound requests and the planned standalone
-HTTP Client, read [the client scope](../coakka-http-runtime/explanation/introduction.md#outbound-http-and-the-planned-http-client).
+may retain their existing HTTP framework and adopt only Runtime.
+
+[Run a first HTTP request](../coakka-http-runtime/getting-started.md) or
+[find the HTTP package for your language](current-packages.md#coakka-http-runtime).
 
 ## Distribution
 
@@ -46,18 +47,6 @@ HTTP Runtime is newer and currently distributed as checksum-pinned repository
 archives on `coakka-publish/main`, with archive-backed samples. It has no npm,
 PyPI, Maven Central or tagged Go-module release in this distribution. Installing
 a Runtime/Logger package does not install HTTP Runtime.
-
-Package-manager distribution for HTTP Runtime is in preparation for **npm**,
-**Maven Central**, **Go modules** and **PyPI**. The archive path above remains
-the current installation route until those releases are recorded in the ledger.
-
-## Runtime Companion Tools
-
-Use **CoAkka Runtime Client**, command `coakka-client`, to try requests from a
-terminal or script. **CoAkka Runtime Inspect**, command `coakka-runtime-inspect`,
-provides a browser explorer and request/reply trial form. The tools keep their own versions and
-inspection scope. Start with the [Client guide](../coakka-runtime/operations/coakka-runtime-client.md)
-or [Inspect guide](../coakka-runtime/operations/coakka-runtime-inspect.md).
 
 ## Repository Boundaries
 
@@ -75,10 +64,8 @@ release; see [Repository Boundaries](repository-boundaries.md).
 
 ## Language And Platform Scope
 
-Runtime integrations include JavaScript/TypeScript on Node.js and Bun, Python,
-Java/Kotlin, C#, Go and Swift; Spring Boot and Quarkus framework adapters; and
-Electron and Tauri desktop apps. C/C++, Rust and Zig have their own source/archive
-paths, while Android and Mojo remain previews.
+The ecosystem includes native C/C++, JVM and framework adapters, Node.js/Bun,
+Python, Go, C#, Rust, Swift and additional source or desktop/device lanes.
 That inventory does not mean every product supports every host. Check the
 selected product's exact version, OS, CPU, package contents and matching-host
 execution evidence. A packaged binary alone does not prove connector execution.

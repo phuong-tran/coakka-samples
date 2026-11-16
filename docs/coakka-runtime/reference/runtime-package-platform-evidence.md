@@ -1,11 +1,13 @@
 # Runtime Package And Platform Evidence
 
-This page records the current CoAkka Runtime artifact train and the separately
-versioned package-manager registries. It is the source of truth for developers
-and AI code generators selecting an OS/CPU payload or generating file-lane
-code.
+CoAkka Runtime 3.2.1 uses Core 3.2, build
+`f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45`, ABI 1. See
+[Current Packages](../../common/current-packages.md) for install coordinates
+and the [3.2.1 changelog](../CHANGELOG.md#321) for each package's
+release record. The historical archive sections below retain their own
+version, checksum and execution scope.
 
-Current artifact generation:
+Historical 2.5.1 native and connector archives:
 
 ```text
 native runtime:   2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be
@@ -48,8 +50,7 @@ manifest, and per-file checksums.
 Both Linux payloads fail closed above the glibc 2.36 baseline. The archive and
 all five libraries pass architecture, dependency, exact 139-export, public
 header, legal-bundle, checksum, and embedded build-identity verification. The
-separately versioned public tool train is recorded below. These published
-identities are distinct from the newer private native-startup candidates.
+separately versioned public tool train is recorded below. The 2.5.1 evidence below applies to that release train.
 
 ## Published Runtime Tool 2.5.1 Matrix
 
@@ -73,17 +74,18 @@ dependency, archive and checksum evidence in this published train. See the
 immutable paths and image digests; newer private target qualification does not
 retroactively broaden this receipt.
 
-## Connector Artifact Matrix
+## Connector Artifact Records
 
-| Surface | Exact artifact coordinate | Native payloads | Current exact-artifact evidence |
+| Surface | Exact artifact coordinate | Native payloads | Release evidence |
 | --- | --- | --- | --- |
-| JVM | `io.github.phuong-tran.coakka:runtime:3.0.0` | All five | Maven Central signed publication, native identity gate, Java package checks, and clean consumers pass. |
-| Node.js, Bun, Electron, Python, Go, C#, Rust, Swift, Mojo, Zig, Tauri | `runtime/<lane>/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e/` | All five where supported | Frozen connector packages pass the public artifact-surface verifier against the exact C1 native archive. Registry versions remain independently listed below. |
-| Android | historical signed internal `1.2.0` candidate; not published | `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64` | Exact tagged AAR passed clean build, package/ABI checks, R8 name verification, and the release-minified API 36 ARM64 Runtime/request/File/Stream smoke. |
+| JVM | `io.github.phuong-tran.coakka:runtime:3.2.1` | All five | Maven Central signed publication, native identity gate, Java package checks, and clean consumers pass. |
+| Historical connector archives | `runtime/<lane>/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be-0ba485e/` | All five where supported | Frozen connector packages pass the public artifact-surface verifier against the exact C1 native archive. Registry versions remain independently listed below. |
+| Android preview | [Android 3.2.1 AAR](../releases/2026-11-05-android-runtime-3.2.1-preview.md) | `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64` | Installed app tests passed on API 24 x86-64 and API 36 ARM64 emulators. |
+| Historical Android candidate | signed internal `1.2.0` candidate | `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64` | Exact tagged AAR passed clean build, package/ABI checks, R8 name verification, and the release-minified API 36 ARM64 Runtime/request/File/Stream smoke. |
 
-Every release directory has a manifest and `SHA256SUMS`. The manifest records
-the five-platform matrix, native source generation, connector source
-generation, and artifact name.
+The frozen desktop archive directories carry a manifest and `SHA256SUMS`.
+Their manifests record platform coverage, native and connector source
+identities, and artifact names.
 
 Connector source `0ba485e8ff19f3ce23902345cb445a1f652fe3f3` makes the native owner-grant contract usable from
 the host-language surfaces. File transfers use transfer-scoped grants with
@@ -105,14 +107,10 @@ The exact release-minified AAR passed on
 (API 36, `arm64-v8a`). R8 evidence checks four exact JNI/callback class names in
 the mapping and 34 native plus two callback members in the final APK DEX before
 executing Runtime, request/reply, File Lane, and Stream Lane. The signed bundle
-is retained as internal reproducibility evidence. It is separate from the
-newer private native-startup candidates. The current private candidate adds
-library obfuscation and product message helpers over frozen Core f6; its
-qualification uses native Mac ARM64 emulators at API 24 and API 36. Earlier
-API 37 x86_64 execution belongs to a distinct older AAR. See
-[Android and industrial tablets](../previews/edge-iot-android.md#android-and-industrial-tablets)
-for that candidate's scope. Neither candidate is a Maven Central publication,
-and no Android registry coordinate is claimed below.
+is retained as internal reproducibility evidence. Earlier API 37 x86_64
+execution belongs to a distinct AAR. See the
+[Android 3.2.1 preview record](../releases/2026-11-05-android-runtime-3.2.1-preview.md)
+for the published AAR and its installed execution scope.
 
 ## Registry Coordinates
 
@@ -122,12 +120,13 @@ coordinates are:
 
 | Registry | Current verified coordinate | Bundled native generation |
 | --- | --- | --- |
-| Maven Central | `io.github.phuong-tran.coakka:runtime:3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
-| npm | `coakka-v2-connector-{node,bun,electron}@3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
-| PyPI | `coakka-v2-connector==3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
-| NuGet | `CoAkka.Runtime==3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
-| Go modules | `github.com/phuong-tran/coakka-runtime-go/v3@v3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
-| SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v3.0.0` | `3.0.0+1522b4a9f30da1039ef8c7d198bbecfc749a2456` |
+| Maven Central | `io.github.phuong-tran.coakka:runtime:3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` |
+| npm (Node.js and Bun) | `coakka-v2-connector-{node,bun}@3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` |
+| npm (Electron) | `coakka-v2-connector-electron@3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` via Node `3.2.1` |
+| PyPI | `coakka-v2-connector==3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` |
+| NuGet | `CoAkka.Runtime==3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` |
+| Go modules | `github.com/phuong-tran/coakka-runtime-go/v3@v3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` |
+| SwiftPM | `github.com/phuong-tran/coakka-runtime-swift@v3.2.1` | `3.2+f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45` |
 
 Maven Runtime `2.5.3`, npm `2.5.3`, PyPI `2.5.3`, NuGet `2.5.3`, Go `v1.8.3`,
 and Swift `v2.5.3` expose typed replica-owner File and Stream Lane grants.
@@ -166,9 +165,29 @@ For code and ownership details, read [Runtime File Transfer](../guides/runtime-f
 [Envelope And Deadletter Map](envelope-deadletter-map.md), and
 [TLS And mTLS](tls-and-mtls.md).
 
+## C# Runtime 3.2.1
+
+NuGet repository signing preserves every qualified package member. A clean
+.NET 8 consumer on macOS ARM64 restored the public package and verified
+request/reply, a route-miss deadletter and the loaded Core. See the [release record](../releases/2026-11-05-nuget-csharp-runtime-3.2.1.md).
+
+## C# Runtime 3.1.1
+
+NuGet adds its repository signature to the qualified package. Every original
+archive member matches byte for byte. A fresh NuGet-only .NET 8 consumer on
+macOS ARM64 verified request/reply, a route-miss deadletter and the loaded
+Core identity. The managed and five native assets carry their matching-host
+qualification. See the [3.1.1 release receipt](../releases/2026-11-04-nuget-csharp-runtime-3.1.1.md).
+
 ## C# Runtime 3.0.0
 
 NuGet `CoAkka.Runtime 3.0.0` contains one `lib/net8.0` managed asset and five native RIDs: macOS ARM64, Linux ARM64/x64 and Windows ARM64/x64. All original candidate member bytes match the registry archive; NuGet adds only its repository signature. Full signature verification and a fresh NuGet-only .NET 8/macOS ARM64 consumer pass. Earlier .NET 8/9/10 registry observations above describe 2.5.3 and Logger, not a new 3.0.0 run on every runtime. The exact executable payload retains its prior five-target qualification. See [the release receipt](../releases/2026-10-30-nuget-csharp-runtime-3.0.0.md).
+
+## Python Runtime 3.2.1
+
+All five wheels downloaded from PyPI match the qualified SHA-256 values. A
+fresh macOS ARM64 CPython 3.11 install passed request/reply, shutdown, File
+and Stream. See the [release record](../releases/2026-11-05-pypi-python-runtime-3.2.1.md).
 
 ## Python Runtime 3.0.0
 
@@ -181,10 +200,29 @@ Runtime/File/Stream consumer. This is not a new post-upload run on every OS.
 PyPy and free-threaded Python remain outside this qualification.
 See [the Python release receipt](../releases/2026-10-30-pypi-python-runtime-3.0.0.md).
 
+## npm Runtime 3.2.1
+
+The three public tarballs match the qualified archives by SHA-256. A clean
+install resolved Electron with Node.js 3.2.1. See the [npm release record](../releases/2026-11-05-npm-node-bun-electron-runtime-3.2.1.md).
+
+## npm Runtime 3.1.2
+
+The Node.js and Bun packages matched the verified registry tarballs.
+Both `latest` selectors pointed to `3.1.2` at that publication. The release
+corrected the package introduction and logo. The native binaries match the
+five-target 3.1.1 evidence byte for byte. Fresh anonymous macOS installs passed request/reply.
+See the [npm 3.1.2 release record](../releases/2026-11-04-npm-node-bun-runtime-3.1.2.md).
+
+## npm Electron Runtime 3.1.1
+
+The registry tarball matches the qualified archive and a clean npm install
+resolves Node 3.1.2 exactly. The macOS ARM64 gate on Electron 42.0.0 covers
+the sandboxed renderer, request/reply, File, Stream and shutdown.
+See the [Electron release record](../releases/2026-11-04-npm-electron-runtime-3.1.1.md).
+
 ## npm Runtime 3.0.0
 
-Node.js, Bun and Electron 3.0.0 are published, with `latest` pointing to 3.0.0
-for all three packages. Registry tarballs match the qualified archives byte for
+The October 30 release set `latest` to `3.0.0` for Node.js, Bun and Electron. Registry tarballs match the qualified archives byte for
 byte. Every JavaScript, declaration and native member remains unchanged from
 the qualified five-target payload. Node/Bun include macOS ARM64, Linux ARM64/x64
 and Windows ARM64/x64 images; Electron uses the exact Node 3.0.0 dependency.
@@ -194,6 +232,15 @@ renderer/File/Stream/shutdown. Ordinary first-run apps pass for all three.
 Earlier exact executable target qualification is retained; this is not a new
 post-upload execution on every OS. Bun on Windows ARM64 requires 1.4.0.
 See [the npm release receipt](../releases/2026-10-30-npm-node-bun-electron-runtime-3.0.0.md).
+
+## Go Runtime 3.2.1
+
+The [GitHub release](https://github.com/phuong-tran/coakka-runtime-go/releases/tag/v3.2.1) and its archive checksum were verified
+anonymously. The public Go proxy module matches the tagged source and the five
+qualified Core 3.2 images. A clean macOS ARM64 consumer passed request/reply;
+GitHub CI ran the Linux x64 application on Go 1.22.12 and stable Go.
+See the [release record](../releases/2026-11-05-go-runtime-3.2.1-github.md) for artifact hashes and
+matching-host qualification scope.
 
 ## Go Runtime 3.0.0
 
@@ -207,6 +254,17 @@ from the qualified package; prior matching-host five-target/race/resource
 evidence is retained, not claimed as a new post-upload run on every target.
 See [the release receipt](../releases/2026-10-30-go-runtime-3.0.0-github.md).
 
+## Swift Runtime 3.2.1
+
+The [GitHub release](https://github.com/phuong-tran/coakka-runtime-swift/releases/tag/v3.2.1) source archive, SHA-256 sidecar, and a fresh
+SwiftPM checkout match the same tag. On macOS ARM64, the exact version passed
+the first-run sample and an installed consumer moved away from its build tree.
+The consumer checked the running Core build and exercised request/reply,
+deadletters, File, Stream and shutdown. Windows ARM64 remains an evaluation
+preview. See the [release record](../releases/2026-11-05-swift-runtime-3.2.1-github.md).
+
+The Swift 3.2.1 CI retry passed 49 tests on [macOS 15 ARM64](https://github.com/phuong-tran/coakka-runtime-swift/actions/runs/41888048785/job/126786477777).
+
 ## Swift Runtime 3.0.0
 
 The GitHub Release contains exact source/archive/checksum. Fresh remote SwiftPM
@@ -219,6 +277,27 @@ skips. All 46 library/C/header/native members remain unchanged; the manifest onl
 integrates current regression tests. Earlier matching-target profiles remain
 qualified; this is not a new post-upload run on every OS. Windows ARM64 alone is
 preview; the Swift package is a release. See [the receipt](../releases/2026-10-30-swift-runtime-3.0.0-github.md).
+
+## Client and Inspect 3.2.1
+
+Client and Inspect archive qualification covers macOS ARM64, Linux ARM64
+on Pi 5, Linux x64 on WSL2, physical Windows x64 and Windows ARM64 in UTM.
+The connected installed checks cover request/reply and inspection.
+The [release record](../releases/2026-11-05-runtime-tools-3.2.1.md) lists all ten anonymously verified archives.
+
+## Android 3.2.1 preview
+
+The Android 3.2.1 preview is a standalone AAR with Core 3.2.
+Installed tests and lifecycle soak passed on API 24 x86_64 (613 cycles)
+and API 36 ARM64 (477 cycles). API 24 ARM64 stopped before APK installation.
+The four ABI payloads passed static checks. See the
+[Android preview release and SHA-256](../releases/2026-11-05-android-runtime-3.2.1-preview.md).
+
+## Maven JVM Runtime 3.2.1
+
+The [Maven release record](../releases/2026-11-05-jvm-spring-quarkus-runtime-3.2.1-maven-central.md) covers all three coordinates,
+the Core 3.2 identity, and verification of 15 public artifacts and their
+detached signatures.
 
 ## Maven JVM Runtime 3.0.0
 

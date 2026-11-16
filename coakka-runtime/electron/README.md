@@ -1,8 +1,7 @@
 # Electron Runtime Samples
 
-`coakka-v2-connector-electron@3.0.0` is published on npm and depends exactly
-on Node connector3.0.0. Use Electron 42 or newer and
-[the ordinary first-run app](registry-basic/README.md):
+Use the [3.2.1 first run](registry-basic/README.md) and see the
+[package ledger](../../docs/common/current-packages.md) for registry availability.
 
 ```sh
 cd coakka-runtime/electron/registry-basic

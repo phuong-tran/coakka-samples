@@ -5,8 +5,8 @@ It is the visual sibling of `coakka-client`: both point at a caller-supplied
 runtime address, both use runtime-owned truth, and both keep route try behavior
 aligned with `call` / `ask`.
 
-The published archives and Docker image use Runtime native
-`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`.
+The native [coakka-runtime-inspect 3.2.1](https://github.com/phuong-tran/coakka-publish/tree/86aa17f3d2af26bfd0faee3c02fbd9e82750592e/coakka-tools/coakka-runtime-inspect/releases/3.2.1%2Bf9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45) archives use Core 3.2.
+The sample runner and Docker walkthrough below exercise the 2.5.1 snapshot.
 
 This sample lane can verify the published macOS ARM64, Linux x86_64, Linux
 ARM64, Windows x86_64, and Windows ARM64 inspect archives from
@@ -82,37 +82,10 @@ are explicitly labelled `local-linked-runtime`.
 
 ## Published Release
 
-The current public inspect release is platform-specific:
-
-```text
-coakka-runtime-inspect native UI
-2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be release id for macOS ARM64
-2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be release id for Linux x86_64
-2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be release id for Linux ARM64
-2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be release id for Windows x86_64
-2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be release id for Windows ARM64
-```
-
-Direct download:
-
-[coakka-runtime-inspect-v2-2.5.1-linux-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/9429dd78fee2127e3aacbf0e753ec1a7bc141f6b/coakka-tools/coakka-runtime-inspect/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-runtime-inspect-v2-2.5.1-linux-aarch64.tar.gz)
-
-[coakka-runtime-inspect-v2-2.5.1-linux-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/9429dd78fee2127e3aacbf0e753ec1a7bc141f6b/coakka-tools/coakka-runtime-inspect/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-runtime-inspect-v2-2.5.1-linux-x86_64.tar.gz)
-
-[coakka-runtime-inspect-v2-2.5.1-macos-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/9429dd78fee2127e3aacbf0e753ec1a7bc141f6b/coakka-tools/coakka-runtime-inspect/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-runtime-inspect-v2-2.5.1-macos-aarch64.tar.gz)
-
-[coakka-runtime-inspect-v2-2.5.1-windows-x86_64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/9429dd78fee2127e3aacbf0e753ec1a7bc141f6b/coakka-tools/coakka-runtime-inspect/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-runtime-inspect-v2-2.5.1-windows-x86_64.tar.gz)
-
-[coakka-runtime-inspect-v2-2.5.1-windows-aarch64.tar.gz](https://raw.githubusercontent.com/phuong-tran/coakka-publish/9429dd78fee2127e3aacbf0e753ec1a7bc141f6b/coakka-tools/coakka-runtime-inspect/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/coakka-runtime-inspect-v2-2.5.1-windows-aarch64.tar.gz)
-
-Artifact catalog and manifest:
-[CoAkka Public Artifacts](https://github.com/phuong-tran/coakka-publish/tree/9429dd78fee2127e3aacbf0e753ec1a7bc141f6b),
-[public-artifacts.tsv](https://raw.githubusercontent.com/phuong-tran/coakka-publish/9429dd78fee2127e3aacbf0e753ec1a7bc141f6b/artifacts/public-artifacts.tsv)
-
-All five archives pass Runtime identity, dependency, architecture, archive,
-and checksum gates. macOS ARM64 completed command and `serve` smoke. The
-Docker Hub image passed inspect smoke on Linux amd64 and arm64. Native
-matching-host execution is not claimed for the other four archive targets.
+Download [coakka-runtime-inspect 3.2.1](https://github.com/phuong-tran/coakka-publish/tree/86aa17f3d2af26bfd0faee3c02fbd9e82750592e/coakka-tools/coakka-runtime-inspect/releases/3.2.1%2Bf9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45) and unpack the archive for your platform.
+Run `bin/coakka-runtime-inspect version` on macOS/Linux or
+`bin\coakka-runtime-inspect.exe version` on Windows. The command reports Core 3.2.
+See the [archive checksums and verification](https://github.com/phuong-tran/coakka-publish/blob/main/docs/coakka-runtime/releases/2026-11-05-runtime-tools-3.2.1.md).
 
 ## Docker
 

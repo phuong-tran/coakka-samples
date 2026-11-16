@@ -5,6 +5,24 @@ surface. It is not a repository release ledger. Artifact versions, manifests,
 and checksums live in the versioned
 [`coakka-publish`](https://github.com/phuong-tran/coakka-publish) warehouse.
 
+## HTTP Runtime 2.2.1 — 2026-11-12
+
+- Added separate [HTTP/1.1, HTTP/2, HTTP/3 and shared-port exercises](docs/coakka-http-runtime/guides/http-versions/README.md),
+  with commands and expected protocol output.
+- Added [runnable examples](coakka-http-runtime/protocol-listeners/README.md)
+  for C, C++, Go, Node.js, Bun, Python, Java and Kotlin. The same-port
+  example uses listener V1 in C, C++, Node.js or Bun.
+  [Release notes](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/release-2.2.1.md)
+
+## Runtime 3.2.1 — 2026-11-05
+
+Pinned the JVM, Spring Boot, Quarkus, Node.js, Bun, Electron, Python, C#, Go
+and Swift first runs to Runtime 3.2.1. The Rust, Tauri Intents, Zig and Mojo
+examples use the published 3.2.1 source archives. The Android guide uses the
+separate 3.2.1 preview AAR. See the
+[first-run index](docs/coakka-runtime/getting-started.md) and
+[Current Packages](docs/common/current-packages.md).
+
 ## HTTP Runtime 2.0.1 — 2026-11-04
 
 - Updated first-request samples and the native contract suite to use HTTP

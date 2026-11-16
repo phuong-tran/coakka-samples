@@ -5,11 +5,9 @@ and request/reply trial tool for CoAkka Runtime. It is the visual companion to
 [CoAkka Runtime Client](coakka-runtime-client.md), whose published command is
 `coakka-client`.
 
-The current published browser shows the Runtime linked into Inspect itself;
-its connection option selects where trial requests go. The sample guide calls
-those displayed snapshots `local-linked-runtime`. They do not describe the
-remote application's health. See the [Inspect sample guide](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-runtime/tools/coakka-runtime-inspect/README.md#boundary)
-for the current read/try distinction.
+Inspect shows the source of each snapshot. A snapshot from the Runtime
+linked into Inspect is labeled `local-linked-runtime`. The destination of
+a trial request and the source of a displayed snapshot can differ.
 
 ![CoAkka Runtime Inspect browser walkthrough](../assets/coakka-runtime-inspect.gif)
 
@@ -33,10 +31,8 @@ It is not an admin dashboard, observability platform, schema registry, service
 discovery server, mTLS control plane, or topology authority. Runtime core
 remains the source of truth; inspect reads and renders runtime facts.
 
-The transport section reports the Runtime snapshot shown by the UI. In the
-current published browser, that is the locally linked Runtime; the trial
-request destination does not change the owner of those displayed facts. TLS
-credential contents, private keys, and credential file paths are never exposed.
+The transport section reports the settings of the displayed snapshot.
+TLS credential contents, private keys, and credential paths stay private.
 When certificate identity metadata is available, inspect shows only non-secret
 fields such as credential ID and generation, validity bounds, and fingerprint.
 
@@ -61,30 +57,13 @@ for application-owned work behind or beside the HTTP edge.
 
 ## Published Artifacts
 
-Current public native generation:
-`2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be`.
+Download [coakka-runtime-inspect 3.2.1](https://github.com/phuong-tran/coakka-publish/tree/86aa17f3d2af26bfd0faee3c02fbd9e82750592e/coakka-tools/coakka-runtime-inspect/releases/3.2.1%2Bf9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45) for macOS ARM64, Linux ARM64/x64, or
+Windows ARM64/x64. The tool bundles Core 3.2 (ABI 1). The
+[release record](../releases/2026-11-05-runtime-tools-3.2.1.md) lists checksums and installed test scope.
 
-Native UI archives live under:
-
-```text
-coakka-tools/coakka-runtime-inspect/releases/2.5.1+26f7944de4a4e0598845a54e4775f9463a9e33be/
-```
-
-Current public platforms:
-
-- macOS ARM64
-- Linux x86_64
-- Linux ARM64
-- Windows x86_64
-- Windows ARM64
-
-Use `coakka-publish/artifacts/public-artifacts.tsv` for exact paths and
-checksums.
-
-All five archives pass Runtime identity, dependency, architecture, archive,
-and checksum gates. macOS ARM64 completed command and `serve` smoke. The
-Docker Hub image passed its inspect smoke on Linux amd64 and arm64. Native
-matching-host execution is not claimed for the other four archive targets.
+The sample runner commands below exercise the pinned 2.5.1 walkthrough.
+For the native 3.2.1 build, unpack the archive and run the executable
+from its package directory.
 
 ## Sample Entry Points
 

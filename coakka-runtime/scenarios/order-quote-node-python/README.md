@@ -8,7 +8,7 @@ example keeps those rules in Python: Node sends a cart to the named work
 CoAkka Runtime carries the request and reply between the two processes.
 The browser talks to the Node web app; Node asks Python through Runtime.
 
-Both apps use **published 3.0.0 packages** from npm and PyPI. Run them in two
+Both apps use **published 3.2.1 packages** from npm and PyPI. Run them in two
 terminals on one computer. Each app starts its own Runtime; no separate Runtime
 server, Docker installation or Core build is needed.
 
@@ -67,8 +67,8 @@ py -3.11 -m venv .venv
 ~~~
 
 No environment activation is needed. [package.json](package.json) pins
-`coakka-v2-connector-node` to 3.0.0 and [requirements.txt](requirements.txt)
-pins `coakka-v2-connector` to 3.0.0. The Node lockfile fixes its resolved package.
+`coakka-v2-connector-node` to 3.2.1 and [requirements.txt](requirements.txt)
+pins `coakka-v2-connector` to 3.2.1. The Node lockfile fixes its resolved package.
 
 ## 2. Terminal A: start Python pricing
 

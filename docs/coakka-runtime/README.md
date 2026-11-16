@@ -12,7 +12,7 @@ Runtime connects their named work and reports replies or delivery failures.
 2. [Choose a business use case](guides/examples-and-use-cases.md).
 3. [Put the same steps in your application](guides/runtime-integration-guide.md).
 
-Start with one local request. The first-run guides use published 3.0.0 packages
+Start with one local request. The first-run guides use published 3.2.1 packages
 and point to real source for each language, including separate Java/Kotlin commands.
 
 ## Add a capability

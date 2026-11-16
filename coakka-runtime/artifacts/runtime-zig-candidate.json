@@ -2,12 +2,12 @@
   "schema": 1,
   "state": "private-candidate",
   "language": "zig",
-  "version": "3.0.0",
-  "coreCommit": "1522b4a9f30da1039ef8c7d198bbecfc749a2456",
+  "version": "3.2.1",
+  "coreCommit": "f9e5a632d2d046a5b4e89d5ce0c9042aee5c7b45",
   "archive": {
-    "file": "coakka-runtime-zig-3.0.0-source.tar.gz",
-    "prefix": "coakka-runtime-zig-3.0.0-source",
-    "bytes": 4058088,
-    "sha256": "e92b2729f2653eed620a8b74880f67dcac27360ae193190d28b4de585336b30c"
+    "file": "coakka-runtime-zig-3.2.1-source.tar.gz",
+    "prefix": "coakka-runtime-zig-3.2.1-source",
+    "bytes": 4264372,
+    "sha256": "7190852f0988df959260cfa4ed7bedb9cf0a5cb3bc4cab3ae82a07059b0948ae"
   }
 }
