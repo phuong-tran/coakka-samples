@@ -13,6 +13,17 @@ stay with the right service, resources are released, and failures are handled.
 
 ## Run the HTTP version samples
 
+### New: C# and Swift 2.3.1
+
+| Language | Requirements and installation | Runnable sample |
+| --- | --- | --- |
+| C# | .NET 8 or later; [CoAkka.Http.Runtime on NuGet](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/csharp/README.md) | [C# protocol project](protocol-listeners/README.md#c) |
+| Swift | Swift 6.0 or later; [SwiftPM installation](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/swift/README.md) | [Swift protocol project](protocol-listeners/README.md#swift) |
+
+Choose `http1`, `http2`, `http3` or `multi` in either project. The
+walkthrough shows the commands, certificate setup and expected responses.
+The `multi` example serves all 3 HTTP versions on one TLS port.
+
 The [protocol samples](protocol-listeners/README.md) use connector 2.3.1
 or Core SDK 2.3.0. They cover standalone HTTP/1.1, HTTP/2 and HTTP/3,
 plus a shared TLS listener for Go, Node.js, Bun, Python, Java, Kotlin,
