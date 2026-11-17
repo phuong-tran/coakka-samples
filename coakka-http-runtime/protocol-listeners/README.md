@@ -75,6 +75,9 @@ CGO_ENABLED=1 CGO_CFLAGS="-I$sdk/include" \
 
 ## Java and Kotlin
 
+Use Maven coordinate `io.github.phuong-tran.coakka:coakka-http-runtime-jvm:2.3.1`
+and its matching native classifier.
+
 Resolve the JVM 2.3.1 JAR and matching platform classifier ZIP from Maven
 Central, using either Maven or Gradle. The connector requires Kotlin
 stdlib 2.3.10 at runtime. Extract the ZIP and set `native_dir` to the
@@ -119,7 +122,7 @@ cmake --build build
 ## C#
 
 From the `protocol-listeners` directory, run the [C# project](csharp/) with
-.NET 8 or later. The project restores `coakka-http-runtime-csharp` 2.3.1
+.NET 8 or later. The project restores `CoAkka.Http.Runtime` 2.3.1
 from NuGet. Use one mode at a time.
 
 ```sh

@@ -6,6 +6,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="coakka-http-runtime-csharp" Version="[2.3.1]" />
+    <PackageReference Include="CoAkka.Http.Runtime" Version="[2.3.1]" />
   </ItemGroup>
 </Project>
