@@ -11,9 +11,9 @@ This product has its own packages and version.
 
 [Run one service and send one request](getting-started.md), or
 [download the matching package](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/README.md).
-Install HTTP Runtime 2.0.1 from its public registries or download the matching
-C/C++ SDK. The earlier 1.0.0 archives support the historical feature recipes.
-[Packages and SDK](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/README.md#version-201)
+Use the [current package catalog](../common/current-packages.md) to select
+the connector for your language. The [release history](releases/README.md)
+records published coordinates, native SDK versions and verified consumers.
 
 ## Use and operate
 
