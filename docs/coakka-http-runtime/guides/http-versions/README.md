@@ -1,6 +1,9 @@
 # Choose an HTTP version
 
-Use connector 2.3.1 or Core SDK 2.3.0 for these exercises.
+Use connector 2.3.1 or Core SDK 2.3.0 for these exercises. In the
+connector version, `2.3` identifies the Core generation and the final `1`
+is the connector's first revision on that Core.
+[Version and SDK compatibility](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/versions.md)
 
 All four exercises serve `GET /hello` from CoAkka HTTP Runtime and return
 `hello`. The listener configuration decides how clients connect. The
@@ -11,7 +14,7 @@ application handler stays the same.
 | [HTTP/1.1](http1.md) | Plain HTTP on loopback over TCP | `200 1.1` |
 | [HTTP/2](http2.md) | HTTPS over TCP with HTTP/2 negotiated in the TLS handshake | `200 2` |
 | [HTTP/3](http3.md) | HTTPS over QUIC on UDP | `200 3` |
-| [HTTP/1.1, HTTP/2 and HTTP/3 on one port](multi.md) | Listener V1 with TLS on TCP and QUIC on UDP | All 3 on the same port |
+| [HTTP/1.1, HTTP/2 and HTTP/3 on one port](multi.md) | Shared listener with TLS on TCP and QUIC on UDP | All 3 on the same port |
 
 The [language samples](../../../../coakka-http-runtime/protocol-listeners/README.md)
 show how to install or select the package and start the same listener
