@@ -2,6 +2,7 @@
 
 | Date | Distribution |
 | --- | --- |
+| 2026-11-18 | [Swift 2.3.1 on GitHub](2026-11-18-swift-2.3.1-github.md) |
 | 2026-11-18 | [C# 2.3.1 on NuGet](2026-11-18-csharp-2.3.1-nuget.md) |
 | 2026-11-18 | [Java and Kotlin 2.3.1 on Maven Central](2026-11-18-jvm-2.3.1-central.md) |
 | 2026-11-17 | [Go 2.3.1 on GitHub](2026-11-17-go-2.3.1-github.md) |
