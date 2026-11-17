@@ -265,7 +265,6 @@ async function demonstrateRoutePublication(): Promise<void> {
     const publication = Object.freeze({
       activationId: 1n,
       expectedRouteGeneration: before.routeGeneration,
-      expectedMetadataGeneration: before.metadataGeneration,
       expectedBindingChangeSequence: before.bindingChangeSequence,
       routes: Object.freeze([
         Object.freeze({
