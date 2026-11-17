@@ -1,21 +1,36 @@
 # CoAkka HTTP Runtime Samples
 
-HTTP Runtime runs HTTP services and sends outbound requests from C, C++, Go,
-Kotlin, Java, Python, Node.js and Bun. Each service runs its own instance.
+CoAkka HTTP Runtime runs HTTP services and sends outbound requests from C, C++, Go,
+Kotlin, Java, Python, Node.js, Bun, C# and Swift. Each service runs its own instance.
 Application handlers use their language API while the native runtime handles
 HTTP delivery, limits and shutdown.
 
-[HTTP documentation](../docs/coakka-http-runtime/README.md) · [Pi 5 benchmark](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/README.md)
+[HTTP documentation](../docs/coakka-http-runtime/README.md) · [Pi 5 benchmark](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/benchmark/README.md) · [GitHub Sponsors](https://github.com/sponsors/phuong-tran) · [Ko-fi](https://ko-fi.com/phuongnamtran)
 
 **[coakka-http-runtime-test](coakka-http-runtime-test.md)** — read and run the public C and C++
 tests against the SDK you install. See how the tests check that requests
 stay with the right service, resources are released, and failures are handled.
 
-## Start with connector 2.2.1 and Core SDK 2.2.0
+## Run the HTTP version samples
 
-[Run the HTTP version samples](protocol-listeners/README.md) to install a
-connector, serve a route and verify the negotiated protocol. The examples
-cover C, C++, Go, Node.js, Bun, Python, Java and Kotlin.
+### New: C# and Swift 2.3.1
+
+| Language | Requirements and installation | Runnable sample |
+| --- | --- | --- |
+| C# | .NET 8 or later; [CoAkka.Http.Runtime on NuGet](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/csharp/README.md) | [C# protocol project](protocol-listeners/README.md#c) |
+| Swift | Swift 6.0 or later; [SwiftPM installation](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/swift/README.md) | [Swift protocol project](protocol-listeners/README.md#swift) |
+
+Choose `http1`, `http2`, `http3` or `multi` in either project. The
+walkthrough shows the commands, certificate setup and expected responses.
+The `multi` example serves all 3 HTTP versions on one TLS port.
+
+The [protocol samples](protocol-listeners/README.md) use connector 2.3.1
+or Core SDK 2.3.0. They cover standalone HTTP/1.1, HTTP/2 and HTTP/3,
+plus a shared TLS listener for Go, Node.js, Bun, Python, Java, Kotlin,
+C# and Swift.
+
+For currently available packages, see the
+[CoAkka HTTP Runtime download catalog](https://github.com/phuong-tran/coakka-publish/tree/main/coakka-http-runtime).
 
 ## Historical examples for 2.0.1
 

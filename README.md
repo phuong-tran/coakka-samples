@@ -26,6 +26,21 @@ and versions.
 **[Choose your language and run your first example](#choose-what-you-want-to-build)** ·
 [Find packages, downloads and checksums](https://github.com/phuong-tran/coakka-publish/blob/main/docs/common/current-packages.md)
 
+## New in CoAkka HTTP Runtime: C# and Swift
+
+**C# and Swift 2.3.1 are now available**, alongside Go, Node.js, Bun,
+Python, Java and Kotlin. Use .NET 8 or later for C#, or Swift 6.0 or later.
+Run HTTP/1.1, HTTP/2 or HTTP/3 separately, then use MultiProtocol to serve
+all 3 on one TLS port.
+
+| Language | Install and send a first request | Run the protocol examples |
+| --- | --- | --- |
+| C# | [CoAkka.Http.Runtime on NuGet](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/csharp/README.md) | [C# standalone and MultiProtocol](coakka-http-runtime/protocol-listeners/README.md#c) |
+| Swift | [coakka-http-runtime-swift with SwiftPM](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/swift/README.md) | [Swift standalone and MultiProtocol](coakka-http-runtime/protocol-listeners/README.md#swift) |
+
+[All HTTP Runtime examples](coakka-http-runtime/README.md) ·
+[Current packages](docs/common/current-packages.md)
+
 ## Try the Node–Python web demo
 
 Build a basket in your browser. Node.js sends it to a separate Python process,
@@ -126,12 +141,13 @@ Outbound requests are part of HTTP Runtime's documented package scope. The
 planned standalone **CoAkka HTTP Client** is a separate future product:
 [current client scope and roadmap](docs/coakka-http-runtime/explanation/introduction.md#outbound-http-and-the-planned-http-client).
 
-**HTTP Runtime 2.0.1** is available for Node.js and Bun on npm, Python on PyPI,
-Go through the `/v2` module, and Java and Kotlin through Maven Central.
+**CoAkka HTTP Runtime 2.3.1** is available for Node.js and Bun on npm,
+Python on PyPI, Go through the `/v2` module, Java and Kotlin through Maven
+Central, C# on NuGet and Swift through SwiftPM.
 
 The first two numbers identify the Core generation; the last identifies that
-connector's revision on that Core. For example, `2.0.1` is revision 1 on Core
-`2.0`. If Go alone publishes `2.0.2`, it still uses Core `2.0` and the same
+connector's revision on that Core. For example, `2.3.1` is revision 1 on Core
+`2.3`. If Go alone publishes `2.3.2`, it still uses Core `2.3` and the same
 native SDK. See [how to read HTTP Runtime versions](https://github.com/phuong-tran/coakka-publish/blob/main/coakka-http-runtime/docs/versions.md)
 and [run your first HTTP request](docs/coakka-http-runtime/getting-started.md).
 

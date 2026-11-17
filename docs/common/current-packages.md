@@ -44,11 +44,13 @@ Each first run shows the prerequisites, command and expected result.
 
 | Host | Install or dependency coordinate | First run |
 | --- | --- | --- |
-| Node.js | [`npm install coakka-http-runtime-node@2.2.1`](https://www.npmjs.com/package/coakka-http-runtime-node/v/2.2.1) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md#nodejs-or-bun) |
-| Bun | [`bun add coakka-http-runtime-bun@2.2.1`](https://www.npmjs.com/package/coakka-http-runtime-bun/v/2.2.1) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md#nodejs-or-bun) |
-| Python | [`python -m pip install coakka-http-runtime-python==2.2.1`](https://pypi.org/project/coakka-http-runtime-python/2.2.1/) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md#python) |
-| Java / Kotlin | [`io.github.phuong-tran.coakka:coakka-http-runtime-jvm:2.2.1`](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/coakka-http-runtime-jvm/2.2.1) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md#java-and-kotlin) |
-| Go | [`go get github.com/phuong-tran/coakka-http-runtime-go/v2@v2.2.1`](https://pkg.go.dev/github.com/phuong-tran/coakka-http-runtime-go/v2@v2.2.1) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md#go) |
+| Node.js | [`npm install coakka-http-runtime-node@2.3.1`](https://www.npmjs.com/package/coakka-http-runtime-node/v/2.3.1) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md#nodejs-or-bun) |
+| Bun | [`bun add coakka-http-runtime-bun@2.3.1`](https://www.npmjs.com/package/coakka-http-runtime-bun/v/2.3.1) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md#nodejs-or-bun) |
+| Python | [`python -m pip install coakka-http-runtime-python==2.3.1`](https://pypi.org/project/coakka-http-runtime-python/2.3.1/) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md#python) |
+| Java / Kotlin | [`io.github.phuong-tran.coakka:coakka-http-runtime-jvm:2.3.1`](https://central.sonatype.com/artifact/io.github.phuong-tran.coakka/coakka-http-runtime-jvm/2.3.1) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md#java-and-kotlin) |
+| Go | [`go get github.com/phuong-tran/coakka-http-runtime-go/v2@v2.3.1`](https://pkg.go.dev/github.com/phuong-tran/coakka-http-runtime-go/v2@v2.3.1) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md#go) |
+| C# / .NET | [`dotnet add package CoAkka.Http.Runtime --version 2.3.1`](https://www.nuget.org/packages/CoAkka.Http.Runtime/2.3.1) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md) |
+| Swift | [`.package(url: "https://github.com/phuong-tran/coakka-http-runtime-swift.git", exact: "2.3.1")`](https://github.com/phuong-tran/coakka-http-runtime-swift/releases/tag/v2.3.1) | [Run the sample](https://github.com/phuong-tran/coakka-samples/blob/main/coakka-http-runtime/protocol-listeners/README.md#swift) |
 
 ### CoAkka Logger
 
